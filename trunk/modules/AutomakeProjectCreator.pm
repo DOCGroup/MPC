@@ -69,6 +69,31 @@ sub fill_value {
       $value = 'VPATH = .:' . $str . $self->crlf();
     }
   }
+  elsif ($name eq 'am_includes') {
+    my($incs) = $self->get_assignment('includes');
+    if (defined $incs) {
+      my(@vec) = split(' ', $incs);
+      foreach(@vec) {
+        if (/^[^\$\/]/) {
+          $_ = '$(srcdir)/' . $_;
+        }
+      }
+
+      $value = join(' ', @vec);
+    }
+  }
+  elsif ($name eq 'rev_avoids') {
+    my($avoids) =  $self->get_assignment('avoids');
+    if (defined $avoids) {
+      $value = join(' ', reverse split(' ', $avoids));
+    }
+  }
+  elsif ($name eq 'rev_requires') {
+    my($requires) =  $self->get_assignment('requires');
+    if (defined $requires) {
+      $value = join(' ', reverse split(' ', $requires));
+    }
+  }
   elsif ($name eq 'tao') {
     my($incs) = $self->get_assignment('includes');
     my($libs) = $self->get_assignment('libpaths');
