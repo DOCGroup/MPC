@@ -1540,7 +1540,7 @@ sub read_template_input {
     my($file) = $self->search_include_path("$file.$TemplateInputExtension");
     if (defined $file) {
       $self->{$tag} = new TemplateInputReader($self->get_include_path());
-      ($status, $errorString) = $self->{$tag}->read_file($file);
+      ($status, $errorString) = $self->{$tag}->cached_file_read($file);
     }
     else {
       if ($override) {
@@ -2152,14 +2152,27 @@ sub sift_files {
       push(@$array, $saved[0]);
     }
     else {
-      my($unescaped) = $self->transform_file_name(
-                               $self->get_assignment('project_name'));
-      my($pjname)    = $self->escape_regex_special($unescaped);
+      my($pjname) = $self->escape_regex_special(
+                              $self->transform_file_name(
+                                  $self->get_assignment('project_name')));
+      my($found)  = 0;
       foreach my $save (@saved) {
-        my($file) = $self->escape_regex_special($save);
-        if ($unescaped =~ /$file/ || $save =~ /$pjname/) {
+        if ($save =~ /$pjname/) {
           if (!$self->already_added($array, $save)) {
             push(@$array, $save);
+            $found = 1;
+          }
+        }
+      }
+
+      ## If we didn't find an rc file, try a case insensitive search.
+      ## After all, these are a Windows specific file type.
+      if (!$found) {
+        foreach my $save (@saved) {
+          if ($save =~ /$pjname/i) {
+            if (!$self->already_added($array, $save)) {
+              push(@$array, $save);
+            }
           }
         }
       }

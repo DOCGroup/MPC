@@ -83,4 +83,22 @@ sub create_array {
 }
 
 
+sub crlf {
+  #my($self) = shift;
+  return "\n";
+}
+
+
+sub windows_crlf {
+  #my($self) = shift;
+  if ($^O eq 'MSWin32' || $^O eq 'os2' ||
+      ($^O eq 'cygwin' &&
+       ($] < 5.008 || (defined $ENV{PERLIO} && $ENV{PERLIO} eq 'crlf')))) {
+    return "\n";
+  }
+  else {
+    return "\r\n";
+  }
+}
+
 1;

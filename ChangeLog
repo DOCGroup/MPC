@@ -1,3 +1,31 @@
+Fri Jan  7 13:59:31 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+        * modules/StringProcessor.pm:
+
+          Moved the crlf and windows_crlf method into StringProcessor and
+          finally fixed the problem with cygwin.  Now cygwin perl can be
+          used with MPC.
+
+        * modules/ProjectCreator.pm:
+
+          Cache the contents of the template input files to avoid reading
+          them multiple times.  Also, search for resource files that differ
+          only in case from the project name.
+
+        * modules/FeatureParser.pm:
+
+          Cache the contents of the feature file to avoid reading it
+          multiple times.
+
+        * modules/Parser.pm:
+        * modules/TemplateParser.pm:
+
+          Took the file caching code out of TemplateParser and moved it into
+          Parser so that more classes can use cached file reads than just
+          the TemplateParser.
+
+
 Wed Jan  5 11:24:36 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/nmake.mpd:
