@@ -289,7 +289,7 @@ sub write_comps {
     foreach my $local (reverse @locals) {
 
       if (open($pfh, "$outdir/$local")) {
-        print $fh "## $local $crlf";
+        print $fh "## $local", $crlf;
 
         my($look_for_libs) = 0;
 

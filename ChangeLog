@@ -1,3 +1,9 @@
+Wed Feb 23 20:34:58 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+
+	  Remove trailing whitespace after project Makefile.am name.
+
 Wed Feb 23 19:43:10 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* modules/AutomakeWorkspaceCreator.pm:
