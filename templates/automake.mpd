@@ -16,7 +16,7 @@ INCLUDES =<%foreach(includes)%> -I<%include%><%endfor%>
 <%endif%>
 
 <%if(exename)%>
-bin_PROGRAMS = <%exename%>
+<%if(install)%>bin_PROGRAMS<%else%>noinst_PROGRAMS<%endif%> = <%exename%>
 
 <%normalize(exename)%>_SOURCES = \
 <%foreach(source_files)%>
