@@ -9,7 +9,10 @@
 //    want enabled or disabled.
 // 2) Create a feature file anywhere you like with the features you want and
 //    use the -feature_file option to specify where it is located.
-
+//
+// Feature definitions from this file are always overwritten by -features
+// command option of mwc.pl.
+//
 // By default we disable these.
 qt            = 0
 zlib          = 0
