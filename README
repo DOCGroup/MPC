@@ -187,6 +187,19 @@ specific        This scope allows assignments that are specific to a
                   ...
                 }
 
+                or
+
+                specific(<project type> [, <project type> ...]) {
+                  lit_libs += c
+                  ...
+                } else {
+                  list_libs += c_other
+                  ...
+                }
+
+                Due to limited parsing capabilities, the else is required to
+                be on the same line as the closing curly brace.
+
                 If a keyword is not recognized as a valid MPC keyword, it is
                 interpreted as a template value modifier.  In this
                 situation, this construct has the exact same restrictions as

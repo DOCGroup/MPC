@@ -6,13 +6,11 @@ feature(zlib) {
   libpaths += $(ZLIB_ROOT)/lib
   macros   += ZLIB
 
-  specific(cbx, borland, bmake, nmake, em3, vc6, vc7, vc71, vc8) {
-    lit_libs += zlib
-  }
-
   // @@ Notice: If you are building with Cygwin, you may need to manually
   //            change the following library to zlib.
-  specific(gnuace, make, sle) {
+  specific(gnuace, make, sle, automake, ghs) {
     lit_libs += z
+  } else {
+    lit_libs += zlib
   }
 }
