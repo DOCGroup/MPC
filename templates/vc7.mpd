@@ -233,12 +233,16 @@
 			Name="<%ucw(custom_type)%>"
 			Filter="<%foreach(custom_type->inputexts)%><%custom_type->inputext%><%fornotlast(";")%><%endfor%>">
 <%foreach(custom_type->input_files)%>
-<%if(custom_type->input_file->output_files)%>
 			<File
 				RelativePath="<%custom_type->input_file%>">
 <%foreach(configurations)%>
 				<FileConfiguration
-					Name="<%configuration%>|<%platform%>">
+					Name="<%configuration%>|<%platform%>"
+<%if(!custom_type->input_file->output_files)%>
+					ExcludedFromBuild="TRUE"
+<%endif%>
+				>
+<%if(custom_type->input_file->output_files)%>
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Invoking <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> on <%custom_type->input_file%>"
@@ -251,10 +255,10 @@
 <%endif%>
 <%endif%>
 						Outputs="<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(";")%><%endfor%>"/>
+<%endif%>
 				</FileConfiguration>
 <%endfor%>
 			</File>
-<%endif%>
 <%endfor%>
 		</Filter>
 <%endif%>
