@@ -3,7 +3,7 @@
 
 conditional_include "common"
 
-configurations     = "Static Release" "Static Debug"
+configurations     = Release Debug
 type_is_binary     = 1
 common_defines     = WIN32 _CONSOLE
 configuration_type = 1
@@ -11,7 +11,7 @@ subsystem          = 1
 pdb                = 1
 use_modifier       =
 
-Static Release {
+Release {
   optimize         = 3
   defines          = NDEBUG
   output_dir       = Static_Release
@@ -21,7 +21,7 @@ Static Release {
   runtime_library  = 2
 }
 
-Static Debug {
+Debug {
   optimize         =
   defines          = _DEBUG
   output_dir       = Static_Debug
@@ -31,7 +31,7 @@ Static Debug {
   runtime_library  = 3
 }
 
-Static MFC Release {
+MFC Release {
   optimize         = 3
   defines          = NDEBUG _AFXDLL
   output_dir       = Static_MFC_Release
@@ -42,7 +42,7 @@ Static MFC Release {
   use_mfc          = 2
 }
 
-Static MFC Debug {
+MFC Debug {
   optimize         =
   defines          = _DEBUG _AFXDLL
   output_dir       = Static_MFC_Debug
