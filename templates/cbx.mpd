@@ -96,7 +96,7 @@
 <%foreach(includes)%>
   <property category="win32.Debug_Build.CygWin.g++compile" name="option.I.arg.<%forcount%>" value="<%include%>"/>
 <%endfor%>
-  <property category="win32.Debug_Build.CygWin.g++compile" name="option.I.arg.merge" value="0"/>
+  <property category="win32.Debug_Build.CygWin.g++compile" name="option.I.arg.merge" value="1"/>
   <property category="win32.Debug_Build.CygWin.g++compile" name="option.I.enabled" value="1"/>
   <property category="win32.Debug_Build.CygWin.g++compile" name="option.o.enabled" value="1"/>
   <property category="win32.Debug_Build.CygWin.g++link" name="option.o.enabled" value="1"/>
@@ -153,10 +153,10 @@
 <%endfor%>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.D.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.Hc.enabled" value="1"/>
-  <property category="win32.Debug_Build.win32b.bcc32" name="option.I.arg.1" value="$(BCB)\include"/>
 <%foreach(includes)%>
-  <property category="win32.Debug_Build.win32b.bcc32" name="option.I.arg.2" value="<%include%>"/>
+  <property category="win32.Debug_Build.win32b.bcc32" name="option.I.arg.<%forcount%>" value="<%include%>"/>
 <%endfor%>
+  <property category="win32.Debug_Build.win32b.bcc32" name="option.I.arg.merge" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.I.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.Od.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.V.enabled" value="1"/>
@@ -165,6 +165,7 @@
   <property category="win32.Debug_Build.win32b.bcc32" name="option.Vx.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.a8.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.b.enabled" value="0"/>
+  <property category="win32.Debug_Build.win32b.bcc32" name="option.o.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.batchfilecompile.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.c.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.g.arg" value="100"/>
@@ -174,10 +175,14 @@
   <property category="win32.Debug_Build.win32b.bcc32" name="option.j.arg" value="25"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.j.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.k.enabled" value="1"/>
-  <property category="win32.Debug_Build.win32b.bcc32" name="option.o.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.r.enabled" value="0"/>
+  <property category="win32.Debug_Build.win32b.bcc32" name="option.q.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.responsefile.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.tWM.enabled" value="1"/>
+  <property category="win32.Debug_Build.win32b.bcc32" name="option.tWR.enabled" value="1"/>
+<%if(type_is_dynamic)%>
+  <property category="win32.Debug_Build.win32b.bcc32" name="option.tWD.enabled" value="1"/>
+<%endif%>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.v.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.vi.enabled" value="0"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.w.enabled" value="1"/>
@@ -191,7 +196,6 @@
   <property category="win32.Debug_Build.win32b.ilink32" name="option.H:xxxx.enabled" value="0"/>
   <property category="win32.Debug_Build.win32b.ilink32" name="option.Hc:xxxx.arg" value="0x00001000"/>
   <property category="win32.Debug_Build.win32b.ilink32" name="option.Hc:xxxx.enabled" value="0"/>
-  <property category="win32.Debug_Build.win32b.ilink32" name="option.L.arg.1" value="$(BCB)\lib"/>
   <property category="win32.Debug_Build.win32b.ilink32" name="option.L.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.ilink32" name="option.S:xxxx.arg" value="0x00100000"/>
   <property category="win32.Debug_Build.win32b.ilink32" name="option.S:xxxx.enabled" value="0"/>
@@ -210,6 +214,17 @@
   <property category="win32.Debug_Build.win32b.ilink32" name="param.libfiles.2" value="import32.lib"/>
   <property category="win32.Debug_Build.win32b.ilink32" name="option.Tpd.enabled" value="<%if(type_is_dynamic)%>1<%w%>0<%endif%>"/>
   <property category="win32.Debug_Build.win32b.ilink32" name="option.Tpe.enabled" value="<%if(type_is_dynamic)%>0<%else%>1<%endif%>"/>
+  <property category="win32.Debug_Build.win32b.ilink32" name="option.Ud.d.arg" value="1.0"/>
+  <property category="win32.Debug_Build.win32b.ilink32" name="option.Ud.d.enabled" value="0"/>
+  <property category="win32.Debug_Build.win32b.ilink32" name="option.Vd.d.arg" value="0.0"/>
+  <property category="win32.Debug_Build.win32b.ilink32" name="option.Vd.d.enabled" value="0"/>
+  <property category="win32.Debug_Build.win32b.ilink32" name="option.b:xxxx.arg" value="0x00400000"/>
+  <property category="win32.Debug_Build.win32b.ilink32" name="option.b:xxxx.enabled" value="0"/>
+  <property category="win32.Debug_Build.win32b.ilink32" name="option.v.enabled" value="1"/>
+  <property category="win32.Debug_Build.win32b.ilink32" name="option.x.enabled" value="1"/>
+  <property category="win32.Debug_Build.win32b.ilink32" name="param.libfiles.1" value="cw32mti.lib"/>
+  <property category="win32.Debug_Build.win32b.ilink32" name="param.libfiles.2" value="import32.lib"/>
+  <property category="win32.Debug_Build.win32b.tlib" name="param.additionalflags.merge" value="1"/>
   <property category="win32.win32b.Debug_Build" name="saved" value="1"/>
   <property category="win32b.ilink32" name="enabled" value="0"/>
 <%if(source_files)%>
