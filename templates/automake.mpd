@@ -144,13 +144,22 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%if(linkflags)%>
 
 <%normalize(exename)%>_LDFLAGS = \
- <%linkflags%>
+<%foreach(linkflags)%>
+  <%linkflag%><%fornotlast(" \\")%>
+<%endfor%>
 <%endif%>
 <%else%>
 <%if(linkflags || am_version)%>
 
 lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LDFLAGS = \
-<%if(am_version)%> -version-number <%am_version%><%endif%> <%linkflags%>
+<%if(am_version)%>
+  -version-number <%am_version%><%if(linkflags)%> \<%endif%>
+<%endif%>
+<%if(linkflags)%>
+<%foreach(linkflags)%>
+  <%linkflag%><%fornotlast(" \\")%>
+<%endfor%>
+<%endif%>
 <%endif%>
 <%endif%>
 <%if(libs || pure_libs || lit_libs)%>
