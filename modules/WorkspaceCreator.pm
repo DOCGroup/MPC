@@ -640,6 +640,12 @@ sub get_workspace_name {
 }
 
 
+sub get_current_output_name {
+  my($self) = shift;
+  return $self->{'current_output'};
+}
+
+
 sub write_workspace {
   my($self)      = shift;
   my($creator)   = shift;
@@ -719,6 +725,7 @@ sub write_workspace {
       }
 
       if ($addfile || !$self->file_written($name)) {
+        $self->{'current_output'} = $name;
         if ($self->compare_output()) {
           ## First write the output to a temporary file
           my($tmp) = "$outdir/MWC$>.$$";
