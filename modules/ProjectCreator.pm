@@ -35,7 +35,7 @@ my($TemplateInputExtension)  = 'mpt';
 
 ## Valid names for assignments within a project
 ## 1 means preserve the order for additions
-## 0 means order is not preserved, it is reversed.
+## 0 means order is not preserved, it is inverted.
 my(%validNames) = ('exename'         => 1,
                    'sharedname'      => 1,
                    'staticname'      => 1,
@@ -53,6 +53,7 @@ my(%validNames) = ('exename'         => 1,
                    'dynamicflags'    => 1,
                    'staticflags'     => 1,
                    'version'         => 1,
+                   'recurse'         => 1,
                    'requires'        => 1,
                    'avoids'          => 1,
                    'tagname'         => 1,
@@ -87,6 +88,10 @@ my(%customDefined) = ('automatic'               => 1,
 my(%custom) = ('commandflags'  => 1,
                'gendir'        => 1,
               );
+
+## All matching assignment arrays will get these keywords
+my(@default_matching_assignments) = ('recurse',
+                                    );
 
 ## Deal with these components in a special way
 my(%specialComponents) = ('header_files' => 1,
@@ -171,6 +176,8 @@ sub new {
   $self->{'exclude'}               = $exclude;
   $self->{'generate_ins'}          = $genins;
   $self->{'addtemp_state'}         = undef;
+
+  $self->add_default_matching_assignments();
   $self->reset_generating_types();
 
   return $self;
@@ -944,6 +951,7 @@ sub parse_define_custom {
 
     if (!defined $self->{'matching_assignments'}->{$tag}) {
       my(@keys) = keys %custom;
+      push(@keys, @default_matching_assignments);
       $self->{'matching_assignments'}->{$tag} = \@keys;
     }
 
@@ -1422,15 +1430,16 @@ sub remove_extra_pch_listings {
 
 
 sub sift_files {
-  my($self)  = shift;
-  my($files) = shift;
-  my($exts)  = shift;
-  my($pchh)  = shift;
-  my($pchc)  = shift;
-  my($tag)   = shift;
-  my($array) = shift;
-  my(@saved) = ();
-  my($ec)    = $self->{'exclude_components'};
+  my($self)   = shift;
+  my($files)  = shift;
+  my($exts)   = shift;
+  my($pchh)   = shift;
+  my($pchc)   = shift;
+  my($tag)    = shift;
+  my($array)  = shift;
+  my($alldir) = shift;
+  my(@saved)  = ();
+  my($ec)     = $self->{'exclude_components'};
 
   foreach my $file (@$files) {
     foreach my $ext (@$exts) {
@@ -1446,7 +1455,7 @@ sub sift_files {
             }
           }
         }
-        elsif ($tag eq 'resource_files') {
+        elsif (!$alldir && $tag eq 'resource_files') {
           ## Save these files for later.  There may
           ## be more than one and we want to try and
           ## find the one that corresponds to this project
@@ -1486,13 +1495,14 @@ sub sift_files {
 
 
 sub generate_default_components {
-  my($self)   = shift;
-  my($files)  = shift;
-  my($passed) = shift;
-  my($vc)     = $self->{'valid_components'};
-  my(@tags)   = (defined $passed ? $passed : keys %$vc);
-  my($pchh)   = $self->get_assignment('pch_header');
-  my($pchc)   = $self->get_assignment('pch_source');
+  my($self)    = shift;
+  my($files)   = shift;
+  my($passed)  = shift;
+  my($vc)      = $self->{'valid_components'};
+  my(@tags)    = (defined $passed ? $passed : keys %$vc);
+  my($pchh)    = $self->get_assignment('pch_header');
+  my($pchc)    = $self->get_assignment('pch_source');
+  my($recurse) = $self->get_assignment('recurse');
 
   foreach my $tag (@tags) {
     my($exts) = $$vc{$tag};
@@ -1511,10 +1521,12 @@ sub generate_default_components {
               my(@built) = ();
               foreach my $file (@$array) {
                 if (-d $file) {
+                  my($alldir) = $recurse ||
+                      $self->{'flag_overrides'}->{$tag}->{$file}->{'recurse'};
                   my(@gen) = $self->generate_default_file_list(
-                                                        $file,
-                                                        $self->{'exclude'});
-                  $self->sift_files(\@gen, $exts, $pchh, $pchc, $tag, \@built);
+                                      $file, $self->{'exclude'}, $alldir);
+                  $self->sift_files(\@gen, $exts, $pchh,
+                                    $pchc, $tag, \@built, $alldir);
                 }
                 else {
                   if (!$self->already_added(\@built, $file)) {
@@ -1864,7 +1876,9 @@ sub generate_defaults {
   }
 
   ## Generate the default pch file names (if needed)
-  my(@files) = $self->generate_default_file_list('.', $self->{'exclude'});
+  my(@files) = $self->generate_default_file_list(
+                                 '.', $self->{'exclude'},
+                                 $self->get_assignment('recurse'));
   $self->generate_default_pch_filenames(\@files);
 
   ## If the pch file names are empty strings then we need to fix that
@@ -2480,6 +2494,19 @@ sub set_source_listing_callback {
 sub reset_values {
   my($self) = shift;
   $self->{'project_info'} = [];
+}
+
+
+sub add_default_matching_assignments {
+  #my($self) = shift;
+  foreach my $key (keys %vc) {
+    if (!defined $ma{$key}) {
+      $ma{$key} = [];
+      foreach my $keyword (@default_matching_assignments) {
+        push(@{$ma{$key}}, $keyword);
+      }
+    }
+  }
 }
 
 

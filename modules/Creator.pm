@@ -390,6 +390,7 @@ sub generate_default_file_list {
   my($self)    = shift;
   my($dir)     = shift;
   my($exclude) = shift;
+  my($recurse) = shift;
   my($dh)      = new FileHandle();
   my(@files)   = ();
 
@@ -413,7 +414,13 @@ sub generate_default_file_list {
         $skip = 0;
       }
       else {
-        push(@files, $full);
+        if ($recurse && -d $full) {
+          push(@files,
+               $self->generate_default_file_list($full, $exclude, $recurse));
+        }
+        else {
+          push(@files, $full);
+        }
       }
     }
 

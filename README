@@ -113,6 +113,10 @@ libout		Specifies where the dynamic and static libraries will be placed
 install		Specifies where executables will be installed
 pch_header	Specifies the precompiled header file name
 pch_source	Specifies the precompiled source file name
+recurse         If set to 1, MPC will recurse into directories listed under
+                component listings and add any component corresponding files
+                to the list.  This keyword can be used as a global project
+                setting or a component scoped setting.
 version         Specifies the version number for the library or executable
 macros          These values will be passed as macros to the compiler.
 libpaths	Specifies 1 or more locations to find libraries
