@@ -1,3 +1,14 @@
+Mon Sep 27 15:53:18 2004  Steve Huston  <shuston@riverace.com>
+
+	* modules/TemplateParser.pm (handle_normalize): Add / $ ( ) to the
+	  characters translated to _ to properly handle full-path names that
+	  may include variables.
+
+	* templates/automake.mpd: Use the dllout/libout settings for placing
+	  libraries. The linker input use of lib names always assumes
+	  libout/lib - this may be too limiting, but not sure how to handle
+	  it otherwise.
+
 Mon Sep 27 11:56:20 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
