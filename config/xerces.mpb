@@ -3,7 +3,17 @@
 
 project {
   includes += $(XERCESCROOT)/include
-  lit_libs += xerces-c
-  macros   += XML_USE_PTHREADS
   libpaths += $(XERCESCROOT)/lib
+
+  specific (em3, vc6, vc7, vc71, vc8, nmake) {
+    xerceslib = xerces-c_2
+  }
+  specific(borland, bmake, cbx) {
+    xerceslib = XercesLib
+  }
+  specific (gnuace, make, sle, automake, ghs) {
+    macros   += XML_USE_PTHREADS
+    xerceslib = xerces-c
+  }
+  libs += $(XERCESLIB)
 }
