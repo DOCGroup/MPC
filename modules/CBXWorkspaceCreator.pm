@@ -1,7 +1,7 @@
-package CbxWorkspaceCreator;
+package CBXWorkspaceCreator;
 
 # ************************************************************
-# Description   : A Cbx Workspace Creator
+# Description   : A CBX Workspace Creator
 # Author        : Chad Elliott
 # Create Date   : 2/06/2004
 # ************************************************************
@@ -12,7 +12,7 @@ package CbxWorkspaceCreator;
 
 use strict;
 
-use CbxProjectCreator;
+use CBXProjectCreator;
 use WorkspaceCreator;
 
 use vars qw(@ISA);

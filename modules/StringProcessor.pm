@@ -43,7 +43,7 @@ sub process_special {
 
   ## Remove any non-escaped double quotes
   $line =~ s/"//g;
-                  
+
   ## Put the escaped double quotes and backslashes back in
   if ($escaped) {
     $line =~ s/\02/"/g;
