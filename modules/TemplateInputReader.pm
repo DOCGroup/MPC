@@ -52,7 +52,7 @@ sub parse_line {
   }
   elsif ($line =~ /^([\w\s]+)\s*{$/) {
     ## Entering a new scope
-    my($name) = $1;
+    my($name) = lc($1);
     $name =~ s/\s+$//;
     if (!defined $$current[$self->{'cindex'}]->{$name}) {
       $$current[$self->{'cindex'}]->{$name} = {};
@@ -71,7 +71,7 @@ sub parse_line {
     }
   }
   elsif ($line =~ /^(\w+)\s*(\+=|=)\s*(.*)?/) {
-    my($name)  = $1;
+    my($name)  = lc($1);
     my($op)    = $2;
     my($value) = $3;
 
@@ -120,7 +120,7 @@ sub parse_line {
 sub get_value {
   my($self) = shift;
   my($tag)  = shift;
-  return $self->{'values'}->{$tag};
+  return $self->{'values'}->{lc($tag)};
 }
 
 

@@ -232,7 +232,7 @@ sub options {
       }
       else {
         if ($value =~ /(\w+)\s*([\-+]?=)\s*(.*)/) {
-          my($name) = $1;
+          my($name) = lc($1);
           my($op)   = $2;
           my($val)  = $3;
           $val =~ s/^\s+//;
@@ -261,7 +261,7 @@ sub options {
       }
       else {
         if ($value =~ /(\w+)\s*([\-+]?=)\s*(.*)/) {
-          my($name) = $1;
+          my($name) = lc($1);
           my($op)   = $2;
           my($val)  = $3;
           $val =~ s/^\s+//;
