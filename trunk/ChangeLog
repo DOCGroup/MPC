@@ -1,3 +1,16 @@
+Wed Mar  9 08:53:39 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Remove duplicate 'macros' when adding or subtracting.
+
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+
+          Set the defaults for 'optimize_flags' and 'debug_flags' to
+          /O2 and /Ob0 respectively.  They can be overridden with 'specific'
+          or the -value_template option.
+
 Tue Mar  8 12:57:52 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3vcp.mpd:

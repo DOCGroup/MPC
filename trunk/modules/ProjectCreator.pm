@@ -1490,11 +1490,12 @@ sub remove_duplicate_addition {
   my($value)   = shift;
   my($nval)    = shift;
 
-  ## If we are modifying the libs, libpaths or includes assignment with
-  ## either addition or subtraction, we are going to
+  ## If we are modifying the libs, libpaths, macros or includes
+  ## assignment with either addition or subtraction, we are going to
   ## perform a little fix on the value to avoid multiple
   ## libraries and to try to insure the correct linking order
-  if ($name eq 'libpaths' || $name eq 'includes' || $name =~ /libs$/) {
+  if ($name eq 'macros'   ||
+      $name eq 'libpaths' || $name eq 'includes' || $name =~ /libs$/) {
     if (defined $nval) {
       my($allowed) = '';
       my(%parts)   = ();
