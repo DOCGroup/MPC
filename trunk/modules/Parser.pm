@@ -21,6 +21,12 @@ use vars qw(@ISA);
 @ISA = qw(OutputMessage StringProcessor DirectoryManager);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my(%filecache) = ();
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -74,7 +80,15 @@ sub read_file {
     if ($cache) {
       while(<$ih>) {
         my($line) = $self->preprocess_line($ih, $_);
-        $self->cache_line($input, $line);
+
+        ## If we don't have an array for this file, then start one
+        if (!defined $filecache{$input}) {
+          $filecache{$input} = [];
+        }
+
+        ## Push the line onto the array for this file
+        push(@{$filecache{$input}}, $line);
+
         ($status, $errorString) = $self->parse_line($ih, $line);
 
         if (!$status) {
@@ -106,7 +120,7 @@ sub read_file {
 sub cached_file_read {
   my($self)  = shift;
   my($input) = shift;
-  my($lines) = $self->get_cache($input);
+  my($lines) = $filecache{$input};
 
   if (defined $lines) {
     my($status) = 1;
@@ -184,19 +198,6 @@ sub escape_regex_special {
 sub parse_line {
   #my($self) = shift;
   #my($ih)   = shift;
-  #my($line) = shift;
-}
-
-
-sub get_cache {
-  #my($self) = shift;
-  #my($key)  = shift;
-}
-
-
-sub cache_line {
-  #my($self) = shift;
-  #my($key)  = shift;
   #my($line) = shift;
 }
 
