@@ -51,12 +51,6 @@ sub project_file_name {
 }
 
 
-sub get_env_accessor {
-  #my($self) = shift;
-  return ('%', '%');
-}
-
-
 sub get_dll_exe_template_input_file {
   #my($self) = shift;
   return 'nmakeexe';
