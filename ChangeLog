@@ -1,3 +1,14 @@
+Wed Mar 16 13:59:13 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+
+	  Only emit empty primary definition if it is found in more
+	  than one conditional or if it is found in both conditional
+	  and unconditional contexts.
+
+	  Fixes unexpected consequences of earlier change to use +=
+	  instead of = for _MANS, _SCRIPTS, and _HEADERS.
+
 Wed Mar 16 12:53:13 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
