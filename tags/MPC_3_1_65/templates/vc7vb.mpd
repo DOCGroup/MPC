@@ -1,0 +1,116 @@
+<VisualStudioProject>
+    <VisualBasic
+        ProjectType = "Local"
+        ProductVersion = "<%prversion("7.10.3077")%>"
+        SchemaVersion = "<%schemaversion("2.0)%>"
+        ProjectGuid = "{<%guid%>}"
+<%if(scc)%>
+        SccProjectName = "<%scc%>"
+        SccLocalPath = "<%scc%>"
+        SccAuxPath = "<%scc%>"
+        SccProvider = "<%scc%>"
+<%endif%>
+    >
+        <Build>
+            <Settings
+<%if(ico_files)%>
+<%foreach(ico_files)%>
+<%if(forfirst)%>
+                ApplicationIcon = "<%ico_file%>"
+<%endif%>
+<%endfor%>
+<%else%>
+                ApplicationIcon = ""
+<%endif%>
+                AssemblyKeyContainerName = ""
+                AssemblyName = "<%if(exename)%><%exename%><%else%><%sharedname%><%endif%>"
+                AssemblyOriginatorKeyFile = ""
+                DefaultClientScript = "JScript"
+                DefaultHTMLPageLayout = "Grid"
+                DefaultTargetSchema = "IE50"
+                DelaySign = "false"
+                OutputType = "<%if(exename)%><%if(winapp)%>Win<%endif%>Exe<%else%>Library<%endif%>"
+                OutputCompare = "Binary"
+                OptionExplicit = "On"
+                OptionStrict = "Off"
+                RootNamespace = ""
+                StartupObject = "<%startupobject%>"
+            >
+<%foreach(configurations)%>
+                <Config
+                   Name = "<%configuration%>"
+                   BaseAddress = "285212672"
+                   ConfigurationOverrideFile = ""
+                   DefineConstants = "<%foreach(defines common_defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
+                   DefineDebug = "<%if(optimize)%>false<%else%>true<%endif%>"
+                   DefineTrace = "<%trace("true")%>"
+                   DefineSymbols = "<%if(optimize)%>false<%else%>true<%endif%>"
+                   IncrementalBuild = "<%incremental("false")%>"
+                   Optimize = "<%if(optimize)%>true<%else%>false<%endif%>"
+                   OutputPath = "<%if(exename)%><%if(install)%><%install%><%else%>.<%endif%><%else%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%endif%>\<%output_dir%>\"
+                   RegisterForComInterop = "false"
+                   RemoveIntegerChecks = "false"
+                   TreatWarningsAsErrors = "false"
+                   WarningLevel = "1"
+                />
+<%endfor%>
+            </Settings>
+            <References>
+<%foreach(libs lit_libs pure_libs)%>
+                <Reference
+                    Name = "<%lib%>"
+                    AssemblyName = "<%lib%>"
+                />
+<%endfor%>
+            <!-- MPC ADD REFERENCES -->
+            </References>
+        </Build>
+        <Files>
+            <Include>
+<%foreach(source_files)%>
+                        <File
+                                RelPath = "<%source_file%>"
+                                SubType = "<%if(flag_overrides(source_file, subtype))%><%flag_overrides(source_file, subtype)%><%else%>Code<%endif%>"
+                                BuildAction = "Compile"
+                        />
+<%endfor%>
+<%foreach(resx_files)%>
+                        <File
+                                RelPath = "<%resx_file%>"
+                                DependentUpon = "<%noextension(resx_file)%>.cs"
+                                BuildAction = "EmbeddedResource"
+                        />
+<%endfor%>
+<%foreach(custom_types)%>
+<%foreach(custom_type->input_files)%>
+<%if(custom_type->input_file->output_files)%>
+                        <File
+                                RelPath = "<%custom_type->input_file%>"
+                                BuildAction = "Compile"
+                                Generator = "<%if(custom_type->libpath)%>PATH=%PATH%;<%custom_type->libpath%>&#x0D;&#x0A;<%endif%><%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_files)%><%else%><%custom_type->input_file->output_files%><%endif%><%endif%><%if(custom_type->postcommand)%><%foreach(custom_type->input_file->output_files)%>&#x0D;&#x0A;<%custom_type->postcommand()%><%endfor%><%endif%>"
+                        />
+<%endif%>
+<%endfor%>
+<%endfor%>
+<%foreach(ico_files)%>
+                        <File
+                                RelPath = "<%ico_file%>"
+                                BuildAction = "Content"
+                        />
+<%endfor%>
+<%foreach(config_files)%>
+                        <File
+                                RelPath = "<%config_file%>"
+                                BuildAction = "None"
+                        />
+<%endfor%>
+<%foreach(documentation_files)%>
+                        <File
+                                RelPath = "<%documentation_file%>"
+                                BuildAction = "None"
+                        />
+<%endfor%>
+            </Include>
+        </Files>
+    </VisualBasic>
+</VisualStudioProject>
