@@ -202,6 +202,7 @@ sub write_comps {
               || /(^BUILT_SOURCES)\s*\+=\s*/
               || /(^CLEANFILES)\s*\+=\s*/
               || /(^EXTRA_DIST)\s*\+=\s*/
+              || /(^pkgconfigdata_DATA)\s*\+=\s*/
              ) {
             if ($in_condition && !defined ($conditional_targets{$1})) {
               $conditional_targets{$1} = 1;
@@ -291,6 +292,7 @@ sub write_comps {
               || /(^BUILT_SOURCES)\s*\+=\s*/
               || /(^CLEANFILES)\s*\+=\s*/
               || /(^EXTRA_DIST)\s*\+=\s*/
+              || /(^pkgconfigdata_DATA)\s*\+=\s*/
              ) {
             if (!defined ($seen{$1})) {
               $seen{$1} = 1;
