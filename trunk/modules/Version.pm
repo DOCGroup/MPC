@@ -37,7 +37,7 @@ sub get {
     my($base) = -36;
     if (open(CLH, ::getBasePath() . '/ChangeLog')) {
       while(<CLH>) {
-        if (/^\w\w\w\s/) {
+        if (/^\w\w\w\s\w\w\w\s/) {
           ++$base;
         }
       }
@@ -47,7 +47,7 @@ sub get {
       $version .= ".$base";
     }
     else {
-      print "WARNING: Unable to determine the beta version number of MPC\n";
+      $version .= '.??';
     }
   }
 
