@@ -1,3 +1,8 @@
+Tue Jun  8 17:14:29 2004  Steve Huston  <shuston@riverace.com>
+
+	* modules/AutomakeWorkspaceCreator.pm: Fixed string writing to write
+	  a tab to the generated file where desired, not a '\t'.
+
 Tue Jun  8 12:29:19 2004  Steve Huston  <shuston@riverace.com>
 
 	* modules/AutomakeWorkspaceCreator.pm (write_comps): Get automake
