@@ -592,19 +592,26 @@ sub process_assignment_add {
   my($assign) = shift;
   my($nval)   = $self->get_assignment_for_modification($name, $assign);
 
-  if (defined $nval) {
-    if ($self->preserve_assignment_order($name)) {
-      $nval .= " $value";
+  ## Remove all duplicate parts from the value to be added.
+  ## Whether anything gets removed or not is up to the implementation
+  ## of the sub classes.
+  $value = $self->remove_duplicate_addition($name, $value, $nval);
+
+  ## If there is anything to add, then do so
+  if ($value ne '') {
+    if (defined $nval) {
+      if ($self->preserve_assignment_order($name)) {
+        $nval .= " $value";
+      }
+      else {
+        $nval = "$value $nval";
+      }
     }
     else {
-      $nval = "$value $nval";
+      $nval = $value;
     }
+    $self->process_assignment($name, $nval, $assign);
   }
-  else {
-    $nval = $value;
-  }
-  $self->process_assignment($name, $nval, $assign);
-  $self->process_duplicate_modification($name, $assign);
 }
 
 
@@ -892,10 +899,12 @@ sub handle_scoped_unknown {
 }
 
 
-sub process_duplicate_modification {
-  #my($self)   = shift;
-  #my($name)   = shift;
-  #my($assign) = shift;
+sub remove_duplicate_addition {
+  my($self)    = shift;
+  my($name)    = shift;
+  my($value)   = shift;
+  my($current) = shift;
+  return $value;
 }
 
 
