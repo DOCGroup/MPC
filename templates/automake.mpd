@@ -79,14 +79,22 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = 
 <%endfor%>
 <%endif%>
 
+<%if(linkflags)%>
+<%if(exename)%>
+<%normalize(exename)%>_LDFLAGS = \
+<%else%>
+lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LDFLAGS = \<%endif%>
+<%foreach(linkflags)%> <%linkflag%><%endfor%>
+
+<%endif%>
 <%if(libs || pure_libs || lit_libs)%>
 <%if(exename)%>
 <%normalize(exename)%>_LDADD = \
 <%else%>
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = \<%endif%>
 <%foreach(libs)%> -l<%lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%>
-<%endif%>
 
+<%endif%>
 <%if(exename)%>
 <%if(header_files)%>
 noinst_HEADERS += \
