@@ -220,6 +220,8 @@
 <%endfor%>
 		</Filter>
 <%endif%>
+<%if(type_is_static)%>
+<%else%>
 <%if(resource_files)%>
 		<Filter
 			Name="Resource Files"
@@ -230,6 +232,7 @@
 			</File>
 <%endfor%>
 		</Filter>
+<%endif%>
 <%endif%>
 	</Files>
 	<Globals>
