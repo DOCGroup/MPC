@@ -1592,29 +1592,38 @@ sub add_generated_files {
   if ($#added >= 0) {
     my($names) = $self->{$tag};
 
-    ## Get all files in one list
+    ## Get all files in one list and save the directory
+    ## and component group in a hashed array.
     my(@all) = ();
+    my(%dircomp) = ();
     foreach my $name (keys %$names) {
       foreach my $key (keys %{$$names{$name}}) {
         push(@all, @{$$names{$name}->{$key}});
+        foreach my $file (@{$$names{$name}->{$key}}) {
+          $dircomp{dirname($file)} = $key;
+        }
       }
     }
 
-    ## TBD: Add the generated files to the "right" group
-    my($defelem) = get_default_element_name();
-    foreach my $name (keys %$names) {
-      foreach my $key (sort { return ($a eq $defelem ? -1 :
-                                      $b eq $defelem ? 1  :
-                                      $a cmp $b);
-                            } keys %{$$names{$name}}) {
-        my(@oktoadd) = ();
-        foreach my $file (@added) {
-          if (!$self->already_added(\@all, $file)) {
-            push(@oktoadd, $file);
-          }
-        }
+    ## Create a small array of only the files we want to add.
+    ## We put them all together so we can keep them in order when
+    ## we put them at the front of the main file list.
+    my(@oktoadd) = ();
+    foreach my $file (@added) {
+      if (!$self->already_added(\@all, $file)) {
+        push(@oktoadd, $file);
+      }
+    }
+
+    ## If we have files to add, make sure we add them to a group
+    ## that has the same directory location as the files we're adding.
+    if ($#oktoadd >= 0) {
+      my($key) = $dircomp{dirname($oktoadd[0])};
+      if (!defined $key) {
+        $key = $self->get_default_element_name();
+      }
+      foreach my $name (keys %$names) {
         unshift(@{$$names{$name}->{$key}}, @oktoadd);
-        last;
       }
     }
   }
@@ -1909,6 +1918,8 @@ sub generate_default_components {
         $$comps{$defcomp} = [];
         my($array) = $$comps{$defcomp};
 
+        $self->{'defaulted'}->{$tag} = 1;
+
         if (!defined $specialComponents{$tag}) {
           $self->sift_files($files, $exts, $pchh, $pchc, $tag, $array);
           if (defined $sourceComponents{$tag}) {
@@ -1921,7 +1932,6 @@ sub generate_default_components {
               my(@input)  = $self->get_component_list($gentype, 1);
               my($wanted) = $self->{'valid_components'}->{$gentype}->[0];
 
-              $self->{'defaulted'}->{$tag} = 1;
               @$array = ();
               foreach my $file (@copy) {
                 my($found) = 0;
@@ -2138,62 +2148,120 @@ sub list_generated_file {
 
 
 sub add_corresponding_component_files {
-  my($self)  = shift;
-  my($ftags) = shift;
-  my($tag)   = shift;
-  my(@all)   = ();
-  my($names) = undef;
+  my($self)   = shift;
+  my($ftags)  = shift;
+  my($tag)    = shift;
+  my($names)  = undef;
+  my($grname) = $grouped_key . $tag;
+  my($defel)  = $self->get_default_element_name();
 
+  ## Collect up all of the files that have already been listed
+  ## with the extension removed.
+  my(%filecomp) = ();
   foreach my $filetag (@$ftags) {
     $names = $self->{$filetag};
     foreach my $name (keys %$names) {
       foreach my $comp (keys %{$$names{$name}}) {
         foreach my $sfile (@{$$names{$name}->{$comp}}) {
-          push(@all, $sfile);
-          $all[$#all] =~ s/\.[^\.]+$//;
+          my($mod) = $sfile;
+          $mod =~ s/\.[^\.]+$//;
+          $filecomp{$mod} = $comp;
         }
       }
     }
   }
 
+  ## Create a hash array keyed off of the existing files of the type
+  ## that we plan on adding.
+  my(%scfiles) = ();
+  $names = $self->{$tag};
+  foreach my $name (keys %$names) {
+    foreach my $comp (keys %{$$names{$name}}) {
+      @scfiles{@{$$names{$name}->{$comp}}} = ();
+    }
+  }
+
+  ## Create an array of extensions for the files we want to add
   my(@exts) = ();
   foreach my $ext (@{$self->{'valid_components'}->{$tag}}) {
     push(@exts, $ext);
     $exts[$#exts] =~ s/\\//g;
   }
 
-  $names = $self->{$tag};
-  foreach my $name (keys %$names) {
-    foreach my $comp (keys %{$$names{$name}}) {
-      my($array)   = $$names{$name}->{$comp};
-      my(%scfiles) = ();
-      @scfiles{@$array} = ();
-      foreach my $sfile (@all) {
-        my($found) = 0;
-        foreach my $ext (@exts) {
-          if (exists $scfiles{"$sfile$ext"}) {
-            $found = 1;
-            last;
+  ## Check each file against a possible new file addition
+  my($adddefaultgroup) = 0;
+  my($oktoadddefault)  = 0;
+  foreach my $sfile (keys %filecomp) {
+    my($found) = 0;
+    foreach my $ext (@exts) {
+      if (exists $scfiles{"$sfile$ext"}) {
+        $found = 1;
+        last;
+      }
+    }
+
+    if (!$found) {
+      ## Get the array of files for the selected component name
+      my($array) = [];
+      my($comp)  = $filecomp{$sfile};
+      foreach my $name (keys %$names) {
+        $array = $$names{$name}->{$comp};
+      }
+
+      ## First check to see if the file exists
+      foreach my $ext (@exts) {
+        if (-r "$sfile$ext") {
+          push(@$array, "$sfile$ext");
+          $found = 1;
+          last;
+        }
+      }
+
+      ## If it doesn't exist, see if it will be generated
+      if (!$found) {
+        foreach my $gentype (keys %{$self->{'generated_exts'}}) {
+          $self->list_generated_file($gentype, $tag, $array, $sfile);
+        }
+      }
+
+      ## If we have any files at all in the component array, check
+      ## to see if we need to add a new group name
+      if (defined $$array[0]) {
+        my($compexists) = undef;
+        my($grval)      = $self->get_assignment($grname);
+        if (defined $grval) {
+          foreach my $grkey (@{$self->create_array($grval)}) {
+            if ($grkey eq $comp) {
+              $compexists = 1;
+              last;
+            }
           }
         }
 
-        if (!$found) {
-          foreach my $ext (@exts) {
-            if (-r "$sfile$ext") {
-               push(@$array, "$sfile$ext");
-               $found = 1;
-               last;
-            }
+        if (!$compexists) {
+          if ($comp eq $defel) {
+            $adddefaultgroup = 1;
           }
+          else {
+            $self->process_assignment_add($grname, $comp);
+            $oktoadddefault = 1;
+          }
+        }
 
-          if (!$found) {
-            foreach my $gentype (keys %{$self->{'generated_exts'}}) {
-              $self->list_generated_file($gentype, $tag, $array, $sfile);
-            }
-          }
+        ## Put the array back into the component list
+        foreach my $name (keys %$names) {
+          $$names{$name}->{$comp} = $array;
         }
       }
     }
+  }
+
+  ## We only need to add the default group name if we wanted to
+  ## add the default group when adding new files and we added a group
+  ## by some other name.  Otherwise, defaulted files would always be
+  ## in a group, which is not what we want.
+  if ($adddefaultgroup && $oktoadddefault) {
+    $self->process_assignment_add($grname, $defel);
   }
 }
 
@@ -2271,15 +2339,21 @@ sub generate_defaults {
     if (!$self->{'special_supplied'}->{$tag}) {
       my($names) = $self->{$tag};
       if (defined $names) {
-        foreach my $name (keys %$names) {
-          my($comps) = $$names{$name};
-          foreach my $comp (keys %$comps) {
-            my($array) = $$comps{$comp};
-            if (!defined $$array[0] ||
-                $self->{'defaulted'}->{'source_files'}) {
-              $self->generate_default_components(\@files, $tag);
+        ## We only want to generate default components if we have
+        ## defaulted the source files or we have no files listed
+        ## in the current special component.
+        my($ok) = $self->{'defaulted'}->{'source_files'};
+        if (!$ok) {
+          my(@all) = ();
+          foreach my $name (keys %$names) {
+            foreach my $key (keys %{$$names{$name}}) {
+              push(@all, @{$$names{$name}->{$key}});
             }
           }
+          $ok = ($#all == -1);
+        }
+        if ($ok) {
+          $self->generate_default_components(\@files, $tag);
         }
       }
     }
@@ -2451,6 +2525,10 @@ sub get_grouped_value {
           }
           else {
             $value = $$comps{$comp};
+          }
+          if ($self->{'sort_files'}) {
+            my(@sorted) = sort { $self->file_sorter($a, $b) } @$value;
+            $value = \@sorted;
           }
           last;
         }
@@ -3386,7 +3464,7 @@ sub generate_recursive_input_list {
 
 sub get_default_element_name {
   #my($self) = shift;
-  return '_default_group_';
+  return 'default_group';
 }
 
 

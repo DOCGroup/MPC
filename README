@@ -83,6 +83,10 @@ project(project_name) : baseproject, anotherbaseproject {
 }
 
 
+When listing files within components (Source_Files, Header_Files, etc.), you
+can use wild cards (*?[]) to include groups of files as can be done in shells.
+You can exclude files by preceding the name (or wild card) with the '!'.
+
 The (project_name) part of the project declaration is optional.  If it is
 left off, the project name will default to the name of the mpc file without
 the extension.  Inheritance is optional.
