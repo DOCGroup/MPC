@@ -48,21 +48,31 @@ CLEANFILES += \
 <%else%>
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_CPPFLAGS = \
 <%endif%>
- -I$(top_builddir) -I$(top_srcdir) \
-<%if(includes)%><%foreach(includes)%> -I<%include%><%endfor%> \<%endif%>
+  -I$(top_builddir) \
+  -I$(top_srcdir)<%if(includes || defines || common_defines || need_staticflags || dynamicflags)%> \<%endif%>
+<%if(includes)%>
+<%foreach(includes)%>
+  -I<%include%><%if(defines || common_defines || macros || type_is_static || need_staticflags || dynamicflags)%> \<%else%><%fornotlast("  \\")%><%endif%>
+<%endfor%>
+<%endif%>
 <%if(defines || common_defines || macros)%>
-<%foreach(defines common_defines macros)%> -D<%define%><%endfor%> \
+<%foreach(defines common_defines macros)%>
+  -D<%define%><%if(type_is_static || need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
+<%endfor%>
 <%endif%>
 <%if(type_is_static || need_staticflags)%>
 <%if(staticflags)%>
-<%foreach(staticflags)%> -D<%staticflag%><%endfor%> \
+<%foreach(staticflags)%>
+  -D<%staticflag%><%fornotlast(" \\")%>
+<%endfor%>
 <%endif%>
 <%else%>
 <%if(dynamicflags)%>
-<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%> \
+<%foreach(dynamicflags)%>
+  -D<%dynamicflag%><%fornotlast("  \\")%>
+<%endfor%>
 <%endif%>
 <%endif%>
- $(DUMMY_VALUE_NOT_ENDING_IN_BACKSLASH)
 
 <%if(exename)%>
 <%normalize(exename)%>_SOURCES = \
