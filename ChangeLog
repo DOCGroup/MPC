@@ -5,6 +5,35 @@ Sun Jan 23 00:15:31 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 	  Restore CLEANFILES and EXTRA_DIST to conditionals since these
 	  two macros don't match the general form of automake primaries.
 
+Sat Jan 22 23:59:00 2005  Marek Brudka  <mbrudka@aster.pl>
+
+        * config/qt_uic.mpb (Module):
+        * config/qt_moc.mpb (Module):
+        * config/qt.mpb (Module):
+        * config/global.features:
+
+        Merged REACTOR_SEPARATION branch with the main trunk. Below is
+        the list of more detailed changes.
+
+        Thu Dec  9 20:00:39 2004  Marek Brudka  <mbrudka@aster.pl>
+
+        * config/qt_uic.mpb (Module):
+        * config/qt_moc.mpb (Module):
+        These files are empty now.
+
+        * config/qt.mpb (Module):
+        Qt became project which provides MOC and UIC rules.
+
+        Sat Dec  4 14:29:51 2004  Marek Brudka  <mbrudka@aster.pl>
+
+        * config/global.features:
+        Added comment about -features option.
+
+        Fri Dec  3 23:56:20 2004  Marek Brudka  <mbrudka@aster.pl>
+
+        * config/qt.mpb (Module):
+        qt based projects requires now qt features to be set.
+
 Sat Jan 22 23:20:57 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
