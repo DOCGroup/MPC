@@ -263,15 +263,25 @@ postcommand         Allows a user to execute arbitrary commands after
                         <%documentation_file%>
                         <%resource_file%>
 
+                    The following pseudo template variables are valid for
+                    use within the command, commandflags, postcommand and
+                    output_option settings:
+
                     <%temporary%> - A temporary file name.
                     <%cat%>       - Platform non-specific command to cat a file.
                     <%cp%>        - Platform non-specific copy command.
                     <%mv%>        - Platform non-specific move command.
                     <%rm%>        - Platform non-specific delete command.
+                    <%nul%>       - Platform non-specific null device.
+                    <%gt%>        - Project non-specific greater than sign.
+                    <%lt%>        - Project non-specific less than sign.
+                    <%and%>       - Project non-specific and sign.
+                    <%or%>        - Project non-specific or sign.
 
-                    If any of the referenced pseudo template variables do
-                    not contain a value, then the postcommand will not be
-                    used.
+                    If any referenced pseudo template variable does
+                    not contain a value, then the particular setting
+                    (command, commandflags, postcommand or output_option)
+                    will not be used.
 pre_extension       If the command produces multiple files of the same
                     extension, this comma separated list can be used to
                     specify them.  For example, tao_idl creates two types of
