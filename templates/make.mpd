@@ -182,6 +182,7 @@ all: $(GENERATED_DIRTY)
 
 <%endif%>
 generated: $(GENERATED_DIRTY)
+	@-:
 
 <%foreach(configurations)%>
 <%if(tempinc)%>
