@@ -1,3 +1,11 @@
+Tue Jan  4 07:48:20 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Added code to support the use of nobase_include_HEADERS and
+          nobase_pkginclude_HEADERS in the case where 'includedir' isn't
+          set.
+
 Mon Jan  3 13:12:23 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeWorkspaceCreator.pm:
