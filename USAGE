@@ -120,7 +120,7 @@ The -static_only option has been replaced by the -static option.  Currently,
 MPC only supports generating dynamic projects or static projects, but not
 both during the same run.  To generate them both you must run MPC twice, once
 with the -static option and once without.  Additionally, the vc6, em3, vc7,
-vc71, vc8 and va4 project names will no longer automatically have _Static
+vc71 and vc8 project names will no longer automatically have _Static
 appended to the project name when generating static projects.  This can
 still be achieved by using the -name_modifier option.
 
