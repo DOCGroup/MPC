@@ -1,3 +1,60 @@
+Mon Jan 17 07:54:36 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+
+          Allow multiple modifications of the same template variable.  Also,
+          fixed a bug where not having an inputext would cause generated
+          files not to be added.
+
+        * modules/TemplateInputReader.pm:
+
+          Allow redefintion of template input variables.
+
+        * templates/automakedll.mpt:
+        * templates/automakeexe.mpt:
+        * templates/bmakedll.mpt:
+        * templates/bmakedllexe.mpt:
+        * templates/bmakelib.mpt:
+        * templates/bmakelibexe.mpt:
+        * templates/cbxdll.mpt:
+        * templates/cbxexe.mpt:
+        * templates/em3vcpdll.mpt:
+        * templates/em3vcpdllexe.mpt:
+        * templates/em3vcplib.mpt:
+        * templates/em3vcplibexe.mpt:
+        * templates/ghsdll.mpt:
+        * templates/ghsdllexe.mpt:
+        * templates/ghslib.mpt:
+        * templates/ghslibexe.mpt:
+        * templates/makedll.mpt:
+        * templates/makeexe.mpt:
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+        * templates/sledll.mpt:
+        * templates/sleexe.mpt:
+        * templates/vc6dspdll.mpt:
+        * templates/vc6dspdllexe.mpt:
+        * templates/vc6dsplib.mpt:
+        * templates/vc6dsplibexe.mpt:
+        * templates/vc7csharp.mpt:
+        * templates/vc7dll.mpt:
+        * templates/vc7exe.mpt:
+        * templates/vc7lib.mpt:
+        * templates/vc7libexe.mpt:
+        * templates/vc7vb.mpt:
+
+          Added a conditional include to each mpt file in of the following
+          form:
+
+          conditional_include "user_XXXXXX"
+
+          where XXXXXX is the name of the current mpt file (without the
+          extension).  This will allow a user to place custom configurations
+          in an mpt file that will automatically be included during project
+          generation, assuming that the file is located through the -include
+          specification.
+
 Mon Jan 10 13:58:37 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

@@ -57,3 +57,4 @@ MFC Debug {
 }
 
 conditional_include "vcpartialmacros"
+conditional_include "user_vc6dspdll"

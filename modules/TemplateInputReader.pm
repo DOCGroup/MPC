@@ -91,13 +91,7 @@ sub parse_line {
       }
     }
     else {
-      if (!$$current[$self->{'cindex'}]->{$name}) {
-        $$current[$self->{'cindex'}]->{$name} = $value;
-      }
-      else {
-        $status = 0;
-        $errorString = "Redifinition of '$name'";
-      }
+      $$current[$self->{'cindex'}]->{$name} = $value;
     }
   }
   elsif ($line =~ /^conditional_include\s+"([\w\s\-\+\/\\\.]+)"$/) {
