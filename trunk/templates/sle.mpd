@@ -22,7 +22,7 @@
 				RunFromDir="%rw">
 				<Exec
 					CmdLine='g++ -c %xup -g -o "%bd%n%oe" %i "%f" %~other'
-                                        OtherOptions="-W -Wall -Wpointer-arith -mcpu=pentiumpro -mthreads -pipe -fno-exceptions -fcheck-new <%foreach(includes)%>-I"<%include%>" <%endfor%><%foreach(defines common_defines macros)%>-D<%define%> <%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>-D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>-D <%staticflag%> <%endfor%><%endif%>"/>
+                                        OtherOptions="-W -Wall -Wpointer-arith -mcpu=pentiumpro -mthreads -pipe -fno-exceptions -fcheck-new <%foreach(includes)%>-I'<%include%>' <%endfor%><%foreach(defines common_defines macros)%>-D<%define%> <%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>-D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>-D <%staticflag%> <%endfor%><%endif%>"/>
 			</Target>
 			<Target
 				Name="Link"
@@ -35,7 +35,7 @@
 				RunFromDir="%rw">
 				<Exec
 					CmdLine='g++ %xup -g -o "%o" %f %libs %~other'
-                                        OtherOptions="-Wl,--enable-auto-import -Wl,-E -lws2_32 -lmswsock -lwsock32 -lnetapi32 <%foreach(pure_libs)%>-l<%pure_lib%> <%endfor%><%foreach(lit_libs)%>-l<%lit_lib%>.lib <%endfor%><%foreach(libs)%>-l<%lib%><%lib_modifier%>.lib <%endfor%><%foreach(libpaths)%>-L"<%libpath%>" <%endfor%>"/>
+                                        OtherOptions="-Wl,--enable-auto-import -Wl,-E -lws2_32 -lmswsock -lwsock32 -lnetapi32 <%foreach(pure_libs)%>-l<%pure_lib%> <%endfor%><%foreach(lit_libs)%>-l<%lit_lib%>.lib <%endfor%><%foreach(libs)%>-l<%lib%><%lib_modifier%>.lib <%endfor%><%foreach(libpaths)%>-L'<%libpath%>' <%endfor%>"/>
 			</Target>
 			<Target
 				Name="Build"
@@ -117,7 +117,7 @@
 				RunFromDir="%rw">
 				<Exec
 					CmdLine='g++ -c %xup -o "%bd%n%oe" %i "%f" %~other'
-                                        OtherOptions="-W -Wall -Wpointer-arith -mcpu=pentiumpro -mthreads -pipe -fno-exceptions -fcheck-new <%foreach(includes)%>-I"<%include%>" <%endfor%><%foreach(defines common_defines macros)%>-D<%define%> <%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>-D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>-D <%staticflag%> <%endfor%><%endif%>"/>
+                                        OtherOptions="-W -Wall -Wpointer-arith -mcpu=pentiumpro -mthreads -pipe -fno-exceptions -fcheck-new <%foreach(includes)%>-I'<%include%>' <%endfor%><%foreach(defines common_defines macros)%>-D<%define%> <%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>-D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>-D <%staticflag%> <%endfor%><%endif%>"/>
 			</Target>
 			<Target
 				Name="Link"
@@ -130,7 +130,7 @@
 				RunFromDir="%rw">
 				<Exec
 					CmdLine='g++ %xup -o "%o" %f %libs %~other'
-                                        OtherOptions="-Wl,--enable-auto-import -Wl,-E -lws2_32 -lmswsock -lwsock32 -lnetapi32 <%foreach(pure_libs)%>-l<%pure_lib%> <%endfor%><%foreach(lit_libs)%>-l<%lit_lib%>.lib <%endfor%><%foreach(libs)%>-l<%lib%><%lib_modifier%>.lib <%endfor%><%foreach(libpaths)%>-L"<%libpath%>" <%endfor%>"/>
+                                        OtherOptions="-Wl,--enable-auto-import -Wl,-E -lws2_32 -lmswsock -lwsock32 -lnetapi32 <%foreach(pure_libs)%>-l<%pure_lib%> <%endfor%><%foreach(lit_libs)%>-l<%lit_lib%>.lib <%endfor%><%foreach(libs)%>-l<%lib%><%lib_modifier%>.lib <%endfor%><%foreach(libpaths)%>-L'<%libpath%>' <%endfor%>"/>
 			</Target>
 			<Target
 				Name="Build"
