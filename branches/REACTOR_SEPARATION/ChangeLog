@@ -1,3 +1,8 @@
+Sat Dec  4 14:29:51 2004  Marek Brudka  <mbrudka@aster.pl>
+
+        * config/global.features:
+        Added comment about -features option.
+
 Fri Dec  3 23:56:20 2004  Marek Brudka  <mbrudka@aster.pl>
 
         * config/qt.mpb (Module):
