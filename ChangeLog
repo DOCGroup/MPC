@@ -1,3 +1,14 @@
+Thu Sep  2 09:11:44 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/bmake.mpd:
+        * templates/bmakedll.mpt:
+        * templates/bmakedllexe.mpt:
+        * templates/bmakelibexe.mpt:
+
+          Modified the template and template input files to correctly build
+          libraries and applications.  Also, added more support for Unicode
+          builds.
+
 Wed Sep  1 12:54:06 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WorkspaceCreator.pm:
