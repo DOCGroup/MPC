@@ -3507,6 +3507,9 @@ sub get_modified_project_file_name {
   my($ext)  = shift;
   my($nmod) = $self->get_name_modifier();
 
+  ## We don't apply the name modifier to the project file
+  ## name if we have already applied it to the project name
+  ## since the project file name comes from the project name.
   if (defined $nmod && !$self->get_apply_project()) {
     $nmod =~ s/\*/$name/g;
     $name = $nmod;
@@ -3535,6 +3538,34 @@ sub preserve_assignment_order {
 sub dependency_combined_static_library {
   #my($self) = shift;
   return defined $ENV{MPC_DEPENDENCY_COMBINED_STATIC_LIBRARY};
+}
+
+
+sub translate_value {
+  my($self) = shift;
+  my($key)  = shift;
+  my($val)  = shift;
+
+  if ($key eq 'after' && $val ne '') {
+    my($arr) = $self->create_array($val);
+    $val = '';
+
+    if ($self->require_dependencies()) {
+      foreach my $entry (@$arr) {
+        if ($self->get_apply_project()) {
+          my($nmod) = $self->get_name_modifier();
+          if (defined $nmod) {
+            $nmod =~ s/\*/$entry/g;
+            $entry = $nmod;
+          }
+        }
+        $val .= '"' . ($self->dependency_is_filename() ?
+                          $self->project_file_name($entry) : $entry) . '" ';
+      }
+      $val =~ s/\s+$//;
+    }
+  }
+  return $val;
 }
 
 # ************************************************************
@@ -3577,20 +3608,15 @@ sub expand_variables_from_template_values {
 }
 
 
-sub translate_value {
-  my($self) = shift;
-  my($key)  = shift;
-  my($val)  = shift;
+sub require_dependencies {
+  #my($self) = shift;
+  return 1;
+}
 
-  if ($key eq 'after' && $val ne '') {
-    my($arr) = $self->create_array($val);
-    $val = '';
-    foreach my $entry (@$arr) {
-      $val .= '"' . $self->project_file_name($entry) . '" ';
-    }
-    $val =~ s/\s+$//;
-  }
-  return $val;
+
+sub dependency_is_filename {
+  #my($self) = shift;
+  return 1;
 }
 
 

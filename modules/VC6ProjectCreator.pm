@@ -33,27 +33,19 @@ sub base_project_name {
 }
 
 
-sub translate_value {
+sub require_dependencies {
   my($self) = shift;
-  my($key)  = shift;
-  my($val)  = shift;
 
-  if ($key eq 'after' && $val ne '') {
-    my($arr) = $self->create_array($val);
-    $val = '';
+  ## Only write dependencies for non-static projects
+  ## and static exe projects, unless the user wants the
+  ## dependency combined static library.
+  return ($self->get_static() == 0 || $self->exe_target() ||
+          $self->dependency_combined_static_library());
+}
 
-    ## Only write dependencies for non-static projects
-    ## and static exe projects, unless the user wants the
-    ## dependency combined static library.
-    if ($self->dependency_combined_static_library() ||
-        $self->get_static() == 0 || $self->exe_target()) {
-      foreach my $entry (@$arr) {
-        $val .= "\"$entry\" ";
-      }
-      $val =~ s/\s+$//;
-    }
-  }
-  return $val;
+sub dependency_is_filename {
+  #my($self) = shift;
+  return 0;
 }
 
 
