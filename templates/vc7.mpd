@@ -69,7 +69,7 @@
 <%if(type_is_static)%>
 				Name="VCLibrarianTool"
 <%if(staticname)%>
-				OutputFile="<%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.lib"
+				OutputFile="<%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
 <%else%>
 				Name="VCLinkerTool"
@@ -81,10 +81,10 @@
 <%endif%>
 <%endif%>
 <%if(type_is_binary)%>
-				AdditionalDependencies="<%foreach(libs)%><%fornotfirst(" ")%><%lib%><%lib_modifier%>.lib<%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"
+				AdditionalDependencies="<%foreach(libs)%><%fornotfirst(" ")%><%lib%><%lib_modifier%><%lib_ext%><%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"
 <%endif%>
 <%if(exename || sharedname || staticname)%>
-				OutputFile="$(OutDir)\<%if(type_is_dynamic)%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.dll<%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.exe<%endif%>"
+				OutputFile="$(OutDir)\<%if(type_is_dynamic)%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
 <%endif%>
 <%if(win_version)%>
 				Version="<%win_version%>"
@@ -114,12 +114,16 @@
 				EntryPointSymbol="<%unicode_mfc_entry%>"
 <%endif%>
 <%if(type_is_dynamic && sharedname)%>
-				ImportLibrary="<%libout%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.lib"
+				ImportLibrary="<%libout%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
 <%endif%>
 				TargetMachine="<%machine("1")%>"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+<%if(postbuild)%>
+				CommandLine="<%eval(postbuild)%>"
+<%endif%>
+			/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

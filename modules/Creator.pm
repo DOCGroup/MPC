@@ -652,11 +652,11 @@ sub process_assignment_sub {
     ## Escape any regular expression special characters
     $value = $self->escape_regex_special($value);
 
-    if ($nval =~ /$value/) {
-      ## Search for the first occurrence and remove it
-      $nval =~ s/$value//;
-
-      ## Reset the value
+    ## Due to the way process_assignment() works, we only need to
+    ## attempt to remove a value that is either followed by a space
+    ## or at the end of the line (single values are always at the end
+    ## of the line).
+    if ($nval =~ s/$value\s+// || $nval =~ s/$value$//) {
       $self->process_assignment($name, $nval, $assign);
     }
   }
