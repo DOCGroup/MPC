@@ -1,3 +1,10 @@
+Wed Mar 16 14:44:51 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+
+	  Fix stray assignment that was marking all primaries as
+	  "seen".
+
 Wed Mar 16 13:59:13 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* modules/AutomakeWorkspaceCreator.pm:
