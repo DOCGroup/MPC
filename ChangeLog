@@ -1,3 +1,12 @@
+Fri Mar 11 07:56:49 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/nmakeexe.mpt:
+
+          Debug and Release xecutable were getting the 'staticflags' due to
+          a side effect of the way scoping works in the TemplateParser.  The
+          solution is to set 'need_staticflags' to empty in the Release and
+          Debug sections.
+
 Fri Mar 11 07:03:04 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/nmake.mpd:
