@@ -43,7 +43,9 @@
 				BufferSecurityCheck="<%BufferSecurityCheck("TRUE")%>"
 				EnableFunctionLevelLinking="<%EnableFunctionLevelLinking("TRUE")%>"
 				TreatWChar_tAsBuiltInType="<%wchar_t("FALSE")%>"
-				ForceConformanceInForLoopScope="TRUE"
+<%if(forloopscope)%>
+				ForceConformanceInForLoopScope="<%forloopscope%>"
+<%endif%>
 				RuntimeTypeInfo="<%rtti("TRUE")%>"
 <%if(pch_header)%>
 <%if(pch_source)%>
