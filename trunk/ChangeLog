@@ -1,3 +1,11 @@
+Thu Mar 10 21:08:24 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+
+	  Emit the RCS/CVS Id in the boilerplate at the beginning of the
+	  workspace Makefile.am in three separate substrings so that it's
+	  not expanded each time this file is changed.
+
 Thu Mar 10 20:13:58 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* modules/AutomakeWorkspaceCreator.pm:
