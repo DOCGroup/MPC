@@ -137,21 +137,21 @@ sub write_comps {
     print $fh $crlf;
     print $fh $crlf;
     print $fh "all-local:$crlf";
-    print $fh '\tlist=\'$(LOCAL_MAKES)\'; for p in $$list; do \\' . $crlf;
-    print $fh '\t$(MAKE) $(AM_MAKEFLAGS) all; \\' . $crlf;
-    print $fh '\tdone;' . $crlf;
+    print $fh "\t" . 'list=\'$(LOCAL_MAKES)\'; for p in $$list; do \\' . $crlf;
+    print $fh "\t" . '$(MAKE) $(AM_MAKEFLAGS) all; \\' . $crlf;
+    print $fh "\t" . 'done;' . $crlf;
 
     print $fh $crlf;
     print $fh "clean-local:$crlf";
-    print $fh '\tlist=\'$(LOCAL_MAKES)\'; for p in $$list; do \\' . $crlf;
-    print $fh '\t$(MAKE) $(AM_MAKEFLAGS) clean; \\' . $crlf;
-    print $fh '\tdone;' . $crlf;
+    print $fh "\t" . 'list=\'$(LOCAL_MAKES)\'; for p in $$list; do \\' . $crlf;
+    print $fh "\t" . '$(MAKE) $(AM_MAKEFLAGS) clean; \\' . $crlf;
+    print $fh "\t" . 'done;' . $crlf;
 
     print $fh $crlf;
     print $fh "distclean-local:$crlf";
-    print $fh '\tlist=\'$(LOCAL_MAKES)\'; for p in $$list; do \\' . $crlf;
-    print $fh '\t$(MAKE) $(AM_MAKEFLAGS) distclean; \\' . $crlf;
-    print $fh '\tdone;' . $crlf;
+    print $fh "\t" . 'list=\'$(LOCAL_MAKES)\'; for p in $$list; do \\' . $crlf;
+    print $fh "\t" . '$(MAKE) $(AM_MAKEFLAGS) distclean; \\' . $crlf;
+    print $fh "\t" . 'done;' . $crlf;
   }
 
   ## If this is the top-level Makefile.am, it needs the directives to pass
