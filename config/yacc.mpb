@@ -1,9 +1,10 @@
 // $Id$
 project {
-  Define_Custom(BISON) {
+  Define_Custom(YACC) {
     automatic        = 1
-    command          = bison
+    command          = yacc
     commandflags     = -d
+    postcommand      = <%mv%> y.tab<%output_ext%> <%output%>
     pch_postrule     = 1
     inputext         = .yy, .y
     pre_extension    = .tab

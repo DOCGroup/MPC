@@ -181,10 +181,10 @@ my(%vbma) = ('source_files' => [ 'subtype' ],
 # Language Specific Component Settings
 # ************************************************************
 
-my(%language) = ('cplusplus' => [ \%cppvc, \%cppec, {}    , 'main' ],
-                 'csharp'    => [ \%csvc,  {},      \%csma, 'Main' ],
-                 'java'      => [ \%jvc,   {},      {}    , 'Main' ],
-                 'vb'        => [ \%vbvc,  {},      \%vbma, 'Main' ],
+my(%language) = ('cplusplus' => [ \%cppvc, \%cppec, {}    , 'main', 1 ],
+                 'csharp'    => [ \%csvc,  {},      \%csma, 'Main', 0 ],
+                 'java'      => [ \%jvc,   {},      {}    , 'Main', 0 ],
+                 'vb'        => [ \%vbvc,  {},      \%vbma, 'Main', 0 ],
                 );
 
 # ************************************************************
@@ -343,7 +343,7 @@ sub begin_project {
   my($status)  = 1;
   my($error)   = undef;
 
-  ## Deal with the inheritance hiearchy first
+  ## Deal with the inheritance hierarchy first
   ## Add in the base projects from the command line
   if (!$self->{'reading_global'} &&
       !defined $self->{'reading_parent'}->[0]) {
@@ -899,11 +899,11 @@ sub parse_components {
         my($exc) = $rem || ($line =~ s/^!//);
 
         ## Convert any $(...) in this line before we process any
-        ## wildcard characters.  If we do not, scoped assignments will
-        ## not work nor will we get the correct wildcarded file list.
+        ## wild card characters.  If we do not, scoped assignments will
+        ## not work nor will we get the correct wild carded file list.
         $line = $self->relative($line);
 
-        ## Set up the files array.  If the line contains a wildcard
+        ## Set up the files array.  If the line contains a wild card
         ## character use CORE::glob() to get the files specified.
         my(@files) = ();
         if ($line =~ /^"([^"]+)"$/) {
@@ -985,7 +985,7 @@ sub parse_verbatim {
   my($type)    = shift;
   my($loc)     = shift;
 
-  ## All types are lowercase
+  ## All types are lower case
   $type = lc($type);
 
   if (!defined $self->{'verbatim'}->{$type}) {
@@ -1606,7 +1606,13 @@ sub generated_filename_arrays {
     ## Loop through creating all of the possible file names
     foreach my $pe (@pearr) {
       push(@array, []);
+      if ($rmesc) {
+        $pe =~ s/\\\././g;
+      }
       foreach my $pf (@pfarr) {
+        if ($rmesc) {
+          $pf =~ s/\\\././g;
+        }
         if ($noext) {
           push(@{$array[$#array]}, "$dir$pf$base$pe");
         }
@@ -1651,16 +1657,19 @@ sub add_generated_files {
   my($gentype) = shift;
   my($tag)     = shift;
   my($arr)     = shift;
-  my($wanted)  = $self->{'valid_components'}->{$gentype}->[0];
 
-  ## Remove the escape sequences for the wanted extension
+  ## Remove the escape sequences for the wanted extension.  It doesn't
+  ## matter if the first valid extension is not the same as the actual
+  ## input file (ex. input = car.y and first ext is .yy).  The extension
+  ## is immediately removed in generated_filename_arrays.
+  my($wanted) = $self->{'valid_components'}->{$gentype}->[0];
   $wanted =~ s/\\//g;
 
   ## Get the generated filenames
   my(@added) = ();
   foreach my $file (@$arr) {
     foreach my $gen ($self->generated_filenames($file, $gentype, $tag,
-                                                "$file$wanted", 0, 1)) {
+                                                "$file$wanted", 1, 1)) {
       $self->list_generated_file($gentype, $tag, \@added, $gen, $file);
     }
   }
@@ -1706,6 +1715,76 @@ sub add_generated_files {
 }
 
 
+sub search_for_entry {
+  my($self)    = shift;
+  my($file)    = shift;
+  my($main)    = shift;
+  my($preproc) = shift;
+  my($name)    = undef;
+  my($fh)      = new FileHandle();
+
+  if (open($fh, $file)) {
+    my($poundifed) = 0;
+    my($commented) = 0;
+
+    while(<$fh>) {
+      if (!$preproc || !$commented) {
+        ## Remove c++ style comments
+        $_ =~ s/\/\/.*//;
+      }
+
+      ## If the current language supports a c preprocessor, we
+      ## will perform a minimal check for #if 0 and c style comments.
+      if ($preproc) {
+        ## Remove one line c style comments
+        $_ =~ s/\/\*.*\*\///g;
+
+        if ($commented) {
+          if (/\*\//) {
+            ## Found the end of a multi-line c style comment
+            --$commented;
+          }
+        }
+        else {
+          if (/\/\*/) {
+            ## Found the beginning of a multi-line c style comment
+            ++$commented;
+          }
+          elsif (/#\s*if\s+0/) {
+            ## Found the beginning of a #if 0
+            ++$poundifed;
+          }
+          elsif ($poundifed) {
+            if (/#\s*if/) {
+              ## We need to keep track of any other #if directives
+              ## to be sure that when we see an #endif we don't
+              ## count the wrong one.
+              ++$poundifed;
+            }
+            elsif (/#\s*endif/) {
+              ## Found a #endif, so decrement our count
+              --$poundifed;
+            }
+          }
+        }
+      }
+
+      ## Check for main; Make sure it's not #if 0'ed and not commented out
+      if (!$poundifed && !$commented &&
+          (/\s+$main\s*\(/ || /^\s*$main\s*\(/)) {
+        ## If we've found a main, set the exename to the basename
+        ## of the cpp file with the extension removed
+        $name = basename($file);
+        $name =~ s/\.[^\.]+$//;
+        last;
+      }
+    }
+    close($fh);
+  }
+  return $name;
+}
+
+
 sub generate_default_target_names {
   my($self) = shift;
 
@@ -1725,27 +1804,13 @@ sub generate_default_target_names {
     ## If it's neither an exe or library target, we will search
     ## through the source files for a main()
     if (!$self->lib_target()) {
-      my($fh)      = new FileHandle();
       my($exename) = undef;
       my(@sources) = $self->get_component_list('source_files', 1);
-      foreach my $file (@sources) {
-        if (open($fh, $file)) {
-          my($main) = $language{$self->get_language()}->[3];
-          while(<$fh>) {
-            ## Remove c++ comments (ignore c style comments for now)
-            $_ =~ s/\/\/.*//;
+      my($main)    = $language{$self->get_language()}->[3];
+      my($preproc) = $language{$self->get_language()}->[4];
 
-            ## Check for main
-            if (/\s+($main)\s*\(/ || /^\s*($main)\s*\(/) {
-              ## If we found a main, set the exename to the basename
-              ## of the cpp file with the extension removed
-              $exename = basename($file);
-              $exename =~ s/\.[^\.]+$//;
-              last;
-            }
-          }
-          close($fh);
-        }
+      foreach my $file (@sources) {
+        $exename = $self->search_for_entry($file, $main, $preproc);
 
         ## Set the exename assignment
         if (defined $exename) {
@@ -1961,6 +2026,10 @@ sub generate_default_components {
   my($pchc)    = $self->get_assignment('pch_source');
   my($recurse) = $self->get_assignment('recurse');
 
+  ## The order of @tags may make a difference in the way that generated
+  ## files get added.  And since the tags are user definable, there may be
+  ## a problem with that.  I can not confirm that this can actually cause a
+  ## problem, so I am leaving it alone.
   foreach my $tag (@tags) {
     if (!defined $self->{'generated_exts'}->{$tag} ||
         $self->{'generated_exts'}->{$tag}->{'automatic'}) {
@@ -2020,14 +2089,17 @@ sub generate_default_components {
                 my(@front)  = ();
                 my(@copy)   = @$array;
                 my(@input)  = $self->get_component_list($gentype, 1);
-                my($wanted) = $self->{'valid_components'}->{$gentype}->[0];
 
                 @$array = ();
                 foreach my $file (@copy) {
                   my($found) = 0;
                   foreach my $input (@input) {
                     my($part) = $input;
-                    $part =~ s/$wanted$//;
+                    foreach my $wanted (@{$self->{'valid_components'}->{$gentype}}) {
+                      if ($part =~ s/$wanted$//) {
+                        last;
+                      }
+                    }
                     $part = $self->escape_regex_special($part);
                     foreach my $re ($self->generated_filenames($part, $gentype,
                                                                $tag, $input,
@@ -2136,11 +2208,10 @@ sub list_default_generated {
 
   if ($self->{'generated_exts'}->{$gentype}->{'automatic'}) {
     ## After all source and headers have been defaulted, see if we
-    ## need to add the generated .h, .i and .cpp files
+    ## need to add the generated files
     if (defined $self->{$gentype}) {
       ## Build up the list of files
       my(@arr)    = ();
-      my($wanted) = $self->{'valid_components'}->{$gentype}->[0];
       my($names)  = $self->{$gentype};
       foreach my $name (keys %$names) {
         my($comps) = $$names{$name};
@@ -2148,17 +2219,26 @@ sub list_default_generated {
           my($array) = $$comps{$key};
           foreach my $val (@$array) {
             my($f) = $val;
-            $f =~ s/$wanted$//;
+            foreach my $wanted (@{$self->{'valid_components'}->{$gentype}}) {
+              if ($f =~ s/$wanted$//) {
+                last;
+              }
+            }
             push(@arr, $f);
           }
         }
       }
 
       foreach my $type (@$tags) {
-        if (!$self->generated_source_listed(
-                              $gentype, $type, \@arr,
-                              $self->{'valid_components'}->{$gentype})) {
-          $self->add_generated_files($gentype, $type, \@arr);
+        ## Do not add generated files if they are "special".
+        ## They are a special case and are added in a different
+        ## location.
+        if (!$specialComponents{$type}) {
+          if (!$self->generated_source_listed(
+                                $gentype, $type, \@arr,
+                                $self->{'valid_components'}->{$gentype})) {
+            $self->add_generated_files($gentype, $type, \@arr);
+          }
         }
       }
     }
@@ -2223,7 +2303,7 @@ sub list_generated_file {
     ## See if we need to add the file
     foreach my $re ($self->generated_filenames($gen, $gentype, $tag, $input, 1)) {
       if ($re =~ /$file(.*)?$/) {
-        my($created) = "$file$1";
+        my($created) = $re;
         $created =~ s/\\//g;
         if (defined $ofile) {
           $created = $self->prepend_gendir($created, $ofile, $gentype);
@@ -2371,7 +2451,7 @@ sub get_default_project_name {
     ## into underscores.
     $name =~ s/\\/_/g;
 
-    ## Convert then name to a usable name
+    ## Convert the name to a usable name
     $name = $self->transform_file_name($name);
 
     ## Take off the extension
@@ -2426,22 +2506,19 @@ sub generate_defaults {
   ## are skipped in the initial default components generation
   $self->generate_default_components(\@files);
 
-  ## This needs to be sorted in order to be used with the
-  ## remove_duplicated_files method.
-  my(@scomp) = sort keys %sourceComponents;
-
   ## Remove source files that are also listed in the template files
   ## If we do not do this, then generated projects can be invalid.
-  $self->remove_duplicated_files(@scomp);
+  $self->remove_duplicated_files('source_files', 'template_files');
 
   ## If pch files are listed in header_files or source_files more than
   ## once, we need to remove the extras
   $self->remove_extra_pch_listings();
 
-  ## Generate the default generated list of source files
+  ## Generate the default generated list of files
   ## only if we defaulted the generated file list
+  my(@vc) = keys %{$self->{'valid_components'}};
   foreach my $gentype (keys %{$self->{'generated_exts'}}) {
-    $self->list_default_generated($gentype, \@scomp);
+    $self->list_default_generated($gentype, \@vc);
   }
 
   ## Now that all of the source files have been added
@@ -2450,6 +2527,7 @@ sub generate_defaults {
 
   ## Add %specialComponents files based on the
   ## source_components (i.e. .h and .i or .inl based on .cpp)
+  my(@scomp) = keys %sourceComponents;
   foreach my $tag (keys %specialComponents) {
     $self->add_corresponding_component_files(\@scomp, $tag);
   }
@@ -2636,7 +2714,7 @@ sub get_grouped_value {
   my($based) = shift;
   my($value) = undef;
 
-  ## Make it all lowercase
+  ## Make it all lower case
   $type = lc($type);
 
   ## Remove the grouped_ part
@@ -2729,12 +2807,14 @@ sub convert_command_parameters {
 
   if (defined $input) {
     $valid{'input_noext'} = $input;
-    $valid{'input_noext'} =~ s/\.[^\.]+$//;
+    $valid{'input_noext'} =~ s/(\.[^\.]+)$//;
+    $valid{'input_ext'}   = $1;
   }
 
   if (defined $output) {
     $valid{'output_noext'} = $output;
-    $valid{'output_noext'} =~ s/\.[^\.]+$//;
+    $valid{'output_noext'} =~ s/(\.[^\.]+)$//;
+    $valid{'output_ext'}   = $1;
   }
 
   ## Add in the specific types of output files

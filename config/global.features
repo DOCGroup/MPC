@@ -15,3 +15,4 @@ qt            = 0
 zlib          = 0
 mfc           = 0
 rpc           = 0
+zzip          = 0
