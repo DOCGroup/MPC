@@ -117,7 +117,9 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = 
 <%normalize(exename)%>_LDFLAGS = \
 <%else%>
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LDFLAGS = \<%endif%>
-<%foreach(linkflags)%> <%linkflag%><%endfor%>
+<%foreach(linkflags)%>
+  <%linkflag%><%fornotlast(" \\")%>
+<%endfor%>
 
 <%endif%>
 <%if(libs || pure_libs || lit_libs)%>
@@ -129,11 +131,18 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = \
 
 <%endif%>
 <%if(!exename)%>
-<%if(header_files || inline_files || template_files)%>
-nobase_pkginclude_HEADERS += \
-<%foreach(header_files inline_files template_files)%>
+<%if(header_files || inline_files || template_files || idl_files)%>
+nobase_include_HEADERS += \
+<%foreach(header_files inline_files template_files idl_files)%>
   <%header_file%><%fornotlast(" \\")%>
 <%endfor%>
 
 <%endif%>
+<%endif%>
+<%if(resource_files)%>
+EXTRA_DIST += \
+<%foreach(resource_files)%>
+  <%resource_file%><%fornotlast(" \\")%>
+<%endfor%>
+
 <%endif%>
