@@ -46,6 +46,16 @@ sub translate {
         $version .= '0';
       }
     }
+
+    if ($version =~ /(\d+)\.(\d+)/) {
+      my($major) = $1;
+      my($minor) = $2;
+      $minor =~ s/^\d+\.//;
+      while($minor > 65535) {
+        $minor = substr($minor, 0, length($minor) - 1);
+      }
+      $version = $major . '.' . $minor;
+    }
   }
   return $version;
 }
