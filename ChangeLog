@@ -1,3 +1,13 @@
+Fri Jan 21 17:16:04 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+
+	  Changed conditionals which matched a set of specific automake
+	  primaries to use a single regular expression that matches the
+	  general form of all automake primaries.  We shouldn't have to
+	  change this any more when adding support for additional auto-
+	  make features.
+
 Fri Jan 21 11:07:56 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/BMakeWorkspaceCreator.pm:

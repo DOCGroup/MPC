@@ -193,17 +193,7 @@ sub write_comps {
             $in_condition--;
           }
 
-          if (   /(^bin_PROGRAMS)\s*\+=\s*/
-              || /(^noinst_PROGRAMS)\s*\+=\s*/
-              || /(^lib_LIBRARIES)\s*\+=\s*/
-              || /(^noinst_LIBRARIES)\s*\+=\s*/
-              || /(^lib_LTLIBRARIES)\s*\+=\s*/
-              || /(^noinst_LTLIBRARIES)\s*\+=\s*/
-              || /(^noinst_HEADERS)\s*\+=\s*/
-              || /(^BUILT_SOURCES)\s*\+=\s*/
-              || /(^CLEANFILES)\s*\+=\s*/
-              || /(^EXTRA_DIST)\s*\+=\s*/
-              || /(^pkgconfigdata_DATA)\s*\+=\s*/
+          if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS))\s*\+=\s*/
              ) {
             if ($in_condition && !defined ($conditional_targets{$1})) {
               $conditional_targets{$1} = 1;
@@ -283,17 +273,7 @@ sub write_comps {
           # Don't emit comments
           next if (/^#/);
 
-          if (   /(^bin_PROGRAMS)\s*\+=\s*/
-              || /(^noinst_PROGRAMS)\s*\+=\s*/
-              || /(^lib_LIBRARIES)\s*\+=\s*/
-              || /(^noinst_LIBRARIES)\s*\+=\s*/
-              || /(^lib_LTLIBRARIES)\s*\+=\s*/
-              || /(^noinst_LTLIBRARIES)\s*\+=\s*/
-              || /(^noinst_HEADERS)\s*\+=\s*/
-              || /(^BUILT_SOURCES)\s*\+=\s*/
-              || /(^CLEANFILES)\s*\+=\s*/
-              || /(^EXTRA_DIST)\s*\+=\s*/
-              || /(^pkgconfigdata_DATA)\s*\+=\s*/
+          if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS))\s*\+=\s*/
              ) {
             if (!defined ($seen{$1})) {
               $seen{$1} = 1;
