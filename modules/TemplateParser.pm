@@ -40,6 +40,7 @@ my(%keywords) = ('if'              => 1,
                  'uc'              => 1,
                  'lc'              => 1,
                  'ucw'             => 1,
+                 'normalize'       => 1,
                 );
 
 my(%filecache) = ();
@@ -665,6 +666,18 @@ sub handle_ucw {
 }
 
 
+sub handle_normalize {
+  my($self) = shift;
+  my($name) = shift;
+
+  if (!$self->{'if_skip'}) {
+    my($val) = $self->get_value_with_default($name);
+    $val =~ tr/\-/_/;
+    $self->append_current($val);
+  }
+}
+
+
 sub handle_noextension {
   my($self) = shift;
   my($name) = shift;
@@ -812,6 +825,9 @@ sub process_name {
       }
       elsif ($name eq 'lc') {
         $self->handle_lc($val);
+      }
+      elsif ($name eq 'normalize') {
+        $self->handle_normalize($val);
       }
     }
     else {
