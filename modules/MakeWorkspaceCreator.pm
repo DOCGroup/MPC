@@ -67,6 +67,7 @@ sub write_comps {
   my($fh)       = shift;
   my($crlf)     = $self->crlf();
   my($projects) = $self->get_projects();
+  my($trans)    = $self->project_target_translation(1);
   my(%targnum)  = ();
   my($pjs)      = $self->get_project_info();
   my(@list)     = $self->number_target_deps($projects, $pjs, \%targnum);
@@ -74,43 +75,42 @@ sub write_comps {
   ## Print out the "all" target
   print $fh $crlf . 'all:';
   foreach my $project (@list) {
-    print $fh " $$pjs{$project}->[0]";
+    print $fh " $$trans{$project}";
   }
 
   ## Print out all other targets here
   print $fh "$crlf$crlf@targets:$crlf";
   foreach my $project (@list) {
     my($dname) = $self->mpc_dirname($project);
-    print $fh "\t\@" .
-              ($dname ne '.' ? "cd $dname; " : '') .
-              "\$(MAKE) PWD=`pwd` -f " .
-              ($dname eq '.' ? $project : basename($project)) .
+    print $fh "\t\@",
+              ($dname ne '.' ? "cd $dname; " : ''),
+              "\$(MAKE) PWD=`pwd` -f ",
+              ($dname eq '.' ? $project : basename($project)),
               " \$(\@)$crlf";
   }
 
   ## Print out each target separately
   foreach my $project (@list) {
     my($dname) = $self->mpc_dirname($project);
-    print $fh $crlf, '.PHONY: ', $$pjs{$project}->[0],
-              $crlf, $$pjs{$project}->[0], ':';
+    print $fh $crlf, $$trans{$project}, ':';
     if (defined $targnum{$project}) {
       foreach my $number (@{$targnum{$project}}) {
         print $fh " $$pjs{$list[$number]}->[0]";
       }
     }
 
-    print $fh $crlf .
-              "\t\@" .
-              ($dname ne '.' ? "cd $dname; " : '') .
-              "\$(MAKE) PWD=`pwd` -f " .
-              ($dname eq '.' ? $project : basename($project)) .
+    print $fh $crlf,
+              "\t\@",
+              ($dname ne '.' ? "cd $dname; " : ''),
+              "\$(MAKE) PWD=`pwd` -f ",
+              ($dname eq '.' ? $project : basename($project)),
               ' generated all', $crlf;
   }
 
   ## Print out the project_name_list target
-  print $fh $crlf . "project_name_list:$crlf";
+  print $fh $crlf, "project_name_list:$crlf";
   foreach my $project (sort @list) {
-    print $fh "\t\@echo $$pjs{$project}->[0]$crlf";
+    print $fh "\t\@echo $$trans{$project}$crlf";
   }
 }
 

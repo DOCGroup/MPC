@@ -1,3 +1,21 @@
+Thu Nov 25 06:55:36 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/MakeWorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Provide target translation to avoid collisions between directory
+          names and target names.  Incidentally Borland Make does not have
+          this problem, it is able to distinguish between directories and
+          targets.  Thanks to Steve Huston <shuston@riverace.com> for
+          bringing this to my attention.
+
+        * templates/vc7.mpd:
+
+          Ensure that static libraries and import libraries got to 'libout'
+          regardless of whether 'dllout' is set or not.  Thanks to Marek
+          Brudka <mbrudka@elka.pw.edu.pl> for reporting this.
+
 Wed Nov 24 08:17:01 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
