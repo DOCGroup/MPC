@@ -1,3 +1,10 @@
+Mon May  3 23:12:37 2004  Ossama Othman  <ossama@dre.vanderbilt.edu>
+
+	* config/openssl.mpb:
+
+	  Some Linux OpenSSL installations compile in Kerberos support.
+	  Add the Kerberos include path to preprocessor include path.
+
 Mon May  3 12:17:10 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
