@@ -1,3 +1,12 @@
+Thu Feb 17 11:36:22 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/TemplateInputReader.pm:
+        * modules/TemplateParser.pm:
+
+          In order to avoid conflicts between template hash names and
+          template variable values, template hash names now need to match
+          case-sensitively.  Thanks to Thomas Rothfuss for reporting this.
+
 Thu Feb 17 10:09:21 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * LICENSE:
