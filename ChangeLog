@@ -1,10 +1,20 @@
+Wed Aug 18 23:08:35 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+
+	  Changed to scan the generated project files for the use of
+	  $(ACE_ROOT), $(TAO_ROOT), etc. and provide the appropriate
+	  definition if they are found.  While this behavior is ACE/TAO
+	  specific, there isn't much that can be done without something
+	  like a workspace template.
+
 Wed Aug 18 08:56:01 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
 
 	  Changed to use am_includes, rev_avoids, and rev_requires.
 
-	* modules/AutomakeProjectCreator:
+	* modules/AutomakeProjectCreator.pm:
 
 	  Changed fill_value to understand am_includes, rev_avoids, and
 	  rev_requires.  am_includes prepends $(srcdir) to any relative

@@ -138,8 +138,77 @@ sub write_comps {
     close($mfh);
   }
 
-  ## Print out the Makefile.am.  If there are local projects, insert
-  ## "." as the first SUBDIR entry.
+  ## Print out the Makefile.am.
+
+  if (@locals) {
+    my($seen_ace_root) = 0;
+    my($seen_tao_root) = 0;
+    my($seen_ace_builddir) = 0;
+    my($seen_tao_builddir) = 0;
+    my($seen_tao_idl) = 0;
+
+    foreach my $local (reverse @locals) {
+      my($pfh) = new FileHandle();
+      if (!open($pfh,$local)) {
+        $self->error("Unable to open $local for reading.");
+      }
+
+      while(<$pfh>) {
+        if (/ACE_ROOT/) {
+           $seen_ace_root = 1;
+        }
+        if (/TAO_ROOT/) {
+           $seen_tao_root = 1;
+        }
+        if (/ACE_BUILDDIR/) {
+           $seen_ace_builddir = 1;
+        }
+        if (/TAO_BUILDDIR/) {
+           $seen_tao_builddir = 1;
+        }
+        if (/TAO_IDL/) {
+           $seen_tao_idl = 1;
+        }
+      }
+
+      close($pfh);
+    }
+
+    if ($seen_ace_root || $seen_ace_builddir ||
+        $seen_tao_root || $seen_tao_builddir) {
+
+      if ($seen_ace_root) {
+        if ($seen_tao_root || $seen_tao_builddir) {
+          print $fh "ACE_ROOT = \$(top_srcdir)/..", $crlf;
+        } else {
+          print $fh "ACE_ROOT = \$(top_srcdir)", $crlf;
+        }
+      }
+      if ($seen_ace_builddir) {
+        if (seen_tao_root || $seen_tao_builddir) {
+          print $fh "ACE_BUILDDIR = \$(top_builddir)/..", $crlf;
+        } else {
+          print $fh "ACE_BUILDDIR = \$(top_builddir)", $crlf;
+        }
+      }
+      if ($seen_tao_root) {
+        print $fh "TAO_ROOT = \$(top_srcdir)", $crlf;
+      }
+      if ($seen_tao_builddir) {
+        print $fh "TAO_BUILDDIR= \$(top_builddir)", $crlf;
+      }
+
+      print $fh $crlf;
+    }
+
+    if ($seen_tao_idl) {
+      print $fh "TAO_IDL = ACE_ROOT=\$(ACE_ROOT) TAO_ROOT=\$(TAO_ROOT) \$(TAO_BUILDDIR)/TAO_IDL/tao_idl", $crlf;
+      print $fh "TAO_IDLFLAGS = -Ge 1 -Wb,pre_include=ace/pre.h -Wb,post_include=ace/post.h -I\$(TAO_ROOT) -I\$(srcdir) -g \$(ACE_BUILDDIR)/apps/gperf/src/gperf", $crlf;
+      print $fh $crlf;
+    }
+  }
+
+  ## If there are local projects, insert "." as the first SUBDIR entry.
   if (@dirs) {
     print $fh 'SUBDIRS =';
     if (@locals) {
