@@ -3911,6 +3911,20 @@ sub requires_parameters {
   return $custom{$name};
 }
 
+
+sub project_file_name {
+  my($self) = shift;
+  my($name) = shift;
+
+  if (!defined $name) {
+    $name = $self->project_name();
+  }
+
+  return $self->get_modified_project_file_name(
+                                     $name,
+                                     $self->project_file_extension());
+}
+
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
@@ -3970,10 +3984,9 @@ sub fill_value {
 }
 
 
-sub project_file_name {
+sub project_file_extension {
   #my($self) = shift;
-  #my($name) = shift;
-  return undef;
+  return '';
 }
 
 

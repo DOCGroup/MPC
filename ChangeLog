@@ -1,3 +1,38 @@
+Wed Jan  5 07:08:57 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeProjectCreator.pm:
+        * modules/BMakeProjectCreator.pm:
+        * modules/CBXProjectCreator.pm:
+        * modules/EM3ProjectCreator.pm:
+        * modules/GHSProjectCreator.pm:
+        * modules/HTMLProjectCreator.pm:
+        * modules/MakeProjectBase.pm:
+        * modules/MakeProjectCreator.pm:
+        * modules/NMakeProjectCreator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/SLEProjectCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/VC6ProjectCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+        * modules/VCProjectBase.pm:
+        * modules/WinProjectBase.pm:
+        * templates/em3vcp.mpd:
+        * templates/vc6dsp.mpd:
+
+          Refactored much repeated code into 3 distinct base modules.  There
+          is now a MakeProjectBase, WinProjectBase and VCProjectBase.  Each
+          contain methods that are common to Make base projects, Windows
+          based projects and Visual C++ project types, respectively.
+
+          Also, the 'win_version' template variable was factored out of the
+          ProjectCreator subclasses and into the TemplateParser.
+
+        * templates/automake.mpd:
+
+          Only emit the library or exe setting if source files are provided.
+          Thanks to Stephen Torri <storri@cse.wustl.edu> for suggesting
+          this.
+
 Tue Jan  4 09:52:13 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WinVersionTranslator.pm:

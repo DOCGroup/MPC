@@ -21,15 +21,9 @@ use vars qw(@ISA);
 # Subroutine Section
 # ************************************************************
 
-sub get_makefile_ext {
+sub project_file_extension {
   #my($self) = shift;
-  return '.vcn';
-}
-
-sub project_file_name {
-  my($self) = shift;
-  return $self->get_modified_project_file_name($self->project_name(),
-                                               '.vcp');
+  return '.vcp';
 }
 
 

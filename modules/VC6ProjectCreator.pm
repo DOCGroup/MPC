@@ -12,87 +12,19 @@ package VC6ProjectCreator;
 
 use strict;
 
-use WinVersionTranslator;
 use ProjectCreator;
+use VCProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(ProjectCreator);
+@ISA = qw(VCProjectBase ProjectCreator);
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
-sub get_makefile_ext {
+sub project_file_extension {
   #my($self) = shift;
-  return '.mak';
-}
-
-
-sub compare_output {
-  #my($self) = shift;
-  return 1;
-}
-
-
-sub base_project_name {
-  my($self) = shift;
-  return $self->transform_file_name($self->project_name());
-}
-
-
-sub require_dependencies {
-  my($self) = shift;
-
-  ## Only write dependencies for non-static projects
-  ## and static exe projects, unless the user wants the
-  ## dependency combined static library.
-  return ($self->get_static() == 0 || $self->exe_target() ||
-          $self->dependency_combined_static_library());
-}
-
-sub dependency_is_filename {
-  #my($self) = shift;
-  return 0;
-}
-
-
-sub file_sorter {
-  my($self)  = shift;
-  my($left)  = shift;
-  my($right) = shift;
-  return lc($left) cmp lc($right);
-}
-
-
-sub crlf {
-  my($self) = shift;
-  return $self->windows_crlf();
-}
-
-
-sub fill_value {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = undef;
-
-  if ($name eq 'make_file_name') {
-    $value = $self->base_project_name() . $self->get_makefile_ext();
-  }
-  elsif ($name eq 'win_version') {
-    $value = $self->get_assignment('version');
-    if (defined $value) {
-      $value = WinVersionTranslator::translate($value);
-    }
-  }
-
-  return $value;
-}
-
-
-sub project_file_name {
-  my($self) = shift;
-  return $self->get_modified_project_file_name($self->project_name(),
-                                               '.dsp');
+  return '.dsp';
 }
 
 
