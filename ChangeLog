@@ -1,3 +1,12 @@
+Mon Aug 30 06:45:25 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed another problem with the -apply_project option.  When
+          determining the library name, it is possible to use the project
+          name.  In that case, we need to keep a copy of the non-modified
+          project name so we can determine the correct library name.
+
 Fri Aug 27 09:03:12 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/vc7.mpd:
