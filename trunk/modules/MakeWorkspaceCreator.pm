@@ -95,7 +95,7 @@ sub write_comps {
     print $fh $crlf, $$trans{$project}, ':';
     if (defined $targnum{$project}) {
       foreach my $number (@{$targnum{$project}}) {
-        print $fh " $$pjs{$list[$number]}->[0]";
+        print $fh " $$trans{$list[$number]}";
       }
     }
 
