@@ -1,9 +1,9 @@
-package NMakeWorkspaceCreator;
+package VA4WorkspaceCreator;
 
 # ************************************************************
-# Description   : A NMake Workspace (Makefile) creator
+# Description   : A VA4 Workspace Creator
 # Author        : Chad Elliott
-# Create Date   : 6/10/2002
+# Create Date   : 5/13/2002
 # ************************************************************
 
 # ************************************************************
@@ -11,9 +11,8 @@ package NMakeWorkspaceCreator;
 # ************************************************************
 
 use strict;
-use File::Basename;
 
-use NMakeProjectCreator;
+use VA4ProjectCreator;
 use WorkspaceCreator;
 
 use vars qw(@ISA);
@@ -32,7 +31,7 @@ sub crlf {
 
 sub workspace_file_name {
   my($self) = shift;
-  return "Makefile";
+  return $self->get_workspace_name() . ".icp";
 }
 
 
@@ -41,7 +40,7 @@ sub pre_workspace {
   my($fh)   = shift;
   my($crlf) = $self->crlf();
 
-  print $fh "# Microsoft Developer Studio Generated NMAKE File$crlf$crlf";
+  print $fh "// Visual Age C++ 4 workspace file$crlf$crlf";
 }
 
 
@@ -53,32 +52,25 @@ sub write_comps {
   my(@list)     = $self->sort_dependencies($projects, $pjs);
   my($crlf)     = $self->crlf();
 
-  print $fh "ALL:$crlf";
   foreach my $project (@list) {
-    my($dir)    = dirname($project);
-    my($chdir)  = 0;
-    my($back)   = 1;
+    my($base) = $project;
+    $base =~ s/\.[^\.]+//;
+    my($ics)  = "$base.ics";
 
-    ## If the directory isn't "." then we need
-    ## to figure out how to get back to our starting point
-    if ($dir ne ".") {
-      $chdir = 1;
-      my($length) = length($dir);
-      for(my $i = 0; $i < $length; $i++) {
-        if (substr($dir, $i, 1) eq "/") {
-          $back++;
-        }
-      }
-    }
-
-    ## These commands will work.  In practicality, only the
-    ## default configuration can be built at the top level.
-    print $fh ($chdir ? "\tcd $dir$crlf" : "") .
-              "\t\$(MAKE) /f " . basename($project) . " CFG=\"\$(CFG)\"$crlf" .
-              ($chdir ? "\tcd " . ("../" x $back) . $crlf : "");
+    print $fh "subproject $base icc \"$project\", ics \"$ics\"$crlf" .
+              "{$crlf" .
+              "}$crlf";
   }
-}
 
+  print $fh "build buildAll$crlf" .
+            "{$crlf";
+  foreach my $project (@list) {
+    my($base) = $project;
+    $base =~ s/\.[^\.]+//;
+    print $fh "        use $base$crlf";
+  }
+  print $fh "}$crlf$crlf";
+}
 
 
 1;
