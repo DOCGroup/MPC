@@ -22,12 +22,6 @@ use vars qw(@ISA);
 # Subroutine Section
 # ************************************************************
 
-sub expand_variables_from_template_values {
-  #my($self) = shift;
-  return 0;
-}
-
-
 sub sort_files {
   #my($self) = shift;
   return 1;
