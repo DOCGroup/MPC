@@ -70,6 +70,7 @@ sub new {
   $self->{'addproj'}         = $addproj;
   $self->{'toplevel'}        = $toplevel;
   $self->{'files_written'}   = {};
+  $self->{'real_fwritten'}   = [];
   $self->{'reading_global'}  = 0;
   $self->{'global_assign'}   = {};
   $self->{'assign'}          = {};
@@ -152,7 +153,8 @@ sub generate {
   my($status) = 1;
 
   ## Reset the files_written hash array between processing each file
-  $self->{'files_written'}  = {};
+  $self->{'files_written'} = {};
+  $self->{'real_fwritten'} = [];
 
   ## Allow subclasses to reset values before
   ## each call to generate().
@@ -472,6 +474,7 @@ sub add_file_written {
   }
   else {
     $self->{'files_written'}->{$key} = $file;
+    push(@{$self->{'real_fwritten'}}, $file);
   }
 
   $all_written{$self->getcwd() . '/' . $file} = 1;
@@ -773,9 +776,8 @@ sub get_toplevel {
 
 
 sub get_files_written {
-  my($self) = shift;
-  my(@keys) = keys %{$self->{'files_written'}};
-  return \@keys;
+  my($self)  = shift;
+  return $self->{'real_fwritten'};
 }
 
 
