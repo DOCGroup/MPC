@@ -73,8 +73,10 @@
 <%if(type_is_binary)%>
 				AdditionalDependencies="<%foreach(pure_libs)%><%pure_lib%> <%endfor%><%foreach(lit_libs)%><%lit_lib%>.lib <%endfor%><%foreach(libs)%><%lib%><%lib_modifier%>.lib<%fornotlast(" ")%><%endfor%>"
 <%endif%>
+<%if(!custom_only)%>
 <%if(exename || sharedname || staticname)%>
 				OutputFile="$(OutDir)\<%if(type_is_dynamic)%><%sharedname%><%lib_modifier%>.dll<%else%><%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.exe<%endif%>"
+<%endif%>
 <%endif%>
 				Version="<%version("1.0")%>"
 				LinkIncremental="<%LinkIncremental("1")%>"
@@ -117,6 +119,7 @@
 <%endfor%>
 	</Configurations>
 	<Files>
+<%if(!custom_only)%>
 <%if(exename || sharedname || staticname)%>
 <%if(source_files)%>
 		<Filter
@@ -187,34 +190,6 @@
 <%endif%>
 		</Filter>
 <%endif%>
-<%foreach(custom_types)%>
-<%if(custom_type->input_files)%>
-		<Filter
-			Name="<%ucw(custom_type)%>"
-			Filter="<%foreach(custom_type->inputexts)%><%custom_type->inputext%><%fornotlast(";")%><%endfor%>">
-<%foreach(custom_type->input_files)%>
-<%if(custom_type->input_file->output_files)%>
-			<File
-				RelativePath="<%custom_type->input_file%>">
-<%foreach(configurations)%>
-				<FileConfiguration
-					Name="<%configuration%>|<%platform%>">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Invoking <%custom_type->command%> on <%custom_type->input_file%>"
-						CommandLine="<%if(custom_type->libpath)%>PATH=%PATH%;<%custom_type->libpath%>&#x0D;&#x0A;<%endif%><%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_files)%><%else%><%custom_type->input_file->output_files%><%endif%><%endif%><%if(custom_type->postcommand)%><%foreach(custom_type->input_file->output_files)%>&#x0D;&#x0A;<%custom_type->postcommand()%><%endfor%><%endif%><%if(pch_header)%><%if(custom_type->pch_postrule)%><%foreach(custom_type->input_file->source_output_files)%>&#x0D;&#x0A;echo #include &quot;<%pch_header%>&quot; &gt; temporary.src&#x0D;&#x0A;type <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> &gt;&gt; temporary.src&#x0D;&#x0A;move /y temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%><%endfor%><%endif%><%endif%>"
-<%if(custom_type->dependent)%>
-						AdditionalDependencies="<%custom_type->command%>.exe"
-<%endif%>
-						Outputs="<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(";")%><%endfor%>"/>
-				</FileConfiguration>
-<%endfor%>
-			</File>
-<%endif%>
-<%endfor%>
-		</Filter>
-<%endif%>
-<%endfor%>
 <%if(inline_files)%>
 		<Filter
 			Name="Inline Files"
@@ -331,6 +306,35 @@
 <%endif%>
 		</Filter>
 <%endif%>
+<%endif%>
+<%foreach(custom_types)%>
+<%if(custom_type->input_files)%>
+		<Filter
+			Name="<%ucw(custom_type)%>"
+			Filter="<%foreach(custom_type->inputexts)%><%custom_type->inputext%><%fornotlast(";")%><%endfor%>">
+<%foreach(custom_type->input_files)%>
+<%if(custom_type->input_file->output_files)%>
+			<File
+				RelativePath="<%custom_type->input_file%>">
+<%foreach(configurations)%>
+				<FileConfiguration
+					Name="<%configuration%>|<%platform%>">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Invoking <%custom_type->command%> on <%custom_type->input_file%>"
+						CommandLine="<%if(custom_type->libpath)%>PATH=%PATH%;<%custom_type->libpath%>&#x0D;&#x0A;<%endif%><%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_files)%><%else%><%custom_type->input_file->output_files%><%endif%><%endif%><%if(custom_type->postcommand)%><%foreach(custom_type->input_file->output_files)%>&#x0D;&#x0A;<%custom_type->postcommand()%><%endfor%><%endif%><%if(pch_header)%><%if(custom_type->pch_postrule)%><%foreach(custom_type->input_file->source_output_files)%>&#x0D;&#x0A;echo #include &quot;<%pch_header%>&quot; &gt; temporary.src&#x0D;&#x0A;type <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> &gt;&gt; temporary.src&#x0D;&#x0A;move /y temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%><%endfor%><%endif%><%endif%>"
+<%if(custom_type->dependent)%>
+						AdditionalDependencies="<%custom_type->command%>.exe"
+<%endif%>
+						Outputs="<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(";")%><%endfor%>"/>
+				</FileConfiguration>
+<%endfor%>
+			</File>
+<%endif%>
+<%endfor%>
+		</Filter>
+<%endif%>
+<%endfor%>
 	</Files>
 	<Globals>
 	</Globals>

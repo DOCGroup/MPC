@@ -212,6 +212,7 @@
   <property category="win32.Debug_Build.win32b.ilink32" name="option.Tpe.enabled" value="<%if(type_is_dynamic)%>0<%else%>1<%endif%>"/>
   <property category="win32.win32b.Debug_Build" name="saved" value="1"/>
   <property category="win32b.ilink32" name="enabled" value="0"/>
+<%if(!custom_only)%>
 <%if(source_files)%>
   <node name="Source Files" type="Folder">
     <property category="unique" name="id"/>
@@ -244,18 +245,6 @@
 <%endfor%>
   </node>
 <%endif%>
-<%foreach(custom_types)%>
-<%if(custom_type->input_files)%>
-  <node name="<%custom_type%>" type="Folder">
-    <property category="unique" name="id"/>
-<%foreach(custom_type->input_files)%>
-      <file path="<%custom_type->input_file%>">
-        <property category="unique" name="id"/>
-      </file>
-<%endfor%>
-  </node>
-<%endif%>
-<%endfor%>
 <%if(template_files)%>
   <node name="Template files" type="Folder">
     <property category="unique" name="id"/>
@@ -287,4 +276,17 @@
 <%endfor%>
   </node>
 <%endif%>
+<%endif%>
+<%foreach(custom_types)%>
+<%if(custom_type->input_files)%>
+  <node name="<%custom_type%>" type="Folder">
+    <property category="unique" name="id"/>
+<%foreach(custom_type->input_files)%>
+      <file path="<%custom_type->input_file%>">
+        <property category="unique" name="id"/>
+      </file>
+<%endfor%>
+  </node>
+<%endif%>
+<%endfor%>
 </project>

@@ -86,6 +86,7 @@ EXPORTFLAGS   = <%if(!exename)%><%foreach(configurations)%><%foreach(platforms)%
 #----------------------------------------------------------------------------
 <%marker(local)%>
 
+<%if(!custom_only)%>
 <%if(exename)%>
 all: $(BIN) <%if(install)%>install<%endif%>
 
@@ -146,6 +147,7 @@ $(LIB): $(TEMPINCDIR) $(OBJS)
 	$(AR) $(ARFLAGS) $(LIB) $(OBJS)<%foreach(configurations)%><%if(tempinc)%> `find $(TEMPINCDIR) -type f`<%endif%><%endfor%>
 
 <%endif%>
+<%endif%>
 <%if(custom_types)%>
 GENERATED_DIRTY    =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><%if(custom_type->input_file->output_files)%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%><%endfor%><%endfor%>
 <%foreach(custom_types)%>
@@ -179,7 +181,7 @@ GENERATED_DIRTY    =<%foreach(custom_types)%><%foreach(custom_type->input_files)
 <%endfor%>
 <%endfor%>
 .PRECIOUS: $(GENERATED_DIRTY)
-<%if(source_files)%>
+<%if(source_files && !custom_only)%>
 $(OBJS): $(GENERATED_DIRTY)
 <%else%>
 all: $(GENERATED_DIRTY)
@@ -189,6 +191,7 @@ all: $(GENERATED_DIRTY)
 generated: $(GENERATED_DIRTY)
 	@-:
 
+<%if(!custom_only)%>
 <%foreach(configurations)%>
 <%if(tempinc)%>
 $(TEMPINCDIR):
@@ -238,6 +241,7 @@ install:
 	$(LN) "$(PWD)/$(INSTARGET)" "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>"; \
 	fi
 
+<%endif%>
 <%endif%>
 <%endif%>
 clean:
