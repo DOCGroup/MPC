@@ -1,3 +1,11 @@
+Wed Sep 15 11:32:57 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/bmake.mpd:
+        * templates/nmake.mpd:
+
+          Modified these templates to work correctly if no exe name, shared
+          or static name is specified by the mpc file.
+
 Mon Sep 13 12:52:22 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
@@ -241,7 +249,7 @@ Thu Aug 12 09:42:55 2004  Chad Elliott  <elliott_c@ociweb.com>
 
           Removed code that converted $(...) to %...%.  During testing, it
           didn't seem necessary and was broken in some instances.  I don't
-          even why it was added in the first place.
+          even remember why it was added in the first place.
 
 Thu Aug 12 03:33:45 UTC 2004  Don Hinton  <don.hinton@vanderbilt.edu>
 
