@@ -71,7 +71,7 @@ MFC Release {
   lib_modifier          = mfcs
   output_dir            = MFC_Release
   intermediate_dir      = MFC_Release
-  use_mfc               = 1
+  use_mfc               = 2
 }
 
 MFC Debug {
@@ -83,7 +83,7 @@ MFC Debug {
   lib_modifier          = mfcsd
   output_dir            = MFC_Debug
   intermediate_dir      = MFC_Debug
-  use_mfc               = 1
+  use_mfc               = 2
 }
 
 conditional_include "vcpartialmacros"
