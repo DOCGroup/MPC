@@ -70,7 +70,7 @@ my(%validNames) = ('exename'         => 1,
 ## 3    Name can also be used in an 'optional' clause
 ## 4    Needs <%...%> conversion
 my(%customDefined) = ('automatic'                   => 0x04,
-                      'dependent'                   => 0x04,
+                      'dependent'                   => 0x14,
                       'command'                     => 0x14,
                       'commandflags'                => 0x14,
                       'postcommand'                 => 0x14,
@@ -859,7 +859,13 @@ sub process_component_line {
     ## Convert any $(...) in this line before we process any
     ## wild card characters.  If we do not, scoped assignments will
     ## not work nor will we get the correct wild carded file list.
+    ## We also need to make sure that any back slashes are converted to
+    ## slashes to ensure that later flag_overrides checks will happen
+    ## correctly.
     $line = $self->relative($line);
+    if ($self->{'convert_slashes'}) {
+      $line =~ s/\\/\//g;
+    }
 
     ## Set up the files array.  If the line contains a wild card
     ## character use CORE::glob() to get the files specified.
@@ -1729,7 +1735,7 @@ sub generated_filename_arrays {
 
     ## If gendir was specified, then we need to account for that
     if (defined $self->{'flag_overrides'}->{$type} &&
-        defined defined $self->{'flag_overrides'}->{$type}->{$file} &&
+        defined $self->{'flag_overrides'}->{$type}->{$file} &&
         defined $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'}) {
       if ($self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} eq '.') {
         $dir = '';
