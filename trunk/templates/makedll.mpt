@@ -65,6 +65,15 @@ gcc {
 }
 
 SunCC {
+  cxx          = CC
+  pic          = -KPIC
+  compileflags = -xarch=v9
+  linkflags    = -library=Cstd -library=Crun
+  clean        = SunWS_cache ir.out
+  platforms    = solaris
+}
+
+SunCC32 {
   cxx       = CC
   pic       = -KPIC
   linkflags = -library=Cstd -library=Crun
@@ -76,12 +85,32 @@ aCC {
   cxx           = aCC
   pic           = +Z
   platforms     = hpux
+  compilerflags = -AA -D_RWSTD_MULTI_THREAD +W336 +DA2.0W +DS2.0W
+  linkflags     = -Wl,+s -Wl,-x -Wl,+h$(@F) -Wl,+b/usr/lib/pa20_64 -ldl
+  pchcreate     = "+hdr_create "
+  pchuse        = "+hdr_use "
+}
+
+aCC32 {
+  cxx           = aCC
+  pic           = +Z
+  platforms     = hpux
   compilerflags = -AA -D_RWSTD_MULTI_THREAD +W336
+  linkflags     = -Wl,+s
   pchcreate     = "+hdr_create "
   pchuse        = "+hdr_use "
 }
 
 xlC_r {
+  cxx           = xlC_r
+  arflags      += -X64 -rv
+  compilerflags = -q64
+  platforms     = aix
+  pchcreate     = -qgenpcomp=
+  pchuse        = -qusepcomp=
+}
+
+xlC_r32 {
   cxx       = xlC_r
   platforms = aix
   pchcreate = -qgenpcomp=
@@ -89,6 +118,17 @@ xlC_r {
 }
 
 SGICC {
+  cxx          = CC
+  pic          = -KPIC
+  compileflags = -64
+  linkflags    = -Wl,-woff,84
+  clean        = ii_files
+  platforms    = irix
+  pchcreate    = -LANG:create_pch=
+  pchuse       = -diag_suppress 3056 -LANG:use_pch=
+}
+
+SGICC32 {
   cxx       = CC
   pic       = -KPIC
   linkflags = -Wl,-woff,84

@@ -65,7 +65,7 @@ RESDIR       = <%rcdir%>
 
 OBJFILES = \
 <%foreach(source_files)%>
-           "$(INTERMEDIATE)\<%basenoextension(source_file)%>$(OBJ_EXT)"<%fornotlast(" \\")%>
+           "$(INTERMEDIATE)\<%noextension(source_file)%>$(OBJ_EXT)"<%fornotlast(" \\")%>
 <%endfor%>
 <%endif%>
 <%if(libpaths)%>
@@ -94,7 +94,7 @@ LIBFILES = \
 
 RESOURCE = \
 <%foreach(resource_files)%>
-           $(INTERMEDIATE)\<%basenoextension(resource_file)%>.res<%fornotlast(" \\")%>
+           $(INTERMEDIATE)\<%noextension(resource_file)%>.res<%fornotlast(" \\")%>
 <%endfor%>
 <%endif%>
 
@@ -153,7 +153,7 @@ PATH := $(PATH);<%custom_type->libpath%>
 <%if(custom_type->input_file->output_files)%>
 <%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%custom_type->input_file%>
 <%if(flag_overrides(custom_type->input_file, gendir))%>
-        -if not exist <%flag_overrides(custom_type->input_file, gendir)%> mkdir <%flag_overrides(custom_type->input_file, gendir)%> 2> nul
+        @if not exist <%flag_overrides(custom_type->input_file, gendir)%> mkdir <%flag_overrides(custom_type->input_file, gendir)%>
 <%endif%>
 	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
@@ -260,6 +260,14 @@ all:
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
         $(CC) $(OCFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 
+<%foreach(source_files)%>
+<%if(dirname(source_file))%>
+"$(INTERMEDIATE)\<%noextension(source_file)%>$(OBJ_EXT)":
+	@if not exist "$(INTERMEDIATE)\<%dirname(source_file)%>" mkdir "$(INTERMEDIATE)\<%dirname(source_file)%>"
+	$(CC) $(OCFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) <%source_file%>
+
+<%endif%>
+<%endfor%>
 <%if(resource_files && !type_is_static)%>
 .path.res = $(INTERMEDIATE)
 
@@ -268,6 +276,14 @@ all:
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
 	$(RC) -fo$@ $<
 
+<%foreach(resource_files)%>
+<%if(dirname(resource_file))%>
+"$(INTERMEDIATE)\<%noextension(resource_file)%>.res":
+	@if not exist "$(INTERMEDIATE)\<%dirname(resource_file)%>" mkdir "$(INTERMEDIATE)\<%dirname(resource_file)%>"
+	$(RC) -fo$@ <%resource_file%>
+
+<%endif%>
+<%endfor%>
 <%endif%>
 clean:
 	if exist "$(INTERMEDIATE)" rmdir /s/q $(INTERMEDIATE)

@@ -92,6 +92,9 @@
 				LinkIncremental="<%LinkIncremental("1")%>"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="<%foreach(libpaths)%><%libpath%><%fornotlast(";")%><%endfor%>"
+<%if(ignore_default_library_names)%>
+				IgnoreDefaultLibraryNames="<%foreach(ignore_default_library_names)%><%ignore_default_library_name%><%fornotlast(";")%><%endfor%>"
+<%endif%>
 				GenerateDebugInformation="TRUE"
 <%if(pdbl)%>
 <%if(sharedname)%>
@@ -160,6 +163,16 @@
 <%foreach(grouped_source_file->files)%>
 				<File
 					RelativePath="<%grouped_source_file->file%>">
+<%if(dirname(grouped_source_file->file))%>
+<%foreach(configurations)%>
+					<FileConfiguration
+						Name="<%configuration%>|<%platform%>">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\<%noextension(grouped_source_file->file)%>.obj"/>
+					</FileConfiguration>
+<%endfor%>
+<%endif%>
 				</File>
 <%endfor%>
 			</Filter>
@@ -168,6 +181,16 @@
 <%foreach(source_files)%>
 			<File
 				RelativePath="<%source_file%>">
+<%if(dirname(source_file))%>
+<%foreach(configurations)%>
+					<FileConfiguration
+						Name="<%configuration%>|<%platform%>">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\<%noextension(source_file)%>.obj"/>
+					</FileConfiguration>
+<%endfor%>
+<%endif%>
 			</File>
 <%endfor%>
 <%endif%>

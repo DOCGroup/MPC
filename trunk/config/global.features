@@ -10,8 +10,8 @@
 // 2) Create a feature file anywhere you like with the features you want and
 //    use the -feature_file option to specify where it is located.
 //
-// Feature definitions from this file are always overwritten by -features
-// command option of mwc.pl.
+// Feature definitions from this file are always overridden by the -features
+// option.
 //
 // By default we disable these.
 boost         = 0

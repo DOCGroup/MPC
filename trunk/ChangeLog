@@ -1,7 +1,39 @@
+Fri Mar  4 12:03:48 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/boost_regex.mpb:
+
+          Turn off Windows automatic linking.
+
+        * config/global.features:
+        * modules/FeatureParser.pm:
+
+          Fixed the comment about the -features option.
+
+        * modules/TemplateParser.pm:
+
+          Added the ability to use 'dirname' in an if statement
+          and 'noextension' and 'normalize' in a foreach statement.
+
+        * templates/bmake.mpd:
+        * templates/em3vcp.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          Added the ability to have multiple cpp files with the same name
+          (in different directories) in a project.  Now, if an input source
+          file has a directory, the object file is placed in a similar
+          directory structure underneath the intermediate file directory.
+
+        * templates/makedll.mpt:
+
+          Changed the default for SunCC, aCC, xlC_r and SGICC to 64-bit.
+          Provided a 32-bit version of each of these.
+
 Thu Mar  3 12:14:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmake.mpd:
-          Only use mkdir to create a directory when it not exists yet
+          Only use mkdir to create a directory when it not exist yet.
 
 Fri Feb 25 08:13:09 2005  Chad Elliott  <elliott_c@ociweb.com>
 
@@ -323,7 +355,7 @@ Thu Jan 27 12:40:12 2005  Chad Elliott  <elliott_c@ociweb.com>
         * config/global.features:
 
           Added requires += boost to the boost_base project and defaulted
-          boots to zero in the global features file.
+          boost to zero in the global features file.
 
         * modules/MakeWorkspaceCreator.pm:
 
