@@ -21,18 +21,10 @@ use vars qw(@ISA);
 # Subroutine Section
 # ************************************************************
 
-sub fill_value {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = undef;
-
-  if ($name eq 'make_file_name') {
-    $value = $self->base_project_name() . '.vcn';
-  }
-
-  return $value;
+sub get_makefile_ext {
+  #my($self) = shift;
+  return '.vcn';
 }
-
 
 sub project_file_name {
   my($self) = shift;

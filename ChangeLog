@@ -1,7 +1,23 @@
+Thu Oct  7 13:06:54 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/EM3ProjectCreator.pm:
+        * modules/NMakeProjectCreator.pm:
+        * modules/VC6ProjectCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+        * modules/WinVersionTranslator.pm:
+        * templates/em3vcp.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          Added a windows version translator to deal with versions that
+          contain letters and multiple decimal points.  See the comment in
+          WinVersionTranslator for more details.
+
 Thu Oct  7 13:03:28 2004  Steve Huston  <shuston@riverace.com>
 
-	* modules/AutomakeWorkspaceCreator.pm: Fixed the library location
-	  adjuster to adjust more than one library on a line.
+        * modules/AutomakeWorkspaceCreator.pm: Fixed the library location
+          adjuster to adjust more than one library on a line.
 
 Wed Oct  6 11:35:48 2004  Chad Elliott  <elliott_c@ociweb.com>
 
