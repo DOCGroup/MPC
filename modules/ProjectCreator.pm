@@ -4039,6 +4039,12 @@ sub remove_non_custom_settings {
 # Virtual Methods To Be Overridden
 # ************************************************************
 
+sub validated_directory {
+  my($self) = shift;
+  my($dir)  = shift;
+  return $dir;
+}
+
 sub get_quote_symbol {
   #my($self) = shift;
   return '"';
