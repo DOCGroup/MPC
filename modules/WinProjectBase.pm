@@ -16,6 +16,22 @@ use strict;
 # Subroutine Section
 # ************************************************************
 
+sub validated_directory {
+  my($self) = shift;
+  my($dir)  = shift;
+
+  ## $(...) could contain a drive letter and Windows can not
+  ## make a directory that resembles a drive letter.  So, we have
+  ## to exclude those directories with $(...).
+  if ($dir =~ /\$\([^\)]+\)/) {
+    return '.';
+  }
+  else {
+    return $dir;
+  }
+}
+
+
 sub crlf {
   my($self) = shift;
   return $self->windows_crlf();

@@ -22,20 +22,6 @@ use vars qw(@ISA);
 # Subroutine Section
 # ************************************************************
 
-sub validated_directory {
-  my($self) = shift;
-  my($dir)  = shift;
-
-  ## VC6 (and EM3) do not deal with $(...) correctly
-  if ($dir =~ /\$\(.*\)/) {
-    return '.';
-  }
-  else {
-    return $dir;
-  }
-}
-
-
 sub project_file_extension {
   #my($self) = shift;
   return '.dsp';
