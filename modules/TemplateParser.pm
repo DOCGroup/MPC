@@ -96,7 +96,7 @@ sub basename {
 }
 
 
-sub dirname {
+sub tp_dirname {
   my($self) = shift;
   my($file) = shift;
   for(my $i = length($file) - 1; $i != 0; --$i) {
@@ -686,7 +686,7 @@ sub handle_dirname {
 
   if (!$self->{'if_skip'}) {
     $self->append_current(
-              $self->dirname($self->get_value_with_default($name)));
+              $self->tp_dirname($self->get_value_with_default($name)));
   }
 }
 

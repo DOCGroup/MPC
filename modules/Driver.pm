@@ -13,10 +13,6 @@ package Driver;
 use strict;
 use File::Basename;
 
-if ( $^O eq 'VMS' ) {
-  require VMS::Filespec;
-  import VMS::Filespec qw(unixify);
-}
 use Options;
 use Parser;
 use Version;
@@ -312,13 +308,7 @@ sub run {
                                 $options->{'genins'},
                                 $options->{'into'});
       if ($base ne $file) {
-        my($dir) = '';
-        if ( $^O eq 'VMS' ) {
-          $dir = ($base eq '' ? $file : unixify(dirname($file)));
-        } else {
-          $dir = ($base eq '' ? $file : dirname($file));
-
-        }
+        my($dir) = ($base eq '' ? $file : $self->mpc_dirname($file));
         if (!$creator->cd($dir)) {
           $self->error("Unable to change to directory: $dir");
           $status++;

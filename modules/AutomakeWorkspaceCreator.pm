@@ -11,7 +11,6 @@ package AutomakeWorkspaceCreator;
 # ************************************************************
 
 use strict;
-use File::Basename;
 
 use AutomakeProjectCreator;
 use WorkspaceCreator;
@@ -95,7 +94,7 @@ sub write_comps {
       ## Since we're consolidating all the project files into one workspace
       ## Makefile.am per directory level, be sure to add that Makefile.am
       ## entry at each level there's a project dependency.
-      my($dep_dir) = dirname($dep);
+      my($dep_dir) = $self->mpc_dirname($dep);
       if (!defined $proj_dir_seen{$dep_dir}) {
         $proj_dir_seen{$dep_dir} = 1;
         ## If there are directory levels between project-containing
