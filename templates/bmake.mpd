@@ -58,12 +58,8 @@ NAME         = <%staticname%>$(LIBMODIFIER)
 <%endif%>
 <%endif%>
 <%endif%>
-<%if(cppdir)%>
 CPPDIR       = <%cppdir%>
-<%endif%>
-<%if(rcdir)%>
 RESDIR       = <%rcdir%>
-<%endif%>
 <%if(exename || sharedname || staticname)%>
 
 OBJFILES = \
@@ -229,6 +225,11 @@ $(OUTPUTDIR)$(NAME)$(LIB_EXT): $(OBJFILES)
 !
 
 <%endif%>
+<%endif%>
+<%if(!exename && !sharedname && !staticname)%>
+all:
+	@-rem
+
 <%endif%>
 .path$(OBJ_EXT) = $(INTERMEDIATE)
 
