@@ -118,6 +118,7 @@ sub new {
 
 sub modify_assignment_value {
   my($self)  = shift;
+  my($name)  = shift;
   my($value) = shift;
 
   ## Workspace assignments do not need modification.
