@@ -74,7 +74,7 @@
 <%else%>
 				Name="VCLinkerTool"
 <%if(!source_files)%>
-                                AdditionalOptions="/noentry <%link_options%>"
+                                AdditionalOptions="/noentry<%if(link_options)%> <%link_options%><%endif%>"
 <%else%>
 <%if(link_options)%>
                                 AdditionalOptions="<%link_options%>"

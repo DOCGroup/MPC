@@ -639,6 +639,29 @@ fornotfirst     Insert the text on every foreach iteration except the first.
 forfirst        Insert the text only on the first foreach iteration.
 forcount        A one based index number of the foreach iterations.
 
+Project Variable and Template Input Variable Interaction
+--------------------------------------------------------
+Project variables and template input variables are separate entities and in
+the context of the TemplateParser, template input variables have precedence
+over project variables.
+
+This means that if the project keyword 'libout' is set in an MPC project and
+is set as a template input variable, the template input variable value will
+be used.  There are exceptions to this rule.  The following list shows the
+project keywords that have their MPC project value appended to the template
+input value (if there is a template input value).
+
+libpaths
+includes
+libs
+lit_libs
+pure_libs
+dynamicflags
+staticflags
+requires
+avoids
+macros
+
 Workspaces
 ----------
 Workspaces (mwc files) can have assignments similar to projects.  There are
