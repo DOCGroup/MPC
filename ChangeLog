@@ -19,6 +19,8 @@ Thu Jul  1 10:16:38 2004  Steve Huston  <shuston@riverace.com>
 	  selection capability is not in the MPC-generated GNUmakefiles
 	  either. It can be (re)attempted later if needed, but the longer-term
 	  goal in ACE land seems to be to find other ways to reduce footprint.
+	  Also changed the _PROGRAMS generation to switch between bin_ and
+	  noinst_ depending on presence of an 'install' directive.
 
 Tue Jun 22 20:53:12 2004  Ossama Othman  <ossama@dre.vanderbilt.edu>
 
