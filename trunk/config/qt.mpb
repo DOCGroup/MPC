@@ -6,13 +6,11 @@ project {
   libpaths += $(QTDIR)/lib
   macros   += QT_THREAD_SUPPORT
 
-  specific(cbx, borland, bmake, nmake, em3, vc6, vc7, vc71, vc8) {
-    lit_libs += qt-mt230nc
-  }
-
   // @@ Notice: If you are building with Cygwin, you may need to manually
   //            change the following Qt library to qt-mt230nc.
-  specific(gnuace, make, sle) {
+  specific(gnuace, make, sle, automake, ghs) {
     lit_libs += qt-mt
+  } else {
+    lit_libs += qt-mt230nc
   }
 }

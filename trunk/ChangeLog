@@ -1,14 +1,29 @@
+Fri Oct 22 08:55:56 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+
+          Added the ability to specify an "else" clause to a "specific"
+          section.
+
+        * config/openssl.mpb:
+        * config/qt.mpb:
+        * config/zlib.mpb:
+
+          Utilize the new "else" clause.
+
 Mon Oct 18 18:03:28 2004  Steve Huston  <shuston@riverace.com>
 
-	* modules/AutomakeWorkspaceCreator.pm: When collecting the list of
-	  subdirectories, maintain dependency order so a subdirectory
-	  required before the current directory's projects gets built
-	  in the correct order.
+        * modules/AutomakeWorkspaceCreator.pm: When collecting the list of
+          subdirectories, maintain dependency order so a subdirectory
+          required before the current directory's projects gets built
+          in the correct order.
 
 Mon Oct 18 11:42:28 2004  Steve Huston  <shuston@riverace.com>
 
-	* config/openssl.mpb: Added automake to the set of targets that
-	  get lit_libs and includes adjusted.
+        * config/openssl.mpb: Added automake to the set of targets that
+          get lit_libs and includes adjusted.
 
 Mon Oct 18 08:09:59 2004  Chad Elliott  <elliott_c@ociweb.com>
 

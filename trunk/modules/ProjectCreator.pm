@@ -675,7 +675,8 @@ sub parse_line {
               ($status, $errorString) = $self->parse_scope(
                                           $ih, $values[1], $type,
                                           $self->{'valid_names'},
-                                          $self->get_assignment_hash());
+                                          $self->get_assignment_hash(),
+                                          {});
               $scope_parsed = 1;
               last;
             }
@@ -686,7 +687,9 @@ sub parse_line {
             ## could still be invalid code that will cause an error.
             ($status, $errorString) = $self->parse_scope(
                                         $ih, $values[1], undef,
-                                        $self->{'valid_names'});
+                                        $self->{'valid_names'},
+                                        undef,
+                                        $self->get_assignment_hash());
           }
         }
         elsif ($comp eq 'define_custom') {
