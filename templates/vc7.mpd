@@ -48,6 +48,9 @@
 				ForceConformanceInForLoopScope="<%forloopscope%>"
 <%endif%>
 				RuntimeTypeInfo="<%rtti("TRUE")%>"
+<%if(pdbc)%>
+				ProgramDataBaseFileName="<%if(type_is_static)%><%libout%>\<%staticname%><%lib_modifier%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%>/<%endif%>"
+<%endif%>
 <%if(pch_header)%>
 <%if(pch_source)%>
 				UsePrecompiledHeader="3"
@@ -90,13 +93,13 @@
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="<%foreach(libpaths)%><%libpath%><%fornotlast(";")%><%endfor%>"
 				GenerateDebugInformation="TRUE"
-<%if(exename || sharedname)%>
-<%if(type_is_dynamic)%>
+<%if(pdbl)%>
+<%if(sharedname)%>
 				ProgramDatabaseFile="$(OutDir)\<%sharedname%><%lib_modifier%>.pdb"
 <%else%>
-   <%if(type_is_binary)%>
+<%if(exename)%>
 				ProgramDatabaseFile="$(OutDir)\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.pdb"
-   <%endif%>
+<%endif%>
 <%endif%>
 <%endif%>
 				SubSystem="<%subsystem("1")%>"
