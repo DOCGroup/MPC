@@ -101,8 +101,12 @@ my(%customDefined) = ('automatic'                   => 0x04,
                      );
 
 ## Custom sections as well as definitions
+## Value  Meaning
+## 0    No modifications
+## 1    Needs <%...%> conversion
 my(%custom) = ('commandflags'  => 1,
-               'gendir'        => 1,
+               'gendir'        => 0,
+               'postcommand'   => 1,
               );
 
 ## All matching assignment arrays will get these keywords
@@ -117,9 +121,10 @@ my(%sourceComponents)  = ('source_files'   => 1,
                           'template_files' => 1,
                          );
 
-my(%genext) = ();
-
 my($grouped_key) = 'grouped_';
+
+## Matches with generic_outputext
+my($generic_key) = 'generic_files';
 
 # ************************************************************
 # C++ Specific Component Settings
@@ -1136,7 +1141,10 @@ sub parse_define_custom {
   ## Make the tag something _files
   $tag = lc($tag) . '_files';
 
-  if (defined $self->{'valid_components'}->{$tag}) {
+  if ($tag eq $generic_key) {
+    $errorString = "$tag is reserved";
+  }
+  elsif (defined $self->{'valid_components'}->{$tag}) {
     $errorString = "$tag has already been defined";
   }
   else {
@@ -1468,6 +1476,10 @@ sub already_added {
   my($self)  = shift;
   my($array) = shift;
   my($name)  = shift;
+
+  ## This method expects that the file
+  ## name will be unix style
+  $name =~ s/\\/\//g;
 
   foreach my $file (@$array) {
     if ($file eq $name) {
@@ -2289,6 +2301,8 @@ sub prepend_gendir {
     foreach my $ma (@{$self->{'matching_assignments'}->{$gentype}}) {
       if ($ma eq 'gendir') {
         if (defined $self->{'flag_overrides'}->{$gentype}->{$key}->{$ma}) {
+          ## Convert the file to unix style for basename
+          $created =~ s/\\/\//g;
           return "$self->{'flag_overrides'}->{$gentype}->{$key}->{$ma}/" .
                  basename($created);
         }
@@ -2324,7 +2338,6 @@ sub list_generated_file {
     foreach my $re ($self->generated_filenames($gen, $gentype, $tag, $input, 1)) {
       if ($re =~ /$file(.*)?$/) {
         my($created) = $re;
-        $created =~ s/\\//g;
         if (defined $ofile) {
           $created = $self->prepend_gendir($created, $ofile, $gentype);
         }
@@ -2911,16 +2924,17 @@ sub get_custom_value {
   my($value)  = undef;
 
   if ($cmd eq 'input_files') {
-    my($generic) = 'generic_files';  ## Matches with generic_outputext
     my(@array) = $self->get_component_list($based);
     $value = \@array;
 
     $self->{'custom_output_files'} = {};
     my(%vcomps) = ();
-    foreach my $vc (keys %{$self->{'valid_components'}}, $generic) {
+    foreach my $vc (keys %{$self->{'valid_components'}}) {
       my(@comps) = $self->get_component_list($vc);
       $vcomps{$vc} = \@comps;
     }
+    $vcomps{$generic_key} = [];
+
     foreach my $input (@array) {
       my(@outputs) = ();
       my($ainput)  = $input;
@@ -2935,7 +2949,7 @@ sub get_custom_value {
         $ainput =~ s/\\/\//g;
       }
 
-      foreach my $vc (keys %{$self->{'valid_components'}}, $generic) {
+      foreach my $vc (keys %{$self->{'valid_components'}}, $generic_key) {
         push(@outputs,
              $self->check_custom_output($based, $cinput,
                                         $ainput, $vc, $vcomps{$vc}));
@@ -3383,7 +3397,7 @@ sub reset_generating_types {
   my(%reset) = ('valid_components'     => $language{$lang}->[0],
                 'exclude_components'   => $language{$lang}->[1],
                 'matching_assignments' => $language{$lang}->[2],
-                'generated_exts'       => \%genext,
+                'generated_exts'       => {},
                 'valid_names'          => \%validNames,
                );
 
@@ -3745,6 +3759,13 @@ sub translate_value {
     }
   }
   return $val;
+}
+
+
+sub requires_parameters {
+  my($self) = shift;
+  my($name) = shift;
+  return $custom{$name};
 }
 
 # ************************************************************
