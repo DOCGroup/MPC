@@ -1,3 +1,14 @@
+Fri Aug 13 10:25:31 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeProjectCreator.pm:
+	  Changed sort_files to return 1.  While this is not required by
+	  automake, it makes the resulting Makefile.am's easier to read.
+	  This is important now that we're still hand-editing the MPC
+	  generated files.
+
+	* templates/automake.mpd:
+	  Add pidl_files to headers so they'll be installed.
+
 Thu Aug 12 09:42:55 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * clone_build_tree.pl:
