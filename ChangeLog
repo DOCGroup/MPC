@@ -1,3 +1,12 @@
+Fri Sep  3 09:14:21 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/em3vcp.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          Only set up custom groups (in the IDE view) if there are input
+          files that correspond to the custom type.
+
 Thu Sep  2 09:11:44 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/bmake.mpd:
