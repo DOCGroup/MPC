@@ -273,9 +273,19 @@ clean:
 	if exist "$(INTERMEDIATE)" rmdir /s/q $(INTERMEDIATE)
 
 realclean: clean
-<%if(custom_types)%>
-	del /q $(GENERATED_DIRTY)
+<%foreach(custom_types)%>
+<%foreach(custom_type->input_files)%>
+<%if(custom_type->input_file->output_files)%>
+<%foreach(custom_type->input_file->output_files)%>
+<%if(flag_overrides(custom_type->input_file, gendir))%>
+	if exist "<%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%>" del <%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%>
+<%else%>
+	if exist "<%custom_type->input_file->output_file%>" del <%custom_type->input_file->output_file%>
 <%endif%>
+<%endfor%>
+<%endif%>
+<%endfor%>
+<%endfor%>
 <%if(exename)%>
 	if exist "$(OUTPUTDIR)$(NAME)$(EXE_EXT)" del $(OUTPUTDIR)$(NAME)$(EXE_EXT)
 <%else%>
