@@ -335,6 +335,7 @@ sub parse_scope {
   my($type)        = shift;
   my($validNames)  = shift;
   my($flags)       = shift;
+  my($elseflags)   = shift;
   my($status)      = 0;
   my($errorString) = "Unable to process $name";
 
@@ -347,9 +348,25 @@ sub parse_scope {
 
     if ($line eq '') {
     }
-    elsif ($line =~ /^}/) {
+    elsif ($line =~ /^}$/) {
       ($status, $errorString) = $self->handle_scoped_end($type, $flags);
       last;
+    }
+    elsif (defined $elseflags && $line =~ /^}\s*else\s*{$/) {
+      ## From here on out anything after this goes into the $elseflags
+      $flags = $elseflags;
+      $elseflags = undef;
+
+      ## We need to adjust the type also.  If there was a type
+      ## then the first part of the clause was used.  If there was
+      ## no type, then the first part was ignored and the second
+      ## part will be used.
+      if (defined $type) {
+        $type = undef;
+      }
+      else {
+        $type = $self->get_default_component_name();
+      }
     }
     else {
       my(@values) = ();
