@@ -1,3 +1,10 @@
+Mon Oct 18 18:03:28 2004  Steve Huston  <shuston@riverace.com>
+
+	* modules/AutomakeWorkspaceCreator.pm: When collecting the list of
+	  subdirectories, maintain dependency order so a subdirectory
+	  required before the current directory's projects gets built
+	  in the correct order.
+
 Mon Oct 18 11:42:28 2004  Steve Huston  <shuston@riverace.com>
 
 	* config/openssl.mpb: Added automake to the set of targets that
