@@ -1,27 +1,34 @@
+Wed Sep 29 06:40:50 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Allow callers of the get_modified_workspace_name() method to get a
+          workspace name that does not have the workspace name attached.
+
 Tue Sep 28 18:33:22 2004  Steve Huston  <shuston@riverace.com>
 
-	* templates/automake.mpd: Removed the dllout/libout path additions from
-	  Mon Sep 27 15:53:18 2004  Steve Huston  <shuston@riverace.com>.
-	  Build all libraries into the same relative path in the build tree
-	  as the sources exist in the source tree. This change just inserts
-	  the project's desired library references. The below changes adjust
-	  the references to contain the relative paths in the build tree.
+        * templates/automake.mpd: Removed the dllout/libout path additions from
+          Mon Sep 27 15:53:18 2004  Steve Huston  <shuston@riverace.com>.
+          Build all libraries into the same relative path in the build tree
+          as the sources exist in the source tree. This change just inserts
+          the project's desired library references. The below changes adjust
+          the references to contain the relative paths in the build tree.
 
-	* modules/ProjectCreator.pm:
-	* modules/WorkspaceCreator.pm: Changes graciously supplied by Chad
-	  Elliot to add a get_lib_locations() method. It returns a hash
-	  reference where the key is a library name (ACE, TAO,
-	  TAO_PortableServer, etc) and the value will be a relative directory
-	  from where mwc.pl starts.
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm: Changes graciously supplied by Chad
+          Elliot to add a get_lib_locations() method. It returns a hash
+          reference where the key is a library name (ACE, TAO,
+          TAO_PortableServer, etc) and the value will be a relative directory
+          from where mwc.pl starts.
 
-	* modules/AutomakeWorkspaceCreator.pm: When collecting the projects'
-	  Makefile.<project>.am files together, find all the *_LDADD and
-	  *_LIBADD tokens that look like lib*.la and insert the path
-	  to the library starting with $(top_builddir). This effectively
-	  ignores any dllout/libout directives applied to the libraries
-	  being referenced (for automake targets). Everything builds into
-	  the build tree at the same relative location as its sources in
-	  the source tree.
+        * modules/AutomakeWorkspaceCreator.pm: When collecting the projects'
+          Makefile.<project>.am files together, find all the *_LDADD and
+          *_LIBADD tokens that look like lib*.la and insert the path
+          to the library starting with $(top_builddir). This effectively
+          ignores any dllout/libout directives applied to the libraries
+          being referenced (for automake targets). Everything builds into
+          the build tree at the same relative location as its sources in
+          the source tree.
 
 Tue Sep 28 09:13:57 2004  Chad Elliott  <elliott_c@ociweb.com>
 
