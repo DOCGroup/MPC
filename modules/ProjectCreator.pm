@@ -62,26 +62,40 @@ my(%validNames) = ('exename'         => 1,
                   );
 
 ## Custom definitions only
-## -1 means that it is always an array
-##  0 means that it is an array that gets outputext converted to files
-##  1 means that it is always scalar
-my(%customDefined) = ('automatic'               => 1,
-                      'dependent'               => 1,
-                      'command'                 => 1,
-                      'commandflags'            => 1,
-                      'inputext'                => -1,
-                      'libpath'                 => 1,
-                      'output_option'           => 1,
-                      'pch_postrule'            => 1,
-                      'pre_extension'           => 0,
-                      'pre_filename'            => 0,
-                      'source_outputext'        => 0,
-                      'template_outputext'      => 0,
-                      'header_outputext'        => 0,
-                      'inline_outputext'        => 0,
-                      'documentation_outputext' => 0,
-                      'resource_outputext'      => 0,
-                      'generic_outputext'       => 0,
+## Bit  Meaning
+## 0    Value is always an array
+## 1    Value is an array and name gets 'outputext' converted to 'files'
+## 2    Value is always scalar
+## 3    Name can also be used in an 'optional' clause
+my(%customDefined) = ('automatic'                   => 0x04,
+                      'dependent'                   => 0x04,
+                      'command'                     => 0x04,
+                      'commandflags'                => 0x04,
+                      'inputext'                    => 0x01,
+                      'libpath'                     => 0x04,
+                      'output_option'               => 0x04,
+                      'pch_postrule'                => 0x04,
+                      'pre_extension'               => 0x08,
+                      'source_pre_extension'        => 0x08,
+                      'template_pre_extension'      => 0x08,
+                      'header_pre_extension'        => 0x08,
+                      'inline_pre_extension'        => 0x08,
+                      'documentation_pre_extension' => 0x08,
+                      'resource_pre_extension'      => 0x08,
+                      'pre_filename'                => 0x08,
+                      'source_pre_filename'         => 0x08,
+                      'template_pre_filename'       => 0x08,
+                      'header_pre_filename'         => 0x08,
+                      'inline_pre_filename'         => 0x08,
+                      'documentation_pre_filename'  => 0x08,
+                      'resource_pre_filename'       => 0x08,
+                      'source_outputext'            => 0x0a,
+                      'template_outputext'          => 0x0a,
+                      'header_outputext'            => 0x0a,
+                      'inline_outputext'            => 0x0a,
+                      'documentation_outputext'     => 0x0a,
+                      'resource_outputext'          => 0x0a,
+                      'generic_outputext'           => 0x0a,
                      );
 
 ## Custom sections as well as definitions
@@ -96,6 +110,9 @@ my(@default_matching_assignments) = ('recurse',
 ## Deal with these components in a special way
 my(%specialComponents) = ('header_files' => 1,
                           'inline_files' => 1,
+                         );
+my(%sourceComponents)  = ('source_files'   => 1,
+                          'template_files' => 1,
                          );
 
 ## Valid component names within a project along with the valid file extensions
@@ -1025,10 +1042,65 @@ sub parse_define_custom {
       $self->{'matching_assignments'}->{$tag} = \@keys;
     }
 
+    ## Set up the 'optional' hash table
+    $self->{'generated_exts'}->{$tag}->{'optional'} = {};
+
+    my($optname) = undef;
+    my($inscope) = 0;
     while(<$fh>) {
       my($line) = $self->preprocess_line($fh, $_);
 
       if ($line eq '') {
+      }
+      elsif ($line =~ /optional\s*\(([^\)]+)\)\s*{/) {
+        $optname = $1;
+        $optname =~ s/^\s+//;
+        $optname =~ s/\s+$//;
+        if (defined $customDefined{$optname} &&
+            ($customDefined{$optname} & 0x08) != 0) {
+          ++$inscope;
+          if ($inscope != 1) {
+            $status = 0;
+            $errorString = 'Can not nest \'optional\' sections';
+            last;
+          }
+        }
+        else {
+          $status = 0;
+          $errorString = "Invalid optional name: $optname";
+          last;
+        }
+      }
+      elsif ($inscope) {
+        if ($line =~ /^}/) {
+          $optname = undef;
+          --$inscope;
+        }
+        else {
+          if ($line =~ /(\w+)\s*\(([^\)]+)\)\s*\+=\s*(.*)/) {
+            my($name) = lc($1);
+            my($opt)  = $2;
+            my(@val)  = split(/\s*,\s*/, $3);
+
+            if (!defined $self->{'generated_exts'}->{$tag}->
+                                {'optional'}->{$optname}) {
+              $self->{'generated_exts'}->{$tag}->
+                     {'optional'}->{$optname} = {};
+            }
+            if (!defined $self->{'generated_exts'}->{$tag}->
+                                {'optional'}->{$optname}->{$name}) {
+              $self->{'generated_exts'}->{$tag}->
+                     {'optional'}->{$optname}->{$name} = {};
+            }
+            if (!defined $self->{'generated_exts'}->{$tag}->
+                                {'optional'}->{$optname}->{$name}->{$opt}) {
+              $self->{'generated_exts'}->{$tag}->
+                     {'optional'}->{$optname}->{$name}->{$opt} = [];
+            }
+            push(@{$self->{'generated_exts'}->{$tag}->{'optional'}->
+                    {$optname}->{$name}->{$opt}}, @val);
+          }
+        }
       }
       elsif ($line =~ /^}/) {
         $status = 1;
@@ -1067,7 +1139,7 @@ sub parse_define_custom {
           my($name)  = $values[1];
           my($value) = $values[2];
           if (defined $customDefined{$name}) {
-            if ($customDefined{$name} == -1) {
+            if (($customDefined{$name} & 0x01) != 0) {
               $value = $self->escape_regex_special($value);
               my(@array) = split(/\s*,\s*/, $value);
               $self->process_array_assignment(
@@ -1091,7 +1163,7 @@ sub parse_define_custom {
                   $value =~ s/\$\(([^\)]+)\)/$envstart$1$envend/g;
                 }
               }
-              if ($customDefined{$name} == 1) {
+              if (($customDefined{$name} & 0x04) != 0) {
                 if ($type eq 'assignment') {
                   $self->process_assignment(
                                      $name, $value,
@@ -1109,10 +1181,12 @@ sub parse_define_custom {
                 }
               }
               else {
-                ## Transform the name from something outputext to
-                ## something files.  We expect this to match the
-                ## names of valid_assignments.
-                $name =~ s/outputext/files/g;
+                if (($customDefined{$name} & 0x02) != 0) {
+                  ## Transform the name from something outputext to
+                  ## something files.  We expect this to match the
+                  ## names of valid_assignments.
+                  $name =~ s/outputext/files/g;
+                }
 
                 ## Get it ready for regular expressions
                 $value = $self->escape_regex_special($value);
@@ -1303,6 +1377,167 @@ sub already_added {
 }
 
 
+sub get_applied_custom_keyword {
+  my($self)  = shift;
+  my($name)  = shift;
+  my($type)  = shift;
+  my($file)  = shift;
+  my($value) = undef;
+
+  if (defined $self->{'flag_overrides'}->{$type}->{$file}->{$name}) {
+    $value = $self->{'flag_overrides'}->{$type}->{$file}->{$name};
+  }
+  else {
+    $value = $self->get_assignment($name,
+                                   $self->{'generated_exts'}->{$type});
+  }
+  return $self->relative($value, 1);
+}
+
+
+sub add_optional_filename_portion {
+  my($self)    = shift;
+  my($gentype) = shift;
+  my($tag)     = shift;
+  my($file)    = shift;
+  my($array)   = shift;
+
+  foreach my $name (keys %{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}}) {
+    foreach my $opt (keys %{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}->{$name}}) {
+      my($ok)    = undef;
+      my($value) = $self->get_applied_custom_keyword($name,
+                                                     $gentype, $file);
+      if (defined $value) {
+        if ($opt =~ /^!\s*(.*)/) {
+          $ok = (index($value, $1) == -1);
+        }
+        else {
+          $ok = (index($value, $opt) >= 0);
+        }
+        if ($ok) {
+          ## Add the optional portion
+          push(@$array, @{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}->{$name}->{$opt}});
+        }
+      }
+    }
+  }
+}
+
+
+sub get_pre_keyword_array {
+  my($self)    = shift;
+  my($keyword) = shift;
+  my($gentype) = shift;
+  my($tag)     = shift;
+  my($file)    = shift;
+
+  ## Get the general pre extension array
+  my(@array) = @{$self->{'generated_exts'}->{$gentype}->{$keyword}};
+
+  ## Add the component specific pre extension array
+  my(@additional) = ();
+  $tag =~ s/files$/$keyword/;
+  if (defined $self->{'generated_exts'}->{$gentype}->{$tag}) {
+    push(@additional, @{$self->{'generated_exts'}->{$gentype}->{$tag}});
+  }
+
+  ## Add in any optional portion to the array
+  foreach my $itag ($keyword, $tag) {
+    $self->add_optional_filename_portion($gentype, $itag,
+                                         $file, \@additional);
+  }
+
+  ## If the current array only has the default,
+  ## then we need to remove it
+  if ($#array == 0 && $array[0] eq '' && $#additional >= 0) {
+    pop(@array);
+  }
+  push(@array, @additional);
+
+  return @array;
+}
+
+
+sub generated_filename_arrays {
+  my($self)  = shift;
+  my($part)  = shift;
+  my($type)  = shift;
+  my($tag)   = shift;
+  my($file)  = shift;
+  my($noext) = shift;
+  my(@array) = ();
+  my(@pearr) = $self->get_pre_keyword_array('pre_extension',
+                                            $type, $tag, $file);
+  my(@pfarr) = $self->get_pre_keyword_array('pre_filename',
+                                            $type, $tag, $file);
+  my(@exts)  = (defined $self->{'generated_exts'}->{$type}->{$tag} ?
+                  @{$self->{'generated_exts'}->{$type}->{$tag}} : ());
+
+  if ($#exts == -1) {
+    my($backtag) = $tag;
+    if ($backtag =~ s/files$/outputext/) {
+      $self->add_optional_filename_portion($type, $backtag,
+                                           $file, \@exts);
+    }
+  }
+
+  if ($#pearr == 0 && $#pfarr == 0 && $#exts == -1 &&
+      $pearr[0] eq '' && $pfarr[0] eq '') {
+    ## If both arrays are defined to be the defaults, then there
+    ## is nothing for us to do.
+  }
+  else {
+    my($dir)  = '';
+    my($base) = undef;
+
+    ## Correctly deal with pre filename and directories
+    if ($part =~ /(.*[\/\\])([^\/\\]+)$/) {
+      $dir = $1;
+      $base = $2;
+    }
+    else {
+      $base = $part;
+    }
+
+    ## Loop through creating all of the possible file names
+    foreach my $pe (@pearr) {
+      push(@array, []);
+      foreach my $pf (@pfarr) {
+        if ($noext) {
+          push(@{$array[$#array]}, "$dir$pf$base$pe");
+        }
+        else {
+          foreach my $ext (@exts) {
+            push(@{$array[$#array]}, "$dir$pf$base$pe$ext");
+          }
+        }
+      }
+    }
+  }
+
+  return @array;
+}
+
+
+sub generated_filenames {
+  my($self)  = shift;
+  my($part)  = shift;
+  my($type)  = shift;
+  my($tag)   = shift;
+  my($file)  = shift;
+  my($noext) = shift;
+  my(@files) = ();
+  my(@array) = $self->generated_filename_arrays($part, $type,
+                                                $tag, $file, $noext);
+
+  foreach my $array (@array) {
+    push(@files, @$array);
+  }
+
+  return @files;
+}
+
+
 sub add_generated_files {
   my($self)    = shift;
   my($gentype) = shift;
@@ -1311,18 +1546,18 @@ sub add_generated_files {
   my($names)   = $self->{$tag};
   my($wanted)  = $self->{'valid_components'}->{$gentype}->[0];
 
+  ## Remove the escape sequences for the wanted extension
+  $wanted =~ s/\\//g;
+
   foreach my $name (keys %$names) {
     my($comps) = $$names{$name};
     foreach my $key (keys %$comps) {
       my(@added) = ();
       my($array) = $$comps{$key};
-      foreach my $i (@$arr) {
-        my($file) = $i;
-        $file =~ s/$wanted$//;
-        foreach my $pf (@{$self->{'generated_exts'}->{$gentype}->{'pre_filename'}}) {
-          foreach my $pe (@{$self->{'generated_exts'}->{$gentype}->{'pre_extension'}}) {
-            $self->list_generated_file($gentype, $tag, \@added, "$pf$file$pe", $i);
-          }
+      foreach my $file (@$arr) {
+        foreach my $gen ($self->generated_filenames($file, $gentype, $tag,
+                                                    "$file$wanted", 1)) {
+          $self->list_generated_file($gentype, $tag, \@added, $gen, $file);
         }
       }
       unshift(@$array, @added);
@@ -1621,25 +1856,35 @@ sub generate_default_components {
 
         if (!defined $specialComponents{$tag}) {
           $self->sift_files($files, $exts, $pchh, $pchc, $tag, $array);
-          if ($tag eq 'source_files') {
+          if (defined $sourceComponents{$tag}) {
             foreach my $gentype (keys %{$self->{'generated_exts'}}) {
               ## If we are auto-generating the source_files, then
               ## we need to make sure that any generated source
               ## files that are added are put at the front of the list.
-              my(@front) = ();
-              my(@copy)  = @$array;
-              my(@exts)  = $self->generated_extensions($gentype, $tag);
+              my(@front)  = ();
+              my(@copy)   = @$array;
+              my(@input)  = $self->get_component_list($gentype, 1);
+              my($wanted) = $self->{'valid_components'}->{$gentype}->[0];
 
               $self->{'defaulted'}->{$tag} = 1;
               @$array = ();
               foreach my $file (@copy) {
                 my($found) = 0;
-                foreach my $ext (@exts) {
-                  if ($file =~ /$ext$/) {
-                    ## No need to check for previously added files
-                    ## here since there are none.
-                    push(@front, $file);
-                    $found = 1;
+                foreach my $input (@input) {
+                  my($part) = $input;
+                  $part =~ s/$wanted$//;
+                  $part = $self->escape_regex_special($part);
+                  foreach my $re ($self->generated_filenames($part, $gentype,
+                                                             $tag, $input)) {
+                    if ($file =~ /$re$/) {
+                      ## No need to check for previously added files
+                      ## here since there are none.
+                      push(@front, $file);
+                      $found = 1;
+                      last;
+                    }
+                  }
+                  if ($found) {
                     last;
                   }
                 }
@@ -1692,43 +1937,30 @@ sub remove_duplicated_files {
 }
 
 
-sub generated_extensions {
-  my($self) = shift;
-  my($name) = shift;
-  my($tag)  = shift;
-  my(@exts) = ();
-  my($gen)  = $self->{'generated_exts'}->{$name};
-
-  if (defined $gen->{$tag}) {
-    foreach my $pe (@{$gen->{'pre_extension'}}) {
-      foreach my $ext (@{$gen->{$tag}}) {
-        push(@exts, "$pe$ext");
-      }
-    }
-  }
-  return @exts;
-}
-
-
 sub generated_source_listed {
   my($self)  = shift;
   my($gent)  = shift;
   my($tag)   = shift;
   my($arr)   = shift;
+  my($sext)  = shift;
   my($names) = $self->{$tag};
-  my(@gen)   = $self->generated_extensions($gent, $tag);
 
   ## Find out which generated source files are listed
   foreach my $name (keys %$names) {
     my($comps) = $$names{$name};
     foreach my $key (keys %$comps) {
-      my($array) = $$comps{$key};
-      foreach my $val (@$array) {
-        foreach my $ext (@gen) {
-          foreach my $i (@$arr) {
-            my($ifile) = $self->escape_regex_special($i);
-            if ($val =~ /$ifile$ext$/) {
-              return 1;
+      foreach my $val (@{$$comps{$key}}) {
+        foreach my $i (@$arr) {
+          my($ifile) = $self->escape_regex_special($i);
+          foreach my $wanted (@$sext) {
+            ## Remove any escape characters from the extension
+            my($oext) = $wanted;
+            $oext =~ s/\\//g;
+            foreach my $re ($self->generated_filenames($ifile, $gent,
+                                                       $tag, "$i$oext")) {
+              if ($val =~ /$re$/) {
+                return 1;
+              }
             }
           }
         }
@@ -1766,7 +1998,9 @@ sub list_default_generated {
       }
 
       foreach my $type (@$tags) {
-        if (!$self->generated_source_listed($gentype, $type, \@arr)) {
+        if (!$self->generated_source_listed(
+                              $gentype, $type, \@arr,
+                              $self->{'valid_components'}->{$gentype})) {
           $self->add_generated_files($gentype, $type, \@arr);
         }
       }
@@ -1817,36 +2051,32 @@ sub list_generated_file {
   my($file)    = shift;
   my($ofile)   = shift;
 
-  if (defined $self->{'generated_exts'}->{$gentype}->{$tag}) {
-    my(@genexts) = $self->generated_extensions($gentype, $tag);
+  $file = $self->escape_regex_special($file);
 
-    $file = $self->escape_regex_special($file);
-
-    foreach my $gen ($self->get_component_list($gentype, 1)) {
-      ## Remove the extension
-      my($start) = $gen;
-      foreach my $ext (@{$self->{'valid_components'}->{$gentype}}) {
-        $gen =~ s/$ext$//;
-        if ($gen ne $start) {
-          last;
-        }
+  foreach my $gen ($self->get_component_list($gentype, 1)) {
+    my($input) = $gen;
+    foreach my $ext (@{$self->{'valid_components'}->{$gentype}}) {
+      ## Remove the extension.
+      ## If it works, then we can exit this loop.
+      if ($gen =~ s/$ext$//) {
+        last;
       }
+    }
 
-      ## See if we need to add the file
-      foreach my $pf (@{$self->{'generated_exts'}->{$gentype}->{'pre_filename'}}) {
-        foreach my $genext (@genexts) {
-          if ("$pf$gen$genext" =~ /$file(.*)?$/) {
-            my($created) = "$file$1";
-            $created =~ s/\\//g;
-            if (!$self->already_added($array, $created)) {
-              if (defined $ofile) {
-                $created = $self->prepend_gendir($created, $ofile, $gentype);
-              }
-              push(@$array, $created);
-            }
-            last;
+    ## See if we need to add the file
+    foreach my $re ($self->generated_filenames($gen, $gentype, $tag, $input)) {
+      ## We don't need to remove the escape sequences from extension portion
+      ## of $re because $file does not contain an extension.
+      if ($re =~ /$file(.*)?$/) {
+        my($created) = "$file$1";
+        $created =~ s/\\//g;
+        if (!$self->already_added($array, $created)) {
+          if (defined $ofile) {
+            $created = $self->prepend_gendir($created, $ofile, $gentype);
           }
+          push(@$array, $created);
         }
+        last;
       }
     }
   }
@@ -1957,9 +2187,13 @@ sub generate_defaults {
   ## are skipped in the initial default components generation
   $self->generate_default_components(\@files);
 
+  ## This needs to be sorted in order to be used with the
+  ## remove_duplicated_files method.
+  my(@scomp) = sort keys %sourceComponents;
+
   ## Remove source files that are also listed in the template files
   ## If we do not do this, then generated projects can be invalid.
-  $self->remove_duplicated_files('source_files', 'template_files');
+  $self->remove_duplicated_files(@scomp);
 
   ## If pch files are listed in header_files or source_files more than
   ## once, we need to remove the extras
@@ -1968,14 +2202,13 @@ sub generate_defaults {
   ## Generate the default generated list of source files
   ## only if we defaulted the generated file list
   foreach my $gentype (keys %{$self->{'generated_exts'}}) {
-    $self->list_default_generated($gentype, ['source_files']);
+    $self->list_default_generated($gentype, \@scomp);
   }
 
   ## Add %specialComponents files based on the
   ## source_components (i.e. .h and .i or .inl based on .cpp)
   foreach my $tag (keys %specialComponents) {
-    $self->add_corresponding_component_files(['source_files',
-                                              'template_files'], $tag);
+    $self->add_corresponding_component_files(\@scomp, $tag);
   }
 
   ## Now, if the %specialComponents are still empty
@@ -2073,41 +2306,38 @@ sub get_component_list {
 sub check_custom_output {
   my($self)    = shift;
   my($based)   = shift;
-  my($pf)      = shift;
   my($cinput)  = shift;
+  my($ainput)  = shift;
   my($type)    = shift;
   my($comps)   = shift;
   my(@outputs) = ();
-  my($gen)     = $self->{'generated_exts'}->{$based};
 
-  if (defined $gen->{$type}) {
-    foreach my $pe (@{$gen->{'pre_extension'}}) {
-      foreach my $ext (@{$gen->{$type}}) {
-        my($ge) = "$pe$ext";
-        $ge =~ s/\\//g;
-        my($built) = "$pf$cinput$ge";
-        if (@$comps == 0) {
-          push(@outputs, $built);
-          last;
+  foreach my $array ($self->generated_filename_arrays($cinput, $based,
+                                                      $type, $ainput)) {
+    foreach my $built (@$array) {
+      ## Remove the escaped portion of the extension
+      $built =~ s/\\\././g;
+      if (@$comps == 0) {
+        push(@outputs, $built);
+        last;
+      }
+      elsif (defined $specialComponents{$type} &&
+             !$self->{'special_supplied'}->{$type}) {
+        push(@outputs, $built);
+        last;
+      }
+      else {
+        my($base) = $built;
+        if ($self->{'convert_slashes'}) {
+          $base =~ s/\\/\//g;
         }
-        elsif (defined $specialComponents{$type} &&
-               !$self->{'special_supplied'}->{$type}) {
-          push(@outputs, $built);
-          last;
-        }
-        else {
-          my($base) = $built;
-          if ($self->{'convert_slashes'}) {
-            $base =~ s/\\/\//g;
-          }
-          my($re) = $self->escape_regex_special(basename($base));
-          foreach my $c (@$comps) {
-            ## We only match if the built file name matches from
-            ## beginning to end or from a slash to the end.
-            if ($c =~ /^$re$/ || $c =~ /[\/\\]$re$/) {
-              push(@outputs, $built);
-              last;
-            }
+        my($re) = $self->escape_regex_special(basename($base));
+        foreach my $c (@$comps) {
+          ## We only match if the built file name matches from
+          ## beginning to end or from a slash to the end.
+          if ($c =~ /^$re$/ || $c =~ /[\/\\]$re$/) {
+            push(@outputs, $built);
+            last;
           }
         }
       }
@@ -2196,14 +2426,22 @@ sub get_custom_value {
     }
     foreach my $input (@array) {
       my(@outputs) = ();
+      my($ainput)  = $input;
       my($cinput)  = $input;
+
+      ## Remove the extension
       $cinput =~ s/\.[^\.]+$//;
-      foreach my $pf (@{$self->{'generated_exts'}->{$based}->{'pre_filename'}}) {
-        foreach my $vc (keys %{$self->{'valid_components'}}, $generic) {
-          push(@outputs,
-               $self->check_custom_output($based, $pf,
-                                          $cinput, $vc, $vcomps{$vc}));
-        }
+
+      ## If we are converting slashes,
+      ## change them back for this parameter
+      if ($self->{'convert_slashes'}) {
+        $ainput =~ s/\\/\//g;
+      }
+
+      foreach my $vc (keys %{$self->{'valid_components'}}, $generic) {
+        push(@outputs,
+             $self->check_custom_output($based, $cinput,
+                                        $ainput, $vc, $vcomps{$vc}));
       }
       $self->{'custom_output_files'}->{$input} = \@outputs;
     }
@@ -2254,7 +2492,8 @@ sub get_custom_value {
     $value = \@array;
   }
   elsif (defined $custom{$cmd} ||
-         (defined $customDefined{$cmd} && $customDefined{$cmd} == 1)) {
+         (defined $customDefined{$cmd} &&
+          ($customDefined{$cmd} & 0x04) != 0)) {
     $value = $self->get_assignment($cmd,
                                    $self->{'generated_exts'}->{$based});
   }
@@ -2750,7 +2989,8 @@ sub relative {
               $val =~ s/\\/\//g;
             }
 
-            ## Lowercase everything if we are running on Windows
+            ## Here we make an assumption that if we convert slashes to
+            ## back-slashes, we also have a case-insensitive file system.
             my($icwd) = ($self->{'convert_slashes'} ? lc($cwd) : $cwd);
             my($ival) = ($self->{'convert_slashes'} ? lc($val) : $val);
 
@@ -2833,15 +3073,33 @@ sub reverse_relative {
       my($rel) = $self->get_relative();
 
       foreach my $key (keys %$rel) {
+        ## Get the relative replacement value and convert back-slashes
         my($val) = $$rel{$key};
-        $val  =~ s/\\/\//g;
+        $val =~ s/\\/\//g;
 
-        my($lval) = ($self->{'convert_slashes'} ?
-                              lc(substr($value, 0, length($val))) :
-                              substr($value, 0, length($val)));
-        if ($lval eq ($self->{'convert_slashes'} ? lc($val) : $val)) {
-          substr($value, 0, length($val)) = "\$($key)";
-          last;
+        ## We only need to check for reverse replacement if the length
+        ## of the string is less than or equal to the length of our
+        ## replacement value or the string has a slash at the position
+        ## of the length of the replacement value
+        my($vlen) = length($val);
+        if (length($value) <= $vlen || substr($value, $vlen, 1) eq '/') {
+          ## Cut the string down by the length of the replacement value
+          my($lval) = substr($value, 0, $vlen);
+
+          ## Here we make an assumption that if we convert slashes to
+          ## back-slashes, we also have a case-insensitive file system.
+          if ($self->{'convert_slashes'}) {
+            if (lc($lval) eq lc($val)) {
+              substr($value, 0, length($val)) = "\$($key)";
+              last;
+            }
+          }
+          else {
+            if ($lval eq $val) {
+              substr($value, 0, length($val)) = "\$($key)";
+              last;
+            }
+          }
         }
       }
     }

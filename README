@@ -3,7 +3,7 @@ Designed by Justin Michel (michel_j@ociweb.com) and Chad Elliott.
 Implemented by Chad Elliott (elliott_c@ociweb.com).
 
 
-A single tool (mpc.pl) can be used to generate tool specific input (i.e.
+A single tool (MPC) can be used to generate tool specific input (i.e.
 Makefile, dsp, vcproj, etc).  The generator takes platform and building
 tool generic files (mpc files) as input which describe basic information
 needed to generate a "project" file for various build tools.  These tools
@@ -246,8 +246,32 @@ pre_extension       If the command produces multiple files of the same
                     extension, this comma separated list can be used to
                     specify them.  For example, tao_idl creates two types of
                     files per extension (C.h, S.h, C.cpp, S.cpp, etc).
+source_pre_extension        This is the same as pre_extension except that it
+                            only applies to source_outputext.
+inline_pre_extension        This is the same as pre_extension except that it
+                            only applies to inline_outputext.
+header_pre_extension        This is the same as pre_extension except that it
+                            only applies to header_outputext.
+template_pre_extension      This is the same as pre_extension except that it
+                            only applies to template_outputext.
+resource_pre_extension      This is the same as pre_extension except that it
+                            only applies to resource_outputext.
+documentation_pre_extension This is the same as pre_extension except that it
+                            only applies to documentation_outputext.        
 pre_filename        This is similar to pre_extension except that the values
                     are prepended to the file name instead of the extension.
+source_pre_filename         This is the same as pre_filename except that it
+                            only applies to source_outputext.
+inline_pre_filename         This is the same as pre_filename except that it
+                            only applies to inline_outputext.
+header_pre_filename         This is the same as pre_filename except that it
+                            only applies to header_outputext.
+template_pre_filename       This is the same as pre_filename except that it
+                            only applies to template_outputext.
+resource_pre_filename       This is the same as pre_filename except that it
+                            only applies to resource_outputext.
+documentation_pre_filename  This is the same as pre_filename except that it
+                            only applies to documentation_outputext.        
 source_outputext    This is a comma separated list of possible source file
                     output extensions.  If the command does not produce
                     source files, then this can be omitted.
@@ -271,19 +295,50 @@ generic_outputext   If the command does not generate any of the other output
                     types listed above, then the extensions should be listed
                     under this.
 
+There is a new construct that can be used within a Define_Custom section. 
+It is called 'optional' and can be used to represent optional custom output
+dependent upon particular command line parameters passed to the custom
+command.
+
+project {
+  Define_Custom(TEST) {
+    optional(keyword) {
+      flag_keyword(option) += value [, value]
+  }
+}
+
+In the above example, keyword can be any of the pre_extension, pre_filename
+or keywords that end in _outputext.  flag_keyword can be any of the custom
+definition keywords, however only commandflags really make any sense. 
+Inside the parenthesis, the flak_keyword value is searched for the 'option'
+value.  If it is found, then the 'value' after the += is added to the list
+specified by 'keyword'.  This can also be negated by prefixing 'option' with
+an exclamation point (!).
+
+project {
+  Define_Custom(IDL) {
+    source_pre_extension = C, S
+    optional(source_pre_extension) {
+      commandflags(-GA) += A
+    }
+  }
+}
+
+In the preceding example, the source_pre_extension contains C and S.  The
+optional clause can be read as follows: If 'commandflags' contains -GA then
+add A to source_pre_extension.
+
 Particular output extensions are not required.  However at least one output
 extension type is required in order for MPC to generate a target.  Your
 command doesn't necessarily have to generate output, but an extension type
-is none the less required.  This can be desirable in some situations,
-whereas the command set to run for the custom type may be a script that runs
-a test.  Thereby, integrating building and testing.
+is none the less required.  In this case, it's best to use
+generic_outputext.
 
 For custom file types, there are two keywords that can be used within the
 custom file type input lists: commandflags and gendir.  The commandflags can
 be used to augment or override the commandflags defined in the Define_Custom
 section.  gendir can be used to specify the directory in which the generated
-output will go.  Below is an
-example:
+output will go.  Below is an example:
 
   MOC_Files {
     commandflags += -nw
