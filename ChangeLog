@@ -1,3 +1,7 @@
+Fri Nov 12 18:17:20 2004  Steve Huston  <shuston@riverace.com>
+
+	* templates/automake.mpd: Added a 'bottom' marker.
+
 Thu Nov 11 10:17:43 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
