@@ -1,7 +1,46 @@
+Mon May 24 07:35:39 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/zzip.mpb:
+
+          Added a base project to support the zzip library.
+
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+
+          Removed unused variables.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+        * modules/CBXWorkspaceCreator.pm:
+        * modules/GHSWorkspaceCreator.pm:
+        * modules/SLEWorkspaceCreator.pm:
+        * modules/VA4WorkspaceCreator.pm:
+
+          Removed an extra unused parameter to the sort_dependencies method.
+
+        * modules/Version.pm:
+
+          Modified the code to only read the ChangeLog if we are going to
+          display the version number.
+
+        * USAGE:
+        * modules/Creator.pm:
+        * modules/DirectoryManager.pm:
+        * modules/Driver.pm:
+        * modules/Options.pm:
+        * modules/Parser.pm:
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Added support for generating the workspace and project files
+          into an alternated directory tree.  This can not be used to build
+          code outside of the source tree, only to generate the workspace
+          and project files to make it easier to package up these files for
+          distribution.
+
 Sat May 22 17:28:31 2004  Steve Huston  <shuston@riverace.com>
 
-	* modules/AutomakeWorkspaceCreator.pm: Changed AUTOMAKE_OPTIONS to
-	  "1.7 foreign" to match what's used at the project level.
+        * modules/AutomakeWorkspaceCreator.pm: Changed AUTOMAKE_OPTIONS to
+          "1.7 foreign" to match what's used at the project level.
 
 Tue May 18 19:48:33 2004  Chad Elliott  <elliott_c@ociweb.com>
 

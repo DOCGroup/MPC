@@ -128,7 +128,7 @@ sub optionError {
                $spaces . "[-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
                $spaces . "[-feature_file <file name>] [-make_coexistence]\n" .
                $spaces . "[-exclude <directories>] [-name_modifier <pattern>]\n" .
-               $spaces . "[-apply_project] [-version]\n" .
+               $spaces . "[-apply_project] [-version] [-into <directory>]\n" .
                $spaces . "[-type <";
 
   my(@keys) = sort keys %{$self->{'types'}};
@@ -160,17 +160,8 @@ sub optionError {
 "       -include        Specifies a directory to search when looking for base\n" .
 "                       projects, template input files and templates.  This\n" .
 "                       option can be used multiple times to add directories.\n" .
-"       -ti             Specifies the template input file (with no extension)\n" .
-"                       for the specific type as shown above\n" .
-"                       (ex. -ti dll_exe:vc8exe)\n" .
-"       -template       Specifies the template name (with no extension).\n" .
-"       -static         Specifies that only static projects will be generated.\n" .
-"                       By default, only dynamic projects will be generated.\n" .
-"       -recurse        Recurse from the current directory and generate from\n" .
-"                       all found input files.\n" .
-"       -relative       Any \$() variable in an mpc that is matched to NAME\n" .
-"                       is replaced by VAR only if VAR can be made into a\n" .
-"                       relative path based on the current working directory.\n" .
+"       -into           Place all output files in a mirrored directory\n" .
+"                       structure starting at <directory>.\n" .
 "       -make_coexistence If multiple 'make' based project types are\n" .
 "                       generated, they will be named such that they can coexist.\n" .
 "       -name_modifier  Modify output names.  The pattern passed to this\n" .
@@ -181,19 +172,30 @@ sub optionError {
 "       -noreldefs      Do not try to generate default relative definitions.\n" .
 "       -notoplevel     Do not generate the top level target file.  Files\n" .
 "                       are still process, but no top level file is created.\n" .
-"       -value_template This option allows modification of a template input\n" .
-"                       name value pair.  Use += to add VAL to the NAME's\n" .
-"                       value.  Use -= to subtract and = to override the value.\n" .
+"       -recurse        Recurse from the current directory and generate from\n" .
+"                       all found input files.\n" .
+"       -relative       Any \$() variable in an mpc that is matched to NAME\n" .
+"                       is replaced by VAR only if VAR can be made into a\n" .
+"                       relative path based on the current working directory.\n" .
+"       -static         Specifies that only static projects will be generated.\n" .
+"                       By default, only dynamic projects will be generated.\n" .
+"       -ti             Specifies the template input file (with no extension)\n" .
+"                       for the specific type as shown above\n" .
+"                       (ex. -ti dll_exe:vc8exe)\n" .
+"       -template       Specifies the template name (with no extension).\n" .
+"       -type           Specifies the type of project file to generate.  This\n" .
+"                       option can be used multiple times to generate multiple\n" .
+"                       types.  If -type is not used, it defaults to '$default'.\n" .
 "       -value_project  This option allows modification of a project variable\n" .
 "                       assignment .  Use += to add VAL to the NAME's value.\n" .
 "                       Use -= to subtract and = to override the value.\n" .
 "                       This can be used to introduce new name value pairs to\n" .
 "                       a project.  However, it must be a valid project\n" .
 "                       assignment.\n" .
-"       -version        Print the MPC version and exit.\n" .
-"       -type           Specifies the type of project file to generate.  This\n" .
-"                       option can be used multiple times to generate multiple\n" .
-"                       types.  If -type is not used, it defaults to '$default'.\n";
+"       -value_template This option allows modification of a template input\n" .
+"                       name value pair.  Use += to add VAL to the NAME's\n" .
+"                       value.  Use -= to subtract and = to override the value.\n" .
+"       -version        Print the MPC version and exit.\n";
 
   exit(0);
 }
@@ -383,7 +385,8 @@ sub run {
                                 $options->{'coexistence'},
                                 $options->{'name_modifier'},
                                 $options->{'apply_project'},
-                                $options->{'genins'});
+                                $options->{'genins'},
+                                $options->{'into'});
       if ($base ne $file) {
         my($dir) = ($base eq '' ? $file : dirname($file));
         if (!$creator->cd($dir)) {
