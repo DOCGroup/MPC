@@ -170,14 +170,12 @@ sub write_comps {
   my($seen_noinst_headers) = 0;
   my($seen_built_sources) = 0;
   my($seen_cleanfiles) = 0;
-  my($seen_template_files) = 0;
-  my($seen_header_files) = 0;
-  my($seen_inline_files) = 0;
+  my($seen_nobase_pkginclude_headers) = 0;
 
   ## Take the local Makefile.<project>.am files and insert each one here,
   ## then delete it.
   if (@locals) {
-    foreach my $local (@locals) {
+    foreach my $local (reverse @locals) {
       my($pfh) = new FileHandle();
       if (open($pfh,$local)) {
         print $fh "## $local $crlf";
@@ -231,20 +229,10 @@ sub write_comps {
               s/\+=/=/;
               $seen_cleanfiles = 1;
             }
-          } elsif (/^TEMPLATE_FILES\s*\+=\s*/) {
-            if (! $seen_template_files) {
+          } elsif (/^nobase_pkginclude_HEADERS\s*\+=\s*/) {
+            if (! $seen_nobase_pkginclude_headers) {
               s/\+=/=/;
-              $seen_template_files = 1;
-            }
-          } elsif (/^HEADER_FILES\s*\+=\s*/) {
-            if (! $seen_header_files) {
-              s/\+=/=/;
-              $seen_header_files = 1;
-            }
-          } elsif (/^INLINE_FILES\s*\+=\s*/) {
-            if (! $seen_inline_files) {
-              s/\+=/=/;
-              $seen_inline_files = 1;
+              $seen_nobase_pkginclude_headers= 1;
             }
           }
 
@@ -272,24 +260,20 @@ sub write_comps {
               $crlf;
   }
 
-  ## Insert pkginclude_HEADERS if we saw TEMPLATE_FILES, HEADER_FILES,
-  ## or INLINE_FILES in the Makefile.<project>.am files.
-  if ($seen_template_files || $seen_inline_files || $seen_header_files) {
-    print $fh 'pkginclude_HEADERS =';
-    print $fh ' $(TEMPLATE_FILES)' if ($seen_template_files);
-    print $fh ' $(INLINE_FILES)' if ($seen_inline_files);
-    print $fh ' $(HEADER_FILES)' if ($seen_header_files);
-    print $fh $crlf,
-              $crlf;
-  }
-
   ## Finish up with the cleanup specs.
-  print $fh '## Clean up template repositories, etc.', $crlf,
-            'clean-local:', $crlf,
-            "\t-rm -f *.bak *.rpo *.sym lib*.*_pure_* Makefile.old core",
-            $crlf,
-            "\t-rm -f gcctemp.c gcctemp so_locations", $crlf,
-            "\t-rm -rf ptrepository SunWS_cache Templates.DB", $crlf;
+  if (@locals) {
+    ## There is no reason to emit this if there are no local targets.
+    ## An argument could be made that it shouldn't be emitted in any
+    ## case because it could be handled by CLEANFILES or a verbatim
+    ## clause.
+
+    print $fh '## Clean up template repositories, etc.', $crlf,
+              'clean-local:', $crlf,
+              "\t-rm -f *.bak *.rpo *.sym lib*.*_pure_* Makefile.old core",
+              $crlf,
+              "\t-rm -f gcctemp.c gcctemp so_locations", $crlf,
+              "\t-rm -rf ptrepository SunWS_cache Templates.DB", $crlf;
+  }
 }
 
 
