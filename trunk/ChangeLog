@@ -1,3 +1,13 @@
+Wed Aug  4 09:23:03 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+        * modules/AutomakeWorkspaceCreator:
+        * templates/automake.mpd:
+          Changed to set nobase_pkginstall_HEADERS instead of HEADER_FILES,
+          INLINE_FILES, and TEMPLATE_FILES in Makefile.<project>.am files.
+          Extending this will enable us to control installing headers on a
+          per library basis (all we need is some way to control the prefix
+          used for _HEADERS).
+
 Mon Aug  2 09:29:31 2004  Steve Huston  <shuston@riverace.com>
 
 	* templates/automake.mpd: For non-installed libraries, generate
