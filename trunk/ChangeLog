@@ -1,3 +1,8 @@
+Thu Mar  3 12:14:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+          Only use mkdir to create a directory when it not exists yet
+
 Fri Feb 25 08:13:09 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/bmake.mpd:
