@@ -97,7 +97,7 @@
 				ImportLibrary="$(OutDir)/<%sharedname%><%lib_modifier%>.lib"
 <%endif%>
 <%endif%>
-			/>
+				TargetMachine="<%machine("1")%>"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
