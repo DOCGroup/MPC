@@ -1,3 +1,8 @@
+Fri Dec  3 23:56:20 2004  Marek Brudka  <mbrudka@aster.pl>
+
+        * config/qt.mpb (Module):
+        qt based projects requires now qt features to be set.
+
 Wed Dec  1 19:28:19 2004  Marek Brudka  <mbrudka@aster.pl>
 
         * USAGE (Module):
