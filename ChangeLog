@@ -1,3 +1,11 @@
+Mon Jan 24 16:45:31 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+
+	  Fixed pkgconfigdata definition: config.status is found in
+	  ${top_builddir}, not ${top_srcdir}.  Also fixed a tab that had
+	  been converted to spaces by mistake.
+
 Sun Jan 23 00:15:31 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* modules/AutomakeWorkspaceCreator.pm:
