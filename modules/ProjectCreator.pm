@@ -1481,6 +1481,7 @@ sub generated_filename_arrays {
   my($type)  = shift;
   my($tag)   = shift;
   my($file)  = shift;
+  my($rmesc) = shift;
   my($noext) = shift;
   my(@array) = ();
   my(@pearr) = $self->get_pre_keyword_array('pre_extension',
@@ -1525,6 +1526,9 @@ sub generated_filename_arrays {
         }
         else {
           foreach my $ext (@exts) {
+            if ($rmesc) {
+              $ext =~ s/\\\././g;
+            }
             push(@{$array[$#array]}, "$dir$pf$base$pe$ext");
           }
         }
@@ -1542,10 +1546,11 @@ sub generated_filenames {
   my($type)  = shift;
   my($tag)   = shift;
   my($file)  = shift;
+  my($rmesc) = shift;
   my($noext) = shift;
   my(@files) = ();
-  my(@array) = $self->generated_filename_arrays($part, $type,
-                                                $tag, $file, $noext);
+  my(@array) = $self->generated_filename_arrays($part, $type, $tag,
+                                                $file, $rmesc, $noext);
 
   foreach my $array (@array) {
     push(@files, @$array);
@@ -1573,7 +1578,7 @@ sub add_generated_files {
       my($array) = $$comps{$key};
       foreach my $file (@$arr) {
         foreach my $gen ($self->generated_filenames($file, $gentype, $tag,
-                                                    "$file$wanted", 1)) {
+                                                    "$file$wanted", 0, 1)) {
           $self->list_generated_file($gentype, $tag, \@added, $gen, $file);
         }
       }
@@ -1900,7 +1905,8 @@ sub generate_default_components {
                   $part =~ s/$wanted$//;
                   $part = $self->escape_regex_special($part);
                   foreach my $re ($self->generated_filenames($part, $gentype,
-                                                             $tag, $input)) {
+                                                             $tag, $input,
+                                                             0)) {
                     if ($file =~ /$re$/) {
                       ## No need to check for previously added files
                       ## here since there are none.
@@ -1982,7 +1988,7 @@ sub generated_source_listed {
             my($oext) = $wanted;
             $oext =~ s/\\//g;
             foreach my $re ($self->generated_filenames($ifile, $gent,
-                                                       $tag, "$i$oext")) {
+                                                       $tag, "$i$oext", 0)) {
               if ($val =~ /$re$/) {
                 return 1;
               }
@@ -2089,9 +2095,7 @@ sub list_generated_file {
     }
 
     ## See if we need to add the file
-    foreach my $re ($self->generated_filenames($gen, $gentype, $tag, $input)) {
-      ## We don't need to remove the escape sequences from extension portion
-      ## of $re because $file does not contain an extension.
+    foreach my $re ($self->generated_filenames($gen, $gentype, $tag, $input, 1)) {
       if ($re =~ /$file(.*)?$/) {
         my($created) = "$file$1";
         $created =~ s/\\//g;
@@ -2338,10 +2342,8 @@ sub check_custom_output {
   my(@outputs) = ();
 
   foreach my $array ($self->generated_filename_arrays($cinput, $based,
-                                                      $type, $ainput)) {
+                                                      $type, $ainput, 1)) {
     foreach my $built (@$array) {
-      ## Remove the escaped portion of the extension
-      $built =~ s/\\\././g;
       if (@$comps == 0) {
         push(@outputs, $built);
         last;

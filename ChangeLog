@@ -1,3 +1,12 @@
+Tue May 18 19:48:33 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Remove escape sequences from extensions while generating the list
+          of possible file names from custom inputs instead of doing it after
+          the fact and possibly removing back slashes from parts of the
+          generated file path.
+
 Tue May 18 09:37:29 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Version.pm:
