@@ -2,15 +2,115 @@
 default:
 <%if(exename)%>
 	program
+	:outputname=<%if(install)%><%reltop_install%><%else%><%reltop%><%endif%>/<%exename%>
+<%if(need_staticflags)%>
+	:staticlink=true
 <%endif%>
-<%if(sharedname || staticname)%>
+<%else%>
+<%if(sharedname)%>
+	shared_library
+	:outputname=<%if(dllout)%><%reltop_dllout%><%else%><%reltop_libout%><%endif%>/<%libprefix%><%sharedname%><%libdecorator%>.<%libext%>
+<%else%>
+<%if(staticname)%>
 	library
+	:outputname=<%reltop_libout%>/<%libprefix%><%staticname%><%libdecorator%>.<%libext%>
+<%else%>
+	subproject
+<%endif%>
+<%endif%>
+<%endif%>
+<%foreach(custom_types)%>
+<%foreach(custom_type->input_files)%>
+<%if(custom_type->input_file->output_files)%>
+	:depends=<%custom_type->input_file%>
+<%foreach(custom_type->input_file->output_files)%>
+	:preexec=<%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> <%custom_type->input_file->output_file%><%endif%>
+<%endfor%>
+<%if(flag_overrides(custom_type->input_file, postcommand))%>
+<%foreach(custom_type->input_file->output_files)%>
+	:preexec=<%flag_overrides(custom_type->input_file, postcommand)%>
+<%endfor%>
+<%else%>
+<%if(custom_type->postcommand)%>
+<%foreach(custom_type->input_file->output_files)%>
+	:preexec=<%custom_type->postcommand%>
+<%endfor%>
+<%endif%>
+<%endif%>
+<%if(custom_type->pch_postrule)%>
+<%foreach(custom_type->input_file->source_output_files)%>
+	:preexec=echo #include "<%pch_header%>" > temporary.src
+        :preexec=cat <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temporary.src
+        :preexec=mv -f temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
+<%endfor%>
+<%endif%>
+<%endif%>
+<%endfor%>
+<%endfor%>
+<%if(optimize)%>
+	:optimizestrategy=speed
+<%endif%>
+<%if(pch_header)%>
 	:cx_pch_option=automatic
-	:outputname=<%libout%>\<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.lib
-	:object_dir=obj
 	:cx_pch_dir=pch
 <%endif%>
+<%foreach(reltop_includes)%>
+	:sysincdirs=<%reltop_include%>
+<%endfor%>
+<%foreach(reltop_libpaths)%>
+	:libdirs=<%reltop_libpath%>
+<%endfor%>
+<%if(syslibdirs)%>
+	:syslibdirs=<%syslibdirs%>
+<%endif%>
+<%if(deflibdirs)%>
+	:deflibdirs=<%deflibdirs%>
+<%endif%>
+<%if(libs || lit_libs || pure_libs)%>
+<%if(exename || sharedname)%>
+<%foreach(libs)%>
+	:libraries=-l<%lib%><%libdecorator%>
+<%endfor%>
+<%foreach(lit_libs)%>
+	:libraries=-l<%lit_lib%>
+<%endfor%>
+<%foreach(pure_libs)%>
+	:libraries=<%pure_lib%>
+<%endfor%>
+<%endif%>
+<%endif%>
+<%if(need_dynamicflags)%>
+<%foreach(dynamicflags)%>
+	:defines=<%dynamicflag%>
+<%endfor%>
+<%endif%>
+<%if(need_staticflags)%>
+<%foreach(staticflags)%>
+	:defines=<%staticflag%>
+<%endfor%>
+<%endif%>
+<%if(macros)%>
+<%foreach(macros)%>
+	:defines=<%macro%>
+<%endfor%>
+<%endif%>
 <%foreach(source_files)%>
-..\<%source_file%>
+<%source_file%>
 	C++
+<%endfor%>
+<%foreach(header_files)%>
+<%header_file%>
+	include_file
+<%endfor%>
+<%foreach(inline_files)%>
+<%inline_file%>
+	include_file
+<%endfor%>
+<%foreach(resource_files)%>
+<%resource_file%>
+	script
+<%endfor%>
+<%foreach(documentation_files)%>
+<%documentation_file%>
+	documentation
 <%endfor%>
