@@ -1,3 +1,10 @@
+Tue Aug 10 17:10:38 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* automake.mpd:
+	  Add initial support for automake conditionals with <%requires%>
+	  and <%avoids%>.
+	  Remove extra spaces before backslashes in _CPPFLAGS.
+
 Tue Aug 10 09:10:36 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/MakeWorkspaceCreator.pm:
