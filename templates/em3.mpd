@@ -69,14 +69,20 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo <%if(sharedname || staticname)%>/o"<%libout%>\<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.bsc"<%endif%>
 <%if(type_is_binary)%>
 LINK32=link.exe
-# ADD LINK32 <%systemlibs("winsock.lib commctrl.lib coredll.lib iphlpapi.lib")%><%if(link_options)%> <%link_options%><%endif%> /INCREMENTAL:<%incremental("NO")%> <%foreach(libs)%><%lib%><%lib_modifier%>.lib <%endfor%><%foreach(lit_libs)%><%lit_lib%>.lib <%endfor%><%foreach(pure_libs)%><%pure_lib%> <%endfor%><%foreach(libpaths)%>/libpath:"<%libpath%>\<%machine%>" <%endfor%>/nologo /base:"<%base("0x00100000")%>" <%stack%><%if(type_is_dynamic)%> /entry:"_DllMainCRTStartup"<%endif%> /nodefaultlib:"$(CENoDefaultLib)"<%if(win_version)%> /version:<%win_version%><%endif%> /subsystem:$(CESubsystem) /align:"<%align("4096")%>"<%if(pdbl)%><%if(sharedname)%> /pdb:"<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%machine%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"<%else%><%if(exename)%> /pdb:"<%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%machine%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.pdb"<%endif%><%endif%><%else%> /pdb:none<%endif%> <%if(type_is_dynamic)%> <%if(!source_files)%>/noentry <%endif%>/dll<%endif%> <%if(unicode && unicode_mfc_entry && exename && source_files)%>/entry:"<%unicode_mfc_entry%>" <%endif%><%if(use_debug_libraries)%>/debug<%endif%> /machine:<%machine%> /out:"<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%machine%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.dll<%endif%><%if(exename)%><%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%machine%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.exe<%endif%>"
+# ADD LINK32 <%systemlibs("winsock.lib commctrl.lib coredll.lib iphlpapi.lib")%><%if(link_options)%> <%link_options%><%endif%> /INCREMENTAL:<%incremental("NO")%> <%foreach(libs)%><%lib%><%lib_modifier%><%lib_ext%> <%endfor%><%foreach(lit_libs)%><%lit_lib%>.lib <%endfor%><%foreach(pure_libs)%><%pure_lib%> <%endfor%><%foreach(libpaths)%>/libpath:"<%libpath%>\<%machine%>" <%endfor%>/nologo /base:"<%base("0x00100000")%>" <%stack%><%if(type_is_dynamic)%> /entry:"_DllMainCRTStartup"<%endif%> /nodefaultlib:"$(CENoDefaultLib)"<%if(win_version)%> /version:<%win_version%><%endif%> /subsystem:$(CESubsystem) /align:"<%align("4096")%>"<%if(pdbl)%><%if(sharedname)%> /pdb:"<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%machine%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"<%else%><%if(exename)%> /pdb:"<%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%machine%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.pdb"<%endif%><%endif%><%else%> /pdb:none<%endif%> <%if(type_is_dynamic)%> <%if(!source_files)%>/noentry <%endif%>/dll<%endif%> <%if(unicode && unicode_mfc_entry && exename && source_files)%>/entry:"<%unicode_mfc_entry%>" <%endif%><%if(use_debug_libraries)%>/debug<%endif%> /machine:<%machine%> /out:"<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%machine%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(exename)%><%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%machine%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
 <%if(link_flags_removed)%>
 # SUBTRACT LINK32 <%link_flags_removed%>
 <%endif%>
 <%endif%>
 <%if(type_is_static)%>
 LIB32=link.exe -lib
-# ADD LIB32 /nologo /out:"<%libout%>\<%machine%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.lib"
+# ADD LIB32 /nologo /out:"<%libout%>\<%machine%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
+<%endif%>
+<%if(postbuild)%>
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PostBuild_Cmds=<%eval(postbuild)%>
+# End Special Build Tool
 <%endif%>
 
 <%endfor%>

@@ -151,6 +151,25 @@ libout          Specifies where the dynamic and static libraries will be placed
 install         Specifies where executables will be installed
 pch_header      Specifies the precompiled header file name
 pch_source      Specifies the precompiled source file name
+postbuild       If this is defined in the project, the value will be
+                interpreted as commands to run after the project has been
+                successfully built.  The <%..%> construct can be used within
+                this value to access template variables and functions of the
+                template parser. In addition, the following pseudo variables
+                can be used.
+
+                  <%cat%>   - Platform non-specific command to cat a file.
+                  <%cp%>    - Platform non-specific copy command.
+                  <%mkdir%> - Platform non-specific mkdir command.
+                  <%mv%>    - Platform non-specific move command.
+                  <%rm%>    - Platform non-specific delete command.
+                  <%nul%>   - Platform non-specific null device.
+                  <%gt%>    - Project non-specific greater than sign.
+                  <%lt%>    - Project non-specific less than sign.
+                  <%and%>   - Project non-specific and sign.
+                  <%or%>    - Project non-specific or sign.
+                  <%quote%> - Project non-specific double quote.
+
 recurse         If set to 1, MPC will recurse into directories listed under
                 component listings and add any component corresponding files
                 to the list.  This keyword can be used as a global project
@@ -437,7 +456,7 @@ generic_outputext   If the command does not generate any of the other output
                     under this.
 
 If the custom output can not be represented with the above output extension
-keywords (*_outputext) and you have knowlege of the output files a priori,
+keywords (*_outputext) and you have knowledge of the output files a priori,
 you can represent them with the '>>' construct.
 
 Below is an example that demonstrates the use of '>>'.  The command takes an

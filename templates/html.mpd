@@ -101,12 +101,15 @@
 <%foreach(custom_types)%>
 <tr><td><%ucw(custom_type)%></td><td><%custom_type->input_files%></td></tr>
 <%endfor%>
-<%if(configurations || pch_defines)%>
+<%if(configurations || pch_defines || postbuild)%>
 <thead>
 <tr><td colspan="2">MPC Template Settings</td></tr>
 <tr><th>Name</th><th>Value</th></tr>
 </thead>
 <%comment("common to all mpt files")%>
+<%if(postbuild)%>
+<tr><td>postbuild</td><td><%postbuild%></td></tr>
+<%endif%>
 <%if(pch_defines)%>
 <tr><td>pch_defines</td><td><%pch_defines%></td></tr>
 <%endif%>
@@ -140,8 +143,8 @@
 <%if(extracppflags)%>
 <tr><td>extracppflags</td><td><%extracppflags%></td></tr>
 <%endif%>
-<%if(soext)%>
-<tr><td>soext</td><td><%soext%></td></tr>
+<%if(dll_ext)%>
+<tr><td>dll_ext</td><td><%dll_ext%></td></tr>
 <%endif%>
 <%comment("em3 mpt files")%>
 <%if(cpu_id)%>
