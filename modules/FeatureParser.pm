@@ -35,7 +35,7 @@ sub new {
   ## Process each feature file
   foreach my $f ($global_file, $file) {
     if (defined $f) {
-      my($status, $warn) = $self->read_file($f);
+      my($status, $warn) = $self->cached_file_read($f);
       if (!$status) {
         ## We only want to warn the user about problems
         ## with the feature file.
