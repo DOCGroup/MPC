@@ -47,6 +47,9 @@ default:
         :preexec=<mv("mv -f")%> temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
 <%endfor%>
 <%endif%>
+<%else%>
+<%custom_type->input_file%>
+	documentation
 <%endif%>
 <%endfor%>
 <%endfor%>
