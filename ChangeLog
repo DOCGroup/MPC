@@ -1,3 +1,9 @@
+Wed Feb 23 19:43:10 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+
+	  Emit extra crlf after null variable definitions.
+
 Wed Feb 23 14:05:23 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
