@@ -823,6 +823,11 @@ sub parse_components {
         ## the file(s) listed are to be excluded
         my($exc) = ($line =~ s/^!//);
 
+        ## Convert any $(...) in this line before we process any
+        ## wildcard characters.  If we do not, scoped assignments will
+        ## not work nor will we get the correct wildcarded file list.
+        $line = $self->relative($line);
+
         ## Set up the files array.  If the line contains a wildcard
         ## character use CORE::glob() to get the files specified.
         my(@files) = ();

@@ -1,3 +1,11 @@
+Tue May 18 07:22:53 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Version.pm:
+        * modules/ProjectCreator.pm:
+
+          When parsing the component list, convert any $(...) to relative
+          paths if possible.
+
 Fri May 14 06:45:14 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * MPC version 3.1 released.
