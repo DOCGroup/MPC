@@ -1,0 +1,262 @@
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+<%marker(top)%>
+<%foreach(configurations)%>
+CXX           = <%cxx%>
+<%if(ld)%>
+LD            = <%ld%>
+<%else%>
+LD            = $(CXX) $(CCFLAGS) $(CPPFLAGS)
+<%endif%>
+<%if(ar)%>
+AR            = <%ar%>
+<%endif%>
+<%if(nm)%>
+NM            = <%nm%>
+<%endif%>
+<%if(cputype)%>
+CPUTYPE       = <%cputype%>
+<%endif%>
+<%if(cpu)%>
+CPU           = <%cpu%>
+<%endif%>
+<%endfor%>
+CCC           = $(CXX)
+MAKEFILE      = <%project_file%>
+DEPENDENCIES  = .depend.$(MAKEFILE)
+<%if(exename)%>
+BIN           = <%exename%>$(EXEEXT)
+<%endif%>
+<%if(staticname)%>
+LIB           = lib<%staticname%>.a
+<%endif%>
+<%foreach(platforms)%>
+EXEEXT        = <%exeext%>
+LN            = <%ln%>
+<%if(soext)%>
+<%if(sharedname)%>
+SHLIB         = lib<%sharedname%>.$(SOEXT)
+SOEXT         = <%soext%>
+<%foreach(configurations)%>
+<%if(pic)%>
+PICFLAGS      = <%pic%>
+<%endif%>
+<%endfor%>
+<%if(shflags)%>
+SHFLAGS       = <%shflags%>
+<%endif%>
+<%endif%>
+<%endif%>
+<%endfor%>
+<%foreach(configurations)%>
+<%if(tempinc)%>
+TEMPINCDIR    = <%tempinc%>/<%project_name%>
+<%endif%>
+<%endfor%>
+GENFLAGS      = <%genflags(-g)%>
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS)<%if(cppflags)%> <%cppflags%><%endif%><%foreach(configurations)%><%if(compileflags)%> <%compileflags%><%endif%><%if(cpu)%> -DCPU=$(CPU)<%endif%><%if(tempinc)%> <%tempincopt%>$(TEMPINCDIR)<%endif%><%if(compilerflags)%> <%compilerflags%><%endif%><%if(pch_source && pchsupport)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%><%endfor%><%foreach(platforms)%><%if(extracppflags)%> <%extracppflags%><%endif%><%endfor%><%if(includes)%><%foreach(includes)%> -I<%include%><%endfor%><%endif%><%if(macros)%><%foreach(macros)%> -D<%macro%><%endfor%><%endif%>
+<%if(arflags)%>
+ARFLAGS       = <%arflags%>
+<%endif%>
+SRC           =<%if(pch_source && pchsupport)%> <%pch_source%><%endif%> <%source_files%>
+OBJS          =<%if(pch_source && pchsupport)%> <%basenoextension(pch_source)%>.o<%endif%><%foreach(source_files)%> <%basenoextension(source_file)%>.o<%endfor%><%foreach(platforms)%><%if(rc)%><%foreach(resource_files)%> <%resource_file%>.o<%endfor%><%endif%><%endfor%>
+LDFLAGS       =<%if(libpaths)%><%foreach(libpaths)%> -L<%libpath%><%endfor%><%endif%><%foreach(configurations)%><%if(linkflags)%> <%linkflags%><%endif%><%endfor%>
+LDLIBS        =<%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(libs lit_libs)%> -l<%lib%><%endfor%><%foreach(platforms)%> <%ldlibs%><%endfor%>
+LINK.cc       = $(LD) $(LDFLAGS)
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+RM            = rm -f
+OUTPUT_OPTION = -o $@
+<%if(dynamicflags)%>
+DYNAMICFLAGS  =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
+<%endif%>
+<%if(staticflags)%>
+STATICFLAGS   =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
+<%endif%>
+EXPORTFLAGS   = <%if(!exename)%><%foreach(configurations)%><%foreach(platforms)%><%if(soext && sharedname)%>$(DYNAMICFLAGS)<%else%>$(STATICFLAGS)<%endif%><%endfor%><%endfor%><%endif%>
+<%marker(macros)%>
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+<%marker(local)%>
+
+<%if(exename)%>
+all: $(BIN) <%if(install)%>install<%endif%>
+
+<%foreach(configurations)%>
+<%foreach(platforms)%>
+<%if(specialscript)%>
+specialscript:
+	@echo '<%specialscript%>' > specialscript
+	@chmod 755 specialscript
+
+<%endif%>
+<%if(prelink)%>
+<%prelink%>: specialscript $(OBJS)
+	@./specialscript $(NM) "$(OBJS)" "$(LDLIBS)" "<%if(libpaths)%><%libpaths%><%else%>.<%endif%>" <%prelink%>
+	@$(RM) specialscript
+
+<%basenoextension(prelink)%>.o: <%prelink%>
+	$(COMPILE.cc) <%prelink%> $(OUTPUT_OPTION)
+	@$(RM) <%prelink%>
+
+<%endif%>
+<%endfor%>
+<%endfor%>
+$(BIN): $(TEMPINCDIR) $(OBJS) <%foreach(configurations)%><%foreach(platforms)%><%if(prelink)%><%basenoextension(prelink)%>.o<%endif%><%endfor%><%endfor%>
+	$(LINK.cc) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
+
+<%endif%>
+<%foreach(configurations)%>
+<%foreach(platforms)%>
+<%if(soext)%>
+<%if(sharedname)%>
+INSTARGET = $(SHLIB)
+
+all: $(INSTARGET) <%if(install)%>install<%else%><%if(!exename)%>install<%endif%><%endif%>
+
+$(SHLIB): $(TEMPINCDIR) $(OBJS)
+	<%foreach(configurations)%><%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%><%endfor%> $(SHFLAGS) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
+<%else%>
+<%if(!exename)%>
+INSTARGET = $(LIB)
+
+all: $(INSTARGET) <%if(install)%>install<%else%><%if(!exename)%>install<%endif%><%endif%>
+<%endif%>
+<%endif%>
+
+<%else%>
+<%if(staticname)%>
+INSTARGET = $(LIB)
+
+all: $(INSTARGET) <%if(install)%>install<%else%><%if(!exename)%>install<%endif%><%endif%>
+
+<%endif%>
+<%endif%>
+<%endfor%>
+<%endfor%>
+<%if(staticname)%>
+$(LIB): $(TEMPINCDIR) $(OBJS)
+	$(AR) $(ARFLAGS) $(LIB) $(OBJS)<%foreach(configurations)%><%if(tempinc)%> `find $(TEMPINCDIR) -type f`<%endif%><%endfor%>
+
+<%endif%>
+<%if(custom_types)%>
+GENERATED_DIRTY    =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><%if(custom_type->input_file->output_files)%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%><%endfor%><%endfor%>
+<%foreach(custom_types)%>
+<%if(custom_types->libpath)%>
+# These may be needed, but some versions of make do not accept this syntax
+#DYLD_LIBRARY_PATH := $(DYLD_LIBRARY_PATH):<%custom_type->libpath%>
+#LD_LIBRARY_PATH   := $(LD_LIBRARY_PATH):<%custom_type->libpath%>
+#SHLIB_PATH        := $(SHLIB_PATH):<%custom_type->libpath%>
+#LIBPATH           := $(LIBPATH):<%custom_type->libpath%>
+#PATH              := $(PATH):<%custom_type->libpath%>
+
+<%endif%>
+<%foreach(custom_type->input_files)%>
+<%if(custom_type->input_file->output_files)%>
+<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%custom_type->input_file%><%if(custom_type->dependent)%> <%custom_type->command%><%endif%>
+	<%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%>
+<%if(custom_type->postcommand)%>
+<%foreach(custom_type->input_file->output_files)%>
+	<%custom_type->postcommand()%>
+<%endfor%>
+<%endif%>
+<%if(pch_header)%>
+<%if(custom_type->pch_postrule)%>
+<%foreach(custom_type->input_file->source_output_files)%>
+	@echo '#include "<%pch_header%>"' > temp.$$$$ && cat <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temp.$$$$ && mv temp.$$$$ <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
+<%endfor%>
+<%endif%>
+<%endif%>
+
+<%endif%>
+<%endfor%>
+<%endfor%>
+.PRECIOUS: $(GENERATED_DIRTY)
+<%if(source_files)%>
+$(OBJS): $(GENERATED_DIRTY)
+<%else%>
+all: $(GENERATED_DIRTY)
+<%endif%>
+
+<%endif%>
+generated: $(GENERATED_DIRTY)
+
+<%foreach(configurations)%>
+<%if(tempinc)%>
+$(TEMPINCDIR):
+	@-test -d $(TEMPINCDIR) || mkdir -p $(TEMPINCDIR) 2> /dev/null || true
+
+<%endif%>
+<%if(pch_source && pchsupport)%>
+<%basenoextension(pch_source)%>.o: <%pch_source%>
+	$(COMPILE.cc) <%if(pchcreate)%><%pchcreate%><%basename(pch_header)%>.gch <%endif%>$(EXPORTFLAGS) <%pch_source%> $(OUTPUT_OPTION)
+
+<%endif%>
+<%foreach(source_files)%>
+<%basenoextension(source_file)%>.o: <%source_file%>
+	$(COMPILE.cc) <%if(pchuse && pch_source && pchsupport)%><%pchuse%><%basename(pch_header)%>.gch <%endif%>$(EXPORTFLAGS) <%source_file%> $(OUTPUT_OPTION)
+
+<%endfor%>
+<%endfor%>
+<%if(resource_files)%>
+<%foreach(platforms)%>
+<%if(rc)%>
+<%foreach(resource_files)%>
+<%resource_file%>.o: <%resource_file%>
+	<%rc%> <%resource_file%> <%resource_file%>.o
+
+<%endfor%>
+<%endif%>
+<%endfor%>
+<%endif%>
+<%if(install)%>
+<%if(exename)%>
+INSTARGET = $(BIN)
+install:
+	@if [ "<%install%>" != "." ]; then \
+	echo "Installing $(INSTARGET) -> <%install%>/$(INSTARGET)"; \
+	test -d "<%install%>" || mkdir -p "<%install%>" 2> /dev/null || true; \
+	$(RM) "<%install%>/$(INSTARGET)"; \
+	$(LN) "$(PWD)/$(INSTARGET)" "<%install%>"; \
+	fi
+
+<%endif%>
+<%else%>
+<%if(!exename)%>
+install:
+	@if [ "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>" != "." ]; then \
+	test -d "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>" || mkdir -p "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>" 2> /dev/null || true; \
+	$(RM) "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(INSTARGET)"; \
+	$(LN) "$(PWD)/$(INSTARGET)" "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>"; \
+	fi
+
+<%endif%>
+<%endif%>
+clean:
+	-$(RM) -r $(OBJS)<%foreach(configurations)%><%if(pch_source && pchsupport)%> <%basename(pch_header)%>.gch<%endif%><%endfor%>
+<%foreach(configurations)%>
+<%if(clean)%>
+	-$(RM) -r <%clean%>
+<%endif%>
+<%endfor%>
+
+realclean: clean
+	-$(RM) -r <%if(exename)%>$(BIN)<%else%>$(SHLIB) $(LIB)<%endif%><%if(install)%> <%install%>/$(INSTARGET)<%endif%>
+<%if(custom_types)%>
+	-$(RM) -r $(GENERATED_DIRTY)
+<%endif%>
+
+#----------------------------------------------------------------------------
+#       Dependencies
+#----------------------------------------------------------------------------
+
+$(DEPENDENCIES):
+	@touch $(DEPENDENCIES)
+
+depend:
+	<%depgen("makedepend -Y")%> $(CFLAGS) $(CCFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> /dev/null
+
+include $(DEPENDENCIES)
+<%marker(bottom)%>
