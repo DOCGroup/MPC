@@ -1,3 +1,11 @@
+Wed Apr  6 06:43:51 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/TemplateParser.pm:
+
+          Added new template functions, 'ends_with' and 'contains', which
+          work similarly to 'starts_with'.  The function names are self
+          explanatory.
+
 Mon Apr  4 13:02:59 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/xerces.mpb:
