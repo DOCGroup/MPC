@@ -227,8 +227,8 @@ $(TEMPINCDIR):
 <%foreach(platforms)%>
 <%if(rc)%>
 <%foreach(resource_files)%>
-<%targetoutdir%><%resource_file%>.$(OBJEXT): <%resource_file%>
-	<%rc%> <%resource_file%> <%targetoutdir%><%resource_file%>.$(OBJEXT)
+<%targetoutdir%><%resource_file%>.$(OBJEXT):
+	<%rc%><%foreach(includes)%> -I<%include%><%endfor%> <%resource_file%> <%targetoutdir%><%resource_file%>.$(OBJEXT)
 
 <%endfor%>
 <%endif%>

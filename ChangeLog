@@ -1,3 +1,15 @@
+Mon Jan  3 09:18:13 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+        * templates/em3vcp.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          Added the ability to generate projects that only contain resource
+          files.
+
 Wed Dec 22 12:47:02 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * MPC version 3.2.0 released.
