@@ -1968,11 +1968,16 @@ sub generate_default_target_names {
 
       ## If we still don't have a project type, then we will
       ## default to a library if there are source files
-      if (!$self->exe_target() && $#sources >= 0) {
-        $self->process_assignment('sharedname',
-                                  $self->{'unmodified_project_name'});
-        $self->process_assignment('staticname',
-                                  $self->{'unmodified_project_name'});
+      if (!$self->exe_target()) {
+        if ($#sources < 0) {
+          @sources = $self->get_component_list('resource_files', 1);
+        }
+        if ($#sources >= 0) {
+          $self->process_assignment('sharedname',
+                                    $self->{'unmodified_project_name'});
+          $self->process_assignment('staticname',
+                                    $self->{'unmodified_project_name'});
+        }
       }
     }
   }
@@ -3194,7 +3199,8 @@ sub check_features {
 sub need_to_write_project {
   my($self) = shift;
 
-  foreach my $key ('source_files', keys %{$self->{'generated_exts'}}) {
+  foreach my $key ('source_files', 'resource_files',
+                   keys %{$self->{'generated_exts'}}) {
     my($names) = $self->{$key};
     foreach my $name (keys %$names) {
       foreach my $key (keys %{$names->{$name}}) {
