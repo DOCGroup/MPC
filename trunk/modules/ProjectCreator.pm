@@ -137,7 +137,7 @@ my(%cppvc) = ('source_files'        => [ "\\.cpp", "\\.cxx", "\\.cc", "\\.c", "\
               'header_files'        => [ "\\.h", "\\.hpp", "\\.hxx", "\\.hh", ],
               'inline_files'        => [ "\\.i", "\\.inl", ],
               'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
-              'resource_files'      => [ "\\.rc", "\\.rc2", "\\.ico", "\\.cur", "\\.bmp", "\\.dlg", "\\.rc2", "\\.rct", "\\.bin", "\\.rgs", "\\.gif", "\\.jpg", "\\.jpeg", "\\.jpe" ],
+              'resource_files'      => [ "\\.rc", ],
              );
 
 ## Exclude these extensions when auto generating the component values
