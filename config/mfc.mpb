@@ -6,10 +6,12 @@ project {
   macros   += _AFXDLL
   specific(em3, nmake, vc6) {
     subsystem = windows
-    use_mfc   = 2
   }
   specific(vc7, vc71, vc8) {
     subsystem = 2
-    use_mfc   = 2
+  }
+  specific {
+    use_mfc = 2
+    unicode_mfc_entry = wWinMainCRTStartup
   }
 }

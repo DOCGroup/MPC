@@ -31,7 +31,7 @@
 				Optimization="0"
 <%endif%>
 				AdditionalIncludeDirectories="<%foreach(includes)%><%include%><%fornotlast(",")%><%endfor%>"
-				PreprocessorDefinitions="<%if(type_is_dynamic)%><%foreach(dynamicflags)%><%dynamicflag%>;<%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%><%staticflag%>;<%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%><%pch_define%>;<%endfor%><%endif%><%foreach(defines common_defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
+				PreprocessorDefinitions="<%if(unicode)%>UNICODE;_UNICODE;<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%><%dynamicflag%>;<%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%><%staticflag%>;<%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%><%pch_define%>;<%endfor%><%endif%><%foreach(defines common_defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
 				MinimalRebuild="<%MinimalRebuild("FALSE")%>"
 				ExceptionHandling="TRUE"
 <%if(!optimize)%>
@@ -106,6 +106,9 @@
 <%if(optimize)%>
 				OptimizeReferences="<%optref("2")%>"
 				EnableCOMDATFolding="<%opticf("2")%>"
+<%endif%>
+<%if(unicode && unicode_mfc_entry && exename && source_files)%>
+				EntryPointSymbol="<%unicode_mfc_entry%>"
 <%endif%>
 <%if(type_is_dynamic && sharedname)%>
 				ImportLibrary="<%libout%>\<%sharedname%><%lib_modifier%>.lib"

@@ -87,6 +87,7 @@ MFC Release {
   intermediate_dir      = MFC_Release
   lib_modifier          = mfc
   debug_switch          =
+  unicode_mfc_entry     = wWinMainCRTStartup
 }
 
 MFC Debug {
@@ -101,6 +102,7 @@ MFC Debug {
   lib_modifier          = mfcd
   pdbl                  = 1
   pdbc                  = 1
+  unicode_mfc_entry     = wWinMainCRTStartup
 }
 
 Static MFC Release {
@@ -115,6 +117,7 @@ Static MFC Release {
   output_dir            = Static_MFC_Release
   intermediate_dir      = Static_MFC_Release
   debug_switch          =
+  unicode_mfc_entry     = wWinMainCRTStartup
 }
 
 Static MFC Debug {
@@ -130,6 +133,7 @@ Static MFC Debug {
   intermediate_dir      = Static_MFC_Debug
   pdbl                  = 1
   pdbc                  = 1
+  unicode_mfc_entry     = wWinMainCRTStartup
 }
 
 conditional_include "vcfullmacros"
