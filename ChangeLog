@@ -1,3 +1,15 @@
+Tue Nov  2 09:43:38 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+
+          Added a section to document MPC related environment variables.
+
+        * modules/Options.pm:
+
+          If the argument to -include is a relative path, prepend the
+          current working directory to the path.  Also, removed the
+          deprecated -static_only option.
+
 Sun Oct 31 15:40:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/cbx.mpd:
