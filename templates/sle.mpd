@@ -22,7 +22,7 @@
 				RunFromDir="%rw">
 				<Exec
 					CmdLine='g++ -c %xup -g -o "%bd%n%oe" %i "%f" %~other'
-                                        OtherOptions="-W -Wall -Wpointer-arith -mcpu=pentiumpro -mthreads -pipe -fno-exceptions -fcheck-new <%foreach(includes)%>-I'<%include%>' <%endfor%><%foreach(defines common_defines macros)%>-D<%define%> <%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>-D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>-D <%staticflag%> <%endfor%><%endif%>"/>
+                                        OtherOptions="-W -Wall -Wpointer-arith -mcpu=pentiumpro -mthreads -pipe -fno-exceptions -fcheck-new <%compile_flags%> <%foreach(includes)%>-I'<%include%>' <%endfor%><%foreach(defines common_defines macros)%>-D<%define%> <%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>-D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>-D <%staticflag%> <%endfor%><%endif%>"/>
 			</Target>
 			<Target
 				Name="Link"
