@@ -31,8 +31,10 @@ Release {
   output_dir            = Release
   intermediate_dir      = Release
   debug_switch          =
+  type_is_static        =
   type_is_dynamic       = 1
   type_is_binary        = 1
+  need_staticflags      =
 }
 
 Debug {
@@ -45,8 +47,10 @@ Debug {
   output_dir            = .
   intermediate_dir      = Debug
   lib_modifier          = d
+  type_is_static        =
   type_is_dynamic       = 1
   type_is_binary        = 1
+  need_staticflags      =
   pdbl                  = 1
   pdbc                  = 1
 }
@@ -64,6 +68,8 @@ Static Release {
   lib_modifier          = s
   debug_switch          =
   type_is_static        = 1
+  type_is_binary        =
+  type_is_dynamic       =
   need_staticflags      = 1
 }
 
@@ -79,6 +85,8 @@ Static Debug {
   intermediate_dir      = Static_Debug
   lib_modifier          = sd
   type_is_static        = 1
+  type_is_binary        =
+  type_is_dynamic       =
   need_staticflags      = 1
   pdbc                  = 1
 }
@@ -94,8 +102,10 @@ MFC Release {
   intermediate_dir      = MFC_Release
   lib_modifier          = mfc
   debug_switch          =
+  type_is_static        =
   type_is_dynamic       = 1
   type_is_binary        = 1
+  need_staticflags      =
 }
 
 MFC Debug {
@@ -108,8 +118,10 @@ MFC Debug {
   output_dir            = MFC_Debug
   intermediate_dir      = MFC_Debug
   lib_modifier          = mfcd
+  type_is_static        =
   type_is_dynamic       = 1
   type_is_binary        = 1
+  need_staticflags      =
   pdbl                  = 1
   pdbc                  = 1
 }
@@ -127,6 +139,8 @@ Static MFC Release {
   lib_modifier          = mfcs
   debug_switch          =
   type_is_static        = 1
+  type_is_binary        =
+  type_is_dynamic       =
   need_staticflags      = 1
 }
 
@@ -142,6 +156,8 @@ Static MFC Debug {
   intermediate_dir      = Static_MFC_Debug
   lib_modifier          = mfcsd
   type_is_static        = 1
+  type_is_binary        =
+  type_is_dynamic       =
   need_staticflags      = 1
   pdbc                  = 1
 }

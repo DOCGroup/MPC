@@ -3,7 +3,6 @@
 
 conditional_include "ghscommon"
 
-need_dynamicflags = 1
-libext            = so
+libext = so
 
 conditional_include "user_ghsdll"

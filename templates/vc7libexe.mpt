@@ -4,7 +4,6 @@
 conditional_include "common"
 
 configurations     = Release Debug
-type_is_binary     = 1
 common_defines     = WIN32 _CONSOLE
 configuration_type = 1
 subsystem          = 1
@@ -16,7 +15,6 @@ Release {
   output_dir       = Static_Release
   intermediate_dir = Static_Release
   lib_modifier     = s
-  need_staticflags = 1
   runtime_library  = 2
 }
 
@@ -26,7 +24,6 @@ Debug {
   output_dir       = Static_Debug
   intermediate_dir = Static_Debug
   lib_modifier     = sd
-  need_staticflags = 1
   runtime_library  = 3
   pdbl             = 1
   pdbc             = 1
@@ -38,7 +35,6 @@ MFC Release {
   output_dir        = Static_MFC_Release
   intermediate_dir  = Static_MFC_Release
   lib_modifier      = mfcs
-  need_staticflags  = 1
   runtime_library   = 2
   use_mfc           = 2
   unicode_mfc_entry = wWinMainCRTStartup
@@ -50,7 +46,6 @@ MFC Debug {
   output_dir        = Static_MFC_Debug
   intermediate_dir  = Static_MFC_Debug
   lib_modifier      = mfcsd
-  need_staticflags  = 1
   runtime_library   = 3
   pdbl              = 1
   pdbc              = 1
