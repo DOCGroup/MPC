@@ -1713,6 +1713,7 @@ sub get_modified_workspace_name {
   my($self)   = shift;
   my($name)   = shift;
   my($ext)    = shift;
+  my($nows)   = shift;
   my($nmod)   = $self->get_name_modifier();
 
   if (defined $nmod) {
@@ -1722,8 +1723,10 @@ sub get_modified_workspace_name {
 
   ## If this is a per project workspace, then we should not
   ## modify the workspace name.  It may overwrite another workspace
-  ## but that's ok, it will also be a per project workspace.
-  if ($self->{'per_project_workspace_name'}) {
+  ## but that's ok, it will only be a per project workspace.
+  ## Also, if we don't want the workspace name attached ($nows) then
+  ## we just return the name plus the extension.
+  if ($nows || $self->{'per_project_workspace_name'}) {
     return "$name$ext";
   }
 
