@@ -47,7 +47,8 @@ sub printUsage {
                $spaces . "[-noreldefs] [-notoplevel] [-static] [-genins] [-expand_env]\n" .
                $spaces . "[-value_template <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
                $spaces . "[-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
-               $spaces . "[-feature_file <file name>] [-make_coexistence]\n" .
+               $spaces . "[-make_coexistence] [-feature_file <file name>] \n" .
+               $spaces . "[-features <feature definitions>] \n" .
                $spaces . "[-exclude <directories>] [-name_modifier <pattern>]\n" .
                $spaces . "[-apply_project] [-version] [-into <directory>]\n" .
                $spaces . "[-language <";
@@ -90,6 +91,7 @@ sub printUsage {
 "       -feature_file   Specifies the feature file to read before processing.\n" .
 "                       The default feature file is default.features under the\n" .
 "                       config directory.\n" .
+"       -features       Specifies the feature list to set before processing.\n" .
 "       -genins         Generate .ins files for use with prj_install.pl.\n" .
 "       -global         Specifies the global input file.  Values stored\n" .
 "                       within this file are applied to all projects.\n" .
@@ -198,6 +200,7 @@ sub options {
   my($global)     = undef;
   my($template)   = undef;
   my($feature_f)  = undef;
+  my(@features)   = ();
   my($nmodifier)  = undef;
   my($into)       = undef;
   my($hierarchy)  = 0;
@@ -274,6 +277,15 @@ sub options {
       $feature_f = $args[$i];
       if (!defined $feature_f) {
         $self->optionError('-feature_file requires a file name argument');
+      }
+    }
+    elsif ($arg eq '-features') {
+      $i++;
+      if (defined $args[$i]) {
+        @features = split(',', $args[$i]);
+      }
+      else {
+        $self->optionError('-features requires a comma separated list argument');
       }
     }
     elsif ($arg eq '-genins') {
@@ -471,6 +483,7 @@ sub options {
 
   my(%options) = ('global'        => $global,
                   'feature_file'  => $feature_f,
+                  'features'      => \@features,
                   'include'       => \@include,
                   'input'         => \@input,
                   'creators'      => \@creators,
