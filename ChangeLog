@@ -1,3 +1,12 @@
+Wed Aug 11 19:15:10 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+	* templates/automake.mpd:
+	  Changed header macro from nobase_pkginclude_HEADERS to
+	  nobase_include_HEADERS.
+	  Changed installed library headers to include idl_files.
+	  Added support for EXTRA_DIST with list of resource_files.
+
 Wed Aug 11 07:45:11 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeProjectCreator.pm:
@@ -29,7 +38,7 @@ Wed Aug 11 10:08:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
 
 Tue Aug 10 17:10:38 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-        * automake.mpd:
+        * templates/automake.mpd:
           Add initial support for automake conditionals with <%requires%>
           and <%avoids%>.
           Remove extra spaces before backslashes in _CPPFLAGS.

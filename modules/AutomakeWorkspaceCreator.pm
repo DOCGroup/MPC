@@ -169,7 +169,9 @@ sub write_comps {
   my($seen_noinst_headers) = 0;
   my($seen_built_sources) = 0;
   my($seen_cleanfiles) = 0;
+  my($seen_nobase_include_headers) = 0;
   my($seen_nobase_pkginclude_headers) = 0;
+  my($seen_extra_dist) = 0;
 
   ## Take the local Makefile.<project>.am files and insert each one here,
   ## then delete it.
@@ -228,10 +230,20 @@ sub write_comps {
               s/\+=/=/;
               $seen_cleanfiles = 1;
             }
+          } elsif (/^nobase_include_HEADERS\s*\+=\s*/) {
+            if (! $seen_nobase_include_headers) {
+              s/\+=/=/;
+              $seen_nobase_include_headers = 1;
+            }
           } elsif (/^nobase_pkginclude_HEADERS\s*\+=\s*/) {
             if (! $seen_nobase_pkginclude_headers) {
               s/\+=/=/;
-              $seen_nobase_pkginclude_headers= 1;
+              $seen_nobase_pkginclude_headers = 1;
+            }
+          } elsif (/^EXTRA_DIST\s*\+=\s*/) {
+            if (! $seen_extra_dist) {
+              s/\+=/=/;
+              $seen_extra_dist = 1;
             }
           }
 
