@@ -2,7 +2,6 @@ Tue Jun 22 20:53:12 2004  Ossama Othman  <ossama@dre.vanderbilt.edu>
 
 	* modules/AutomakeWorkspaceCreator.pm (AUTOMAKE_OPTIONS):
 
-
 	  Removed generation of this make variable.  All Automake options
 	  should generally be set via the AM_INIT_AUTOMAKE autoconf macro
 	  in the application's `configure.ac' file.
