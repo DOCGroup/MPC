@@ -298,6 +298,14 @@ postcommand         Allows a user to execute arbitrary commands after
                         <%documentation_file%>
                         <%resource_file%>
 
+                      The following are also available for use within the
+                      postcommand setting.  They return the extension (if
+                      there is any) of the input and output files
+                      respectively:
+
+                        <%input_ext%>
+                        <%output_ext%>
+
                     The following pseudo template variables are valid for
                     use within the command, commandflags, postcommand and
                     output_option settings:
