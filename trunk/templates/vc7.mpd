@@ -189,7 +189,7 @@
 <%endif%>
 <%foreach(custom_types)%>
 		<Filter
-			Name="<%custom_type%>"
+			Name="<%ucw(custom_type)%>"
 			Filter="<%foreach(custom_type->inputexts)%><%custom_type->inputext%><%fornotlast(";")%><%endfor%>">
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>

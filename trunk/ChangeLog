@@ -1,3 +1,19 @@
+Thu Jul  8 09:16:21 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+
+          Added documentation about the wild card support in MPC.
+
+        * modules/ProjectCreator.pm:
+
+          If grouping is used in source files, put automatically added files
+          in corresponding groups.
+
+        * templates/vc7.mpd:
+
+          Use <%ucw()%> for the custom_type which looks better in the
+          graphical interface.
+
 Tue Jul  6 11:29:07 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
@@ -200,7 +216,7 @@ Fri May 28 14:03:13 2004  Chad Elliott  <elliott_c@ociweb.com>
         * templates/bmake.mpd:
         * templates/makedll.mpt:
 
-          Removed trailing whitespace.
+          Removed trailing white space.
 
 Fri May 28 13:06:01 2004  Chad Elliott  <elliott_c@ociweb.com>
 
@@ -260,7 +276,7 @@ Mon May 24 07:35:39 2004  Chad Elliott  <elliott_c@ociweb.com>
         * modules/WorkspaceCreator.pm:
 
           Added support for generating the workspace and project files
-          into an alternated directory tree.  This can not be used to build
+          into an alternate directory tree.  This can not be used to build
           code outside of the source tree, only to generate the workspace
           and project files to make it easier to package up these files for
           distribution.
