@@ -224,14 +224,16 @@ sub new {
   my($genins)     = shift;
   my($into)       = shift;
   my($language)   = shift;
-  my($expand_env) = shift;
+  my($use_env)    = shift;
+  my($expandvars) = shift;
   my($self)       = $class->SUPER::new($global, $inc,
                                        $template, $ti, $dynamic, $static,
                                        $relative, $addtemp, $addproj,
                                        $progress, $toplevel, $baseprojs,
                                        $feature, $features,
                                        $hierarchy, $nmod, $applypj,
-                                       $into, $language, $expand_env,
+                                       $into, $language, $use_env,
+                                       $expandvars,
                                        'project');
 
   $self->{$self->{'type_check'}}   = 0;
@@ -3710,8 +3712,9 @@ sub relative {
       $value = \@built;
     }
     elsif ($value =~ /\$/) {
-      my($expenv) = $self->get_expand_env();
-      my($rel)    = ($expenv ? \%ENV : $self->get_relative());
+      my($useenv) = $self->get_use_env();
+      my($expand) = $self->get_expand_vars();
+      my($rel)    = ($useenv ? \%ENV : $self->get_relative());
       my(@keys)   = keys %$rel;
 
       if (defined $keys[0]) {
@@ -3724,7 +3727,7 @@ sub relative {
           my($val)    = $$rel{$name};
 
           if (defined $val) {
-            if ($expenv) {
+            if ($expand) {
               if ($self->{'convert_slashes'}) {
                 $val = $self->slash_to_backslash($val);
               }
@@ -3801,9 +3804,8 @@ sub relative {
               $whole = '';
             }
             else {
-              if ($expenv) {
-                $self->warning("Unable to expand $name " .
-                               "as an environment variable.");
+              if ($expand) {
+                $self->warning("Unable to expand $name.");
               }
             }
           }
