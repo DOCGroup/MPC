@@ -869,19 +869,21 @@ sub generate_hierarchy {
       $sinfo{$rest} = $projinfo{$prj};
     }
     elsif ($top ne $current) {
-      ## Write out the hierachical workspace
-      $self->cd($current);
-      $self->generate_hierarchy($creator, \@saved, \%sinfo);
+      if ($current ne '.') {
+        ## Write out the hierachical workspace
+        $self->cd($current);
+        $self->generate_hierarchy($creator, \@saved, \%sinfo);
 
-      $self->{'projects'}       = \@saved;
-      $self->{'project_info'}   = \%sinfo;
-      $self->{'workspace_name'} = $self->base_directory();
+        $self->{'projects'}       = \@saved;
+        $self->{'project_info'}   = \%sinfo;
+        $self->{'workspace_name'} = $self->base_directory();
 
-      my($status, $error) = $self->write_workspace($creator);
-      if (!$status) {
-        $self->error($error);
+        my($status, $error) = $self->write_workspace($creator);
+        if (!$status) {
+          $self->error($error);
+        }
+        $self->cd($cwd);
       }
-      $self->cd($cwd);
 
       ## Start the next one
       $current = $top;
