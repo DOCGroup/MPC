@@ -65,6 +65,7 @@ sub new {
   my($baseprojs)  = shift;
   my($gfeature)   = shift;
   my($feature)    = shift;
+  my($features)   = shift;
   my($hierarchy)  = shift;
   my($exclude)    = shift;
   my($makeco)     = shift;
@@ -78,7 +79,8 @@ sub new {
                                  $template, $ti, $dynamic, $static,
                                  $relative, $addtemp, $addproj,
                                  $progress, $toplevel, $baseprojs,
-                                 $feature, $hierarchy, $nmod, $applypj,
+                                 $feature, $features,
+                                 $hierarchy, $nmod, $applypj,
                                  $into, $language, $expand_env,
                                  'workspace');
 
@@ -1660,7 +1662,7 @@ sub process_cmdline {
       my(@cacheInvalidating) = ('global', 'include', 'baseprojs',
                                 'template', 'ti', 'relative',
                                 'addtemp', 'addproj', 'feature_file',
-                                'expand_env');
+                                'features', 'expand_env');
       foreach my $key (@cacheInvalidating) {
         if ($self->is_set($key, $options)) {
           $self->{'cacheok'} = 0;
@@ -1716,6 +1718,7 @@ sub project_creator {
                    $parameters{'baseprojs'},
                    $self->{'global_feature_file'},
                    $parameters{'feature_file'},
+                   $parameters{'features'},
                    $parameters{'hierarchy'},
                    $self->{'exclude'}->{$self->{'wctype'}},
                    $self->make_coexistence(),
