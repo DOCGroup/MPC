@@ -1,3 +1,8 @@
+Thu Oct  7 13:03:28 2004  Steve Huston  <shuston@riverace.com>
+
+	* modules/AutomakeWorkspaceCreator.pm: Fixed the library location
+	  adjuster to adjust more than one library on a line.
+
 Wed Oct  6 11:35:48 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * clone_build_tree.pl:
