@@ -1,3 +1,16 @@
+Mon Aug  9 07:50:47 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug in the code that determines which generated files get
+          added automatically.  The array that can exist in the components
+          list could be undefined and in that case nothing got added
+          automatically.
+
+        * templates/automakedll.mpt:
+
+          Added a missing conditional include of the common mpt file.
+
 Mon Aug  9 07:04:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmakecommon.mpt:
@@ -5,51 +18,51 @@ Mon Aug  9 07:04:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
 
 Sat Aug  7 23:19:33 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
-	  Introduce an intermediate dependency between custom input
-	  and output files so that only one instance of the command
-	  is spawned per input file with parallel make.
+        * templates/automake.mpd:
+          Introduce an intermediate dependency between custom input
+          and output files so that only one instance of the command
+          is spawned per input file with parallel make.
 
 Thu Aug  5 14:57:19 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
-	  Use $(srcdir)/<%custom_type->input_file%> instead of $< so
-	  resulting makefile will work on systems where make doesn't
-	  support VPATH.
+        * templates/automake.mpd:
+          Use $(srcdir)/<%custom_type->input_file%> instead of $< so
+          resulting makefile will work on systems where make doesn't
+          support VPATH.
 
 Thu Aug  5 11:14:12 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
-	  Check "libout", not "install" to determine whether a library
-	  is to be installed.
+        * templates/automake.mpd:
+          Check "libout", not "install" to determine whether a library
+          is to be installed.
 
 Thu Aug  5 09:14:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         The following changes are from Martin Corino <mcorino@remedy.nl>
 
-        * modules/Creator.pl:
-        * modules/Driver.pl:
-        * modules/ProjectCreator.pl:
-        * modules/WorkspaceCreator.pl:
+        * modules/Creator.pm:
+        * modules/Driver.pm:
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
           Added various changes to support autobuild MPC generation on
           OpenVMS.
 
 Wed Aug  4 11:47:06 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
-	  Use technique pioneered in the last checkin to remove the
-	  $(DUMMY_VALUE...) hack from _CPPFLAGS definitions.
+        * templates/automake.mpd:
+          Use technique pioneered in the last checkin to remove the
+          $(DUMMY_VALUE...) hack from _CPPFLAGS definitions.
 
 Wed Aug  4 11:23:04 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
-	  The automake documentation recommends that header files for
-	  programs and convienence libraries be listed in _SOURCES and not
-	  _HEADERS.  This has been done for programs (as we don't yet have
-	  a way to reliably distinguish between convienence libraries from
-	  installed libraries).  I've done this with rather ugly template
-	  macros to avoid having to do the $(DUMMY_VALUE...) hack.  This
-	  results in more readable Makefile.am's.
+        * templates/automake.mpd:
+          The automake documentation recommends that header files for
+          programs and convienence libraries be listed in _SOURCES and not
+          _HEADERS.  This has been done for programs (as we don't yet have
+          a way to reliably distinguish between convienence libraries from
+          installed libraries).  I've done this with rather ugly template
+          macros to avoid having to do the $(DUMMY_VALUE...) hack.  This
+          results in more readable Makefile.am's.
 
 Wed Aug  4 09:23:03 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
@@ -63,10 +76,10 @@ Wed Aug  4 09:23:03 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 Mon Aug  2 09:29:31 2004  Steve Huston  <shuston@riverace.com>
 
-	* templates/automake.mpd: For non-installed libraries, generate
-	  noinst_LTLIBRARIES instead of lib_LTLIBRARIES.
-	  For libraries, assume that "libs" are libtool-created libraries
-	  and "lit_libs" are not.
+        * templates/automake.mpd: For non-installed libraries, generate
+          noinst_LTLIBRARIES instead of lib_LTLIBRARIES.
+          For libraries, assume that "libs" are libtool-created libraries
+          and "lit_libs" are not.
 
 Mon Aug  2 08:04:27 2004  Chad Elliott  <elliott_c@ociweb.com>
 
