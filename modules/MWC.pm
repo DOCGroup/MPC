@@ -19,17 +19,15 @@ use Driver;
 
 sub new {
   my($class) = shift;
-  my($self)  = bless {'creators' => [ 'GNUACEWorkspaceCreator',
+  my($self)  = bless {'creators' => [ 'MakeWorkspaceCreator',
                                       'NMakeWorkspaceCreator',
                                       'VC6WorkspaceCreator',
                                       'VC7WorkspaceCreator',
                                       'VC71WorkspaceCreator',
-                                      'BorlandWorkspaceCreator',
-                                      'CbxWorkspaceCreator',
+                                      'CBXWorkspaceCreator',
                                       'GHSWorkspaceCreator',
                                       'EM3WorkspaceCreator',
                                       'VA4WorkspaceCreator',
-                                      'MakeWorkspaceCreator',
                                       'AutomakeWorkspaceCreator',
                                       'BMakeWorkspaceCreator',
                                       'HTMLWorkspaceCreator',

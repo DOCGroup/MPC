@@ -19,17 +19,15 @@ use Driver;
 
 sub new {
   my($class) = shift;
-  my($self)  = bless {'creators' => [ 'GNUACEProjectCreator',
+  my($self)  = bless {'creators' => [ 'MakeProjectCreator',
                                       'NMakeProjectCreator',
                                       'VC6ProjectCreator',
                                       'VC7ProjectCreator',
                                       'VC71ProjectCreator',
-                                      'BorlandProjectCreator',
-                                      'CbxProjectCreator',
+                                      'CBXProjectCreator',
                                       'GHSProjectCreator',
                                       'EM3ProjectCreator',
                                       'VA4ProjectCreator',
-                                      'MakeProjectCreator',
                                       'AutomakeProjectCreator',
                                       'BMakeProjectCreator',
                                       'HTMLProjectCreator',
