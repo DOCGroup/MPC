@@ -1,3 +1,13 @@
+Thu May  6 09:21:59 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/em3vcp.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          Added a template name, link_options, to allow users to inject MS
+          linker options into the generated projects.
+
 Wed May  5 12:34:51 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
