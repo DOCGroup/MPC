@@ -224,6 +224,9 @@
   <property category="win32.Debug_Build.win32b.ilink32" name="option.x.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.ilink32" name="param.libfiles.1" value="cw32mti.lib"/>
   <property category="win32.Debug_Build.win32b.ilink32" name="param.libfiles.2" value="import32.lib"/>
+  <property category="win32.Debug_Build.win32b.tlib" name="option.P.arg" value="4096"/>
+  <property category="win32.Debug_Build.win32b.tlib" name="option.P.arg.merge" value="1"/>
+  <property category="win32.Debug_Build.win32b.tlib" name="option.P.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.tlib" name="param.additionalflags.merge" value="1"/>
   <property category="win32.win32b.Debug_Build" name="saved" value="1"/>
   <property category="win32b.ilink32" name="enabled" value="0"/>
