@@ -6,7 +6,7 @@ project {
   libpaths += $(QTDIR)/lib
   macros   += QT_THREAD_SUPPORT
 
-  specific(cbx, borland, bmake, nmake, em3, vc6, vc7, vc71) {
+  specific(cbx, borland, bmake, nmake, em3, vc6, vc7, vc71, vc8) {
     lit_libs += qt-mt230nc
   }
 
