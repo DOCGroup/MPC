@@ -1,18 +1,38 @@
+Thu Sep 30 11:19:57 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Driver.pm:
+
+          Use the diagnostic() method instead of print so that when the
+          MPC_SILENT environment variable is set, the messages do not get
+          printed.
+
+        * modules/Version.pm:
+
+          Do not print a warning if we are unable to find the beta version,
+          just set the beta version to ??.
+
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Warn users when options that are used are unnecessary or have no
+          effect.
+
 Thu Sep 30 01:26:41 2004  Ossama Othman  <ossama@dre.vanderbilt.edu>
 
-	* MPC/modules/AutomakeWorkspaceCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
 
-	  Updated list of files to be cleaned in generated clean-local
-	  target to match current list used by the MPC generated
-	  GNUmakefiles.
+          Updated list of files to be cleaned in generated clean-local
+          target to match current list used by the MPC generated
+          GNUmakefiles.
 
-	* MPC/templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Removed line continuation generation code.  A line continuation
-	  character was not generated after processing the "libs" list
-	  despite the fact that "pure_libs" or "lit_libs" may be defined
-	  as well.  This fix causes all libraries to be listed on one line
-	  rather than be split up across multiple lines.
+          Removed line continuation generation code.  A line continuation
+          character was not generated after processing the "libs" list
+          despite the fact that "pure_libs" or "lit_libs" may be defined
+          as well.  This fix causes all libraries to be listed on one line
+          rather than be split up across multiple lines.
 
 Wed Sep 29 06:53:40 2004  Chad Elliott  <elliott_c@ociweb.com>
 
