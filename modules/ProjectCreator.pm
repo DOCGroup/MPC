@@ -15,6 +15,10 @@ use FileHandle;
 use File::Path;
 use File::Compare;
 use File::Basename;
+if ( $^O eq 'VMS' ) {
+  require VMS::Filespec;
+  import VMS::Filespec qw(unixify);
+}
 
 use Creator;
 use TemplateInputReader;
@@ -2946,7 +2950,13 @@ sub write_output_file {
           }
 
           my($fh)  = new FileHandle();
-          my($dir) = dirname($name);
+          my($dir) = '';
+          if ( $^O eq 'VMS' ) {
+            $dir = unixify(dirname($name));
+          }
+          else  {
+            $dir = dirname($name);
+          }
 
           if ($dir ne '.') {
             mkpath($dir, 0, 0777);
