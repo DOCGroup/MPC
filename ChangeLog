@@ -1,7 +1,18 @@
+Wed Apr 21 08:50:01 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/VC8ProjectCreator.pm:
+
+          Corrected some bugs in this module.
+
+        * modules/VC8WorkspaceCreator.pm:
+
+          Removed some redundant methods that are inherited from the
+          VC71WorkspaceCreator.
+
 Wed Apr 21 13:27:43 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * USAGE:
-          Aded vc8.
+          Added vc8.
 
 Wed Apr 21 13:06:44 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
 
