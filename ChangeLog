@@ -1,3 +1,12 @@
+Thu Jul  8 14:09:49 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/ProjectCreator.pm:
+
+          Added a new wild card syntax ('^') similar to the '!' that works
+          best for excluding generated files from component lists.  See the
+          README for more details.
+
 Thu Jul  8 09:16:21 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:

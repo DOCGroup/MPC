@@ -189,6 +189,7 @@ sub new {
   $self->{'custom_types'}          = {};
   $self->{'parents_read'}          = {};
   $self->{'inheritance_tree'}      = {};
+  $self->{'remove_files'}          = {};
   $self->{'feature_parser'}        = new FeatureParser($gfeature, $feature);
   $self->{'convert_slashes'}       = $self->convert_slashes();
   $self->{'sort_files'}            = $self->sort_files();
@@ -483,6 +484,7 @@ sub parse_line {
             $self->{'flag_overrides'}       = {};
             $self->{'parents_read'}         = {};
             $self->{'inheritance_tree'}     = {};
+            $self->{'remove_files'}         = {};
             $self->reset_generating_types();
           }
         }
@@ -833,7 +835,8 @@ sub parse_components {
       else {
         ## If we successfully remove a '!' from the front, then
         ## the file(s) listed are to be excluded
-        my($exc) = ($line =~ s/^!//);
+        my($rem) = ($line =~ s/^\^//);
+        my($exc) = $rem || ($line =~ s/^!//);
 
         ## Convert any $(...) in this line before we process any
         ## wildcard characters.  If we do not, scoped assignments will
@@ -853,12 +856,21 @@ sub parse_components {
           push(@files, $line);
         }
 
+        ## If we want to remove these files at the end too, then
+        ## add them to our remove_files hash array.
+        if ($rem) {
+          if (!defined $self->{'remove_files'}->{$tag}) {
+            $self->{'remove_files'}->{$tag} = {};
+          }
+          foreach my $file (@files) {
+            $self->{'remove_files'}->{$tag}->{$file} = 1;
+          }
+        }
+
         ## If we're excluding these files, then put them in the hash
         if ($exc) {
           $grname = $current;
-          foreach my $file (@files) {
-            $exclude{$file} = 1;
-          }
+          @exclude{@files} = (@files);
         }
         else {
           ## Set the flag overrides for each file
@@ -2289,6 +2301,30 @@ sub get_default_project_name {
 }
 
 
+sub remove_excluded {
+  my($self) = shift;
+  my(@tags) = @_;
+
+  ## Process each file type and remove the excluded files
+  foreach my $tag (@tags) {
+    my($names) = $self->{$tag};
+    foreach my $name (keys %$names) {
+      foreach my $comp (keys %{$$names{$name}}) {
+        my($count) = scalar(@{$$names{$name}->{$comp}});
+        for(my $i = 0; $i < $count; ++$i) {
+          my($file) = $$names{$name}->{$comp}->[$i];
+          if (defined $self->{'remove_files'}->{$tag}->{$file}) {
+            splice(@{$$names{$name}->{$comp}}, $i, 1);
+            --$i;
+            --$count;
+          }
+        }
+      }
+    }
+    delete $self->{'remove_files'}->{$tag};
+  }
+}
+
 sub generate_defaults {
   my($self) = shift;
 
@@ -2327,6 +2363,10 @@ sub generate_defaults {
     $self->list_default_generated($gentype, \@scomp);
   }
 
+  ## Now that all of the source files have been added
+  ## we need to remove those that have need to be removed
+  $self->remove_excluded('source_files');
+
   ## Add %specialComponents files based on the
   ## source_components (i.e. .h and .i or .inl based on .cpp)
   foreach my $tag (keys %specialComponents) {
@@ -2357,6 +2397,13 @@ sub generate_defaults {
         }
       }
     }
+  }
+
+  ## Now that all of the other files have been added
+  ## we need to remove those that have need to be removed
+  my(@rmkeys) = keys %{$self->{'remove_files'}};
+  if ($#rmkeys != -1) {
+    $self->remove_excluded(@rmkeys);
   }
 
   ## Generate default target names after all source files are added
