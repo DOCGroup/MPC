@@ -1,3 +1,37 @@
+Tue Oct  5 08:53:10 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/rpc.mpb:
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where a generated file (on Windows only) would not be
+          recognized as already added to the list of files.
+
+        * README:
+        * modules/TemplateParser.pm:
+        * templates/automake.mpd:
+        * templates/bmake.mpd:
+        * templates/em3vcp.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+
+          Added the ability to add to 'postcommand' within the scope of a
+          custom section (such as IDL_Files, RPC_Files, etc.)  In the
+          process of doing this, I fixed a couple of bugs in
+          TemplateParser.pm:
+
+          1) If flag_overrides was used in an <%if()%> and the closing
+             parenthesis were left off, it would not be recognized as an
+             error but wouldn't give the expected output.
+          2) If pseudo variables were used in a scoped add to commandflags,
+             they wouldn't get converted.
+          3) If a line contained only a tab and then a <%...%> variable, a
+             new line wouldn't be added to the end.
+
 Thu Sep 30 11:19:57 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Driver.pm:

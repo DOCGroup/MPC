@@ -419,8 +419,9 @@ is none the less required.  In this case, it's best to use
 generic_outputext.
 
 For custom file types, there are two keywords that can be used within the
-custom file type input lists: commandflags and gendir.  The commandflags can
-be used to augment or override the commandflags defined in the Define_Custom
+custom file type input lists: commandflags, gendir and postcommand.  The
+commandflags and postcommand can be used to augment or override the
+commandflags and postcommand respectively defined in the Define_Custom
 section.  gendir can be used to specify the directory in which the generated
 output will go.  Below is an example:
 
