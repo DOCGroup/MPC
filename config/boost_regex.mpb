@@ -2,5 +2,6 @@
 // $Id$
 
 project: boost_base {
+  macros   += BOOST_REGEX_NO_LIB
   lit_libs += boost_regex$(BOOST_CFG)
 }
