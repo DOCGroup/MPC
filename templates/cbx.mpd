@@ -278,6 +278,8 @@
       <file path="<%template_file%>">
         <property category="unique" name="id"/>
         <property category="win32b.bcc32" name="enabled" value="0"/>
+        <property category="MinGW.g++compile" name="enabled" value="0"/>
+        <property category="mswin32.MSCL" name="enabled" value="0"/>
       </file>
 <%endfor%>
   </node>
