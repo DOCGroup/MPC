@@ -60,7 +60,9 @@ CLEANFILES += \
 <%endfor%>
 <%endif%>
 <%endif%>
+<%if(multiple(custom_type->input_file->output_files))%>
 	@touch $@
+<%endif%>
 
 <%endif%>
 <%endfor%>
