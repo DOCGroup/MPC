@@ -1,3 +1,26 @@
+Tue Nov 23 07:52:03 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/boost_base.mpb:
+        * config/boost_date_time.mpb:
+        * config/boost_filesystem.mpb:
+        * config/boost_prg_exec_monitor.mpb:
+        * config/boost_regex.mpb:
+        * config/boost_signals.mpb:
+        * config/boost_test_exec_monitor.mpb:
+        * config/boost_thread.mpb:
+        * config/boost_unit_test_framework.mpb:
+
+          Added initial support for boost.
+
+        * modules/AutomakeProjectCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
+        * modules/WorkspaceHelper.pm:
+        * templates/automake.mpd:
+
+          Fixed a bug dealing with the output_option of a custom build
+          definition.  Added support for library versioning and adding the
+          includedir setting.
+
 Fri Nov 19 07:06:11 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/BMakeProjectCreator.pm:

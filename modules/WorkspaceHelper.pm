@@ -59,6 +59,14 @@ sub new {
 }
 
 
+sub modify_value {
+  my($self)  = shift;
+  my($name)  = shift;
+  my($value) = shift;
+  return $value;
+}
+
+
 sub write_settings {
   return 1, undef;
 }
