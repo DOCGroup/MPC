@@ -1,3 +1,22 @@
+Mon Jan  3 11:11:35 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+        * modules/MPC.pm:
+        * modules/MWC.pm:
+
+          Removed support for Visual Age 4.  It was incomplete, out-of-date
+          and most likely didn't work at all.
+
+        * modules/VA4ProjectCreator.pm:
+        * modules/VA4WorkspaceCreator.pm:
+        * templates/va4icc.mpd:
+        * templates/va4iccdll.mpt:
+        * templates/va4iccdllexe.mpt:
+        * templates/va4icclib.mpt:
+        * templates/va4icclibexe.mpt:
+
+          Removed these files.
+
 Mon Jan  3 09:18:13 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
