@@ -399,7 +399,10 @@ sub usageAndExit {
   my($base) = basename($0);
   my($spc)  = ' ' x (length($base) + 8);
 
-  print STDERR "$base v$version\n",
+  print STDERR "$base v$version\n\n",
+               "Create a tree identical in layout to the current directory\n",
+               "with the use of ", ($hasSymlink ? "symbolic links or " : ''),
+               "hard links.\n\n",
                "Usage: $base [-b <builddir>] [-d <dmode>] ",
                ($hasSymlink ? "[-a] [-l] " : ''),
                "[-v]\n",
