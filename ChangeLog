@@ -1,3 +1,12 @@
+Mon Aug  2 08:04:27 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/bmake.mpd:
+        * templates/bmakecommon.mpt:
+
+          Removed ACE specific portions of the bmake template.  They will
+          need to be supplied on the command line using the -value_template
+          and -value_project options.
+
 Sun Aug  1 08:31:49 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:
