@@ -1,3 +1,20 @@
+Mon Sep 13 12:52:22 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where if a custom file is in a directory other than
+          '.' and the 'gendir' setting is used to specify that the generated
+          output will be in a particular directory, it would be ignored when
+          determining if generated files were listed.
+
+        * modules/Creator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          When converting slashes to back slashes (on Windows), only convert
+          values when the parameter name does not contain 'flags'.  Some
+          custom build executables on Windows require the use of / as
+          command switches.
+
 Tue Sep  7 07:08:26 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * USAGE:

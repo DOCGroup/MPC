@@ -1588,6 +1588,21 @@ sub generated_filename_arrays {
       $base = $part;
     }
 
+    ## If gendir was specified, then we need to account for that
+    if (defined $self->{'flag_overrides'}->{$type}) {
+      foreach my $q (keys %{$self->{'flag_overrides'}->{$type}}) {
+        if (defined $self->{'flag_overrides'}->{$type}->{$q}->{'gendir'}) {
+          if ($self->{'flag_overrides'}->{$type}->{$q}->{'gendir'} eq '.') {
+            $dir = '';
+          }
+          else {
+            $dir = $self->{'flag_overrides'}->{$type}->{$q}->{'gendir'};
+          }
+          last;
+        }
+      }
+    }
+
     ## Loop through creating all of the possible file names
     foreach my $pe (@pearr) {
       push(@array, []);
