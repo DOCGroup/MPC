@@ -276,6 +276,7 @@ sub write_comps {
       print $fh "$assign =$crlf";
       $seen{$assign} = 1;
     }
+    print $fh $crlf;
   }
 
   ## Take the local Makefile.<project>.am files and insert each one here,
