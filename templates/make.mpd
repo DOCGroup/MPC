@@ -124,10 +124,10 @@ all: $(INSTARGET) <%if(install)%>install<%else%><%if(!exename)%>install<%endif%>
 $(SHLIB): <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%><%targetoutdir%> $(OBJS)
 	<%foreach(configurations)%><%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%><%endfor%> $(SHFLAGS) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
 <%else%>
-<%if(!exename)%>
+<%if(staticname)%>
 INSTARGET = $(LIB)
 
-all: $(INSTARGET) <%if(install)%>install<%else%><%if(!exename)%>install<%endif%><%endif%>
+all: $(INSTARGET)<%if(install)%> install<%endif%>
 <%endif%>
 <%endif%>
 
@@ -247,7 +247,7 @@ install:
 
 <%endif%>
 <%else%>
-<%if(!exename)%>
+<%if(sharedname || staticname)%>
 install:
 	@if [ "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>" != "." ]; then \
 	test -d "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%if(targetoutdir)%>/<%targetoutdir%><%endif%>" || mkdir -p "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%if(targetoutdir)%>/<%targetoutdir%><%endif%>" 2> /dev/null || true; \
@@ -279,7 +279,11 @@ $(DEPENDENCIES):
 	@touch $(DEPENDENCIES)
 
 depend:
+<%if(source_files || pch_source)%>
 	<%depgen("makedepend -Y")%> $(CFLAGS) $(CCFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> /dev/null
+<%else%>
+	@-:
+<%endif%>
 
 include $(DEPENDENCIES)
 <%marker(bottom)%>
