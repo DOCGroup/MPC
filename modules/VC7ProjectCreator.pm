@@ -104,9 +104,13 @@ sub crlf {
 }
 
 
-sub get_vcversion {
-  #my($self) = shift;
-  return '7.00';
+sub get_configurable {
+  my($self)   = shift;
+  my($name)   = shift;
+  my(%config) = ('vcversion'    => '7.00',
+                 'forloopscope' => 'TRUE',
+                );
+  return $config{$name};
 }
 
 
@@ -121,8 +125,8 @@ sub fill_value {
                              $self->{'current_input'},
                              $self->getcwd());
   }
-  elsif ($name eq 'vcversion') {
-    $value = $self->get_vcversion();
+  else {
+    $value = $self->get_configurable($name);
   }
   return $value;
 }

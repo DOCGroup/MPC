@@ -1,3 +1,13 @@
+Tue Oct  5 10:21:20 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/VC71ProjectCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+        * modules/VC8ProjectCreator.pm:
+        * templates/vc7.mpd:
+
+          For vc7 and vc71, set the ForceConformanceInForLoopScope to TRUE.
+          For vc8, that setting is deprecated so we do not set it at all.
+
 Tue Oct  5 08:53:10 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/rpc.mpb:
