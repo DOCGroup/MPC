@@ -276,6 +276,7 @@ sub new {
   $self->{'addtemp_state'}         = undef;
   $self->{'command_subs'}          = $self->get_command_subs();
   $self->{'use_reldefs'}           = $self->use_reldefs();
+  $self->{'escape_spaces'}         = $self->escape_spaces();
 
   $self->add_default_matching_assignments();
   $self->reset_generating_types();
@@ -875,8 +876,7 @@ sub process_component_line {
     ## Now look for specially listed files
     if ($line =~ /(.*)\s+>>\s+(.*)/) {
       $line = $1;
-      my(@extra) = split(/\s+/, $2);
-      $self->{'custom_special_output'}->{$line} = \@extra;
+      $self->{'custom_special_output'}->{$line} = $self->create_array($2);
     }
 
     ## Set up the files array.  If the line contains a wild card
@@ -3524,11 +3524,24 @@ sub write_project {
   if ($self->check_features($self->get_assignment('requires'),
                             $self->get_assignment('avoids'),
                             1)) {
-    if ($self->get_assignment('custom_only')) {
-      $self->remove_non_custom_settings();
-    }
-
     if ($self->need_to_write_project()) {
+      if ($self->get_assignment('custom_only')) {
+        $self->remove_non_custom_settings();
+      }
+
+      if ($self->{'escape_spaces'}) {
+        foreach my $key (keys %{$self->{'valid_components'}}) {
+          my($names) = $self->{$key};
+          foreach my $name (keys %$names) {
+            foreach my $key (keys %{$$names{$name}}) {
+              foreach my $file (@{$$names{$name}->{$key}}) {
+                $file =~ s/(\s)/\\$1/g;
+              }
+            }
+          }
+        }
+      }
+
       ($status, $error) = $self->write_output_file(
                                    $self->transform_file_name(
                                             $self->project_file_name()));
@@ -4040,6 +4053,12 @@ sub remove_non_custom_settings {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub escape_spaces {
+  #my($self) = shift;
+  return 0;
+}
+
 
 sub use_reldefs {
   #my($self) = shift;
