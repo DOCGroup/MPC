@@ -68,7 +68,8 @@ sub new {
   $self->{'ti'}         = $prjc->get_template_input();
   $self->{'cslashes'}   = $prjc->convert_slashes();
   $self->{'crlf'}       = $prjc->crlf();
-  $self->{'clen'}       = length($self->{'crlf'});
+  $self->{'cmds'}       = $prjc->get_command_subs();
+  $self->{'vnames'}     = $prjc->get_valid_names();
   $self->{'values'}     = {};
   $self->{'defaults'}   = {};
   $self->{'lines'}      = [];
@@ -78,7 +79,6 @@ sub new {
   $self->{'if_skip'}    = 0;
   $self->{'eval'}       = 0;
   $self->{'eval_str'}   = '';
-  $self->{'cmds'}       = $prjc->get_command_subs();
 
   $self->{'foreach'}  = {};
   $self->{'foreach'}->{'count'}      = -1;
@@ -191,6 +191,7 @@ sub get_value {
   my($name)    = shift;
   my($value)   = undef;
   my($counter) = $self->{'foreach'}->{'count'};
+  my($fromprj) = 0;
 
   ## First, check the temporary scope (set inside a foreach)
   if ($counter >= 0) {
@@ -209,47 +210,67 @@ sub get_value {
         $value = $self->{'prjc'}->adjust_value($name, $value);
       }
     }
+
     if (!defined $value) {
       my($uvalue) = $self->{'prjc'}->adjust_value($name, []);
       if (defined $$uvalue[0]) {
         $value = $uvalue;
       }
-    }
 
-    if (!defined $value) {
-      ## Next, check the inner to outer foreach
-      ## scopes for overriding values
-      while(!defined $value && $counter >= 0) {
-        $value = $self->{'foreach'}->{'scope'}->[$counter]->{$name};
-        --$counter;
-      }
-
-      ## Then get the value from the project creator
       if (!defined $value) {
-        $value = $self->{'prjc'}->get_assignment($name);
+        ## Next, check the inner to outer foreach
+        ## scopes for overriding values
+        while(!defined $value && $counter >= 0) {
+          $value = $self->{'foreach'}->{'scope'}->[$counter]->{$name};
+          --$counter;
+        }
 
-        ## Then get it from our known values
+        ## Then get the value from the project creator
         if (!defined $value) {
-          $value = $self->{'values'}->{$name};
-          if (!defined $value) {
-            ## Call back onto the project creator to allow
-            ## it to fill in the value before defaulting to undef.
-            $value = $self->{'prjc'}->fill_value($name);
-            if (!defined $value && $name =~ /^(.*)\->(\w+)/) {
-              my($pre)  = $1;
-              my($post) = $2;
-              my($base) = $self->get_value($pre);
+          $fromprj = 1;
+          $value = $self->{'prjc'}->get_assignment($name);
 
-              if (defined $base) {
-                $value = $self->{'prjc'}->get_special_value(
-                            $pre, $post, $base,
-                            ($self->{'prjc'}->requires_parameters($post) ?
-                                $self->prepare_parameters($pre) : undef));
+          ## Then get it from our known values
+          if (!defined $value) {
+            $value = $self->{'values'}->{$name};
+            if (!defined $value) {
+              ## Call back onto the project creator to allow
+              ## it to fill in the value before defaulting to undef.
+              $value = $self->{'prjc'}->fill_value($name);
+              if (!defined $value && $name =~ /^(.*)\->(\w+)/) {
+                my($pre)  = $1;
+                my($post) = $2;
+                my($base) = $self->get_value($pre);
+
+                if (defined $base) {
+                  $value = $self->{'prjc'}->get_special_value(
+                              $pre, $post, $base,
+                              ($self->{'prjc'}->requires_parameters($post) ?
+                                  $self->prepare_parameters($pre) : undef));
+                }
               }
             }
           }
         }
       }
+    }
+  }
+
+  ## If the value did not come from the project creator, we
+  ## check the variable name.  If it is a project keyword we then
+  ## check to see if we need to add the project value to the template
+  ## variable value.  If so, we make a copy of the value array and
+  ## push the project value onto that (to avoid modifying the original).
+  if (!$fromprj && defined $self->{'vnames'}->{$name} &&
+      $self->{'prjc'}->add_to_template_input_value($name)) {
+    my($pjval) = $self->{'prjc'}->get_assignment($name);
+    if (defined $pjval) {
+      my(@copy) = @$value;
+      if (!UNIVERSAL::isa($pjval, 'ARRAY')) {
+        $pjval = $self->create_array($pjval);
+      }
+      push(@copy, @$pjval);
+      $value = \@copy;
     }
   }
 
