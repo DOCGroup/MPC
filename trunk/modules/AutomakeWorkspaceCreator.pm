@@ -23,7 +23,8 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my($acfile) = 'configure.ac.Makefiles';
+my($acfile)  = 'configure.ac';
+my($acmfile) = 'configure.ac.Makefiles';
 
 # ************************************************************
 # Subroutine Section
@@ -79,9 +80,29 @@ sub write_comps {
   ## of all the involved Makefiles.
   my($mfh);
   if ($toplevel) {
-    unlink("$outdir/$acfile");
+    if (! -e "$outdir/$acfile") {
+      my($acfh) = new FileHandle();
+      if (open($acfh, ">$outdir/$acfile")) {
+        print $acfh "AC_INIT(", $self->get_workspace_name(), ", 1.0)$crlf",
+                    "AM_INIT_AUTOMAKE([1.9])$crlf",
+                    $crlf,
+                    "AC_PROG_CXX$crlf",
+                    "AC_PROG_CXXCPP$crlf",
+                    "AC_PROG_LIBTOOL$crlf",
+                    $crlf,
+                    "m4_include([$acmfile])$crlf",
+                    $crlf,
+                    "AC_OUTPUT$crlf";
+        close($acfh);
+      }
+    }
+    else {
+      $self->information("$acfile already exists.");
+    }
+
+    unlink("$outdir/$acmfile");
     $mfh = new FileHandle();
-    open($mfh, ">$outdir/$acfile");
+    open($mfh, ">$outdir/$acmfile");
     ## The top-level is never listed as a dependency, so it needs to be
     ## added explicitly.
     print $mfh "AC_CONFIG_FILES([ Makefile ])$crlf";

@@ -1,3 +1,54 @@
+Wed Feb 23 15:34:12 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/bmake.mpd:
+
+          Changed the realclean target to delete files with /q instead of
+          checking for generated files and then deleting them if they exist.
+          In situations where a large number of files are generated, it
+          could have failed because the command was too long.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Generate a configure.ac if one doesn't already exist.
+
+        * modules/WorkspaceCreator.pm:
+
+          Remove whitespace only if the dependency is defined and not an
+          empty string.
+
+        * modules/TemplateParser.pm:
+        * templates/automake.mpd:
+        * templates/bmakelib.mpt:
+        * templates/bmakelibexe.mpt:
+        * templates/cbxdll.mpt:
+        * templates/cbxexe.mpt:
+        * templates/em3vcpdll.mpt:
+        * templates/em3vcpdllexe.mpt:
+        * templates/em3vcplib.mpt:
+        * templates/em3vcplibexe.mpt:
+        * templates/ghs.mpd:
+        * templates/ghsdll.mpt:
+        * templates/ghslib.mpt:
+        * templates/ghslibexe.mpt:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+        * templates/sledll.mpt:
+        * templates/sleexe.mpt:
+        * templates/vc6dspdll.mpt:
+        * templates/vc6dspdllexe.mpt:
+        * templates/vc6dsplib.mpt:
+        * templates/vc6dsplibexe.mpt:
+        * templates/vc7dll.mpt:
+        * templates/vc7exe.mpt:
+        * templates/vc7lib.mpt:
+        * templates/vc7libexe.mpt:
+
+          Standardized the type_is_static, type_is_dynamic, type_is_binary
+          and need_staticflags template variables and set them from within
+          the TemplateParser so that each mpt does not have to set them.
+
 Fri Feb 18 09:43:08 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
