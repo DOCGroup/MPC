@@ -3,7 +3,8 @@
 
 conditional_include "bmakecommon"
 
-startup_obj = c0d32$(OBJ_EXT)
+startup_obj   = c0d32$(OBJ_EXT)
+compile_flags = -tWR -tWD
 
 Release {
   optimize         = 1

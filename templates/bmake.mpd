@@ -8,8 +8,8 @@
 <%marker(top)%>
 <%foreach(configurations)%>
 !ifdef <%uc(configuration)%>
-OCFLAGS      = <%if(optimize)%>-O2<%endif%><%foreach(defines)%> -D<%define%><%endfor%>
-INTERMEDIATE = <%intermediate_dir%>\<%noextension(project_file)%>
+OCFLAGS      = <%if(optimize)%>-O2<%else%>-v -y -Od -vi- -k<%endif%><%foreach(defines)%> -D<%define%><%endfor%>
+CFG_DIR      = <%intermediate_dir%>\\
 LIBMODIFIER  = <%lib_modifier%>
 EXEMODIFIER  = <%if(use_modifier)%><%lib_modifier%><%endif%>
 <%if(postlinkrmext)%>
@@ -25,6 +25,13 @@ EXEOUTPUTDIR = <%exeoutputdir(".")%>\\
 !endif
 <%endfor%>
 
+!ifdef UNICODE
+UC_CFLAGS    = <%unicode_flags%>
+UNICODE_DIR  = Unicode\\
+!endif
+
+INTERMEDIATE = $(CFG_DIR)$(UNICODE_DIR)<%noextension(project_file)%>
+
 <%foreach(compilers)%>
 OBJ_EXT      = <%obj_ext%>
 DLL_EXT      = <%dll_ext%>
@@ -39,7 +46,7 @@ DLLFLAGS     = <%dllflags%>
 LIBFLAGS     = <%libflags%>
 EXEFLAGS     = <%exeflags%>
 WARNFLAGS    = <%warnflags%>
-CCFLAGS      = <%ccflags%>
+CCFLAGS      = <%ccflags%><%if(compile_flags)%> <%compile_flags%><%endif%>
 <%endfor%>
 <%if(exename)%>
 NAME         = <%exename%>$(EXEMODIFIER)
@@ -54,8 +61,6 @@ NAME         = <%staticname%>$(LIBMODIFIER)
 <%endif%>
 CPPDIR       = <%cppdir%>
 RESDIR       = <%rcdir%>
-UNICODE_CFLAGS = <%unicode_flags%>
-
 <%if(exename || sharedname || staticname)%>
 
 OBJFILES = \
@@ -66,6 +71,9 @@ OBJFILES = \
 <%if(libpaths)%>
 
 LFLAGS   = \
+<%if(!optimize)%>
+           -v<%if(libpaths)%> \<%endif%>
+<%endif%>
 <%foreach(libpaths)%>
            -L"<%libpath%>" -j"<%libpath%>"<%fornotlast(" \\")%>
 <%endfor%>
@@ -82,8 +90,8 @@ LIBFILES = \
            <%lit_lib%>$(LIB_EXT) \
 <%endfor%>
            <%common_libs%>
-
 <%if(resource_files && !type_is_static)%>
+
 RESOURCE = \
 <%foreach(resource_files)%>
            $(INTERMEDIATE)\<%basenoextension(resource_file)%>.res<%fornotlast(" \\")%>
@@ -125,7 +133,6 @@ CFLAGS = \
          $(DUMMY_VALUE_NOT_ENDING_IN_BACKSLASH)
 
 <%if(pch_header)%>
-
 # Borland precompiled headers choke on some header files.
 #PCH_HEADER=<%pch_header%>
 <%endif%>
@@ -209,27 +216,27 @@ $(OUTPUTDIR)$(NAME)$(LIB_EXT): $(OBJFILES)
 .path.cpp = $(CPPDIR)
 .cpp$(OBJ_EXT):
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(OCFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
+        $(CC) $(OCFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 
 .path.cxx = $(CPPDIR)
 .cxx$(OBJ_EXT):
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(OCFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
+        $(CC) $(OCFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 
 .path.cc = $(CPPDIR)
 .cc$(OBJ_EXT):
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(OCFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
+        $(CC) $(OCFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 
 .path.C = $(CPPDIR)
 .C$(OBJ_EXT):
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(OCFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
+        $(CC) $(OCFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 
 .path.c = $(CPPDIR)
 .c$(OBJ_EXT):
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(OCFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
+        $(CC) $(OCFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 
 <%if(resource_files && !type_is_static)%>
 .path.res = $(INTERMEDIATE)
