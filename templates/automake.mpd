@@ -79,6 +79,14 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = 
 <%endfor%>
 <%endif%>
 
+<%if(libs || pure_libs || lit_libs)%>
+<%if(exename)%>
+<%normalize(exename)%>_LDADD = \
+<%else%>
+lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = \<%endif%>
+<%foreach(libs)%> -l<%lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%>
+<%endif%>
+
 <%if(exename)%>
 <%if(header_files)%>
 noinst_HEADERS += \
@@ -87,10 +95,6 @@ noinst_HEADERS += \
 <%endfor%>
 <%endif%>
 <%else%>
-lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LDFLAGS = $(X_LIBS)
-
-lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = $(X_PRE_LIBS) $(<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_XLIBS) $(X_EXTRA_LIBS)
-
 <%if(template_files)%>
 TEMPLATE_FILES += \
 <%foreach(template_files)%>
