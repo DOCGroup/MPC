@@ -60,6 +60,8 @@ gcc {
   cxx       = g++
   pic       = -fPIC
   platforms = linux
+  pchcreate = "-o "
+  pchnobj   = 1
 }
 
 SunCC {

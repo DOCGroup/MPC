@@ -1,3 +1,16 @@
+Wed Jan 26 13:52:36 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/WorkspaceCreator.pm:
+
+           Allow the user to negate project types in 'exclude' clauses
+           within mwc files.
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Provide precompiled header support for gcc.
+
 Tue Jan 25 12:38:57 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3vcpdll.mpt:
