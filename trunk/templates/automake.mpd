@@ -71,12 +71,19 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = 
 <%endif%>
 <%if(grouped_source_files)%>
 <%foreach(grouped_source_files)%>
-  $(<%grouped_source_file%>)<%fornotlast(" \\")%>
+  $(<%grouped_source_file%>)<%if(exename)%><%if(header_files || inline_files)%> \<%else%><%fornotlast(" \\")%><%endif%><%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
 <%else%>
 <%foreach(source_files)%>
-  <%source_file%><%fornotlast(" \\")%>
+  <%source_file%><%if(exename)%><%if(header_files || inline_files)%> \<%else%><%fornotlast(" \\")%><%endif%><%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
+<%endif%>
+<%if(exename)%>
+<%if(header_files || inline_files)%>
+<%foreach(header_files inline_files)%>
+  <%header_file%><%fornotlast(" \\")%>
+<%endfor%>
+<%endif%>
 <%endif%>
 
 <%if(linkflags)%>
@@ -93,15 +100,9 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LDFLAGS = 
 <%else%>
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = \<%endif%>
 <%foreach(libs)%> $(top_builddir)/ace/lib<%lib%>.la<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%>
+
 <%endif%>
-<%if(exename)%>
-<%if(header_files)%>
-noinst_HEADERS += \
-<%foreach(header_files)%>
-  <%header_file%><%fornotlast(" \\")%>
-<%endfor%>
-<%endif%>
-<%else%>
+<%if(!exename)%>
 <%if(header_files || inline_files || template_files)%>
 nobase_pkginclude_HEADERS += \
 <%foreach(header_files inline_files template_files)%>
