@@ -61,21 +61,64 @@ sub pre_workspace {
 
 
 sub write_comps {
-  my($self)     = shift;
-  my($fh)       = shift;
-  my($projects) = $self->get_projects();
-  my(@list)     = $self->sort_dependencies($projects);
-  my($crlf)     = $self->crlf();
-  my(%unique)   = ();
-  my(@dirs)     = ();
+  my($self)          = shift;
+  my($fh)            = shift;
+  my($projects)      = $self->get_projects();
+  my(@list)          = $self->sort_dependencies($projects);
+  my($crlf)          = $self->crlf();
+  my(%unique)        = ();
+  my(@dirs)          = ();
+  my(@locals)        = ();
+  my(%proj_dir_seen) = ();
 
-  ## Get a unique list of next-level directories for SUBDIRS.
+  ## This step writes a configure.ac.Makefiles list into the starting
+  ## directory. The list contains of all the Makefiles generated down
+  ## the tree. configure.ac can include this to get an up-to-date list
+  ## of all the involved Makefiles.
+  my($mfh);
+  if ($self->getstartdir() eq $self->getcwd()) {
+    unlink('configure.ac.Makefiles');
+    $mfh = new FileHandle();
+    open($mfh, '>configure.ac.Makefiles');
+  }
+
+  ## If we're writing a configure.ac.Makefiles file, every seen project
+  ## goes into it. Since we only write this at the starting directory
+  ## level, it'll include all projects processed at this level and below.
   foreach my $dep (reverse @list) {
+    $dep =~ s/\.am$//;       ## Lose the ".am" suffix.
+    if ($mfh) {
+      ## There should be a Makefile at each level, but it's not a project,
+      ## it's a workspace; therefore, it's not in the list of projects. But
+      ## it's needed in the configure process so add it here. But don't
+      ## add it for "." - that's the one we're generating now.
+      my($dep_dir) = dirname($dep);
+      if ($dep_dir ne '.') {
+        if (!defined $proj_dir_seen{$dep_dir}) {
+          $proj_dir_seen{$dep_dir} = 1;
+          print $mfh "AC_CONFIG_FILES([ $dep_dir" . "/Makefile ])$crlf";
+        }
+      }
+      print $mfh "AC_CONFIG_FILES([ $dep ])$crlf";
+    }
+
+    ## Get a unique list of next-level directories for SUBDIRS.
     my($dir) = $self->get_first_level_directory($dep);
     if (!defined $unique{$dir}) {
       $unique{$dir} = 1;
       unshift(@dirs, $dir);
     }
+
+    ## At each directory level, each project is written into a separate
+    ## Makefile.<project>.am file. To bring these back into the build
+    ## process, write out a list of local projects and then generate
+    ## local make targets for them below.
+    if ($dir eq '.') {
+      unshift(@locals, $dep);
+    }
+  }
+  if ($mfh) {
+    close($mfh);
   }
 
   ## Print out the subdirectories
@@ -84,6 +127,43 @@ sub write_comps {
     print $fh " \\$crlf        $dir";
   }
   print $fh $crlf;
+
+  ## Print out the local targets, if there are any.
+  if (@locals) {
+    print $fh $crlf . 'LOCAL_MAKES =';
+    foreach my $local (@locals) {
+      print $fh " \\$crlf        $local";
+    }
+    print $fh $crlf;
+    print $fh $crlf;
+    print $fh "all-local:$crlf";
+    print $fh '\tlist=\'$(LOCAL_MAKES)\'; for p in $$list; do \\' . $crlf;
+    print $fh '\t$(MAKE) $(AM_MAKEFLAGS) all; \\' . $crlf;
+    print $fh '\tdone;' . $crlf;
+
+    print $fh $crlf;
+    print $fh "clean-local:$crlf";
+    print $fh '\tlist=\'$(LOCAL_MAKES)\'; for p in $$list; do \\' . $crlf;
+    print $fh '\t$(MAKE) $(AM_MAKEFLAGS) clean; \\' . $crlf;
+    print $fh '\tdone;' . $crlf;
+
+    print $fh $crlf;
+    print $fh "distclean-local:$crlf";
+    print $fh '\tlist=\'$(LOCAL_MAKES)\'; for p in $$list; do \\' . $crlf;
+    print $fh '\t$(MAKE) $(AM_MAKEFLAGS) distclean; \\' . $crlf;
+    print $fh '\tdone;' . $crlf;
+  }
+
+  ## If this is the top-level Makefile.am, it needs the directives to pass
+  ## autoconf/automake flags down the tree when running autoconf.
+  ## *** This may be too closely tied to how we have things set up in ACE,
+  ## even though it's recommended practice. ***
+  if ($self->getstartdir() eq $self->getcwd()) {
+    print $fh $crlf;
+    print $fh 'ACLOCAL = @ACLOCAL@' . $crlf;
+    print $fh 'ACLOCAL_AMFLAGS = -I m4' . $crlf;
+  }
+
 }
 
 
