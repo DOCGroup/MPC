@@ -23,6 +23,7 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
+my($max_line_length) = 32767; ## Borland Make's maximum line length
 my(@targets) = ('clean', 'realclean', '$(CUSTOM_TARGETS)');
 
 # ************************************************************
@@ -115,21 +116,27 @@ sub write_comps {
   my(%targnum)  = ();
   my(@list)     = $self->number_target_deps($projects, $pjs, \%targnum);
   my($crlf)     = $self->crlf();
+  my(@ltargets) = @targets;
 
   ## Set up the custom targets
   print $fh '!ifndef CUSTOM_TARGETS', $crlf,
             'CUSTOM_TARGETS=_EMPTY_TARGET_', $crlf,
             '!endif', $crlf;
 
-  ## Print out the "all" target
-  print $fh $crlf . 'all:';
+  ## Construct the "all" target
+  my($all) = $crlf . 'all:';
   foreach my $project (@list) {
-    print $fh " $$pjs{$project}->[0]";
+    $all .= " $$pjs{$project}->[0]";
   }
-  print $fh $crlf;
+  if (length($all) < $max_line_length) {
+    print $fh $all, $crlf;
+  }
+  else {
+    unshift(@ltargets, 'all');
+  }
 
   ## Print out all other targets here
-  foreach my $target (@targets) {
+  foreach my $target (@ltargets) {
     print $fh $crlf .
               $target . ':' . $crlf;
     $self->write_project_targets($fh, $target, \@list);
