@@ -1,3 +1,10 @@
+Wed Mar 16 22:04:35 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+
+	  Only emit empty primary definition if the first instance seen in
+	  the project Makefile.am's is not unconditional.
+
 Wed Mar 16 14:44:51 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* modules/AutomakeWorkspaceCreator.pm:
