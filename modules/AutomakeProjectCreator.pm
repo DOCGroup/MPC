@@ -79,7 +79,7 @@ sub fill_value {
         }
       }
 
-      $value = join(' ', @vec);
+      $value = \@vec;
     }
   }
   elsif ($name eq 'rev_avoids') {
@@ -100,6 +100,14 @@ sub fill_value {
     if ((defined $incs && $incs =~ /tao/i) ||
         (defined $libs && $libs =~ /tao/i)) {
       $value = 1;
+    }
+  }
+  elsif ($name eq 'am_version') {
+    $value = $self->get_assignment('version');
+    if (defined $value) {
+      if (($value =~ tr/./:/) < 2) {
+        $value .= ':0';
+      }
     }
   }
 
