@@ -667,7 +667,7 @@ sub handle_normalize {
   my($name) = shift;
   my($val)  = $self->get_value_with_default($name);
 
-  $val =~ tr/\-/_/;
+  $val =~ tr/\/\-$()./_/;
   $self->append_current($val);
 }
 

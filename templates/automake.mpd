@@ -53,14 +53,14 @@ CLEANFILES += \
 <%if(exename)%>
 <%if(INSTALL_THIS_TARGET)%>bin<%else%>noinst<%endif%>_PROGRAMS += <%exename%>
 <%else%>
-<%if(INSTALL_THIS_TARGET)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
+<%if(INSTALL_THIS_TARGET)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += <%if(dllout)%><%dllout%>/<%else%><%if(libout)%><%libout%>/<%endif%><%endif%>lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
 <%endif%>
 <%if(am_includes || defines || common_defines || need_staticflags || dynamicflags)%>
 
 <%if(exename)%>
 <%normalize(exename)%>_CPPFLAGS = \
 <%else%>
-lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_CPPFLAGS = \
+<%if(dllout)%><%normalize(dllout)%>_<%else%><%if(libout)%><%normalize(libout)%>_<%endif%><%endif%>lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_CPPFLAGS = \
 <%endif%>
   -I$(top_builddir) \
   -I$(top_srcdir)<%if(am_includes || defines || common_defines || need_staticflags || dynamicflags)%> \<%endif%>
@@ -93,7 +93,7 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_CPPFLAGS =
 <%if(exename)%>
 <%normalize(exename)%>_SOURCES = \
 <%else%>
-lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = \
+<%if(dllout)%><%normalize(dllout)%>_<%else%><%if(libout)%><%normalize(libout)%>_<%endif%><%endif%>lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = \
 <%endif%>
 <%if(grouped_source_files)%>
 <%foreach(grouped_source_files)%>
@@ -117,7 +117,7 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = 
 <%if(exename)%>
 <%normalize(exename)%>_LDFLAGS = \
 <%else%>
-lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LDFLAGS = \<%endif%>
+<%if(dllout)%><%normalize(dllout)%>_<%else%><%if(libout)%><%normalize(libout)%>_<%endif%><%endif%>lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LDFLAGS = \<%endif%>
 <%foreach(linkflags)%> <%linkflag%><%endfor%>
 <%endif%>
 <%if(libs || pure_libs || lit_libs)%>
@@ -125,8 +125,8 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LDFLAGS = 
 <%if(exename)%>
 <%normalize(exename)%>_LDADD = \
 <%else%>
-lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = \<%endif%>
-<%foreach(libs)%> $(top_builddir)/ace/lib<%lib%>.la<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%>
+<%if(dllout)%><%normalize(dllout)%>_<%else%><%if(libout)%><%normalize(libout)%>_<%endif%><%endif%>lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = \<%endif%>
+<%foreach(libs)%> $(top_builddir)/lib/lib<%lib%>.la<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%>
 <%endif%>
 <%if(!exename)%>
 <%if(header_files || inline_files || template_files || idl_files || pidl_files)%>
