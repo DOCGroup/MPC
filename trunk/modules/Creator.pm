@@ -683,20 +683,22 @@ sub save_state {
   ## Make a deep copy of each state value.  That way our array
   ## references and hash references do not get accidentally modified.
   foreach my $skey (defined $selected ? $selected : @statekeys) {
-    if (UNIVERSAL::isa($self->{$skey}, 'ARRAY')) {
-      $state{$skey} = [];
-      foreach my $element (@{$self->{$skey}}) {
-        push(@{$state{$skey}}, $element);
+    if (defined $self->{$skey}) {
+      if (UNIVERSAL::isa($self->{$skey}, 'ARRAY')) {
+        $state{$skey} = [];
+        foreach my $element (@{$self->{$skey}}) {
+          push(@{$state{$skey}}, $element);
+        }
       }
-    }
-    elsif (UNIVERSAL::isa($self->{$skey}, 'HASH')) {
-      $state{$skey} = {};
-      foreach my $key (keys %{$self->{$skey}}) {
-        $state{$skey}->{$key} = $self->{$skey}->{$key};
+      elsif (UNIVERSAL::isa($self->{$skey}, 'HASH')) {
+        $state{$skey} = {};
+        foreach my $key (keys %{$self->{$skey}}) {
+          $state{$skey}->{$key} = $self->{$skey}->{$key};
+        }
       }
-    }
-    else {
-      $state{$skey} = $self->{$skey};
+      else {
+        $state{$skey} = $self->{$skey};
+      }
     }
   }
 
@@ -712,16 +714,18 @@ sub restore_state {
   ## Make a deep copy of each state value.  That way our array
   ## references and hash references do not get accidentally modified.
   foreach my $skey (defined $selected ? $selected : @statekeys) {
-    if (UNIVERSAL::isa($state->{$skey}, 'ARRAY')) {
-      my(@arr) = @{$state->{$skey}};
-      $self->{$skey} = \@arr;
-    }
-    elsif (UNIVERSAL::isa($state->{$skey}, 'HASH')) {
-      my(%hash) = %{$state->{$skey}};
-      $self->{$skey} = \%hash;
-    }
-    else {
-      $self->{$skey} = $state->{$skey};
+    if (defined $state->{$skey}) {
+      if (UNIVERSAL::isa($state->{$skey}, 'ARRAY')) {
+        my(@arr) = @{$state->{$skey}};
+        $self->{$skey} = \@arr;
+      }
+      elsif (UNIVERSAL::isa($state->{$skey}, 'HASH')) {
+        my(%hash) = %{$state->{$skey}};
+        $self->{$skey} = \%hash;
+      }
+      else {
+        $self->{$skey} = $state->{$skey};
+      }
     }
   }
 }

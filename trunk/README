@@ -310,7 +310,7 @@ project {
 In the above example, keyword can be any of the pre_extension, pre_filename
 or keywords that end in _outputext.  flag_keyword can be any of the custom
 definition keywords, however only commandflags really make any sense. 
-Inside the parenthesis, the flak_keyword value is searched for the 'option'
+Inside the parenthesis, the flag_keyword value is searched for the 'option'
 value.  If it is found, then the 'value' after the += is added to the list
 specified by 'keyword'.  This can also be negated by prefixing 'option' with
 an exclamation point (!).
@@ -463,7 +463,7 @@ The second assignment is 'implicit'.  This assignment takes two different
 types of values.  It takes a boolean value (0 or 1) to indicate that an
 implicit project should be created in directories that contain no mpc file,
 but contain project related files (source, headers, etc.).  The default
-value for implicit is 0.  It also takes a charater string that represents a
+value for implicit is 0.  It also takes a character string that represents a
 base project (similar to the -base option).  In this case, implicit is
 enabled and each implicitly generate project file will have the base project
 or base projects (when addition is used) when the project is created.

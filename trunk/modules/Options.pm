@@ -332,19 +332,21 @@ sub is_set {
   my($key)     = shift;
   my($options) = shift;
 
-  if (UNIVERSAL::isa($options->{$key}, 'ARRAY')) {
-    if (defined $options->{$key}->[0]) {
-      return 'ARRAY';
+  if (defined $options->{$key}) {
+    if (UNIVERSAL::isa($options->{$key}, 'ARRAY')) {
+      if (defined $options->{$key}->[0]) {
+        return 'ARRAY';
+      }
     }
-  }
-  elsif (UNIVERSAL::isa($options->{$key}, 'HASH')) {
-    my(@keys) = keys %{$options->{$key}};
-    if (defined $keys[0]) {
-      return 'HASH';
+    elsif (UNIVERSAL::isa($options->{$key}, 'HASH')) {
+      my(@keys) = keys %{$options->{$key}};
+      if (defined $keys[0]) {
+        return 'HASH';
+      }
     }
-  }
-  elsif (defined $options->{$key}) {
-    return 'SCALAR';
+    else {
+      return 'SCALAR';
+    }
   }
 
   return undef;

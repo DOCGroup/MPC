@@ -20,7 +20,6 @@
   <property category="build.config.1" name="settings.gnuc++" value="default;release"/>
   <property category="build.config.1" name="settings.mswin32" value="default;release"/>
   <property category="build.config.1" name="type" value="Toolset"/>
-  <property category="build.node" name="name" value="ACEtest"/>
   <property category="build.node" name="type" value="libraryproject"/>
   <property category="build.platform" name="active" value="win32"/>
   <property category="build.platform" name="linux.Debug_Build.toolset" value="gnuc++"/>
@@ -155,7 +154,6 @@
   <property category="win32.Debug_Build.win32b.bcc32" name="option.D.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.Hc.enabled" value="1"/>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.I.arg.1" value="$(BCB)\include"/>
-  <property category="win32.Debug_Build.win32b.bcc32" name="option.I.arg.2" value="$(ACE_ROOT)"/>
 <%foreach(includes)%>
   <property category="win32.Debug_Build.win32b.bcc32" name="option.I.arg.2" value="<%include%>"/>
 <%endfor%>
