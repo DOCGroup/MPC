@@ -70,12 +70,12 @@ my(%validNames) = ('exename'         => 1,
 ## 4    Needs <%...%> conversion
 my(%customDefined) = ('automatic'                   => 0x04,
                       'dependent'                   => 0x04,
-                      'command'                     => 0x04,
-                      'commandflags'                => 0x04,
+                      'command'                     => 0x14,
+                      'commandflags'                => 0x14,
                       'postcommand'                 => 0x14,
                       'inputext'                    => 0x01,
                       'libpath'                     => 0x04,
-                      'output_option'               => 0x04,
+                      'output_option'               => 0x14,
                       'pch_postrule'                => 0x04,
                       'pre_extension'               => 0x08,
                       'source_pre_extension'        => 0x08,
@@ -196,6 +196,7 @@ sub new {
   $self->{'dollar_special'}        = $self->dollar_special();
   $self->{'generate_ins'}          = $genins;
   $self->{'addtemp_state'}         = undef;
+  $self->{'command_subs'}          = $self->get_command_subs();
 
   $self->add_default_matching_assignments();
   $self->reset_generating_types();
@@ -786,10 +787,17 @@ sub parse_components {
     }
     elsif ($line =~ /^(\w+)\s*{$/) {
       if (!defined $current || !$set) {
-        if (defined $current && !defined $$comps{$current}->[0]) {
-          ## The default components name was never used
-          ## so we remove it from the components
-          delete $$comps{$current};
+        if (defined $current) {
+          if (!defined $$comps{$current}->[0]) {
+            ## The default components name was never used
+            ## so we remove it from the components
+            delete $$comps{$current};
+          }
+          else {
+            ## It was used, so we need to add that name to
+            ## the set of group names
+            $self->process_assignment_add($grtag, $current);
+          }
         }
         $current = $1;
         $set = 1;
@@ -1567,31 +1575,46 @@ sub add_generated_files {
   my($gentype) = shift;
   my($tag)     = shift;
   my($arr)     = shift;
-  my($names)   = $self->{$tag};
   my($wanted)  = $self->{'valid_components'}->{$gentype}->[0];
 
   ## Remove the escape sequences for the wanted extension
   $wanted =~ s/\\//g;
 
-  foreach my $name (keys %$names) {
-    my($comps) = $$names{$name};
-    foreach my $key (keys %$comps) {
-      my(@added) = ();
-      my($array) = $$comps{$key};
-      foreach my $file (@$arr) {
-        foreach my $gen ($self->generated_filenames($file, $gentype, $tag,
-                                                    "$file$wanted", 0, 1)) {
-          $self->list_generated_file($gentype, $tag, \@added, $gen, $file);
-        }
+  ## Get the generated filenames
+  my(@added) = ();
+  foreach my $file (@$arr) {
+    foreach my $gen ($self->generated_filenames($file, $gentype, $tag,
+                                                "$file$wanted", 0, 1)) {
+      $self->list_generated_file($gentype, $tag, \@added, $gen, $file);
+    }
+  }
+
+  if ($#added >= 0) {
+    my($names) = $self->{$tag};
+
+    ## Get all files in one list
+    my(@all) = ();
+    foreach my $name (keys %$names) {
+      foreach my $key (keys %{$$names{$name}}) {
+        push(@all, @{$$names{$name}->{$key}});
       }
-      if ($#added >= 0) {
+    }
+
+    ## TBD: Add the generated files to the "right" group
+    my($defelem) = get_default_element_name();
+    foreach my $name (keys %$names) {
+      foreach my $key (sort { return ($a eq $defelem ? -1 :
+                                      $b eq $defelem ? 1  :
+                                      $a cmp $b);
+                            } keys %{$$names{$name}}) {
         my(@oktoadd) = ();
         foreach my $file (@added) {
-          if (!$self->already_added($array, $file)) {
+          if (!$self->already_added(\@all, $file)) {
             push(@oktoadd, $file);
           }
         }
-        unshift(@$array, @oktoadd);
+        unshift(@{$$names{$name}->{$key}}, @oktoadd);
+        last;
       }
     }
   }
@@ -2446,16 +2469,9 @@ sub get_grouped_value {
 }
 
 
-sub convert_postcommand_parameters {
-  my($self)   = shift;
-  my($str)    = shift;
-  my($input)  = shift;
-  my($output) = shift;
-  my(%nowarn) = ();
-  my(%valid)  = ('input'     => $input,
-                 'output'    => $output,
-                 'temporary' => 'temp.$$$$.' . int(rand(0xffffffff)),
-                );
+sub get_command_subs {
+  my($self)  = shift;
+  my(%valid) = ();
 
   ## Add the built-in OS compatibility commands
   if ($self->{'convert_slashes'}) {
@@ -2463,13 +2479,38 @@ sub convert_postcommand_parameters {
     $valid{'cp'}  = 'copy /y';
     $valid{'mv'}  = 'move /y';
     $valid{'rm'}  = 'del /f/s/q';
+    $valid{'nul'} = 'nul';
   }
   else {
     $valid{'cat'} = 'cat';
     $valid{'cp'}  = 'cp -f';
     $valid{'mv'}  = 'mv -f';
     $valid{'rm'}  = 'rm -rf';
+    $valid{'nul'} = '/dev/null';
   }
+
+  ## Add the project specific compatibility commands
+  $valid{'gt'}  = $self->get_gt_symbol();
+  $valid{'lt'}  = $self->get_lt_symbol();
+  $valid{'and'} = $self->get_and_symbol();
+  $valid{'or'}  = $self->get_or_symbol();
+
+  return \%valid;
+}
+
+
+sub convert_command_parameters {
+  my($self)   = shift;
+  my($str)    = shift;
+  my($input)  = shift;
+  my($output) = shift;
+  my(%nowarn) = ();
+  my(%valid)  = %{$self->{'command_subs'}};
+
+  ## Add in the values that change for every call to this function
+  $valid{'input'}     = $input;
+  $valid{'output'}    = $output;
+  $valid{'temporary'} = 'temp.$$$$.' . int(rand(0xffffffff));
 
   ## Add in the specific types of output files
   if (defined $output) {
@@ -2627,7 +2668,7 @@ sub get_custom_value {
     $value = $self->get_assignment($cmd,
                                    $self->{'generated_exts'}->{$based});
     if (defined $value && ($customDefined{$cmd} & 0x10) != 0) {
-      $value = $self->convert_postcommand_parameters($value, @params);
+      $value = $self->convert_command_parameters($value, @params);
     }
   }
   elsif (defined $custom{$cmd}) {
@@ -3345,7 +3386,7 @@ sub generate_recursive_input_list {
 
 sub get_default_element_name {
   #my($self) = shift;
-  return 'FILES';
+  return '_default_group_';
 }
 
 
@@ -3389,10 +3430,35 @@ sub dependency_combined_static_library {
 # Virtual Methods To Be Overridden
 # ************************************************************
 
+sub get_gt_symbol {
+  #my($self) = shift;
+  return '>';
+}
+
+
+sub get_lt_symbol {
+  #my($self) = shift;
+  return '<';
+}
+
+
+sub get_and_symbol {
+  #my($self) = shift;
+  return '&&';
+}
+
+
+sub get_or_symbol {
+  #my($self) = shift;
+  return '||';
+}
+
+
 sub convert_macros_to_env {
   #my($self) = shift;
   return 0;
 }
+
 
 sub dollar_special {
   #my($self) = shift;
