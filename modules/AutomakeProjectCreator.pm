@@ -2,7 +2,7 @@ package AutomakeProjectCreator;
 
 # ************************************************************
 # Description   : A Automake Project Creator
-# Author        : Chad Elliott
+# Author        : J.T. Conklin & Chad Elliott
 # Create Date   : 2/26/2003
 # ************************************************************
 
