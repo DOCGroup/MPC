@@ -1,3 +1,11 @@
+Mon Sep 27 19:13:31 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+
+	  Changed to omit executable/library building rules if exename,
+	  sharedname, or staticname is not defined.  This is useful for
+	  projects that only contain scripts, manpages, IDL files, etc.
+
 Mon Sep 27 19:02:51 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
