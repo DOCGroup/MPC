@@ -170,8 +170,8 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 
 <%endif%>
 <%if(install_headers)%><%project_name%>_include<%else%>noinst<%endif%>_HEADERS = \
-<%foreach(header_files inline_files template_files idl_files pidl_files)%>
-  <%header_file%><%fornotlast(" \\")%>
+<%foreach(header, sort(header_files inline_files template_files idl_files pidl_files))%>
+  <%header%><%fornotlast(" \\")%>
 <%endfor%>
 <%endif%>
 <%endif%>
