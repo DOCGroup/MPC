@@ -1,3 +1,9 @@
+Wed Mar 16 10:42:45 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+
+	  Use += instead of = for _MANS, _SCRIPTS, and _HEADERS.
+
 Fri Mar 11 07:56:49 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/nmakeexe.mpt:
