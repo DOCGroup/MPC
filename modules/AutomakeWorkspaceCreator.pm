@@ -271,9 +271,12 @@ sub write_comps {
 
           ## This scheme relies on automake.mpd emitting the 'la' libs first.
           if ($look_for_libs) {
-            if ( /^\s+(lib(\w+).la)/ ) {
-              my $libfile = $1;
-              my $libname = $2;
+            my @libs = /\s+(lib(\w+).la)/gm;
+            my $libcount = @libs / 2;
+            my $i = 0;
+            while ($i < $libcount) {
+              my $libfile = (@libs)[$i*2];
+              my $libname = (@libs)[$i*2+1];
               my $reldir = $$liblocs{$libname};
               if ($reldir) {
                 s/$libfile/\$(top_builddir)\/$reldir\/$libfile/;
@@ -281,8 +284,9 @@ sub write_comps {
               else {
                 $self->warning("No reldir found for $libname ($libfile).");
               }
+              $i++;
             }
-            else {
+            if ($libcount == 0) {
               $look_for_libs = 0;
             }
           }
