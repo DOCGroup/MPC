@@ -20,8 +20,20 @@ use vars qw(@ISA);
 @ISA = qw(WorkspaceCreator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my(@targets) = ('clean', 'realclean', '$(CUSTOM_TARGETS)');
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
+
+
+sub crlf {
+  my($self) = shift;
+  return $self->windows_crlf();
+}
 
 
 sub workspace_file_name {
@@ -104,6 +116,11 @@ sub write_comps {
   my(@list)     = $self->number_target_deps($projects, $pjs, \%targnum);
   my($crlf)     = $self->crlf();
 
+  ## Set up the custom targets
+  print $fh '!ifndef CUSTOM_TARGETS', $crlf,
+            'CUSTOM_TARGETS=_EMPTY_TARGET_', $crlf,
+            '!endif', $crlf;
+
   ## Print out the "all" target
   print $fh $crlf . 'all:';
   foreach my $project (@list) {
@@ -112,7 +129,7 @@ sub write_comps {
   print $fh $crlf;
 
   ## Print out all other targets here
-  foreach my $target ('clean', 'realclean') {
+  foreach my $target (@targets) {
     print $fh $crlf .
               $target . ':' . $crlf;
     $self->write_project_targets($fh, $target, \@list);
