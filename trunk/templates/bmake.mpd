@@ -215,8 +215,7 @@ $(OUTPUTDIR)$(NAME)$(DLL_EXT): $(OBJFILES) $(RESOURCE)
 !
 
 <%endif%>
-<%if(type_is_static)%>
-<%if(staticname)%>
+<%if(type_is_static && staticname)%>
 OUTPUTDIR = <%libout%>\\
 all: $(OUTPUTDIR)$(NAME)$(LIB_EXT)
 
@@ -227,7 +226,6 @@ $(OUTPUTDIR)$(NAME)$(LIB_EXT): $(OBJFILES)
 + )
 !
 
-<%endif%>
 <%endif%>
 <%if(!exename && !sharedname && !staticname)%>
 all:
@@ -287,6 +285,8 @@ realclean: clean
 	if exist "$(OUTPUTDIR)$(NAME)$(LIB_EXT)" del $(OUTPUTDIR)$(NAME)$(LIB_EXT)
 <%endif%>
 <%endif%>
+<%if(exename || sharedname || staticname)%>
         if exist "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" del $(OUTPUTDIR)$(NAME)$(POSTLINKRM)
+<%endif%>
 
 <%marker(bottom)%>

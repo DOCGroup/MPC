@@ -3,7 +3,7 @@
 # ** DO NOT EDIT **
 
 <%foreach(platforms)%>
-# TARGTYPE "<%operating_system("Win32")%> (<%platform%>) <%type_description("Dynamic-Link Library")%>" <%type_code%>
+# TARGTYPE "<%operating_system("Win32")%> (<%platform%>) <%if(exename || sharedname || staticname)%><%type_description%>" <%type_code%><%else%>Generic Project" 0x010a<%endif%>
 <%endfor%>
 
 CFG=<%project_name%> - <%operating_system("Win32")%> (<%default_platform%>) <%default_configuration%>
@@ -22,7 +22,7 @@ CFG=<%project_name%> - <%operating_system("Win32")%> (<%default_platform%>) <%de
 !MESSAGE
 <%foreach(platforms)%>
 <%foreach(configurations)%>
-!MESSAGE "<%project_name%> - <%operating_system%> (<%platform%>) <%configuration%>" (based on "<%operating_system%> (<%platform%>) <%type_description%>")
+!MESSAGE "<%project_name%> - <%operating_system%> (<%platform%>) <%configuration%>" (based on "<%operating_system%> (<%platform%>) <%if(exename || sharedname || staticname)%><%type_description%><%else%>Generic Project<%endif%>")
 <%endfor%>
 <%endfor%>
 !MESSAGE

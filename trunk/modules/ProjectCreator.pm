@@ -43,6 +43,7 @@ my(%validNames) = ('exename'         => 1,
                    'install'         => 1,
                    'includes'        => 1,
                    'after'           => 1,
+                   'custom_only'     => 1,
                    'libs'            => 0,
                    'lit_libs'        => 0,
                    'pure_libs'       => 0,
@@ -189,6 +190,13 @@ my(%vbma) = ('source_files' => [ 'subtype' ],
 # Language Specific Component Settings
 # ************************************************************
 
+# Index Description
+# ----- -----------
+# 0     File types
+# 1     Files automatically excluded from source_files
+# 2     Assignments available in standard file types
+# 3     The entry point for executables
+# 4     The language uses a preprocessor
 my(%language) = ('cplusplus' => [ \%cppvc, \%cppec, {}    , 'main', 1 ],
                  'csharp'    => [ \%csvc,  {},      \%csma, 'Main', 0 ],
                  'java'      => [ \%jvc,   {},      {}    , 'Main', 0 ],
@@ -3457,6 +3465,10 @@ sub write_project {
   if ($self->check_features($self->get_assignment('requires'),
                             $self->get_assignment('avoids'),
                             1)) {
+    if ($self->get_assignment('custom_only')) {
+      $self->remove_non_custom_settings();
+    }
+
     if ($self->need_to_write_project()) {
       ($status, $error) = $self->write_output_file(
                                    $self->transform_file_name(
@@ -3560,6 +3572,7 @@ sub reset_generating_types {
   my($self)  = shift;
   my($lang)  = $self->get_language();
   my(%reset) = ('valid_components'     => $language{$lang}->[0],
+                'custom_only_removed'  => $language{$lang}->[0],
                 'exclude_components'   => $language{$lang}->[1],
                 'matching_assignments' => $language{$lang}->[2],
                 'generated_exts'       => {},
@@ -3947,6 +3960,22 @@ sub project_file_name {
   return $self->get_modified_project_file_name(
                                      $name,
                                      $self->project_file_extension());
+}
+
+
+sub remove_non_custom_settings {
+  my($self) = shift;
+
+  ## Remove any files that may have automatically been added
+  ## to this project
+  foreach my $key (keys %{$self->{'custom_only_removed'}}) {
+    $self->{$key} = {};
+  }
+
+  ## Unset the exename, sharedname and staticname
+  $self->process_assignment('exename',    undef);
+  $self->process_assignment('sharedname', undef);
+  $self->process_assignment('staticname', undef);
 }
 
 # ************************************************************

@@ -85,7 +85,11 @@ DEPEND :
 	@echo cvs -d :pserver:anonymous@anoncvs.ociweb.com:/cvs co Depgen
 	@echo Then set the DEPGEN_ROOT environment variable to the full path of Depgen.
 !ELSE
+<%if(source_files || pch_source)%>
 	$(DEPGEN)<%foreach(includes)%> -I"<%include%>"<%endfor%><%foreach(defines cpu_defines common_defines macros)%> -D<%define%><%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%> -D<%staticflag%><%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%> -f "<%noextension(project_file)%>.dep"<%foreach(source_files)%> <%source_file%><%endfor%><%if(pch_source)%> <%pch_source%><%endif%>
+<%else%>
+	-@rem
+<%endif%>
 !ENDIF
 
 REALCLEAN : CLEAN
