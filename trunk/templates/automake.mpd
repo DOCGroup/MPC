@@ -13,16 +13,20 @@ BUILT_SOURCES += \
 
 CLEANFILES += \
 <%foreach(custom_type->input_file->output_files)%>
-  <%custom_type->input_file->output_file%><%fornotlast(" \\")%>
+  <%custom_type->input_file->output_file%> \
 <%endfor%>
+  <%basenoextension(custom_type->input_file)%>-stamp
 
-<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%custom_type->input_file%>
+<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%basenoextension(custom_type->input_file)%>-stamp
+
+<%basenoextension(custom_type->input_file)%>-stamp: $(srcdir)/<%custom_type->input_file%>
 	<%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(srcdir)/<%custom_type->input_file%><%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%>
 <%if(custom_type->postcommand)%>
 <%foreach(custom_type->input_file->output_files)%>
 	<%custom_type->postcommand()%>
 <%endfor%>
 <%endif%>
+	@touch $@
 
 <%endif%>
 <%endfor%>
