@@ -58,6 +58,8 @@ sub pre_workspace {
 sub write_comps {
   my($self)          = shift;
   my($fh)            = shift;
+  my($creator)       = shift;
+  my($toplevel)      = shift;
   my($projects)      = $self->get_projects();
   my(@list)          = $self->sort_dependencies($projects);
   my($crlf)          = $self->crlf();
@@ -71,7 +73,7 @@ sub write_comps {
   ## the tree. configure.ac can include this to get an up-to-date list
   ## of all the involved Makefiles.
   my($mfh);
-  if ($self->getstartdir() eq $self->getcwd()) {
+  if ($toplevel) {
     unlink('configure.ac.Makefiles');
     $mfh = new FileHandle();
     open($mfh, '>configure.ac.Makefiles');

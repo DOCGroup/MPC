@@ -1,3 +1,24 @@
+Thu Jul 15 14:02:04 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Cleaned up the code a bit.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Used a parameter passed into write_comps to determine if we are
+          writing the top level workspace.
+
+        * modules/ProjectCreator.pm:
+
+          Ignore project names that are set in a base project.  It doesn't
+          make sense and I can't think of a practical use of this.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where an excluded name could be partially matched and
+          possibly exclude something that wasn't meant to be.
+
 Thu Jul  8 14:09:49 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:

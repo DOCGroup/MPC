@@ -372,7 +372,7 @@ sub excluded {
   my($file) = shift;
 
   foreach my $excluded (@{$self->{'exclude'}->{$self->{'wctype'}}}) {
-    if ($excluded eq $file || $file =~ /$excluded\//) {
+    if ($excluded eq $file || $file =~ /^$excluded\//) {
       return 1;
     }
   }
@@ -725,7 +725,7 @@ sub write_workspace {
           my($different) = 1;
           if (open($fh, ">$tmp")) {
             $self->pre_workspace($fh);
-            $self->write_comps($fh, $creator);
+            $self->write_comps($fh, $creator, $addfile);
             $self->post_workspace($fh);
             close($fh);
 
@@ -765,7 +765,7 @@ sub write_workspace {
         else {
           if (open($fh, ">$name")) {
             $self->pre_workspace($fh);
-            $self->write_comps($fh, $creator);
+            $self->write_comps($fh, $creator, $addfile);
             $self->post_workspace($fh);
             close($fh);
 
@@ -1788,6 +1788,7 @@ sub write_comps {
   #my($self) = shift;
   #my($fh)   = shift;
   #my($gens) = shift;
+  #my($top)  = shift;
 }
 
 
