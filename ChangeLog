@@ -13,6 +13,10 @@ Fri Oct 22 08:55:56 2004  Chad Elliott  <elliott_c@ociweb.com>
 
           Utilize the new "else" clause.
 
+        * config/xerces.mpb:
+
+          Added a base project for xerces.
+
 Mon Oct 18 18:03:28 2004  Steve Huston  <shuston@riverace.com>
 
         * modules/AutomakeWorkspaceCreator.pm: When collecting the list of
