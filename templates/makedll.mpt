@@ -25,6 +25,7 @@ soext          = so
 exeext         =
 cppflags       =
 arflags        =
+pchsupport     = 1
 
 // ***********************************************************************
 // Configuration Section
@@ -36,6 +37,8 @@ cxx {
   tempincopt = "-ptr "
   tempinc    = cxx_repository
   platforms  = tru64
+  pchcreate  = "-nopch_messages -create_pch "
+  pchuse     = "-nopch_messages -use_pch "
 }
 
 gcc {
@@ -57,11 +60,15 @@ aCC {
   pic           = +Z
   platforms     = hpux
   compilerflags = -AA -D_RWSTD_MULTI_THREAD
+  pchcreate     = "+hdr_create "
+  pchuse        = "+hdr_use "
 }
 
 xlC_r {
   cxx       = xlC_r
   platforms = aix
+  pchcreate = -qgenpcomp=
+  pchuse    = -qusepcomp=
 }
 
 SGICC {
@@ -70,6 +77,8 @@ SGICC {
   linkflags = -Wl,-woff,84
   clean     = ii_files
   platforms = irix
+  pchcreate = -LANG:create_pch=
+  pchuse    = -LANG:use_pch=
 }
 
 wrsppc {

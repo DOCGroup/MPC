@@ -1,0 +1,12 @@
+// $Id$
+project {
+  Define_Custom(LEX) {
+    automatic        = 1
+    command          = lex
+    commandflags     = -t
+    output_option    = >
+    pch_postrule     = 1
+    inputext         = .l
+    source_outputext = .c
+  }
+}
