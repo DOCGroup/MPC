@@ -73,6 +73,7 @@ my(%customDefined) = ('automatic'                   => 0x04,
                       'dependent'                   => 0x14,
                       'command'                     => 0x14,
                       'commandflags'                => 0x14,
+                      'precommand'                  => 0x14,
                       'postcommand'                 => 0x14,
                       'inputext'                    => 0x01,
                       'libpath'                     => 0x04,
@@ -109,6 +110,7 @@ my(%custom) = ('command'       => 1,
                'commandflags'  => 1,
                'dependent'     => 1,
                'gendir'        => 0,
+               'precommand'    => 1,
                'postcommand'   => 1,
               );
 
@@ -2996,18 +2998,20 @@ sub get_command_subs {
 
   ## Add the built-in OS compatibility commands
   if ($self->{'convert_slashes'}) {
-    $valid{'cat'} = 'type';
-    $valid{'cp'}  = 'copy /y';
-    $valid{'mv'}  = 'move /y';
-    $valid{'rm'}  = 'del /f/s/q';
-    $valid{'nul'} = 'nul';
+    $valid{'cat'}   = 'type';
+    $valid{'cp'}    = 'copy /y';
+    $valid{'mkdir'} = 'mkdir';
+    $valid{'mv'}    = 'move /y';
+    $valid{'rm'}    = 'del /f/s/q';
+    $valid{'nul'}   = 'nul';
   }
   else {
-    $valid{'cat'} = 'cat';
-    $valid{'cp'}  = 'cp -f';
-    $valid{'mv'}  = 'mv -f';
-    $valid{'rm'}  = 'rm -rf';
-    $valid{'nul'} = '/dev/null';
+    $valid{'cat'}   = 'cat';
+    $valid{'cp'}    = 'cp -f';
+    $valid{'mkdir'} = 'mkdir -p';
+    $valid{'mv'}    = 'mv -f';
+    $valid{'rm'}    = 'rm -rf';
+    $valid{'nul'}   = '/dev/null';
   }
 
   ## Add the project specific compatibility commands
@@ -3035,15 +3039,17 @@ sub convert_command_parameters {
   $valid{'temporary'} = 'temp.$$$$.' . int(rand(0xffffffff));
 
   if (defined $input) {
-    $valid{'input_noext'} = $input;
-    $valid{'input_noext'} =~ s/(\.[^\.]+)$//;
-    $valid{'input_ext'}   = $1;
+    $valid{'input_basename'} = basename($input);
+    $valid{'input_noext'}    = $input;
+    $valid{'input_noext'}    =~ s/(\.[^\.]+)$//;
+    $valid{'input_ext'}      = $1;
   }
 
   if (defined $output) {
-    $valid{'output_noext'} = $output;
-    $valid{'output_noext'} =~ s/(\.[^\.]+)$//;
-    $valid{'output_ext'}   = $1;
+    $valid{'output_basename'} = basename($output);
+    $valid{'output_noext'}    = $output;
+    $valid{'output_noext'}    =~ s/(\.[^\.]+)$//;
+    $valid{'output_ext'}      = $1;
   }
 
   ## Add in the specific types of output files
@@ -3082,8 +3088,7 @@ sub convert_command_parameters {
             $replace =~ s/\.[^\.]+$//;
           }
           else {
-            $self->warning("Uknown postcommand " .
-                           "parameter modifier $modifier.");
+            $self->warning("Uknown parameter modifier $modifier.");
           }
         }
         $str =~ s/<%\w+(\(\w+\))?%>/$replace/;
@@ -3097,12 +3102,12 @@ sub convert_command_parameters {
 
       ## We only want to warn the user that we did not recognize the
       ## pseudo template parameter if there was an input and an output
-      ## file passed to this function.  If the 'postcommand' was used
+      ## file passed to this function.  If this variable was used
       ## without the parenthesis (as in an if statement), then we don't
       ## want to warn the user.
       if (defined $input && defined $output) {
         if (!defined $nowarn{$name}) {
-          $self->warning("<%$name%> was not recognized in the postcommand.");
+          $self->warning("<%$name%> was not recognized.");
         }
 
         ## If we didn't recognize the pseudo template parameter then
