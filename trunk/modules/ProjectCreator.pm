@@ -71,7 +71,7 @@ my(%customDefined) = ('automatic'               => 1,
                       'inputext'                => -1,
                       'libpath'                 => 1,
                       'output_option'           => 1,
-                      'pch_option'              => 1,
+                      'pch_postrule'            => 1,
                       'pre_extension'           => 0,
                       'pre_filename'            => 0,
                       'source_outputext'        => 0,
@@ -2121,6 +2121,38 @@ sub get_custom_value {
     # Generate output files based on $based
     if (defined $self->{'custom_output_files'}) {
       $value = $self->{'custom_output_files'}->{$based};
+    }
+  }
+  elsif ($cmd eq 'source_output_files') {
+    # Generate source output files based on $based
+    if (defined $self->{'custom_output_files'}) {
+      $value = [];
+      foreach my $file (@{$self->{'custom_output_files'}->{$based}}) {
+        foreach my $ext (@{$self->{'valid_components'}->{'source_files'}}) {
+          if ($file =~ /$ext$/) {
+            push(@$value, $file);
+            last;
+          }
+        }
+      }
+    }
+  }
+  elsif ($cmd eq 'non_source_output_files') {
+    # Generate non source output files based on $based
+    if (defined $self->{'custom_output_files'}) {
+      $value = [];
+      foreach my $file (@{$self->{'custom_output_files'}->{$based}}) {
+        my($source) = 0;
+        foreach my $ext (@{$self->{'valid_components'}->{'source_files'}}) {
+          if ($file =~ /$ext$/) {
+            $source = 1;
+            last;
+          }
+        }
+        if (!$source) {
+          push(@$value, $file);
+        }
+      }
     }
   }
   elsif ($cmd eq 'inputexts') {
