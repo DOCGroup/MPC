@@ -78,7 +78,7 @@ LIBFILES = \
 <%endfor%>
            <%common_libs%>
 
-<%if(resource_files)%>
+<%if(resource_files && !type_is_static)%>
 
 RESOURCE = \
 <%foreach(resource_files)%>
@@ -222,7 +222,7 @@ $(OUTPUTDIR)$(NAME)$(LIB_EXT): $(OBJFILES)
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
 	$(CC) $(OCFLAGS) $(THREADFLAGS) $(CFLAGS) -c -n$(@D) $<
 
-<%if(resource_files)%>
+<%if(resource_files && !type_is_static)%>
 .path.res = $(INTERMEDIATE)
 
 .path.rc = <%rcdir%>

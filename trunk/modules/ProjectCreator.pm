@@ -3264,14 +3264,14 @@ sub get_dll_exe_template_input_file {
 
 
 sub get_lib_exe_template_input_file {
-  #my($self) = shift;
-  return undef;
+  my($self) = shift;
+  return $self->get_dll_exe_template_input_file();
 }
 
 
 sub get_lib_template_input_file {
-  #my($self) = shift;
-  return undef;
+  my($self) = shift;
+  return $self->get_dll_template_input_file();
 }
 
 
