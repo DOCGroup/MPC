@@ -5,8 +5,9 @@ conditional_include "common"
 
 configurations        = Debug Release
 compilers             = bcc
-common_defines        = WIN32 _WINDOWS
+common_defines        = WIN32 _WINDOWS _NO_VCL
 common_libs           = import32$(LIB_EXT) cw32mt.lib ws2_32.lib
+common_flags          = -a8
 
 bcc {
   obj_ext = .obj
@@ -18,22 +19,26 @@ bcc {
   tlib    = tlib
   link    = ilink32
   thflags = -D_MT -tWM
-  dllflags = -Tpd -Gi -x -Gn
+  dllflags = -Tpd -Gi -x -Gn -w-dup
   libflags = /C
+  ccflags  = -q
   exeflags = -Tpe -x -Gn
+  warnflags = -w-rvl -w-rch -w-ccc -w-obs -w-aus -w-pia -w-inl
 }
 
 cbx {
-  obj_ext = .o
-  dll_ext = .dll
-  lib_ext = .a
-  exe_ext = .exe
-  cc      = bccx
-  rc      = brcc32
-  tlib    = ar
-  link    = ilink
-  thflags = -D_MT -tWM
-  dllflags = -Tpd -Gi -x -Gn
-  libflags = cfrv
-  exeflags = -Tpe -x -Gn
+  obj_ext   = .o
+  dll_ext   = .dll
+  lib_ext   = .a
+  exe_ext   = .exe
+  cc        = bccx
+  rc        = brcc32
+  tlib      = ar
+  link      = ilink
+  thflags   = -D_MT -tWM
+  dllflags  = -Tpd -Gi -x -Gn -w-dup
+  libflags  = cfrv
+  ccflags   = -b
+  exeflags  = -Tpe -x -Gn
+  warnflags = -w-rvl -w-rch -w-ccc -w-obs -w-aus -w-pia -w-inl
 }
