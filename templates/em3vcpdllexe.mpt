@@ -52,7 +52,7 @@ WCE ARMV4 {
 Release {
   use_debug_libraries   = 0
   optimize              = 1
-  compile_flags         = /W3
+  compile_flags         = /W3 /GR
   defines               = NDEBUG
   compile_flags_removed = /YX
   output_dir            = Release
@@ -62,7 +62,7 @@ Release {
 Debug {
   use_debug_libraries   = 1
   optimize              =
-  compile_flags         = /W3 /Zi
+  compile_flags         = /W3 /Gm /Zi /GR /Gy
   defines               = _DEBUG
   compile_flags_removed = /YX
   output_dir            = .
@@ -73,7 +73,7 @@ Debug {
 MFC Release {
   use_debug_libraries   = 0
   optimize              = 1
-  compile_flags         = /W3
+  compile_flags         = /W3 /GR
   defines               = NDEBUG _AFXDLL
   compile_flags_removed = /YX
   output_dir            = MFC_Release
@@ -85,7 +85,7 @@ MFC Release {
 MFC Debug {
   use_debug_libraries   = 1
   optimize              =
-  compile_flags         = /W3 /Zi
+  compile_flags         = /W3 /Gm /Zi /GR /Gy
   defines               = _DEBUG _AFXDLL
   compile_flags_removed = /YX
   output_dir            = MFC_Debug
