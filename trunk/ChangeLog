@@ -1,3 +1,11 @@
+Thu Jan 20 07:13:43 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+        * templates/automake.mpd:
+
+	  Changed to append <%pkgconfig_files%> to EXTRA_FILES.
+
+	  Changed to append to pkgconfigdata_DATA.
+
 Wed Jan 19 11:20:42 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * USAGE:
