@@ -4,10 +4,10 @@
 <%marker(top)%>
 <%if(requires || avoids)%>
 
-<%foreach(requires)%>
+<%foreach(uniq(requires))%>
 if BUILD_<%uc(require)%>
 <%endfor%>
-<%foreach(avoids)%>
+<%foreach(uniq(avoids))%>
 if !BUILD_<%uc(avoid)%>
 <%endfor%>
 <%endif%>
@@ -31,14 +31,20 @@ BUILT_SOURCES += \
 <%endfor%>
 
 CLEANFILES += \
+<%if(multiple(custom_type->input_file->output_files))%>
+  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%endif%><%basenoextension(custom_type->input_file)%>-stamp \
+<%endif%>
 <%foreach(custom_type->input_file->output_files)%>
-  <%custom_type->input_file->output_file%> \
+  <%custom_type->input_file->output_file%><%fornotlast(" \\")%>
 <%endfor%>
-  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%endif%><%basenoextension(custom_type->input_file)%>-stamp
 
+<%if(multiple(custom_type->input_file->output_files))%>
 <%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%endif%><%basenoextension(custom_type->input_file)%>-stamp
 
 <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%endif%><%basenoextension(custom_type->input_file)%>-stamp: $(srcdir)/<%custom_type->input_file%>
+<%else%>
+<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: $(srcdir)/<%custom_type->input_file%>
+<%endif%>
 <%if(flag_overrides(custom_type->input_file, gendir))%>
 	mkdir -p <%flag_overrides(custom_type->input_file, gendir)%>
 <%endif%>
@@ -177,23 +183,20 @@ pkgconfigdata_DATA += <%basenoextension(pkgconfig_file)%>
         ${top_srcdir}/config.status --file $@:${srcdir}/<%pkgconfig_file%>
 <%endfor%>
 <%endif%>
-<%if(rev_avoids || rev_requires)%>
+<%if(avoids || requires)%>
 
-<%foreach(rev_avoids)%>
-endif !BUILD_<%uc(rev_avoid)%>
+<%foreach(reverse(uniq(avoids)))%>
+endif !BUILD_<%uc(avoid)%>
 <%endfor%>
-<%foreach(rev_requires)%>
-endif BUILD_<%uc(rev_require)%>
+<%foreach(reverse(uniq(requires)))%>
+endif BUILD_<%uc(require)%>
 <%endfor%>
 <%endif%>
 <%if(pkgconfig_files || resource_files)%>
 
 EXTRA_DIST += \
-<%foreach(pkgconfig_files)%>
-  <%pkgconfig_file%><%if(resource_files)%> \<%else%><fornotlast(" \\)%><%endif%>
-<%endfor%>
-<%foreach(resource_files)%>
-  <%resource_file%><%fornotlast(" \\")%>
+<%foreach(extra_dist, sort(pkgconfig_files resource_files))%>
+  <%extra_dist%><%fornotlast(" \\")%>
 <%endfor%>
 
 <%endif%>
