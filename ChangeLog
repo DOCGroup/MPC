@@ -1,3 +1,13 @@
+Thu Sep 16 09:32:09 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/ProjectCreator.pm:
+
+          If an asterisk is used in the exename, sharedname or staticname
+          setting, then it (the asterisk) will be replaced with the project
+          name.  Thanks to Martin Corino <mcorino@remedy.nl> for suggesting
+          this.
+
 Thu Sep 16 07:45:11 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/BMakeWorkspaceCreator.pm:
