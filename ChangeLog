@@ -1,3 +1,13 @@
+Tue Mar  8 07:21:11 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/VC6ProjectCreator.pm:
+
+          vc6 and em3 do not deal with $(...) correctly when compiling
+          source into an alternate intermediate directory (it doesn't expand
+          $(...) inside the /Fo option).
+
 Mon Mar  7 10:01:34 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
