@@ -12,7 +12,7 @@ projects for each one found.
 Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-ti <dll | lib | dll_exe | lib_exe>:<file>] [-hierarchy]
               [-template <file>] [-relative NAME=VAR] [-base <project>]
-              [-noreldefs] [-notoplevel] [-static] [-genins]
+              [-noreldefs] [-notoplevel] [-static] [-genins] [-expand_env]
               [-value_template <NAME+=VAL | NAME=VAL | NAME-=VAL>]
               [-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]
               [-feature_file <file name>] [-make_coexistence]
@@ -30,6 +30,8 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        .mpc extension will be tried.
        -exclude        Use this option to exclude directories when searching
                        for input files.
+       -expand_env     Expand all uses of $() to the value set in the
+                       environment.
        -feature_file   Specifies the feature file to read before processing.
                        The default feature file is default.features under the
                        config directory.

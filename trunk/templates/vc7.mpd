@@ -15,7 +15,7 @@
 		<Configuration
 			Name="<%configuration%>|<%platform%>"
 			OutputDirectory="<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%else%><%if(type_is_static)%><%libout%><%else%><%if(install)%><%install%><%else%><%output_dir%><%endif%><%endif%><%endif%>"
-			IntermediateDirectory="<%intermediate_dir%>/<%noextension(project_file)%>"
+			IntermediateDirectory="<%intermediate_dir%>\<%noextension(project_file)%>"
 			ConfigurationType="<%configuration_type("2")%>"
 			UseOfMFC="<%use_mfc("0")%>"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
@@ -63,7 +63,7 @@
 <%if(type_is_static)%>
 				Name="VCLibrarianTool"
 <%if(staticname)%>
-				OutputFile="$(OutDir)/<%staticname%><%lib_modifier%>.lib"
+				OutputFile="$(OutDir)\<%staticname%><%lib_modifier%>.lib"
 <%endif%>
 <%else%>
 				Name="VCLinkerTool"
@@ -74,7 +74,7 @@
 				AdditionalDependencies="<%foreach(pure_libs)%><%pure_lib%> <%endfor%><%foreach(lit_libs)%><%lit_lib%>.lib <%endfor%><%foreach(libs)%><%lib%><%lib_modifier%>.lib<%fornotlast(" ")%><%endfor%>"
 <%endif%>
 <%if(exename || sharedname || staticname)%>
-				OutputFile="$(OutDir)/<%if(type_is_dynamic)%><%sharedname%><%lib_modifier%>.dll<%else%><%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.exe<%endif%>"
+				OutputFile="$(OutDir)\<%if(type_is_dynamic)%><%sharedname%><%lib_modifier%>.dll<%else%><%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.exe<%endif%>"
 <%endif%>
 				Version="<%version("1.0")%>"
 				LinkIncremental="<%LinkIncremental("1")%>"
@@ -82,10 +82,10 @@
 				AdditionalLibraryDirectories="<%foreach(libpaths)%><%libpath%><%fornotlast(";")%><%endfor%>"
 				GenerateDebugInformation="TRUE"
 <%if(type_is_dynamic)%>
-				ProgramDatabaseFile="$(OutDir)/<%sharedname%><%lib_modifier%>.pdb"
+				ProgramDatabaseFile="$(OutDir)\<%sharedname%><%lib_modifier%>.pdb"
 <%else%>
    <%if(type_is_binary)%>
-				ProgramDatabaseFile="$(OutDir)/<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.pdb"
+				ProgramDatabaseFile="$(OutDir)\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.pdb"
    <%endif%>
 <%endif%>
 				SubSystem="<%subsystem("1")%>"
@@ -94,7 +94,7 @@
 				EnableCOMDATFolding="<%opticf("2")%>"
 <%endif%>
 <%if(type_is_dynamic)%>
-				ImportLibrary="$(OutDir)/<%sharedname%><%lib_modifier%>.lib"
+				ImportLibrary="$(OutDir)\<%sharedname%><%lib_modifier%>.lib"
 <%endif%>
 <%endif%>
 				TargetMachine="<%machine("1")%>"/>

@@ -27,7 +27,7 @@ my(@statekeys) = ('global', 'include', 'template', 'ti',
                   'dynamic', 'static', 'relative', 'addtemp',
                   'addproj', 'progress', 'toplevel', 'baseprojs',
                   'feature_file', 'hierarchy', 'name_modifier',
-                  'apply_project', 'into',
+                  'apply_project', 'into', 'expand_env',
                  );
 
 my(%all_written) = ();
@@ -37,27 +37,28 @@ my(%all_written) = ();
 # ************************************************************
 
 sub new {
-  my($class)     = shift;
-  my($global)    = shift;
-  my($inc)       = shift;
-  my($template)  = shift;
-  my($ti)        = shift;
-  my($dynamic)   = shift;
-  my($static)    = shift;
-  my($relative)  = shift;
-  my($addtemp)   = shift;
-  my($addproj)   = shift;
-  my($progress)  = shift;
-  my($toplevel)  = shift;
-  my($baseprojs) = shift;
-  my($feature)   = shift;
-  my($hierarchy) = shift;
-  my($nmodifier) = shift;
-  my($applypj)   = shift;
-  my($into)      = shift;
-  my($language)  = shift;
-  my($type)      = shift;
-  my($self)      = Parser::new($class, $inc);
+  my($class)      = shift;
+  my($global)     = shift;
+  my($inc)        = shift;
+  my($template)   = shift;
+  my($ti)         = shift;
+  my($dynamic)    = shift;
+  my($static)     = shift;
+  my($relative)   = shift;
+  my($addtemp)    = shift;
+  my($addproj)    = shift;
+  my($progress)   = shift;
+  my($toplevel)   = shift;
+  my($baseprojs)  = shift;
+  my($feature)    = shift;
+  my($hierarchy)  = shift;
+  my($nmodifier)  = shift;
+  my($applypj)    = shift;
+  my($into)       = shift;
+  my($language)   = shift;
+  my($expand_env) = shift;
+  my($type)       = shift;
+  my($self)       = Parser::new($class, $inc);
 
   $self->{'relative'}        = $relative;
   $self->{'template'}        = $template;
@@ -85,6 +86,7 @@ sub new {
   $self->{'apply_project'}   = $applypj;
   $self->{'into'}            = $into;
   $self->{'language'}        = $language;
+  $self->{'expand_env'}      = $expand_env;
   $self->{'convert_slashes'} = $self->convert_slashes();
 
   return $self;
@@ -799,6 +801,12 @@ sub get_toplevel {
 sub get_into {
   my($self) = shift;
   return $self->{'into'};
+}
+
+
+sub get_expand_env {
+  my($self) = shift;
+  return $self->{'expand_env'};
 }
 
 
