@@ -78,13 +78,13 @@ sub read_file {
   $self->{'line_number'} = 0;
   if (open($ih, $input)) {
     if ($cache) {
+      ## If we don't have an array for this file, then start one
+      if (!defined $filecache{$input}) {
+        $filecache{$input} = [];
+      }
+
       while(<$ih>) {
         my($line) = $self->preprocess_line($ih, $_);
-
-        ## If we don't have an array for this file, then start one
-        if (!defined $filecache{$input}) {
-          $filecache{$input} = [];
-        }
 
         ## Push the line onto the array for this file
         push(@{$filecache{$input}}, $line);
