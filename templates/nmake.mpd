@@ -74,7 +74,7 @@ DEPEND :
 	@echo Then set the DEPGEN_ROOT environment variable to the full path of Depgen.
 !ELSE
 <%if(source_files || pch_source)%>
-	$(DEPGEN)<%foreach(includes)%> -I"<%include%>"<%endfor%><%foreach(defines cpu_defines common_defines macros)%> -D<%define%><%endfor%><%if(unicode)%> /D UNICODE /D _UNICODE<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%> -D<%staticflag%><%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%> -f "<%noextension(project_file)%>.dep"<%foreach(source_files)%> <%source_file%><%endfor%><%if(pch_source)%> <%pch_source%><%endif%>
+	$(DEPGEN)<%foreach(includes)%> -I"<%include%>"<%endfor%><%foreach(defines cpu_defines common_defines macros)%> -D<%define%><%endfor%><%if(unicode)%> /D UNICODE /D _UNICODE<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%> -D<%staticflag%><%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%> -f "<%noextension(project_file)%>.dep"<%foreach(source_files)%> "<%source_file%>"<%endfor%><%if(pch_source)%> "<%pch_source%>"<%endif%>
 <%else%>
 	-@rem
 <%endif%>
@@ -83,39 +83,39 @@ DEPEND :
 REALCLEAN : CLEAN
 <%if(pdbl)%>
 <%if(exename)%>
-	-@erase "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.pdb"
+	-@del /f/q "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.pdb"
 <%endif%>
 <%if(sharedname && type_is_dynamic)%>
-	-@erase "$(OUTDIR)\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
-        -@erase "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.dll"
-        -@erase "$(OUTDIR)\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.lib"
-        -@erase "$(OUTDIR)\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.exp"
-        -@erase "$(OUTDIR)\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.ilk"
+	-@del /f/q "$(OUTDIR)\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
+        -@del /f/q "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.dll"
+        -@del /f/q "$(OUTDIR)\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.lib"
+        -@del /f/q "$(OUTDIR)\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.exp"
+        -@del /f/q "$(OUTDIR)\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.ilk"
 <%else%>
 <%if(staticname && type_is_dynamic)%>
-	-@erase "$(OUTDIR)\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
-        -@erase "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.dll"
+	-@del /f/q "$(OUTDIR)\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
+        -@del /f/q "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.dll"
 <%endif%>
 <%endif%>
 <%if(staticname && type_is_static || !sharedname && type_is_dynamic)%>
-        -@erase "$(OUTDIR)\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.lib"
-        -@erase "$(OUTDIR)\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.exp"
-        -@erase "$(OUTDIR)\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.ilk"
+        -@del /f/q "$(OUTDIR)\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.lib"
+        -@del /f/q "$(OUTDIR)\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.exp"
+        -@del /f/q "$(OUTDIR)\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.ilk"
 <%endif%>
 <%endif%>
 <%if(pdbc)%>
 <%if(type_is_static)%>
-	-@erase "<%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
+	-@del /f/q "<%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
 <%endif%>
 <%endif%>
 <%if(exename)%>
-        -@erase "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.exe"
-        -@erase "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.ilk"
+        -@del /f/q "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.exe"
+        -@del /f/q "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.ilk"
 <%endif%>
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <%foreach(custom_type->input_file->output_files)%>
-        -@erase "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>"
+        -@del /f/q "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>"
 <%endfor%>
 <%endfor%>
 <%endfor%>
@@ -226,15 +226,15 @@ SOURCE=<%pch_source%>
 
 CPP_SWITCHES=/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%><%optimize_flags%><%else%><%debug_flags%><%endif%> <%compile_flags%><%if(pdbc)%> /Fd"<%if(type_is_static)%><%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%>$(INTDIR)/<%endif%>"<%endif%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines macros)%>/D <%define%> <%endfor%><%if(unicode)%>/D UNICODE /D _UNICODE <%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%>/D <%pch_define%> <%endfor%>/Fp"$(INTDIR)\<%noextension(pch_header)%>.pch" /Yc"<%pch_header%>" <%endif%>/FD /c
 
-"$(INTDIR)\<%noextension(pch_source)%>.obj"	"$(INTDIR)\<%noextension(pch_header)%>.pch" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\<%noextension(pch_source)%>.obj"	"$(INTDIR)\<%noextension(pch_header)%>.pch" : "$(SOURCE)" "$(INTDIR)"
 <%if(dirname(pch_source))%>
         @if not exist "$(INTDIR)\<%dirname(pch_source)%>\$(NULL)" mkdir "$(INTDIR)\<%dirname(pch_source)%>"
 	$(CPP) @<<
-  $(CPP_SWITCHES) /Fo"$(INTDIR)\<%noextension(pch_source)%>.obj" $(SOURCE)
+  $(CPP_SWITCHES) /Fo"$(INTDIR)\<%noextension(pch_source)%>.obj" "$(SOURCE)"
 <<
 <%else%>
 	$(CPP) @<<
-  $(CPP_SWITCHES) /Fo"<%fo_flag%>" $(SOURCE)
+  $(CPP_SWITCHES) /Fo"<%fo_flag%>" "$(SOURCE)"
 <<
 <%endif%>
 
@@ -250,15 +250,15 @@ SOURCE=<%source_file%>
 <%foreach(configurations)%>
 !<%fornotfirst("ELSE")%>IF  "$(CFG)" == "<%platform%> <%configuration%>"
 
-"$(INTDIR)\<%noextension(source_file)%>.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\<%noextension(source_file)%>.obj" : "$(SOURCE)" "$(INTDIR)"
         @if not exist "$(INTDIR)\<%dirname(source_file)%>\$(NULL)" mkdir "$(INTDIR)\<%dirname(source_file)%>"
 	$(CPP) @<<
-	/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%><%optimize_flags%><%else%><%debug_flags%><%endif%> <%compile_flags%><%if(pdbc)%> /Fd"<%if(type_is_static)%><%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%>$(INTDIR)/<%endif%>"<%endif%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines macros)%>/D <%define%> <%endfor%><%if(unicode)%>/D UNICODE /D _UNICODE <%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%>/D <%pch_define%> <%endfor%><%if(pch_source)%>/Yu<%else%>/YX<%endif%>"<%pch_header%>" /Fp"$(INTDIR)\<%noextension(pch_header)%>.pch" <%endif%>/FD /c /Fo"$(INTDIR)\<%noextension(source_file)%>.obj" $(SOURCE)
+	/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%><%optimize_flags%><%else%><%debug_flags%><%endif%> <%compile_flags%><%if(pdbc)%> /Fd"<%if(type_is_static)%><%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%>$(INTDIR)/<%endif%>"<%endif%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines macros)%>/D <%define%> <%endfor%><%if(unicode)%>/D UNICODE /D _UNICODE <%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%>/D <%pch_define%> <%endfor%><%if(pch_source)%>/Yu<%else%>/YX<%endif%>"<%pch_header%>" /Fp"$(INTDIR)\<%noextension(pch_header)%>.pch" <%endif%>/FD /c /Fo"$(INTDIR)\<%noextension(source_file)%>.obj" "$(SOURCE)"
 <<
 <%endfor%>
 !ENDIF
 <%else%>
-"$(INTDIR)\<%noextension(source_file)%>.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\<%noextension(source_file)%>.obj" : "$(SOURCE)" "$(INTDIR)"
 <%endif%>
 
 <%endfor%>
@@ -270,7 +270,7 @@ SOURCE=<%custom_type->input_file%>
 
 InputPath=<%custom_type->input_file%>
 
-<%foreach(custom_type->input_file->output_files)%>"<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>" <%endfor%>: $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+<%foreach(custom_type->input_file->output_files)%>"<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>" <%endfor%>: "$(SOURCE)" "$(INTDIR)" "$(OUTDIR)"
 	<<tempfile.bat
 	@echo off
 <%if(custom_type->libpath)%>
@@ -281,10 +281,10 @@ InputPath=<%custom_type->input_file%>
 <%endif%>
 <%if(custom_type->output_option)%>
 <%foreach(custom_type->input_file->output_files)%>
-	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(InputPath) <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>
+	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> "$(InputPath)" <%custom_type->output_option%> "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>"
 <%endfor%>
 <%else%>
-	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(InputPath)
+	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> "$(InputPath)"
 <%endif%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
 <%foreach(custom_type->input_file->output_files)%>
@@ -301,8 +301,8 @@ InputPath=<%custom_type->input_file%>
 <%if(custom_type->pch_postrule)%>
 <%foreach(custom_type->input_file->source_output_files)%>
 	echo #include "<%pch_header%>" > temporary.src
-	type <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temporary.src
-        move /y temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
+	type "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>" >> temporary.src
+        move /y temporary.src "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>"
 <%endfor%>
 <%endif%>
 <%endif%>
@@ -315,11 +315,11 @@ InputPath=<%custom_type->input_file%>
 <%foreach(resource_files)%>
 SOURCE=<%resource_file%>
 
-"$(INTDIR)\<%noextension(resource_file)%>.res" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\<%noextension(resource_file)%>.res" : "$(SOURCE)" "$(INTDIR)"
 <%if(dirname(resource_file))%>
 	@if not exist "$(INTDIR)\<%dirname(resource_file)%>\$(NULL)" mkdir "$(INTDIR)\<%dirname(resource_file)%>"
 <%endif%>
-	$(RSC) $(RSC_PROJ) $(SOURCE)
+	$(RSC) $(RSC_PROJ) "$(SOURCE)"
 
 
 <%endfor%>

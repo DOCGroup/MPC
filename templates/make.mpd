@@ -55,7 +55,7 @@ SHFLAGS       = <%shflags%>
 <%endfor%>
 <%foreach(configurations)%>
 OBJEXT        = <%objext%>
-OUTPUT_OPTION = <%output_option("-o $@")%>
+OUTPUT_OPTION = <%output_option(-o \"$@\")%>
 COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) <%compile_option("-c")%>
 <%if(arflags)%>
 ARFLAGS       = <%arflags%>
@@ -169,7 +169,7 @@ GENERATED_DIRTY    =<%foreach(custom_types)%><%foreach(custom_type->input_files)
 <%if(flag_overrides(custom_type->input_file, gendir))%>
 	@mkdir -p <%flag_overrides(custom_type->input_file, gendir)%>
 <%endif%>
-	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%>
+	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> "$@"<%endif%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
 <%foreach(custom_type->input_file->output_files)%>
 	<%flag_overrides(custom_type->input_file, postcommand)%>
