@@ -54,6 +54,8 @@ my(%keywords) = ('if'              => 0,
                  'uniq'            => 3,
                  'multiple'        => 5,
                  'starts_with'     => 5,
+                 'ends_with'       => 5,
+                 'contains'        => 5,
                 );
 
 # ************************************************************
@@ -610,6 +612,90 @@ sub handle_starts_with {
 
   if (defined $str) {
     my($val) = $self->doif_starts_with([$str]);
+
+    if (defined $val) {
+      $self->append_current($val);
+    }
+    else {
+      $self->append_current(0);
+    }
+  }
+}
+
+
+sub get_ends_with {
+  my($self) = shift;
+  my($str)  = shift;
+  return $self->doif_ends_with([$str]);
+}
+
+
+sub doif_ends_with {
+  my($self) = shift;
+  my($val)  = shift;
+
+  if (defined $val) {
+    my($str) = "@$val";
+    if ($str =~ /([^,]+)\s*,\s*(.*)/) {
+      my($name)    = $1;
+      my($pattern) = $2;
+      if (defined $name && defined $pattern) {
+        return ($self->get_value_with_default($name) =~ /$pattern$/);
+      }
+    }
+  }
+  return undef;
+}
+
+
+sub handle_ends_with {
+  my($self) = shift;
+  my($str)  = shift;
+
+  if (defined $str) {
+    my($val) = $self->doif_ends_with([$str]);
+
+    if (defined $val) {
+      $self->append_current($val);
+    }
+    else {
+      $self->append_current(0);
+    }
+  }
+}
+
+
+sub get_contains {
+  my($self) = shift;
+  my($str)  = shift;
+  return $self->doif_contains([$str]);
+}
+
+
+sub doif_contains {
+  my($self) = shift;
+  my($val)  = shift;
+
+  if (defined $val) {
+    my($str) = "@$val";
+    if ($str =~ /([^,]+)\s*,\s*(.*)/) {
+      my($name)    = $1;
+      my($pattern) = $2;
+      if (defined $name && defined $pattern) {
+        return ($self->get_value_with_default($name) =~ /$pattern/);
+      }
+    }
+  }
+  return undef;
+}
+
+
+sub handle_contains {
+  my($self) = shift;
+  my($str)  = shift;
+
+  if (defined $str) {
+    my($val) = $self->doif_contains([$str]);
 
     if (defined $val) {
       $self->append_current($val);
