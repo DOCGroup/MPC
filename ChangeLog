@@ -1,6 +1,19 @@
-Tue May 18 07:22:53 2004  Chad Elliott  <elliott_c@ociweb.com>
+Tue May 18 09:37:29 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Version.pm:
+
+          Added code to automatically determine the beta version number at
+          run-time.  This number is determined by the manipulating the total
+          number of ChangeLog entries.
+
+        * mpc.pl:
+        * mwc.pl:
+
+          Provide a getBasePath() function to allow MPC to determine the
+          location of the ChangeLog.
+
+Tue May 18 07:22:53 2004  Chad Elliott  <elliott_c@ociweb.com>
+
         * modules/ProjectCreator.pm:
 
           When parsing the component list, convert any $(...) to relative
