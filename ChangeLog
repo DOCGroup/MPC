@@ -1,3 +1,10 @@
+Thu Mar 31 10:23:39 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          If -global is used and the file does not contain a path, we will
+          search the include path for it.
+
 Thu Mar 31 06:53:14 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * combine_dsw.pl:

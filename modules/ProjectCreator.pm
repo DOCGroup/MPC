@@ -292,6 +292,15 @@ sub read_global_configuration {
   my($status) = 1;
 
   if (defined $input) {
+    ## If it doesn't contain a path, search the include path
+    if ($input !~ /[\/\\]/) {
+      $input = $self->search_include_path($input);
+      if (!defined $input) {
+        $input = $self->get_global_cfg();
+      }
+    }
+
+    ## Read and parse the global project file
     $self->{'reading_global'} = 1;
     $status = $self->parse_file($input);
     $self->{'reading_global'} = 0;
