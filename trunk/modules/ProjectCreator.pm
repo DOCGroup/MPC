@@ -227,6 +227,7 @@ sub new {
   $self->{$self->{'type_check'}}   = 0;
   $self->{'feature_defined'}       = 0;
   $self->{'project_info'}          = [];
+  $self->{'lib_locations'}         = {};
   $self->{'reading_parent'}        = [];
   $self->{'dexe_template_input'}   = undef;
   $self->{'lexe_template_input'}   = undef;
@@ -508,6 +509,25 @@ sub parse_line {
             ## write_project() can return 0 for error, 1 for project
             ## was written and 2 for project was skipped
             if ($status == 1) {
+              ## Save the library name and location
+              foreach my $name ('sharedname', 'staticname') {
+                my($val) = $self->get_assignment($name);
+                if (defined $val) {
+                  my($cwd)   = $self->getcwd();
+                  my($start) = $self->getstartdir();
+                  my($amount) = 0;
+                  if ($cwd eq $start) {
+                    $amount = length($start);
+                  }
+                  elsif (index($cwd, $start) == 0) {
+                    $amount = length($start) + 1;
+                  }
+                  $self->{'lib_locations'}->{$val} =
+                      substr($cwd, $amount);
+                  last;
+                }
+              }
+
               ## Check for unused verbatim markers
               foreach my $key (keys %{$self->{'verbatim'}}) {
                 if (defined $self->{'verbatim_accessed'}->{$key}) {
@@ -3292,6 +3312,12 @@ sub get_project_info {
 }
 
 
+sub get_lib_locations {
+  my($self) = shift;
+  return $self->{'lib_locations'};
+}
+
+
 sub get_inheritance_tree {
   my($self) = shift;
   return $self->{'inheritance_tree'};
@@ -3328,7 +3354,12 @@ sub set_source_listing_callback {
 
 sub reset_values {
   my($self) = shift;
-  $self->{'project_info'} = [];
+
+  ## Only put data structures that need to be cleared
+  ## out when the mpc file is done being read, not at the
+  ## end of each project within the mpc file.
+  $self->{'project_info'}  = [];
+  $self->{'lib_locations'} = {};
 }
 
 

@@ -62,14 +62,14 @@ CLEANFILES += \
 <%if(exename)%>
 <%if(INSTALL_THIS_TARGET)%>bin<%else%>noinst<%endif%>_PROGRAMS += <%exename%>
 <%else%>
-<%if(INSTALL_THIS_TARGET)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += <%if(dllout)%><%dllout%>/<%else%><%if(libout)%><%libout%>/<%endif%><%endif%>lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
+<%if(INSTALL_THIS_TARGET)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
 <%endif%>
 <%if(am_includes || defines || common_defines || need_staticflags || dynamicflags)%>
 
 <%if(exename)%>
 <%normalize(exename)%>_CPPFLAGS = \
 <%else%>
-<%if(dllout)%><%normalize(dllout)%>_<%else%><%if(libout)%><%normalize(libout)%>_<%endif%><%endif%>lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_CPPFLAGS = \
+lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_CPPFLAGS = \
 <%endif%>
 <%if(am_includes)%>
 <%foreach(am_includes)%>
@@ -100,7 +100,7 @@ CLEANFILES += \
 <%if(exename)%>
 <%normalize(exename)%>_SOURCES = \
 <%else%>
-<%if(dllout)%><%normalize(dllout)%>_<%else%><%if(libout)%><%normalize(libout)%>_<%endif%><%endif%>lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = \
+lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_SOURCES = \
 <%endif%>
 <%if(grouped_source_files)%>
 <%foreach(grouped_source_files)%>
@@ -124,7 +124,7 @@ CLEANFILES += \
 <%if(exename)%>
 <%normalize(exename)%>_LDFLAGS = \
 <%else%>
-<%if(dllout)%><%normalize(dllout)%>_<%else%><%if(libout)%><%normalize(libout)%>_<%endif%><%endif%>lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LDFLAGS = \<%endif%>
+lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LDFLAGS = \<%endif%>
 <%foreach(linkflags)%> <%linkflag%><%endfor%>
 <%endif%>
 <%if(libs || pure_libs || lit_libs)%>
@@ -132,8 +132,9 @@ CLEANFILES += \
 <%if(exename)%>
 <%normalize(exename)%>_LDADD = \
 <%else%>
-<%if(dllout)%><%normalize(dllout)%>_<%else%><%if(libout)%><%normalize(libout)%>_<%endif%><%endif%>lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = \<%endif%>
-<%foreach(libs)%> $(top_builddir)/lib/lib<%lib%>.la<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%>
+lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LIBADD = \<%endif%>
+<%foreach(libs)%> lib<%lib%>.la<%fornotlast(" \\")%>
+<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%>
 <%endif%>
 <%if(!exename)%>
 <%if(header_files || inline_files || template_files || idl_files || pidl_files)%>

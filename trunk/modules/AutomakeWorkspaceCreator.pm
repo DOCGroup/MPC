@@ -183,7 +183,7 @@ sub write_comps {
   if (@locals) {
     my($pfh) = new FileHandle();
     foreach my $local (reverse @locals) {
-      if (open($pfh,$local)) {
+      if (open($pfh, $local)) {
         my($in_condition) = 0;
         while (<$pfh>) {
           # Don't look at comments
@@ -239,9 +239,12 @@ sub write_comps {
   ## then delete it.
   if (@locals) {
     my($pfh) = new FileHandle();
+    my($liblocs) = $self->get_lib_locations();
     foreach my $local (reverse @locals) {
-      if (open($pfh,$local)) {
+      if (open($pfh, $local)) {
         print $fh "## $local $crlf";
+
+        my($look_for_libs) = 0;
 
         while (<$pfh>) {
           # Don't emit comments
@@ -264,6 +267,27 @@ sub write_comps {
               $seen{$1} = 1;
               s/\+=/=/;
             }
+          }
+
+          ## This scheme relies on automake.mpd emitting the 'la' libs first.
+          if ($look_for_libs) {
+            if ( /^\s+(lib(\w+).la)\s*\\?/ ) {
+              my $libfile = $1;
+              my $libname = $2;
+              my $reldir = $$liblocs{$libname};
+              if ($reldir) {
+                s/$libfile/\$(top_builddir)\/$reldir\/$libfile/;
+              }
+              else {
+                warn "No reldir found for $libname ($libfile)\n";
+              }
+            }
+            else {
+              $look_for_libs = 0;
+            }
+          }
+          if ( /^*_LDADD = \\$/ || /^*_LIBADD = \\$/ ) {
+            $look_for_libs = 1;
           }
 
           print $fh $_;
