@@ -1,8 +1,19 @@
+Fri May 28 13:06:01 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/em3vcplib.mpt:
+        * templates/em3vcplibexe.mpt:
+        * templates/vc7lib.mpt:
+        * templates/vc7libexe.mpt:
+
+          Consistently name static project configurations across all Windows
+          based project types (excluding NMake since it has both dynamic and
+          static in a single makefile).
+
 Wed May 26 17:17:29 2004  Steve Huston  <shuston@riverace.com>
 
-	* modules/AutomakeWorkspaceCreator.pm: In write_comps(), when writing
-	  the SUBDIRS list, only list next-level directories - SUBDIRS is
-	  only allowed to list them, and not anything below.
+        * modules/AutomakeWorkspaceCreator.pm: In write_comps(), when writing
+          the SUBDIRS list, only list next-level directories - SUBDIRS is
+          only allowed to list them, and not anything below.
 
 Mon May 24 13:44:13 2004  Chad Elliott  <elliott_c@ociweb.com>
 
