@@ -1,10 +1,10 @@
-Sat Dec  4 16:03:26 2004  Marek Brudka  <mbrudka@aster.pl>
+Thu Dec  9 20:00:39 2004  Marek Brudka  <mbrudka@aster.pl>
 
 	* config/qt_uic.mpb (Module):
 	* config/qt_moc.mpb (Module):
+	These files are empty now.
 	* config/qt.mpb (Module):
-	UIC and MOC custom rules moved to qt.mpb. This way qt_uic and qt_moc became
-	unnecesary.
+	Qt became project which provides MOC and UIC rules.
 
 Sat Dec  4 14:29:51 2004  Marek Brudka  <mbrudka@aster.pl>
 

@@ -1,14 +1,5 @@
 // -*- MPC -*-
 // $Id$
-
+// This file stays here for compatibility reasons
 project : qt {
-  Define_Custom(MOC) {
-    automatic        = 0
-    command          = $(QTDIR)/bin/moc
-    output_option    = -o
-    pch_postrule     = 1
-    inputext         = .h
-    pre_extension    = _moc
-    source_outputext = .cpp
-  }
 }
