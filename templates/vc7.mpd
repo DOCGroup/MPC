@@ -220,9 +220,7 @@
 <%endfor%>
 		</Filter>
 <%endif%>
-<%if(type_is_static)%>
-<%else%>
-<%if(resource_files)%>
+<%if(resource_files && !type_is_static)%>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe">
@@ -232,7 +230,6 @@
 			</File>
 <%endfor%>
 		</Filter>
-<%endif%>
 <%endif%>
 	</Files>
 	<Globals>

@@ -170,7 +170,7 @@ SOURCE="<%documentation_file%>"
 <%endfor%>
 # End Group
 <%endif%>
-<%if(resource_files)%>
+<%if(resource_files && !type_is_static)%>
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "rc;ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
