@@ -662,10 +662,13 @@ sub write_workspace {
         my($name) = lc($self->{'project_info'}->{$project}->[0]);
         if (defined $names{$name}) {
           ++$duplicates;
-          $self->error("Duplicate case-insensitive project '$name'.");
+          $self->error("Duplicate case-insensitive project '$name'. " .
+                       "Look in " . dirname($project) . " and " .
+                       dirname($names{$name}) .
+                       " for project name conflicts.");
         }
         else {
-          $names{$name} = 1;
+          $names{$name} = $project;
         }
       }
     }

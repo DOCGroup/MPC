@@ -1,3 +1,19 @@
+Mon Apr 12 11:38:29 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Added more file types to exclude during cloning.
+
+        * modules/Creator.pm:
+
+          We still need to maintain the real set of files added for
+          generation of the workspace.
+
+        * modules/WorkspaceCreator.pm:
+
+          Added more information to the error message when duplicate
+          projects are found within a workspace.
+
 Mon Apr 12 10:00:56 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
