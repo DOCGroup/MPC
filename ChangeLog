@@ -1,3 +1,21 @@
+Tue Jan 18 09:29:09 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/ProjectCreator.pm:
+        * templates/automake.mpd:
+        * templates/bmake.mpd:
+        * templates/em3vcp.mpd:
+        * templates/ghs.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+
+          Added the ability to modify 'command' and 'dependent' within the
+          scope of a custom section (such as IDL_Files, RPC_Files, etc.)
+
 Tue Jan 18 07:34:32 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:

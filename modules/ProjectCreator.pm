@@ -104,7 +104,9 @@ my(%customDefined) = ('automatic'                   => 0x04,
 ## Value  Meaning
 ## 0    No modifications
 ## 1    Needs <%...%> conversion
-my(%custom) = ('commandflags'  => 1,
+my(%custom) = ('command'       => 1,
+               'commandflags'  => 1,
+               'dependent'     => 1,
                'gendir'        => 0,
                'postcommand'   => 1,
               );

@@ -285,11 +285,15 @@ SOURCE="<%custom_type->input_file%>"
 <%foreach(configurations)%>
 !<%fornotfirst("ELSE")%>IF  "$(CFG)" == "<%project_name%> - <%operating_system%> (<%platform%>) <%configuration%>"
 
+<%if(flag_overrides(custom_type->input_file, dependent))%>
+USERDEP__<%basenoextension(custom_type->input_file)%>=<%flag_overrides(custom_type->input_file, dependent)%>.exe
+<%else%>
 <%if(custom_type->dependent)%>
 USERDEP__<%basenoextension(custom_type->input_file)%>=<%custom_type->dependent%>.exe
 <%endif%>
+<%endif%>
 # PROP Ignore_Default_Tool 1
-# Begin Custom Build - Invoking <%custom_type->command%> on $(InputPath)
+# Begin Custom Build - Invoking <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> on $(InputPath)
 InputPath="<%custom_type->input_file%>"
 
 BuildCmds= \
@@ -299,7 +303,7 @@ BuildCmds= \
 <%if(flag_overrides(custom_type->input_file, gendir))%>
 	mkdir <%flag_overrides(custom_type->input_file, gendir)%> 2> nul \
 <%endif%>
-	<%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(InputPath)<%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_files)%><%else%><%custom_type->input_file->output_files%><%endif%><%endif%> \
+	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(InputPath)<%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_files)%><%else%><%custom_type->input_file->output_files%><%endif%><%endif%> \
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
 <%foreach(custom_type->input_file->output_files)%>
 	<%flag_overrides(custom_type->input_file, postcommand)%> \
