@@ -64,6 +64,9 @@
 <%endif%>
 <%else%>
 				Name="VCLinkerTool"
+<%if(link_options)%>
+                                AdditionalOptions="<%link_options%>"
+<%endif%>
 <%if(type_is_binary)%>
 				AdditionalDependencies="<%foreach(pure_libs)%><%pure_lib%> <%endfor%><%foreach(lit_libs)%><%lit_lib%>.lib <%endfor%><%foreach(libs)%><%lib%><%lib_modifier%>.lib<%fornotlast(" ")%><%endfor%>"
 <%endif%>
