@@ -12,11 +12,11 @@ if !BUILD_<%uc(avoid)%>
 <%endif%>
 <%if(man_files)%>
 
-man_MANS =<%foreach(man_files)%> <%man_file%><%endfor%>
+man_MANS = <%man_files%>
 <%endif%>
 <%if(script_files)%>
 
-bin_SCRIPTS =<%foreach(script_files)%> <%script_file%><%endfor%>
+bin_SCRIPTS = <%script_files%>
 <%endif%>
 <%if(custom_types)%>
 
