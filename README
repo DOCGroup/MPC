@@ -206,6 +206,28 @@ specific        This scope allows assignments that are specific to a
                 the -value_template command line option.  See the USAGE file
                 for more information.
 
+conditional     This scope allows addition of source files conditionally
+                based on a particular project type.  The syntax is as
+                follows:
+
+                conditional(<project type> [, <project type> ...]) {
+                  source1.cpp
+                  ...
+                }
+
+                or
+
+                conditional(<project type> [, <project type> ...]) {
+                  source1.cpp
+                  ...
+                } else {
+                  source2.cpp
+                  ...
+                }
+
+                Due to limited parsing capabilities, the else is required to
+                be on the same line as the closing curly brace.
+
 requires        Specifies which features should be enabled in order to
                 generate the project file.
 avoids          Specifies which features should be disabled in order to
