@@ -1,3 +1,12 @@
+Fri Aug 13 18:31:01 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+	  Use INSTALL_THIS_TARGET to determine whether to use the
+	  noinst_ prefix.
+
+	* template/automakedll.mpt:
+	  Define INSTALL_THIS_TARGET for use by automake.mpd.
+
 Fri Aug 13 10:53:57 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
