@@ -166,11 +166,25 @@
 				 RelativePath="<%pch_header%>">
 			</File>
 <%endif%>
+<%if(grouped_header_files)%>
+<%foreach(grouped_header_files)%>
+			<Filter
+				Name="<%grouped_header_file%>"
+				Filter="">
+<%foreach(grouped_header_file->files)%>
+				<File
+					RelativePath="<%grouped_header_file->file%>">
+				</File>
+<%endfor%>
+			</Filter>
+<%endfor%>
+<%else%>
 <%foreach(header_files)%>
 			<File
 				RelativePath="<%header_file%>">
 			</File>
 <%endfor%>
+<%endif%>
 		</Filter>
 <%endif%>
 <%foreach(custom_types)%>
@@ -203,17 +217,52 @@
 		<Filter
 			Name="Inline Files"
 			Filter="i;inl">
+<%if(grouped_inline_files)%>
+<%foreach(grouped_inline_files)%>
+			<Filter
+				Name="<%grouped_inline_file%>"
+				Filter="">
+<%foreach(grouped_inline_file->files)%>
+				<File
+					RelativePath="<%grouped_inline_file->file%>">
+				</File>
+<%endfor%>
+			</Filter>
+<%endfor%>
+<%else%>
 <%foreach(inline_files)%>
 			<File
 				RelativePath="<%inline_file%>">
 			</File>
 <%endfor%>
+<%endif%>
 		</Filter>
 <%endif%>
 <%if(template_files)%>
 		<Filter
 			Name="Template Files"
 			Filter="">
+<%if(grouped_template_files)%>
+<%foreach(grouped_template_files)%>
+			<Filter
+				Name="<%grouped_template_file%>"
+				Filter="">
+<%foreach(grouped_template_file->files)%>
+				<File
+					RelativePath="<%grouped_template_file->file%>">
+<%foreach(configurations)%>
+					<FileConfiguration
+						Name="<%configuration%>|<%platform%>"
+						ExcludedFromBuild="TRUE">
+						<Tool
+							Name="VCCLCompilerTool"/>
+					</FileConfiguration>
+<%endfor%>
+				</File>
+<%endfor%>
+			</Filter>
+<%endfor%>
+<%else%>
 <%foreach(template_files)%>
 			<File
 				RelativePath="<%template_file%>">
@@ -227,28 +276,57 @@
 <%endfor%>
 			</File>
 <%endfor%>
+<%endif%>
 		</Filter>
 <%endif%>
 <%if(documentation_files)%>
 		<Filter
 			Name="Documentation"
 			Filter="">
+<%if(grouped_documentation_files)%>
+<%foreach(grouped_documentation_files)%>
+			<Filter
+				Name="<%grouped_documentation_file%>"
+				Filter="">
+<%foreach(grouped_documentation_file->files)%>
+				<File
+					RelativePath="<%grouped_documentation_file->file%>">
+				</File>
+<%endfor%>
+			</Filter>
+<%endfor%>
+<%else%>
 <%foreach(documentation_files)%>
 			<File
 				RelativePath="<%documentation_file%>">
 			</File>
 <%endfor%>
+<%endif%>
 		</Filter>
 <%endif%>
 <%if(resource_files && !type_is_static)%>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe">
+<%if(grouped_resource_files)%>
+<%foreach(grouped_resource_files)%>
+			<Filter
+				Name="<%grouped_resource_file%>"
+				Filter="">
+<%foreach(grouped_resource_file->files)%>
+				<File
+					RelativePath="<%grouped_resource_file->file%>">
+				</File>
+<%endfor%>
+			</Filter>
+<%endfor%>
+<%else%>
 <%foreach(resource_files)%>
 			<File
 				RelativePath="<%resource_file%>">
 			</File>
 <%endfor%>
+<%endif%>
 		</Filter>
 <%endif%>
 	</Files>

@@ -137,30 +137,75 @@ SOURCE="<%source_file%>"
 SOURCE="<%pch_header%>"
 # End Source File
 <%endif%>
+<%if(grouped_header_files)%>
+<%foreach(grouped_header_files)%>
+# Begin Group "<%grouped_header_file%>"
+
+# PROP Default_Filter ""
+<%foreach(grouped_header_file->files)%>
+# Begin Source File
+
+SOURCE="<%grouped_header_file->file%>"
+# End Source File
+<%endfor%>
+# End Group
+<%endfor%>
+<%else%>
 <%foreach(header_files)%>
 # Begin Source File
 
 SOURCE="<%header_file%>"
 # End Source File
 <%endfor%>
+<%endif%>
 # End Group
 <%endif%>
 <%if(inline_files)%>
 # Begin Group "Inline Files"
 
 # PROP Default_Filter "i;inl"
+<%if(grouped_inline_files)%>
+<%foreach(grouped_inline_files)%>
+# Begin Group "<%grouped_inline_file%>"
+
+# PROP Default_Filter ""
+<%foreach(grouped_inline_file->files)%>
+# Begin Source File
+
+SOURCE="<%grouped_inline_file->file%>"
+# End Source File
+<%endfor%>
+# End Group
+<%endfor%>
+<%else%>
 <%foreach(inline_files)%>
 # Begin Source File
 
 SOURCE="<%inline_file%>"
 # End Source File
 <%endfor%>
+<%endif%>
 # End Group
 <%endif%>
 <%if(template_files)%>
 # Begin Group "Template Files"
 
 # PROP Default_Filter ""
+<%if(grouped_template_files)%>
+<%foreach(grouped_template_files)%>
+# Begin Group "<%grouped_template_file%>"
+
+# PROP Default_Filter ""
+<%foreach(grouped_template_file->files)%>
+# Begin Source File
+
+SOURCE="<%grouped_template_file->file%>"
+# PROP Exclude_From_Build 1
+# End Source File
+<%endfor%>
+# End Group
+<%endfor%>
+<%else%>
 <%foreach(template_files)%>
 # Begin Source File
 
@@ -168,30 +213,61 @@ SOURCE="<%template_file%>"
 # PROP Exclude_From_Build 1
 # End Source File
 <%endfor%>
+<%endif%>
 # End Group
 <%endif%>
 <%if(documentation_files)%>
 # Begin Group "Documentation"
 
 # PROP Default_Filter ""
+<%if(grouped_documentation_files)%>
+<%foreach(grouped_documentation_files)%>
+# Begin Group "<%grouped_documentation_file%>"
+
+# PROP Default_Filter ""
+<%foreach(grouped_documentation_file->files)%>
+# Begin Source File
+
+SOURCE="<%grouped_documentation_file->file%>"
+# End Source File
+<%endfor%>
+# End Group
+<%endfor%>
+<%else%>
 <%foreach(documentation_files)%>
 # Begin Source File
 
 SOURCE="<%documentation_file%>"
 # End Source File
 <%endfor%>
+<%endif%>
 # End Group
 <%endif%>
 <%if(resource_files && !type_is_static)%>
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "rc;ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
+<%if(grouped_resource_files)%>
+<%foreach(grouped_resource_files)%>
+# Begin Group "<%grouped_resource_file%>"
+
+# PROP Default_Filter ""
+<%foreach(grouped_resource_file->files)%>
+# Begin Source File
+
+SOURCE="<%grouped_resource_file->file%>"
+# End Source File
+<%endfor%>
+# End Group
+<%endfor%>
+<%else%>
 <%foreach(resource_files)%>
 # Begin Source File
 
 SOURCE="<%resource_file%>"
 # End Source File
 <%endfor%>
+<%endif%>
 # End Group
 <%endif%>
 <%foreach(custom_types)%>
