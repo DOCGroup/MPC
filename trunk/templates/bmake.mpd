@@ -58,8 +58,12 @@ NAME         = <%staticname%>$(LIBMODIFIER)
 <%endif%>
 <%endif%>
 <%endif%>
+<%if(cppdir)%>
 CPPDIR       = <%cppdir%>
+<%endif%>
+<%if(rcdir)%>
 RESDIR       = <%rcdir%>
+<%endif%>
 <%if(exename || sharedname || staticname)%>
 
 OBJFILES = \
