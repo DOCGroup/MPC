@@ -231,10 +231,13 @@ sub process_assignment {
 
 
 sub get_assignment_for_modification {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($assign) = shift;
+  my($self)        = shift;
+  my($name)        = shift;
+  my($assign)      = shift;
+  my($subtraction) = shift;
 
+  ## If we weren't passed an assignment hash, then we need to
+  ## look one up that may possibly correctly deal with keyword mappings
   if (!defined $assign) {
     my($mapped) = $self->{'valid_names'}->{$name};
 
@@ -244,7 +247,18 @@ sub get_assignment_for_modification {
     }
   }
 
-  return $self->get_assignment($name, $assign);
+  ## Get the assignment value
+  my($value) = $self->get_assignment($name, $assign);
+
+  ## If we are involved in a subtraction, we get back a value and
+  ## it's a scoped or mapped assignment, then we need to possibly
+  ## expand any template variables.  Otherwise, the subtractions
+  ## may not work correctly.
+  if ($subtraction && defined $value && defined $assign) {
+    $value = $self->relative($value, 1);
+  }
+
+  return $value;
 }
 
 
@@ -2705,8 +2719,9 @@ sub adjust_value {
 
 
 sub relative {
-  my($self)  = shift;
-  my($value) = shift;
+  my($self)            = shift;
+  my($value)           = shift;
+  my($expand_template) = shift;
 
   if (defined $value) {
     if (UNIVERSAL::isa($value, 'ARRAY')) {
@@ -2772,7 +2787,8 @@ sub relative {
               $whole = $ival;
             }
           }
-          elsif ($self->expand_variables_from_template_values()) {
+          elsif ($expand_template ||
+                 $self->expand_variables_from_template_values()) {
             my($ti) = $self->get_template_input();
             if (defined $ti) {
               $val = $ti->get_value($name);
