@@ -71,6 +71,7 @@ sub write_comps {
   my(@locals)        = ();
   my(%proj_dir_seen) = ();
   my($have_subdirs)  = 0;
+  my($outdir)        = $self->get_outdir();
 
   ## This step writes a configure.ac.Makefiles list into the starting
   ## directory. The list contains of all the Makefiles generated down
@@ -78,9 +79,9 @@ sub write_comps {
   ## of all the involved Makefiles.
   my($mfh);
   if ($toplevel) {
-    unlink($acfile);
+    unlink("$outdir/$acfile");
     $mfh = new FileHandle();
-    open($mfh, ">$acfile");
+    open($mfh, ">$outdir/$acfile");
     ## The top-level is never listed as a dependency, so it needs to be
     ## added explicitly.
     print $mfh "AC_CONFIG_FILES([ Makefile ])$crlf";
@@ -176,7 +177,7 @@ sub write_comps {
         $project_name = 'nobase';
       }
 
-      if (open($pfh, $local)) {
+      if (open($pfh, "$outdir/$local")) {
         my($in_condition) = 0;
         my($regok)        = $self->escape_regex_special($project_name);
         my($inc_pattern)  = $regok . '_include_HEADERS';
@@ -273,7 +274,7 @@ sub write_comps {
     my($start) = $self->getstartdir();
     foreach my $local (reverse @locals) {
 
-      if (open($pfh, $local)) {
+      if (open($pfh, "$outdir/$local")) {
         print $fh "## $local $crlf";
 
         my($look_for_libs) = 0;
@@ -357,7 +358,7 @@ sub write_comps {
         }
 
         close($pfh);
-        unlink($local);
+        unlink("$outdir/$local");
         print $fh $crlf;
       }
       else {

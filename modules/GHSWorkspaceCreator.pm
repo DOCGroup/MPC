@@ -65,10 +65,11 @@ sub mix_settings {
   my($crlf)    = $self->crlf();
   my($rh)      = new FileHandle();
   my($mix)     = '';
+  my($outdir)  = $self->get_outdir();
 
   ## Things that seem like they should be set in the project
   ## actually have to be set in the controlling build file.
-  if (open($rh, $project)) {
+  if (open($rh, "$outdir/$project")) {
     while(<$rh>) {
       if (/^\s*(program|library|subproject)\s*$/) {
         $mix .= "\t$1$crlf" .

@@ -710,17 +710,10 @@ sub write_workspace {
     }
 
     my($name)   = $self->transform_file_name($self->workspace_file_name());
-    my($into)   = $self->get_into();
-    my($outdir) = '.';
+    my($outdir) = $self->get_outdir();
     my($oname)  = $name;
 
-    if (defined $into) {
-      $outdir = $self->getcwd();
-      my($re) = $self->escape_regex_special($self->getstartdir());
-      $outdir =~ s/^$re//;
-      $outdir = $into . $outdir;
-      $name = "$outdir/$name";
-    }
+    $name = "$outdir/$name";
 
     my($abort_creation) = 0;
     if ($duplicates > 0) {

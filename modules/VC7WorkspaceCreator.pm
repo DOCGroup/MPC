@@ -202,15 +202,16 @@ sub write_comps {
 
 
 sub add_references {
-  my($self)  = shift;
-  my($proj)  = shift;
-  my($pguid) = shift;
-  my($deps)  = shift;
-  my($gmap)  = shift;
-  my($crlf)  = $self->crlf();
-  my($fh)    = new FileHandle();
+  my($self)   = shift;
+  my($proj)   = shift;
+  my($pguid)  = shift;
+  my($deps)   = shift;
+  my($gmap)   = shift;
+  my($crlf)   = $self->crlf();
+  my($fh)     = new FileHandle();
+  my($outdir) = $self->get_outdir();
 
-  if (open($fh, $proj)) {
+  if (open($fh, "$outdir/$proj")) {
     my($write) = 0;
     my(@read)  = ();
     while(<$fh>) {
@@ -231,7 +232,7 @@ sub add_references {
     }
     close($fh);
 
-    if ($write && open($fh, ">$proj")) {
+    if ($write && open($fh, ">$outdir/$proj")) {
       foreach my $line (@read) {
         print $fh $line;
       }
