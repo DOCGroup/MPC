@@ -2,6 +2,7 @@
 // $Id$
 
 project {
+  requires += qt
   includes += $(QTDIR)/include
   libpaths += $(QTDIR)/lib
   macros   += QT_THREAD_SUPPORT
@@ -13,4 +14,24 @@ project {
   } else {
     lit_libs += qt-mt230nc
   }
+
+  Define_Custom(UIC) {
+    automatic        = 1
+    command          = $(QTDIR)/bin/uic
+    postcommand      = $(QTDIR)/bin/uic -impl <%output_noext%>.h -o <%output_noext%>.cpp <%input%>
+    output_option    = -o
+    inputext         = .ui
+    header_outputext = .h
+  }
+
+  Define_Custom(MOC) {
+    automatic        = 0
+    command          = $(QTDIR)/bin/moc
+    output_option    = -o
+    pch_postrule     = 1
+    inputext         = .h
+    pre_extension    = _moc
+    source_outputext = .cpp
+  }
+
 }

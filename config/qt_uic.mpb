@@ -1,13 +1,5 @@
 // -*- MPC -*-
 // $Id$
-
+// This file stays here for compatibility reasons
 project : qt {
-  Define_Custom(UIC) {
-    automatic        = 1
-    command          = $(QTDIR)/bin/uic
-    postcommand      = $(QTDIR)/bin/uic -impl <%input_noext%>.h -o <%input_noext%>.cpp <%input%>
-    output_option    = -o
-    inputext         = .ui
-    header_outputext = .h
-  }
 }
