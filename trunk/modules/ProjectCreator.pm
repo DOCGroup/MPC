@@ -849,7 +849,7 @@ sub parse_components {
         ## Convert any $(...) in this line before we process any
         ## wildcard characters.  If we do not, scoped assignments will
         ## not work nor will we get the correct wildcarded file list.
-        $line = $self->relative($line, 0, 1);
+        $line = $self->relative($line);
 
         ## Set up the files array.  If the line contains a wildcard
         ## character use CORE::glob() to get the files specified.
@@ -1184,20 +1184,9 @@ sub parse_define_custom {
               if (!defined $self->{'generated_exts'}->{$tag}) {
                 $self->{'generated_exts'}->{$tag} = {};
               }
-              ## First try to convert the value into a relative path
-              $value = $self->relative($value, 0, 1);
+              ## Try to convert the value into a relative path
+              $value = $self->relative($value);
 
-              ## If that didn't work, try to convert it to the
-              ## right environment variable form.
-              if ($value =~ /\$\(.*\)/) {
-                my($envstart, $envend) = $self->get_env_accessor();
-                if (defined $envstart) {
-                  if (!defined $envend) {
-                    $envend = '';
-                  }
-                  $value =~ s/\$\(([^\)]+)\)/$envstart$1$envend/g;
-                }
-              }
               if (($customDefined{$name} & 0x04) != 0) {
                 if ($type eq 'assignment') {
                   $self->process_assignment(
@@ -3318,13 +3307,12 @@ sub relative {
   my($self)            = shift;
   my($value)           = shift;
   my($expand_template) = shift;
-  my($expand_env)      = shift;
 
   if (defined $value) {
     if (UNIVERSAL::isa($value, 'ARRAY')) {
       my(@built) = ();
       foreach my $val (@$value) {
-        push(@built, $self->relative($val, $expand_template, $expand_env));
+        push(@built, $self->relative($val, $expand_template));
       }
       $value = \@built;
     }
@@ -3388,18 +3376,6 @@ sub relative {
               }
               substr($value, $start) =~ s/\$\([^)]+\)/$ival/;
               $whole = $ival;
-            }
-            else {
-              if ($expand_env && $self->convert_macros_to_env()) {
-                my($envstart, $envend) = $self->get_env_accessor();
-                if (defined $envstart) {
-                  if (!defined $envend) {
-                    $envend = '';
-                  }
-                  substr($value, $start) =~ s/\$\(([^\)]+)\)/$envstart$1$envend/g;
-                  $whole = "$envstart$1$envend";
-                }
-              }
             }
           }
           elsif ($expand_template ||
@@ -3589,12 +3565,6 @@ sub get_or_symbol {
 }
 
 
-sub convert_macros_to_env {
-  #my($self) = shift;
-  return 0;
-}
-
-
 sub dollar_special {
   #my($self) = shift;
   return 0;
@@ -3651,11 +3621,6 @@ sub override_exclude_component_extensions {
   return undef;
 }
 
-
-sub get_env_accessor {
-  #my($self) = shift;
-  return ();
-}
 
 sub get_dll_exe_template_input_file {
   #my($self) = shift;

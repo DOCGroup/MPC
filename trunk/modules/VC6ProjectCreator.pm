@@ -21,12 +21,6 @@ use vars qw(@ISA);
 # Subroutine Section
 # ************************************************************
 
-sub convert_macros_to_env {
-  #my($self) = shift;
-  return 1;
-}
-
-
 sub compare_output {
   #my($self) = shift;
   return 1;
@@ -122,12 +116,6 @@ sub override_exclude_component_extensions {
   }
 
   return $array;
-}
-
-
-sub get_env_accessor {
-  #my($self) = shift;
-  return ('%', '%');
 }
 
 
