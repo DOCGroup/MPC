@@ -1,3 +1,14 @@
+Wed Dec  1 19:28:19 2004  Marek Brudka  <mbrudka@aster.pl>
+
+        * USAGE (Module):
+        * modules/WorkspaceCreator.pm (Module):
+        * modules/ProjectCreator.pm (Module):
+        * modules/Options.pm (Module):
+        * modules/FeatureParser.pm (Module):
+        * modules/Driver.pm (Module):
+        * modules/Creator.pm (Module):
+        Added command line option  '-features'. Thanks for Kacper Reutt for a patch.
+
 Mon Nov 29 11:24:05 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/automake.mpd:

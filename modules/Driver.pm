@@ -300,6 +300,7 @@ sub run {
                                 $options->{'baseprojs'},
                                 $global_feature_file,
                                 $options->{'feature_file'},
+                                $options->{'features'},
                                 $options->{'hierarchy'},
                                 $options->{'exclude'},
                                 $options->{'coexistence'},

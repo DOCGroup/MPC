@@ -213,6 +213,7 @@ sub new {
   my($baseprojs)  = shift;
   my($gfeature)   = shift;
   my($feature)    = shift;
+  my($features)   = shift;
   my($hierarchy)  = shift;
   my($exclude)    = shift;
   my($makeco)     = shift;
@@ -226,7 +227,8 @@ sub new {
                                        $template, $ti, $dynamic, $static,
                                        $relative, $addtemp, $addproj,
                                        $progress, $toplevel, $baseprojs,
-                                       $feature, $hierarchy, $nmod, $applypj,
+                                       $feature, $features,
+                                       $hierarchy, $nmod, $applypj,
                                        $into, $language, $expand_env,
                                        'project');
 
@@ -249,7 +251,8 @@ sub new {
   $self->{'parents_read'}          = {};
   $self->{'inheritance_tree'}      = {};
   $self->{'remove_files'}          = {};
-  $self->{'feature_parser'}        = new FeatureParser($gfeature, $feature);
+  $self->{'feature_parser'}        = new FeatureParser($gfeature, $feature,
+                                                       $features);
   $self->{'convert_slashes'}       = $self->convert_slashes();
   $self->{'sort_files'}            = $self->sort_files();
   $self->{'source_callback'}       = undef;
