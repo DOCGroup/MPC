@@ -1,3 +1,12 @@
+Thu Apr 22 08:32:20 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/openssl.mpb:
+        * config/qt.mpb:
+        * config/zlib.mpb:
+
+          Added the vc8 type to the 'specific' sections that have vc71 in
+          them.
+
 Wed Apr 21 08:50:01 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/VC8ProjectCreator.pm:
