@@ -42,7 +42,7 @@
 				RuntimeLibrary="<%if(!optimize)%><%runtime_library("3")%><%else%><%runtime_library("2")%><%endif%>"
 				BufferSecurityCheck="<%BufferSecurityCheck("TRUE")%>"
 				EnableFunctionLevelLinking="<%EnableFunctionLevelLinking("TRUE")%>"
-				TreatWChar_tAsBuiltInType="TRUE"
+				TreatWChar_tAsBuiltInType="<%wchar_t("FALSE")%>"
 				ForceConformanceInForLoopScope="TRUE"
 				RuntimeTypeInfo="<%rtti("TRUE")%>"
 <%if(pch_header)%>
