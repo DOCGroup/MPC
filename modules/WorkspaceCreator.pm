@@ -74,14 +74,15 @@ sub new {
   my($genins)     = shift;
   my($into)       = shift;
   my($language)   = shift;
-  my($expand_env) = shift;
+  my($use_env)    = shift;
+  my($expandvars) = shift;
   my($self)       = Creator::new($class, $global, $inc,
                                  $template, $ti, $dynamic, $static,
                                  $relative, $addtemp, $addproj,
                                  $progress, $toplevel, $baseprojs,
                                  $feature, $features,
                                  $hierarchy, $nmod, $applypj,
-                                 $into, $language, $expand_env,
+                                 $into, $language, $use_env, $expandvars,
                                  'workspace');
 
   $self->{'workspace_name'}      = undef;
@@ -1664,7 +1665,7 @@ sub process_cmdline {
       my(@cacheInvalidating) = ('global', 'include', 'baseprojs',
                                 'template', 'ti', 'relative',
                                 'addtemp', 'addproj', 'feature_file',
-                                'features', 'expand_env');
+                                'features', 'use_env', 'expand_vars');
       foreach my $key (@cacheInvalidating) {
         if ($self->is_set($key, $options)) {
           $self->{'cacheok'} = 0;
@@ -1729,7 +1730,8 @@ sub project_creator {
                    $self->{'generate_ins'},
                    $parameters{'into'},
                    $self->get_language(),
-                   $parameters{'expand_env'});
+                   $parameters{'use_env'},
+                   $parameters{'expand_vars'});
 }
 
 
