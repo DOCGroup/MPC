@@ -32,7 +32,6 @@ Release {
   debug_switch          =
   type_is_dynamic       = 1
   type_is_binary        = 1
-  pdb                   = 1
 }
 
 Debug {
@@ -47,7 +46,8 @@ Debug {
   lib_modifier          = d
   type_is_dynamic       = 1
   type_is_binary        = 1
-  pdb                   = 1
+  pdbl                  = 1
+  pdbc                  = 1
 }
 
 Static Release {
@@ -79,6 +79,7 @@ Static Debug {
   lib_modifier          = sd
   type_is_static        = 1
   need_staticflags      = 1
+  pdbc                  = 1
 }
 
 MFC Release {
@@ -94,7 +95,6 @@ MFC Release {
   debug_switch          =
   type_is_dynamic       = 1
   type_is_binary        = 1
-  pdb                   = 1
 }
 
 MFC Debug {
@@ -109,7 +109,8 @@ MFC Debug {
   lib_modifier          = mfcd
   type_is_dynamic       = 1
   type_is_binary        = 1
-  pdb                   = 1
+  pdbl                  = 1
+  pdbc                  = 1
 }
 
 Static MFC Release {
@@ -141,6 +142,7 @@ Static MFC Debug {
   lib_modifier          = mfcsd
   type_is_static        = 1
   need_staticflags      = 1
+  pdbc                  = 1
 }
 
 conditional_include "vcfullmacros"

@@ -10,7 +10,6 @@ default_platform      = "WCE ARM"
 configurations        = Release Debug
 type_is_binary        = 1
 common_defines        = UNICODE _UNICODE
-pdb                   = 1
 stack                 =
 use_modifier          =
 
@@ -68,6 +67,8 @@ Debug {
   output_dir            = .
   intermediate_dir      = Debug
   lib_modifier          = d
+  pdbl                  = 1
+  pdbc                  = 1
 }
 
 MFC Release {
@@ -91,6 +92,8 @@ MFC Debug {
   output_dir            = MFC_Debug
   intermediate_dir      = MFC_Debug
   lib_modifier          = mfcd
+  pdbl                  = 1
+  pdbc                  = 1
   use_mfc               = 2
 }
 

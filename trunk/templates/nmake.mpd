@@ -93,7 +93,7 @@ DEPEND :
 !ENDIF
 
 REALCLEAN : CLEAN
-<%if(pdb)%>
+<%if(pdbl)%>
 <%if(exename)%>
 	-@erase "$(INSTALLDIR)\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.pdb"
 <%endif%>
@@ -105,10 +105,14 @@ REALCLEAN : CLEAN
         -@erase "$(OUTDIR)\<%sharedname%><%lib_modifier%>.ilk"
 <%endif%>
 <%if(staticname && type_is_static)%>
-	-@erase "$(OUTDIR)\<%staticname%><%lib_modifier%>.pdb"
         -@erase "$(OUTDIR)\<%staticname%><%lib_modifier%>.lib"
         -@erase "$(OUTDIR)\<%staticname%><%lib_modifier%>.exp"
         -@erase "$(OUTDIR)\<%staticname%><%lib_modifier%>.ilk"
+<%endif%>
+<%endif%>
+<%if(pdbc)%>
+<%if(type_is_static)%>
+	-@erase "<%libout%>\<%staticname%><%lib_modifier%>.pdb"
 <%endif%>
 <%endif%>
 <%if(exename)%>
@@ -129,7 +133,7 @@ REALCLEAN : CLEAN
     if not exist "$(INTDIR)\$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%>/O2<%else%>/Ob0<%endif%> <%compile_flags%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines macros)%>/D <%define%> <%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%>/D <%pch_define%> <%endfor%><%if(pch_source)%>/Yu<%else%>/YX<%endif%>"<%pch_header%>" /Fp"$(INTDIR)\<%basenoextension(pch_header)%>.pch" <%endif%>/Fo"<%fo_flag("$(INTDIR)\\\\")%>" /Fd"<%fd_flag("$(INTDIR)\\\\")%>" /FD /c
+CPP_PROJ=/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%>/O2<%else%>/Ob0<%endif%> <%compile_flags%><%if(pdbc)%> /Fd"<%if(type_is_static)%><%libout%>\<%staticname%><%lib_modifier%>.pdb<%else%>$(INTDIR)/<%endif%>"<%endif%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines macros)%>/D <%define%> <%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%>/D <%pch_define%> <%endfor%><%if(pch_source)%>/Yu<%else%>/YX<%endif%>"<%pch_header%>" /Fp"$(INTDIR)\<%basenoextension(pch_header)%>.pch" <%endif%>/Fo"<%fo_flag("$(INTDIR)\\\\")%>" /FD /c
 
 <%if(!type_is_static)%>
 RSC=rc.exe
@@ -141,7 +145,7 @@ RSC_PROJ=/l 0x409 /fo"$(INTDIR)\<%basenoextension(resource_file)%>.res"<%foreach
 <%if(exename || sharedname || staticname)%>
 <%if(type_is_binary)%>
 LINK32=link.exe
-LINK32_FLAGS=<%systemlibs("advapi32.lib user32.lib")%><%if(link_options)%> <%link_options%><%endif%> /INCREMENTAL:<%incremental("NO")%> <%foreach(libs)%><%lib%><%lib_modifier%>.lib <%endfor%><%foreach(lit_libs)%><%lit_lib%>.lib <%endfor%><%foreach(pure_libs)%><%pure_lib%> <%endfor%><%foreach(libpaths)%>/libpath:"<%libpath%>" <%endfor%>/nologo<%if(win_version)%> /version:<%win_version%><%endif%> /subsystem:<%subsystem("windows")%><%if(type_is_dynamic)%> <%if(!source_files)%>/noentry <%endif%>/dll<%endif%> <%debug_switch("/debug")%> <%if(pdb)%>/pdb:"<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%lib_modifier%>.pdb<%endif%><%if(exename)%>$(INSTALLDIR)\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.pdb<%endif%><%if(type_is_static)%>$(OUTDIR)\<%staticname%><%lib_modifier%>.pdb<%endif%>" <%endif%>/machine:<%machine("I386")%> /out:"<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%lib_modifier%>.dll<%endif%><%if(exename)%>$(INSTALLDIR)\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.exe<%endif%>"<%if(sharedname)%> /implib:"$(OUTDIR)\<%sharedname%><%lib_modifier%>.lib"<%endif%>
+LINK32_FLAGS=<%systemlibs("advapi32.lib user32.lib")%><%if(link_options)%> <%link_options%><%endif%> /INCREMENTAL:<%incremental("NO")%> <%foreach(libs)%><%lib%><%lib_modifier%>.lib <%endfor%><%foreach(lit_libs)%><%lit_lib%>.lib <%endfor%><%foreach(pure_libs)%><%pure_lib%> <%endfor%><%foreach(libpaths)%>/libpath:"<%libpath%>" <%endfor%>/nologo<%if(win_version)%> /version:<%win_version%><%endif%> /subsystem:<%subsystem("windows")%><%if(type_is_dynamic)%> <%if(!source_files)%>/noentry <%endif%>/dll<%endif%> <%debug_switch("/debug")%> <%if(pdbl)%>/pdb:"<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%lib_modifier%>.pdb<%endif%><%if(exename)%>$(INSTALLDIR)\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.pdb<%endif%><%if(type_is_static)%>$(OUTDIR)\<%staticname%><%lib_modifier%>.pdb<%endif%>" <%endif%>/machine:<%machine("I386")%> /out:"<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%lib_modifier%>.dll<%endif%><%if(exename)%>$(INSTALLDIR)\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.exe<%endif%>"<%if(sharedname)%> /implib:"$(OUTDIR)\<%sharedname%><%lib_modifier%>.lib"<%endif%>
 <%endif%>
 <%if(type_is_static)%>
 LINK32=link.exe -lib
@@ -230,7 +234,7 @@ SOURCE=<%pch_source%>
 <%foreach(configurations)%>
 !<%fornotfirst("ELSE")%>IF  "$(CFG)" == "<%platform%> <%configuration%>"
 
-CPP_SWITCHES=/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%>/O2<%else%>/Ob0<%endif%> <%compile_flags%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines macros)%>/D <%define%> <%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%>/D <%pch_define%> <%endfor%>/Fp"$(INTDIR)\<%basenoextension(pch_header)%>.pch" /Yc"<%pch_header%>" <%endif%>/Fo"<%fo_flag%>" /Fd"<%fd_flag%>" /FD /c
+CPP_SWITCHES=/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%>/O2<%else%>/Ob0<%endif%> <%compile_flags%><%if(pdbc)%> /Fd"<%if(type_is_static)%><%libout%>\<%staticname%><%lib_modifier%>.pdb<%else%>$(INTDIR)/<%endif%>"<%endif%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines macros)%>/D <%define%> <%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%>/D <%pch_define%> <%endfor%>/Fp"$(INTDIR)\<%basenoextension(pch_header)%>.pch" /Yc"<%pch_header%>" <%endif%>/Fo"<%fo_flag%>" /FD /c
 
 "$(INTDIR)\<%basenoextension(pch_source)%>.obj"	"$(INTDIR)\<%basenoextension(pch_header)%>.pch" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
