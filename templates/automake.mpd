@@ -168,6 +168,15 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%endif%>
 <%endif%>
 <%endif%>
+<%if(pkgconfig_files)%>
+<%foreach(pkgconfig_files)%>
+
+pkgconfigdata_DATA = <%pkgconfig_file%>
+
+<%basenoextension(pkgconfig_file)%>: ${top_srcdir}/config.status ${srcdir}/<%pkgconfig_file%>
+        ${top_srcdir}/config.status --file $@:${srcdir}/<%pkgconfig_file%>
+<%endfor%>
+<%endif%>
 <%if(rev_avoids || rev_requires)%>
 
 <%foreach(rev_avoids)%>
