@@ -1,3 +1,11 @@
+Mon Sep 27 19:32:42 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+
+	  Removed code that added -I${top_srcdir} and -I${top_builddir}
+	  to CPPFLAGS.  These should be added by project files if they
+	  are needed.
+
 Mon Sep 27 19:13:31 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
