@@ -33,7 +33,7 @@ Debug {
   output_dir            = Static_Debug
   intermediate_dir      = Static_Debug
   lib_modifier          = sd
-  pdb                   = 1
+  pdbc                  = 1
 }
 
 MFC Release {
@@ -58,7 +58,7 @@ MFC Debug {
   output_dir            = Static_MFC_Debug
   intermediate_dir      = Static_MFC_Debug
   lib_modifier          = mfcsd
-  pdb                   = 1
+  pdbc                  = 1
   use_mfc               = 2
 }
 
