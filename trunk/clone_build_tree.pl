@@ -32,7 +32,7 @@ use File::Basename;
 # Data Section
 # ******************************************************************
 
-my($version)    = '0.1';
+my($version)    = '0.2';
 my($exclude)    = undef;
 my($verbose)    = 0;
 my(@foundFiles) = ();
@@ -100,10 +100,9 @@ sub findCallback {
                 );
 
       if ($matches) {
-        ## Remove the beginning dot slash and save the file
-        my($file) = $File::Find::name;
-        $file =~ s/^\.[\\\/]+//;
-        push(@foundFiles, $file);
+        ## Remove the beginning dot slash as we save the file
+        push(@foundFiles, $File::Find::name);
+        $foundFiles[$#foundFiles] =~ s/^\.[\\\/]+//;
       }
     }
   }
@@ -310,7 +309,7 @@ sub hardlinkFiles {
   ## Remove links that point to non-existant files
   my($lfh) = new FileHandle();
   my($txt) = "$fullbuild/clone_build_tree.links";
-  if (open($lfh, "$txt")) {
+  if (open($lfh, $txt)) {
     while(<$lfh>) {
       my($line) = $_;
       $line =~ s/\s+$//;
@@ -356,7 +355,9 @@ sub linkFiles {
   ## Search for the clonable files
   print "Searching $startdir for files...\n";
   my($files) = getFileList();
-  print "Found $#foundFiles files and directories.\n";
+  my($findtime) = time() - $starttime;
+  print 'Found ', scalar(@$files), ' files and directories in ',
+        $findtime, ' second', ($findtime == 1 ? '' : 's'), ".\n";
 
   foreach my $build (@$builds) {
     my($fullbuild) = "$builddir/$build";
@@ -375,7 +376,7 @@ sub linkFiles {
   }
 
   if ($status == 0) {
-    print "Total time: ", time() - $starttime, " seconds.\n";
+    print 'Total time: ', time() - $starttime, " seconds.\n";
   }
 
   return $status;
@@ -480,7 +481,7 @@ else {
 if (!defined $builds[0]) {
   my($cwd) = getcwd();
   if (chdir($builddir)) {
-    @builds = glob("*");
+    @builds = glob('*');
     chdir($cwd);
   }
   else {
