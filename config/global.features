@@ -14,8 +14,9 @@
 // command option of mwc.pl.
 //
 // By default we disable these.
-qt            = 0
-zlib          = 0
+boost         = 0
 mfc           = 0
+qt            = 0
 rpc           = 0
+zlib          = 0
 zzip          = 0

@@ -2,6 +2,7 @@
 // $Id$
 
 project {
+  requires += boost
   includes += $(BOOST_ROOT)/include/$(BOOST_VERSION)
   libpaths += $(BOOST_ROOT)/lib
 }
