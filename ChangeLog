@@ -1,3 +1,25 @@
+Fri Feb 11 06:58:04 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/mfc.mpb:
+        * templates/em3vcp.mpd:
+        * templates/em3vcpdll.mpt:
+        * templates/em3vcpdllexe.mpt:
+        * templates/em3vcplib.mpt:
+        * templates/em3vcplibexe.mpt:
+        * templates/nmake.mpd:
+        * templates/nmakeexe.mpt:
+        * templates/vc6dsp.mpd:
+        * templates/vc6dspdllexe.mpt:
+        * templates/vc6dsplibexe.mpt:
+        * templates/vc7.mpd:
+        * templates/vc7exe.mpt:
+        * templates/vc7libexe.mpt:
+
+          Provided a new template variable, unicode, which when set will
+          change the entry point for any MFC related executable to
+          wWinMainCRTStartup and set the UNICODE and _UNICODE preprocessor
+          macros.  RT #5106
+
 Mon Feb  7 09:51:10 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3vcp.mpd:
