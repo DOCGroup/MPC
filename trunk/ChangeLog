@@ -1,3 +1,13 @@
+Mon Apr  4 12:27:14 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/TemplateParser.pm:
+
+          Added a new template function, 'starts_with', that takes two
+          parameters.  The first parameter is a template variable and the
+          second is a literal string.  If the value of the template variable
+          starts with the literal string, then starts_with evaluates to
+          true.
+
 Fri Apr  1 12:39:12 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3vcp.mpd:

@@ -53,6 +53,7 @@ my(%keywords) = ('if'              => 0,
                  'sort'            => 2,
                  'uniq'            => 3,
                  'multiple'        => 5,
+                 'starts_with'     => 5,
                 );
 
 # ************************************************************
@@ -578,6 +579,48 @@ sub handle_multiple {
 }
 
 
+sub get_starts_with {
+  my($self) = shift;
+  my($str)  = shift;
+  return $self->doif_starts_with([$str]);
+}
+
+
+sub doif_starts_with {
+  my($self) = shift;
+  my($val)  = shift;
+
+  if (defined $val) {
+    my($str) = "@$val";
+    if ($str =~ /([^,]+)\s*,\s*(.*)/) {
+      my($name)    = $1;
+      my($pattern) = $2;
+      if (defined $name && defined $pattern) {
+        return ($self->get_value_with_default($name) =~ /^$pattern/);
+      }
+    }
+  }
+  return undef;
+}
+
+
+sub handle_starts_with {
+  my($self) = shift;
+  my($str)  = shift;
+
+  if (defined $str) {
+    my($val) = $self->doif_starts_with([$str]);
+
+    if (defined $val) {
+      $self->append_current($val);
+    }
+    else {
+      $self->append_current(0);
+    }
+  }
+}
+
+
 sub perform_reverse {
   my($self)  = shift;
   my($value) = shift;
@@ -698,7 +741,7 @@ sub process_compound_if {
 
       $val = $str;
       foreach my $cmd (reverse @cmds) {
-        if (($keywords{$cmd} & $type) != 0) {
+        if (defined $keywords{$cmd} && ($keywords{$cmd} & $type) != 0) {
           my($func) = "$prefix$cmd";
           $val = $self->$func($val);
 
