@@ -76,7 +76,7 @@ aCC {
   cxx           = aCC
   pic           = +Z
   platforms     = hpux
-  compilerflags = -AA -D_RWSTD_MULTI_THREAD
+  compilerflags = -AA -D_RWSTD_MULTI_THREAD +W336
   pchcreate     = "+hdr_create "
   pchuse        = "+hdr_use "
 }
