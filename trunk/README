@@ -85,7 +85,12 @@ project(project_name) : baseproject, anotherbaseproject {
 
 When listing files within components (Source_Files, Header_Files, etc.), you
 can use wild cards (*?[]) to include groups of files as can be done in shells.
-You can exclude files by preceding the name (or wild card) with the '!'.
+You can exclude files by preceding the name (or wild card) with the '!', but
+this sort of exclusion only pertains to files that exist in the directory at
+the time of project generation.  There is an additional syntax similar to
+the '!' ('^') which works the same as the '!' except that after all of the
+source files are added to the list (after automatic custom generated files
+are added) these files are explicitly removed from the list.
 
 The (project_name) part of the project declaration is optional.  If it is
 left off, the project name will default to the name of the mpc file without
@@ -439,9 +444,8 @@ project {
 Special type of feature project
 -------------------------------
 A feature project contains information as a project would, but can only
-be a base project, can not inherit from other projects and will only be
-added to a sub project if the features that it requires (or avoids) are
-present.
+be a base project and will only be added to a sub project if the features
+that it requires (or avoids) are present.
 
 A feature definition requires at least one feature name.  A name by itself
 specifies that the feature is required.  A '!' in front of the feature name
