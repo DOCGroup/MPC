@@ -1,3 +1,9 @@
+Fri Nov 19 10:05:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+          Only generate CPPDIR when cppdir is defined, also only generate
+          RESDIR when rcdir is defined
+
 Thu Nov 18 11:56:57 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
