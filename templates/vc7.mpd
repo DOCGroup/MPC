@@ -188,6 +188,7 @@
 		</Filter>
 <%endif%>
 <%foreach(custom_types)%>
+<%if(custom_type->input_files)%>
 		<Filter
 			Name="<%ucw(custom_type)%>"
 			Filter="<%foreach(custom_type->inputexts)%><%custom_type->inputext%><%fornotlast(";")%><%endfor%>">
@@ -212,6 +213,7 @@
 <%endif%>
 <%endfor%>
 		</Filter>
+<%endif%>
 <%endfor%>
 <%if(inline_files)%>
 		<Filter
