@@ -306,7 +306,8 @@ sub run {
                                 $options->{'name_modifier'},
                                 $options->{'apply_project'},
                                 $options->{'genins'},
-                                $options->{'into'});
+                                $options->{'into'},
+                                $options->{'language'});
       if ($base ne $file) {
         my($dir) = ($base eq '' ? $file : $self->mpc_dirname($file));
         if (!$creator->cd($dir)) {

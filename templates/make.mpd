@@ -28,16 +28,20 @@ DEPENDENCIES  = .depend.$(MAKEFILE)
 <%if(exename)%>
 BIN           = <%exename%>$(EXEEXT)
 <%endif%>
-<%if(staticname)%>
-LIB           = lib<%staticname%>.a
-<%endif%>
 <%foreach(platforms)%>
 EXEEXT        = <%exeext%>
 LN            = <%ln%>
+LIBPREFIX     = <%libprefix%>
+<%if(arext)%>
+<%if(staticname)%>
+AREXT         = <%arext%>
+LIB           = $(LIBPREFIX)<%staticname%>.$(AREXT)
+<%endif%>
+<%endif%>
 <%if(soext)%>
 <%if(sharedname)%>
-SHLIB         = lib<%sharedname%>.$(SOEXT)
 SOEXT         = <%soext%>
+SHLIB         = $(LIBPREFIX)<%sharedname%>.$(SOEXT)
 <%foreach(configurations)%>
 <%if(pic)%>
 PICFLAGS      = <%pic%>
@@ -50,23 +54,24 @@ SHFLAGS       = <%shflags%>
 <%endif%>
 <%endfor%>
 <%foreach(configurations)%>
+OBJEXT        = <%objext%>
+OUTPUT_OPTION = <%output_option("-o $@")%>
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) <%compile_option("-c")%>
+<%if(arflags)%>
+ARFLAGS       = <%arflags%>
+<%endif%>
 <%if(tempinc)%>
 TEMPINCDIR    = <%tempinc%>/<%project_name%>
 <%endif%>
 <%endfor%>
 GENFLAGS      = <%genflags(-g)%>
 CPPFLAGS      = $(PICFLAGS) $(GENFLAGS)<%if(cppflags)%> <%cppflags%><%endif%><%foreach(configurations)%><%if(compileflags)%> <%compileflags%><%endif%><%if(cpu)%> -DCPU=$(CPU)<%endif%><%if(tempinc)%> <%tempincopt%>$(TEMPINCDIR)<%endif%><%if(compilerflags)%> <%compilerflags%><%endif%><%if(pch_source && pchsupport)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%><%endfor%><%foreach(platforms)%><%if(extracppflags)%> <%extracppflags%><%endif%><%endfor%><%if(includes)%><%foreach(includes)%> -I<%include%><%endfor%><%endif%><%if(macros)%><%foreach(macros)%> -D<%macro%><%endfor%><%endif%>
-<%if(arflags)%>
-ARFLAGS       = <%arflags%>
-<%endif%>
 SRC           =<%if(pch_source && pchsupport)%> <%pch_source%><%endif%> <%source_files%>
-OBJS          =<%if(pch_source && pchsupport)%> <%basenoextension(pch_source)%>.o<%endif%><%foreach(source_files)%> <%basenoextension(source_file)%>.o<%endfor%><%foreach(platforms)%><%if(rc)%><%foreach(resource_files)%> <%resource_file%>.o<%endfor%><%endif%><%endfor%>
+OBJS          =<%if(pch_source && pchsupport)%> <%basenoextension(pch_source)%>.$(OBJEXT)<%endif%><%foreach(source_files)%> <%basenoextension(source_file)%>.$(OBJEXT)<%endfor%><%foreach(platforms)%><%if(rc)%><%foreach(resource_files)%> <%resource_file%>.$(OBJEXT)<%endfor%><%endif%><%endfor%>
 LDFLAGS       =<%if(libpaths)%><%foreach(libpaths)%> -L<%libpath%><%endfor%><%endif%><%foreach(configurations)%><%if(linkflags)%> <%linkflags%><%endif%><%endfor%>
 LDLIBS        =<%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(libs lit_libs)%> -l<%lib%><%endfor%><%foreach(platforms)%> <%ldlibs%><%endfor%>
 LINK.cc       = $(LD) $(LDFLAGS)
-COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
 RM            = rm -f
-OUTPUT_OPTION = -o $@
 <%if(dynamicflags)%>
 DYNAMICFLAGS  =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
 <%endif%>
@@ -97,14 +102,14 @@ specialscript:
 	@./specialscript $(NM) "$(OBJS)" "$(LDLIBS)" "<%if(libpaths)%><%libpaths%><%else%>.<%endif%>" <%prelink%>
 	@$(RM) specialscript
 
-<%basenoextension(prelink)%>.o: <%prelink%>
+<%basenoextension(prelink)%>.$(OBJEXT): <%prelink%>
 	$(COMPILE.cc) <%prelink%> $(OUTPUT_OPTION)
 	@$(RM) <%prelink%>
 
 <%endif%>
 <%endfor%>
 <%endfor%>
-$(BIN): $(TEMPINCDIR) $(OBJS) <%foreach(configurations)%><%foreach(platforms)%><%if(prelink)%><%basenoextension(prelink)%>.o<%endif%><%endfor%><%endfor%>
+$(BIN): $(TEMPINCDIR) $(OBJS) <%foreach(configurations)%><%foreach(platforms)%><%if(prelink)%><%basenoextension(prelink)%>.$(OBJEXT)<%endif%><%endfor%><%endfor%>
 	$(LINK.cc) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
 
 <%endif%>
@@ -191,12 +196,12 @@ $(TEMPINCDIR):
 
 <%endif%>
 <%if(pch_source && pchsupport)%>
-<%basenoextension(pch_source)%>.o: <%pch_source%>
+<%basenoextension(pch_source)%>.$(OBJEXT): <%pch_source%>
 	$(COMPILE.cc) <%if(pchcreate)%><%pchcreate%><%basename(pch_header)%>.gch <%endif%>$(EXPORTFLAGS) <%pch_source%> $(OUTPUT_OPTION)
 
 <%endif%>
 <%foreach(source_files)%>
-<%basenoextension(source_file)%>.o: <%source_file%>
+<%basenoextension(source_file)%>.$(OBJEXT): <%source_file%>
 	$(COMPILE.cc) <%if(pchuse && pch_source && pchsupport)%><%pchuse%><%basename(pch_header)%>.gch <%endif%>$(EXPORTFLAGS) <%source_file%> $(OUTPUT_OPTION)
 
 <%endfor%>
@@ -205,8 +210,8 @@ $(TEMPINCDIR):
 <%foreach(platforms)%>
 <%if(rc)%>
 <%foreach(resource_files)%>
-<%resource_file%>.o: <%resource_file%>
-	<%rc%> <%resource_file%> <%resource_file%>.o
+<%resource_file%>.$(OBJEXT): <%resource_file%>
+	<%rc%> <%resource_file%> <%resource_file%>.$(OBJEXT)
 
 <%endfor%>
 <%endif%>

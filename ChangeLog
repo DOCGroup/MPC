@@ -1,3 +1,43 @@
+Tue Aug 31 08:00:20 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where setting a scoped assignment would not apply to a
+          directory specified within that scope.  For example:
+
+          project {
+            Source_Files {
+              some_feature = value
+              src
+            }
+          }
+
+          The some_feature setting would not get applied to the files found
+          in the src directory.
+
+        * USAGE:
+        * modules/Creator.pm:
+        * modules/Driver.pm:
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/VC6ProjectCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/WorkspaceCreator.pm:
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+        * templates/vc7csharp.mpd:
+        * templates/vc7csharp.mpt:
+        * templates/vc7vb.mpd:
+        * templates/vc7vb.mpt:
+
+          Added multi-language support to MPC.  The default language is C++,
+          but it now supports C#, Java and Visual Basic.
+
+          An additional bug was fixed in ProjectCreator.pm.  If, in a
+          Define_Custom, the automatic keyword was not set or set to zero
+          MPC would still automatically add custom files to the project.
+
 Mon Aug 30 08:07:51 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:

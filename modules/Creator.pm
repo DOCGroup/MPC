@@ -55,6 +55,7 @@ sub new {
   my($nmodifier) = shift;
   my($applypj)   = shift;
   my($into)      = shift;
+  my($language)  = shift;
   my($type)      = shift;
   my($self)      = Parser::new($class, $inc);
 
@@ -83,6 +84,7 @@ sub new {
   $self->{'name_modifier'}   = $nmodifier;
   $self->{'apply_project'}   = $applypj;
   $self->{'into'}            = $into;
+  $self->{'language'}        = $language;
   $self->{'convert_slashes'} = $self->convert_slashes();
 
   return $self;
@@ -869,6 +871,12 @@ sub get_name_modifier {
 sub get_apply_project {
   my($self) = shift;
   return $self->{'apply_project'};
+}
+
+
+sub get_language {
+  my($self) = shift;
+  return $self->{'language'};
 }
 
 # ************************************************************

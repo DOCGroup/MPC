@@ -19,6 +19,33 @@ use vars qw(@ISA);
 @ISA = qw(ProjectCreator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my(%info) = ('cplusplus' => {'ext'      => '.vcproj',
+                             'dllexe'   => 'vc7exe',
+                             'libexe'   => 'vc7libexe',
+                             'dll'      => 'vc7dll',
+                             'lib'      => 'vc7lib',
+                             'template' => 'vc7',
+                            },
+             'csharp'    => {'ext'      => '.csproj',
+                             'dllexe'   => 'vc7csharp',
+                             'libexe'   => 'vc7csharp',
+                             'dll'      => 'vc7csharp',
+                             'lib'      => 'vc7csharp',
+                             'template' => 'vc7csharp',
+                            },
+             'vb'        => {'ext'      => '.vbproj',
+                             'dllexe'   => 'vc7vb',
+                             'libexe'   => 'vc7vb',
+                             'dll'      => 'vc7vb',
+                             'lib'      => 'vc7vb',
+                             'template' => 'vc7vb',
+                            },
+            );
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -109,37 +136,38 @@ sub project_file_name {
     $name = $self->project_name();
   }
 
-  return $self->get_modified_project_file_name($name, '.vcproj');
+  return $self->get_modified_project_file_name(
+                     $name, $info{$self->get_language()}->{'ext'});
 }
 
 
 sub get_dll_exe_template_input_file {
-  #my($self) = shift;
-  return 'vc7exe';
+  my($self) = shift;
+  return $info{$self->get_language()}->{'dllexe'};
 }
 
 
 sub get_lib_exe_template_input_file {
-  #my($self) = shift;
-  return 'vc7libexe';
+  my($self) = shift;
+  return $info{$self->get_language()}->{'libexe'};
 }
 
 
 sub get_dll_template_input_file {
-  #my($self) = shift;
-  return 'vc7dll';
+  my($self) = shift;
+  return $info{$self->get_language()}->{'dll'};
 }
 
 
 sub get_lib_template_input_file {
-  #my($self) = shift;
-  return 'vc7lib';
+  my($self) = shift;
+  return $info{$self->get_language()}->{'lib'};
 }
 
 
 sub get_template {
-  #my($self) = shift;
-  return 'vc7';
+  my($self) = shift;
+  return $info{$self->get_language()}->{'template'};
 }
 
 
