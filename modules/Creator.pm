@@ -613,7 +613,7 @@ sub process_assignment_sub {
   my($name)   = shift;
   my($value)  = shift;
   my($assign) = shift;
-  my($nval)   = $self->get_assignment_for_modification($name, $assign);
+  my($nval)   = $self->get_assignment_for_modification($name, $assign, 1);
 
   if (defined $nval) {
     ## Remove double quotes if there are any
@@ -797,10 +797,10 @@ sub get_assignment {
 
 
 sub get_assignment_for_modification {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($assign) = shift;
-
+  my($self)        = shift;
+  my($name)        = shift;
+  my($assign)      = shift;
+  my($subtraction) = shift;
   return $self->get_assignment($name, $assign);
 }
 
