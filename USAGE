@@ -61,9 +61,6 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
        -value_template This option allows modification of a template input
                        name value pair.  Use += to add VAL to the NAME's
                        value.  Use -= to subtract and = to override the value.
-                       It is important to note that this will only modify
-                       existing template input name value pairs and can not
-                       be used to introduce new name value pairs.
        -value_project  This option allows modification of a project variable
                        assignment .  Use += to add VAL to the NAME's value.
                        Use -= to subtract and = to override the value.
@@ -227,9 +224,6 @@ Usage: mpc.pl [-global <file>] [-include <directory>] [-recurse]
        -value_template This option allows modification of a template input
                        name value pair.  Use += to add VAL to the NAME's
                        value.  Use -= to subtract and = to override the value.
-                       It is important to note that this will only modify
-                       existing template input name value pairs and can not
-                       be used to introduce new name value pairs.
        -value_project  This option allows modification of a project variable
                        assignment .  Use += to add VAL to the NAME's value.
                        Use -= to subtract and = to override the value.

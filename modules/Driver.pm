@@ -184,9 +184,6 @@ sub optionError {
 "       -value_template This option allows modification of a template input\n" .
 "                       name value pair.  Use += to add VAL to the NAME's\n" .
 "                       value.  Use -= to subtract and = to override the value.\n" .
-"                       It is important to note that this will only modify\n" .
-"                       existing template input name value pairs and can not\n" .
-"                       be used to introduce new name value pairs.\n" .
 "       -value_project  This option allows modification of a project variable\n" .
 "                       assignment .  Use += to add VAL to the NAME's value.\n" .
 "                       Use -= to subtract and = to override the value.\n" .

@@ -1,3 +1,22 @@
+Thu Apr  8 07:02:25 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+        * modules/Driver.pm:
+
+          Removed the documentation stating that new name value template
+          pairs could not be added using -value_template.  This is no longer
+          the case.
+
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/TemplateInputReader.pm:
+        * modules/TemplateParser.pm:
+
+          Support replacing $() constructs with template values of the same
+          name.  By default all project creators will do this.  Overriding
+          the expand_variables_from_template_values method is the way to
+          modify this behavior.
+
 Wed Apr  7 06:49:16 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/bmake.mpd:
