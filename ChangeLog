@@ -1,3 +1,17 @@
+Wed Aug 18 08:56:01 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+
+	  Changed to use am_includes, rev_avoids, and rev_requires.
+
+	* modules/AutomakeProjectCreator:
+
+	  Changed fill_value to understand am_includes, rev_avoids, and
+	  rev_requires.  am_includes prepends $(srcdir) to any relative
+	  include paths; rev_avoids and and rev_requires reverses the
+	  order of the avoids and requires lists.  This is useful for
+	  the trailing comments after the "endif" in conditionals.
+
 Fri Aug 13 18:31:01 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
