@@ -4,3 +4,4 @@
 conditional_include "common"
 
 linkflags =
+INSTALL_THIS_TARGET =
