@@ -1,41 +1,51 @@
+Thu Feb 24 06:44:30 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/automakedll.mpt:
+
+          Removed the setting of 'am_version' for two reasons.  One, it's
+          not necessary to set the template variable in order to use it in
+          a template anymore. And two, it causes the 'version' conversion in
+          AutomakeProjectCreator.pm never to be used if a user sets
+          'version' but does not set the 'am_version' template variable.
+
 Wed Feb 23 20:36:31 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Remove trailing whitespace after version number if no
-	  linkflags were specified.
+          Remove trailing whitespace after version number if no
+          linkflags were specified.
 
-	  Rename pkgconfigdata_DATA to pkgconfig_DATA.
+          Rename pkgconfigdata_DATA to pkgconfig_DATA.
 
 Wed Feb 23 20:34:58 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeWorkspaceCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
 
-	  Remove trailing whitespace after project Makefile.am name.
+          Remove trailing whitespace after project Makefile.am name.
 
 Wed Feb 23 19:43:10 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeWorkspaceCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
 
-	  Emit extra crlf after null variable definitions.
+          Emit extra crlf after null variable definitions.
 
 Wed Feb 23 14:05:23 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Revert last change.  Multi-line output is more ugly than I
-	  thought it would be.
+          Revert last change.  Multi-line output is more ugly than I
+          thought it would be.
 
 Wed Feb 23 13:56:42 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Rework linkflags handling so output is more like what a human
-	  might write.
+          Rework linkflags handling so output is more like what a human
+          might write.
 
-	* templates/automakedll.mpt:
+        * templates/automakedll.mpt:
 
-	  Added am_version definition.
+          Added am_version definition.
 
 Wed Feb 23 15:34:12 2005  Chad Elliott  <elliott_c@ociweb.com>
 
