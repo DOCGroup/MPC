@@ -435,6 +435,10 @@ sub get_flag_overrides {
   my($fo)    = $prjc->{'flag_overrides'};
 
   if (defined $file) {
+    my($ustyle) = $file;
+    $ustyle =~ s/\\/\//g;
+    my($dir)   = $self->mpc_dirname($ustyle);
+
     ## Replace the custom_type key with the actual custom type
     if ($name =~ /^custom_type\->/) {
       my($ct) = $self->get_value('custom_type');
@@ -446,11 +450,9 @@ sub get_flag_overrides {
     foreach my $key (keys %$fo) {
       if ($key =~ /^$name/) {
         foreach my $of (keys %{$$fo{$key}}) {
-          my($cv) = $of;
-          if ($self->{'cslashes'}) {
-            $cv = $prjc->slash_to_backslash($of);
-          }
-          if ($cv eq $file) {
+          my($cv) = ($self->{'cslashes'} ? $prjc->slash_to_backslash($of) :
+                                           $of);
+          if ($cv eq $file || $cv eq $dir) {
             foreach my $ma (keys %{$prjc->{'matching_assignments'}}) {
               if ($ma eq $key) {
                 foreach my $aname (@{$prjc->{'matching_assignments'}->{$ma}}) {

@@ -71,12 +71,13 @@ sub new {
   my($applypj)   = shift;
   my($genins)    = shift;
   my($into)      = shift;
+  my($language)  = shift;
   my($self)      = Creator::new($class, $global, $inc,
                                 $template, $ti, $dynamic, $static,
                                 $relative, $addtemp, $addproj,
                                 $progress, $toplevel, $baseprojs,
                                 $feature, $hierarchy, $nmod, $applypj,
-                                $into,
+                                $into, $language,
                                 'workspace');
 
   $self->{'workspace_name'}      = undef;
@@ -1590,6 +1591,9 @@ sub process_cmdline {
       if (defined $options->{'into'}) {
         $self->optionError('-into is ignored');
       }
+      if (defined $options->{'language'}) {
+        $self->optionError('-language is ignored');
+      }
       if (defined $options->{'input'}->[0]) {
         $self->optionError('Command line files ' .
                            'specified in a workspace are ignored');
@@ -1660,7 +1664,8 @@ sub project_creator {
                    $parameters{'name_modifier'},
                    $parameters{'apply_project'},
                    $self->{'generate_ins'},
-                   $parameters{'into'});
+                   $parameters{'into'},
+                   $self->get_language());
 }
 
 

@@ -19,6 +19,15 @@ use vars qw(@ISA);
 @ISA = qw(WorkspaceCreator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my(%guids) = ('cplusplus' => '8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942',
+              'csharp'    => 'FAE04EC0-301F-11D3-BF4B-00C04F79EFBC',
+              'vb'        => 'F184B08F-C81C-45F6-A57F-5ABD9991F28F',
+             );
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -124,7 +133,8 @@ sub write_comps {
   my($fh)       = shift;
   my($gen)      = shift;
   my($projects) = $self->get_projects();
-  my($vc7guid)  = '8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942';
+  my($language) = $self->get_language();
+  my($vc7guid)  = $guids{$language};
   my($pjs)      = $self->get_project_info();
   my(@list)     = sort @$projects;
   my($crlf)     = $self->crlf();
@@ -146,6 +156,11 @@ sub write_comps {
     print $fh "Project(\"{$vc7guid}\") = \"$name\", \"$cpy\", \"{$guid}\"$crlf";
     $self->print_inner_project($fh, $gen, $guid, $deps, $name, \%name_to_guid_map);
     print $fh "EndProject$crlf";
+
+    if ($deps ne '' &&
+        ($language eq 'csharp' || $language eq 'vb')) {
+      $self->add_references($project, $vc7guid, $deps, \%name_to_guid_map);
+    }
   }
 
   ## Project Configurations
@@ -183,6 +198,46 @@ sub write_comps {
             "\tGlobalSection(ExtensibilityAddIns) = postSolution$crlf" .
             "\tEndGlobalSection$crlf" .
             "EndGlobal$crlf";
+}
+
+
+sub add_references {
+  my($self)  = shift;
+  my($proj)  = shift;
+  my($pguid) = shift;
+  my($deps)  = shift;
+  my($gmap)  = shift;
+  my($crlf)  = $self->crlf();
+  my($fh)    = new FileHandle();
+
+  if (open($fh, $proj)) {
+    my($write) = 0;
+    my(@read)  = ();
+    while(<$fh>) {
+      if (/MPC\s+ADD\s+REFERENCES/) {
+        $write = 1;
+        my($darr) = $self->create_array($deps);
+        foreach my $dep (@$darr) {
+          push(@read, "                <Reference$crlf",
+                      "                    Name = \"$dep\"$crlf",
+                      "                    Project = \"{$$gmap{$dep}}\"$crlf",
+                      "                    Package = \"{$pguid}\"$crlf",
+                      "                />$crlf");
+        }
+      }
+      else {
+        push(@read, $_);
+      }
+    }
+    close($fh);
+
+    if ($write && open($fh, ">$proj")) {
+      foreach my $line (@read) {
+        print $fh $line;
+      }
+      close($fh);
+    }
+  }
 }
 
 

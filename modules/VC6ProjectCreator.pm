@@ -88,9 +88,8 @@ sub override_valid_component_extensions {
   my($comp)  = shift;
   my($array) = undef;
 
-  if ($comp eq 'source_files') {
-    my(@exts) = ("\\.cpp", "\\.cxx", "\\.c");
-    $array = \@exts;
+  if ($comp eq 'source_files' && $self->get_language() eq 'cplusplus') {
+    $array = ["\\.cpp", "\\.cxx", "\\.c"];
   }
 
   return $array;

@@ -13,6 +13,16 @@ package Options;
 use strict;
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my(%languages) = ('cplusplus' => 1,
+                  'csharp'    => 1,
+                  'java'      => 1,
+                  'vb'        => 1,
+                 );
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -29,7 +39,7 @@ sub printUsage {
   }
   my($spaces) = (' ' x (length($base) + 8));
   print STDERR "$base v$version\n" .
-               "Usage: $base [-global <file>] [-include <directory>] [-recurse]]\n" .
+               "Usage: $base [-global <file>] [-include <directory>] [-recurse]\n" .
                $spaces . "[-ti <dll | lib | dll_exe | lib_exe>:<file>] [-hierarchy]\n" .
                $spaces . "[-template <file>] [-relative NAME=VAR] [-base <project>]\n" .
                $spaces . "[-noreldefs] [-notoplevel] [-static] [-genins]\n" .
@@ -38,9 +48,22 @@ sub printUsage {
                $spaces . "[-feature_file <file name>] [-make_coexistence]\n" .
                $spaces . "[-exclude <directories>] [-name_modifier <pattern>]\n" .
                $spaces . "[-apply_project] [-version] [-into <directory>]\n" .
-               $spaces . "[-type <";
+               $spaces . "[-language <";
 
-  my(@keys) = sort @types;
+  my(@keys) = sort keys %languages;
+  for(my $i = 0; $i <= $#keys; $i++) {
+    print STDERR $keys[$i];
+    if ($i != $#keys) {
+      print STDERR ' | ';
+    }
+    if ($i != $#keys && (($i + 1) % 4) == 0) {
+      print STDERR "\n$spaces        ";
+    }
+  }
+  print STDERR ">]\n",
+               $spaces, "[-type <";
+
+  @keys = sort @types;
   for(my $i = 0; $i <= $#keys; $i++) {
     print STDERR $keys[$i];
     if ($i != $#keys) {
@@ -72,6 +95,8 @@ sub printUsage {
 "                       option can be used multiple times to add directories.\n" .
 "       -into           Place all output files in a mirrored directory\n" .
 "                       structure starting at <directory>.\n" .
+"       -language       Specify the language preference.  The default is\n".
+"                       cplusplus.\n" .
 "       -make_coexistence If multiple 'make' based project types are\n" .
 "                       generated, they will be named such that they can coexist.\n" .
 "       -name_modifier  Modify output names.  The pattern passed to this\n" .
@@ -162,6 +187,7 @@ sub options {
   my($nmodifier)  = undef;
   my($into)       = undef;
   my($hierarchy)  = 0;
+  my($language)   = ($defaults ? 'cplusplus' : undef);
   my($dynamic)    = ($defaults ? 1 : undef);
   my($reldefs)    = ($defaults ? 1 : undef);
   my($toplevel)   = ($defaults ? 1 : undef);
@@ -262,6 +288,16 @@ sub options {
         $self->optionError('-into requires a directory argument');
       }
     }
+    elsif ($arg eq '-language') {
+      $i++;
+      $language = $args[$i];
+      if (!defined $language) {
+        $self->optionError('-language requires a language argument');
+      }
+      elsif (!defined $languages{$language}) {
+        $self->optionError("$language is not a valid language");
+      }
+    }
     elsif ($arg eq '-make_coexistence') {
       $makeco = 1;
     }
@@ -317,10 +353,17 @@ sub options {
         $self->optionError('-ti requires a template input argument');
       }
       else {
-        if ($tmpi =~ /(dll|lib|dll_exe|lib_exe):(.*)/) {
-          my($key)  = $1;
-          my($name) = $2;
-          $ti{$key} = $name;
+        if ($tmpi =~ /((dll|lib|dll_exe|lib_exe):)?(.*)/) {
+          my($key)  = $2;
+          my($name) = $3;
+          if (defined $key) {
+            $ti{$key} = $name;
+          }
+          else {
+            foreach my $type ('dll', 'lib', 'dll_exe', 'lib_exe') {
+              $ti{$type} = $name;
+            }
+          }
         }
         else {
           $self->optionError("Invalid -ti argument: $tmpi");
@@ -429,6 +472,7 @@ sub options {
                   'apply_project' => $applypj,
                   'genins'        => $genins,
                   'into'          => $into,
+                  'language'      => $language,
                  );
 
   return \%options;
