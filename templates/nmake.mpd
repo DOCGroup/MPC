@@ -7,7 +7,10 @@ CFG=<%platform%> <%default_configuration%>
 <%endfor%>
 !ENDIF
 
-!IF <%foreach(platforms)%><%foreach(configurations)%>"$(CFG)" != "<%platform%> <%configuration%>"<%fornotlast(" && ")%><%endfor%><%endfor%>
+<%foreach(platforms)%>
+!IF <%foreach(configurations)%>"$(CFG)" == "<%platform%> <%configuration%>"<%fornotlast(" || ")%><%endfor%>
+!ELSE
+<%endfor%>
 !MESSAGE Invalid configuration "$(CFG)" specified.
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
@@ -24,8 +27,10 @@ CFG=<%platform%> <%default_configuration%>
 <%endfor%>
 <%endfor%>
 !MESSAGE
-!ERROR An invalid configuration is specified.
+!ERROR An invalid configuration was specified.
+<%foreach(platforms)%>
 !ENDIF
+<%endfor%>
 
 !IF "$(OS)" == "Windows_NT"
 NULL=
@@ -55,7 +60,7 @@ OUTDIR=<%output_dir(".")%>
 <%if(type_is_dynamic)%>
 OUTDIR=<%libout%>
 <%endif%>
-INTDIR=<%intermediate_dir%>\<%noextension(project_file)%>
+INTDIR=<%intermediate_dir%>\<%noextension(project_file)%>\<%machine%>
 
 ALL : DEPENDCHECK <%foreach(custom_types)%><%foreach(custom_type->input_files)%><%foreach(custom_type->input_file->output_files)%> "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>"<%endfor%><%endfor%><%endfor%> <%if(exename)%><%if(install)%>"$(INSTALLDIR)" <%endif%><%endif%><%if(sharedname && type_is_dynamic)%>"<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%lib_modifier%>.dll"<%endif%><%if(staticname && type_is_static)%>"$(OUTDIR)\<%staticname%><%lib_modifier%>.lib"<%endif%><%if(exename)%>"$(INSTALLDIR)\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.exe"<%endif%>
 
@@ -117,15 +122,16 @@ REALCLEAN : CLEAN
 
 <%if(install)%>
 "$(INSTALLDIR)" :
-    if not exist "<%install%>/$(NULL)" mkdir "<%install%>"
+    if not exist "<%install%>\$(NULL)" mkdir "<%install%>"
 
 <%endif%>
 "$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+    if not exist "$(OUTDIR)\$(NULL)" mkdir "$(OUTDIR)"
 
 "$(INTDIR)" :
-    if not exist "<%intermediate_dir%>/$(NULL)" mkdir "<%intermediate_dir%>"
-    if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
+    if not exist "<%intermediate_dir%>\$(NULL)" mkdir "<%intermediate_dir%>"
+    if not exist "<%intermediate_dir%>\<%noextension(project_file)%>\$(NULL)" mkdir "<%intermediate_dir%>\<%noextension(project_file)%>"
+    if not exist "$(INTDIR)\$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
 CPP_PROJ=/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%>/O2<%else%>/Ob0<%endif%> <%compile_flags%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines macros)%>/D <%define%> <%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%>/D <%pch_define%> <%endfor%><%if(pch_source)%>/Yu<%else%>/YX<%endif%>"<%pch_header%>" /Fp"$(INTDIR)\<%noextension(pch_header)%>.pch" <%endif%>/Fo"<%fo_flag("$(INTDIR)\\\\")%>" /Fd"<%fd_flag("$(INTDIR)\\\\")%>" /FD /c
@@ -209,12 +215,12 @@ LINK32_OBJS= \
 !ENDIF
 
 <%marker(macros)%>
-!IF <%foreach(platforms)%><%foreach(configurations)%>"$(CFG)" == "<%platform%> <%configuration%>" <%fornotlast("|| ")%><%endfor%><%endfor%>
+<%foreach(platforms)%>
+!IF <%foreach(configurations)%>"$(CFG)" == "<%platform%> <%configuration%>" <%fornotlast("|| ")%><%endfor%>
 <%if(pch_source)%>
 <%if(pch_header)%>
 SOURCE=<%pch_source%>
 
-<%foreach(platforms)%>
 <%foreach(configurations)%>
 !<%fornotfirst("ELSE")%>IF  "$(CFG)" == "<%platform%> <%configuration%>"
 
@@ -225,7 +231,6 @@ CPP_SWITCHES=/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%
   $(CPP_SWITCHES) $(SOURCE)
 <<
 
-<%endfor%>
 <%endfor%>
 !ENDIF
 
@@ -250,7 +255,6 @@ SOURCE=<%template_file%>
 <%if(custom_type->input_file->output_files)%>
 SOURCE=<%custom_type->input_file%>
 
-<%foreach(platforms)%>
 <%foreach(configurations)%>
 !<%fornotfirst("ELSE")%>IF  "$(CFG)" == "<%platform%> <%configuration%>"
 
@@ -289,7 +293,6 @@ InputDir=<%dirname(custom_type->input_file)%>
 
 <%endfor%>
 !ENDIF
-<%endfor%>
 
 <%endif%>
 <%endfor%>
@@ -307,5 +310,6 @@ SOURCE=<%resource_file%>
 <%marker(local)%>
 
 !ENDIF
+<%endfor%>
 
 <%marker(bottom)%>
