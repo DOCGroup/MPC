@@ -138,7 +138,7 @@ PATH := $(PATH);<%custom_type->libpath%>
 <%foreach(custom_type->input_file->source_output_files)%>
 	@echo #include "<%pch_header%>" > temporary.src
 	@type <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temporary.src
-        @move /y temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
+	@move /y temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
 <%endfor%>
 <%endif%>
 <%endif%>
