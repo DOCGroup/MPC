@@ -30,13 +30,13 @@
 				PreprocessorDefinitions="<%if(type_is_dynamic)%><%foreach(dynamicflags)%><%dynamicflag%>;<%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%><%staticflag%>;<%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%><%pch_define%>;<%endfor%><%endif%><%foreach(defines common_defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
 				MinimalRebuild="<%MinimalRebuild("FALSE")%>"
 				ExceptionHandling="TRUE"
-<%if(debug)%>
+<%if(!optimize)%>
 				BasicRuntimeChecks="<%BasicRuntimeChecks("3")%>"
 <%endif%>
 <%if(StringPooling)%>
 				StringPooling="<%StringPooling%>"
 <%endif%>
-				RuntimeLibrary="<%if(debug)%><%runtime_library("3")%><%else%><%runtime_library("2")%><%endif%>"
+				RuntimeLibrary="<%if(!optimize)%><%runtime_library("3")%><%else%><%runtime_library("2")%><%endif%>"
 				BufferSecurityCheck="<%BufferSecurityCheck("TRUE")%>"
 				EnableFunctionLevelLinking="<%EnableFunctionLevelLinking("TRUE")%>"
 				TreatWChar_tAsBuiltInType="TRUE"
@@ -83,11 +83,9 @@
    <%endif%>
 <%endif%>
 				SubSystem="<%subsystem("1")%>"
-<%if(!debug)%>
 <%if(optimize)%>
 				OptimizeReferences="<%optref("2")%>"
 				EnableCOMDATFolding="<%opticf("2")%>"
-<%endif%>
 <%endif%>
 <%if(type_is_dynamic)%>
 				ImportLibrary="$(OutDir)/<%sharedname%><%lib_modifier%>.lib"
