@@ -333,6 +333,18 @@ postcommand         Allows a user to execute arbitrary commands after
                         <%documentation_file%>
                         <%resource_file%>
 
+                      The output file without an extension can be referenced
+                      as a generic output file using <%output_noext%> or can
+                      be referenced as a component file (if it matches the
+                      particular type) using one of the following:
+
+                        <%source_file_noext%>
+                        <%template_file_noext%>
+                        <%header_file_noext%>
+                        <%inline_file_noext%>
+                        <%documentation_file_noext%>
+                        <%resource_file_noext%>
+
                       The following are also available for use within the
                       postcommand setting.  They return the extension (if
                       there is any) of the input and output files
