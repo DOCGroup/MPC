@@ -1,3 +1,25 @@
+Wed Jan 19 11:20:42 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+        * modules/Creator.pm:
+        * modules/Driver.pm:
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Split the functionality of -expand_env into two options, -use_env
+          and -expand_vars.
+
+          If the -use_env option is supplied to mwc.pl or mpc.pl, then MPC
+          will use environment variable to replace $() instances instead of
+          the values provided by -relative.
+
+          If the -expand_vars option is used, then MPC will expand $()
+          variables to the exact value as found in the environment or the
+          -relative settings (depending on the use of the -use_env option).
+
+          Also, the -relative option can now accept relative paths.
+
 Tue Jan 18 09:29:09 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
