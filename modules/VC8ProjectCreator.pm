@@ -21,9 +21,12 @@ use vars qw(@ISA);
 # Subroutine Section
 # ************************************************************
 
-sub get_vcversion {
-  #my($self) = shift;
-  return '8.00';
+sub get_configurable {
+  my($self)   = shift;
+  my($name)   = shift;
+  my(%config) = ('vcversion' => '8.00',
+                );
+  return $config{$name};
 }
 
 1;
