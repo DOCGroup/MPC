@@ -1,3 +1,18 @@
+Fri Feb 11 13:25:02 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/ProjectCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+
+          Added a new pseudo variable, 'quote', that will provide a
+          project specific representation of a double quote character.
+          RT #5125
+
+        * clone_build_tree.pl:
+
+          Aesthetic change to print only Updating if updating a build and
+          Creating if creating a build.
+
 Fri Feb 11 06:58:04 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/mfc.mpb:

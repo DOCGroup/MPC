@@ -3005,10 +3005,11 @@ sub get_command_subs {
   }
 
   ## Add the project specific compatibility commands
-  $valid{'gt'}  = $self->get_gt_symbol();
-  $valid{'lt'}  = $self->get_lt_symbol();
-  $valid{'and'} = $self->get_and_symbol();
-  $valid{'or'}  = $self->get_or_symbol();
+  $valid{'gt'}    = $self->get_gt_symbol();
+  $valid{'lt'}    = $self->get_lt_symbol();
+  $valid{'and'}   = $self->get_and_symbol();
+  $valid{'or'}    = $self->get_or_symbol();
+  $valid{'quote'} = $self->get_quote_symbol();
 
   return \%valid;
 }
@@ -4000,6 +4001,11 @@ sub remove_non_custom_settings {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub get_quote_symbol {
+  #my($self) = shift;
+  return '"';
+}
 
 sub get_gt_symbol {
   #my($self) = shift;
