@@ -178,8 +178,9 @@ sub write_comps {
 
       if (open($pfh, $local)) {
         my($in_condition) = 0;
-        my($inc_pattern)  = $project_name . '_include_HEADERS';
-        my($pkg_pattern)  = $project_name . '_pkginclude_HEADERS';
+        my($regok)        = $self->escape_regex_special($project_name);
+        my($inc_pattern)  = $regok . '_include_HEADERS';
+        my($pkg_pattern)  = $regok . '_pkginclude_HEADERS';
         while (<$pfh>) {
           # Don't look at comments
           next if (/^#/);
@@ -303,8 +304,9 @@ sub write_comps {
             else {
               $project_name = 'nobase';
             }
-            my($inc_pattern) = $project_name . '_include_HEADERS';
-            my($pkg_pattern) = $project_name . '_pkginclude_HEADERS';
+            my($regok)       = $self->escape_regex_special($project_name);
+            my($inc_pattern) = $regok . '_include_HEADERS';
+            my($pkg_pattern) = $regok . '_pkginclude_HEADERS';
             if (/^$inc_pattern\s*=\s*/ || /^$pkg_pattern\s*=\s*/) {
               $_ =~ s/^$project_name/nobase/;
               if (/^(nobase_include_HEADERS)\s*=\s*/ ||
