@@ -795,32 +795,28 @@ sub handle_unknown_assignment {
 
   ## If $type is not defined, then we are skipping this section
   if (defined $type) {
-    ## If the template override has already been set, then
-    ## we will ignore this and keep the original value.
-    if (!defined $self->get_addtemp()->{$values[1]}) {
-      ## Save the addtemp state if we haven't done so before
-      if (!defined $self->{'addtemp_state'}) {
-        my(%state) = $self->save_state('addtemp');
-        $self->{'addtemp_state'} = \%state;
-      }
+    ## Save the addtemp state if we haven't done so before
+    if (!defined $self->{'addtemp_state'}) {
+      my(%state) = $self->save_state('addtemp');
+      $self->{'addtemp_state'} = \%state;
+    }
 
-      ## Now modify the addtemp values
-      $self->information("'$values[1]' was used as a template modifier.");
-      if ($values[0] eq 'assign_add') {
-        $values[0] = 1;
-      }
-      elsif ($values[0] eq 'assign_sub') {
-        $values[0] = -1;
-      }
-      else {
-        $values[0] = 0;
-      }
-      $self->get_addtemp()->{$values[1]} = [$values[0], $values[2]];
+    ## Now modify the addtemp values
+    $self->information("'$values[1]' was used as a template modifier.");
+    if ($values[0] eq 'assign_add') {
+      $values[0] = 1;
+    }
+    elsif ($values[0] eq 'assign_sub') {
+      $values[0] = -1;
     }
     else {
-      $self->information("'$values[1]' was used as a template modifier. " .
-                         "It has been set previously and will be ignored.");
+      $values[0] = 0;
     }
+
+    if (!defined $self->get_addtemp()->{$values[1]}) {
+      $self->get_addtemp()->{$values[1]} = [];
+    }
+    push(@{$self->get_addtemp()->{$values[1]}}, [$values[0], $values[2]]);
   }
 
   return 1, undef;
@@ -1779,85 +1775,88 @@ sub add_generated_files {
     ## input file (ex. input = car.y and first ext is .yy).  The extension
     ## is immediately removed in generated_filename_arrays.
     $wanted =~ s/\\//g;
+  }
+  else {
+    $wanted = '';
+  }
 
-    ## Get the generated filenames
-    my(@added) = ();
-    foreach my $file (@$arr) {
-      foreach my $gen ($self->generated_filenames($file, $gentype, $tag,
-                                                  "$file$wanted", 1, 1)) {
-        $self->list_generated_file($gentype, $tag, \@added, $gen, $file);
+  ## Get the generated filenames
+  my(@added) = ();
+  foreach my $file (@$arr) {
+    foreach my $gen ($self->generated_filenames($file, $gentype, $tag,
+                                                "$file$wanted", 1, 1)) {
+      $self->list_generated_file($gentype, $tag, \@added, $gen, $file);
+    }
+  }
+
+  if ($#added >= 0) {
+    my($names) = $self->{$tag};
+
+    ## Get all files in one list and save the directory
+    ## and component group in a hashed array.
+    my(@all) = ();
+    my(%dircomp) = ();
+    foreach my $name (keys %$names) {
+      foreach my $key (keys %{$$names{$name}}) {
+        push(@all, @{$$names{$name}->{$key}});
+        foreach my $file (@{$$names{$name}->{$key}}) {
+          $dircomp{$self->mpc_dirname($file)} = $key;
+        }
       }
     }
 
-    if ($#added >= 0) {
-      my($names) = $self->{$tag};
+    ## Create a small array of only the files we want to add.
+    ## We put them all together so we can keep them in order when
+    ## we put them at the front of the main file list.
+    my(@oktoadd) = ();
+    foreach my $file (@added) {
+      if (!$self->already_added(\@all, $file)) {
+        push(@oktoadd, $file);
+      }
+    }
 
-      ## Get all files in one list and save the directory
-      ## and component group in a hashed array.
-      my(@all) = ();
-      my(%dircomp) = ();
-      foreach my $name (keys %$names) {
-        foreach my $key (keys %{$$names{$name}}) {
-          push(@all, @{$$names{$name}->{$key}});
-          foreach my $file (@{$$names{$name}->{$key}}) {
-            $dircomp{$self->mpc_dirname($file)} = $key;
+    ## If we have files to add, make sure we add them to a group
+    ## that has the same directory location as the files we're adding.
+    if ($#oktoadd >= 0) {
+      my($key) = $dircomp{$self->mpc_dirname($oktoadd[0])};
+      if (!defined $key) {
+        my($defel) = $self->get_default_element_name();
+        my($check) = $oktoadd[0];
+        foreach my $regext (@{$self->{'valid_components'}->{$tag}}) {
+          if ($check =~ s/\.inl$//) {
+            last;
           }
         }
-      }
-
-      ## Create a small array of only the files we want to add.
-      ## We put them all together so we can keep them in order when
-      ## we put them at the front of the main file list.
-      my(@oktoadd) = ();
-      foreach my $file (@added) {
-        if (!$self->already_added(\@all, $file)) {
-          push(@oktoadd, $file);
-        }
-      }
-
-      ## If we have files to add, make sure we add them to a group
-      ## that has the same directory location as the files we're adding.
-      if ($#oktoadd >= 0) {
-        my($key) = $dircomp{$self->mpc_dirname($oktoadd[0])};
-        if (!defined $key) {
-          my($defel) = $self->get_default_element_name();
-          my($check) = $oktoadd[0];
-          foreach my $regext (@{$self->{'valid_components'}->{$tag}}) {
-            if ($check =~ s/\.inl$//) {
-              last;
-            }
-          }
-          foreach my $vc (keys %{$self->{'valid_components'}}) {
-            if ($vc ne $tag) {
-              foreach my $name (keys %{$self->{$vc}}) {
-                foreach my $ckey (keys %{$self->{$vc}->{$name}}) {
-                  if ($ckey ne $defel) {
-                    foreach my $ofile (@{$self->{$vc}->{$name}->{$ckey}}) {
-                      my($file) = $ofile;
-                      foreach my $regext (@{$self->{'valid_components'}->{$vc}}) {
-                        if ($file =~ s/$regext//) {
-                          last;
-                        }
-                      }
-                      if ($file eq $check) {
-                        $key = $ckey;
+        foreach my $vc (keys %{$self->{'valid_components'}}) {
+          if ($vc ne $tag) {
+            foreach my $name (keys %{$self->{$vc}}) {
+              foreach my $ckey (keys %{$self->{$vc}->{$name}}) {
+                if ($ckey ne $defel) {
+                  foreach my $ofile (@{$self->{$vc}->{$name}->{$ckey}}) {
+                    my($file) = $ofile;
+                    foreach my $regext (@{$self->{'valid_components'}->{$vc}}) {
+                      if ($file =~ s/$regext//) {
                         last;
                       }
                     }
+                    if ($file eq $check) {
+                      $key = $ckey;
+                      last;
+                    }
                   }
-                  last if (defined $key);
                 }
+                last if (defined $key);
               }
-              last if (defined $key);
             }
-          }
-          if (!defined $key) {
-            $key = $defel;
+            last if (defined $key);
           }
         }
-        foreach my $name (keys %$names) {
-          unshift(@{$$names{$name}->{$key}}, @oktoadd);
+        if (!defined $key) {
+          $key = $defel;
         }
+      }
+      foreach my $name (keys %$names) {
+        unshift(@{$$names{$name}->{$key}}, @oktoadd);
       }
     }
   }
@@ -2391,6 +2390,15 @@ sub list_default_generated {
                 last;
               }
             }
+
+            ## If the user provided file does not match any of the
+            ## extensions specified by the custom definition, we need
+            ## to remove the extension or else this file will not be
+            ## added to the project.
+            if ($f eq $val) {
+              $f =~ s/\.[^\.]+$//;
+            }
+
             push(@arr, $f);
           }
         }
@@ -2467,6 +2475,14 @@ sub list_generated_file {
       if ($gen =~ s/$ext$//) {
         last;
       }
+    }
+
+    ## If the user provided file does not match any of the
+    ## extensions specified by the custom definition, we need
+    ## to remove the extension or else this file will not be
+    ## added to the project.
+    if ($gen eq $input) {
+      $gen =~ s/\.[^\.]+$//;
     }
 
     ## See if we need to add the file
@@ -3642,46 +3658,48 @@ sub adjust_value {
   ## Perform any additions, subtractions
   ## or overrides for the template values.
   if (defined $self->get_addtemp()->{lc($name)}) {
-    my($val) = $self->get_addtemp()->{lc($name)};
-    my($arr) = $self->create_array($$val[1]);
-    if ($$val[0] > 0) {
-      if (UNIVERSAL::isa($value, 'ARRAY')) {
-        ## We need to make $value a new array reference ($arr)
-        ## to avoid modifying the array reference pointed to by $value
-        unshift(@$arr, @$value);
-        $value = $arr;
+    my($addtemparr) = $self->get_addtemp()->{lc($name)};
+    foreach my $val (@$addtemparr) {
+      my($arr) = $self->create_array($$val[1]);
+      if ($$val[0] > 0) {
+        if (UNIVERSAL::isa($value, 'ARRAY')) {
+          ## We need to make $value a new array reference ($arr)
+          ## to avoid modifying the array reference pointed to by $value
+          unshift(@$arr, @$value);
+          $value = $arr;
+        }
+        else {
+          $value .= " $$val[1]";
+        }
       }
-      else {
-        $value .= " $$val[1]";
-      }
-    }
-    elsif ($$val[0] < 0) {
-      my($parts) = undef;
-      if (UNIVERSAL::isa($value, 'ARRAY')) {
-        $parts = $value;
-      }
-      else {
-        $parts = $self->create_array($value);
-      }
+      elsif ($$val[0] < 0) {
+        my($parts) = undef;
+        if (UNIVERSAL::isa($value, 'ARRAY')) {
+          $parts = $value;
+        }
+        else {
+          $parts = $self->create_array($value);
+        }
 
-      $value = [];
-      foreach my $part (@$parts) {
-        if ($part ne '') {
-          my($found) = 0;
-          foreach my $ae (@$arr) {
-            if ($part eq $ae) {
-              $found = 1;
-              last;
+        $value = [];
+        foreach my $part (@$parts) {
+          if ($part ne '') {
+            my($found) = 0;
+            foreach my $ae (@$arr) {
+              if ($part eq $ae) {
+                $found = 1;
+                last;
+              }
             }
-          }
-          if (!$found) {
-            push(@$value, $part);
+            if (!$found) {
+              push(@$value, $part);
+            }
           }
         }
       }
-    }
-    else {
-      $value = $arr;
+      else {
+        $value = $arr;
+      }
     }
   }
 

@@ -17,3 +17,5 @@ Debug {
   defines          = DESIGN DEBUG
   output_dir       = Debug
 }
+
+conditional_include "user_vc7csharp"
