@@ -1,8 +1,16 @@
+Fri Aug 27 08:35:39 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a problem with the circular project dependency detection
+          algorithm.  Previously, it could take days to detect a circular
+          dependency if there were a large number of projects.
+
 Thu Aug 26 17:38:41 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeWorkspaceCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
 
-	  Fix tipos, forgot a leading $.
+          Fix tipos, forgot a leading $.
 
 Thu Aug 26 09:14:57 2004  Chad Elliott  <elliott_c@ociweb.com>
 
