@@ -12,20 +12,15 @@ package AutomakeProjectCreator;
 
 use strict;
 
+use MakeProjectBase;
 use ProjectCreator;
 
 use vars qw(@ISA);
-@ISA = qw(ProjectCreator);
+@ISA = qw(MakeProjectBase ProjectCreator);
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
-
-sub dollar_special {
-  #my($self) = shift;
-  return 1;
-}
-
 
 sub expand_variables_from_template_values {
   #my($self) = shift;
@@ -50,26 +45,7 @@ sub fill_value {
   my($name)  = shift;
   my($value) = undef;
 
-  if ($name eq 'vpath') {
-    my(%vpath) = ();
-    my($names) = $self->{'source_files'};
-    foreach my $name (keys %$names) {
-      my($comps) = $$names{$name};
-      foreach my $key (keys %$comps) {
-        foreach my $item (@{$$comps{$key}}) {
-          my($dname) = $self->relative($self->mpc_dirname($item));
-          if ($dname ne '.' && $dname !~ /^\.\.\//) {
-            $vpath{$dname} = 1;
-          }
-        }
-      }
-    }
-    my($str) = join(':', keys %vpath);
-    if ($str ne '') {
-      $value = 'VPATH = .:' . $str . $self->crlf();
-    }
-  }
-  elsif ($name eq 'am_includes') {
+  if ($name eq 'am_includes') {
     my($incs) = $self->get_assignment('includes');
     if (defined $incs) {
       my(@vec) = split(' ', $incs);
@@ -94,14 +70,6 @@ sub fill_value {
       $value = join(' ', reverse split(' ', $requires));
     }
   }
-  elsif ($name eq 'tao') {
-    my($incs) = $self->get_assignment('includes');
-    my($libs) = $self->get_assignment('libpaths');
-    if ((defined $incs && $incs =~ /tao/i) ||
-        (defined $libs && $libs =~ /tao/i)) {
-      $value = 1;
-    }
-  }
   elsif ($name eq 'am_version') {
     $value = $self->get_assignment('version');
     if (defined $value) {
@@ -115,17 +83,9 @@ sub fill_value {
 }
 
 
-sub project_file_name {
-  my($self) = shift;
-  my($name) = shift;
-
-  if (!defined $name) {
-    $name = $self->project_name();
-  }
-
-  return $self->get_modified_project_file_name('Makefile' .
-                                               ($name eq '' ? '' : ".$name"),
-                                               '.am');
+sub project_file_extension {
+  #my($self) = shift;
+  return '.am';
 }
 
 

@@ -13,11 +13,11 @@ package VC7ProjectCreator;
 use strict;
 
 use GUID;
-use WinVersionTranslator;
 use ProjectCreator;
+use VCProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(ProjectCreator);
+@ISA = qw(VCProjectBase ProjectCreator);
 
 # ************************************************************
 # Data Section
@@ -68,43 +68,6 @@ sub get_and_symbol {
 }
 
 
-sub compare_output {
-  #my($self) = shift;
-  return 1;
-}
-
-
-sub file_sorter {
-  my($self)  = shift;
-  my($left)  = shift;
-  my($right) = shift;
-  return lc($left) cmp lc($right);
-}
-
-
-sub require_dependencies {
-  my($self) = shift;
-
-  ## Only write dependencies for non-static projects
-  ## and static exe projects, unless the user wants the
-  ## dependency combined static library.
-  return ($self->get_static() == 0 || $self->exe_target() ||
-          $self->dependency_combined_static_library());
-}
-
-
-sub dependency_is_filename {
-  #my($self) = shift;
-  return 0;
-}
-
-
-sub crlf {
-  my($self) = shift;
-  return $self->windows_crlf();
-}
-
-
 sub get_configurable {
   my($self)   = shift;
   my($name)   = shift;
@@ -126,12 +89,6 @@ sub fill_value {
                              $self->{'current_input'},
                              $self->getcwd());
   }
-  elsif ($name eq 'win_version') {
-    $value = $self->get_assignment('version');
-    if (defined $value) {
-      $value = WinVersionTranslator::translate($value);
-    }
-  }
   else {
     $value = $self->get_configurable($name);
   }
@@ -139,16 +96,9 @@ sub fill_value {
 }
 
 
-sub project_file_name {
+sub project_file_extension {
   my($self) = shift;
-  my($name) = shift;
-
-  if (!defined $name) {
-    $name = $self->project_name();
-  }
-
-  return $self->get_modified_project_file_name(
-                     $name, $info{$self->get_language()}->{'ext'});
+  return $info{$self->get_language()}->{'ext'};
 }
 
 
