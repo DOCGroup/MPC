@@ -179,9 +179,9 @@ sub write_comps {
   # automake's uniform naming convention.  A true perl wizard probably
   # would be able to do this in a single line of code.
 
-  my(@need_blanks) = ();
-  my(%conditional_targets) = ();
   my(%seen) = ();
+  my(%conditional_targets) = ();
+  my(%unconditional_targets) = ();
   my($installable_headers) = undef;
   my($installable_pkgconfig) = undef;
   my($includedir) = undef;
@@ -219,10 +219,15 @@ sub write_comps {
               || /(^CLEANFILES)\s*\+=\s*/
               || /(^EXTRA_DIST)\s*\+=\s*/
              ) {
-            if ($in_condition && !defined ($conditional_targets{$1})) {
-              $conditional_targets{$1} = 1;
-              unshift(@need_blanks, $1);
+
+            if ($in_condition) {
+              $conditional_targets{$1}++;
+            } else {
+              $unconditional_targets{$1}++
             }
+
+            $seen{1} = 1;
+
             if (/^pkgconfig_DATA/) {
                 $installable_pkgconfig= 1;
             }
@@ -283,11 +288,17 @@ sub write_comps {
   ## Now, for each target used in a conditional, emit a blank assignment
   ## and mark that we've seen that target to avoid changing the += to =
   ## as the individual files are pulled in.
-  if (@need_blanks) {
-    foreach my $assign (@need_blanks) {
-      print $fh "$assign =$crlf";
-      $seen{$assign} = 1;
+  if (%conditional_targets) {
+    my $primary;
+    my $count;
+
+    while ( ($primary, $count) = each %conditional_targets) {
+      if ($unconditional_targets{$primary} || ($count > 1)) {
+        print $fh "$primary =$crlf";
+        $seen{$primary} = 1;
+      }
     }
+
     print $fh $crlf;
   }
 
