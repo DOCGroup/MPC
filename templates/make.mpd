@@ -109,7 +109,7 @@ specialscript:
 <%endif%>
 <%endfor%>
 <%endfor%>
-$(BIN): <%if(tempinc)%>$(TEMPINCDIR) <%endif%><%targetoutdir%> $(OBJS) <%foreach(configurations)%><%foreach(platforms)%><%if(prelink)%><%targetoutdir%><%noextension(prelink)%>.$(OBJEXT)<%endif%><%endfor%><%endfor%>
+$(BIN): <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%><%targetoutdir%> $(OBJS) <%foreach(configurations)%><%foreach(platforms)%><%if(prelink)%><%targetoutdir%><%noextension(prelink)%>.$(OBJEXT)<%endif%><%endfor%><%endfor%>
 	$(LINK.cc) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
 
 <%endif%>
@@ -121,7 +121,7 @@ INSTARGET = $(SHLIB)
 
 all: $(INSTARGET) <%if(install)%>install<%else%><%if(!exename)%>install<%endif%><%endif%>
 
-$(SHLIB): <%if(tempinc)%>$(TEMPINCDIR) <%endif%><%targetoutdir%> $(OBJS)
+$(SHLIB): <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%><%targetoutdir%> $(OBJS)
 	<%foreach(configurations)%><%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%><%endfor%> $(SHFLAGS) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
 <%else%>
 <%if(!exename)%>
@@ -142,7 +142,7 @@ all: $(INSTARGET) <%if(install)%>install<%else%><%if(!exename)%>install<%endif%>
 <%endfor%>
 <%endfor%>
 <%if(staticname)%>
-$(LIB): <%if(tempinc)%>$(TEMPINCDIR) <%endif%><%targetoutdir%> $(OBJS)
+$(LIB): <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%><%targetoutdir%> $(OBJS)
 	$(AR) $(ARFLAGS) $(LIB) $(OBJS)<%foreach(configurations)%><%if(tempinc)%> `find $(TEMPINCDIR) -type f`<%endif%><%endfor%>
 
 <%endif%>

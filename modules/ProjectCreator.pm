@@ -1326,6 +1326,9 @@ sub parse_define_custom {
         if (!defined $self->{'generated_exts'}->{$tag}->{'automatic'}) {
           $self->{'generated_exts'}->{$tag}->{'automatic'} = 1;
         }
+        if (!defined $self->{'valid_components'}->{$tag}) {
+          $self->{'valid_components'}->{$tag} = [];
+        }
         last;
       }
       else {
@@ -1703,17 +1706,14 @@ sub generated_filename_arrays {
     }
 
     ## If gendir was specified, then we need to account for that
-    if (defined $self->{'flag_overrides'}->{$type}) {
-      foreach my $q (keys %{$self->{'flag_overrides'}->{$type}}) {
-        if (defined $self->{'flag_overrides'}->{$type}->{$q}->{'gendir'}) {
-          if ($self->{'flag_overrides'}->{$type}->{$q}->{'gendir'} eq '.') {
-            $dir = '';
-          }
-          else {
-            $dir = $self->{'flag_overrides'}->{$type}->{$q}->{'gendir'} . '/';
-          }
-          last;
-        }
+    if (defined $self->{'flag_overrides'}->{$type} &&
+        defined defined $self->{'flag_overrides'}->{$type}->{$file} &&
+        defined $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'}) {
+      if ($self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} eq '.') {
+        $dir = '';
+      }
+      else {
+        $dir = $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} . '/';
       }
     }
 
@@ -1772,90 +1772,92 @@ sub add_generated_files {
   my($tag)     = shift;
   my($arr)     = shift;
 
-  ## Remove the escape sequences for the wanted extension.  It doesn't
-  ## matter if the first valid extension is not the same as the actual
-  ## input file (ex. input = car.y and first ext is .yy).  The extension
-  ## is immediately removed in generated_filename_arrays.
   my($wanted) = $self->{'valid_components'}->{$gentype}->[0];
-  $wanted =~ s/\\//g;
+  if (defined $wanted) {
+    ## Remove the escape sequences for the wanted extension.  It doesn't
+    ## matter if the first valid extension is not the same as the actual
+    ## input file (ex. input = car.y and first ext is .yy).  The extension
+    ## is immediately removed in generated_filename_arrays.
+    $wanted =~ s/\\//g;
 
-  ## Get the generated filenames
-  my(@added) = ();
-  foreach my $file (@$arr) {
-    foreach my $gen ($self->generated_filenames($file, $gentype, $tag,
-                                                "$file$wanted", 1, 1)) {
-      $self->list_generated_file($gentype, $tag, \@added, $gen, $file);
-    }
-  }
-
-  if ($#added >= 0) {
-    my($names) = $self->{$tag};
-
-    ## Get all files in one list and save the directory
-    ## and component group in a hashed array.
-    my(@all) = ();
-    my(%dircomp) = ();
-    foreach my $name (keys %$names) {
-      foreach my $key (keys %{$$names{$name}}) {
-        push(@all, @{$$names{$name}->{$key}});
-        foreach my $file (@{$$names{$name}->{$key}}) {
-          $dircomp{$self->mpc_dirname($file)} = $key;
-        }
+    ## Get the generated filenames
+    my(@added) = ();
+    foreach my $file (@$arr) {
+      foreach my $gen ($self->generated_filenames($file, $gentype, $tag,
+                                                  "$file$wanted", 1, 1)) {
+        $self->list_generated_file($gentype, $tag, \@added, $gen, $file);
       }
     }
 
-    ## Create a small array of only the files we want to add.
-    ## We put them all together so we can keep them in order when
-    ## we put them at the front of the main file list.
-    my(@oktoadd) = ();
-    foreach my $file (@added) {
-      if (!$self->already_added(\@all, $file)) {
-        push(@oktoadd, $file);
-      }
-    }
+    if ($#added >= 0) {
+      my($names) = $self->{$tag};
 
-    ## If we have files to add, make sure we add them to a group
-    ## that has the same directory location as the files we're adding.
-    if ($#oktoadd >= 0) {
-      my($key) = $dircomp{$self->mpc_dirname($oktoadd[0])};
-      if (!defined $key) {
-        my($defel) = $self->get_default_element_name();
-        my($check) = $oktoadd[0];
-        foreach my $regext (@{$self->{'valid_components'}->{$tag}}) {
-          if ($check =~ s/\.inl$//) {
-            last;
+      ## Get all files in one list and save the directory
+      ## and component group in a hashed array.
+      my(@all) = ();
+      my(%dircomp) = ();
+      foreach my $name (keys %$names) {
+        foreach my $key (keys %{$$names{$name}}) {
+          push(@all, @{$$names{$name}->{$key}});
+          foreach my $file (@{$$names{$name}->{$key}}) {
+            $dircomp{$self->mpc_dirname($file)} = $key;
           }
         }
-        foreach my $vc (keys %{$self->{'valid_components'}}) {
-          if ($vc ne $tag) {
-            foreach my $name (keys %{$self->{$vc}}) {
-              foreach my $ckey (keys %{$self->{$vc}->{$name}}) {
-                if ($ckey ne $defel) {
-                  foreach my $ofile (@{$self->{$vc}->{$name}->{$ckey}}) {
-                    my($file) = $ofile;
-                    foreach my $regext (@{$self->{'valid_components'}->{$vc}}) {
-                      if ($file =~ s/$regext//) {
+      }
+
+      ## Create a small array of only the files we want to add.
+      ## We put them all together so we can keep them in order when
+      ## we put them at the front of the main file list.
+      my(@oktoadd) = ();
+      foreach my $file (@added) {
+        if (!$self->already_added(\@all, $file)) {
+          push(@oktoadd, $file);
+        }
+      }
+
+      ## If we have files to add, make sure we add them to a group
+      ## that has the same directory location as the files we're adding.
+      if ($#oktoadd >= 0) {
+        my($key) = $dircomp{$self->mpc_dirname($oktoadd[0])};
+        if (!defined $key) {
+          my($defel) = $self->get_default_element_name();
+          my($check) = $oktoadd[0];
+          foreach my $regext (@{$self->{'valid_components'}->{$tag}}) {
+            if ($check =~ s/\.inl$//) {
+              last;
+            }
+          }
+          foreach my $vc (keys %{$self->{'valid_components'}}) {
+            if ($vc ne $tag) {
+              foreach my $name (keys %{$self->{$vc}}) {
+                foreach my $ckey (keys %{$self->{$vc}->{$name}}) {
+                  if ($ckey ne $defel) {
+                    foreach my $ofile (@{$self->{$vc}->{$name}->{$ckey}}) {
+                      my($file) = $ofile;
+                      foreach my $regext (@{$self->{'valid_components'}->{$vc}}) {
+                        if ($file =~ s/$regext//) {
+                          last;
+                        }
+                      }
+                      if ($file eq $check) {
+                        $key = $ckey;
                         last;
                       }
                     }
-                    if ($file eq $check) {
-                      $key = $ckey;
-                      last;
-                    }
                   }
+                  last if (defined $key);
                 }
-                last if (defined $key);
               }
+              last if (defined $key);
             }
-            last if (defined $key);
+          }
+          if (!defined $key) {
+            $key = $defel;
           }
         }
-        if (!defined $key) {
-          $key = $defel;
+        foreach my $name (keys %$names) {
+          unshift(@{$$names{$name}->{$key}}, @oktoadd);
         }
-      }
-      foreach my $name (keys %$names) {
-        unshift(@{$$names{$name}->{$key}}, @oktoadd);
       }
     }
   }
