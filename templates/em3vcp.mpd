@@ -16,7 +16,7 @@ CFG=<%project_name%> - <%operating_system("Win32")%> (<%default_platform%>) <%de
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE
-!MESSAGE NMAKE <%project_name%> - <%operating_system%> (<%default_platform%>) <%default_configuration%>"
+!MESSAGE NMAKE CFG="<%project_name%> - <%operating_system%> (<%default_platform%>) <%default_configuration%>"
 !MESSAGE
 !MESSAGE Possible choices for configuration are:
 !MESSAGE
