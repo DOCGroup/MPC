@@ -1,3 +1,12 @@
+Thu Mar 10 20:13:58 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+
+	  Scan project Makefile.am's for pkgconfig_DATA, if it is present
+	  emit "pkgconfigdir = @libdir@/pkgconfig" at the begining of the
+	  workspace Makefile.am.  This will help avoid typos like the ACE
+	  pkgconfigdir definition in 5.4.4.
+
 Wed Mar  9 08:53:39 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
