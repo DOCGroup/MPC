@@ -161,14 +161,25 @@ sub write_comps {
   my(%conditional_targets) = ();
   my(%seen) = ();
   my($installable_headers) = undef;
+  my($includedir) = undef;
+  my($project_name) = undef;
 
   ## To avoid unnecessarily emitting blank assignments, rip through the
   ## Makefile.<project>.am files and check for conditions.
   if (@locals) {
     my($pfh) = new FileHandle();
     foreach my $local (reverse @locals) {
+      if ($local =~ /Makefile\.(.*)\.am/) {
+        $project_name = $1;
+      }
+      else {
+        $project_name = 'nobase';
+      }
+
       if (open($pfh, $local)) {
         my($in_condition) = 0;
+        my($inc_pattern)  = $project_name . '_include_HEADERS';
+        my($pkg_pattern)  = $project_name . '_pkginclude_HEADERS';
         while (<$pfh>) {
           # Don't look at comments
           next if (/^#/);
@@ -189,18 +200,20 @@ sub write_comps {
               || /(^noinst_HEADERS)\s*\+=\s*/
               || /(^BUILT_SOURCES)\s*\+=\s*/
               || /(^CLEANFILES)\s*\+=\s*/
-              || /(^nobase_include_HEADERS)\s*\+=\s*/
-              || /(^nobase_pkginclude_HEADERS)\s*\+=\s*/
+              || /(^$inc_pattern)\s*=\s*/
+              || /(^$pkg_pattern)\s*=\s*/
               || /(^EXTRA_DIST)\s*\+=\s*/
              ) {
             if ($in_condition && !defined ($conditional_targets{$1})) {
               $conditional_targets{$1} = 1;
               unshift(@need_blanks, $1);
             }
-            if ($1 eq 'nobase_include_HEADERS' ||
-                $1 eq 'nobase_pkginclude_HEADERS') {
+            if ($1 eq $inc_pattern || $1 eq $pkg_pattern) {
               $installable_headers = 1;
             }
+          }
+          elsif (/includedir\s*=\s*(.*)/) {
+            $includedir = $1;
           }
         }
 
@@ -215,9 +228,9 @@ sub write_comps {
 
   ## Print out the Makefile.am.
   my($wsHelper) = WorkspaceHelper::get($self);
-  if ($installable_headers) {
-    my($incdir)   = $wsHelper->modify_value('includedir',
-                                            $self->get_includedir());
+  if (!defined $includedir && $installable_headers) {
+    my($incdir) = $wsHelper->modify_value('includedir',
+                                          $self->get_includedir());
     if ($incdir ne '') {
       print $fh "includedir = \@includedir\@$incdir$crlf$crlf";
     }
@@ -275,8 +288,6 @@ sub write_comps {
               || /(^noinst_HEADERS)\s*\+=\s*/
               || /(^BUILT_SOURCES)\s*\+=\s*/
               || /(^CLEANFILES)\s*\+=\s*/
-              || /(^nobase_include_HEADERS)\s*\+=\s*/
-              || /(^nobase_pkginclude_HEADERS)\s*\+=\s*/
               || /(^EXTRA_DIST)\s*\+=\s*/
              ) {
             if (!defined ($seen{$1})) {
