@@ -175,6 +175,9 @@ project {
   Define_Custom(MOC) {
     automatic        = 0
     command          = $(QTDIR)/bin/moc
+    postcommand      = echo "#include <some.h>" > <%temporary%> && \
+                       <%cat%> <%output%> >> <%temporary%> && \
+                       <%mv%> <%temporary%> <%output%>
     output_option    = -o
     inputext         = .h
     pre_extension    = _moc
@@ -236,12 +239,39 @@ keyword             This is a special assignment that takes the form of the
                     template code. ex. <%newname%>
 libpath             If the command requires an additional library path, add
                     it here.
-output_option       If the command takes an option to specify a single file
-                    output name, then set it here.  Otherwise, this should be
-                    omitted.
+output_option       If the command takes an option to specify only a single
+                    file output name, then set it here.  Otherwise, this
+                    should be omitted.
 pch_postrule        If this is set to 1, then a rule will be added to the
-                    custom rule that will modify the output files to
+                    custom rule that will modify the source output files to
                     include the precompiled header file.
+postcommand         Allows a user to execute arbitrary commands after
+                    the main command is run to generate the output file.
+                    The following pseudo variables can be accessed from
+                    within the postcommand assignment:
+                    <%input%>     - The input file for the original command.
+                    <%output%>    - The output created by the original command.
+                      The output file can be referenced as a generic output
+                      file using <%output%> or can be referenced as a
+                      component file (if it matches the particular type)
+                      using one of the following:
+
+                        <%source_file%>
+                        <%template_file%>
+                        <%header_file%>
+                        <%inline_file%>
+                        <%documentation_file%>
+                        <%resource_file%>
+
+                    <%temporary%> - A temporary file name.
+                    <%cat%>       - Platform non-specific command to cat a file.
+                    <%cp%>        - Platform non-specific copy command.
+                    <%mv%>        - Platform non-specific move command.
+                    <%rm%>        - Platform non-specific delete command.
+
+                    If any of the referenced pseudo template variables do
+                    not contain a value, then the postcommand will not be
+                    used.
 pre_extension       If the command produces multiple files of the same
                     extension, this comma separated list can be used to
                     specify them.  For example, tao_idl creates two types of
@@ -304,6 +334,7 @@ project {
   Define_Custom(TEST) {
     optional(keyword) {
       flag_keyword(option) += value [, value]
+    }
   }
 }
 

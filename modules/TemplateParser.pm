@@ -54,18 +54,19 @@ sub new {
   my($prjc)  = shift;
   my($self)  = $class->SUPER::new();
 
-  $self->{'prjc'}     = $prjc;
-  $self->{'ti'}       = $prjc->get_template_input();
-  $self->{'cslashes'} = $prjc->convert_slashes();
-  $self->{'crlf'}     = $prjc->crlf();
-  $self->{'clen'}     = length($self->{'crlf'});
-  $self->{'values'}   = {};
-  $self->{'defaults'} = {};
-  $self->{'lines'}    = [];
-  $self->{'built'}    = '';
-  $self->{'sstack'}   = [];
-  $self->{'lstack'}   = [];
-  $self->{'if_skip'}  = 0;
+  $self->{'prjc'}       = $prjc;
+  $self->{'ti'}         = $prjc->get_template_input();
+  $self->{'cslashes'}   = $prjc->convert_slashes();
+  $self->{'crlf'}       = $prjc->crlf();
+  $self->{'clen'}       = length($self->{'crlf'});
+  $self->{'values'}     = {};
+  $self->{'defaults'}   = {};
+  $self->{'lines'}      = [];
+  $self->{'built'}      = '';
+  $self->{'sstack'}     = [];
+  $self->{'lstack'}     = [];
+  $self->{'if_skip'}    = 0;
+  $self->{'parameters'} = [];
 
   $self->{'foreach'}  = {};
   $self->{'foreach'}->{'count'}      = -1;
@@ -178,7 +179,8 @@ sub get_nested_value {
     my($post) = $2;
     my($base) = $self->get_value($pre);
     if (defined $base) {
-      $value = $self->{'prjc'}->get_special_value($pre, $post, $base);
+      $value = $self->{'prjc'}->get_special_value($pre, $post, $base,
+                                                  @{$self->{'parameters'}});
     }
   }
 
@@ -622,10 +624,8 @@ sub handle_special {
   ## If $name (fornotlast, forfirst, etc.) is set to 1
   ## Then we append the $val onto the current string that's
   ## being built.
-  if (!$self->{'if_skip'}) {
-    if ($self->get_value($name)) {
-      $self->append_current($val);
-    }
+  if ($self->get_value($name)) {
+    $self->append_current($val);
   }
 }
 
@@ -634,9 +634,7 @@ sub handle_uc {
   my($self) = shift;
   my($name) = shift;
 
-  if (!$self->{'if_skip'}) {
-    $self->append_current(uc($self->get_value_with_default($name)));
-  }
+  $self->append_current(uc($self->get_value_with_default($name)));
 }
 
 
@@ -644,49 +642,41 @@ sub handle_lc {
   my($self) = shift;
   my($name) = shift;
 
-  if (!$self->{'if_skip'}) {
-    $self->append_current(lc($self->get_value_with_default($name)));
-  }
+  $self->append_current(lc($self->get_value_with_default($name)));
 }
 
 
 sub handle_ucw {
   my($self) = shift;
   my($name) = shift;
+  my($val)  = $self->get_value_with_default($name);
 
-  if (!$self->{'if_skip'}) {
-    my($val) = $self->get_value_with_default($name);
-    substr($val, 0, 1) = uc(substr($val, 0, 1));
-    while($val =~ /[_\s]([a-z])/) {
-      my($uc) = uc($1);
-      $val =~ s/(_|\s)([a-z])/$1$uc/;
-    }
-    $self->append_current($val);
+  substr($val, 0, 1) = uc(substr($val, 0, 1));
+  while($val =~ /[_\s]([a-z])/) {
+    my($uc) = uc($1);
+    $val =~ s/[_\s][a-z]/ $uc/;
   }
+  $self->append_current($val);
 }
 
 
 sub handle_normalize {
   my($self) = shift;
   my($name) = shift;
+  my($val)  = $self->get_value_with_default($name);
 
-  if (!$self->{'if_skip'}) {
-    my($val) = $self->get_value_with_default($name);
-    $val =~ tr/\-/_/;
-    $self->append_current($val);
-  }
+  $val =~ tr/\-/_/;
+  $self->append_current($val);
 }
 
 
 sub handle_noextension {
   my($self) = shift;
   my($name) = shift;
+  my($val)  = $self->get_value_with_default($name);
 
-  if (!$self->{'if_skip'}) {
-    my($val) = $self->get_value_with_default($name);
-    $val =~ s/\.[^\.]+$//;
-    $self->append_current($val);
-  }
+  $val =~ s/\.[^\.]+$//;
+  $self->append_current($val);
 }
 
 
@@ -715,12 +705,10 @@ sub handle_basename {
 sub handle_basenoextension {
   my($self) = shift;
   my($name) = shift;
+  my($val)  = $self->basename($self->get_value_with_default($name));
 
-  if (!$self->{'if_skip'}) {
-    my($val) = $self->basename($self->get_value_with_default($name));
-    $val =~ s/\.[^\.]+$//;
-    $self->append_current($val);
-  }
+  $val =~ s/\.[^\.]+$//;
+  $self->append_current($val);
 }
 
 
@@ -731,11 +719,9 @@ sub handle_flag_overrides {
 
   ($name, $type) = split(/,\s*/, $name);
 
-  if (!$self->{'if_skip'}) {
-    my($value) = $self->get_flag_overrides($name, $type);
-    if (defined $value) {
-      $self->append_current($value);
-    }
+  my($value) = $self->get_flag_overrides($name, $type);
+  if (defined $value) {
+    $self->append_current($value);
   }
 }
 
@@ -743,13 +729,48 @@ sub handle_flag_overrides {
 sub handle_marker {
   my($self) = shift;
   my($name) = shift;
+  my($val)  = $self->{'prjc'}->get_verbatim($name);
 
-  if (!$self->{'if_skip'}) {
-    my($value) = $self->{'prjc'}->get_verbatim($name);
-    if (defined $value) {
-      $self->append_current($value);
+  if (defined $val) {
+    $self->append_current($val);
+  }
+}
+
+
+sub handle_function {
+  my($self)   = shift;
+  my($name)   = shift;
+  my($prefix) = shift;
+  my($input)  = $self->get_value($prefix . '->input_file');
+  my($output) = undef;
+
+  if (defined $input) {
+    if ($self->{'cslashes'}) {
+      $input = $self->{'prjc'}->slash_to_backslash($input);
+    }
+    $output = $self->get_value($prefix . '->input_file->output_file');
+
+    if (defined $output) {
+      my($fo) = $self->get_flag_overrides($prefix . '->input_file',
+                                          'gendir');
+      if (defined $fo) {
+        $output = $fo . '/' . File::Basename::basename($output);
+      }
+      if ($self->{'cslashes'}) {
+        $output = $self->{'prjc'}->slash_to_backslash($output);
+      }
     }
   }
+
+  ## Set the parameters array with the determined input and output files
+  $self->{'parameters'} = [ $input, $output ];
+
+  ## Append the value returned by get_value_with_default.  It will use
+  ## the parameters when it calls get_special_value on the ProjectCreator
+  $self->append_current($self->get_value_with_default($name));
+
+  ## Reset the parameters arary
+  $self->{'parameters'} = [];
 }
 
 
@@ -791,43 +812,65 @@ sub process_name {
       }
       elsif ($name eq 'fornotlast'  || $name eq 'forlast' ||
              $name eq 'fornotfirst' || $name eq 'forfirst') {
-        $self->handle_special($name, $self->process_special($val));
+        if (!$self->{'if_skip'}) {
+          $self->handle_special($name, $self->process_special($val));
+        }
       }
       elsif ($name eq 'else') {
         $self->handle_else();
       }
       elsif ($name eq 'flag_overrides') {
-        $self->handle_flag_overrides($val);
+        if (!$self->{'if_skip'}) {
+          $self->handle_flag_overrides($val);
+        }
       }
       elsif ($name eq 'noextension') {
-        $self->handle_noextension($val);
+        if (!$self->{'if_skip'}) {
+          $self->handle_noextension($val);
+        }
       }
       elsif ($name eq 'basenoextension') {
-        $self->handle_basenoextension($val);
+        if (!$self->{'if_skip'}) {
+          $self->handle_basenoextension($val);
+        }
       }
       elsif ($name eq 'basename') {
-        $self->handle_basename($val);
+        if (!$self->{'if_skip'}) {
+          $self->handle_basename($val);
+        }
       }
       elsif ($name eq 'marker') {
-        $self->handle_marker($val);
+        if (!$self->{'if_skip'}) {
+          $self->handle_marker($val);
+        }
       }
       elsif ($name eq 'dirname') {
-        $self->handle_dirname($val);
+        if (!$self->{'if_skip'}) {
+          $self->handle_dirname($val);
+        }
       }
       elsif ($name eq 'comment') {
         ## Ignore the contents of the comment
       }
       elsif ($name eq 'uc') {
-        $self->handle_uc($val);
+        if (!$self->{'if_skip'}) {
+          $self->handle_uc($val);
+        }
       }
       elsif ($name eq 'ucw') {
-        $self->handle_ucw($val);
+        if (!$self->{'if_skip'}) {
+          $self->handle_ucw($val);
+        }
       }
       elsif ($name eq 'lc') {
-        $self->handle_lc($val);
+        if (!$self->{'if_skip'}) {
+          $self->handle_lc($val);
+        }
       }
       elsif ($name eq 'normalize') {
-        $self->handle_normalize($val);
+        if (!$self->{'if_skip'}) {
+          $self->handle_normalize($val);
+        }
       }
     }
     else {
@@ -838,6 +881,14 @@ sub process_name {
         $self->append_current($self->get_value_with_default($name));
       }
     }
+  }
+  elsif ($line =~ /^((\w+)(->\w+)+)\(\)%>/) {
+    my($name) = $1;
+    ## Handle all "function calls" separately
+    if (!$self->{'if_skip'}) {
+      $self->handle_function($name, $2);
+    }
+    $length += length($name) + 2;
   }
   else {
     my($error)  = $line;

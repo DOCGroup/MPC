@@ -104,7 +104,7 @@ specialscript:
 <%endif%>
 <%endfor%>
 <%endfor%>
-$(BIN): $(OBJS) <%foreach(configurations)%><%foreach(platforms)%><%if(prelink)%><%basenoextension(prelink)%>.o<%endif%><%endfor%><%endfor%>
+$(BIN): $(TEMPINCDIR) $(OBJS) <%foreach(configurations)%><%foreach(platforms)%><%if(prelink)%><%basenoextension(prelink)%>.o<%endif%><%endfor%><%endfor%>
 	$(LINK.cc) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
 
 <%endif%>
@@ -116,12 +116,14 @@ INSTARGET = $(SHLIB)
 
 all: $(INSTARGET) <%if(install)%>install<%else%><%if(!exename)%>install<%endif%><%endif%>
 
-$(SHLIB): $(OBJS)
+$(SHLIB): $(TEMPINCDIR) $(OBJS)
 	<%foreach(configurations)%><%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%><%endfor%> $(SHFLAGS) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
 <%else%>
+<%if(!exename)%>
 INSTARGET = $(LIB)
 
 all: $(INSTARGET) <%if(install)%>install<%else%><%if(!exename)%>install<%endif%><%endif%>
+<%endif%>
 <%endif%>
 
 <%else%>
@@ -135,7 +137,7 @@ all: $(INSTARGET) <%if(install)%>install<%else%><%if(!exename)%>install<%endif%>
 <%endfor%>
 <%endfor%>
 <%if(staticname)%>
-$(LIB): $(OBJS)
+$(LIB): $(TEMPINCDIR) $(OBJS)
 	$(AR) $(ARFLAGS) $(LIB) $(OBJS)<%foreach(configurations)%><%if(tempinc)%> `find $(TEMPINCDIR) -type f`<%endif%><%endfor%>
 
 <%endif%>
@@ -155,6 +157,11 @@ GENERATED_DIRTY    =<%foreach(custom_types)%><%foreach(custom_type->input_files)
 <%if(custom_type->input_file->output_files)%>
 <%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%custom_type->input_file%><%if(custom_type->dependent)%> <%custom_type->command%><%endif%>
 	<%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%>
+<%if(custom_type->postcommand)%>
+<%foreach(custom_type->input_file->output_files)%>
+	<%custom_type->postcommand()%>
+<%endfor%>
+<%endif%>
 <%if(pch_header)%>
 <%if(custom_type->pch_postrule)%>
 <%foreach(custom_type->input_file->source_output_files)%>
@@ -178,8 +185,6 @@ generated: $(GENERATED_DIRTY)
 
 <%foreach(configurations)%>
 <%if(tempinc)%>
-all: $(TEMPINCDIR)
-
 $(TEMPINCDIR):
 	@-test -d $(TEMPINCDIR) || mkdir -p $(TEMPINCDIR) 2> /dev/null || true
 

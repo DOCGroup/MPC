@@ -269,6 +269,11 @@ InputDir=<%dirname(custom_type->input_file)%>
 <%else%>
 	<%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(InputPath)
 <%endif%>
+<%if(custom_type->postcommand)%>
+<%foreach(custom_type->input_file->output_files)%>
+	<%custom_type->postcommand()%>
+<%endfor%>
+<%endif%>
 <%if(pch_header)%>
 <%if(custom_type->pch_postrule)%>
 <%foreach(custom_type->input_file->source_output_files)%>

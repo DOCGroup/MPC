@@ -67,10 +67,12 @@ my(%validNames) = ('exename'         => 1,
 ## 1    Value is an array and name gets 'outputext' converted to 'files'
 ## 2    Value is always scalar
 ## 3    Name can also be used in an 'optional' clause
+## 4    Needs <%...%> conversion
 my(%customDefined) = ('automatic'                   => 0x04,
                       'dependent'                   => 0x04,
                       'command'                     => 0x04,
                       'commandflags'                => 0x04,
+                      'postcommand'                 => 0x14,
                       'inputext'                    => 0x01,
                       'libpath'                     => 0x04,
                       'output_option'               => 0x04,
@@ -120,7 +122,7 @@ my(%vc) = ('source_files'        => [ "\\.cpp", "\\.cxx", "\\.cc", "\\.c", "\\.C
            'template_files'      => [ "_T\\.cpp", "_T\\.cxx", "_T\\.cc", "_T\\.c", "_T\\.C", ],
            'header_files'        => [ "\\.h", "\\.hpp", "\\.hxx", "\\.hh", ],
            'inline_files'        => [ "\\.i", "\\.inl", ],
-           'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", ],
+           'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
            'resource_files'      => [ "\\.rc", ],
           );
 
@@ -2376,13 +2378,14 @@ sub check_custom_output {
 
 
 sub get_special_value {
-  my($self)  = shift;
-  my($type)  = shift;
-  my($cmd)   = shift;
-  my($based) = shift;
+  my($self)   = shift;
+  my($type)   = shift;
+  my($cmd)    = shift;
+  my($based)  = shift;
+  my(@params) = @_;
 
   if ($type =~ /^custom_type/) {
-    return $self->get_custom_value($cmd, $based);
+    return $self->get_custom_value($cmd, $based, @params);
   }
   elsif ($type =~ /^grouped_/) {
     return $self->get_grouped_value($type, $cmd, $based);
@@ -2434,11 +2437,103 @@ sub get_grouped_value {
 }
 
 
+sub convert_postcommand_parameters {
+  my($self)   = shift;
+  my($str)    = shift;
+  my($input)  = shift;
+  my($output) = shift;
+  my(%nowarn) = ();
+  my(%valid)  = ('input'     => $input,
+                 'output'    => $output,
+                 'temporary' => 'temp.$$$$.' . int(rand(0xffffffff)),
+                );
+
+  ## Add the built-in OS compatibility commands
+  if ($self->{'convert_slashes'}) {
+    $valid{'cat'} = 'type';
+    $valid{'cp'}  = 'copy /y';
+    $valid{'mv'}  = 'move /y';
+    $valid{'rm'}  = 'del /f/s/q';
+  }
+  else {
+    $valid{'cat'} = 'cat';
+    $valid{'cp'}  = 'cp -f';
+    $valid{'mv'}  = 'mv -f';
+    $valid{'rm'}  = 'rm -rf';
+  }
+
+  ## Add in the specific types of output files
+  if (defined $output) {
+    foreach my $type (keys %{$self->{'valid_components'}}) {
+      my($key) = $type;
+      $key =~ s/s$//gi;
+      $nowarn{$key} = 1;
+      foreach my $ext (@{$self->{'valid_components'}->{$type}}) {
+        if ($output =~ /$ext$/) {
+          $valid{$key} = $output;
+        }
+      }
+    }
+  }
+
+  while ($str =~ /<%(\w+)(\(\w+\))?%>/) {
+    my($name)     = $1;
+    my($modifier) = $2;
+    if (defined $modifier) {
+      my($tmp) = $name;
+      $name = $modifier;
+      $name =~ s/[\(\)]//g;
+      $modifier = $tmp;
+    }
+
+    if (exists $valid{$name}) {
+      if (defined $valid{$name}) {
+        my($replace) = $valid{$name};
+        if (defined $modifier) {
+          if ($modifier eq 'noextension') {
+            $replace =~ s/\.[^\.]+$//;
+          }
+          else {
+            $self->warning("Uknown postcommand " .
+                           "parameter modifier $modifier.");
+          }
+        }
+        $str =~ s/<%\w+(\(\w+\))?%>/$replace/;
+      }
+      else {
+        $str =~ s/<%\w+(\(\w+\))?%>//;
+      }
+    }
+    else {
+      $str =~ s/<%\w+(\(\w+\))?%>//;
+
+      ## We only want to warn the user that we did not recognize the
+      ## pseudo template parameter if there was an input and an output
+      ## file passed to this function.  If the 'postcommand' was used
+      ## without the parenthesis (as in an if statement), then we don't
+      ## want to warn the user.
+      if (defined $input && defined $output) {
+        if (!defined $nowarn{$name}) {
+          $self->warning("<%$name%> was not recognized in the postcommand.");
+        }
+
+        ## If we didn't recognize the pseudo template parameter then
+        ## we don't want to return anything back.
+        return undef;
+      }
+    }
+  }
+
+  return $str;
+}
+
+
 sub get_custom_value {
-  my($self)  = shift;
-  my($cmd)   = shift;
-  my($based) = shift;
-  my($value) = undef;
+  my($self)   = shift;
+  my($cmd)    = shift;
+  my($based)  = shift;
+  my(@params) = @_;
+  my($value)  = undef;
 
   if ($cmd eq 'input_files') {
     my($generic) = 'generic_files';  ## Matches with generic_outputext
@@ -2518,9 +2613,15 @@ sub get_custom_value {
     }
     $value = \@array;
   }
-  elsif (defined $custom{$cmd} ||
-         (defined $customDefined{$cmd} &&
-          ($customDefined{$cmd} & 0x04) != 0)) {
+  elsif (defined $customDefined{$cmd} &&
+         ($customDefined{$cmd} & 0x04) != 0) {
+    $value = $self->get_assignment($cmd,
+                                   $self->{'generated_exts'}->{$based});
+    if (defined $value && ($customDefined{$cmd} & 0x10) != 0) {
+      $value = $self->convert_postcommand_parameters($value, @params);
+    }
+  }
+  elsif (defined $custom{$cmd}) {
     $value = $self->get_assignment($cmd,
                                    $self->{'generated_exts'}->{$based});
   }
