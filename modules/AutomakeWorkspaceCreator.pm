@@ -48,16 +48,7 @@ sub pre_workspace {
             '## this file will be lost the next time it is generated.', $crlf,
             '##', $crlf,
             '## MPC Command:', $crlf,
-            "## $0 @ARGV", $crlf, $crlf,
-            'bin_PROGRAMS =', $crlf,
-            'noinst_PROGRAMS =', $crlf,
-            'noinst_HEADERS =', $crlf,
-            'lib_LTLIBRARIES =', $crlf,
-            'BUILT_SOURCES =', $crlf,
-            'CLEANFILES =', $crlf,
-            'TEMPLATE_FILES =', $crlf,
-            'HEADER_FILES =', $crlf,
-            'INLINE_FILES =', $crlf, $crlf;
+            "## $0 @ARGV", $crlf, $crlf;
 }
 
 
@@ -91,7 +82,7 @@ sub write_comps {
   ## If we're writing a configure.ac.Makefiles file, every seen project
   ## goes into it. Since we only write this at the starting directory
   ## level, it'll include all projects processed at this level and below.
-  foreach my $dep (reverse @list) {
+  foreach my $dep (@list) {
     if ($mfh) {
       ## There should be a Makefile at each level, but it's not a project,
       ## it's a workspace; therefore, it's not in the list of projects.
@@ -101,6 +92,23 @@ sub write_comps {
       my($dep_dir) = dirname($dep);
       if (!defined $proj_dir_seen{$dep_dir}) {
         $proj_dir_seen{$dep_dir} = 1;
+        ## If there are directory levels between project-containing
+        ## directories (for example, at this time in
+        ## ACE_wrappers/apps/JAWS/server, there are no projects at the
+        ## apps or apps/JAWS level) we need to insert the Makefile
+        ## entries for the levels without projects. They won't be listed
+        ## in @list but are needed for make to traverse intervening directory
+        ## levels down to where the project(s) to build are.
+        my(@dirs) = split /\//, $dep_dir;
+        my $inter_dir = "";
+        foreach my $dep (@dirs) {
+          $inter_dir = "$inter_dir$dep";
+          if (!defined $proj_dir_seen{$inter_dir}) {
+            $proj_dir_seen{$inter_dir} = 1;
+            print $mfh "AC_CONFIG_FILES([ $inter_dir" . "/Makefile ])$crlf";
+          }
+          $inter_dir = "$inter_dir/";
+        }
         print $mfh "AC_CONFIG_FILES([ $dep_dir" . "/Makefile ])$crlf";
       }
     }
@@ -124,10 +132,27 @@ sub write_comps {
     close($mfh);
   }
 
-  ## Print out the subdirectories
+  ## Print out the Makefile.am. If there are local projects in this directory,
+  ## put the boilerplate stuff first that lets us use += instead of = to
+  ## add project info to bin_PROGRAMS, etc. Also, if there are local projects,
+  ## insert "." as the first SUBDIR entry.
+  if (@locals) {
+    print $fh 'bin_PROGRAMS =', $crlf,
+              'noinst_PROGRAMS =', $crlf,
+              'noinst_HEADERS =', $crlf,
+              'lib_LTLIBRARIES =', $crlf,
+              'BUILT_SOURCES =', $crlf,
+              'CLEANFILES =', $crlf,
+              'TEMPLATE_FILES =', $crlf,
+              'HEADER_FILES =', $crlf,
+              'INLINE_FILES =', $crlf, $crlf;
+  }
   if (@dirs) {
     print $fh 'SUBDIRS =';
-    foreach my $dir (@dirs) {
+    if (@locals) {
+      print $fh " \\$crlf        .";
+    }
+    foreach my $dir (reverse @dirs) {
       print $fh " \\$crlf        $dir";
     }
     print $fh $crlf, $crlf;
@@ -160,10 +185,13 @@ sub write_comps {
     print $fh 'ACLOCAL_AMFLAGS = -I m4' . $crlf;
   }
 
+  ## If there's the possibility of any project info here, insert this summary.
+  if (@locals) {
+    print $fh $crlf;
+    print $fh 'pkginclude_HEADERS = $(TEMPLATE_FILES)',
+              ' $(INLINE_FILES) $(HEADER_FILES)', $crlf;
+  }
   ## Finish up with the cleanup specs.
-  print $fh $crlf;
-  print $fh 'pkginclude_HEADERS = $(TEMPLATE_FILES)',
-            ' $(INLINE_FILES) $(HEADER_FILES)', $crlf;
   print $fh $crlf;
   print $fh '## Clean up template repositories, etc.' . $crlf;
   print $fh 'clean-local:' . $crlf;
