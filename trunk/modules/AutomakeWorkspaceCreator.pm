@@ -183,6 +183,7 @@ sub write_comps {
   my(%conditional_targets) = ();
   my(%seen) = ();
   my($installable_headers) = undef;
+  my($installable_pkgconfig) = undef;
   my($includedir) = undef;
   my($project_name) = undef;
 
@@ -222,6 +223,9 @@ sub write_comps {
               $conditional_targets{$1} = 1;
               unshift(@need_blanks, $1);
             }
+            if (/^pkgconfig_DATA/) {
+                $installable_pkgconfig= 1;
+            }
           }
           elsif (/^$inc_pattern\s*=\s*/ || /^$pkg_pattern\s*=\s*/) {
             $installable_headers = 1;
@@ -243,13 +247,21 @@ sub write_comps {
   ## Print out the Makefile.am.
   my($wsHelper) = WorkspaceHelper::get($self);
   my($convert_header_name) = undef;
-  if (!defined $includedir && $installable_headers) {
-    my($incdir) = $wsHelper->modify_value('includedir',
-                                          $self->get_includedir());
-    if ($incdir ne '') {
-      print $fh "includedir = \@includedir\@$incdir$crlf$crlf";
-      $convert_header_name = 1;
+  if ((!defined $includedir && $installable_headers)
+      || $installable_pkgconfig) {
+    if (!defined $includedir && $installable_headers) {
+      my($incdir) = $wsHelper->modify_value('includedir',
+                                            $self->get_includedir());
+      if ($incdir ne '') {
+        print $fh "includedir = \@includedir\@$incdir$crlf";
+        $convert_header_name = 1;
+      }
     }
+    if ($installable_pkgconfig) {
+       print $fh "pkgconfigdir = \@libdir\@/pkgconfig$crlf";
+    }
+
+    print $fh $crlf;
   }
 
   if (@locals) {
