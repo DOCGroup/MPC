@@ -1,3 +1,11 @@
+Tue Aug 10 09:10:36 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/MakeWorkspaceCreator.pm:
+        * templates/make.mpd:
+
+          Modifications to ensure that generated files get built before
+          anything else.
+
 Mon Aug  9 07:50:47 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

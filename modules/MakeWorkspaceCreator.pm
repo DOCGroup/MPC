@@ -103,7 +103,7 @@ sub write_comps {
               ($dname ne '.' ? "cd $dname; " : '') .
               "\$(MAKE) PWD=`pwd` -f " .
               ($dname eq '.' ? $project : basename($project)) .
-              $crlf;
+              ' generated all', $crlf;
   }
 
   ## Print out the project_name_list target
