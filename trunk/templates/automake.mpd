@@ -58,6 +58,7 @@ endif
 <%foreach(requires)%>
 endif
 <%endfor%>
+<%if(includes || defines || common_defines || need_staticflags || dynamicflags)%>
 
 <%if(exename)%>
 <%normalize(exename)%>_CPPFLAGS = \
@@ -89,6 +90,8 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_CPPFLAGS =
 <%endfor%>
 <%endif%>
 <%endif%>
+<%endif%>
+<%if(grouped_source_files || source_files)%>
 
 <%if(exename)%>
 <%normalize(exename)%>_SOURCES = \
@@ -111,36 +114,36 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = 
 <%endfor%>
 <%endif%>
 <%endif%>
-
+<%endif%>
 <%if(linkflags)%>
+
 <%if(exename)%>
 <%normalize(exename)%>_LDFLAGS = \
 <%else%>
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LDFLAGS = \<%endif%>
 <%foreach(linkflags)%> <%linkflag%><%endfor%>
-
 <%endif%>
 <%if(libs || pure_libs || lit_libs)%>
+
 <%if(exename)%>
 <%normalize(exename)%>_LDADD = \
 <%else%>
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = \<%endif%>
 <%foreach(libs)%> $(top_builddir)/ace/lib<%lib%>.la<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%>
-
 <%endif%>
 <%if(!exename)%>
 <%if(header_files || inline_files || template_files || idl_files || pidl_files)%>
+
 nobase_include_HEADERS += \
 <%foreach(header_files inline_files template_files idl_files pidl_files)%>
   <%header_file%><%fornotlast(" \\")%>
 <%endfor%>
-
 <%endif%>
 <%endif%>
 <%if(resource_files)%>
+
 EXTRA_DIST += \
 <%foreach(resource_files)%>
   <%resource_file%><%fornotlast(" \\")%>
 <%endfor%>
-
 <%endif%>
