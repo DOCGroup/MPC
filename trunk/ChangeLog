@@ -1,3 +1,18 @@
+Fri Apr  1 07:30:50 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+
+          For some project keywords, the project value will be appended to
+          the template input variable of the same name (if there is one).
+          See the "Project Variable and Template Input Variable Interaction"
+          section of the README for more details.
+
+        * templates/vc7.mpd:
+
+          Only use 'link_options' if it's set.
+
 Thu Mar 31 10:23:39 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

@@ -34,33 +34,34 @@ my($TemplateExtension)       = 'mpd';
 my($TemplateInputExtension)  = 'mpt';
 
 ## Valid names for assignments within a project
-## 1 means preserve the order for additions
-## 0 means order is not preserved, it is inverted.
+## Bit Meaning
+## 0   Preserve the order for additions (1) or invert it (0)
+## 1   Add this value to template input value (if there is one)
 my(%validNames) = ('exename'         => 1,
                    'sharedname'      => 1,
                    'staticname'      => 1,
-                   'libpaths'        => 1,
+                   'libpaths'        => 3,
                    'install'         => 1,
-                   'includes'        => 1,
+                   'includes'        => 3,
                    'after'           => 1,
                    'custom_only'     => 1,
-                   'libs'            => 0,
-                   'lit_libs'        => 0,
-                   'pure_libs'       => 0,
+                   'libs'            => 2,
+                   'lit_libs'        => 2,
+                   'pure_libs'       => 2,
                    'pch_header'      => 1,
                    'pch_source'      => 1,
                    'postbuild'       => 1,
                    'dllout'          => 1,
                    'libout'          => 1,
-                   'dynamicflags'    => 1,
-                   'staticflags'     => 1,
+                   'dynamicflags'    => 3,
+                   'staticflags'     => 3,
                    'version'         => 1,
                    'recurse'         => 1,
-                   'requires'        => 1,
-                   'avoids'          => 1,
+                   'requires'        => 3,
+                   'avoids'          => 3,
                    'tagname'         => 1,
                    'tagchecks'       => 1,
-                   'macros'          => 1,
+                   'macros'          => 3,
                   );
 
 ## Custom definitions only
@@ -3973,6 +3974,12 @@ sub get_modified_project_file_name {
 }
 
 
+sub get_valid_names {
+  my($self) = shift;
+  return $self->{'valid_names'};
+}
+
+
 sub preserve_assignment_order {
   my($self) = shift;
   my($name) = shift;
@@ -3983,10 +3990,27 @@ sub preserve_assignment_order {
   ## a keyword mapping and all mapped keywords should have preserved
   ## assignment order.
   if (defined $mapped && !UNIVERSAL::isa($mapped, 'ARRAY')) {
-    return $mapped;
+    return ($mapped & 1);
   }
 
   return 1;
+}
+
+
+sub add_to_template_input_value {
+  my($self) = shift;
+  my($name) = shift;
+  my($mapped) = $self->{'valid_names'}->{$name};
+
+  ## Only return the value stored in the valid_names hash map if it's
+  ## defined and it's not an array reference.  The array reference is
+  ## a keyword mapping and no mapped keywords should be added to
+  ## template input variables.
+  if (defined $mapped && !UNIVERSAL::isa($mapped, 'ARRAY')) {
+    return ($mapped & 2);
+  }
+
+  return 0;
 }
 
 
