@@ -88,6 +88,7 @@
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="<%foreach(libpaths)%><%libpath%><%fornotlast(";")%><%endfor%>"
 				GenerateDebugInformation="TRUE"
+<%if(exename || sharedname)%>
 <%if(type_is_dynamic)%>
 				ProgramDatabaseFile="$(OutDir)\<%sharedname%><%lib_modifier%>.pdb"
 <%else%>
@@ -95,12 +96,13 @@
 				ProgramDatabaseFile="$(OutDir)\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.pdb"
    <%endif%>
 <%endif%>
+<%endif%>
 				SubSystem="<%subsystem("1")%>"
 <%if(optimize)%>
 				OptimizeReferences="<%optref("2")%>"
 				EnableCOMDATFolding="<%opticf("2")%>"
 <%endif%>
-<%if(type_is_dynamic)%>
+<%if(type_is_dynamic && sharedname)%>
 				ImportLibrary="<%libout%>\<%sharedname%><%lib_modifier%>.lib"
 <%endif%>
 <%endif%>

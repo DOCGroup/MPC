@@ -49,6 +49,7 @@ sub findCallback {
   my($matches) = !(/^CVS\z/s && ($File::Find::prune = 1)            ||
                    defined $exclude &&
                    /^$exclude\z/s && ($File::Find::prune = 1)       ||
+                   /^\.cvsignore\z/s && ($File::Find::prune = 1)    ||
                    /^build\z/s && ($File::Find::prune = 1)          ||
                    /^\..*obj\z/s && ($File::Find::prune = 1)        ||
                    /^Templates\.DB\z/s && ($File::Find::prune = 1)  ||

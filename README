@@ -162,6 +162,8 @@ pure_libs       Specifies 1 or more libraries to link into the exe or library.
                 If libraries receive a file extension, then these will not.
 after           Specifies that this project must be built after 1 or more
                 project names listed.
+custom_only     Create a project that contains only custom generation
+                targets (any file type described by a Define_Custom section).
 dynamicflags    Specifies preprocessor flags needed for dynamic libraries
 staticflags     Specifies preprocessor flags needed for static libraries
 
