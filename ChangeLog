@@ -1,3 +1,9 @@
+Thu Aug  5 11:14:12 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+	  Check "libout", not "install" to determine whether a library
+	  is to be installed.
+
 Thu Aug  5 09:14:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         The following changes are from Martin Corino <mcorino@remedy.nl>
