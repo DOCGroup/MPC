@@ -1,0 +1,6 @@
+// -*- MPC -*-
+// $Id$
+
+conditional_include "ghscommon"
+
+need_staticflags = 1

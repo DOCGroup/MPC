@@ -18,13 +18,28 @@ use WorkspaceCreator;
 use vars qw(@ISA);
 @ISA = qw(WorkspaceCreator);
 
+my(%directives) = ('sysincdirs' => 1,
+                   'libdirs'    => 1,
+                   'syslibdirs' => 1,
+                   'libraries'  => 1,
+                   'defines'    => 1,
+                   'staticlink' => 1,
+                   'deflibdirs' => 1,
+                  );
+
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
+sub compare_output {
+  #my($self) = shift;
+  return 1;
+}
+
+
 sub workspace_file_name {
   my($self) = shift;
-  return $self->get_modified_workspace_name('ghs/default', '.bld');
+  return $self->get_modified_workspace_name('default', '.bld');
 }
 
 
@@ -33,39 +48,63 @@ sub pre_workspace {
   my($fh)   = shift;
   my($crlf) = $self->crlf();
 
-  print $fh "#!build$crlf" .
-            "default:$crlf";
+  print $fh "#!build$crlf",
+            "default:$crlf",
+            "\tnobuild$crlf",
+            "\t:cx_option=exceptions$crlf",
+            "\t:cx_option=std_namespaces$crlf",
+            "\t:language=cxx$crlf",
+            "\t:config_setting=longlong$crlf",
+            "\t:cx_mode=ansi$crlf";
+}
+
+
+sub mix_settings {
+  my($self)    = shift;
+  my($project) = shift;
+  my($crlf)    = $self->crlf();
+  my($rh)      = new FileHandle();
+  my($mix)     = '';
+
+  ## Things that seem like they should be set in the project
+  ## actually have to be set in the controlling build file.
+  if (open($rh, $project)) {
+    while(<$rh>) {
+      if (/^\s*(program|library|subproject)\s*$/) {
+        $mix .= "\t$1$crlf" .
+                "\t:object_dir=" . $self->mpc_dirname($project) .
+                '/.obj' . $crlf;
+      }
+      elsif (/^\s*(shared_library)\s*$/) {
+        $mix .= "\t$1$crlf" .
+                "\t:config_setting=pic$crlf" .
+                "\t:object_dir=" . $self->mpc_dirname($project) .
+                '/.shobj' . $crlf;
+      }
+      else {
+        if (/^\s*:(\w+)=/) {
+          if (defined $directives{$1}) {
+            $mix .= $_;
+          }
+        }
+      }
+    }
+    close($rh);
+  }
+
+  return $mix;
 }
 
 
 sub write_comps {
-  my($self)     = shift;
-  my($fh)       = shift;
-  my($gen)      = shift;
-  my($projects) = $self->get_projects();
-  my(@list)     = $self->sort_dependencies($projects);
-  my($crlf)     = $self->crlf();
+  my($self) = shift;
+  my($fh)   = shift;
+  my($crlf) = $self->crlf();
 
-  ## Print out the projet
-  print $fh "\tnobuild$crlf" .
-            "\t:cx_option=noexceptions$crlf" .
-            "\t:cx_option=std_namespaces$crlf" .
-            "\t:cx_template_option=noautomatic$crlf" .
-            "\t:language=cxx$crlf" .
-            "\t:cx_mode=ansi$crlf" .
-            "\t:cx_lib=scnoe$crlf";
-
-  foreach my $project (@list) {
-    ## Convert all /'s to \
-    $project = $self->slash_to_backslash($project);
-
-    print $fh "..\\$project$crlf";
-    if ($gen->exe_target()) {
-      print $fh "\tprogram$crlf";
-    }
-    else {
-      print $fh "\tlibrary$crlf";
-    }
+  ## Print out each projet
+  foreach my $project ($self->sort_dependencies($self->get_projects())) {
+    print $fh "$project$crlf",
+              $self->mix_settings($project);
   }
 }
 

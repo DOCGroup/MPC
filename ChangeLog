@@ -1,3 +1,25 @@
+Wed Oct  6 11:35:48 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Added a description of what this script does to the usage.
+
+        * modules/GHSProjectCreator.pm:
+        * modules/GHSWorkspaceCreator.pm:
+        * templates/ghs.mpd:
+        * templates/ghscommon.mpt:
+        * templates/ghsdll.mpt:
+        * templates/ghsdllexe.mpt:
+        * templates/ghslib.mpt:
+        * templates/ghslibexe.mpt:
+
+          Increased the support for Green Hills Builder.  It still isn't
+          complete as I have only tested it for Integrity.  I will need to
+          test it for different platforms such as Solaris and Windows.
+
+          Due to the way that the builder works, the -hierarchy option does
+          not work and will never work with the ghs project type.
+
 Tue Oct  5 10:21:20 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/VC71ProjectCreator.pm:
