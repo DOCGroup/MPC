@@ -1256,30 +1256,35 @@ sub parse_define_custom {
 }
 
 
-sub process_duplicate_modification {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($assign) = shift;
+sub remove_duplicate_addition {
+  my($self)    = shift;
+  my($name)    = shift;
+  my($value)   = shift;
+  my($nval)    = shift;
 
   ## If we are modifying the libs, libpaths or includes assignment with
   ## either addition or subtraction, we are going to
   ## perform a little fix on the value to avoid multiple
   ## libraries and to try to insure the correct linking order
   if ($name eq 'libpaths' || $name eq 'includes' || $name =~ /libs$/) {
-    my($nval) = $self->get_assignment($name, $assign);
     if (defined $nval) {
-      my($parts) = $self->create_array($nval);
-      my(%seen)  = ();
-      my($value) = '';
-      foreach my $part (@$parts) {
-        if (!defined $seen{$part}) {
-          $value .= $part . ' ';
-          $seen{$part} = 1;
+      my($allowed) = '';
+      my(%parts)   = ();
+
+      ## Convert the array into keys for a hash table
+      @parts{@{$self->create_array($nval)}} = ();
+
+      foreach my $val (@{$self->create_array($value)}) {
+        if (!exists $parts{$val}) {
+          $allowed .= $val . ' ';
         }
       }
-      $self->process_assignment($name, $value, $assign);
+      $allowed =~ s/\s+$//;
+      return $allowed;
     }
   }
+
+  return $value;
 }
 
 
