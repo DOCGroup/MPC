@@ -3042,8 +3042,8 @@ sub relative {
       $value = \@built;
     }
     elsif ($value =~ /\$/) {
-      my($rel)   = $self->get_relative();
-      my(@keys)  = keys %$rel;
+      my($rel)  = $self->get_relative();
+      my(@keys) = keys %$rel;
 
       if (defined $keys[0]) {
         my($cwd)   = $self->getcwd();
@@ -3101,6 +3101,18 @@ sub relative {
               }
               substr($value, $start) =~ s/\$\([^)]+\)/$ival/;
               $whole = $ival;
+            }
+            else {
+              if ($self->convert_macros_to_env()) {
+                my($envstart, $envend) = $self->get_env_accessor();
+                if (defined $envstart) {
+                  if (!defined $envend) {
+                    $envend = '';
+                  }
+                  substr($value, $start) =~ s/\$\(([^\)]+)\)/$envstart$1$envend/g;
+                  $whole = "$envstart$1$envend";
+                }
+              }
             }
           }
           elsif ($expand_template ||
@@ -3265,6 +3277,11 @@ sub dependency_combined_static_library {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub convert_macros_to_env {
+  #my($self) = shift;
+  return 0;
+}
 
 sub dollar_special {
   #my($self) = shift;

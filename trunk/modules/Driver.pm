@@ -113,97 +113,17 @@ sub parse_line {
 sub optionError {
   my($self) = shift;
   my($line) = shift;
-  my($base) = $self->{'name'};
 
-  if (defined $line) {
-    $self->error($line);
-  }
-  my($spaces) = (' ' x (length($base) + 8));
-  print STDERR "$base v" . Version::get() . "\n" .
-               "Usage: $base [-global <file>] [-include <directory>] [-recurse]]\n" .
-               $spaces . "[-ti <dll | lib | dll_exe | lib_exe>:<file>] [-hierarchy]\n" .
-               $spaces . "[-template <file>] [-relative NAME=VAR] [-base <project>]\n" .
-               $spaces . "[-noreldefs] [-notoplevel] [-static] [-genins]\n" .
-               $spaces . "[-value_template <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
-               $spaces . "[-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
-               $spaces . "[-feature_file <file name>] [-make_coexistence]\n" .
-               $spaces . "[-exclude <directories>] [-name_modifier <pattern>]\n" .
-               $spaces . "[-apply_project] [-version] [-into <directory>]\n" .
-               $spaces . "[-type <";
-
-  my(@keys) = sort keys %{$self->{'types'}};
-  for(my $i = 0; $i <= $#keys; $i++) {
-    print STDERR $keys[$i];
-    if ($i != $#keys) {
-      print STDERR ' | ';
-    }
-    if ($i != $#keys && (($i + 1) % 6) == 0) {
-      print STDERR "\n$spaces        ";
-    }
-  }
-  print STDERR ">]\n" .
-               $spaces . "[files]\n\n";
-
-  my($default) = $self->extractType($self->{'default'});
-  print STDERR
-"       -base           Add <project> as a base project to each generated\n" .
-"                       project file.\n" .
-"       -exclude        Use this option to exclude directories when searching\n" .
-"                       for input files.\n" .
-"       -feature_file   Specifies the feature file to read before processing.\n" .
-"                       The default feature file is default.features under the\n" .
-"                       config directory.\n" .
-"       -genins         Generate .ins files for use with prj_install.pl.\n" .
-"       -global         Specifies the global input file.  Values stored\n" .
-"                       within this file are applied to all projects.\n" .
-"       -hierarchy      Generate a workspace in a hierarchical fashion.\n" .
-"       -include        Specifies a directory to search when looking for base\n" .
-"                       projects, template input files and templates.  This\n" .
-"                       option can be used multiple times to add directories.\n" .
-"       -into           Place all output files in a mirrored directory\n" .
-"                       structure starting at <directory>.\n" .
-"       -make_coexistence If multiple 'make' based project types are\n" .
-"                       generated, they will be named such that they can coexist.\n" .
-"       -name_modifier  Modify output names.  The pattern passed to this\n" .
-"                       parameter will have the '*' portion replaced with the\n" .
-"                       actual output name.  Ex. *_Static\n" .
-"       -apply_project  When used in conjunction with -name_modifier, it applies\n" .
-"                       the name modifier to the project name also.\n" .
-"       -noreldefs      Do not try to generate default relative definitions.\n" .
-"       -notoplevel     Do not generate the top level target file.  Files\n" .
-"                       are still process, but no top level file is created.\n" .
-"       -recurse        Recurse from the current directory and generate from\n" .
-"                       all found input files.\n" .
-"       -relative       Any \$() variable in an mpc that is matched to NAME\n" .
-"                       is replaced by VAR only if VAR can be made into a\n" .
-"                       relative path based on the current working directory.\n" .
-"       -static         Specifies that only static projects will be generated.\n" .
-"                       By default, only dynamic projects will be generated.\n" .
-"       -ti             Specifies the template input file (with no extension)\n" .
-"                       for the specific type as shown above\n" .
-"                       (ex. -ti dll_exe:vc8exe)\n" .
-"       -template       Specifies the template name (with no extension).\n" .
-"       -type           Specifies the type of project file to generate.  This\n" .
-"                       option can be used multiple times to generate multiple\n" .
-"                       types.  If -type is not used, it defaults to '$default'.\n" .
-"       -value_project  This option allows modification of a project variable\n" .
-"                       assignment .  Use += to add VAL to the NAME's value.\n" .
-"                       Use -= to subtract and = to override the value.\n" .
-"                       This can be used to introduce new name value pairs to\n" .
-"                       a project.  However, it must be a valid project\n" .
-"                       assignment.\n" .
-"       -value_template This option allows modification of a template input\n" .
-"                       name value pair.  Use += to add VAL to the NAME's\n" .
-"                       value.  Use -= to subtract and = to override the value.\n" .
-"       -version        Print the MPC version and exit.\n";
-
+  $self->printUsage($line, $self->{'name'}, Version::get(),
+                    $self->extractType($self->{'default'}),
+                    keys %{$self->{'types'}});
   exit(0);
 }
 
 
 sub run {
-  my($self)   = shift;
-  my(@args)   = @_;
+  my($self) = shift;
+  my(@args) = @_;
 
   ## Dynamically load in each perl module and set up
   ## the type tags and project creators
