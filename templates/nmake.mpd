@@ -46,19 +46,7 @@ DEPGEN=perl $(ACE_ROOT)\bin\depgen.pl -t nmake
 !ENDIF
 !ENDIF
 
-DEPENDCHECK :
-!IF "$(NO_EXTERNAL_DEPS)" != "1"
-!IF EXISTS("<%noextension(project_file)%>.dep")
-	@echo Using "<%noextension(project_file)%>.dep"
-!ELSE
-	@echo Warning: cannot find "<%noextension(project_file)%>.dep"
-!ENDIF
-!ENDIF
-
 GENERATED_DIRTY =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><%foreach(custom_type->input_file->output_files)%> "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>"<%endfor%><%endfor%><%endfor%>
-
-GENERATED : $(GENERATED_DIRTY)
-	-@rem
 
 <%foreach(platforms)%>
 <%foreach(configurations)%>
@@ -236,12 +224,19 @@ SOURCE=<%pch_source%>
 <%foreach(configurations)%>
 !<%fornotfirst("ELSE")%>IF  "$(CFG)" == "<%platform%> <%configuration%>"
 
-CPP_SWITCHES=/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%><%optimize_flags%><%else%><%debug_flags%><%endif%> <%compile_flags%><%if(pdbc)%> /Fd"<%if(type_is_static)%><%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%>$(INTDIR)/<%endif%>"<%endif%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines macros)%>/D <%define%> <%endfor%><%if(unicode)%>/D UNICODE /D _UNICODE <%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%>/D <%pch_define%> <%endfor%>/Fp"$(INTDIR)\<%noextension(pch_header)%>.pch" /Yc"<%pch_header%>" <%endif%>/Fo"<%fo_flag%>" /FD /c
+CPP_SWITCHES=/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%><%optimize_flags%><%else%><%debug_flags%><%endif%> <%compile_flags%><%if(pdbc)%> /Fd"<%if(type_is_static)%><%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%>$(INTDIR)/<%endif%>"<%endif%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines macros)%>/D <%define%> <%endfor%><%if(unicode)%>/D UNICODE /D _UNICODE <%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%>/D <%pch_define%> <%endfor%>/Fp"$(INTDIR)\<%noextension(pch_header)%>.pch" /Yc"<%pch_header%>" <%endif%>/FD /c
 
 "$(INTDIR)\<%noextension(pch_source)%>.obj"	"$(INTDIR)\<%noextension(pch_header)%>.pch" : $(SOURCE) "$(INTDIR)"
+<%if(dirname(pch_source))%>
+        @if not exist "$(INTDIR)\<%dirname(pch_source)%>\$(NULL)" mkdir "$(INTDIR)\<%dirname(pch_source)%>"
 	$(CPP) @<<
-  $(CPP_SWITCHES) $(SOURCE)
+  $(CPP_SWITCHES) /Fo"$(INTDIR)\<%noextension(pch_source)%>.obj" $(SOURCE)
 <<
+<%else%>
+	$(CPP) @<<
+  $(CPP_SWITCHES) /Fo"<%fo_flag%>" $(SOURCE)
+<<
+<%endif%>
 
 <%endfor%>
 !ENDIF
@@ -333,5 +328,17 @@ SOURCE=<%resource_file%>
 
 !ENDIF
 <%endfor%>
+
+GENERATED : $(GENERATED_DIRTY)
+	-@rem
+
+DEPENDCHECK :
+!IF "$(NO_EXTERNAL_DEPS)" != "1"
+!IF EXISTS("<%noextension(project_file)%>.dep")
+	@echo Using "<%noextension(project_file)%>.dep"
+!ELSE
+	@echo Warning: cannot find "<%noextension(project_file)%>.dep"
+!ENDIF
+!ENDIF
 
 <%marker(bottom)%>
