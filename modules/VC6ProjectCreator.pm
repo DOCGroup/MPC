@@ -21,6 +21,12 @@ use vars qw(@ISA);
 # Subroutine Section
 # ************************************************************
 
+sub convert_macros_to_env {
+  #my($self) = shift;
+  return 1;
+}
+
+
 sub compare_output {
   #my($self) = shift;
   return 1;

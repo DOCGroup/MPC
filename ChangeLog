@@ -1,35 +1,50 @@
+Thu Jun 10 08:33:08 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Driver.pm:
+        * modules/Options.pm:
+
+          Moved the usage out of the Driver and into the Options module.
+
+        * modules/ProjectCreator.pm:
+        * modules/VC6ProjectCreator.pm:
+
+          Added support for replacing $(...) with an environment variable.
+          This is not necessary for 'make' based project types and is not
+          supported by Visual C++ 7 or higher.  So, it is used by the em3
+          and vc6 types.
+
 Tue Jun  8 17:14:29 2004  Steve Huston  <shuston@riverace.com>
 
-	* modules/AutomakeWorkspaceCreator.pm: Fixed string writing to write
-	  a tab to the generated file where desired, not a '\t'.
+        * modules/AutomakeWorkspaceCreator.pm: Fixed string writing to write
+          a tab to the generated file where desired, not a '\t'.
 
 Tue Jun  8 12:29:19 2004  Steve Huston  <shuston@riverace.com>
 
-	* modules/AutomakeWorkspaceCreator.pm (write_comps): Get automake
-	  trees to generate. It now relies on this scheme:
-	  * Each project goes in its own Makefile.<project>.am file (this is
-	    not a change from previous versions).
-	  * Each Makefile.am has a list of local project Makefiles added to
-	    it and has all-local, clean-local, and distclean-local targets
-	    added that cycle through all the local projects and do sub-makes.
-	  * At autoconf/automake (bootstrap) time, all of the
-	    Makefile[.<proj>].am files get processed into Makefile[.<proj>].in
-	    files. This list is directed by the configure.ac.Makefiles list
-	    that should be included into configure.ac.
-	  * At configure time, all of the .in files get processed into
-	    Makefiles. All the local targets that MPC put in the Makefile.am
-	    files should go through to the Makefiles at each level, and
-	    direct the build.
+        * modules/AutomakeWorkspaceCreator.pm (write_comps): Get automake
+          trees to generate. It now relies on this scheme:
+          * Each project goes in its own Makefile.<project>.am file (this is
+            not a change from previous versions).
+          * Each Makefile.am has a list of local project Makefiles added to
+            it and has all-local, clean-local, and distclean-local targets
+            added that cycle through all the local projects and do sub-makes.
+          * At autoconf/automake (bootstrap) time, all of the
+            Makefile[.<proj>].am files get processed into Makefile[.<proj>].in
+            files. This list is directed by the configure.ac.Makefiles list
+            that should be included into configure.ac.
+          * At configure time, all of the .in files get processed into
+            Makefiles. All the local targets that MPC put in the Makefile.am
+            files should go through to the Makefiles at each level, and
+            direct the build.
 
-	Made these changes:
-	  - Only generate a configure.ac.Makefiles at the starting directory
-	    level; not at each level. When adding entries, don't keep the
-	    ".am" suffix; this was a mistake.
-	  - The configure.ac.Makefile also needs an entry for the Makefile at
-	    each directory level with a project.
-	  - The top-level Makefile.am has the "ACLOCAL = @ACLOCAL@" and
-	    "AC_LOCAL_AMFLAGS = -I m4" lines added to the end to pass the
-	    flags along properly when running autoconf.
+        Made these changes:
+          - Only generate a configure.ac.Makefiles at the starting directory
+            level; not at each level. When adding entries, don't keep the
+            ".am" suffix; this was a mistake.
+          - The configure.ac.Makefile also needs an entry for the Makefile at
+            each directory level with a project.
+          - The top-level Makefile.am has the "ACLOCAL = @ACLOCAL@" and
+            "AC_LOCAL_AMFLAGS = -I m4" lines added to the end to pass the
+            flags along properly when running autoconf.
 
 Tue Jun  8 11:30:15 2004  Chad Elliott  <elliott_c@ociweb.com>
 
