@@ -1,17 +1,48 @@
+Tue Jan 25 10:44:07 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Added .cvsignore to the list of files to exclude.
+
+        * templates/em3vcpdll.mpt:
+        * templates/vc6dspdll.mpt:
+
+          Explicitly set the type_description and type_code instead of
+          getting a default in the template file.
+
+        * templates/nmake.mpd:
+
+          Don't run the $(DEPGEN) command if there are no source files.
+
+        * README:
+        * modules/ProjectCreator.pm:
+        * templates/bmake.mpd:
+        * templates/em3vcp.mpd:
+        * templates/make.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+
+          Added support for a new keyword called 'custom_only'.  If it is
+          set in an mpc file, the generated project will only contain custom
+          generation targets.  It will not contain source files, header
+          files, etc.
+
 Mon Jan 24 16:45:31 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Fixed pkgconfigdata definition: config.status is found in
-	  ${top_builddir}, not ${top_srcdir}.  Also fixed a tab that had
-	  been converted to spaces by mistake.
+          Fixed pkgconfigdata definition: config.status is found in
+          ${top_builddir}, not ${top_srcdir}.  Also fixed a tab that had
+          been converted to spaces by mistake.
 
 Sun Jan 23 00:15:31 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeWorkspaceCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
 
-	  Restore CLEANFILES and EXTRA_DIST to conditionals since these
-	  two macros don't match the general form of automake primaries.
+          Restore CLEANFILES and EXTRA_DIST to conditionals since these
+          two macros don't match the general form of automake primaries.
 
 Sat Jan 22 23:59:00 2005  Marek Brudka  <mbrudka@aster.pl>
 
@@ -44,27 +75,27 @@ Sat Jan 22 23:59:00 2005  Marek Brudka  <mbrudka@aster.pl>
 
 Sat Jan 22 23:20:57 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Use new "sort" feature to sort list of header, inline,
-	  template, etc. files for _HEADERS primary.
+          Use new "sort" feature to sort list of header, inline,
+          template, etc. files for _HEADERS primary.
 
 Sat Jan 22 23:12:53 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Changed to touch "stamp" file only if custom file type
-	  generates multiple files.
+          Changed to touch "stamp" file only if custom file type
+          generates multiple files.
 
 Fri Jan 21 17:16:04 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeWorkspaceCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
 
-	  Changed conditionals which matched a set of specific automake
-	  primaries to use a single regular expression that matches the
-	  general form of all automake primaries.  We shouldn't have to
-	  change this any more when adding support for additional auto-
-	  make features.
+          Changed conditionals which matched a set of specific automake
+          primaries to use a single regular expression that matches the
+          general form of all automake primaries.  We shouldn't have to
+          change this any more when adding support for additional auto-
+          make features.
 
 Fri Jan 21 11:07:56 2005  Chad Elliott  <elliott_c@ociweb.com>
 

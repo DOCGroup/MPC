@@ -23,13 +23,17 @@
                 ApplicationIcon = ""
 <%endif%>
                 AssemblyKeyContainerName = ""
-                AssemblyName = "<%if(exename)%><%exename%><%else%><%sharedname%><%endif%>"
+<%if(exename || sharedname || staticname)%>
+                AssemblyName = "<%if(exename)%><%exename%><%else%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>"
+<%endif%>
                 AssemblyOriginatorKeyFile = ""
                 DefaultClientScript = "JScript"
                 DefaultHTMLPageLayout = "Grid"
                 DefaultTargetSchema = "IE50"
                 DelaySign = "false"
+<%if(exename || sharedname || staticname)%>
                 OutputType = "<%if(exename)%><%if(winapp)%>Win<%endif%>Exe<%else%>Library<%endif%>"
+<%endif%>
                 PreBuildEvent = ""
                 PostBuildEvent = ""
                 RootNamespace = ""
@@ -51,7 +55,9 @@
                    NoStdLib = "false"
                    NoWarn = ""
                    Optimize = "<%if(optimize)%>true<%else%>false<%endif%>"
+<%if(exename || sharedname || staticname)%>
                    OutputPath = "<%if(exename)%><%if(install)%><%install%><%else%>.<%endif%><%else%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%endif%>\<%output_dir%>\"
+<%endif%>
                    RegisterForComInterop = "false"
                    RemoveIntegerChecks = "false"
                    TreatWarningsAsErrors = "false"

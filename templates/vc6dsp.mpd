@@ -2,7 +2,7 @@
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
-# TARGTYPE "<%platform("Win32")%> (<%platform_hardware("x86")%>) <%type_description("Dynamic-Link Library")%>" <%type_code("0x0102")%>
+# TARGTYPE "<%platform("Win32")%> (<%platform_hardware("x86")%>) <%if(exename || sharedname || staticname)%><%type_description%>" <%type_code%><%else%>Generic Project" 0x010a<%endif%>
 
 CFG=<%project_name%> - <%platform("Win32")%> <%default_configuration("Debug")%>
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
@@ -19,7 +19,7 @@ CFG=<%project_name%> - <%platform("Win32")%> <%default_configuration("Debug")%>
 !MESSAGE Possible choices for configuration are:
 !MESSAGE
 <%foreach(configurations)%>
-!MESSAGE "<%project_name%> - <%platform%> <%configuration%>" (based on "<%platform%> (<%platform_hardware%>) <%type_description%>")
+!MESSAGE "<%project_name%> - <%platform%> <%configuration%>" (based on "<%platform%> (<%platform_hardware%>) <%if(exename || sharedname || staticname)%><%type_description%><%else%>Generic Project<%endif%>")
 <%endfor%>
 !MESSAGE
 
