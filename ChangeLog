@@ -1,3 +1,26 @@
+Mon Dec  6 09:39:01 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/bison.mpb:
+        * config/flex.mpb:
+        * config/lex.mpb:
+        * config/yacc.mpb:
+
+          Added more possible output extensions.
+
+        * README:
+        * modules/ProjectCreator.pm:
+
+          Added the ability to get the output file by specific type without
+          an extension.  See the README for more detail.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where exclude blocks always excluded the listing even
+          if project types were listed and did not match the current project
+          type.  As a result, the exclude block works just as any other
+          scope if the project type does not match the excluded project
+          types.
+
 Wed Dec  1 19:28:19 2004  Marek Brudka  <mbrudka@aster.pl>
 
         * USAGE (Module):
@@ -7,7 +30,9 @@ Wed Dec  1 19:28:19 2004  Marek Brudka  <mbrudka@aster.pl>
         * modules/FeatureParser.pm (Module):
         * modules/Driver.pm (Module):
         * modules/Creator.pm (Module):
-        Added command line option  '-features'. Thanks for Kacper Reutt for a patch.
+
+        Added command line option  '-features'. Thanks for Kacper Reutt for
+        the patch.
 
 Mon Nov 29 11:24:05 2004  Chad Elliott  <elliott_c@ociweb.com>
 
