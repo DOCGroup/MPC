@@ -52,8 +52,7 @@ sub write_comps {
   my($self)     = shift;
   my($fh)       = shift;
   my($projects) = $self->get_projects();
-  my($pjs)      = $self->get_project_info();
-  my(@list)     = $self->sort_dependencies($projects, $pjs);
+  my(@list)     = $self->sort_dependencies($projects);
   my($crlf)     = $self->crlf();
 
   print $fh '<!--Project Group-->', $crlf,

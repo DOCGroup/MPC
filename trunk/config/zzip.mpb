@@ -1,0 +1,8 @@
+// -*- MPC -*-
+// $Id$
+
+feature(zzip) {
+  includes += $(ZZIP_ROOT)/include
+  libpaths += $(ZZIP_ROOT)/lib
+  lit_libs += zzlib
+}

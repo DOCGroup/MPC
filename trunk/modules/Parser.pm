@@ -15,22 +15,10 @@ use FileHandle;
 
 use OutputMessage;
 use StringProcessor;
+use DirectoryManager;
 
 use vars qw(@ISA);
-@ISA = qw(OutputMessage StringProcessor);
-
-# ************************************************************
-# Data Section
-# ************************************************************
-
-my($cwd) = Cwd::getcwd();
-if ($^O eq 'cygwin' && $cwd !~ /[A-Za-z]:/) {
-   my($cyg) = `cygpath -w $cwd`;
-   if (defined $cyg) {
-     $cyg =~ s/\\/\//g;
-     chop($cwd = $cyg);
-   }
- }
+@ISA = qw(OutputMessage StringProcessor DirectoryManager);
 
 # ************************************************************
 # Subroutine Section
@@ -49,48 +37,6 @@ sub new {
   $self->{'include'}     = $inc;
 
   return $self;
-}
-
-
-sub cd {
-  my($self)   = shift;
-  my($dir)    = shift;
-  my($status) = chdir($dir);
-
-  if ($status && $dir ne '.') {
-    ## First strip out any /./ or ./ or /.
-    $dir =~ s/\/\.\//\//g;
-    $dir =~ s/^\.\///;
-    $dir =~ s/\/\.$//;
-
-    ## If the new directory contains a relative directory
-    ## then we just get the real working directory
-    if ($dir =~ /\.\./) {
-      $cwd = Cwd::getcwd();
-      if ($^O eq 'cygwin' && $cwd !~ /[A-Za-z]:/) {
-         my($cyg) = `cygpath -w $cwd`;
-         if (defined $cyg) {
-           $cyg =~ s/\\/\//g;
-           chop($cwd = $cyg);
-         }
-       }
-    }
-    else {
-      if ($dir =~ /^(\/|[a-z]:)/i) {
-        $cwd = $dir;
-      }
-      else {
-        $cwd .= "/$dir";
-      }
-    }
-  }
-  return $status;
-}
-
-
-sub getcwd {
-  #my($self) = shift;
-  return $cwd;
 }
 
 
@@ -234,12 +180,6 @@ sub escape_regex_special {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
-
-sub convert_slashes {
-  #my($self) = shift;
-  return 1;
-}
-
 
 sub parse_line {
   #my($self) = shift;

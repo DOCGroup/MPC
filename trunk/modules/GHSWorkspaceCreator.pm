@@ -44,8 +44,7 @@ sub write_comps {
   my($fh)       = shift;
   my($gen)      = shift;
   my($projects) = $self->get_projects();
-  my($pjs)      = $self->get_project_info();
-  my(@list)     = $self->sort_dependencies($projects, $pjs);
+  my(@list)     = $self->sort_dependencies($projects);
   my($crlf)     = $self->crlf();
 
   ## Print out the projet

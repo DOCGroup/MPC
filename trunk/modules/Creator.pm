@@ -27,7 +27,7 @@ my(@statekeys) = ('global', 'include', 'template', 'ti',
                   'dynamic', 'static', 'relative', 'addtemp',
                   'addproj', 'progress', 'toplevel', 'baseprojs',
                   'feature_file', 'hierarchy', 'name_modifier',
-                  'apply_project',
+                  'apply_project', 'into',
                  );
 
 my(%all_written) = ();
@@ -54,6 +54,7 @@ sub new {
   my($hierarchy) = shift;
   my($nmodifier) = shift;
   my($applypj)   = shift;
+  my($into)      = shift;
   my($type)      = shift;
   my($self)      = Parser::new($class, $inc);
 
@@ -81,6 +82,7 @@ sub new {
   $self->{'hierarchy'}       = $hierarchy;
   $self->{'name_modifier'}   = $nmodifier;
   $self->{'apply_project'}   = $applypj;
+  $self->{'into'}            = $into;
   $self->{'convert_slashes'} = $self->convert_slashes();
 
   return $self;
@@ -783,6 +785,12 @@ sub get_addproj {
 sub get_toplevel {
   my($self) = shift;
   return $self->{'toplevel'};
+}
+
+
+sub get_into {
+  my($self) = shift;
+  return $self->{'into'};
 }
 
 

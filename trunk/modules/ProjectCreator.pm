@@ -161,11 +161,13 @@ sub new {
   my($nmod)      = shift;
   my($applypj)   = shift;
   my($genins)    = shift;
+  my($into)      = shift;
   my($self)      = $class->SUPER::new($global, $inc,
                                       $template, $ti, $dynamic, $static,
                                       $relative, $addtemp, $addproj,
                                       $progress, $toplevel, $baseprojs,
                                       $feature, $hierarchy, $nmod, $applypj,
+                                      $into,
                                       'project');
 
   $self->{$self->{'type_check'}}   = 0;
@@ -569,7 +571,7 @@ sub parse_line {
       else {
         if ($comp eq 'verbatim') {
           my($type, $loc) = split(/\s*,\s*/, $name);
-          if (!$self->parse_verbatim($ih, $comp, $type, $loc)) {
+          if (!$self->parse_verbatim($ih, $type, $loc)) {
             $errorString = "Unable to process $comp";
             $status = 0;
           }
@@ -898,7 +900,6 @@ sub parse_components {
 sub parse_verbatim {
   my($self)    = shift;
   my($fh)      = shift;
-  my($tag)     = shift;
   my($type)    = shift;
   my($loc)     = shift;
 
@@ -1029,7 +1030,6 @@ sub parse_define_custom {
   my($tag)         = shift;
   my($status)      = 0;
   my($errorString) = "Unable to process $tag";
-  my(%flags)       = ();
 
   ## Make the tag something _files
   $tag = lc($tag) . '_files';
@@ -2649,6 +2649,18 @@ sub write_output_file {
         }
 
         if ($self->get_toplevel()) {
+          my($into)   = $self->get_into();
+          my($outdir) = '.';
+          my($oname)  = $name;
+
+          if (defined $into) {
+            $outdir = $self->getcwd();
+            my($re) = $self->escape_regex_special($self->getstartdir());
+            $outdir =~ s/^$re//;
+            $outdir = $into . $outdir;
+            $name = "$outdir/$name";
+          }
+
           my($fh)  = new FileHandle();
           my($dir) = dirname($name);
 
@@ -2658,7 +2670,7 @@ sub write_output_file {
 
           if ($self->compare_output()) {
             ## First write the output to a temporary file
-            my($tmp) = "MPC$>.$$";
+            my($tmp) = "$outdir/MPC$>.$$";
             my($different) = 1;
             if (open($fh, ">$tmp")) {
               my($lines) = $tp->get_lines();
@@ -2682,7 +2694,7 @@ sub write_output_file {
               if ($different) {
                 unlink($name);
                 if (rename($tmp, $name)) {
-                  $self->add_file_written($name);
+                  $self->add_file_written($oname);
                 }
                 else {
                   $error = "Unable to open $name for output.";
@@ -2692,7 +2704,7 @@ sub write_output_file {
               else {
                 ## We will pretend that we wrote the file
                 unlink($tmp);
-                $self->add_file_written($name);
+                $self->add_file_written($oname);
               }
             }
           }
@@ -2703,7 +2715,7 @@ sub write_output_file {
                 print $fh $line;
               }
               close($fh);
-              $self->add_file_written($name);
+              $self->add_file_written($oname);
             }
             else {
               $error = "Unable to open $name for output.";
@@ -2729,6 +2741,15 @@ sub write_install_file {
   my($insfile) = $self->transform_file_name(
                            $self->get_assignment('project_name')) .
                  '.ins';
+  my($into)    = $self->get_into();
+
+  if (defined $into) {
+    my($outdir) = $self->getcwd();
+    my($re)     = $self->escape_regex_special($self->getstartdir());
+    $outdir =~ s/^$re//;
+    $outdir = $into . $outdir;
+    $insfile = $outdir . '/' . $insfile;
+  }
 
   unlink($insfile);
   if (open($fh, ">$insfile")) {
