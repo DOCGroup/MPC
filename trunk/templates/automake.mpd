@@ -49,6 +49,7 @@ CLEANFILES += \
 <%endfor%>
 <%endfor%>
 <%endif%>
+<%if(exename || sharedname || staticname)%>
 <%if(grouped_source_files)%>
 <%foreach(grouped_source_files)%>
 <%grouped_source_file%> = \
@@ -143,6 +144,7 @@ CLEANFILES += \
 <%foreach(header_files inline_files template_files idl_files pidl_files)%>
   <%header_file%><%fornotlast(" \\")%>
 <%endfor%>
+<%endif%>
 <%endif%>
 <%endif%>
 <%if(rev_avoids || rev_requires)%>
