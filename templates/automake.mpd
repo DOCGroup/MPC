@@ -61,7 +61,7 @@ CLEANFILES += \
 <%endif%>
 <%endif%>
 <%if(multiple(custom_type->input_file->output_files))%>
-	@touch $@
+	@touch "$@"
 <%endif%>
 
 <%endif%>
@@ -188,7 +188,7 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 pkgconfig_DATA += <%basenoextension(pkgconfig_file)%>
 
 <%basenoextension(pkgconfig_file)%>: ${top_builddir}/config.status ${srcdir}/<%pkgconfig_file%>
-	${top_builddir}/config.status --file $@:${srcdir}/<%pkgconfig_file%>
+	${top_builddir}/config.status --file "$@":${srcdir}/<%pkgconfig_file%>
 <%endfor%>
 <%endif%>
 <%if(avoids || requires)%>
