@@ -2419,7 +2419,16 @@ sub get_grouped_value {
       my($comps) = $$names{$name};
       foreach my $comp (keys %$comps) {
         if ($comp eq $based) {
-          $value = $$comps{$comp};
+          if ($self->{'convert_slashes'}) {
+            my(@converted) = ();
+            foreach my $file (@{$$comps{$comp}}) {
+              push(@converted, $self->slash_to_backslash($file));
+            }
+            $value = \@converted;
+          }
+          else {
+            $value = $$comps{$comp};
+          }
           last;
         }
       }
