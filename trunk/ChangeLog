@@ -1,3 +1,34 @@
+Wed Jul 21 17:04:39 2004  Steve Huston  <shuston@riverace.com>
+
+	* modules/AutomakeWorkspaceCreator.pm: In write_comps(), combine all
+	  of the current directory level's Makefile.<project>.am files into
+	  the directory's Makefile.am file and delete the individual files.
+	  Write only the Makefile.am file paths into the configure.ac.Makefiles
+	  list. This is because the previous loop-through-current-Makefile
+	  scheme sent make into an infinite loop, consuming all process
+	  slots very quickly. The generated Makefiles always like to start
+	  again at the top Makefile to check its updatedness, even if
+	  a specific Makefile.<project> file was specified to make. Moved the
+	  general cleanup text from automake.mpd to here.
+
+	* templates/automake.mpd: For non-project-specific info (bin, lib,
+	  etc.) use += rather than = to allow multiple per-project files to
+	  be combined into one file later. Removed the general cleanup
+	  directives and put them in the workspace generator, above. J.T.
+	  Conklin also supplied changes for the following:
+
+	  - Append list of custom_type outfiles to BUILT_SOURCES
+
+	  - Append list of custom_type outfiles to CLEANFILES
+
+	  - Emit explicit rules for building custom type outfiles.  Note that
+	    unlike some of the other makefile templates, I've used $< instead
+	    of <%custom_type->input_file%> so that the file will be found via
+	    vpath.
+
+	  - Removed global setting of INCLUDES.  Include paths are now handled
+	    by per library/program _CPPFLAGS.
+
 Fri Jul 16 12:24:36 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WorkspaceCreator.pm:
