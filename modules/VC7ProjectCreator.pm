@@ -50,6 +50,12 @@ my(%info) = ('cplusplus' => {'ext'      => '.vcproj',
 # Subroutine Section
 # ************************************************************
 
+sub get_quote_symbol {
+  #my($self) = shift;
+  return '&quot;';
+}
+
+
 sub get_gt_symbol {
   #my($self) = shift;
   return '&gt;';
