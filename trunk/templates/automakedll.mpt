@@ -3,6 +3,7 @@
 
 conditional_include "common"
 
+am_version =
 linkflags =
 includedir =
 
