@@ -92,12 +92,7 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LDFLAGS = 
 <%normalize(exename)%>_LDADD = \
 <%else%>
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = \<%endif%>
-<<<<<<< automake.mpd
 <%foreach(libs)%> $(top_builddir)/ace/lib<%lib%>.la<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%>
-=======
-<%foreach(libs)%> -l<%lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%>
-
->>>>>>> 1.14
 <%endif%>
 <%if(exename)%>
 <%if(header_files)%>
