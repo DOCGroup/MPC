@@ -1,4 +1,5 @@
 # Microsoft Developer Studio Generated NMAKE File
+<%marker(top)%>
 <%foreach(platforms)%>
 !<%fornotfirst("ELSE")%>IF "$(CFG)" == ""
 CFG=<%platform%> <%default_configuration%>
@@ -207,6 +208,7 @@ LINK32_OBJS= \
 !ENDIF
 !ENDIF
 
+<%marker(macros)%>
 !IF <%foreach(platforms)%><%foreach(configurations)%>"$(CFG)" == "<%platform%> <%configuration%>" <%fornotlast("|| ")%><%endfor%><%endfor%>
 <%if(pch_source)%>
 <%if(pch_header)%>
@@ -302,6 +304,8 @@ SOURCE=<%resource_file%>
 
 <%endfor%>
 <%endif%>
+<%marker(local)%>
 
 !ENDIF
 
+<%marker(bottom)%>

@@ -20,6 +20,12 @@ use vars qw(@ISA);
 @ISA = qw(WorkspaceCreator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my(@targets) = ('DEPEND', 'CLEAN', 'REALCLEAN', '$(CUSTOM_TARGETS)');
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -124,7 +130,10 @@ sub write_comps {
             'CFG=' . $default . $crlf .
             '!MESSAGE No configuration specified. ' .
             'Defaulting to ' . $default . '.' . $crlf .
-            '!ENDIF' . $crlf;
+            '!ENDIF', $crlf, $crlf,
+            '!IF "$(CUSTOM_TARGETS)" == ""', $crlf,
+            'CUSTOM_TARGETS=_EMPTY_TARGET_', $crlf,
+            '!ENDIF', $crlf;
 
   ## Print out the "all" target
   print $fh $crlf . 'ALL:';
@@ -134,7 +143,7 @@ sub write_comps {
   print $fh $crlf;
 
   ## Print out all other targets here
-  foreach my $target ('DEPEND', 'CLEAN', 'REALCLEAN') {
+  foreach my $target (@targets) {
     print $fh $crlf .
               $target . ':' . $crlf;
     $self->write_project_targets($fh, 'CFG="$(CFG)" ' . $target, \@list);
