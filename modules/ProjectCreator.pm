@@ -2702,7 +2702,11 @@ sub relative {
                 $val = $self->slash_to_backslash($val);
               }
               substr($value, $start) =~ s/\$\([^)]+\)/$val/;
-              $whole = $val;
+
+              ## We have replaced the template value, but that template
+              ## value may contain a $() construct that may need to get
+              ## replaced too.
+              $whole = '';
             }
           }
           $start += length($whole);
