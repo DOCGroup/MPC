@@ -37,7 +37,10 @@ CLEANFILES += \
 <%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%basenoextension(custom_type->input_file)%>-stamp
 
 <%basenoextension(custom_type->input_file)%>-stamp: $(srcdir)/<%custom_type->input_file%>
-	<%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(srcdir)/<%custom_type->input_file%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_files)%><%else%><%custom_type->input_file->output_files%><%endif%><%endif%>
+<%if(flag_overrides(custom_type->input_file, gendir))%>
+	mkdir -p <%flag_overrides(custom_type->input_file, gendir)%>
+<%endif%>
+	<%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(srcdir)/<%custom_type->input_file%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_files)%><%else%><%custom_type->input_file->output_files%><%endif%><%endif%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
 <%foreach(custom_type->input_file->output_files)%>
 	<%flag_overrides(custom_type->input_file, postcommand)%>

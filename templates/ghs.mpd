@@ -24,6 +24,9 @@ default:
 <%if(custom_type->input_file->output_files)%>
 	:depends=<%custom_type->input_file%>
 <%foreach(custom_type->input_file->output_files)%>
+<%if(flag_overrides(custom_type->input_file, gendir))%>
+	:preexec=<%mkdir("mkdir -p")%> <%flag_overrides(custom_type->input_file, gendir)%><%postmkdir%>
+<%endif%>
 	:preexec=<%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> <%custom_type->input_file->output_file%><%endif%>
 <%endfor%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
