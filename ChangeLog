@@ -1,3 +1,21 @@
+Tue Jan 18 07:34:32 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Factored code common to the Project and Workspace creator dealing
+          with the -into option into a method on the Creator for use in other
+          modules.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+        * modules/GHSWorkspaceCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+
+          Honor the -into option by prefixing each open and unlink with the
+          correct output directory determined by the new method on the
+          Creator.
+
 Mon Jan 17 07:54:36 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Options.pm:

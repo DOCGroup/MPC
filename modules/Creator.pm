@@ -896,6 +896,20 @@ sub get_language {
   return $self->{'language'};
 }
 
+sub get_outdir {
+  my($self) = shift;
+  if (defined $self->{'into'}) {
+    my($outdir) = $self->getcwd();
+    my($re)     = $self->escape_regex_special($self->getstartdir());
+
+    $outdir =~ s/^$re//;
+    return $self->{'into'} . $outdir;
+  }
+  else {
+    return '.';
+  }
+}
+
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
