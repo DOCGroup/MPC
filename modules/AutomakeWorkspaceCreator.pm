@@ -161,27 +161,79 @@ sub write_comps {
     print $fh $crlf, $crlf;
   }
 
-  # The Makefile.<project>.am files always append values to macros,
-  # but automake will fails if the first isn't a plain assignment.  To
-  # address this we parse the Makefile.<project>.am files as we insert
-  # them, changinng the first instance of += to = for each macro.
+  # The Makefile.<project>.am files append values to build target macros
+  # for each program/library to build. When using conditionals, however,
+  # a plain empty assignment is done outside the conditional to be sure
+  # that each append can be done regardless of the condition test. Because
+  # automake fails if the first isn't a plain assignment, we need to resolve
+  # these situations when combining the files. The code below makes sure
+  # that there's always a plain assignment, whether it's one outside a
+  # conditional or the first append is changed to a simple assignment.
   #
   # We should consider extending this to support all macros that match
   # automake's uniform naming convention.  A true perl wizard probably
   # would be able to do this in a single line of code.
 
-  my($seen_bin_programs) = 0;
-  my($seen_noinst_programs) = 0;
-  my($seen_lib_libraries) = 0;
-  my($seen_noinst_libraries) = 0;
-  my($seen_lib_ltlibraries) = 0;
-  my($seen_noinst_ltlibraries) = 0;
-  my($seen_noinst_headers) = 0;
-  my($seen_built_sources) = 0;
-  my($seen_cleanfiles) = 0;
-  my($seen_nobase_include_headers) = 0;
-  my($seen_nobase_pkginclude_headers) = 0;
-  my($seen_extra_dist) = 0;
+  my(@need_blanks) = ();
+  my(%conditional_targets) = ();
+  my(%seen) = ();
+
+  ## To avoid unnecessarily emitting blank assignments, rip through the
+  ## Makefile.<project>.am files and check for conditions.
+  if (@locals) {
+    my($pfh) = new FileHandle();
+    foreach my $local (reverse @locals) {
+      if (open($pfh,$local)) {
+        my($in_condition) = 0;
+        while (<$pfh>) {
+          # Don't look at comments
+          next if (/^#/);
+
+          if (/^if\s*/) {
+            $in_condition++;
+          }
+          if (/^endif\s*/) {
+            $in_condition--;
+          }
+
+          if (   /(^bin_PROGRAMS)\s*\+=\s*/
+              || /(^noinst_PROGRAMS)\s*\+=\s*/
+              || /(^lib_LIBRARIES)\s*\+=\s*/
+              || /(^noinst_LIBRARIES)\s*\+=\s*/
+              || /(^lib_LTLIBRARIES)\s*\+=\s*/
+              || /(^noinst_LTLIBRARIES)\s*\+=\s*/
+              || /(^noinst_HEADERS)\s*\+=\s*/
+              || /(^BUILT_SOURCES)\s*\+=\s*/
+              || /(^CLEANFILES)\s*\+=\s*/
+              || /(^nobase_include_HEADERS)\s*\+=\s*/
+              || /(^nobase_pkginclude_HEADERS)\s*\+=\s*/
+              || /(^EXTRA_DIST)\s*\+=\s*/
+             ) {
+            if ($in_condition && !defined ($conditional_targets{$1})) {
+              $conditional_targets{$1} = 1;
+              unshift(@need_blanks, $1);
+            }
+          }
+        }
+
+        close($pfh);
+        $in_condition = 0;
+      }
+      else {
+        $self->error("Unable to open $local for reading.");
+      }
+    }
+  }
+
+  ## Now, for each target used in a conditional, emit a blank assignment
+  ## and mark that we've seen that target to avoid changing the += to =
+  ## as the individual files are pulled in.
+  if (@need_blanks) {
+    foreach my $assign (@need_blanks) {
+      print $fh "$assign =$crlf";
+      $seen{$assign} = 1;
+    }
+  }
 
   ## Take the local Makefile.<project>.am files and insert each one here,
   ## then delete it.
@@ -195,65 +247,22 @@ sub write_comps {
           # Don't emit comments
           next if (/^#/);
 
-          if (/^bin_PROGRAMS\s*\+=\s*/) {
-            if (! $seen_bin_programs) {
+          if (   /(^bin_PROGRAMS)\s*\+=\s*/
+              || /(^noinst_PROGRAMS)\s*\+=\s*/
+              || /(^lib_LIBRARIES)\s*\+=\s*/
+              || /(^noinst_LIBRARIES)\s*\+=\s*/
+              || /(^lib_LTLIBRARIES)\s*\+=\s*/
+              || /(^noinst_LTLIBRARIES)\s*\+=\s*/
+              || /(^noinst_HEADERS)\s*\+=\s*/
+              || /(^BUILT_SOURCES)\s*\+=\s*/
+              || /(^CLEANFILES)\s*\+=\s*/
+              || /(^nobase_include_HEADERS)\s*\+=\s*/
+              || /(^nobase_pkginclude_HEADERS)\s*\+=\s*/
+              || /(^EXTRA_DIST)\s*\+=\s*/
+             ) {
+            if (!defined ($seen{$1})) {
+              $seen{$1} = 1;
               s/\+=/=/;
-              $seen_bin_programs = 1;
-            }
-          } elsif (/^noinst_PROGRAMS\s*\+=\s*/) {
-            if (! $seen_noinst_programs) {
-              s/\+=/=/;
-              $seen_noinst_programs = 1;
-            }
-          } elsif (/^lib_LIBRARIES\s*\+=\s*/) {
-            if (! $seen_lib_libraries ) {
-              s/\+=/=/;
-              $seen_lib_libraries = 1;
-            }
-          } elsif (/^noinst_LIBRARIES\s*\+=\s*/) {
-            if (! $seen_noinst_libraries ) {
-              s/\+=/=/;
-              $seen_noinst_libraries = 1;
-            }
-          } elsif (/^lib_LTLIBRARIES\s*\+=\s*/) {
-            if (! $seen_lib_ltlibraries ) {
-              s/\+=/=/;
-              $seen_lib_ltlibraries = 1;
-            }
-          } elsif (/^noinst_LTLIBRARIES\s*\+=\s*/) {
-            if (! $seen_noinst_ltlibraries ) {
-              s/\+=/=/;
-              $seen_noinst_ltlibraries = 1;
-            }
-          } elsif (/^noinst_HEADERS\s*\+=\s*/) {
-            if (! $seen_noinst_headers) {
-              s/\+=/=/;
-              $seen_noinst_headers = 1;
-            }
-          } elsif (/^BUILT_SOURCES\s*\+=\s*/) {
-            if (! $seen_built_sources) {
-              s/\+=/=/;
-              $seen_built_sources = 1;
-            }
-          } elsif (/^CLEANFILES\s*\+=\s*/) {
-            if (! $seen_cleanfiles) {
-              s/\+=/=/;
-              $seen_cleanfiles = 1;
-            }
-          } elsif (/^nobase_include_HEADERS\s*\+=\s*/) {
-            if (! $seen_nobase_include_headers) {
-              s/\+=/=/;
-              $seen_nobase_include_headers = 1;
-            }
-          } elsif (/^nobase_pkginclude_HEADERS\s*\+=\s*/) {
-            if (! $seen_nobase_pkginclude_headers) {
-              s/\+=/=/;
-              $seen_nobase_pkginclude_headers = 1;
-            }
-          } elsif (/^EXTRA_DIST\s*\+=\s*/) {
-            if (! $seen_extra_dist) {
-              s/\+=/=/;
-              $seen_extra_dist = 1;
             }
           }
 
