@@ -1,3 +1,14 @@
+Sat May 01 15:20:00 2004  Justin Michel <michel_j@ociweb.com>
+
+        * templates/vc7.mpd:
+        * templates/vc7dll.mpt:
+        * templates/vc7lib.mpt:
+	
+	  Resource Files are only for exe or dll binaries, not for static libs. Added
+	a check for type_is_static, so that the resource files section is not created.
+	  type_is_* should be defined outside of the individual configurations. This change
+	allows checking type_is_static from outside of a particular configuration.
+
 Thu Apr 30 14:50:00 2004  Justin Michel <michel_j@ociweb.com>
 
         * templates/nmake.mpd:

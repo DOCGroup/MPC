@@ -5,10 +5,10 @@ conditional_include "common"
 
 configurations     = Release Debug
 common_defines     = WIN32 _WINDOWS
+type_is_dynamic    = 1
+type_is_binary     = 1
 
 Release {
-  type_is_dynamic  = 1
-  type_is_binary   = 1
   optimize         = 3
   defines          = NDEBUG
   output_dir       = Release
@@ -18,8 +18,6 @@ Release {
 }
 
 Debug {
-  type_is_dynamic  = 1
-  type_is_binary   = 1
   optimize         =
   defines          = _DEBUG
   output_dir       = .
@@ -30,8 +28,6 @@ Debug {
 }
 
 MFC Release {
-  type_is_dynamic  = 1
-  type_is_binary   = 1
   optimize         = 3
   defines          = NDEBUG
   output_dir       = MFC_Release
@@ -43,8 +39,6 @@ MFC Release {
 }
 
 MFC Debug {
-  type_is_dynamic  = 1
-  type_is_binary   = 1
   optimize         =
   defines          = _DEBUG
   output_dir       = MFC_Debug
