@@ -1,3 +1,25 @@
+Mon Mar  7 10:01:34 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+
+          Documented both changes below.
+
+        * modules/ProjectCreator.pm:
+
+          Added a new operator, '>>' to allow user to specify multiple
+          unrelated (file name wise) output files based on a custom input
+          file.
+
+        * templates/em3vcp.mpd:
+        * templates/ghs.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          If a custom defintion does not have an output extension specified,
+          you can list custom input files, but they will not be compiled
+          or processed.  In the above graphical tools they will be
+          listed/displayed and excluded from the build.
+
 Fri Mar  4 12:03:48 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/boost_regex.mpb:
