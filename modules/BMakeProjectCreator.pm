@@ -60,7 +60,9 @@ sub fill_value {
       }
       $dirnames{$dirname} = 1;
     }
-    $value = join(';', keys %dirnames);
+
+    ## Sort the directories to ensure that '.' comes first
+    $value = join(';', sort keys %dirnames);
   }
 
   return $value;

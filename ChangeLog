@@ -1,3 +1,12 @@
+Wed May 12 08:14:00 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/BMakeProjectCreator.pm:
+
+          Sort the directories when forming the cppdir value.  We need to
+          ensure that '.' comes first.  Borland make attempts to generate
+          source files in each CPPDIR directory until it is successful
+          which explains multiple invocations of custom build tools.
+
 Tue May 11 11:36:00 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3vcp.mpd:
