@@ -26,7 +26,7 @@ CCC           = $(CXX)
 MAKEFILE      = <%project_file%>
 DEPENDENCIES  = .depend.$(MAKEFILE)
 <%if(exename)%>
-BIN           = <%exename%>$(EXEEXT)
+BIN           = <%targetoutdir%><%exename%>$(EXEEXT)
 <%endif%>
 <%foreach(platforms)%>
 EXEEXT        = <%exeext%>
@@ -35,13 +35,13 @@ LIBPREFIX     = <%libprefix%>
 <%if(arext)%>
 <%if(staticname)%>
 AREXT         = <%arext%>
-LIB           = $(LIBPREFIX)<%staticname%>.$(AREXT)
+LIB           = <%targetoutdir%>$(LIBPREFIX)<%staticname%>.$(AREXT)
 <%endif%>
 <%endif%>
 <%if(soext)%>
 <%if(sharedname)%>
 SOEXT         = <%soext%>
-SHLIB         = $(LIBPREFIX)<%sharedname%>.$(SOEXT)
+SHLIB         = <%targetoutdir%>$(LIBPREFIX)<%sharedname%>.$(SOEXT)
 <%foreach(configurations)%>
 <%if(pic)%>
 PICFLAGS      = <%pic%>
@@ -67,9 +67,9 @@ TEMPINCDIR    = <%tempinc%>/<%project_name%>
 GENFLAGS      = <%genflags(-g)%>
 CPPFLAGS      = $(PICFLAGS) $(GENFLAGS)<%if(cppflags)%> <%cppflags%><%endif%><%foreach(configurations)%><%if(compileflags)%> <%compileflags%><%endif%><%if(cpu)%> -DCPU=$(CPU)<%endif%><%if(tempinc)%> <%tempincopt%>$(TEMPINCDIR)<%endif%><%if(compilerflags)%> <%compilerflags%><%endif%><%if(pch_source && pchsupport)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%><%endfor%><%foreach(platforms)%><%if(extracppflags)%> <%extracppflags%><%endif%><%endfor%><%if(includes)%><%foreach(includes)%> -I<%include%><%endfor%><%endif%><%if(macros)%><%foreach(macros)%> -D<%macro%><%endfor%><%endif%>
 SRC           =<%if(pch_source && pchsupport)%> <%pch_source%><%endif%> <%source_files%>
-OBJS          =<%if(pch_source && pchsupport)%> <%noextension(pch_source)%>.$(OBJEXT)<%endif%><%foreach(source_files)%> <%noextension(source_file)%>.$(OBJEXT)<%endfor%><%foreach(platforms)%><%if(rc)%><%foreach(resource_files)%> <%resource_file%>.$(OBJEXT)<%endfor%><%endif%><%endfor%>
+OBJS          =<%if(pch_source && pchsupport)%> <%targetoutdir%><%noextension(pch_source)%>.$(OBJEXT)<%endif%><%foreach(source_files)%> <%targetoutdir%><%noextension(source_file)%>.$(OBJEXT)<%endfor%><%foreach(platforms)%><%if(rc)%><%foreach(resource_files)%> <%targetoutdir%><%resource_file%>.$(OBJEXT)<%endfor%><%endif%><%endfor%>
 LDFLAGS       =<%if(libpaths)%><%foreach(libpaths)%> -L<%libpath%><%endfor%><%endif%><%foreach(configurations)%><%if(linkflags)%> <%linkflags%><%endif%><%endfor%>
-LDLIBS        =<%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(libs lit_libs)%> -l<%lib%><%endfor%><%foreach(platforms)%> <%ldlibs%><%endfor%>
+LDLIBS        =<%foreach(libs lit_libs)%> -l<%lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(platforms)%> <%ldlibs%><%endfor%>
 LINK.cc       = $(LD) $(LDFLAGS)
 RM            = rm -f
 <%if(dynamicflags)%>
@@ -102,14 +102,14 @@ specialscript:
 	@./specialscript $(NM) "$(OBJS)" "$(LDLIBS)" "<%if(libpaths)%><%libpaths%><%else%>.<%endif%>" <%prelink%>
 	@$(RM) specialscript
 
-<%noextension(prelink)%>.$(OBJEXT): <%prelink%>
+<%targetoutdir%><%noextension(prelink)%>.$(OBJEXT): <%prelink%>
 	$(COMPILE.cc) <%prelink%> $(OUTPUT_OPTION)
 	@$(RM) <%prelink%>
 
 <%endif%>
 <%endfor%>
 <%endfor%>
-$(BIN): $(TEMPINCDIR) $(OBJS) <%foreach(configurations)%><%foreach(platforms)%><%if(prelink)%><%noextension(prelink)%>.$(OBJEXT)<%endif%><%endfor%><%endfor%>
+$(BIN): <%if(tempinc)%>$(TEMPINCDIR) <%endif%><%targetoutdir%> $(OBJS) <%foreach(configurations)%><%foreach(platforms)%><%if(prelink)%><%targetoutdir%><%noextension(prelink)%>.$(OBJEXT)<%endif%><%endfor%><%endfor%>
 	$(LINK.cc) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
 
 <%endif%>
@@ -121,7 +121,7 @@ INSTARGET = $(SHLIB)
 
 all: $(INSTARGET) <%if(install)%>install<%else%><%if(!exename)%>install<%endif%><%endif%>
 
-$(SHLIB): $(TEMPINCDIR) $(OBJS)
+$(SHLIB): <%if(tempinc)%>$(TEMPINCDIR) <%endif%><%targetoutdir%> $(OBJS)
 	<%foreach(configurations)%><%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%><%endfor%> $(SHFLAGS) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
 <%else%>
 <%if(!exename)%>
@@ -142,8 +142,13 @@ all: $(INSTARGET) <%if(install)%>install<%else%><%if(!exename)%>install<%endif%>
 <%endfor%>
 <%endfor%>
 <%if(staticname)%>
-$(LIB): $(TEMPINCDIR) $(OBJS)
+$(LIB): <%if(tempinc)%>$(TEMPINCDIR) <%endif%><%targetoutdir%> $(OBJS)
 	$(AR) $(ARFLAGS) $(LIB) $(OBJS)<%foreach(configurations)%><%if(tempinc)%> `find $(TEMPINCDIR) -type f`<%endif%><%endfor%>
+
+<%endif%>
+<%if(targetoutdir)%>
+<%targetoutdir%>:
+	@-test -d <%targetoutdir%> || mkdir -p <%targetoutdir%> 2> /dev/null || true
 
 <%endif%>
 <%if(custom_types)%>
@@ -205,12 +210,15 @@ $(TEMPINCDIR):
 
 <%endif%>
 <%if(pch_source && pchsupport)%>
-<%noextension(pch_source)%>.$(OBJEXT): <%pch_source%>
+<%targetoutdir%><%noextension(pch_source)%>.$(OBJEXT): <%pch_source%>
 	$(COMPILE.cc) <%if(pchcreate)%><%pchcreate%><%pch_header%>.gch <%endif%>$(EXPORTFLAGS) <%pch_source%> $(OUTPUT_OPTION)
 
 <%endif%>
 <%foreach(source_files)%>
-<%noextension(source_file)%>.$(OBJEXT): <%source_file%>
+<%targetoutdir%><%noextension(source_file)%>.$(OBJEXT): <%source_file%>
+<%if(targetoutdir)%>
+	@mkdir -p <%targetoutdir%><%dirname(source_file)%>
+<%endif%>
 	$(COMPILE.cc) <%if(pchuse && pch_source && pchsupport)%><%pchuse%><%pch_header%>.gch <%endif%>$(EXPORTFLAGS) <%source_file%> $(OUTPUT_OPTION)
 
 <%endfor%>
@@ -219,8 +227,8 @@ $(TEMPINCDIR):
 <%foreach(platforms)%>
 <%if(rc)%>
 <%foreach(resource_files)%>
-<%resource_file%>.$(OBJEXT): <%resource_file%>
-	<%rc%> <%resource_file%> <%resource_file%>.$(OBJEXT)
+<%targetoutdir%><%resource_file%>.$(OBJEXT): <%resource_file%>
+	<%rc%> <%resource_file%> <%targetoutdir%><%resource_file%>.$(OBJEXT)
 
 <%endfor%>
 <%endif%>
@@ -232,9 +240,9 @@ INSTARGET = $(BIN)
 install:
 	@if [ "<%install%>" != "." ]; then \
 	echo "Installing $(INSTARGET) -> <%install%>/$(INSTARGET)"; \
-	test -d "<%install%>" || mkdir -p "<%install%>" 2> /dev/null || true; \
+	test -d "<%install%><%if(targetoutdir)%>/<%targetoutdir%><%endif%>" || mkdir -p "<%install%><%if(targetoutdir)%>/<%targetoutdir%><%endif%>" 2> /dev/null || true; \
 	$(RM) "<%install%>/$(INSTARGET)"; \
-	$(LN) "$(PWD)/$(INSTARGET)" "<%install%>"; \
+	$(LN) "$(PWD)/$(INSTARGET)" "<%install%><%if(targetoutdir)%>/<%targetoutdir%><%endif%>"; \
 	fi
 
 <%endif%>
@@ -242,9 +250,9 @@ install:
 <%if(!exename)%>
 install:
 	@if [ "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>" != "." ]; then \
-	test -d "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>" || mkdir -p "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>" 2> /dev/null || true; \
+	test -d "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%if(targetoutdir)%>/<%targetoutdir%><%endif%>" || mkdir -p "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%if(targetoutdir)%>/<%targetoutdir%><%endif%>" 2> /dev/null || true; \
 	$(RM) "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(INSTARGET)"; \
-	$(LN) "$(PWD)/$(INSTARGET)" "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>"; \
+	$(LN) "$(PWD)/$(INSTARGET)" "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%if(targetoutdir)%>/<%targetoutdir%><%endif%>"; \
 	fi
 
 <%endif%>
