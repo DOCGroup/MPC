@@ -5,3 +5,5 @@ conditional_include "ghscommon"
 
 libext           = a
 need_staticflags = 1
+
+conditional_include "user_ghslib"

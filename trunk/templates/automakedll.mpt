@@ -5,3 +5,5 @@ conditional_include "common"
 
 linkflags =
 includedir =
+
+conditional_include "user_automakedll"

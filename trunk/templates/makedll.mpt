@@ -93,7 +93,7 @@ SGICC {
   clean     = ii_files
   platforms = irix
   pchcreate = -LANG:create_pch=
-  pchuse    = -LANG:use_pch=
+  pchuse    = -diag_suppress 3056 -LANG:use_pch=
 }
 
 wrsppc {
@@ -228,3 +228,4 @@ tandem {
   extracppflags = -D_REENTRANT
 }
 
+conditional_include "user_makedll"

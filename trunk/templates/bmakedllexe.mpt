@@ -23,3 +23,5 @@ Debug {
   lib_modifier     = d
   postlinkrmext    = .tds
 }
+
+conditional_include "user_bmakedllexe"
