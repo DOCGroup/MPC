@@ -677,10 +677,7 @@ sub parse_line {
       else {
         if ($comp eq 'verbatim') {
           my($type, $loc) = split(/\s*,\s*/, $name);
-          if (!$self->parse_verbatim($ih, $type, $loc)) {
-            $errorString = "Unable to process $comp";
-            $status = 0;
-          }
+          ($status, $errorString) = $self->parse_verbatim($ih, $type, $loc);
         }
         elsif ($comp eq 'specific') {
           my($scope_parsed) = 0;
@@ -974,7 +971,7 @@ sub parse_components {
   my($status)  = 1;
   my($names)   = {};
   my($comps)   = {};
-  my($set)     = 0;
+  my($set)     = undef;
   my(%flags)   = ();
   my(@exclude) = ();
   my($custom)  = defined $self->{'generated_exts'}->{$tag};
@@ -1027,8 +1024,20 @@ sub parse_components {
           }
           else {
             ## It was used, so we need to add that name to
-            ## the set of group names
-            $self->process_assignment_add($grtag, $current);
+            ## the set of group names unless it's already been added.
+            my($groups)   = $self->get_assignment($grtag);
+            my($addgroup) = 1;
+            if (defined $groups) {
+              foreach my $group (@{$self->create_array($groups)}) {
+                if ($current eq $group) {
+                  $addgroup = 0;
+                  last;
+                }
+              }
+            }
+            if ($addgroup) {
+              $self->process_assignment_add($grtag, $current);
+            }
           }
         }
         $current = $1;
@@ -1051,9 +1060,10 @@ sub parse_components {
         last;
       }
     }
-    elsif ($line =~ /^}/) {
+    elsif ($line =~ /^}$/) {
       if (defined $current && $set) {
-        $current = undef;
+        $current = $self->get_default_element_name();
+        $set = undef;
       }
       else {
         ## This is not an error,
@@ -1095,10 +1105,14 @@ sub parse_components {
 
 
 sub parse_verbatim {
-  my($self)    = shift;
-  my($fh)      = shift;
-  my($type)    = shift;
-  my($loc)     = shift;
+  my($self) = shift;
+  my($fh)   = shift;
+  my($type) = shift;
+  my($loc)  = shift;
+
+  if (!defined $loc) {
+    return 0, 'You must provide a location parameter to verbatim';
+  }
 
   ## All types are lower case
   $type = lc($type);
@@ -1112,7 +1126,7 @@ sub parse_verbatim {
   while(<$fh>) {
     my($line) = $self->preprocess_line($fh, $_);
 
-    if ($line =~ /^}/) {
+    if ($line =~ /^}$/) {
       ## This is not an error,
       ## this is the end of the verbatim
       last;
@@ -1122,7 +1136,7 @@ sub parse_verbatim {
     }
   }
 
-  return 1;
+  return 1, undef;
 }
 
 
@@ -1277,7 +1291,7 @@ sub parse_define_custom {
         }
       }
       elsif ($inscope) {
-        if ($line =~ /^}/) {
+        if ($line =~ /^}$/) {
           $optname = undef;
           --$inscope;
         }
@@ -1307,7 +1321,7 @@ sub parse_define_custom {
           }
         }
       }
-      elsif ($line =~ /^}/) {
+      elsif ($line =~ /^}$/) {
         $status = 1;
         $errorString = undef;
 
@@ -1835,7 +1849,7 @@ sub add_generated_files {
         my($defel) = $self->get_default_element_name();
         my($check) = $oktoadd[0];
         foreach my $regext (@{$self->{'valid_components'}->{$tag}}) {
-          if ($check =~ s/\.inl$//) {
+          if ($check =~ s/$regext$//) {
             last;
           }
         }
@@ -2497,17 +2511,22 @@ sub list_generated_file {
       $gen =~ s/\.[^\.]+$//;
     }
 
-    ## See if we need to add the file
-    foreach my $re ($self->generated_filenames($gen, $gentype, $tag, $input, 1)) {
-      if ($re =~ /$file(.*)?$/) {
-        my($created) = $re;
-        if (defined $ofile) {
-          $created = $self->prepend_gendir($created, $ofile, $gentype);
+    ## See if we need to add the file.  We only need to bother
+    ## if the length of $gen is less than or equal to the length of
+    ## $file because they couldn't possibly match if they weren't.
+    if (length(basename($gen)) <= length(basename($file))) {
+      foreach my $re ($self->generated_filenames($gen, $gentype,
+                                                 $tag, $input, 1)) {
+        if ($re =~ /$file(.*)?$/) {
+          my($created) = $re;
+          if (defined $ofile) {
+            $created = $self->prepend_gendir($created, $ofile, $gentype);
+          }
+          if (!$self->already_added($array, $created)) {
+            push(@$array, $created);
+          }
+          last;
         }
-        if (!$self->already_added($array, $created)) {
-          push(@$array, $created);
-        }
-        last;
       }
     }
   }
