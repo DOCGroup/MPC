@@ -1,3 +1,13 @@
+Fri Apr  9 21:19:34 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+
+          Added a new keyword, 'recurse', that causes MPC to recurse into
+          directories listed under componets such as Source_Files,
+          Header_Files, etc.
+
 Fri Apr  9 13:51:47 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * clone_build_tree.pl:
