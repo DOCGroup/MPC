@@ -145,9 +145,11 @@ CPP_PROJ=/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%>/O2
 <<
 
 RSC=rc.exe
+<%if(!type_is_static)%>
 <%foreach(resource_files)%>
 RSC_PROJ=/l 0x409 /fo"$(INTDIR)\<%basenoextension(resource_file)%>.res"<%foreach(defines cpu_defines macros)%> /d <%define%><%endfor%><%foreach(includes)%> /i "<%include%>"<%endfor%>
 <%endfor%>
+<%endif%>
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo <%if(sharedname || staticname)%>/o"$(OUTDIR)\<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.bsc"<%endif%>
 BSC32_SBRS= \
@@ -161,9 +163,11 @@ LINK32=link.exe -lib
 LINK32_FLAGS=/nologo /machine:<%machine("I386")%> /out:"<%libout%>\<%staticname%><%lib_modifier%>.lib"
 <%endif%>
 LINK32_OBJS= \
+<%if(!type_is_static)%>
 <%foreach(resource_files)%>
 	"$(INTDIR)\<%basenoextension(resource_file)%>.res" \
 <%endfor%>
+<%endif%>
 <%if(exename || sharedname || staticname)%>
 <%if(pch_source)%>
 	"$(INTDIR)\<%basenoextension(pch_source)%>.obj" \
@@ -268,6 +272,7 @@ InputDir=<%dirname(custom_type->input_file)%>
 <%endif%>
 <%endfor%>
 <%endfor%>
+<%if(!type_is_static)%>
 <%foreach(resource_files)%>
 SOURCE=<%resource_file%>
 
@@ -276,6 +281,7 @@ SOURCE=<%resource_file%>
 
 
 <%endfor%>
+<%endif%>
 
 !ENDIF
 

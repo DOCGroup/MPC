@@ -1,3 +1,21 @@
+Mon May  3 12:17:10 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          By default, refer to the dll based template input files for static
+          template input.  If the template supports generating static
+          projects, then the project creator module will have overridden
+          the methods to return the correct template input files.
+
+        * templates/bmake.mpd:
+        * templates/em3vcp.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          These template files have been changed in a similar fashion to
+          Justin Michel's changes from Sat May  1 15:20:00 2004.
+
 Mon May  3 10:49:28 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
