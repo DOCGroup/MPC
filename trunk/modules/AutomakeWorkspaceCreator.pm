@@ -240,6 +240,8 @@ sub write_comps {
   if (@locals) {
     my($pfh) = new FileHandle();
     my($liblocs) = $self->get_lib_locations();
+    my($here) = $self->getcwd();
+    my($start) = $self->getstartdir();
     foreach my $local (reverse @locals) {
       if (open($pfh, $local)) {
         print $fh "## $local $crlf";
@@ -270,6 +272,11 @@ sub write_comps {
           }
 
           ## This scheme relies on automake.mpd emitting the 'la' libs first.
+          ## Look for all the libXXXX.la, find out where they are located
+          ## relative to the start of the MPC run, and relocate the reference
+          ## to that location under $top_builddir. Unless the referred-to
+          ## library is in the current directory, then leave it undecorated
+          ## so the automake-generated dependency orders the build correctly.
           if ($look_for_libs) {
             my @libs = /\s+(lib(\w+).la)/gm;
             my $libcount = @libs / 2;
@@ -279,7 +286,9 @@ sub write_comps {
               my $libname = (@libs)[$i*2+1];
               my $reldir = $$liblocs{$libname};
               if ($reldir) {
-                s/$libfile/\$(top_builddir)\/$reldir\/$libfile/;
+                if ("$start/$reldir" ne $here) {
+                  s/$libfile/\$(top_builddir)\/$reldir\/$libfile/;
+                }
               }
               else {
                 $self->warning("No reldir found for $libname ($libfile).");
