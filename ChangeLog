@@ -1,82 +1,99 @@
+Wed Jul 28 09:15:02 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Remove backup files before trying to create them and added
+          information to some error messages.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Cleaned up the code a bit.
+
+        * templates/automakedll.mpt:
+        * templates/automakeexe.mpt:
+
+          The automakedll.mpt defines linkflags for use within
+          automake.mpd.  automakeexe.mpt just includes automakedll.mpt.
+
 Fri Jul 23 14:32:54 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeWorkspaceCreator.pm:
-	  Parse generated Makefile.<project>.am files as their contents
-	  are being inserted into the workspace Makefile.am, converting
-	  the first instance where a macro is appended to (+=) into a
-	  simple assignment (=).  This results in a Makefile.am that is
-	  closer to what would be written by hand, and automake will often
-	  generate smaller Makefile.in files since it won't be tricked
-	  into pulling in boilerplate for macros that were defined and not
-	  used.
+        * modules/AutomakeWorkspaceCreator.pm:
+          Parse generated Makefile.<project>.am files as their contents
+          are being inserted into the workspace Makefile.am, converting
+          the first instance where a macro is appended to (+=) into a
+          simple assignment (=).  This results in a Makefile.am that is
+          closer to what would be written by hand, and automake will often
+          generate smaller Makefile.in files since it won't be tricked
+          into pulling in boilerplate for macros that were defined and not
+          used.
 
 Thu Jul 22 17:39:41 2004  Steve Huston  <shuston@riverace.com>
 
-	* modules/AutomakeWorkspaceCreator.pm: When writing
-	  configure.ac.Makefiles, insert entries for project-less directories
-	  between project-containing directories. Allows the bootstrap
-	  procedure to find and make the needed Makefiles to traverse the
-	  entire build tree.
+        * modules/AutomakeWorkspaceCreator.pm: When writing
+          configure.ac.Makefiles, insert entries for project-less directories
+          between project-containing directories. Allows the bootstrap
+          procedure to find and make the needed Makefiles to traverse the
+          entire build tree.
 
-	* templates/automake.mpd: Changed _LIBADD to _LDADD for programs.
+        * templates/automake.mpd: Changed _LIBADD to _LDADD for programs.
 
 Thu Jul 22 12:52:39 2004  Steve Huston  <shuston@riverace.com>
 
-	* modules/AutomakeWorkspaceCreator.pm: If there's no local project
-	  info for the current Makefile.am, don't put the initial bin_PROGRAMS,
-	  lib_LTLIBRARIES, etc. If there are local projects, add "." to the
-	  SUBDIRS.
+        * modules/AutomakeWorkspaceCreator.pm: If there's no local project
+          info for the current Makefile.am, don't put the initial bin_PROGRAMS,
+          lib_LTLIBRARIES, etc. If there are local projects, add "." to the
+          SUBDIRS.
 
-	* templates/automake.mpd: Add _LIBADD settings to pick up needed
-	  libraries.
+        * templates/automake.mpd: Add _LIBADD settings to pick up needed
+          libraries.
 
 Wed Jul 21 19:34:46 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeProjectCreator.pm:
-	  Override expand_variables_from_template_values.
+        * modules/AutomakeProjectCreator.pm:
+          Override expand_variables_from_template_values.
 
-	* modules/AutomakeWorkspaceCreator.pm: Don't emit SUBDIRS
-	  definition if there aren't any subdirectories.
+        * modules/AutomakeWorkspaceCreator.pm: Don't emit SUBDIRS
+          definition if there aren't any subdirectories.
 
-	* templates/automake.mpd: Simplify so that _CPPFLAGS, etc.
-	  settings are not duplicated for programs and libraries,
-	  grouped and non-grouped source files, etc.
+        * templates/automake.mpd: Simplify so that _CPPFLAGS, etc.
+          settings are not duplicated for programs and libraries,
+          grouped and non-grouped source files, etc.
 
 Wed Jul 21 18:02:31 2004  Steve Huston  <shuston@riverace.com>
 
-	* templates/automake.mpd: Added the _CPPFLAGS setting to the
-	  non-grouped library section.
+        * templates/automake.mpd: Added the _CPPFLAGS setting to the
+          non-grouped library section.
 
 Wed Jul 21 17:04:39 2004  Steve Huston  <shuston@riverace.com>
 
-	* modules/AutomakeWorkspaceCreator.pm: In write_comps(), combine all
-	  of the current directory level's Makefile.<project>.am files into
-	  the directory's Makefile.am file and delete the individual files.
-	  Write only the Makefile.am file paths into the configure.ac.Makefiles
-	  list. This is because the previous loop-through-current-Makefile
-	  scheme sent make into an infinite loop, consuming all process
-	  slots very quickly. The generated Makefiles always like to start
-	  again at the top Makefile to check its updatedness, even if
-	  a specific Makefile.<project> file was specified to make. Moved the
-	  general cleanup text from automake.mpd to here.
+        * modules/AutomakeWorkspaceCreator.pm: In write_comps(), combine all
+          of the current directory level's Makefile.<project>.am files into
+          the directory's Makefile.am file and delete the individual files.
+          Write only the Makefile.am file paths into the configure.ac.Makefiles
+          list. This is because the previous loop-through-current-Makefile
+          scheme sent make into an infinite loop, consuming all process
+          slots very quickly. The generated Makefiles always like to start
+          again at the top Makefile to check its updatedness, even if
+          a specific Makefile.<project> file was specified to make. Moved the
+          general cleanup text from automake.mpd to here.
 
-	* templates/automake.mpd: For non-project-specific info (bin, lib,
-	  etc.) use += rather than = to allow multiple per-project files to
-	  be combined into one file later. Removed the general cleanup
-	  directives and put them in the workspace generator, above. J.T.
-	  Conklin also supplied changes for the following:
+        * templates/automake.mpd: For non-project-specific info (bin, lib,
+          etc.) use += rather than = to allow multiple per-project files to
+          be combined into one file later. Removed the general cleanup
+          directives and put them in the workspace generator, above. J.T.
+          Conklin also supplied changes for the following:
 
-	  - Append list of custom_type outfiles to BUILT_SOURCES
+          - Append list of custom_type outfiles to BUILT_SOURCES
 
-	  - Append list of custom_type outfiles to CLEANFILES
+          - Append list of custom_type outfiles to CLEANFILES
 
-	  - Emit explicit rules for building custom type outfiles.  Note that
-	    unlike some of the other makefile templates, I've used $< instead
-	    of <%custom_type->input_file%> so that the file will be found via
-	    vpath.
+          - Emit explicit rules for building custom type outfiles.  Note that
+            unlike some of the other makefile templates, I've used $< instead
+            of <%custom_type->input_file%> so that the file will be found via
+            vpath.
 
-	  - Removed global setting of INCLUDES.  Include paths are now handled
-	    by per library/program _CPPFLAGS.
+          - Removed global setting of INCLUDES.  Include paths are now handled
+            by per library/program _CPPFLAGS.
 
 Fri Jul 16 12:24:36 2004  Chad Elliott  <elliott_c@ociweb.com>
 

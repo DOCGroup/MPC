@@ -32,10 +32,11 @@ use File::Basename;
 # Data Section
 # ******************************************************************
 
-my($version)    = '0.2';
 my($exclude)    = undef;
 my($verbose)    = 0;
 my(@foundFiles) = ();
+my($version)    = '$Id$';
+$version =~ s/.*\s+(\d+[\.\d]+)\s+.*/$1/;
 
 # ******************************************************************
 # Subroutine Section
@@ -129,6 +130,7 @@ sub backupAndMoveModified {
     $status = 0;
 
     ## Move the real file to a backup
+    unlink("$realpath.bak");
     if (rename($realpath, "$realpath.bak")) {
       ## Move the linked file to the real file name
       if (move($linkpath, $realpath)) {
@@ -152,6 +154,7 @@ sub backupAndMoveModified {
   if (!$status) {
     ## We were not able to properly deal with this file.  We will
     ## attempt to preserve the modified file.
+    unlink("$linkpath.bak");
     rename($linkpath, "$linkpath.bak");
   }
 }
@@ -207,7 +210,8 @@ sub symlinkFiles {
         my($stat) = stat($fullpath);
         if ($stat->nlink() > 1) {
           print STDERR "ERROR: Attempting to mix softlinks ",
-                       "with a hardlink build.\n";
+                       "with a hardlink build.\n",
+                       "$fullpath has ", $stat->nlink(), " links.\n";
           return 1;
         }
       }
@@ -286,7 +290,8 @@ sub hardlinkFiles {
         ## and softlinks.
         if (-l $fullpath) {
           print STDERR "ERROR: Attempting to mix hardlinks ",
-                       "with a softlink build.\n";
+                       "with a softlink build.\n",
+                       "$fullpath is a softlink.\n";
           return 1;
         }
         backupAndMoveModified($file, $fullpath);
