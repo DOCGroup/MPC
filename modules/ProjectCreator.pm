@@ -1707,7 +1707,7 @@ sub generated_filename_arrays {
             $dir = '';
           }
           else {
-            $dir = $self->{'flag_overrides'}->{$type}->{$q}->{'gendir'};
+            $dir = $self->{'flag_overrides'}->{$type}->{$q}->{'gendir'} . '/';
           }
           last;
         }
