@@ -114,6 +114,15 @@ sub new {
     $previous_workspace_name{$self->{'wctype'}} = {};
   }
 
+  ## Warn users about unnecessary options
+  if ($self->get_hierarchy() && $self->workspace_per_project()) {
+    $self->warning("The -hierarchy option is unnecessary " .
+                   "for the " . $self->{'wctype'} . " type.");
+  }
+  if ($self->make_coexistence() && !$self->supports_make_coexistence()) {
+    $self->warning("Using the -make_coexistence option has " .
+                   "no effect on the " . $self->{'wctype'} . " type.");
+  }
   return $self;
 }
 
@@ -1834,6 +1843,12 @@ sub source_listing_callback {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub supports_make_coexistence {
+  #my($self) = shift;
+  return 0;
+}
+
 
 sub generate_implicit_project_dependencies {
   #my($self) = shift;

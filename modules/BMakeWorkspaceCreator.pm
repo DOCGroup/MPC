@@ -30,6 +30,11 @@ my(@targets) = ('clean', 'realclean', '$(CUSTOM_TARGETS)');
 # Subroutine Section
 # ************************************************************
 
+sub supports_make_coexistence {
+  #my($self) = shift;
+  return 1;
+}
+
 
 sub crlf {
   my($self) = shift;
