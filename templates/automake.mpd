@@ -10,6 +10,14 @@ if BUILD_<%uc(require)%>
 if !BUILD_<%uc(avoid)%>
 <%endfor%>
 <%endif%>
+<%if(man_files)%>
+
+man_MANS =<%foreach(man_files)%> <%man_file%><%endfor%>
+<%endif%>
+<%if(script_files)%>
+
+bin_SCRIPTS =<%foreach(script_files)%> <%script_file%><%endfor%>
+<%endif%>
 <%if(custom_types)%>
 
 <%foreach(custom_types)%>
