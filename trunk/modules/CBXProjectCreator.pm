@@ -1,4 +1,4 @@
-package CbxProjectCreator;
+package CBXProjectCreator;
 
 # ************************************************************
 # Description   : The Borland C++ BuilderX Project Creator
