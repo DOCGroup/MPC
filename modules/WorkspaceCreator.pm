@@ -824,8 +824,19 @@ sub generate_hierarchy {
   my($cwd)       = $self->getcwd();
 
   ## Make a copy of these.  We will be modifying them.
-  ## It is necessary to sort the project to get the correct ordering.
-  my(@projects)  = sort @{$origproj};
+  ## It is necessary to sort the projects to get the correct ordering.
+  ## Projects in the current directory must come before projects in
+  ## other directories.
+  my(@projects)  = sort { my($sa) = ($a =~ /\//);
+                          my($sb) = ($b =~ /\//);
+                          if ($sa && !$sb) {
+                            return 1;
+                          }
+                          elsif ($sb && !$sa) {
+                            return -1;
+                          }
+                          return $a cmp $b;
+                        } @{$origproj};
   my(%projinfo)  = %{$originfo};
 
   foreach my $prj (@projects) {
