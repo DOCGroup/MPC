@@ -103,8 +103,8 @@ sub write_project_targets {
       }
     }
 
-    print $fh ($chdir ? "\tcd $dir$crlf" : '') .
-              "\t\$(MAKE) /f " . basename($project) . " $target$crlf" .
+    print $fh ($chdir ? "\tcd $dir$crlf" : ''),
+              "\t\$(MAKE) /f ", basename($project), " $target$crlf",
               ($chdir ? "\tcd $back$crlf" : '');
   }
 }
@@ -115,6 +115,7 @@ sub write_comps {
   my($fh)       = shift;
   my($projects) = $self->get_projects();
   my($pjs)      = $self->get_project_info();
+  my($trans)    = $self->project_target_translation();
   my(%targnum)  = ();
   my(@list)     = $self->number_target_deps($projects, $pjs, \%targnum);
   my($crlf)     = $self->crlf();
@@ -132,35 +133,35 @@ sub write_comps {
   }
 
   ## Print out the content
-  print $fh '!IF "$(CFG)" == ""' . $crlf .
-            'CFG=' . $default . $crlf .
-            '!MESSAGE No configuration specified. ' .
-            'Defaulting to ' . $default . '.' . $crlf .
+  print $fh '!IF "$(CFG)" == ""', $crlf,
+            'CFG=', $default, $crlf,
+            '!MESSAGE No configuration specified. ',
+            'Defaulting to ', $default, '.', $crlf,
             '!ENDIF', $crlf, $crlf,
             '!IF "$(CUSTOM_TARGETS)" == ""', $crlf,
             'CUSTOM_TARGETS=_EMPTY_TARGET_', $crlf,
             '!ENDIF', $crlf;
 
   ## Print out the "all" target
-  print $fh $crlf . 'ALL:';
+  print $fh $crlf, 'ALL:';
   foreach my $project (@list) {
-    print $fh " $$pjs{$project}->[0]";
+    print $fh " $$trans{$project}";
   }
   print $fh $crlf;
 
   ## Print out all other targets here
   foreach my $target (@targets) {
-    print $fh $crlf .
-              $target . ':' . $crlf;
+    print $fh $crlf,
+              $target, ':', $crlf;
     $self->write_project_targets($fh, 'CFG="$(CFG)" ' . $target, \@list);
   }
 
   ## Print out each target separately
   foreach my $project (@list) {
-    print $fh $crlf . $$pjs{$project}->[0] . ':';
+    print $fh $crlf, $$trans{$project}, ':';
     if (defined $targnum{$project}) {
       foreach my $number (@{$targnum{$project}}) {
-        print $fh " $$pjs{$list[$number]}->[0]";
+        print $fh " $$trans{$list[$number]}";
       }
     }
 
@@ -169,9 +170,9 @@ sub write_comps {
   }
 
   ## Print out the project_name_list target
-  print $fh $crlf . "project_name_list:$crlf";
+  print $fh $crlf, "project_name_list:$crlf";
   foreach my $project (sort @list) {
-    print $fh "\t\@echo $$pjs{$project}->[0]$crlf";
+    print $fh "\t\@echo $$trans{$project}$crlf";
   }
 }
 
