@@ -1757,9 +1757,10 @@ sub generate_default_target_names {
       ## If we still don't have a project type, then we will
       ## default to a library if there are source files
       if (!$self->exe_target() && $#sources >= 0) {
-        my($base) = $self->{'unmodified_project_name'};
-        $self->process_assignment('sharedname', $base);
-        $self->process_assignment('staticname', $base);
+        $self->process_assignment('sharedname',
+                                  $self->{'unmodified_project_name'});
+        $self->process_assignment('staticname',
+                                  $self->{'unmodified_project_name'});
       }
     }
   }
@@ -1771,6 +1772,16 @@ sub generate_default_target_names {
     my($sharedname) = $self->get_assignment('sharedname');
     if (defined $sharedname) {
       $self->process_assignment('sharedname', undef);
+    }
+  }
+
+  ## Check for the use of an asterisk in the name
+  foreach my $key ('exename', 'sharedname', 'staticname') {
+    my($value) = $self->get_assignment($key);
+    if (defined $value && $value =~ /\*/) {
+      $value = $self->fill_type_name($value,
+                                     $self->{'unmodified_project_name'});
+      $self->process_assignment($key, $value);
     }
   }
 }
