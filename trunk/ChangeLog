@@ -1,10 +1,39 @@
+Fri Jan 21 11:07:56 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/BMakeWorkspaceCreator.pm:
+
+          Cosmetic changes.
+
+        * modules/TemplateParser.pm:
+
+          Provide new functionality for modifying lists within the context
+          of 'foreach' and 'if' statments.  Four functions are provided:
+          'multiple', 'reverse', 'sort', 'uniq'.
+
+          'multiple' returns true if the parameter give has more than one
+          element when evaluated in a list context.
+
+          'reverse' returns the list in reverse order.
+
+          'sort' returns the list in sorted order.
+
+          'uniq' return the list in sorted order with duplicates removed.
+
+        * modules/AutomakeProjectCreator.pm:
+
+          Removed 'rev_requires' and 'rev_avoids' and used the new 'reverse'
+          modifier.
+
+        * templates/automake.mpd:
+
+          Use the new modifiers provide by the TemplateParser.
+
 Thu Jan 20 07:13:43 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:
 
-	  Changed to append <%pkgconfig_files%> to EXTRA_FILES.
-
-	  Changed to append to pkgconfigdata_DATA.
+          Changed to append <%pkgconfig_files%> to EXTRA_FILES.
+          Changed to append to pkgconfigdata_DATA.
 
 Wed Jan 19 11:20:42 2005  Chad Elliott  <elliott_c@ociweb.com>
 
