@@ -1,3 +1,11 @@
+Fri Apr  9 13:51:47 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Added a script that works similarly to create_ace_build.pl except
+          that it does not restrict the location of the cloned build tree
+          and works with any tree structure, not just ACE_wrappers.
+
 Fri Apr  9 12:38:15 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
