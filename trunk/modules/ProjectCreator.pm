@@ -711,6 +711,7 @@ sub parse_components {
   my(%exclude) = ();
   my($custom)  = defined $self->{'generated_exts'}->{$tag};
   my($grtag)   = $grouped_key . $tag;
+  my($grname)  = undef;
 
   if ($custom) {
     ## For the custom scoped assignments, we want to put a copy of
@@ -806,6 +807,7 @@ sub parse_components {
 
         ## If we're excluding these files, then put them in the hash
         if ($exc) {
+          $grname = $current;
           foreach my $file (@files) {
             $exclude{$file} = 1;
           }
@@ -820,10 +822,14 @@ sub parse_components {
           }
 
           foreach my $file (@files) {
+            ## Add the file if we're not excluding it
             if (!defined $exclude{$file}) {
-              ++$count;
               push(@{$$comps{$current}}, $file);
             }
+
+            ## The user listed a file explicitly, whether we
+            ## excluded it or not.
+            ++$count;
           }
         }
       }
@@ -834,19 +840,19 @@ sub parse_components {
     }
   }
 
-  if ($status && $count == 0) {
-    my(@exc) = keys %exclude;
-
-    if (scalar(@exc) != 0) {
-      my($alldir) = $self->get_assignment('recurse') || $flags{'recurse'};
-      my(@files)  = $self->generate_default_file_list('.', \@exc, $alldir);
-      $self->sift_files(\@files,
-                        $self->{'valid_components'}->{$tag},
-                        $self->get_assignment('pch_header'),
-                        $self->get_assignment('pch_source'),
-                        $tag,
-                        $$comps{$current});
-    }
+  ## If we didn't encounter an error, didn't have any files explicitly
+  ## listed and we attempted to exclude files, then we need to find the
+  ## set of files that don't match the excluded files and add them.
+  if ($status && $count == 0 && defined $grname) {
+    my(@exc)    = keys %exclude;
+    my($alldir) = $self->get_assignment('recurse') || $flags{'recurse'};
+    my(@files)  = $self->generate_default_file_list('.', \@exc, $alldir);
+    $self->sift_files(\@files,
+                      $self->{'valid_components'}->{$tag},
+                      $self->get_assignment('pch_header'),
+                      $self->get_assignment('pch_source'),
+                      $tag,
+                      $$comps{$grname});
   }
 
   return $status;
