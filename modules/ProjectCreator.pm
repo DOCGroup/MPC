@@ -1689,7 +1689,7 @@ sub generate_default_target_names {
       ## If we still don't have a project type, then we will
       ## default to a library if there are source files
       if (!$self->exe_target() && $#sources >= 0) {
-        my($base) = $self->get_assignment('project_name');
+        my($base) = $self->{'unmodified_project_name'};
         $self->process_assignment('sharedname', $base);
         $self->process_assignment('staticname', $base);
       }
@@ -2414,6 +2414,13 @@ sub set_project_name {
   my($self) = shift;
   my($name) = shift;
 
+  ## Save the unmodified project name so that when we
+  ## need to determine the default target name, we can use
+  ## what is expected by the user.
+  $self->{'unmodified_project_name'} = $name;
+
+  ## If we are applying the name modifier to the project
+  ## then we will modify the project name
   if ($self->get_apply_project()) {
     my($nmod) = $self->get_name_modifier();
 
@@ -2423,6 +2430,8 @@ sub set_project_name {
     }
   }
 
+  ## Set the project_name assignment so that the TemplateParser
+  ## can get the project name.
   $self->process_assignment('project_name', $name);
 }
 
