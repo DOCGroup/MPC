@@ -276,13 +276,14 @@
 <%endfor%>
 <%if(template_files)%>
   <node name="Template files" type="Folder">
+    <property category="build.win32.Debug_Build.win32b" name="exclude" value="1"/>
+    <property category="build.linux.Debug_Build.gnuc++" name="exclude" value="1"/>
+    <property category="build.mac os.Debug_Build.gnuc++" name="exclude" value="1"/>
+    <property category="build.solaris.Debug_Build.sunforte70" name="exclude" value="1"/>
     <property category="unique" name="id"/>
 <%foreach(template_files)%>
       <file path="<%template_file%>">
         <property category="unique" name="id"/>
-        <property category="win32b.bcc32" name="enabled" value="0"/>
-        <property category="MinGW.g++compile" name="enabled" value="0"/>
-        <property category="mswin32.MSCL" name="enabled" value="0"/>
       </file>
 <%endfor%>
   </node>
