@@ -2,7 +2,7 @@
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
-# TARGTYPE "<%platform("Win32")%> (<%platform_hardware("x86")%>) <%type_description("Dynamic-Link Library")%>" <%type_code("0x0102")%>
+# TARGTYPE "<%platform("Win32")%> (<%platform_hardware("x86")%>) <%type_description("Dynamic-Link Library")%>" <%if(custom_only)%><%type_code("0x010a")%><%else%><%type_code("0x0102")%><%endif%>
 
 CFG=<%project_name%> - <%platform("Win32")%> <%default_configuration("Debug")%>
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
@@ -50,6 +50,10 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 <%endif%>
 # PROP Target_Dir ""
+<%if(target_ext)%>
+# PROP Target_Ext "<%target_ext%>
+<%endif%>
+<%if(!custom_only)%>
 <%if(type_is_static)%>
 LINK32=link.exe -lib
 <%endif%>
@@ -64,7 +68,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo <%if(sharedname || staticname)%>/o"<%libout%>\<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.bsc"<%endif%>
 <%if(type_is_binary)%>
 LINK32=link.exe
-# ADD LINK32 <%systemlibs("advapi32.lib user32.lib")%><%if(link_options)%> <%link_options%><%endif%> /INCREMENTAL:<%incremental("NO")%> <%foreach(pure_libs)%><%pure_lib%> <%endfor%><%foreach(lit_libs)%><%lit_lib%>.lib <%endfor%><%foreach(libs)%><%lib%><%lib_modifier%>.lib <%endfor%><%foreach(libpaths)%>/libpath:"<%libpath%>" <%endfor%>/nologo /version:<%version("1.0")%> /subsystem:<%subsystem("windows")%><%if(pdb)%><%if(sharedname)%> /pdb:"<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%lib_modifier%>.pdb"<%else%><%if(exename)%> /pdb:"<%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.pdb"<%endif%><%endif%><%endif%><%if(type_is_dynamic)%> /dll<%endif%> <%debug_switch("/debug")%> /machine:<%machine("I386")%> /out:"<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%lib_modifier%>.dll<%endif%><%if(exename)%><%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.exe<%endif%>"
+# ADD LINK32 <%systemlibs("advapi32.lib user32.lib")%><%if(link_options)%> <%link_options%><%endif%> /INCREMENTAL:<%incremental("NO")%> <%foreach(pure_libs)%><%pure_lib%> <%endfor%><%foreach(lit_libs)%><%lit_lib%>.lib <%endfor%><%foreach(libs)%><%lib%><%lib_modifier%>.lib <%endfor%><%foreach(libpaths)%>/libpath:"<%libpath%>" <%endfor%>/nologo /version:<%version("1.0")%> /subsystem:<%subsystem("windows")%><%if(pdb)%><%if(sharedname)%> /pdb:"<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%lib_modifier%>.pdb"<%else%><%if(exename)%> /pdb:"<%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.pdb"<%endif%><%endif%><%endif%><%if(type_is_dynamic)%> /dll<%endif%> <%debug_switch("/debug")%> /machine:<%machine("I386")%> /out:"<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%lib_modifier%>.<%if(target_ext)%><%target_ext%><%else%>dll<%endif%><%endif%><%if(exename)%><%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%exename%><%if(use_modifier)%><%lib_modifier%><%endif%>.exe<%endif%>"
 <%if(link_flags_removed)%>
 # SUBTRACT LINK32 <%link_flags_removed%>
 <%endif%>
@@ -72,6 +76,7 @@ LINK32=link.exe
 <%if(type_is_static)%>
 LIB32=link.exe -lib
 # ADD LIB32 /nologo /out:"<%libout%>\<%staticname%><%lib_modifier%>.lib"
+<%endif%>
 <%endif%>
 
 <%endfor%>
@@ -82,10 +87,9 @@ LIB32=link.exe -lib
 <%foreach(configurations)%>
 # Name "<%project_name%> - <%platform%> <%configuration%>"
 <%endfor%>
-<%if(exename || sharedname || staticname)%>
 # Begin Group "Source Files"
 
-# PROP Default_Filter "cpp;cxx;c"
+# PROP Default_Filter "idl;cpp;cxx;c"
 <%if(pch_source)%>
 <%if(pch_header)%>
 # Begin Source File
@@ -117,7 +121,6 @@ SOURCE="<%source_file%>"
 <%endfor%>
 <%endif%>
 # End Group
-<%endif%>
 <%if(header_files)%>
 # Begin Group "Header Files"
 

@@ -68,6 +68,7 @@
 <tbody>
 <tr><td>after</td><td><%after%></td></tr>
 <tr><td>avoids</td><td><%avoids%></td></tr>
+<tr><td>custom_only</td><td><%custom_only%></td></tr>
 <tr><td>dllout</td><td><%dllout%></td></tr>
 <tr><td>dynamicflags</td><td><%dynamicflags%></td></tr>
 <tr><td>exename</td><td><%exename%></td></tr>
@@ -92,12 +93,14 @@
 <tr><td colspan="2">MPC Project Files</td></tr>
 <tr><th>Name</th><th>Value</th></tr>
 </thead>
+<%if(!custom_only)%>
 <tr><td>Source Files</td><td><%source_files%></td></tr>
 <tr><td>Header Files</td><td><%header_files%></td></tr>
 <tr><td>Inline Files</td><td><%inline_files%></td></tr>
 <tr><td>Template Files</td><td><%template_files%></td></tr>
 <tr><td>Resource Files</td><td><%resource_files%></td></tr>
 <tr><td>Documentation Files</td><td><%documentation_files%></td></tr>
+<%endif%>
 <%foreach(custom_types)%>
 <tr><td><%ucw(custom_type)%></td><td><%custom_type->input_files%></td></tr>
 <%endfor%>

@@ -91,6 +91,7 @@ LIB32=link.exe -lib
 # Name "<%project_name%> - <%operating_system%> (<%platform%>) <%configuration%>"
 <%endfor%>
 <%endfor%>
+<%if(!custom_only)%>
 <%if(exename || sharedname || staticname)%>
 # Begin Group "Source Files"
 
@@ -269,6 +270,7 @@ SOURCE="<%resource_file%>"
 <%endfor%>
 <%endif%>
 # End Group
+<%endif%>
 <%endif%>
 <%foreach(custom_types)%>
 <%if(custom_type->input_files)%>
