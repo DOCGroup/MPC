@@ -9,12 +9,12 @@ CFG=<%project_name%> - <%platform("Win32")%> <%default_configuration("Debug")%>
 !MESSAGE run the tool that generated this project file and specify the
 !MESSAGE nmake output type.  You can then use the following command:
 !MESSAGE
-!MESSAGE NMAKE /f "<%make_file_name%>".
+!MESSAGE NMAKE.
 !MESSAGE
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE
-!MESSAGE NMAKE /f "<%make_file_name%>" CFG="<%project_name%> - <%platform%> <%default_configuration%>"
+!MESSAGE NMAKE CFG="<%project_name%> - <%platform%> <%default_configuration%>"
 !MESSAGE
 !MESSAGE Possible choices for configuration are:
 !MESSAGE

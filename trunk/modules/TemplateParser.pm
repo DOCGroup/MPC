@@ -13,6 +13,7 @@ package TemplateParser;
 use strict;
 
 use Parser;
+use WinVersionTranslator;
 
 use vars qw(@ISA);
 @ISA = qw(Parser);
@@ -957,6 +958,14 @@ sub collect_data {
   ## this to correspond to the same guid used in the workspace.
   my($guid) = $prjc->update_project_info($self, 1, ['guid']);
   $self->{'values'}->{'guid'} = $guid;
+
+  ## Some Windows based projects can't deal with certain version
+  ## values.  So, for those we provide a translated version.
+  my($version) = $prjc->get_assignment('version');
+  if (defined $version) {
+    $self->{'values'}->{'win_version'} =
+                        WinVersionTranslator::translate($version);
+  }
 }
 
 

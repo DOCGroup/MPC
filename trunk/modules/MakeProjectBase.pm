@@ -1,9 +1,9 @@
-package MakeProjectCreator;
+package MakeProjectBase;
 
 # ************************************************************
-# Description   : A Generic Make Project Creator
+# Description   : A Make Project base module
 # Author        : Chad Elliott
-# Create Date   : 2/18/2003
+# Create Date   : 1/4/2005
 # ************************************************************
 
 # ************************************************************
@@ -12,37 +12,33 @@ package MakeProjectCreator;
 
 use strict;
 
-use MakeProjectBase;
-use ProjectCreator;
-
-use vars qw(@ISA);
-@ISA = qw(MakeProjectBase ProjectCreator);
-
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
-sub convert_slashes {
+sub dollar_special {
+  #my($self) = shift;
+  return 1;
+}
+
+
+sub sort_files {
   #my($self) = shift;
   return 0;
 }
 
 
-sub get_dll_exe_template_input_file {
-  #my($self) = shift;
-  return 'makeexe';
-}
+sub project_file_name {
+  my($self) = shift;
+  my($name) = shift;
 
+  if (!defined $name) {
+    $name = $self->project_name();
+  }
 
-sub get_dll_template_input_file {
-  #my($self) = shift;
-  return 'makedll';
-}
-
-
-sub get_template {
-  #my($self) = shift;
-  return 'make';
+  return $self->get_modified_project_file_name(
+                                     "Makefile.$name",
+                                     $self->project_file_extension());
 }
 
 1;
