@@ -11,10 +11,6 @@
 #
 #----------------------------------------------------------------------------
 
-## The number in AUTOMAKE_OPTIONS is the minimum required version automake
-## needed to process this file.
-AUTOMAKE_OPTIONS = 1.7 foreign
-
 <%if(includes)%>
 INCLUDES =<%foreach(includes)%> -I<%include%><%endfor%>
 <%endif%>
@@ -105,7 +101,7 @@ INLINE_FILES = \
 
 pkginclude_HEADERS = \
 <%if(template_files)%>
-  $(INLINE_FILES) \
+  $(TEMPLATE_FILES) \
 <%endif%>
 <%if(inline_files)%>
   $(INLINE_FILES) \
