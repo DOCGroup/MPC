@@ -1,3 +1,10 @@
+Thu Aug  5 14:57:19 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+	  Use $(srcdir)/<%custom_type->input_file%> instead of $< so
+	  resulting makefile will work on systems where make doesn't
+	  support VPATH.
+
 Thu Aug  5 11:14:12 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
