@@ -14,6 +14,7 @@ use strict;
 
 use AutomakeProjectCreator;
 use WorkspaceCreator;
+use WorkspaceHelper;
 
 use vars qw(@ISA);
 @ISA = qw(WorkspaceCreator);
@@ -141,70 +142,10 @@ sub write_comps {
   ## Print out the Makefile.am.
 
   if (@locals) {
-    my($seen_ace_root) = 0;
-    my($seen_tao_root) = 0;
-    my($seen_ace_builddir) = 0;
-    my($seen_tao_builddir) = 0;
-    my($seen_tao_idl) = 0;
-
-    foreach my $local (reverse @locals) {
-      my($pfh) = new FileHandle();
-      if (!open($pfh,$local)) {
-        $self->error("Unable to open $local for reading.");
-      }
-
-      while(<$pfh>) {
-        if (/ACE_ROOT/) {
-           $seen_ace_root = 1;
-        }
-        if (/TAO_ROOT/) {
-           $seen_tao_root = 1;
-        }
-        if (/ACE_BUILDDIR/) {
-           $seen_ace_builddir = 1;
-        }
-        if (/TAO_BUILDDIR/) {
-           $seen_tao_builddir = 1;
-        }
-        if (/TAO_IDL/) {
-           $seen_tao_idl = 1;
-        }
-      }
-
-      close($pfh);
-    }
-
-    if ($seen_ace_root || $seen_ace_builddir ||
-        $seen_tao_root || $seen_tao_builddir) {
-
-      if ($seen_ace_root) {
-        if ($seen_tao_root || $seen_tao_builddir) {
-          print $fh "ACE_ROOT = \$(top_srcdir)/..", $crlf;
-        } else {
-          print $fh "ACE_ROOT = \$(top_srcdir)", $crlf;
-        }
-      }
-      if ($seen_ace_builddir) {
-        if ($seen_tao_root || $seen_tao_builddir) {
-          print $fh "ACE_BUILDDIR = \$(top_builddir)/..", $crlf;
-        } else {
-          print $fh "ACE_BUILDDIR = \$(top_builddir)", $crlf;
-        }
-      }
-      if ($seen_tao_root) {
-        print $fh "TAO_ROOT = \$(top_srcdir)", $crlf;
-      }
-      if ($seen_tao_builddir) {
-        print $fh "TAO_BUILDDIR = \$(top_builddir)", $crlf;
-      }
-
-      print $fh $crlf;
-    }
-
-    if ($seen_tao_idl) {
-      print $fh "TAO_IDL = ACE_ROOT=\$(ACE_ROOT) TAO_ROOT=\$(TAO_ROOT) \$(TAO_BUILDDIR)/TAO_IDL/tao_idl", $crlf;
-      print $fh "TAO_IDLFLAGS = -Ge 1 -Wb,pre_include=ace/pre.h -Wb,post_include=ace/post.h -I\$(TAO_ROOT) -I\$(srcdir) -g \$(ACE_BUILDDIR)/apps/gperf/src/gperf", $crlf;
-      print $fh $crlf;
+    my($wsHelper) = WorkspaceHelper::get($self);
+    my($status, $error) = $wsHelper->write_settings($self, $fh, @locals);
+    if (!$status) {
+      $self->error($error);
     }
   }
 
@@ -245,8 +186,8 @@ sub write_comps {
   ## Take the local Makefile.<project>.am files and insert each one here,
   ## then delete it.
   if (@locals) {
+    my($pfh) = new FileHandle();
     foreach my $local (reverse @locals) {
-      my($pfh) = new FileHandle();
       if (open($pfh,$local)) {
         print $fh "## $local $crlf";
 
@@ -320,7 +261,7 @@ sub write_comps {
         }
 
         close($pfh);
-##        unlink($local);
+        unlink($local);
         print $fh $crlf;
       }
       else {

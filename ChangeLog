@@ -1,3 +1,23 @@
+Wed Sep  1 12:54:06 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where the toplevel workspace would be created twice in
+          the event that the -hierarchy option was used or the subclassed
+          workspace creator defined the workspace_per_project method to
+          return 1.
+
+        * modules/WorkspaceHelper.pm:
+
+          Added the base class and factory for all WorkspaceHelpers.  It
+          will dynamically locate, load and allocate the helper based on the
+          workspace creator type.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Uncommented the unlink() and split the ACE specific portion into a
+          helper under ACE_wrappers/bin/MakeProjectCreator/modules.
+
 Tue Aug 31 08:00:20 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/TemplateParser.pm:
