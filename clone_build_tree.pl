@@ -38,6 +38,9 @@ my(@foundFiles) = ();
 my($version)    = '$Id$';
 $version =~ s/.*\s+(\d+[\.\d]+)\s+.*/$1/;
 
+eval 'symlink("", "");';
+my($hasSymlink) = ($@ eq '');
+
 # ******************************************************************
 # Subroutine Section
 # ******************************************************************
@@ -395,26 +398,20 @@ sub usageAndExit {
   }
   my($base) = basename($0);
   my($spc)  = ' ' x (length($base) + 8);
-  if ($^O eq 'MSWin32') {
-    print STDERR "$base v$version\n",
-                 "Usage: $base [-b <builddir>] [-l] [-v] ",
-                 "[build names...]\n\n",
-                 "-b  Set the build directory. It defaults to the ",
-                 "<current directory>/build.\n",
-                 "-v  Enables verbose mode.\n";
-  }
-  else {
-    print STDERR "$base v$version\n",
-                 "Usage: $base [-a] [-b <builddir>] [-d <dmode>] ",
-                 "[-l] [-v]\n",
-                 $spc, "[build names...]\n\n",
-                 "-a  Use absolute paths when creating soft links.\n",
-                 "-b  Set the build directory. It defaults to the ",
-                 "<current directory>/build.\n",
-                 "-d  Set the directory permissions mode.\n",
-                 "-l  Use hard links instead of soft links.\n",
-                 "-v  Enables verbose mode.\n";
-  }
+
+  print STDERR "$base v$version\n",
+               "Usage: $base [-b <builddir>] [-d <dmode>] ",
+               ($hasSymlink ? "[-a] [-l] " : ''),
+               "[-v]\n",
+               $spc, "[build names...]\n\n",
+               ($hasSymlink ?
+               "-a  Use absolute paths when creating soft links.\n" .
+               "-l  Use hard links instead of soft links.\n" : ''),
+               "-b  Set the build directory. It defaults to the ",
+               "<current directory>/build.\n",
+               "-d  Set the directory permissions mode.\n",
+               "-v  Enable verbose mode.\n";
+
   exit(0);
 }
 
@@ -425,7 +422,7 @@ sub usageAndExit {
 
 my($dmode)    = 0777;
 my($absolute) = 0;
-my($hardlink) = ($^O eq 'MSWin32');
+my($hardlink) = !$hasSymlink;
 my($builddir) = getcwd() . '/build';
 my(@builds)   = ();
 
