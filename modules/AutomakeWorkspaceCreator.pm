@@ -226,8 +226,6 @@ sub write_comps {
               $unconditional_targets{$1}++
             }
 
-            $seen{1} = 1;
-
             if (/^pkgconfig_DATA/) {
                 $installable_pkgconfig= 1;
             }
