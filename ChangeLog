@@ -1,3 +1,18 @@
+Mon Feb 14 16:10:32 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeProjectCreator.pm:
+
+          Removed the implementation of
+          expand_variables_from_template_values to get the default
+          implementation which returns 1.
+
+        * templates/em3vcp.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          Support spaces in custom input files.  Not all project types can
+          support spaces in file names, so use them at your own risk.
+
 Sat Feb 12 10:48:29 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
