@@ -12,7 +12,7 @@ feature(openssl) {
     libpaths += $(SSL_ROOT)/out32dll $(SSL_ROOT)/out32
   }
 
-  specific(gnuace, make, sle) {
+  specific(gnuace, make, sle, automake) {
     lit_libs += ssl crypto
     includes += $(SSL_ROOT)/include
     libpaths += $(SSL_ROOT)/lib
