@@ -31,8 +31,8 @@ use vars qw(@ISA);
 my(%keywords) = ('if'              => 0,
                  'else'            => 0,
                  'endif'           => 0,
-                 'noextension'     => 0,
-                 'dirname'         => 0,
+                 'noextension'     => 2,
+                 'dirname'         => 5,
                  'basename'        => 0,
                  'basenoextension' => 0,
                  'foreach'         => 0,
@@ -46,7 +46,7 @@ my(%keywords) = ('if'              => 0,
                  'uc'              => 0,
                  'lc'              => 0,
                  'ucw'             => 0,
-                 'normalize'       => 0,
+                 'normalize'       => 2,
                  'flag_overrides'  => 1,
                  'reverse'         => 2,
                  'sort'            => 2,
@@ -94,12 +94,7 @@ sub basename {
   my($self) = shift;
   my($file) = shift;
 
-  if ($file =~ s/.*[\/\\]//) {
-    $self->{'values'}->{'basename_found'} = 1;
-  }
-  else {
-    delete $self->{'values'}->{'basename_found'};
-  }
+  $file =~ s/.*[\/\\]//;
   return $file;
 }
 
@@ -110,13 +105,9 @@ sub tp_dirname {
   for(my $i = length($file) - 1; $i != 0; --$i) {
     my($ch) = substr($file, $i, 1);
     if ($ch eq '/' || $ch eq '\\') {
-      ## The template file may use this value (<%dirname_found%>)
-      ## to determine whether a dirname removed the basename or not
-      $self->{'values'}->{'dirname_found'} = 1;
       return substr($file, 0, $i);
     }
   }
-  delete $self->{'values'}->{'dirname_found'};
   return '.';
 }
 
@@ -839,13 +830,28 @@ sub handle_ucw {
 }
 
 
+sub perform_normalize {
+  my($self)  = shift;
+  my($value) = shift;
+  $value =~ tr/\/\\\-$()./_/;
+  return $value;
+}
+
+
 sub handle_normalize {
   my($self) = shift;
   my($name) = shift;
   my($val)  = $self->get_value_with_default($name);
 
-  $val =~ tr/\/\-$()./_/;
-  $self->append_current($val);
+  $self->append_current($self->perform_normalize($val));
+}
+
+
+sub perform_noextension {
+  my($self)  = shift;
+  my($value) = shift;
+  $value =~ s/\.[^\.]+$//;
+  return $value;
 }
 
 
@@ -854,8 +860,28 @@ sub handle_noextension {
   my($name) = shift;
   my($val)  = $self->get_value_with_default($name);
 
-  $val =~ s/\.[^\.]+$//;
-  $self->append_current($val);
+  $self->append_current($self->perform_noextension($val));
+}
+
+
+sub get_dirname {
+  my($self)  = shift;
+  my($name)  = shift;
+  my($value) = $self->get_value_with_default($name);
+  return (defined $value ?
+              $self->doif_dirname($value) : undef);
+}
+
+
+sub doif_dirname {
+  my($self)  = shift;
+  my($value) = shift;
+
+  if (defined $value) {
+    $value = $self->tp_dirname($value);
+    return ($value ne '.');
+  }
+  return undef;
 }
 
 
