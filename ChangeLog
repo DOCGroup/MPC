@@ -1,3 +1,11 @@
+Thu Apr 15 13:16:03 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where generating the hierarchical workspace would have
+          the wrong build ordering.  It was a subtle bug that had to do with
+          the way projects were sorted.
+
 Wed Apr 14 07:41:58 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
