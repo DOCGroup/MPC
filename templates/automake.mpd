@@ -14,11 +14,11 @@ if !BUILD_<%uc(avoid)%>
 <%marker(macros)%>
 <%if(man_files)%>
 
-man_MANS = <%man_files%>
+man_MANS += <%man_files%>
 <%endif%>
 <%if(script_files)%>
 
-<%if(install_this_target)%>bin<%else%>noinst<%endif%>_SCRIPTS = <%script_files%>
+<%if(install_this_target)%>bin<%else%>noinst<%endif%>_SCRIPTS += <%script_files%>
 <%endif%>
 <%if(custom_types)%>
 
@@ -168,7 +168,7 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%project_name%>_includedir = <%includedir%>
 
 <%endif%>
-<%if(install_headers)%><%project_name%>_include<%else%>noinst<%endif%>_HEADERS = \
+<%if(install_headers)%><%project_name%>_include<%else%>noinst<%endif%>_HEADERS += \
 <%foreach(header, sort(header_files inline_files template_files idl_files pidl_files))%>
   <%header%><%fornotlast(" \\")%>
 <%endfor%>
