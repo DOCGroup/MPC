@@ -42,7 +42,7 @@ sub printUsage {
                "Usage: $base [-global <file>] [-include <directory>] [-recurse]\n" .
                $spaces . "[-ti <dll | lib | dll_exe | lib_exe>:<file>] [-hierarchy]\n" .
                $spaces . "[-template <file>] [-relative NAME=VAR] [-base <project>]\n" .
-               $spaces . "[-noreldefs] [-notoplevel] [-static] [-genins]\n" .
+               $spaces . "[-noreldefs] [-notoplevel] [-static] [-genins] [-expand_env]\n" .
                $spaces . "[-value_template <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
                $spaces . "[-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
                $spaces . "[-feature_file <file name>] [-make_coexistence]\n" .
@@ -83,6 +83,8 @@ sub printUsage {
 "                       .mpc extension will be tried.\n" .
 "       -exclude        Use this option to exclude directories when searching\n" .
 "                       for input files.\n" .
+"       -expand_env     Expand all uses of \$() to the value set in the\n" .
+"                       environment.\n" .
 "       -feature_file   Specifies the feature file to read before processing.\n" .
 "                       The default feature file is default.features under the\n" .
 "                       config directory.\n" .
@@ -148,13 +150,23 @@ sub completion_command {
   my($types) = shift;
   my($str)   = "complete $name " .
                "'c/-/(genins global include type template relative " .
-               "ti static noreldefs notoplevel feature_file " .
-               "value_template value_project make_coexistence " .
+               "ti static noreldefs notoplevel feature_file expand_env " .
+               "value_template value_project make_coexistence language " .
                "hierarchy exclude name_modifier apply_project version)/' " .
                "'c/dll:/f/' 'c/dll_exe:/f/' 'c/lib_exe:/f/' 'c/lib:/f/' " .
-               "'n/-ti/(dll lib dll_exe lib_exe)/:' 'n/-type/(";
+               "'n/-ti/(dll lib dll_exe lib_exe)/:' ";
 
-  my(@keys) = sort keys %$types;
+  $str .= "'n/-language/(";
+  my(@keys) = sort keys %languages;
+  for(my $i = 0; $i <= $#keys; $i++) {
+    $str .= $keys[$i];
+    if ($i != $#keys) {
+      $str .= " ";
+    }
+  }
+  $str .= ")/' 'n/-type/(";
+
+  @keys = sort keys %$types;
   for(my $i = 0; $i <= $#keys; $i++) {
     $str .= $keys[$i];
     if ($i != $#keys) {
@@ -191,6 +203,7 @@ sub options {
   my($dynamic)    = ($defaults ? 1 : undef);
   my($reldefs)    = ($defaults ? 1 : undef);
   my($toplevel)   = ($defaults ? 1 : undef);
+  my($expand_env) = ($defaults ? 0 : undef);
   my($static)     = ($defaults ? 0 : undef);
   my($recurse)    = ($defaults ? 0 : undef);
   my($makeco)     = ($defaults ? 0 : undef);
@@ -250,6 +263,9 @@ sub options {
         $self->optionError('-exclude requires a ' .
                            'comma separated list argument');
       }
+    }
+    elsif ($arg eq '-expand_env') {
+      $expand_env = 1;
     }
     elsif ($arg eq '-feature_file') {
       $i++;
@@ -473,6 +489,7 @@ sub options {
                   'genins'        => $genins,
                   'into'          => $into,
                   'language'      => $language,
+                  'expand_env'    => $expand_env,
                  );
 
   return \%options;

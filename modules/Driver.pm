@@ -307,7 +307,8 @@ sub run {
                                 $options->{'apply_project'},
                                 $options->{'genins'},
                                 $options->{'into'},
-                                $options->{'language'});
+                                $options->{'language'},
+                                $options->{'expand_env'});
       if ($base ne $file) {
         my($dir) = ($base eq '' ? $file : $self->mpc_dirname($file));
         if (!$creator->cd($dir)) {

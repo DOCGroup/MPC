@@ -192,36 +192,37 @@ my(%language) = ('cplusplus' => [ \%cppvc, \%cppec, {}    , 'main' ],
 # ************************************************************
 
 sub new {
-  my($class)     = shift;
-  my($global)    = shift;
-  my($inc)       = shift;
-  my($template)  = shift;
-  my($ti)        = shift;
-  my($dynamic)   = shift;
-  my($static)    = shift;
-  my($relative)  = shift;
-  my($addtemp)   = shift;
-  my($addproj)   = shift;
-  my($progress)  = shift;
-  my($toplevel)  = shift;
-  my($baseprojs) = shift;
-  my($gfeature)  = shift;
-  my($feature)   = shift;
-  my($hierarchy) = shift;
-  my($exclude)   = shift;
-  my($makeco)    = shift;
-  my($nmod)      = shift;
-  my($applypj)   = shift;
-  my($genins)    = shift;
-  my($into)      = shift;
-  my($language)  = shift;
-  my($self)      = $class->SUPER::new($global, $inc,
-                                      $template, $ti, $dynamic, $static,
-                                      $relative, $addtemp, $addproj,
-                                      $progress, $toplevel, $baseprojs,
-                                      $feature, $hierarchy, $nmod, $applypj,
-                                      $into, $language,
-                                      'project');
+  my($class)      = shift;
+  my($global)     = shift;
+  my($inc)        = shift;
+  my($template)   = shift;
+  my($ti)         = shift;
+  my($dynamic)    = shift;
+  my($static)     = shift;
+  my($relative)   = shift;
+  my($addtemp)    = shift;
+  my($addproj)    = shift;
+  my($progress)   = shift;
+  my($toplevel)   = shift;
+  my($baseprojs)  = shift;
+  my($gfeature)   = shift;
+  my($feature)    = shift;
+  my($hierarchy)  = shift;
+  my($exclude)    = shift;
+  my($makeco)     = shift;
+  my($nmod)       = shift;
+  my($applypj)    = shift;
+  my($genins)     = shift;
+  my($into)       = shift;
+  my($language)   = shift;
+  my($expand_env) = shift;
+  my($self)       = $class->SUPER::new($global, $inc,
+                                       $template, $ti, $dynamic, $static,
+                                       $relative, $addtemp, $addproj,
+                                       $progress, $toplevel, $baseprojs,
+                                       $feature, $hierarchy, $nmod, $applypj,
+                                       $into, $language, $expand_env,
+                                       'project');
 
   $self->{$self->{'type_check'}}   = 0;
   $self->{'feature_defined'}       = 0;
@@ -3393,8 +3394,9 @@ sub relative {
       $value = \@built;
     }
     elsif ($value =~ /\$/) {
-      my($rel)  = $self->get_relative();
-      my(@keys) = keys %$rel;
+      my($expenv) = $self->get_expand_env();
+      my($rel)    = ($expenv ? \%ENV : $self->get_relative());
+      my(@keys)   = keys %$rel;
 
       if (defined $keys[0]) {
         my($cwd)   = $self->getcwd();
@@ -3406,52 +3408,61 @@ sub relative {
           my($val)    = $$rel{$name};
 
           if (defined $val) {
-            ## Fix up the value for Windows switch the \\'s to /
-            if ($self->{'convert_slashes'}) {
-              $val =~ s/\\/\//g;
-            }
-
-            ## Here we make an assumption that if we convert slashes to
-            ## back-slashes, we also have a case-insensitive file system.
-            my($icwd) = ($self->{'convert_slashes'} ? lc($cwd) : $cwd);
-            my($ival) = ($self->{'convert_slashes'} ? lc($val) : $val);
-            my($iclen) = length($icwd);
-            my($ivlen) = length($ival);
-
-            ## If the relative value contains the current working
-            ## directory plus additional subdirectories, we must pull
-            ## off the additional directories into a temporary where
-            ## it can be put back after the relative replacement is done.
-            my($append) = undef;
-            if (index($ival, $icwd) == 0 && $iclen != $ivlen &&
-                substr($ival, $iclen, 1) eq '/') {
-              my($diff) = $ivlen - $iclen;
-              $append = substr($ival, $iclen);
-              substr($ival, $iclen, $diff) = '';
-              $ivlen -= $diff;
-            }
-
-            if (index($icwd, $ival) == 0 &&
-                ($iclen == $ivlen || substr($icwd, $ivlen, 1) eq '/')) {
-              my($current) = $icwd;
-              substr($current, 0, $ivlen) = '';
-
-              my($dircount) = ($current =~ tr/\///);
-              if ($dircount == 0) {
-                $ival = '.';
-              }
-              else {
-                $ival = '../' x $dircount;
-                $ival =~ s/\/$//;
-              }
-              if (defined $append) {
-                $ival .= $append;
-              }
+            if ($expenv) {
               if ($self->{'convert_slashes'}) {
-                $ival = $self->slash_to_backslash($ival);
+                $val = $self->slash_to_backslash($val);
               }
-              substr($value, $start) =~ s/\$\([^)]+\)/$ival/;
-              $whole = $ival;
+              substr($value, $start) =~ s/\$\([^)]+\)/$val/;
+              $whole = $val;
+            }
+            else {
+              ## Fix up the value for Windows switch the \\'s to /
+              if ($self->{'convert_slashes'}) {
+                $val =~ s/\\/\//g;
+              }
+
+              ## Here we make an assumption that if we convert slashes to
+              ## back-slashes, we also have a case-insensitive file system.
+              my($icwd) = ($self->{'convert_slashes'} ? lc($cwd) : $cwd);
+              my($ival) = ($self->{'convert_slashes'} ? lc($val) : $val);
+              my($iclen) = length($icwd);
+              my($ivlen) = length($ival);
+
+              ## If the relative value contains the current working
+              ## directory plus additional subdirectories, we must pull
+              ## off the additional directories into a temporary where
+              ## it can be put back after the relative replacement is done.
+              my($append) = undef;
+              if (index($ival, $icwd) == 0 && $iclen != $ivlen &&
+                  substr($ival, $iclen, 1) eq '/') {
+                my($diff) = $ivlen - $iclen;
+                $append = substr($ival, $iclen);
+                substr($ival, $iclen, $diff) = '';
+                $ivlen -= $diff;
+              }
+
+              if (index($icwd, $ival) == 0 &&
+                  ($iclen == $ivlen || substr($icwd, $ivlen, 1) eq '/')) {
+                my($current) = $icwd;
+                substr($current, 0, $ivlen) = '';
+
+                my($dircount) = ($current =~ tr/\///);
+                if ($dircount == 0) {
+                  $ival = '.';
+                }
+                else {
+                  $ival = '../' x $dircount;
+                  $ival =~ s/\/$//;
+                }
+                if (defined $append) {
+                  $ival .= $append;
+                }
+                if ($self->{'convert_slashes'}) {
+                  $ival = $self->slash_to_backslash($ival);
+                }
+                substr($value, $start) =~ s/\$\([^)]+\)/$ival/;
+                $whole = $ival;
+              }
             }
           }
           elsif ($expand_template ||
@@ -3473,6 +3484,12 @@ sub relative {
               ## replaced too.
               $whole = '';
             }
+            else {
+              if ($expenv) {
+                $self->warning("Unable to expand $name " .
+                               "as an environment variable.");
+              }
+            }
           }
           $start += length($whole);
         }
@@ -3480,57 +3497,6 @@ sub relative {
     }
   }
 
-  return $value;
-}
-
-
-sub reverse_relative {
-  my($self)  = shift;
-  my($value) = shift;
-
-  if (defined $value) {
-    if (UNIVERSAL::isa($value, 'ARRAY')) {
-      my(@built) = ();
-      foreach my $val (@$value) {
-        push(@built, $self->reverse_relative($val));
-      }
-      $value = \@built;
-    }
-    else {
-      my($rel) = $self->get_relative();
-
-      foreach my $key (keys %$rel) {
-        ## Get the relative replacement value and convert back-slashes
-        my($val) = $$rel{$key};
-        $val =~ s/\\/\//g;
-
-        ## We only need to check for reverse replacement if the length
-        ## of the string is less than or equal to the length of our
-        ## replacement value or the string has a slash at the position
-        ## of the length of the replacement value
-        my($vlen) = length($val);
-        if (length($value) <= $vlen || substr($value, $vlen, 1) eq '/') {
-          ## Cut the string down by the length of the replacement value
-          my($lval) = substr($value, 0, $vlen);
-
-          ## Here we make an assumption that if we convert slashes to
-          ## back-slashes, we also have a case-insensitive file system.
-          if ($self->{'convert_slashes'}) {
-            if (lc($lval) eq lc($val)) {
-              substr($value, 0, length($val)) = "\$($key)";
-              last;
-            }
-          }
-          else {
-            if ($lval eq $val) {
-              substr($value, 0, length($val)) = "\$($key)";
-              last;
-            }
-          }
-        }
-      }
-    }
-  }
   return $value;
 }
 
