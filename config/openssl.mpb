@@ -16,5 +16,9 @@ feature(openssl) {
     lit_libs += ssl crypto
     includes += $(SSL_ROOT)/include
     libpaths += $(SSL_ROOT)/lib
+
+// Some Linux OpenSSL installations compile in Kerberos support.  Add
+// the Kerberos include path to preprocessor include path.
+    includes += /usr/kerberos/include
   }
 }
