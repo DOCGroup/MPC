@@ -1,3 +1,10 @@
+Wed Apr 14 07:41:58 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Modified the file exclusion behavior to work correctly with
+          grouped files within components.
+
 Tue Apr 13 13:46:14 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
