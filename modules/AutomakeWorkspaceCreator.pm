@@ -40,10 +40,7 @@ sub pre_workspace {
   my($fh)   = shift;
   my($crlf) = $self->crlf();
 
-  print $fh '##', $crlf,
-            '##  Process this file with automake', $crlf,
-            '##', $crlf,
-            $crlf,
+  print $fh '##  Process this file with automake to create Makefile.in', $crlf,
             '##', $crlf,
             '## $Id$', $crlf,
             '##', $crlf,
@@ -51,7 +48,16 @@ sub pre_workspace {
             '## this file will be lost the next time it is generated.', $crlf,
             '##', $crlf,
             '## MPC Command:', $crlf,
-            "## $0 @ARGV", $crlf, $crlf;
+            "## $0 @ARGV", $crlf, $crlf,
+            'bin_PROGRAMS =', $crlf,
+            'noinst_PROGRAMS =', $crlf,
+            'noinst_HEADERS =', $crlf,
+            'lib_LTLIBRARIES =', $crlf,
+            'BUILT_SOURCES =', $crlf,
+            'CLEANFILES =', $crlf,
+            'TEMPLATE_FILES =', $crlf,
+            'HEADER_FILES =', $crlf,
+            'INLINE_FILES =', $crlf, $crlf;
 }
 
 
@@ -77,23 +83,26 @@ sub write_comps {
     unlink('configure.ac.Makefiles');
     $mfh = new FileHandle();
     open($mfh, '>configure.ac.Makefiles');
+    ## The top-level is never listed as a dependency, so it needs to be
+    ## added explicitly.
+    print $mfh "AC_CONFIG_FILES([ Makefile ])$crlf";
   }
 
   ## If we're writing a configure.ac.Makefiles file, every seen project
   ## goes into it. Since we only write this at the starting directory
   ## level, it'll include all projects processed at this level and below.
   foreach my $dep (reverse @list) {
-    $dep =~ s/\.am$//;       ## Lose the ".am" suffix.
     if ($mfh) {
       ## There should be a Makefile at each level, but it's not a project,
-      ## it's a workspace; therefore, it's not in the list of projects. But
-      ## it's needed in the configure process so add it here.
+      ## it's a workspace; therefore, it's not in the list of projects.
+      ## Since we're consolidating all the project files into one workspace
+      ## Makefile.am per directory level, be sure to add that Makefile.am
+      ## entry at each level there's a project dependency.
       my($dep_dir) = dirname($dep);
       if (!defined $proj_dir_seen{$dep_dir}) {
         $proj_dir_seen{$dep_dir} = 1;
         print $mfh "AC_CONFIG_FILES([ $dep_dir" . "/Makefile ])$crlf";
       }
-      print $mfh "AC_CONFIG_FILES([ $dep ])$crlf";
     }
 
     ## Get a unique list of next-level directories for SUBDIRS.
@@ -105,8 +114,8 @@ sub write_comps {
 
     ## At each directory level, each project is written into a separate
     ## Makefile.<project>.am file. To bring these back into the build
-    ## process, write out a list of local projects and then generate
-    ## local make targets for them below.
+    ## process, they'll be sucked back into the workspace Makefile.am file.
+    ## Remember which ones to pull in at this level.
     if ($dir eq '.') {
       unshift(@locals, $dep);
     }
@@ -120,32 +129,23 @@ sub write_comps {
   foreach my $dir (@dirs) {
     print $fh " \\$crlf        $dir";
   }
-  print $fh $crlf;
+  print $fh $crlf, $crlf;
 
-  ## Print out the local targets, if there are any.
+  ## Take the local Makefile.<project>.am files and insert each one here,
+  ## then delete it.
   if (@locals) {
-    print $fh $crlf . 'LOCAL_MAKES =';
     foreach my $local (@locals) {
-      print $fh " \\$crlf        $local";
+      my($pfh);
+      $pfh = new FileHandle();
+      open($pfh,$local) || print "Error opening $local" . $crlf;
+      print $fh "## $local $crlf";
+      while (<$pfh>) {
+        print $fh $_;
+      }
+      close($pfh);
+##      unlink($local);
+      print $fh $crlf;
     }
-    print $fh $crlf;
-    print $fh $crlf;
-    print $fh "all-local:$crlf";
-    print $fh "\t" . 'list=\'$(LOCAL_MAKES)\'; for p in $$list; do \\' . $crlf;
-    print $fh "\t" . '$(MAKE) $(AM_MAKEFLAGS) all; \\' . $crlf;
-    print $fh "\t" . 'done;' . $crlf;
-
-    print $fh $crlf;
-    print $fh "clean-local:$crlf";
-    print $fh "\t" . 'list=\'$(LOCAL_MAKES)\'; for p in $$list; do \\' . $crlf;
-    print $fh "\t" . '$(MAKE) $(AM_MAKEFLAGS) clean; \\' . $crlf;
-    print $fh "\t" . 'done;' . $crlf;
-
-    print $fh $crlf;
-    print $fh "distclean-local:$crlf";
-    print $fh "\t" . 'list=\'$(LOCAL_MAKES)\'; for p in $$list; do \\' . $crlf;
-    print $fh "\t" . '$(MAKE) $(AM_MAKEFLAGS) distclean; \\' . $crlf;
-    print $fh "\t" . 'done;' . $crlf;
   }
 
   ## If this is the top-level Makefile.am, it needs the directives to pass
@@ -158,6 +158,16 @@ sub write_comps {
     print $fh 'ACLOCAL_AMFLAGS = -I m4' . $crlf;
   }
 
+  ## Finish up with the cleanup specs.
+  print $fh $crlf;
+  print $fh 'pkginclude_HEADERS = $(TEMPLATE_FILES)',
+            ' $(INLINE_FILES) $(HEADER_FILES)', $crlf;
+  print $fh $crlf;
+  print $fh '## Clean up template repositories, etc.' . $crlf;
+  print $fh 'clean-local:' . $crlf;
+  print $fh "\t-rm -f *.bak *.rpo *.sym lib*.*_pure_* Makefile.old core" . $crlf;
+  print $fh "\t-rm -f gcctemp.c gcctemp so_locations" . $crlf;
+  print $fh "\t-rm -rf ptrepository SunWS_cache Templates.DB" . $crlf;
 }
 
 
