@@ -44,11 +44,11 @@ sub printUsage {
                "Usage: $base [-global <file>] [-include <directory>] [-recurse]\n" .
                $spaces . "[-ti <dll | lib | dll_exe | lib_exe>:<file>] [-hierarchy]\n" .
                $spaces . "[-template <file>] [-relative NAME=VAR] [-base <project>]\n" .
-               $spaces . "[-noreldefs] [-notoplevel] [-static] [-genins] [-expand_env]\n" .
+               $spaces . "[-noreldefs] [-notoplevel] [-static] [-genins] [-use_env]\n" .
                $spaces . "[-value_template <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
                $spaces . "[-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
-               $spaces . "[-make_coexistence] [-feature_file <file name>] \n" .
-               $spaces . "[-features <feature definitions>] \n" .
+               $spaces . "[-make_coexistence] [-feature_file <file name>]\n" .
+               $spaces . "[-expand_vars] [-features <feature definitions>]\n" .
                $spaces . "[-exclude <directories>] [-name_modifier <pattern>]\n" .
                $spaces . "[-apply_project] [-version] [-into <directory>]\n" .
                $spaces . "[-language <";
@@ -86,8 +86,8 @@ sub printUsage {
 "                       .mpc extension will be tried.\n" .
 "       -exclude        Use this option to exclude directories when searching\n" .
 "                       for input files.\n" .
-"       -expand_env     Expand all uses of \$() to the value set in the\n" .
-"                       environment.\n" .
+"       -expand_vars    Perform direct expansion, instead of performing relative\n" .
+"                       replacement with either -use_env or -relative options.\n" .
 "       -feature_file   Specifies the feature file to read before processing.\n" .
 "                       The default feature file is default.features under the\n" .
 "                       config directory.\n" .
@@ -127,6 +127,8 @@ sub printUsage {
 "       -type           Specifies the type of project file to generate.  This\n" .
 "                       option can be used multiple times to generate multiple\n" .
 "                       types.  If -type is not used, it defaults to '$default'.\n" .
+"       -use_env        Use environment variables for all uses of \$() instead\n" .
+"                       of the relative replacement values.\n" .
 "       -value_project  This option allows modification of a project variable\n" .
 "                       assignment .  Use += to add VAL to the NAME's value.\n" .
 "                       Use -= to subtract and = to override the value.\n" .
@@ -154,9 +156,10 @@ sub completion_command {
   my($types) = shift;
   my($str)   = "complete $name " .
                "'c/-/(genins global include type template relative " .
-               "ti static noreldefs notoplevel feature_file expand_env " .
+               "ti static noreldefs notoplevel feature_file use_env " .
                "value_template value_project make_coexistence language " .
-               "hierarchy exclude name_modifier apply_project version)/' " .
+               "hierarchy exclude name_modifier apply_project version " .
+               "expand_vars)/' " .
                "'c/dll:/f/' 'c/dll_exe:/f/' 'c/lib_exe:/f/' 'c/lib:/f/' " .
                "'n/-ti/(dll lib dll_exe lib_exe)/:' ";
 
@@ -208,7 +211,8 @@ sub options {
   my($dynamic)    = ($defaults ? 1 : undef);
   my($reldefs)    = ($defaults ? 1 : undef);
   my($toplevel)   = ($defaults ? 1 : undef);
-  my($expand_env) = ($defaults ? 0 : undef);
+  my($use_env)    = ($defaults ? 0 : undef);
+  my($expandvars) = ($defaults ? 0 : undef);
   my($static)     = ($defaults ? 0 : undef);
   my($recurse)    = ($defaults ? 0 : undef);
   my($makeco)     = ($defaults ? 0 : undef);
@@ -269,8 +273,8 @@ sub options {
                            'comma separated list argument');
       }
     }
-    elsif ($arg eq '-expand_env') {
-      $expand_env = 1;
+    elsif ($arg eq '-expand_vars') {
+      $expandvars = 1;
     }
     elsif ($arg eq '-feature_file') {
       $i++;
@@ -376,7 +380,16 @@ sub options {
           my($val)  = $2;
           $val =~ s/^\s+//;
           $val =~ s/\s+$//;
-          $relative{$name} = $val;
+
+          ## If the specified path is relative, expand it based on
+          ## the current working directory.
+          if ($val !~ /^[\/\\]/ &&
+              $val !~ /^[A-Za-z]:[\/\\]?/) {
+            $val = DirectoryManager::getcwd() . '/' . $val;
+          }
+
+          ## Clean up the path as much as possible
+          $relative{$name} = File::Spec->canonpath($val);
         }
         else {
           $self->optionError('Invalid argument to -relative');
@@ -406,6 +419,9 @@ sub options {
           $self->optionError("Invalid -ti argument: $tmpi");
         }
       }
+    }
+    elsif ($arg eq '-use_env') {
+      $use_env = 1;
     }
     elsif ($arg eq '-value_template') {
       $i++;
@@ -509,7 +525,8 @@ sub options {
                   'genins'        => $genins,
                   'into'          => $into,
                   'language'      => $language,
-                  'expand_env'    => $expand_env,
+                  'use_env'       => $use_env,
+                  'expand_vars'   => $expandvars,
                  );
 
   return \%options;

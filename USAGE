@@ -12,11 +12,11 @@ projects for each one found.
 Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-ti <dll | lib | dll_exe | lib_exe>:<file>] [-hierarchy]
               [-template <file>] [-relative NAME=VAR] [-base <project>]
-              [-noreldefs] [-notoplevel] [-static] [-genins] [-expand_env]
+              [-noreldefs] [-notoplevel] [-static] [-genins] [-use_env]
               [-value_template <NAME+=VAL | NAME=VAL | NAME-=VAL>]
               [-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]
               [-make_coexistence] [-feature_file <file name>]
-              [-features <feature definitions>]
+              [-expand_vars] [-features <feature definitions>]
               [-exclude <directories>] [-name_modifier <pattern>]
               [-apply_project] [-version] [-into <directory>]
               [-language <cplusplus | csharp | java | vb>]
@@ -31,8 +31,8 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        .mpc extension will be tried.
        -exclude        Use this option to exclude directories when searching
                        for input files.
-       -expand_env     Expand all uses of $() to the value set in the
-                       environment.
+       -expand_vars    Perform direct expansion, instead of performing relative
+                       replacement with either -use_env or -relative options.
        -feature_file   Specifies the feature file to read before processing.
                        The default feature file is default.features under the
                        config directory.
@@ -72,6 +72,8 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
        -type           Specifies the type of project file to generate.  This
                        option can be used multiple times to generate multiple
                        types.  If -type is not used, it defaults to 'make'.
+       -use_env        Use environment variables for all uses of $() instead
+                       of the relative replacement values.
        -value_project  This option allows modification of a project variable
                        assignment .  Use += to add VAL to the NAME's value.
                        Use -= to subtract and = to override the value.

@@ -27,7 +27,8 @@ my(@statekeys) = ('global', 'include', 'template', 'ti',
                   'dynamic', 'static', 'relative', 'addtemp',
                   'addproj', 'progress', 'toplevel', 'baseprojs',
                   'feature_file', 'features', 'hierarchy',
-                  'name_modifier', 'apply_project', 'into', 'expand_env',
+                  'name_modifier', 'apply_project', 'into', 'use_env',
+                  'expand_vars',
                  );
 
 my(%all_written) = ();
@@ -57,7 +58,8 @@ sub new {
   my($applypj)    = shift;
   my($into)       = shift;
   my($language)   = shift;
-  my($expand_env) = shift;
+  my($use_env)    = shift;
+  my($expandvars) = shift;
   my($type)       = shift;
   my($self)       = Parser::new($class, $inc);
 
@@ -88,7 +90,8 @@ sub new {
   $self->{'apply_project'}   = $applypj;
   $self->{'into'}            = $into;
   $self->{'language'}        = $language;
-  $self->{'expand_env'}      = $expand_env;
+  $self->{'use_env'}         = $use_env;
+  $self->{'expand_vars'}     = $expandvars;
   $self->{'convert_slashes'} = $self->convert_slashes();
 
   return $self;
@@ -813,9 +816,15 @@ sub get_into {
 }
 
 
-sub get_expand_env {
+sub get_use_env {
   my($self) = shift;
-  return $self->{'expand_env'};
+  return $self->{'use_env'};
+}
+
+
+sub get_expand_vars {
+  my($self) = shift;
+  return $self->{'expand_vars'};
 }
 
 
