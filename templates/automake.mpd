@@ -1,6 +1,7 @@
 # @file <%project_file%>
 #
 # $Id$
+<%marker(top)%>
 <%if(requires || avoids)%>
 
 <%foreach(requires)%>
@@ -10,6 +11,7 @@ if BUILD_<%uc(require)%>
 if !BUILD_<%uc(avoid)%>
 <%endfor%>
 <%endif%>
+<%marker(macros)%>
 <%if(man_files)%>
 
 man_MANS = <%man_files%>
@@ -58,6 +60,7 @@ CLEANFILES += \
 <%endfor%>
 <%endfor%>
 <%endif%>
+<%marker(local)%>
 <%if(exename || sharedname || staticname)%>
 <%if(grouped_source_files)%>
 <%foreach(grouped_source_files)%>
