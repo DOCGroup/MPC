@@ -32,9 +32,10 @@ sub new {
   my($inc)   = shift;
   my($self)  = Parser::new($class, $inc);
 
-  $self->{'values'}  = {};
-  $self->{'cindex'}  = 0;
-  $self->{'current'} = [ $self->{'values'} ];
+  $self->{'values'}    = {};
+  $self->{'cindex'}    = 0;
+  $self->{'current'}   = [ $self->{'values'} ];
+  $self->{'realnames'} = {};
 
   return $self;
 }
@@ -52,8 +53,11 @@ sub parse_line {
   }
   elsif ($line =~ /^([\w\s]+)\s*{$/) {
     ## Entering a new scope
-    my($name) = lc($1);
-    $name =~ s/\s+$//;
+    my($rname) = $1;
+    $rname =~ s/\s+$//;
+    my($name) = lc($rname);
+    $self->{'realnames'}->{$name} = $rname;
+
     if (!defined $$current[$self->{'cindex'}]->{$name}) {
       $$current[$self->{'cindex'}]->{$name} = {};
     }
@@ -110,6 +114,13 @@ sub get_value {
   my($self) = shift;
   my($tag)  = shift;
   return $self->{'values'}->{lc($tag)};
+}
+
+
+sub get_realname {
+  my($self) = shift;
+  my($tag)  = shift;
+  return $self->{'realnames'}->{lc($tag)};
 }
 
 

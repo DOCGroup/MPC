@@ -162,8 +162,13 @@ sub set_current_values {
   if (defined $self->{'ti'}) {
     my($counter) = $self->{'foreach'}->{'count'};
     if ($counter >= 0) {
+      ## Variable names are case-insensitive in MPC, however this can
+      ## cause problems when dealing with template variable values that
+      ## happen to match HASH names only by case-insensitivity.  So, we
+      ## now make HASH names match with case-sensitivity.
       my($value) = $self->{'ti'}->get_value($name);
-      if (defined $value && UNIVERSAL::isa($value, 'HASH')) {
+      if (defined $value && UNIVERSAL::isa($value, 'HASH') &&
+          $self->{'ti'}->get_realname($name) eq $name) {
         my(%copy) = ();
         foreach my $key (keys %$value) {
           $copy{$key} = $self->{'prjc'}->adjust_value($key, $$value{$key});
