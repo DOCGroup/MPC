@@ -357,21 +357,19 @@ feature(qt) {
   }
 
   MOC_Files {
-    QtReactor.h
+    QtSpecific.h
   }
 
-  Source_Files(ACE_COMPONENTS) {
-    Demux {
-      QtReactor_moc.cpp
-    }
+  Source_Files {
+    QtSpecific_moc.cpp
   }
 }
 
 Assuming that the above feature definition is stored in a file named
-qt_reactor.mpb, an mpc project could inherit from it and would only receive
+qt_specific.mpb, an mpc project could inherit from it and would only receive
 the feature definition if the qt feature was enabled.
 
-project: acelib, qt_reactor {
+project: qt_specific {
   ...
 }
 
@@ -455,13 +453,6 @@ Defaulting Behavior
 
    it is assumed to be the precompiled header file (the same applies to
    pch_source)
-
-8) If -relative is not used to set ACE_ROOT and the ACE_ROOT environment
-   variable is set
-
-   it will be used to set the relative value for ACE_ROOT.  If -relative is
-   not used to set TAO_ROOT, it will be set from the TAO_ROOT environment
-   variable.  If that is not set, the relative value of ACE_ROOT plus /TAO.
 
 Processing Order
 ----------------

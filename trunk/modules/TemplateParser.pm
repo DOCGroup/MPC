@@ -42,6 +42,8 @@ my(%keywords) = ('if'              => 1,
                  'ucw'             => 1,
                 );
 
+my(%filecache) = ();
+
 # ************************************************************
 # Subroutine Section
 # ************************************************************
@@ -49,7 +51,7 @@ my(%keywords) = ('if'              => 1,
 sub new {
   my($class) = shift;
   my($prjc)  = shift;
-  my($self)  = Parser::new($class);
+  my($self)  = $class->SUPER::new();
 
   $self->{'prjc'}     = $prjc;
   $self->{'ti'}       = $prjc->get_template_input();
@@ -994,7 +996,7 @@ sub parse_file {
   my($input) = shift;
 
   $self->collect_data();
-  my($status, $errorString) = $self->read_file($input);
+  my($status, $errorString) = $self->cached_file_read($input);
 
   if ($status) {
     my($sstack) = $self->{'sstack'};
@@ -1017,6 +1019,28 @@ sub parse_file {
 sub get_lines {
   my($self) = shift;
   return $self->{'lines'};
+}
+
+
+sub get_cache {
+  my($self) = shift;
+  my($key)  = shift;
+  return $filecache{$key};
+}
+
+
+sub cache_line {
+  my($self) = shift;
+  my($key)  = shift;
+  my($line) = shift;
+
+  ## If we don't have an array for this key, then start one
+  if (!defined $filecache{$key}) {
+    $filecache{$key} = [];
+  }
+
+  ## Push the line onto the array for this key
+  push(@{$filecache{$key}}, $line);
 }
 
 

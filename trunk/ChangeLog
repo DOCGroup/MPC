@@ -1,3 +1,38 @@
+Tue Apr 13 13:46:14 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * USAGE:
+
+          Removed ACE specific references and documentation.
+
+        * modules/ProjectCreator.pm:
+
+          Added wildcard support (*?[]) for component lists and the ability
+          to exclude files from the component lists by preceding the name
+          with '!'.
+
+          ex.
+          project {
+            Source_Files {
+              // Get every source file, except foo.cpp
+              !foo.cpp
+            }
+          }
+
+          project {
+            Source_Files {
+              // Get every cpp file that starts with RT
+              RT*.cpp
+            }
+          }
+
+        * modules/Parser.pm:
+        * modules/TemplateParser.pm:
+
+          Added the ability for the TemplateParser to cache the contents of
+          a template to avoid opening and reading the project template over
+          and over again.
+
 Mon Apr 12 11:38:29 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * clone_build_tree.pl:
