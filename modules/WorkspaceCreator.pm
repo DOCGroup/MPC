@@ -49,36 +49,37 @@ my($aggregated) = 'aggregated_workspace';
 # ************************************************************
 
 sub new {
-  my($class)     = shift;
-  my($global)    = shift;
-  my($inc)       = shift;
-  my($template)  = shift;
-  my($ti)        = shift;
-  my($dynamic)   = shift;
-  my($static)    = shift;
-  my($relative)  = shift;
-  my($addtemp)   = shift;
-  my($addproj)   = shift;
-  my($progress)  = shift;
-  my($toplevel)  = shift;
-  my($baseprojs) = shift;
-  my($gfeature)  = shift;
-  my($feature)   = shift;
-  my($hierarchy) = shift;
-  my($exclude)   = shift;
-  my($makeco)    = shift;
-  my($nmod)      = shift;
-  my($applypj)   = shift;
-  my($genins)    = shift;
-  my($into)      = shift;
-  my($language)  = shift;
-  my($self)      = Creator::new($class, $global, $inc,
-                                $template, $ti, $dynamic, $static,
-                                $relative, $addtemp, $addproj,
-                                $progress, $toplevel, $baseprojs,
-                                $feature, $hierarchy, $nmod, $applypj,
-                                $into, $language,
-                                'workspace');
+  my($class)      = shift;
+  my($global)     = shift;
+  my($inc)        = shift;
+  my($template)   = shift;
+  my($ti)         = shift;
+  my($dynamic)    = shift;
+  my($static)     = shift;
+  my($relative)   = shift;
+  my($addtemp)    = shift;
+  my($addproj)    = shift;
+  my($progress)   = shift;
+  my($toplevel)   = shift;
+  my($baseprojs)  = shift;
+  my($gfeature)   = shift;
+  my($feature)    = shift;
+  my($hierarchy)  = shift;
+  my($exclude)    = shift;
+  my($makeco)     = shift;
+  my($nmod)       = shift;
+  my($applypj)    = shift;
+  my($genins)     = shift;
+  my($into)       = shift;
+  my($language)   = shift;
+  my($expand_env) = shift;
+  my($self)       = Creator::new($class, $global, $inc,
+                                 $template, $ti, $dynamic, $static,
+                                 $relative, $addtemp, $addproj,
+                                 $progress, $toplevel, $baseprojs,
+                                 $feature, $hierarchy, $nmod, $applypj,
+                                 $into, $language, $expand_env,
+                                 'workspace');
 
   $self->{'workspace_name'}      = undef;
   $self->{$self->{'type_check'}} = 0;
@@ -1604,7 +1605,8 @@ sub process_cmdline {
       ## Determine if it's ok to use the cache
       my(@cacheInvalidating) = ('global', 'include', 'baseprojs',
                                 'template', 'ti', 'relative',
-                                'addtemp', 'addproj', 'feature_file');
+                                'addtemp', 'addproj', 'feature_file',
+                                'expand_env');
       foreach my $key (@cacheInvalidating) {
         if ($self->is_set($key, $options)) {
           $self->{'cacheok'} = 0;
@@ -1667,7 +1669,8 @@ sub project_creator {
                    $parameters{'apply_project'},
                    $self->{'generate_ins'},
                    $parameters{'into'},
-                   $self->get_language());
+                   $self->get_language(),
+                   $parameters{'expand_env'});
 }
 
 

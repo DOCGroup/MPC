@@ -1,3 +1,21 @@
+Tue Sep  7 07:08:26 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+        * modules/Creator.pm:
+        * modules/Driver.pm:
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Added an option, -expand_env, to replace all $() variables
+          referenced in MPC with the environment variable equivalent.
+
+        * templates/vc7.mpd:
+
+          Converted all slashes to back-slashes to more closely match the
+          Windows style.
+
 Fri Sep  3 09:14:21 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3vcp.mpd:
