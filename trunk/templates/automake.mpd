@@ -1,8 +1,17 @@
 # @file <%project_file%>
 #
 # $Id$
+<%if(requires || avoids)%>
 
+<%foreach(requires)%>
+if BUILD_<%uc(require)%>
+<%endfor%>
+<%foreach(avoids)%>
+if !BUILD_<%uc(avoid)%>
+<%endfor%>
+<%endif%>
 <%if(custom_types)%>
+
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
@@ -41,23 +50,11 @@ CLEANFILES += \
 
 <%endfor%>
 <%endif%>
-<%foreach(requires)%>
-if BUILD_<%uc(require)%>
-<%endfor%>
-<%foreach(avoids)%>
-if !BUILD_<%uc(avoid)%>
-<%endfor%>
 <%if(exename)%>
-<%if(install)%>bin<%else%>noinst<%endif%>_PROGRAMS += <%exename%>
+<%if(INSTALL_THIS_TARGET)%>bin<%else%>noinst<%endif%>_PROGRAMS += <%exename%>
 <%else%>
-<%if(libout)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
+<%if(INSTALL_THIS_TARGET)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
 <%endif%>
-<%foreach(avoids)%>
-endif
-<%endfor%>
-<%foreach(requires)%>
-endif
-<%endfor%>
 <%if(includes || defines || common_defines || need_staticflags || dynamicflags)%>
 
 <%if(exename)%>
@@ -134,11 +131,20 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = \
 <%if(!exename)%>
 <%if(header_files || inline_files || template_files || idl_files || pidl_files)%>
 
-nobase_include_HEADERS += \
+<%if(INSTALL_THIS_TARGET)%>nobase_include<%else%>noinst<%endif%>_HEADERS += \
 <%foreach(header_files inline_files template_files idl_files pidl_files)%>
   <%header_file%><%fornotlast(" \\")%>
 <%endfor%>
 <%endif%>
+<%endif%>
+<%if(avoids || requires)%>
+
+<%foreach(avoids)%>
+endif
+<%endfor%>
+<%foreach(requires)%>
+endif
+<%endfor%>
 <%endif%>
 <%if(resource_files)%>
 
