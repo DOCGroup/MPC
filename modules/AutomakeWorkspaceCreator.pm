@@ -323,9 +323,11 @@ sub write_comps {
 
     print $fh '## Clean up template repositories, etc.', $crlf,
               'clean-local:', $crlf,
-              "\t-rm -f *.bak *.rpo *.sym lib*.*_pure_* Makefile.old core",
+              "\t-rm -f *~ *.bak *.rpo *.sym lib*.*_pure_* core core.*",
               $crlf,
-              "\t-rm -f gcctemp.c gcctemp so_locations", $crlf,
+              "\t-rm -f gcctemp.c gcctemp so_locations *.ics", $crlf,
+              "\t-rm -rf cxx_repository ptrepository ti_files", $crlf,
+              "\t-rm -rf templateregistry ir.out", $crlf,
               "\t-rm -rf ptrepository SunWS_cache Templates.DB", $crlf;
   }
 }
