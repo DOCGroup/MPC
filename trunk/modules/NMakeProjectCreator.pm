@@ -12,6 +12,7 @@ package NMakeProjectCreator;
 
 use strict;
 
+use WinVersionTranslator;
 use ProjectCreator;
 
 use vars qw(@ISA);
@@ -50,6 +51,21 @@ sub project_file_name {
   return $self->get_modified_project_file_name($name, '.mak');
 }
 
+
+sub fill_value {
+  my($self)  = shift;
+  my($name)  = shift;
+  my($value) = undef;
+
+  if ($name eq 'win_version') {
+    $value = $self->get_assignment('version');
+    if (defined $value) {
+      $value = WinVersionTranslator::translate($value);
+    }
+  }
+
+  return $value;
+}
 
 sub get_dll_exe_template_input_file {
   #my($self) = shift;

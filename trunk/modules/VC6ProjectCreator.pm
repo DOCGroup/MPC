@@ -12,6 +12,7 @@ package VC6ProjectCreator;
 
 use strict;
 
+use WinVersionTranslator;
 use ProjectCreator;
 
 use vars qw(@ISA);
@@ -20,6 +21,12 @@ use vars qw(@ISA);
 # ************************************************************
 # Subroutine Section
 # ************************************************************
+
+sub get_makefile_ext {
+  #my($self) = shift;
+  return '.mak';
+}
+
 
 sub compare_output {
   #my($self) = shift;
@@ -69,7 +76,13 @@ sub fill_value {
   my($value) = undef;
 
   if ($name eq 'make_file_name') {
-    $value = $self->base_project_name() . '.mak';
+    $value = $self->base_project_name() . $self->get_makefile_ext();
+  }
+  elsif ($name eq 'win_version') {
+    $value = $self->get_assignment('version');
+    if (defined $value) {
+      $value = WinVersionTranslator::translate($value);
+    }
   }
 
   return $value;
