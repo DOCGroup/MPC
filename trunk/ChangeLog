@@ -1,3 +1,9 @@
+Wed Aug  4 11:47:06 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+	  Use technique pioneered in the last checkin to remove the
+	  $(DUMMY_VALUE...) hack from _CPPFLAGS definitions.
+
 Wed Aug  4 11:23:04 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
