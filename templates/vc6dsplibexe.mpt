@@ -21,8 +21,8 @@ Release {
   defines               = NDEBUG
   compile_flags_removed = /YX
   lib_modifier          = s
-  output_dir            = Release
-  intermediate_dir      = Release
+  output_dir            = Static_Release
+  intermediate_dir      = Static_Release
   debug_switch          =
 }
 
@@ -32,8 +32,8 @@ Debug {
   compile_flags         = /W3 /Gm /GX /Zi /MDd /GR /Gy
   defines               = _DEBUG
   compile_flags_removed = /YX
-  intermediate_dir      = Debug
-  output_dir            = Debug
+  intermediate_dir      = Static_Debug
+  output_dir            = Static_Debug
   lib_modifier          = sd
 }
 
@@ -45,8 +45,8 @@ MFC Release {
   common_defines        = WIN32 _WINDOWS
   defines               = NDEBUG _AFXDLL
   compile_flags_removed = /YX
-  output_dir            = MFC_Release
-  intermediate_dir      = MFC_Release
+  output_dir            = Static_MFC_Release
+  intermediate_dir      = Static_MFC_Release
   debug_switch          =
   lib_modifier          = mfcs
   use_mfc               = 2
@@ -60,8 +60,8 @@ MFC Debug {
   common_defines        = WIN32 _WINDOWS
   defines               = _DEBUG _AFXDLL
   compile_flags_removed = /YX
-  intermediate_dir      = MFC_Debug
-  output_dir            = MFC_Debug
+  intermediate_dir      = Static_MFC_Debug
+  output_dir            = Static_MFC_Debug
   lib_modifier          = mfcsd
   use_mfc               = 2
 }

@@ -8,13 +8,13 @@ type_is_static = 1
 Release {
   optimize         = 1
   defines          = NDEBUG
-  intermediate_dir = Release
+  intermediate_dir = Static_Release
   lib_modifier     = s
 }
 
 Debug {
   optimize         =
   defines          = _DEBUG
-  intermediate_dir = Debug
+  intermediate_dir = Static_Debug
   lib_modifier     = sd
 }

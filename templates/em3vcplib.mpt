@@ -61,26 +61,26 @@ Static Debug {
   pdb                   = 1
 }
 
-MFC Release {
+Static MFC Release {
   use_debug_libraries   = 0
   optimize              = 1
   compile_flags         = /W3
   defines               = NDEBUG
   compile_flags_removed = /YX
-  output_dir            = MFC_Release
-  intermediate_dir      = MFC_Release
+  output_dir            = Static_MFC_Release
+  intermediate_dir      = Static_MFC_Release
   lib_modifier          = mfcs
   use_mfc               = 2
 }
 
-MFC Debug {
+Static MFC Debug {
   use_debug_libraries   = 1
   optimize              =
   compile_flags         = /W3 /Zi
   defines               = _DEBUG
   compile_flags_removed = /Fr /YX
-  output_dir            = MFC_Debug
-  intermediate_dir      = MFC_Debug
+  output_dir            = Static_MFC_Debug
+  intermediate_dir      = Static_MFC_Debug
   lib_modifier          = mfcsd
   pdb                   = 1
   use_mfc               = 2
