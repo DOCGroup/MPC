@@ -28,7 +28,6 @@ sub new {
                                       'CBXWorkspaceCreator',
                                       'GHSWorkspaceCreator',
                                       'EM3WorkspaceCreator',
-                                      'VA4WorkspaceCreator',
                                       'AutomakeWorkspaceCreator',
                                       'BMakeWorkspaceCreator',
                                       'HTMLWorkspaceCreator',
