@@ -6,7 +6,7 @@ conditional_include "common"
 configurations        = Debug Release
 compilers             = bcc
 common_defines        = WIN32 _WINDOWS _NO_VCL
-common_libs           = import32$(LIB_EXT) cw32mt.lib ws2_32.lib
+common_libs           = import32$(LIB_EXT) cw32mti.lib ws2_32.lib
 common_flags          = -a8
 unicode_flags         = -WU
 
