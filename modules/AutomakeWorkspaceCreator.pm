@@ -232,11 +232,11 @@ sub write_comps {
             $seen{$1} = 1;
 
             if (/^pkgconfig_DATA/) {
-                $installable_pkgconfig= 1;
+               $installable_pkgconfig= 1;
             }
-          }
-          elsif (/^$inc_pattern\s*=\s*/ || /^$pkg_pattern\s*=\s*/) {
-            $installable_headers = 1;
+            if (/^$inc_pattern\s*\+=\s*/ || /^$pkg_pattern\s*\+=\s*/) {
+              $installable_headers = 1;
+            }
           }
           elsif (/includedir\s*=\s*(.*)/) {
             $includedir = $1;
@@ -330,16 +330,7 @@ sub write_comps {
           # Don't emit comments
           next if (/^#/);
 
-          if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS))\s*\+=\s*/
-              || /(^CLEANFILES)\s*\+=\s*/
-              || /(^EXTRA_DIST)\s*\+=\s*/
-             ) {
-            if (!defined ($seen{$1})) {
-              $seen{$1} = 1;
-              s/\+=/=/;
-            }
-          }
-          elsif ($convert_header_name) {
+          if ($convert_header_name) {
             if ($local =~ /Makefile\.(.*)\.am/) {
               $project_name = $1;
             }
@@ -349,17 +340,18 @@ sub write_comps {
             my($regok)       = $self->escape_regex_special($project_name);
             my($inc_pattern) = $regok . '_include_HEADERS';
             my($pkg_pattern) = $regok . '_pkginclude_HEADERS';
-            if (/^$inc_pattern\s*=\s*/ || /^$pkg_pattern\s*=\s*/) {
+            if (/^$inc_pattern\s*\+=\s*/ || /^$pkg_pattern\s*\+=\s*/) {
               $_ =~ s/^$project_name/nobase/;
-              if (/^(nobase_include_HEADERS)\s*=\s*/ ||
-                  /^(nobase_pkginclude_HEADERS)\s*=\s*/) {
-                if (defined $seen{$1}) {
-                  $_ =~ s/=/+=/;
-                }
-                else {
-                  $seen{$1} = 1;
-                }
-              }
+            }
+          }
+
+          if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS))\s*\+=\s*/
+              || /(^CLEANFILES)\s*\+=\s*/
+              || /(^EXTRA_DIST)\s*\+=\s*/
+             ) {
+            if (!defined ($seen{$1})) {
+              $seen{$1} = 1;
+              s/\+=/=/;
             }
           }
 
