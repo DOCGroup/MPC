@@ -1,3 +1,11 @@
+Fri Apr  9 12:38:15 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          When replacing $() with template variables, we need to ensure that
+          if what it is replaced with also contains a $() construct, then
+          that too will be replaced with relative definitions.
+
 Thu Apr  8 09:51:28 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/make.mpd:
