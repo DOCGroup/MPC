@@ -20,4 +20,5 @@ Debug {
   exeoutputdir     = .
   intermediate_dir = Debug
   lib_modifier     = d
+  postlinkrmext    = .tds
 }
