@@ -1,3 +1,8 @@
+Fri Oct 29 11:15:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/cbx.mpd:
+          Set the page size to 4096 by default in a debug build
+
 Fri Oct 29 09:17:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/cbx.mpd:
