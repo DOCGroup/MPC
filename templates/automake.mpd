@@ -55,7 +55,7 @@ CLEANFILES += \
 <%else%>
 <%if(INSTALL_THIS_TARGET)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
 <%endif%>
-<%if(includes || defines || common_defines || need_staticflags || dynamicflags)%>
+<%if(am_includes || defines || common_defines || need_staticflags || dynamicflags)%>
 
 <%if(exename)%>
 <%normalize(exename)%>_CPPFLAGS = \
@@ -63,10 +63,10 @@ CLEANFILES += \
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_CPPFLAGS = \
 <%endif%>
   -I$(top_builddir) \
-  -I$(top_srcdir)<%if(includes || defines || common_defines || need_staticflags || dynamicflags)%> \<%endif%>
-<%if(includes)%>
-<%foreach(includes)%>
-  -I<%include%><%if(defines || common_defines || macros || type_is_static || need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
+  -I$(top_srcdir)<%if(am_includes || defines || common_defines || need_staticflags || dynamicflags)%> \<%endif%>
+<%if(am_includes)%>
+<%foreach(am_includes)%>
+  -I<%am_include%><%if(defines || common_defines || macros || type_is_static || need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
 <%endif%>
 <%if(defines || common_defines || macros)%>
@@ -137,13 +137,13 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = \
 <%endfor%>
 <%endif%>
 <%endif%>
-<%if(avoids || requires)%>
+<%if(rev_avoids || rev_requires)%>
 
-<%foreach(avoids)%>
-endif
+<%foreach(rev_avoids)%>
+endif !BUILD_<%uc(rev_avoid)%>
 <%endfor%>
-<%foreach(requires)%>
-endif
+<%foreach(rev_requires)%>
+endif BUILD_<%uc(rev_require)%>
 <%endfor%>
 <%endif%>
 <%if(resource_files)%>
