@@ -12,7 +12,7 @@ type_is_binary        = 1
 common_defines        = WIN32 _CONSOLE
 subsystem             = console
 need_staticflags      = 1
-use_modifier          =
+use_exe_modifier      =
 
 Release {
   use_debug_libraries   = 0

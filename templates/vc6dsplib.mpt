@@ -10,7 +10,7 @@ configurations        = Release Debug
 type_is_static        = 1
 need_staticflags      = 1
 common_defines        = WIN32 _WINDOWS
-
+use_lib_modifier      = 1
 
 Release {
   use_debug_libraries   = 0

@@ -12,7 +12,7 @@ type_is_binary        = 1
 common_defines        = UNICODE _UNICODE
 need_staticflags      = 1
 stack                 =
-use_modifier          =
+use_exe_modifier      =
 unicode               = 1
 
 WCE x86 {

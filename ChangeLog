@@ -1,3 +1,41 @@
+Tue Feb 15 08:29:47 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/bmake.mpd:
+        * templates/bmakedll.mpt:
+        * templates/bmakedllexe.mpt:
+        * templates/bmakelib.mpt:
+        * templates/bmakelibexe.mpt:
+        * templates/em3vcp.mpd:
+        * templates/em3vcpdll.mpt:
+        * templates/em3vcpdllexe.mpt:
+        * templates/em3vcplib.mpt:
+        * templates/em3vcplibexe.mpt:
+        * templates/nmake.mpd:
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+        * templates/sle.mpd:
+        * templates/sledll.mpt:
+        * templates/sleexe.mpt:
+        * templates/vc6dsp.mpd:
+        * templates/vc6dspdll.mpt:
+        * templates/vc6dspdllexe.mpt:
+        * templates/vc6dsplib.mpt:
+        * templates/vc6dsplibexe.mpt:
+        * templates/vc7.mpd:
+        * templates/vc7dll.mpt:
+        * templates/vc7exe.mpt:
+        * templates/vc7lib.mpt:
+        * templates/vc7libexe.mpt:
+
+          Renamed the 'use_modifier' template variable to 'use_exe_modifier'
+          which determines if the 'lib_modifier' is added to the end of the
+          executable name.
+
+          Added the 'use_lib_modifier' template variable which determines is
+          the 'lib_modifier' is added to the end of the library output name.
+          Note that 'lib_modifier' is always added to the input libraries
+          specified in the MPC project keyword 'libs'.
+
 Mon Feb 14 16:10:32 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeProjectCreator.pm:
