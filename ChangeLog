@@ -1,3 +1,21 @@
+Thu Jan 27 12:40:12 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/boost_base.mpb:
+        * config/global.features:
+
+          Added requires += boost to the boost_base project and defaulted
+          boots to zero in the global features file.
+
+        * modules/MakeWorkspaceCreator.pm:
+
+          Fixed a bug where a project that was dependent upon a project that
+          had a translated name, would have the untranslated name as the
+          dependency.
+
+        * templates/make.mpd:
+
+          Removed an unnecessary foreach loop under the clean target.
+
 Wed Jan 26 13:52:36 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
