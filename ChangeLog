@@ -1,3 +1,16 @@
+Mon Aug 30 08:07:51 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/ProjectCreator.pm:
+
+          Added the ability to get the input and output file names without
+          an extension.
+
+        * config/qt_uic.mpb:
+
+          Added support for generating uic interface declarations and
+          implementations.
+
 Mon Aug 30 06:45:25 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
@@ -27,7 +40,7 @@ Thu Aug 26 17:38:41 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * modules/AutomakeWorkspaceCreator.pm:
 
-          Fix tipos, forgot a leading $.
+          Fix typos, forgot a leading $.
 
 Thu Aug 26 09:14:57 2004  Chad Elliott  <elliott_c@ociweb.com>
 

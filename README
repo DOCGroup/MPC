@@ -260,6 +260,8 @@ postcommand         Allows a user to execute arbitrary commands after
                     within the postcommand assignment:
                     <%input%>     - The input file for the original command.
                     <%output%>    - The output created by the original command.
+                    <%input_noext%>  - The input file with no extension.
+                    <%output_noext%> - The output file with no extension.
                       The output file can be referenced as a generic output
                       file using <%output%> or can be referenced as a
                       component file (if it matches the particular type)
