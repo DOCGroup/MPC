@@ -13,6 +13,7 @@ package VC7ProjectCreator;
 use strict;
 
 use GUID;
+use WinVersionTranslator;
 use ProjectCreator;
 
 use vars qw(@ISA);
@@ -124,6 +125,12 @@ sub fill_value {
     $value = $guid->generate($self->project_file_name(),
                              $self->{'current_input'},
                              $self->getcwd());
+  }
+  elsif ($name eq 'win_version') {
+    $value = $self->get_assignment('version');
+    if (defined $value) {
+      $value = WinVersionTranslator::translate($value);
+    }
   }
   else {
     $value = $self->get_configurable($name);
