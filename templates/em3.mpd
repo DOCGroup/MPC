@@ -271,6 +271,7 @@ SOURCE="<%resource_file%>"
 # End Group
 <%endif%>
 <%foreach(custom_types)%>
+<%if(custom_type->input_files)%>
 # Begin Group "<%ucw(custom_type)%>"
 
 # PROP Default_Filter "<%foreach(custom_type->inputexts)%><%custom_type->inputext%><%fornotlast(";")%><%endfor%>"
@@ -325,6 +326,7 @@ BuildCmds= \
 <%endif%>
 <%endfor%>
 # End Group
+<%endif%>
 <%endfor%>
 # End Target
 # End Project
