@@ -18,3 +18,5 @@ Debug {
   intermediate_dir = Static_Debug
   lib_modifier     = sd
 }
+
+conditional_include "user_bmakelib"

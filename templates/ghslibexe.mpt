@@ -4,3 +4,5 @@
 conditional_include "ghscommon"
 
 need_staticflags = 1
+
+conditional_include "user_ghslibexe"

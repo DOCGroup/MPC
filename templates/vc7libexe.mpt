@@ -53,4 +53,5 @@ MFC Debug {
   use_mfc          = 2
 }
 
-conditional_include "vcfullmacros"
+conditional_include "vcpartialmacros"
+conditional_include "user_vc7libexe"

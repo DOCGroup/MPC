@@ -15,3 +15,5 @@ Debug {
   optimize         =
   output_dir       = Debug
 }
+
+conditional_include "user_vc7vb"

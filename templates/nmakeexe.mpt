@@ -126,3 +126,4 @@ Static MFC Debug {
 }
 
 conditional_include "vcfullmacros"
+conditional_include "user_nmakeexe"

@@ -429,7 +429,10 @@ sub options {
           else {
             $op = 0;
           }
-          $addtemp{$name} = [$op, $val];
+          if (!defined $addtemp{$name}) {
+            $addtemp{$name} = [];
+          }
+          push(@{$addtemp{$name}}, [$op, $val]);
         }
         else {
           $self->optionError('Invalid argument to -value_template');
