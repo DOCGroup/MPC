@@ -107,16 +107,16 @@ sub write_comps {
 
     ## Get a unique list of next-level directories for SUBDIRS.
     my($dir) = $self->get_first_level_directory($dep);
-    if (!defined $unique{$dir}) {
-      $unique{$dir} = 1;
-      unshift(@dirs, $dir);
-    }
-
-    ## At each directory level, each project is written into a separate
-    ## Makefile.<project>.am file. To bring these back into the build
-    ## process, they'll be sucked back into the workspace Makefile.am file.
-    ## Remember which ones to pull in at this level.
-    if ($dir eq '.') {
+    if ($dir ne '.') {
+        if (!defined $unique{$dir}) {
+          $unique{$dir} = 1;
+          unshift(@dirs, $dir);
+        }
+    } else {
+      ## At each directory level, each project is written into a separate
+      ## Makefile.<project>.am file. To bring these back into the build
+      ## process, they'll be sucked back into the workspace Makefile.am file.
+      ## Remember which ones to pull in at this level.
       unshift(@locals, $dep);
     }
   }
@@ -125,11 +125,13 @@ sub write_comps {
   }
 
   ## Print out the subdirectories
-  print $fh 'SUBDIRS =';
-  foreach my $dir (@dirs) {
-    print $fh " \\$crlf        $dir";
+  if (@dirs) {
+    print $fh 'SUBDIRS =';
+    foreach my $dir (@dirs) {
+      print $fh " \\$crlf        $dir";
+    }
+    print $fh $crlf, $crlf;
   }
-  print $fh $crlf, $crlf;
 
   ## Take the local Makefile.<project>.am files and insert each one here,
   ## then delete it.

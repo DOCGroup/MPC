@@ -28,11 +28,27 @@ CLEANFILES += \
 <%endfor%>
 <%endfor%>
 <%endif%>
+<%if(grouped_source_files)%>
+<%foreach(grouped_source_files)%>
+<%grouped_source_file%> = \
+<%foreach(grouped_source_file->files)%>
+  <%grouped_source_file->file%><%fornotlast(" \\")%>
+<%endfor%>
+
+<%endfor%>
+<%endif%>
+<%if(exename)%>
+<%if(install)%>bin<%else%>noinst<%endif%>_PROGRAMS += <%exename%>
+<%else%>
+lib_LTLIBRARIES += lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
+<%endif%>
 
 <%if(exename)%>
-<%if(install)%>bin_PROGRAMS<%else%>noinst_PROGRAMS<%endif%> += <%exename%>
-
-<%normalize(exename)%>_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
+<%normalize(exename)%>_CPPFLAGS = \
+<%else%>
+lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_CPPFLAGS = \
+<%endif%>
+ -I$(top_builddir) -I$(top_srcdir) \
 <%if(includes)%><%foreach(includes)%> -I<%include%><%endfor%> \<%endif%>
 <%if(defines || common_defines || macros)%>
 <%foreach(defines common_defines macros)%> -D<%define%><%endfor%> \
@@ -46,14 +62,24 @@ CLEANFILES += \
 <%foreach(dynamicflags)%> -D<%dynamicflags%><%endfor%> \
 <%endif%>
 <%endif%>
-  $(DUMMY_VALUE_NOT_ENDING_IN_BACKSLASH)
+ $(DUMMY_VALUE_NOT_ENDING_IN_BACKSLASH)
 
-
+<%if(exename)%>
 <%normalize(exename)%>_SOURCES = \
+<%else%>
+lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = \
+<%endif%>
+<%if(grouped_source_files)%>
+<%foreach(grouped_source_files)%>
+  $(<%grouped_source_file%>)<%fornotlast(" \\")%>
+<%endfor%>
+<%else%>
 <%foreach(source_files)%>
   <%source_file%><%fornotlast(" \\")%>
 <%endfor%>
+<%endif%>
 
+<%if(exename)%>
 <%if(header_files)%>
 noinst_HEADERS += \
 <%foreach(header_files)%>
@@ -61,69 +87,9 @@ noinst_HEADERS += \
 <%endfor%>
 <%endif%>
 <%else%>
-<%if(grouped_source_files)%>
-<%foreach(grouped_source_files)%>
-<%grouped_source_file%> = \
-<%foreach(grouped_source_file->files)%>
-  <%grouped_source_file->file%><%fornotlast(" \\")%>
-<%endfor%>
-
-<%endfor%>
-
-lib_LTLIBRARIES += lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
-
-lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
-<%if(includes)%>
-<%foreach(includes)%> -I<%include%><%endfor%> \
-<%endif%>
-<%if(defines || common_defines || macros)%>
-<%foreach(defines common_defines macros)%> -D<%define%><%endfor%> \
-<%endif%>
-<%if(type_is_static || need_staticflags)%>
-<%if(staticflags)%>
-<%foreach(staticflags)%> -D<%staticflag%><%endfor%> \
-<%endif%>
-<%else%>
-<%if(dynamicflags)%>
-<%foreach(dynamicflags)%> -D<%dynamicflags%><%endfor%> \
-<%endif%>
-<%endif%>
-  $(DUMMY_VALUE_NOT_ENDING_IN_BACKSLASH)
-
-lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = \
-<%foreach(grouped_source_files)%>
-  $(<%grouped_source_file%>)<%fornotlast(" \\")%>
-<%endfor%>
-
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LDFLAGS = $(X_LIBS)
 
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = $(X_PRE_LIBS) $(<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_XLIBS) $(X_EXTRA_LIBS)
-<%else%>
-lib_LTLIBRARIES += lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
-
-lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
-<%if(includes)%>
-<%foreach(includes)%> -I<%include%><%endfor%> \
-<%endif%>
-<%if(defines || common_defines || macros)%>
-<%foreach(defines common_defines macros)%> -D<%define%><%endfor%> \
-<%endif%>
-<%if(type_is_static || need_staticflags)%>
-<%if(staticflags)%>
-<%foreach(staticflags)%> -D<%staticflag%><%endfor%> \
-<%endif%>
-<%else%>
-<%if(dynamicflags)%>
-<%foreach(dynamicflags)%> -D<%dynamicflags%><%endfor%> \
-<%endif%>
-<%endif%>
-  $(DUMMY_VALUE_NOT_ENDING_IN_BACKSLASH)
-
-lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = \
-<%foreach(source_files)%>
-  <%source_file%><%fornotlast(" \\")%>
-<%endfor%>
-<%endif%>
 
 <%if(template_files)%>
 TEMPLATE_FILES += \
