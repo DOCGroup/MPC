@@ -1,3 +1,10 @@
+Wed Feb 23 14:05:23 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+
+	  Revert last change.  Multi-line output is more ugly than I
+	  thought it would be.
+
 Wed Feb 23 13:56:42 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
