@@ -40,6 +40,7 @@ Thu Jul 22 17:39:41 2004  Steve Huston  <shuston@riverace.com>
           procedure to find and make the needed Makefiles to traverse the
           entire build tree.
 
+
         * templates/automake.mpd: Changed _LIBADD to _LDADD for programs.
 
 Thu Jul 22 12:52:39 2004  Steve Huston  <shuston@riverace.com>
