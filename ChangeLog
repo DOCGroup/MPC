@@ -24,7 +24,7 @@ Tue Sep 28 18:33:22 2004  Steve Huston  <shuston@riverace.com>
 
         * modules/ProjectCreator.pm:
         * modules/WorkspaceCreator.pm: Changes graciously supplied by Chad
-          Elliot to add a get_lib_locations() method. It returns a hash
+          Elliott to add a get_lib_locations() method. It returns a hash
           reference where the key is a library name (ACE, TAO,
           TAO_PortableServer, etc) and the value will be a relative directory
           from where mwc.pl starts.
