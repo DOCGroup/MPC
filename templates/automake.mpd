@@ -181,8 +181,8 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 
 pkgconfigdata_DATA += <%basenoextension(pkgconfig_file)%>
 
-<%basenoextension(pkgconfig_file)%>: ${top_srcdir}/config.status ${srcdir}/<%pkgconfig_file%>
-        ${top_srcdir}/config.status --file $@:${srcdir}/<%pkgconfig_file%>
+<%basenoextension(pkgconfig_file)%>: ${top_builddir}/config.status ${srcdir}/<%pkgconfig_file%>
+	${top_builddir}/config.status --file $@:${srcdir}/<%pkgconfig_file%>
 <%endfor%>
 <%endif%>
 <%if(avoids || requires)%>
