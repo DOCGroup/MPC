@@ -1,3 +1,11 @@
+Thu Apr 29 14:50:00 2004  Justin Michel <michel_j@ociweb.com>
+
+	* templates/nmake.mpd:
+
+	  The custom build output should be the first thing listed for 
+	the ALL target, to ensure that any generated files are available
+	for the rest of the commands.
+
 Mon Apr 26 09:55:25 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3vcplibexe.mpt:
