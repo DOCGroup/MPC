@@ -1,3 +1,20 @@
+Fri Nov 19 07:06:11 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/BMakeProjectCreator.pm:
+
+          Added '.' to the directories for cppdir and rcdir.  At least one
+          directory is always necessary due to the way that the template is
+          set up.
+
+        * templates/bmake.mpd:
+
+          Reverted Johnny's previous change as the CPPDIR and RESDIR
+          settings always need to be there since they are used by the
+          automatic targets in the template (regardless of whether there are
+          cpp and rc files or not).
+
+          Also, added a dummy all target if there is no exe or lib.
+
 Fri Nov 19 10:05:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmake.mpd:
