@@ -211,7 +211,10 @@ $(TEMPINCDIR):
 <%endif%>
 <%if(pch_source && pchsupport)%>
 <%targetoutdir%><%noextension(pch_source)%>.$(OBJEXT): <%pch_source%>
-	$(COMPILE.cc) <%if(pchcreate)%><%pchcreate%><%pch_header%>.gch <%endif%>$(EXPORTFLAGS) <%pch_source%> $(OUTPUT_OPTION)
+	$(COMPILE.cc) <%if(pchcreate)%><%pchcreate%><%targetoutdir%><%pch_header%>.gch <%endif%>$(EXPORTFLAGS) <%pch_source%><%if(!pchnobj)%> $(OUTPUT_OPTION)<%endif%>
+<%if(pchnobj)%>
+	@cp -p <%pch_header%>.gch <%targetoutdir%><%noextension(pch_source)%>.$(OBJEXT)
+<%endif%>
 
 <%endif%>
 <%foreach(source_files)%>

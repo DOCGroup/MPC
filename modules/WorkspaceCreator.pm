@@ -359,6 +359,24 @@ sub parse_exclude {
   my(%types)   = ();
   @types{split(/\s*,\s*/, $typestr)} = ();
 
+
+  ## If there is a negation at all, add our
+  ## current type, it may be removed below
+  if ($typestr =~ /!/) {
+    $types{$self->{wctype}} = 1;
+
+    ## Process negated exclusions
+    foreach my $key (keys %types) {
+      if ($key =~ /^!(\w+)/) {
+        ## Remove the negated key
+        delete $types{$key};
+
+        ## Then delete the key that was negated in the exclusion.
+        delete $types{$1};
+      }
+    }
+  }
+
   if (exists $types{$self->{wctype}}) {
     while(<$fh>) {
       my($line) = $self->preprocess_line($fh, $_);
