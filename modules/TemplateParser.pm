@@ -130,14 +130,14 @@ sub strip_line {
 ## built.  This line may be a foreach line or a general
 ## line without a foreach.
 sub append_current {
-  my($self)  = shift;
-  my($value) = shift;
+#  my($self)  = shift;
+#  my($value) = shift;
 
-  if ($self->{'foreach'}->{'count'} >= 0) {
-    $self->{'foreach'}->{'text'}->[$self->{'foreach'}->{'count'}] .= $value;
+  if ($_[0]->{'foreach'}->{'count'} >= 0) {
+    $_[0]->{'foreach'}->{'text'}->[$_[0]->{'foreach'}->{'count'}] .= $_[1];
   }
   else {
-    $self->{'built'} .= $value;
+    $_[0]->{'built'} .= $_[1];
   }
 }
 
@@ -727,12 +727,21 @@ sub handle_else {
   my($self)  = shift;
   my(@scopy) = @{$self->{'sstack'}};
 
-  ## This method does not take into account that
-  ## multiple else clauses could be supplied to a single if.
-  ## Someday, this may be fixed.
-  if (defined $scopy[$#scopy] && $scopy[$#scopy] eq 'endif') {
-    $self->{'if_skip'} ^= 1;
+  if (defined $scopy[$#scopy]) {
+    my($index) = index($scopy[$#scopy], 'endif');
+    if ($index >= 0) {
+      if ($index == 0) {
+        $self->{'if_skip'} ^= 1;
+      }
+      $self->{'sstack'}->[$#scopy] .= ':';
+    }
+
+    if (($self->{'sstack'}->[$#scopy] =~ tr/:/:/) > 1) {
+      return 0, 'Unmatched else';
+    }
   }
+
+  return 1, undef;
 }
 
 
@@ -967,17 +976,6 @@ sub prepare_parameters {
 }
 
 
-## TBD: Remove this deprecated function
-sub handle_function {
-  my($self) = shift;
-  my($name) = shift;
-
-  ## Append the value returned by get_value_with_default.  It will use
-  ## the parameters when it calls get_special_value on the ProjectCreator
-  $self->append_current($self->get_value_with_default($name));
-}
-
-
 sub process_name {
   my($self)        = shift;
   my($line)        = shift;
@@ -1027,7 +1025,7 @@ sub process_name {
         }
       }
       elsif ($name eq 'else') {
-        $self->handle_else();
+        ($status, $errorString) = $self->handle_else();
       }
       elsif ($name eq 'comment') {
         ## Ignore the contents of the comment
@@ -1047,15 +1045,6 @@ sub process_name {
         $self->append_current($self->get_value_with_default($name));
       }
     }
-  }
-  ## TBD: Remove this deprecated elsif
-  elsif ($line =~ /^((\w+)(->\w+)+)\(\)%>/) {
-    my($name) = $1;
-    ## Handle all "function calls" separately
-    if (!$self->{'if_skip'}) {
-      $self->handle_function($name, $2);
-    }
-    $length += length($name) + 2;
   }
   else {
     my($error)  = $line;
@@ -1149,23 +1138,15 @@ sub parse_line {
   my($line)        = shift;
   my($status)      = 1;
   my($errorString) = undef;
-  my($length)      = length($line);
-  my($name)        = 0;
-  my($startempty)  = ($length == 0 ? 1 : 0);
-  my($append_name) = 0;
+  my($startempty)  = (length($line) == 0 ? 1 : 0);
 
   ## If processing a foreach or the line only
   ## contains a keyword, then we do
   ## not need to add a newline to the end.
   if ($self->{'foreach'}->{'processing'} == 0) {
-    my($is_only_keyword) = undef;
-    if ($line =~ /^[ ]*<%(\w+)(\(((\w+\s*,\s*)?\w+\(.+\)|[^\)]+)\))?%>$/) {
-      $is_only_keyword = defined $keywords{$1};
-    }
-
-    if (!$is_only_keyword) {
-      $line   .= $self->{'crlf'};
-      $length += $self->{'clen'};
+    if ($line !~ /^[ ]*<%(\w+)(\(((\w+\s*,\s*)?\w+\(.+\)|[^\)]+)\))?%>$/ ||
+        !defined $keywords{$1}) {
+      $line .= $self->{'crlf'};
     }
   }
 
@@ -1173,66 +1154,87 @@ sub parse_line {
     $self->{'built'} = '';
   }
 
-  for(my $i = 0; $i < $length; ++$i) {
-    my($part) = substr($line, $i, 2);
-    if ($part eq '<%') {
-      ++$i;
-      $name = 1;
-    }
-    elsif ($part eq '%>') {
-      ++$i;
-      $name = 0;
-      if ($append_name) {
-        $append_name = 0;
-        if (!$self->{'if_skip'}) {
-          $self->append_current($part);
-        }
-      }
-    }
-    elsif ($name) {
-      my($substr)  = substr($line, $i);
-      my($efcheck) = ($substr =~ /^endfor\%\>/);
-      my($focheck) = ($efcheck ? 0 : ($substr =~ /^foreach\(/));
-
-      if ($focheck && $self->{'foreach'}->{'count'} >= 0) {
-        ++$self->{'foreach'}->{'nested'};
-      }
-
-      if ($self->{'foreach'}->{'count'} < 0 ||
-          $self->{'foreach'}->{'processing'} > $self->{'foreach'}->{'nested'} ||
-          (($efcheck || $focheck) &&
-           $self->{'foreach'}->{'nested'} == $self->{'foreach'}->{'processing'})) {
-        my($nlen) = 0;
-        ($status,
-         $errorString,
-         $nlen) = $self->process_name($substr);
-
-        if ($status && $nlen == 0) {
-          $errorString = "Could not parse this line at column $i";
-          $status = 0;
-        }
-        if (!$status) {
-          last;
-        }
-
-        $i += ($nlen - 1);
-      }
-      else  {
-        $name = 0;
-        if (!$self->{'if_skip'}) {
-          $self->append_current('<%' . substr($line, $i, 1));
-          $append_name = 1;
-        }
-      }
-
-      if ($efcheck && $self->{'foreach'}->{'nested'} > 0) {
-        --$self->{'foreach'}->{'nested'};
-      }
-    }
-    else {
+  my($start) = index($line, '<%');
+  if ($start >= 0) {
+    my($append_name) = 0;
+    if ($start > 0) {
       if (!$self->{'if_skip'}) {
-        $self->append_current(substr($line, $i, 1));
+        $self->append_current(substr($line, 0, $start));
       }
+      $line = substr($line, $start);
+    }
+    foreach my $item (split('<%', $line)) {
+      my($name)   = 1;
+      my($length) = length($item);
+      for(my $i = 0; $i < $length; ++$i) {
+        my($part) = substr($item, $i, 2);
+        if ($part eq '%>') {
+          ++$i;
+          $name = 0;
+          if ($append_name) {
+            $append_name = 0;
+            if (!$self->{'if_skip'}) {
+              $self->append_current($part);
+            }
+          }
+          if ($length != $i + 1) {
+            if (!$self->{'if_skip'}) {
+              $self->append_current(substr($item, $i + 1));
+            }
+            last;
+          }
+        }
+        elsif ($name) {
+          my($substr)  = substr($item, $i);
+          my($efcheck) = ($substr =~ /^endfor\%\>/);
+          my($focheck) = ($efcheck ? 0 : ($substr =~ /^foreach\(/));
+
+          if ($focheck && $self->{'foreach'}->{'count'} >= 0) {
+            ++$self->{'foreach'}->{'nested'};
+          }
+
+          if ($self->{'foreach'}->{'count'} < 0 ||
+              $self->{'foreach'}->{'processing'} > $self->{'foreach'}->{'nested'} ||
+              (($efcheck || $focheck) &&
+               $self->{'foreach'}->{'nested'} == $self->{'foreach'}->{'processing'})) {
+            my($nlen) = 0;
+            ($status,
+             $errorString,
+             $nlen) = $self->process_name($substr);
+
+            if ($status && $nlen == 0) {
+              $errorString = "Could not parse this line at column $i";
+              $status = 0;
+            }
+            if (!$status) {
+              last;
+            }
+
+            $i += ($nlen - 1);
+          }
+          else  {
+            $name = 0;
+            if (!$self->{'if_skip'}) {
+              $self->append_current('<%' . substr($item, $i, 1));
+              $append_name = 1;
+            }
+          }
+
+          if ($efcheck && $self->{'foreach'}->{'nested'} > 0) {
+            --$self->{'foreach'}->{'nested'};
+          }
+        }
+        else {
+          if (!$self->{'if_skip'}) {
+            $self->append_current(substr($item, $i, 1));
+          }
+        }
+      }
+    }
+  }
+  else {
+    if (!$self->{'if_skip'}) {
+      $self->append_current($line);
     }
   }
 

@@ -22,6 +22,12 @@ use vars qw(@ISA);
 # Subroutine Section
 # ************************************************************
 
+sub use_reldefs {
+  #my($self) = shift;
+  return 0;
+}
+
+
 sub sort_files {
   #my($self) = shift;
   return 1;
