@@ -71,8 +71,6 @@ CLEANFILES += \
 <%else%>
 <%if(dllout)%><%normalize(dllout)%>_<%else%><%if(libout)%><%normalize(libout)%>_<%endif%><%endif%>lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_CPPFLAGS = \
 <%endif%>
-  -I$(top_builddir) \
-  -I$(top_srcdir)<%if(am_includes || defines || common_defines || need_staticflags || dynamicflags)%> \<%endif%>
 <%if(am_includes)%>
 <%foreach(am_includes)%>
   -I<%am_include%><%if(defines || common_defines || macros || type_is_static || need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
