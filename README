@@ -104,33 +104,33 @@ disallowed due to limitations of some workspace tools.
 
 Project Keywords
 ----------------
-exename		Specifies the name of the executable that will be created
-sharedname	Specifies the name of the shared library that will be created
-staticname	Specifies the name of the static library that will be created
-dllout		If defined, specifies where the dynamic libraries will be
+exename         Specifies the name of the executable that will be created
+sharedname      Specifies the name of the shared library that will be created
+staticname      Specifies the name of the static library that will be created
+dllout          If defined, specifies where the dynamic libraries will be
                 placed.  This overrides libout in the dynamic case.
-libout		Specifies where the dynamic and static libraries will be placed
-install		Specifies where executables will be installed
-pch_header	Specifies the precompiled header file name
-pch_source	Specifies the precompiled source file name
+libout          Specifies where the dynamic and static libraries will be placed
+install         Specifies where executables will be installed
+pch_header      Specifies the precompiled header file name
+pch_source      Specifies the precompiled source file name
 recurse         If set to 1, MPC will recurse into directories listed under
                 component listings and add any component corresponding files
                 to the list.  This keyword can be used as a global project
                 setting or a component scoped setting.
 version         Specifies the version number for the library or executable
 macros          These values will be passed as macros to the compiler.
-libpaths	Specifies 1 or more locations to find libraries
-includes	Specifies 1 or more locations to find include files
-libs		Specifies 1 or more libraries to link into the exe or library
-lit_libs	Specifies 1 or more libraries to link into the exe or library.
+libpaths        Specifies 1 or more locations to find libraries
+includes        Specifies 1 or more locations to find include files
+libs            Specifies 1 or more libraries to link into the exe or library
+lit_libs        Specifies 1 or more libraries to link into the exe or library.
                 If libraries receive a library decorator, then these will not.
-pure_libs	Specifies 1 or more libraries to link into the exe or library.
+pure_libs       Specifies 1 or more libraries to link into the exe or library.
                 If libraries receive a library decorator, then these will not.
                 If libraries receive a file extension, then these will not.
 after           Specifies that this project must be built after 1 or more
                 project names listed.
-dynamicflags	Specifies preprocessor flags needed for dynamic libraries
-staticflags	Specifies preprocessor flags needed for static libraries
+dynamicflags    Specifies preprocessor flags needed for dynamic libraries
+staticflags     Specifies preprocessor flags needed for static libraries
 
 verbatim        This allows arbitrary information to be place in a generated
                 project file.  The syntax is as follows:
@@ -257,7 +257,7 @@ template_pre_extension      This is the same as pre_extension except that it
 resource_pre_extension      This is the same as pre_extension except that it
                             only applies to resource_outputext.
 documentation_pre_extension This is the same as pre_extension except that it
-                            only applies to documentation_outputext.        
+                            only applies to documentation_outputext.
 pre_filename        This is similar to pre_extension except that the values
                     are prepended to the file name instead of the extension.
 source_pre_filename         This is the same as pre_filename except that it
@@ -271,7 +271,7 @@ template_pre_filename       This is the same as pre_filename except that it
 resource_pre_filename       This is the same as pre_filename except that it
                             only applies to resource_outputext.
 documentation_pre_filename  This is the same as pre_filename except that it
-                            only applies to documentation_outputext.        
+                            only applies to documentation_outputext.
 source_outputext    This is a comma separated list of possible source file
                     output extensions.  If the command does not produce
                     source files, then this can be omitted.
@@ -295,7 +295,7 @@ generic_outputext   If the command does not generate any of the other output
                     types listed above, then the extensions should be listed
                     under this.
 
-There is a new construct that can be used within a Define_Custom section. 
+There is a new construct that can be used within a Define_Custom section.
 It is called 'optional' and can be used to represent optional custom output
 dependent upon particular command line parameters passed to the custom
 command.
@@ -309,7 +309,7 @@ project {
 
 In the above example, keyword can be any of the pre_extension, pre_filename
 or keywords that end in _outputext.  flag_keyword can be any of the custom
-definition keywords, however only commandflags really make any sense. 
+definition keywords, however only commandflags really make any sense.
 Inside the parenthesis, the flag_keyword value is searched for the 'option'
 value.  If it is found, then the 'value' after the += is added to the list
 specified by 'keyword'.  This can also be negated by prefixing 'option' with
@@ -352,6 +352,10 @@ output will go.  Below is an example:
 
 In the above example, the generated file (QtReactor_moc.cpp) is placed in
 the moc_generated directory and the -nw option is added to commandflags.
+It should be noted that if the custom file definition does not set the
+output_option then you must provide the necessary options in
+commandflags to ensure that the generated output goes into the directory
+specified by gendir.
 
 The following example illustrates the use of the keyword mapping capability
 of the Define_Custom:
@@ -431,12 +435,12 @@ project: qt_specific {
 
 Special Keywords Available to Templates
 ---------------------------------------
-project_name	This contains the name of the project.
-project_file	This contains the name of the output file.
-guid		This is used by the VC7 project and workspace creator.
-configurations	When used within a foreach context, this info (each
-		configuration) is gathered for use with the VC7 workspace
-		creator.
+project_name    This contains the name of the project.
+project_file    This contains the name of the output file.
+guid            This is used by the VC7 project and workspace creator.
+configurations  When used within a foreach context, this info (each
+                configuration) is gathered for use with the VC7 workspace
+                creator.
 flag_overrides  Used to determine flags that have been overridden on a per
                 file basis.
 custom_types    The list of custom file types that may have been defined

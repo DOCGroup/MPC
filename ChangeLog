@@ -1,9 +1,16 @@
+Tue May  4 07:40:02 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+
+          Updated information about the use of 'gendir' without
+          'output_option' set in a custom file definition.
+
 Mon May  3 23:12:37 2004  Ossama Othman  <ossama@dre.vanderbilt.edu>
 
-	* config/openssl.mpb:
+        * config/openssl.mpb:
 
-	  Some Linux OpenSSL installations compile in Kerberos support.
-	  Add the Kerberos include path to preprocessor include path.
+          Some Linux OpenSSL installations compile in Kerberos support.
+          Add the Kerberos include path to preprocessor include path.
 
 Mon May  3 12:17:10 2004  Chad Elliott  <elliott_c@ociweb.com>
 
