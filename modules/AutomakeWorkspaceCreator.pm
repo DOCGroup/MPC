@@ -51,12 +51,7 @@ sub pre_workspace {
             '## this file will be lost the next time it is generated.', $crlf,
             '##', $crlf,
             '## MPC Command:', $crlf,
-            "## $0 @ARGV", $crlf,
-            '##', $crlf,
-            $crlf,
-            '## The number in AUTOMAKE_OPTIONS is the minimum required version automake', $crlf,
-            '## needed to process this file.', $crlf,
-            'AUTOMAKE_OPTIONS = 1.7 foreign', $crlf, $crlf;
+            "## $0 @ARGV", $crlf, $crlf;
 }
 
 
