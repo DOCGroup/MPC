@@ -22,5 +22,6 @@ Debug {
   exeoutputdir     = Static_Debug
   intermediate_dir = Static_Debug
   lib_modifier     = sd
+  postlinkrmext    = .tds
 }
 
