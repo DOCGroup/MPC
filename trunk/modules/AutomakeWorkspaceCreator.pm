@@ -132,21 +132,8 @@ sub write_comps {
     close($mfh);
   }
 
-  ## Print out the Makefile.am. If there are local projects in this directory,
-  ## put the boilerplate stuff first that lets us use += instead of = to
-  ## add project info to bin_PROGRAMS, etc. Also, if there are local projects,
-  ## insert "." as the first SUBDIR entry.
-  if (@locals) {
-    print $fh 'bin_PROGRAMS =', $crlf,
-              'noinst_PROGRAMS =', $crlf,
-              'noinst_HEADERS =', $crlf,
-              'lib_LTLIBRARIES =', $crlf,
-              'BUILT_SOURCES =', $crlf,
-              'CLEANFILES =', $crlf,
-              'TEMPLATE_FILES =', $crlf,
-              'HEADER_FILES =', $crlf,
-              'INLINE_FILES =', $crlf, $crlf;
-  }
+  ## Print out the Makefile.am.  If there are local projects, insert
+  ## "." as the first SUBDIR entry.
   if (@dirs) {
     print $fh 'SUBDIRS =';
     if (@locals) {
@@ -158,6 +145,28 @@ sub write_comps {
     print $fh $crlf, $crlf;
   }
 
+  # The Makefile.<project>.am files always append values to macros,
+  # but automake will fails if the first isn't a plain assignment.  To
+  # address this we parse the Makefile.<project>.am files as we insert
+  # them, changinng the first instance of += to = for each macro.
+  #
+  # We should consider extending this to support all macros that match
+  # automake's uniform naming convention.  A true perl wizard probably
+  # would be able to do this in a single line of code.
+
+  my($seen_bin_programs) = 0;
+  my($seen_noinst_programs) = 0;
+  my($seen_lib_libraries) = 0;
+  my($seen_noinst_libraries) = 0;
+  my($seen_lib_ltlibraries) = 0;
+  my($seen_noinst_ltlibraries) = 0;
+  my($seen_noinst_headers) = 0;
+  my($seen_built_sources) = 0;
+  my($seen_cleanfiles) = 0;
+  my($seen_template_files) = 0;
+  my($seen_header_files) = 0;
+  my($seen_inline_files) = 0;
+
   ## Take the local Makefile.<project>.am files and insert each one here,
   ## then delete it.
   if (@locals) {
@@ -166,9 +175,76 @@ sub write_comps {
       $pfh = new FileHandle();
       open($pfh,$local) || print "Error opening $local" . $crlf;
       print $fh "## $local $crlf";
+
       while (<$pfh>) {
+        # Don't emit comments
+        next if (/^#/);
+
+        if (/^bin_PROGRAMS\s*\+=\s*/) {
+          if (! $seen_bin_programs) {
+            s/\+=/=/;
+            $seen_bin_programs = 1;
+          }
+        } elsif (/^noinst_PROGRAMS\s*\+=\s*/) {
+          if (! $seen_noinst_programs) {
+            s/\+=/=/;
+            $seen_noinst_programs = 1;
+          }
+        } elsif (/^lib_LIBRARIES\s*\+=\s*/) {
+          if (! $seen_lib_libraries ) {
+            s/\+=/=/;
+            $seen_lib_libraries = 1;
+          }
+        } elsif (/^noinst_LIBRARIES\s*\+=\s*/) {
+          if (! $seen_noinst_libraries ) {
+            s/\+=/=/;
+            $seen_noinst_libraries = 1;
+          }
+        } elsif (/^lib_LTLIBRARIES\s*\+=\s*/) {
+          if (! $seen_lib_ltlibraries ) {
+            s/\+=/=/;
+            $seen_lib_ltlibraries = 1;
+          }
+        } elsif (/^noinst_LTLIBRARIES\s*\+=\s*/) {
+          if (! $seen_noinst_ltlibraries ) {
+            s/\+=/=/;
+            $seen_noinst_ltlibraries = 1;
+          }
+        } elsif (/^noinst_HEADERS\s*\+=\s*/) {
+          if (! $seen_noinst_headers) {
+            s/\+=/=/;
+            $seen_noinst_headers = 1;
+          }
+        } elsif (/^BUILT_SOURCES\s*\+=\s*/) {
+          if (! $seen_built_sources) {
+            s/\+=/=/;
+            $seen_built_sources = 1;
+          }
+        } elsif (/^CLEANFILES\s*\+=\s*/) {
+          if (! $seen_cleanfiles) {
+            s/\+=/=/;
+            $seen_cleanfiles = 1;
+          }
+        } elsif (/^TEMPLATE_FILES\s*\+=\s*/) {
+          if (! $seen_template_files) {
+            s/\+=/=/;
+            $seen_template_files = 1;
+          }
+        } elsif (/^HEADER_FILES\s*\+=\s*/) {
+          if (! $seen_header_files) {
+            s/\+=/=/;
+            $seen_header_files = 1;
+          }
+        } elsif (/^INLINE_FILES\s*\+=\s*/) {
+          if (! $seen_inline_files) {
+            s/\+=/=/;
+            $seen_inline_files = 1;
+          }
+        }
+
         print $fh $_;
       }
+
       close($pfh);
 ##      unlink($local);
       print $fh $crlf;
@@ -183,16 +259,21 @@ sub write_comps {
     print $fh $crlf;
     print $fh 'ACLOCAL = @ACLOCAL@' . $crlf;
     print $fh 'ACLOCAL_AMFLAGS = -I m4' . $crlf;
+    print $fh $crlf;
   }
 
-  ## If there's the possibility of any project info here, insert this summary.
-  if (@locals) {
+  ## Insert pkginclude_HEADERS if we saw TEMPLATE_FILES, HEADER_FILES,
+  ## or INLINE_FILES in the Makefile.<project>.am files.
+  if ($seen_template_files || $seen_inline_files || $seen_header_files) {
+    print $fh 'pkginclude_HEADERS =';
+    print $fh ' $(TEMPLATE_FILES)' if ($seen_template_files);
+    print $fh ' $(INLINE_FILES)' if ($seen_inline_files);
+    print $fh ' $(HEADER_FILES)' if ($seen_header_files);
     print $fh $crlf;
-    print $fh 'pkginclude_HEADERS = $(TEMPLATE_FILES)',
-              ' $(INLINE_FILES) $(HEADER_FILES)', $crlf;
+    print $fh $crlf;
   }
+
   ## Finish up with the cleanup specs.
-  print $fh $crlf;
   print $fh '## Clean up template repositories, etc.' . $crlf;
   print $fh 'clean-local:' . $crlf;
   print $fh "\t-rm -f *.bak *.rpo *.sym lib*.*_pure_* Makefile.old core" . $crlf;

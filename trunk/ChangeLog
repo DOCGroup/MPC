@@ -1,3 +1,15 @@
+Fri Jul 23 14:32:54 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+	  Parse generated Makefile.<project>.am files as their contents
+	  are being inserted into the workspace Makefile.am, converting
+	  the first instance where a macro is appended to (+=) into a
+	  simple assignment (=).  This results in a Makefile.am that is
+	  closer to what would be written by hand, and automake will often
+	  generate smaller Makefile.in files since it won't be tricked
+	  into pulling in boilerplate for macros that were defined and not
+	  used.
+
 Thu Jul 22 17:39:41 2004  Steve Huston  <shuston@riverace.com>
 
 	* modules/AutomakeWorkspaceCreator.pm: When writing
