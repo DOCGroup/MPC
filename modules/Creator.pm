@@ -464,17 +464,6 @@ sub generate_default_file_list {
 }
 
 
-sub windows_crlf {
-  #my($self) = shift;
-  if ($^O eq 'MSWin32' || $^O eq 'cygwin' || $^O eq 'os2') {
-    return "\n";
-  }
-  else {
-    return "\r\n";
-  }
-}
-
-
 sub transform_file_name {
   my($self) = shift;
   my($name) = shift;
@@ -963,12 +952,6 @@ sub generate_recursive_input_list {
   #my($dir)     = shift;
   #my($exclude) = shift;
   return ();
-}
-
-
-sub crlf {
-  #my($self) = shift;
-  return "\n";
 }
 
 
