@@ -53,6 +53,7 @@ NAME         = <%staticname%>$(LIBMODIFIER)
 <%endif%>
 <%endif%>
 CPPDIR       = <%cppdir%>
+RESDIR       = <%rcdir%>
 UNICODE_CFLAGS = <%unicode_flags%>
 
 <%if(exename || sharedname || staticname)%>
@@ -85,7 +86,7 @@ LIBFILES = \
 <%if(resource_files && !type_is_static)%>
 RESOURCE = \
 <%foreach(resource_files)%>
-           $(INTERMEDIATE)\<%noextension(resource_file)%>.res<%fornotlast(" \\")%>
+           $(INTERMEDIATE)\<%basenoextension(resource_file)%>.res<%fornotlast(" \\")%>
 <%endfor%>
 <%endif%>
 
@@ -233,7 +234,7 @@ $(OUTPUTDIR)$(NAME)$(LIB_EXT): $(OBJFILES)
 <%if(resource_files && !type_is_static)%>
 .path.res = $(INTERMEDIATE)
 
-.path.rc = <%rcdir%>
+.path.rc = $(RESDIR)
 .rc.res:
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
 	$(RC) -fo$@ $<
