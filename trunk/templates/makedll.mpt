@@ -18,14 +18,11 @@
 // ***********************************************************************
 
 conditional_include "common"
+conditional_include "unixcommon"
 
 configurations = gcc
 ln             = ln -s
-libprefix      = lib
-arext          = a
-soext          = so
-objext         = o
-exeext         =
+obj_ext        = .o
 compile_flags  =
 arflags        =
 pchsupport     = 1
@@ -38,7 +35,7 @@ targetoutdir   =
 java {
   cxx            = javac
   ld             = echo
-  objext         = class
+  obj_ext        = .class
   output_option  =
   compile_option =
   ar             = jar
@@ -173,9 +170,9 @@ NCC {
 // ***********************************************************************
 
 jvm {
-  libprefix =
-  soext     =
-  arext     = jar
+  lib_prefix =
+  dll_ext    =
+  lib_ext    = .jar
 }
 
 tru64 {
@@ -197,14 +194,14 @@ solaris {
 }
 
 hpux {
-  soext         = sl
+  dll_ext       = .sl
   shflags       = -b
   ldlibs        = -lxti -lpthread -lrt -ldld
   extracppflags = -D_REENTRANT
 }
 
 aix {
-  soext         =
+  dll_ext       =
   ldlibs        = -ldl -lpthread
   extracppflags = -D_REENTRANT
 }
@@ -215,13 +212,13 @@ irix {
 }
 
 lynxos {
-  soext         =
+  dll_ext       =
   extracppflags = -D__NO_INCLUDE_WARN__
 }
 
 macos {
   dld     = libtool
-  soext   = dylib
+  dll_ext = .dylib
   shflags = -dynamic
   ldlibs  = -lcc_dynamic -lstdc++ -lSystem -ldl
 }
@@ -240,7 +237,7 @@ qnx {
 }
 
 vxworks {
-  soext         =
+  dll_ext       =
   specialscript = "#!/bin/sh\nfor i in $$3; do\nfor j in $$4; do\ni=`echo $$i | sed sa\^-laa`\n[ -r \"$$j/lib$$i.a\" ] && libs=\"$$libs $$j/lib$$i.a\" && break\ndone\ndone\n$$1 $$2 $$libs | munch | grep -v \\.cpp > $$5"
   prelink       = __ctordtor.c
   ldlibs        = -L$(WIND_BASE)/target/lib/$(CPUTYPE)/$(CPU)/common -larch
@@ -248,16 +245,16 @@ vxworks {
 }
 
 cygwin32 {
-  soext   = dll
-  exeext  = .exe
+  dll_ext = .dll
+  exe_ext = .exe
   shflags = -shared
   ln      = mv
   rc      = windres
 }
 
 mingw32 {
-  soext   = dll
-  exeext  = .exe
+  dll_ext = .dll
+  exe_ext = .exe
   shflags = -shared
   ln      = mv
   ldlibs  = -lwsock32 -lnetapi32

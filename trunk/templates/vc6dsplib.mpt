@@ -3,6 +3,7 @@
 
 conditional_include "common"
 conditional_include "vccommon"
+conditional_include "windowscommon"
 
 type_description      = "Static Library"
 type_code             = 0x0104

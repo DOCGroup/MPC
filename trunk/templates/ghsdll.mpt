@@ -3,6 +3,6 @@
 
 conditional_include "ghscommon"
 
-libext = so
+libext = .so
 
 conditional_include "user_ghsdll"
