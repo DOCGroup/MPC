@@ -1871,10 +1871,11 @@ sub get_validated_ordering {
             }
           }
         }
+
+        $deps =~ s/^\s+//;
+        $deps =~ s/\s+$//;
       }
 
-      $deps =~ s/^\s+//;
-      $deps =~ s/\s+$//;
       $self->{'ordering_cache'}->{$project} = $deps;
     }
   }

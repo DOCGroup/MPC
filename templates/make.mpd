@@ -78,7 +78,7 @@ DYNAMICFLAGS  =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
 <%if(staticflags)%>
 STATICFLAGS   =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
 <%endif%>
-EXPORTFLAGS   = <%if(!exename)%><%foreach(configurations)%><%foreach(platforms)%><%if(soext && sharedname)%>$(DYNAMICFLAGS)<%else%>$(STATICFLAGS)<%endif%><%endfor%><%endfor%><%endif%>
+EXPORTFLAGS   = <%if(exename)%><%if(need_staticflags)%>$(STATICFLAGS)<%endif%><%else%><%foreach(configurations)%><%foreach(platforms)%><%if(soext && sharedname)%>$(DYNAMICFLAGS)<%else%>$(STATICFLAGS)<%endif%><%endfor%><%endfor%><%endif%>
 <%marker(macros)%>
 
 #----------------------------------------------------------------------------
