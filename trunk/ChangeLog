@@ -1,3 +1,16 @@
+Tue Jun 22 20:35:36 2004  Ossama Othman  <ossama@dre.vanderbilt.edu>
+
+	* templates/automake.mpd (AUTOMAKE_OPTIONS):
+
+	  Removed this make variable.  All Automake options should
+	  generally be set via the AM_INIT_AUTOMAKE autoconf macro in the
+	  application's `configure.ac' file.
+
+	  (pkginclude_HEADERS):
+
+	  Corrected make variable for template files.
+	  "$(INLINE_FILES)" -> "$(TEMPLATE_FILES)".
+
 Tue Jun 15 07:02:12 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * USAGE:
