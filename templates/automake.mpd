@@ -40,7 +40,7 @@ CLEANFILES += \
 <%if(exename)%>
 <%if(install)%>bin<%else%>noinst<%endif%>_PROGRAMS += <%exename%>
 <%else%>
-<%if(install)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
+<%if(libout)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
 <%endif%>
 
 <%if(exename)%>
