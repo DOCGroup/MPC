@@ -128,7 +128,7 @@ sub optionError {
                $spaces . "[-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
                $spaces . "[-feature_file <file name>] [-make_coexistence]\n" .
                $spaces . "[-exclude <directories>] [-name_modifier <pattern>]\n" .
-               $spaces . "[-apply_project]\n" .
+               $spaces . "[-apply_project] [-version]\n" .
                $spaces . "[-type <";
 
   my(@keys) = sort keys %{$self->{'types'}};
@@ -190,6 +190,7 @@ sub optionError {
 "                       This can be used to introduce new name value pairs to\n" .
 "                       a project.  However, it must be a valid project\n" .
 "                       assignment.\n" .
+"       -version        Print the MPC version and exit.\n" .
 "       -type           Specifies the type of project file to generate.  This\n" .
 "                       option can be used multiple times to generate multiple\n" .
 "                       types.  If -type is not used, it defaults to '$default'.\n";
@@ -201,7 +202,6 @@ sub optionError {
 sub run {
   my($self)   = shift;
   my(@args)   = @_;
-  my($status) = 0;
 
   ## Dynamically load in each perl module and set up
   ## the type tags and project creators
@@ -226,14 +226,13 @@ sub run {
     ## If options are not defined, that means that calling options
     ## took care of whatever functionality that was required and
     ## we can now return with a good status.
-    return $status;
+    return 0;
   }
 
-  ## Warn about the minimum version of perl that is required
+  ## If the minimum version of perl is not met, then it is an error
   if ($] < $minperl) {
-    $self->warning("Perl version $minperl is required. " .
-                   "Execution will continue, however you may see " .
-                   "unexpected results.");
+    $self->error("Perl version $minperl is required.");
+    return 1;
   }
 
   ## Set up a hash that we can use to keep track of what
@@ -311,7 +310,7 @@ sub run {
       my($srel, $errorString) = $self->read_file($rel);
       if (!$srel) {
         $self->error("$errorString\nin $rel");
-        return $status;
+        return 1;
       }
     }
 
@@ -349,6 +348,7 @@ sub run {
   $| = 1;
 
   ## Generate the files
+  my($status) = 0;
   foreach my $cfile (@{$options->{'input'}}) {
     ## To correctly reference any pathnames in the input file, chdir to
     ## its directory if there's any directory component to the specified path.

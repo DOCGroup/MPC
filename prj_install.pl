@@ -31,6 +31,10 @@ my(%defaults) = ('header_files'   => 1,
                  'template_files' => 1,
                 );
 
+my(%special)  = ('exe_output' => 1,
+                 'lib_output' => 1,
+                );
+
 # ******************************************************************
 # Subroutine Section
 # ******************************************************************
@@ -55,7 +59,7 @@ sub copyFiles {
         print "Copying to $insdir/$file\n";
       }
       if (!copy($file, "$insdir/$file")) {
-        print STDERR "ERROR: Unable to copy $file to $insdir\n";
+        print STDERR "ERROR: Unable to copy $file to $insdir/$file\n";
         return 0;
       }
     }
@@ -66,6 +70,54 @@ sub copyFiles {
     }
   }
   return 1;
+}
+
+
+sub determineSpecialName {
+  my($tag)  = shift;
+  my($dir)  = shift;
+  my($info) = shift;
+
+  my($insdir, $name) = split(/\s+/, $info);
+  if (defined $name) {
+    $insdir .= '/';
+  }
+  else {
+    $name = $insdir;
+    $insdir = '';
+  }
+
+  my($odir) = ($dir eq '' ? '.' : $dir) . '/' . $insdir;
+  if ($tag eq 'exe_output') {
+    my(@exes) = ();
+    my($fh)   = new FileHandle();
+    if (opendir($fh, $odir)) {
+      foreach my $file (grep(!/^\.\.?$/, readdir($fh))) {
+        if ($file =~ /^$name$/ ||
+            $file =~ /^$name.*\.exe$/i) {
+          push(@exes, "$dir$insdir$file");
+        }
+      }
+      closedir($fh);
+    }
+    return @exes;
+  }
+  elsif ($tag eq 'lib_output') {
+    my(@libs) = ();
+    my($fh)   = new FileHandle();
+    if (opendir($fh, $odir)) {
+      foreach my $file (grep(!/^\.\.?$/, readdir($fh))) {
+        if ($file =~ /^lib$name\.(a|so|sl)/ ||
+            $file =~ /^$name.*\.(dll|lib)$/i) {
+          push(@libs, "$dir$insdir$file");
+        }
+      }
+      closedir($fh);
+    }
+    return @libs;
+  }
+
+  return "$dir$name";
 }
 
 
@@ -87,6 +139,7 @@ sub loadInsFiles {
       }
       else {
         $base =~ s/^\.[\/\\]+//;
+        $base .= '/';
       }
 
       my($current) = undef;
@@ -105,7 +158,12 @@ sub loadInsFiles {
             }
           }
           elsif (defined $current) {
-            push(@copy, "$base/$line");
+            if (defined $special{$current}) {
+              push(@copy, determineSpecialName($current, $base, $line));
+            }
+            else {
+              push(@copy, "$base$line");
+            }
           }
         }
       }
@@ -213,6 +271,7 @@ for(my $i = 0; $i <= $#ARGV; ++$i) {
     }
   }
   elsif (!defined $insdir) {
+    $arg =~ s/\\/\//g;
     $insdir = $arg;
   }
   else {
@@ -222,6 +281,7 @@ for(my $i = 0; $i <= $#ARGV; ++$i) {
         print "Collecting $insext files...\n";
       }
     }
+    $arg =~ s/\\/\//g;
     push(@insfiles, getInsFiles($arg));
   }
 }
