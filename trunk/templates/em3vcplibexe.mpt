@@ -13,6 +13,7 @@ common_defines        = UNICODE _UNICODE
 need_staticflags      = 1
 stack                 =
 use_modifier          =
+unicode               = 1
 
 WCE x86 {
   type_code   = 0x8301
@@ -83,6 +84,7 @@ MFC Release {
   output_dir            = Static_MFC_Release
   intermediate_dir      = Static_MFC_Release
   use_mfc               = 2
+  unicode_mfc_entry     = wWinMainCRTStartup
 }
 
 MFC Debug {
@@ -97,6 +99,7 @@ MFC Debug {
   pdbl                  = 1
   pdbc                  = 1
   use_mfc               = 2
+  unicode_mfc_entry     = wWinMainCRTStartup
 }
 
 conditional_include "vcpartialmacros"

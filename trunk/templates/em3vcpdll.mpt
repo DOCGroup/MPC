@@ -12,6 +12,7 @@ type_is_binary        = 1
 type_is_dynamic       = 1
 common_defines        = UNICODE _UNICODE
 stack                 =
+unicode               = 1
 
 WCE x86 {
   type_code   = 0x8302

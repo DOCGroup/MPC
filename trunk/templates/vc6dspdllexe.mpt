@@ -49,6 +49,7 @@ MFC Release {
   debug_switch          =
   lib_modifier          = mfc
   use_mfc               = 2
+  unicode_mfc_entry     = wWinMainCRTStartup
 }
 
 MFC Debug {
@@ -65,6 +66,7 @@ MFC Debug {
   pdbl                  = 1
   pdbc                  = 1
   use_mfc               = 2
+  unicode_mfc_entry     = wWinMainCRTStartup
 }
 
 conditional_include "vcpartialmacros"
