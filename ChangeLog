@@ -1,3 +1,12 @@
+Thu May  6 10:50:53 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug dealing with generated files that used the 'gendir'
+          setting.  If the generated files were listed, but did not match up
+          exactly with what was expected, they would be listed twice in the
+          generated project.
+
 Thu May  6 09:21:59 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3vcp.mpd:
