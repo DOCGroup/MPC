@@ -11,6 +11,12 @@ package DirectoryManager;
 # ************************************************************
 
 use strict;
+use File::Basename;
+
+if ($^O eq 'VMS') {
+  require VMS::Filespec;
+  import VMS::Filespec qw(unixify);
+}
 
 # ************************************************************
 # Data Section
@@ -76,6 +82,14 @@ sub getstartdir {
   #my($self) = shift;
   return $start;
 }
+
+sub mpc_dirname {
+  my($self) = shift;
+  my($dir)  = shift;
+  return ($^O ne 'VMS' ? File::Basename::dirname($dir) :
+                         unixify(File::Basename::dirname($dir)));
+}
+
 
 # ************************************************************
 # Virtual Methods To Be Overridden

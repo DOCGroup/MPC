@@ -13,7 +13,6 @@ package CBXProjectCreator;
 use strict;
 
 use ProjectCreator;
-use File::Basename;
 
 use vars qw(@ISA);
 @ISA = qw(ProjectCreator);
