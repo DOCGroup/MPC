@@ -50,7 +50,7 @@ sub new {
     my($status, $warn) = $self->parse_line(undef, $feature);
     if (!$status) {
       ## We only want to warn the user about problems
-      ## with the feature file.
+      ## with the -feature option.
       $self->warning("-features parameter: $warn");
     }
   }

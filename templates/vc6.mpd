@@ -104,6 +104,9 @@ SOURCE="<%pch_source%>"
 # Begin Source File
 
 SOURCE="<%grouped_source_file->file%>"
+<%if(dirname(grouped_source_file->file))%>
+# ADD CPP /Fo"<%intermediate_dir%>\<%noextension(project_file)%>\<%noextension(grouped_source_file->file)%>.obj"
+<%endif%>
 # End Source File
 <%endfor%>
 # End Group
@@ -113,6 +116,9 @@ SOURCE="<%grouped_source_file->file%>"
 # Begin Source File
 
 SOURCE="<%source_file%>"
+<%if(dirname(source_file))%>
+# ADD CPP /Fo"<%intermediate_dir%>\<%noextension(project_file)%>\<%noextension(source_file)%>.obj"
+<%endif%>
 # End Source File
 <%endfor%>
 <%endif%>
