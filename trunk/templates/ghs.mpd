@@ -40,8 +40,8 @@ default:
 <%if(custom_type->pch_postrule)%>
 <%foreach(custom_type->input_file->source_output_files)%>
 	:preexec=echo #include "<%pch_header%>" > temporary.src
-        :preexec=cat <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temporary.src
-        :preexec=mv -f temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
+        :preexec=<%cat("cat")%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temporary.src
+        :preexec=<mv("mv -f")%> temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
 <%endfor%>
 <%endif%>
 <%endif%>
