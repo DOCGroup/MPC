@@ -1,3 +1,9 @@
+Thu Aug 26 17:38:41 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+
+	  Fix tipos, forgot a leading $.
+
 Thu Aug 26 09:14:57 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeProjectCreator.pm:
