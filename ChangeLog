@@ -1,3 +1,10 @@
+Sun Jan 23 00:15:31 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* modules/AutomakeWorkspaceCreator.pm:
+
+	  Restore CLEANFILES and EXTRA_DIST to conditionals since these
+	  two macros don't match the general form of automake primaries.
+
 Sat Jan 22 23:20:57 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:

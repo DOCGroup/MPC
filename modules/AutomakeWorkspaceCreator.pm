@@ -194,6 +194,8 @@ sub write_comps {
           }
 
           if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS))\s*\+=\s*/
+              || /(^CLEANFILES)\s*\+=\s*/
+              || /(^EXTRA_DIST)\s*\+=\s*/
              ) {
             if ($in_condition && !defined ($conditional_targets{$1})) {
               $conditional_targets{$1} = 1;
@@ -274,6 +276,8 @@ sub write_comps {
           next if (/^#/);
 
           if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS))\s*\+=\s*/
+              || /(^CLEANFILES)\s*\+=\s*/
+              || /(^EXTRA_DIST)\s*\+=\s*/
              ) {
             if (!defined ($seen{$1})) {
               $seen{$1} = 1;
