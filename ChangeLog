@@ -1,36 +1,47 @@
+Tue Sep 28 09:13:57 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/BMakeWorkspaceCreator.pm:
+
+          Borland Make has a maximum line length of roughly 32767.  The
+          'all' target could exceed that length given a large amount of
+          projects within a single workspace.  In that case, we have to
+          create an 'all' target that specifically lists the target commands
+          and thereby creating a larger workspace makefile, but working
+          around the Borland Make limitation.
+
 Mon Sep 27 19:32:42 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Removed code that added -I${top_srcdir} and -I${top_builddir}
-	  to CPPFLAGS.  These should be added by project files if they
-	  are needed.
+          Removed code that added -I${top_srcdir} and -I${top_builddir}
+          to CPPFLAGS.  These should be added by project files if they
+          are needed.
 
 Mon Sep 27 19:13:31 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Changed to omit executable/library building rules if exename,
-	  sharedname, or staticname is not defined.  This is useful for
-	  projects that only contain scripts, manpages, IDL files, etc.
+          Changed to omit executable/library building rules if exename,
+          sharedname, or staticname is not defined.  This is useful for
+          projects that only contain scripts, manpages, IDL files, etc.
 
 Mon Sep 27 19:02:51 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Define man_MANS or bin_SCRIPTS if man_files or script_files are
-	  set.
+          Define man_MANS or bin_SCRIPTS if man_files or script_files are
+          set.
 
 Mon Sep 27 15:53:18 2004  Steve Huston  <shuston@riverace.com>
 
-	* modules/TemplateParser.pm (handle_normalize): Add / $ ( ) to the
-	  characters translated to _ to properly handle full-path names that
-	  may include variables.
+        * modules/TemplateParser.pm (handle_normalize): Add / $ ( ) to the
+          characters translated to _ to properly handle full-path names that
+          may include variables.
 
-	* templates/automake.mpd: Use the dllout/libout settings for placing
-	  libraries. The linker input use of lib names always assumes
-	  libout/lib - this may be too limiting, but not sure how to handle
-	  it otherwise.
+        * templates/automake.mpd: Use the dllout/libout settings for placing
+          libraries. The linker input use of lib names always assumes
+          libout/lib - this may be too limiting, but not sure how to handle
+          it otherwise.
 
 Mon Sep 27 11:56:20 2004  Chad Elliott  <elliott_c@ociweb.com>
 
