@@ -2645,6 +2645,16 @@ sub convert_command_parameters {
   $valid{'output'}    = $output;
   $valid{'temporary'} = 'temp.$$$$.' . int(rand(0xffffffff));
 
+  if (defined $input) {
+    $valid{'input_noext'} = $input;
+    $valid{'input_noext'} =~ s/\.[^\.]+$//;
+  }
+
+  if (defined $output) {
+    $valid{'output_noext'} = $output;
+    $valid{'output_noext'} =~ s/\.[^\.]+$//;
+  }
+
   ## Add in the specific types of output files
   if (defined $output) {
     foreach my $type (keys %{$self->{'valid_components'}}) {
