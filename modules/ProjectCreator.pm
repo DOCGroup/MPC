@@ -231,8 +231,8 @@ sub process_assignment {
   ## the user to correctly depend on another project within the same
   ## directory.
   if ($name eq 'after' && $value =~ /\*/) {
-    my($def) = $self->get_default_project_name();
-    $value = $self->fill_type_name($value, $def);
+    $value = $self->fill_type_name($value,
+                                   $self->get_default_project_name());
   }
   if (defined $value && !$self->{'dollar_special'} && $value =~ /\$\$/) {
     $value =~ s/\$\$/\$/g;
@@ -503,15 +503,23 @@ sub parse_line {
                              'or a back slash in the name';
             }
             else {
-              $name =~ s/^\(\s*//;
-              $name =~ s/\s*\)$//;
-              $name = $self->transform_file_name($name);
+              ## We should only set the project name if we are not
+              ## reading in a parent project.
+              if (!defined $self->{'reading_parent'}->[0]) {
+                $name =~ s/^\(\s*//;
+                $name =~ s/\s*\)$//;
+                $name = $self->transform_file_name($name);
 
-              ## Replace any *'s with the default name
-              my($def) = $self->get_default_project_name();
-              $name = $self->fill_type_name($name, $def);
+                ## Replace any *'s with the default name
+                $name = $self->fill_type_name(
+                                    $name,
+                                    $self->get_default_project_name());
 
-              $self->set_project_name($name);
+                $self->set_project_name($name);
+              }
+              else {
+                $self->warning("Ignoring project name in a base project.");
+              }
             }
           }
         }
