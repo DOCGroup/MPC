@@ -397,11 +397,15 @@ sub generate_default_file_list {
   my($recurse) = shift;
   my($dh)      = new FileHandle();
   my(@files)   = ();
+  my($is_vms)  = ( $^O eq 'VMS' );
 
   if (opendir($dh, $dir)) {
     my($need_dir) = ($dir ne '.');
     my($skip)     = 0;
     foreach my $file (grep(!/^\.\.?$/, readdir($dh))) {
+      if ( $is_vms && $file =~ /\.dir$/ ) {
+        $file =~ s/\.dir$//;
+      }
       ## Prefix each file name with the directory only if it's not '.'
       my($full) = ($need_dir ? "$dir/" : '') . $file;
 
@@ -493,6 +497,9 @@ sub extension_recursive_input_list {
 
   if (opendir($fh, $dir)) {
     foreach my $file (grep(!/^\.\.?$/, readdir($fh))) {
+      if ( $^O eq 'VMS' && $file =~ /\.dir$/ ) {
+        $file =~ s/\.dir$//;
+      }
       my($skip) = 0;
       my($full) = ($dir ne '.' ? "$dir/" : '') . $file;
 

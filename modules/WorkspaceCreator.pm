@@ -15,6 +15,10 @@ use FileHandle;
 use File::Path;
 use File::Compare;
 use File::Basename;
+if ( $^O eq 'VMS' ) {
+  require VMS::Filespec;
+  import VMS::Filespec qw(unixify);
+}
 
 use Creator;
 use Options;
@@ -278,7 +282,11 @@ sub aggregated_workspace {
     $self->{'handled_scopes'}->{$aggregated} = undef;
     $self->set_line_number(0);
     $self->{$self->{'type_check'}} = 0;
-    $self->{'scoped_basedir'} = dirname($file);
+    if ( $^O eq 'VMS' ) {
+      $self->{'scoped_basedir'} = unixify(dirname($file));
+    } else {
+      $self->{'scoped_basedir'} = dirname($file);
+    }
 
     while(<$fh>) {
       my($line) = $self->preprocess_line($fh, $_);
@@ -438,7 +446,11 @@ sub handle_scoped_unknown {
         if ($file =~ /\.mpc$/) {
           my($exc) = $file;
           do {
-            $exc = dirname($exc);
+            if ( $^O eq 'VMS' ) {
+              $exc = unixify(dirname($exc));
+            } else {
+              $exc = dirname($exc);
+            }
             $remove{$exc} = 1;
           } while($exc ne '.' && $exc !~ /[a-z]:[\/\\]/i);
         }
@@ -524,14 +536,28 @@ sub remove_duplicate_projects {
   my($list)  = shift;
   my($count) = scalar(@$list);
 
-  for(my $i = 0; $i < $count; ++$i) {
-    my($file) = $$list[$i];
-    foreach my $inner (@$list) {
-      if ($file ne $inner && $file eq dirname($inner) && ! -d $inner) {
-        splice(@$list, $i, 1);
-        --$count;
-        --$i;
-        last;
+  if ( $^O eq 'VMS' ) {
+    for(my $i = 0; $i < $count; ++$i) {
+      my($file) = $$list[$i];
+      foreach my $inner (@$list) {
+        if ($file ne $inner && $file eq unixify(dirname($inner)) && ! -d $inner) {
+          splice(@$list, $i, 1);
+          --$count;
+          --$i;
+          last;
+        }
+      }
+    }
+  } else {
+    for(my $i = 0; $i < $count; ++$i) {
+      my($file) = $$list[$i];
+      foreach my $inner (@$list) {
+        if ($file ne $inner && $file eq dirname($inner) && ! -d $inner) {
+          splice(@$list, $i, 1);
+          --$count;
+          --$i;
+          last;
+        }
       }
     }
   }
@@ -713,7 +739,12 @@ sub write_workspace {
 
     if (!$abort_creation) {
       my($fh)  = new FileHandle();
-      my($dir) = dirname($name);
+      my($dir) = '';
+      if ( $^O eq 'VMS' ) {
+        $dir = unixify(dirname($name));
+      } else {
+        $dir = dirname($name);
+      }
 
       ## Verify and possibly modify the dependencies
       if ($addfile) {
@@ -934,7 +965,13 @@ sub generate_project_files {
   foreach my $ofile (@{$self->{'project_files'}}) {
     if (!$self->excluded($ofile)) {
       my($file)    = $ofile;
-      my($dir)     = dirname($file);
+      my($dir) = '';
+      if ( $^O eq 'VMS' ) {
+        $dir     = unixify(dirname($file));
+      }
+      else {
+        $dir     = dirname($file);
+      }
       my($restore) = 0;
 
       if (defined $self->{'scoped_assign'}->{$ofile}) {
