@@ -71,13 +71,10 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        option can be used multiple times to generate multiple
                        types.  If -type is not used, it defaults to 'make'.
 
-The default global input file
-(ACE_wrappers/bin/MakeProjectCreator/config/global.mpb) is used if -global
+The default global input file (config/global.mpb) is used if -global
 is not specified on the command line.
 
-Two include directories are used by default
-(ACE_wrappers/bin/MakeProjectCreator/config and
-ACE_wrappers/bin/MakeProjectCreator/templates).
+Two include directories are used by default (config and templates).
 
 Each project creator has a default template input file for each type of
 project (dll_exe, lib_exe, dll, lib).  You can override the default template
@@ -130,8 +127,8 @@ The -name_modifier option can be used to modify the generated workspace or
 project name.  The parameter to the -name_modifier option is a pattern where
 an asterisk (*) within the pattern is replaced by the actual workspace or
 project name.  Thus, passing -name_modifier '*_Static' to mwc.pl will result
-in all workspace and project names ending in _Static. (Ex. ACE_Static.dsw,
-ACE_Static.dsp, etc.)
+in all workspace and project names ending in _Static. (Ex. FOO_Static.dsw,
+FOO_Static.dsp, etc.)
 
 The -apply_project option, when used in conjunction with the -name_modifier
 option, causes MPC to apply the name modifier to the project name in
@@ -139,7 +136,7 @@ addition to the workspace and project file names.  This option has no effect
 outside the scope of the -name_modifier option.
 
 The -noreldefs option says not to generate default relative definitions for
-ACE_ROOT and TAO_ROOT (which would come from environment variables).
+*_ROOT (which comes from environment variables).
 
 The -notoplevel option tells mwc.pl to generate all projects for a
 workspace, but do not generate the top level workspace file.  For mpc.pl, it

@@ -144,12 +144,12 @@ sub new {
   my($nmod)      = shift;
   my($applypj)   = shift;
   my($genins)    = shift;
-  my($self)      = Creator::new($class, $global, $inc,
-                                $template, $ti, $dynamic, $static,
-                                $relative, $addtemp, $addproj,
-                                $progress, $toplevel, $baseprojs,
-                                $feature, $hierarchy, $nmod, $applypj,
-                                'project');
+  my($self)      = $class->SUPER::new($global, $inc,
+                                      $template, $ti, $dynamic, $static,
+                                      $relative, $addtemp, $addproj,
+                                      $progress, $toplevel, $baseprojs,
+                                      $feature, $hierarchy, $nmod, $applypj,
+                                      'project');
 
   $self->{$self->{'type_check'}}   = 0;
   $self->{'feature_defined'}       = 0;
@@ -173,7 +173,6 @@ sub new {
   $self->{'sort_files'}            = $self->sort_files();
   $self->{'source_callback'}       = undef;
   $self->{'dollar_special'}        = $self->dollar_special();
-  $self->{'exclude'}               = $exclude;
   $self->{'generate_ins'}          = $genins;
   $self->{'addtemp_state'}         = undef;
 
@@ -709,6 +708,7 @@ sub parse_components {
   my($comps)   = {};
   my($set)     = 0;
   my(%flags)   = ();
+  my(%exclude) = ();
   my($custom)  = defined $self->{'generated_exts'}->{$tag};
   my($grtag)   = $grouped_key . $tag;
 
@@ -738,6 +738,7 @@ sub parse_components {
     $$comps{$current} = [];
   }
 
+  my($count) = 0;
   if (defined $specialComponents{$tag}) {
     $self->{'special_supplied'}->{$tag} = 1;
   }
@@ -786,16 +787,65 @@ sub parse_components {
         }
       }
       else {
-        my($over) = $self->{'flag_overrides'}->{$tag};
-        if (defined $over) {
-          $$over{$line} = \%flags;
+        ## If we successfully remove a '!' from the front, then
+        ## the file(s) listed are to be excluded
+        my($exc) = ($line =~ s/^!//);
+
+        ## Set up the files array.  If the line contains a wildcard
+        ## character use CORE::glob() to get the files specified.
+        my(@files) = ();
+        if ($line =~ /^"([^"]+)"$/) {
+          push(@files, $1);
         }
-        push(@{$$comps{$current}}, $line);
+        elsif ($line =~ /[\?\*\[\]]/) {
+          @files = glob($line);
+        }
+        else {
+          push(@files, $line);
+        }
+
+        ## If we're excluding these files, then put them in the hash
+        if ($exc) {
+          foreach my $file (@files) {
+            $exclude{$file} = 1;
+          }
+        }
+        else {
+          ## Set the flag overrides for each file
+          my($over) = $self->{'flag_overrides'}->{$tag};
+          if (defined $over) {
+            foreach my $file (@files) {
+              $$over{$file} = \%flags;
+            }
+          }
+
+          foreach my $file (@files) {
+            if (!defined $exclude{$file}) {
+              ++$count;
+              push(@{$$comps{$current}}, $file);
+            }
+          }
+        }
       }
     }
     else {
       $status = 0;
       last;
+    }
+  }
+
+  if ($status && $count != 0) {
+    my(@exc) = keys %exclude;
+
+    if (scalar(@exc) != 0) {
+      my($alldir) = $self->get_assignment('recurse') || $flags{'recurse'};
+      my(@files)  = $self->generate_default_file_list('.', \@exc, $alldir);
+      $self->sift_files(\@files,
+                        $self->{'valid_components'}->{$tag},
+                        $self->get_assignment('pch_header'),
+                        $self->get_assignment('pch_source'),
+                        $tag,
+                        $$comps{$current});
     }
   }
 
@@ -1524,7 +1574,7 @@ sub generate_default_components {
                   my($alldir) = $recurse ||
                       $self->{'flag_overrides'}->{$tag}->{$file}->{'recurse'};
                   my(@gen) = $self->generate_default_file_list(
-                                      $file, $self->{'exclude'}, $alldir);
+                                      $file, [], $alldir);
                   $self->sift_files(\@gen, $exts, $pchh,
                                     $pchc, $tag, \@built, $alldir);
                 }
@@ -1877,8 +1927,7 @@ sub generate_defaults {
 
   ## Generate the default pch file names (if needed)
   my(@files) = $self->generate_default_file_list(
-                                 '.', $self->{'exclude'},
-                                 $self->get_assignment('recurse'));
+                                 '.', [], $self->get_assignment('recurse'));
   $self->generate_default_pch_filenames(\@files);
 
   ## If the pch file names are empty strings then we need to fix that

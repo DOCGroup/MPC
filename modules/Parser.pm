@@ -118,18 +118,32 @@ sub preprocess_line {
 sub read_file {
   my($self)        = shift;
   my($input)       = shift;
+  my($cache)       = shift;
   my($ih)          = new FileHandle();
   my($status)      = 1;
   my($errorString) = undef;
 
   $self->{'line_number'} = 0;
   if (open($ih, $input)) {
-    while(<$ih>) {
-      ($status, $errorString) = $self->parse_line(
+    if ($cache) {
+      while(<$ih>) {
+        my($line) = $self->preprocess_line($ih, $_);
+        $self->cache_line($input, $line);
+        ($status, $errorString) = $self->parse_line($ih, $line);
+
+        if (!$status) {
+          last;
+        }
+      }
+    }
+    else {
+      while(<$ih>) {
+        ($status, $errorString) = $self->parse_line(
                                     $ih, $self->preprocess_line($ih, $_));
 
-      if (!$status) {
-        last;
+        if (!$status) {
+          last;
+        }
       }
     }
     close($ih);
@@ -140,6 +154,30 @@ sub read_file {
   }
 
   return $status, $errorString;
+}
+
+
+sub cached_file_read {
+  my($self)  = shift;
+  my($input) = shift;
+  my($lines) = $self->get_cache($input);
+
+  if (defined $lines) {
+    my($status) = 1;
+    my($error)  = undef;
+    $self->{'line_number'} = 0;
+    foreach my $line (@$lines) {
+      ++$self->{'line_number'};
+      ($status, $error) = $self->parse_line(undef, $line);
+
+      if (!$status) {
+        last;
+      }
+    }
+    return $status, $error;
+  }
+
+  return $self->read_file($input, 1);
 }
 
 
@@ -206,6 +244,19 @@ sub convert_slashes {
 sub parse_line {
   #my($self) = shift;
   #my($ih)   = shift;
+  #my($line) = shift;
+}
+
+
+sub get_cache {
+  #my($self) = shift;
+  #my($key)  = shift;
+}
+
+
+sub cache_line {
+  #my($self) = shift;
+  #my($key)  = shift;
   #my($line) = shift;
 }
 
