@@ -1,3 +1,46 @@
+Tue Feb  1 10:31:00 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed the following bugs:
+
+          1) Not supplying a location to verbatim would not result in an
+             error.
+          2) Adding non-grouped files after adding grouped files would
+             result in an error.
+          3) Characters trailing closing curly braces would not be
+             recognized as an error.
+          4) Some generated files could be added more than once depending on
+             the similarity of other generated files.  For example,
+             Source.idl and SourceControl.idl would cause SourceControlC.cpp
+             to be added more than once.
+
+          Thanks to Thomas Rothfuss for reporting #4.
+
+        * modules/TemplateInputReader.pm:
+
+          Simplified an if/else clause.
+
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where mixed (HASH and SCALAR) foreach SCALAR values
+          would not be removed.  It was originally dependent upon the order.
+
+          Again, thanks to Thomas Rothfuss for reporting this.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where characters trailing closing curly braces would
+          not be recognized as an error.
+
+        * templates/em3vcp.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          Do not default the version value.  Only provide version
+          information if the user specifically provided it.
+
 Thu Jan 27 12:40:12 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/boost_base.mpb:

@@ -331,17 +331,17 @@ sub process_foreach {
 
     ## If the foreach values are mixed (HASH and SCALAR), then
     ## remove the SCALAR values.
-    my($pset) = undef;
+    my(%mixed) = ();
+    my($mixed) = 0;
     for(my $i = 0; $i <= $#values; ++$i) {
-      my($set) = $self->set_current_values($values[$i]);
-      if (!defined $pset) {
-        $pset |= $set;
-      }
-      else {
-        if ($pset && !$set) {
-          splice(@values, $i, 1);
-          $i = 0;
-          $pset = undef;
+      $mixed{$values[$i]} = $self->set_current_values($values[$i]);
+      $mixed |= $mixed{$values[$i]};
+    }
+    if ($mixed) {
+      @values = ();
+      foreach my $key (sort keys %mixed) {
+        if ($mixed{$key}) {
+          push(@values, $key);
         }
       }
     }

@@ -82,13 +82,8 @@ sub parse_line {
       $value = [];
     }
 
-    if ($op eq '+=') {
-      if (defined $$current[$self->{'cindex'}]->{$name}) {
-        push(@{$$current[$self->{'cindex'}]->{$name}}, @$value);
-      }
-      else {
-        $$current[$self->{'cindex'}]->{$name} = $value;
-      }
+    if ($op eq '+=' && defined $$current[$self->{'cindex'}]->{$name}) {
+      push(@{$$current[$self->{'cindex'}]->{$name}}, @$value);
     }
     else {
       $$current[$self->{'cindex'}]->{$name} = $value;
