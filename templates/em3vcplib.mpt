@@ -5,9 +5,9 @@ conditional_include "common"
 
 type_description      = "Static Library"
 platforms             = "WCE ARM" "WCE ARMV4" "WCE x86" "WCE emulator"
-default_configuration = "Static Debug"
+default_configuration = Debug
 default_platform      = "WCE ARM"
-configurations        = "Static Release" "Static Debug"
+configurations        = Release Debug
 common_defines        = UNICODE _UNICODE
 type_is_static        = 1
 need_staticflags      = 1
@@ -48,7 +48,7 @@ WCE ARMV4 {
   cpu_options = /QRxscale
 }
 
-Static Release {
+Release {
   use_debug_libraries   = 0
   optimize              = 1
   compile_flags         = /W3
@@ -59,7 +59,7 @@ Static Release {
   lib_modifier          = s
 }
 
-Static Debug {
+Debug {
   use_debug_libraries   = 1
   optimize              =
   compile_flags         = /W3 /Zi
@@ -71,7 +71,7 @@ Static Debug {
   pdb                   = 1
 }
 
-Static MFC Release {
+MFC Release {
   use_debug_libraries   = 0
   optimize              = 1
   compile_flags         = /W3
@@ -83,7 +83,7 @@ Static MFC Release {
   use_mfc               = 2
 }
 
-Static MFC Debug {
+MFC Debug {
   use_debug_libraries   = 1
   optimize              =
   compile_flags         = /W3 /Zi
