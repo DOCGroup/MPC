@@ -1378,6 +1378,13 @@ sub already_added {
       return 1;
     }
   }
+
+  ## If we haven't matched the name yet and the name
+  ## begins with ./, we will remove it and try again.
+  if ($name =~ s/^\.\///) {
+    return $self->already_added($array, $name);
+  }
+
   return 0;
 }
 
@@ -1565,7 +1572,15 @@ sub add_generated_files {
           $self->list_generated_file($gentype, $tag, \@added, $gen, $file);
         }
       }
-      unshift(@$array, @added);
+      if ($#added >= 0) {
+        my(@oktoadd) = ();
+        foreach my $file (@added) {
+          if (!$self->already_added($array, $file)) {
+            push(@oktoadd, $file);
+          }
+        }
+        unshift(@$array, @oktoadd);
+      }
     }
   }
 }
@@ -2075,10 +2090,10 @@ sub list_generated_file {
       if ($re =~ /$file(.*)?$/) {
         my($created) = "$file$1";
         $created =~ s/\\//g;
+        if (defined $ofile) {
+          $created = $self->prepend_gendir($created, $ofile, $gentype);
+        }
         if (!$self->already_added($array, $created)) {
-          if (defined $ofile) {
-            $created = $self->prepend_gendir($created, $ofile, $gentype);
-          }
           push(@$array, $created);
         }
         last;
