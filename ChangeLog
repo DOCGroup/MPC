@@ -1,3 +1,9 @@
+Sun Oct 31 15:40:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/cbx.mpd:
+          Just exclude the complete Template_Files folder instead of all files
+          individually
+
 Fri Oct 29 11:15:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/cbx.mpd:
