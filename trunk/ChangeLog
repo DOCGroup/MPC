@@ -1,3 +1,23 @@
+Thu Jul 22 17:39:41 2004  Steve Huston  <shuston@riverace.com>
+
+	* modules/AutomakeWorkspaceCreator.pm: When writing
+	  configure.ac.Makefiles, insert entries for project-less directories
+	  between project-containing directories. Allows the bootstrap
+	  procedure to find and make the needed Makefiles to traverse the
+	  entire build tree.
+
+	* templates/automake.mpd: Changed _LIBADD to _LDADD for programs.
+
+Thu Jul 22 12:52:39 2004  Steve Huston  <shuston@riverace.com>
+
+	* modules/AutomakeWorkspaceCreator.pm: If there's no local project
+	  info for the current Makefile.am, don't put the initial bin_PROGRAMS,
+	  lib_LTLIBRARIES, etc. If there are local projects, add "." to the
+	  SUBDIRS.
+
+	* templates/automake.mpd: Add _LIBADD settings to pick up needed
+	  libraries.
+
 Wed Jul 21 19:34:46 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* modules/AutomakeProjectCreator.pm:
