@@ -1,3 +1,17 @@
+Thu Aug 12 03:33:45 UTC 2004  Don Hinton  <don.hinton@vanderbilt.edu>
+
+        * templates/vc6dsp.mpd:
+        * templates/vc6dspdll.mpt:
+        * templates/vc6dspdllexe.mpt:
+        * templates/vc6dsplib.mpt:
+        * templates/vc6dsplibexe.mpt:
+        * templates/vccommon.mpt: New file.
+          Added support for midl.  It uses midl_includes, midl_defines,
+          and midl_flags.  To use, just add an idl file to your source
+          files section and define the midl_* variables in the vc6/7
+          section.  Thanks to Chad Elliott  <elliott_c@ociweb.com> and
+          Krishnakumar B <kitty@dre.vanderbilt.edu> for help with this.
+
 Wed Aug 11 19:15:10 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* modules/AutomakeWorkspaceCreator.pm:
