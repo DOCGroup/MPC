@@ -182,6 +182,7 @@ sub write_comps {
   my(%seen) = ();
   my(%conditional_targets) = ();
   my(%unconditional_targets) = ();
+  my(%first_instance_unconditional) = ();
   my($installable_headers) = undef;
   my($installable_pkgconfig) = undef;
   my($includedir) = undef;
@@ -223,8 +224,12 @@ sub write_comps {
             if ($in_condition) {
               $conditional_targets{$1}++;
             } else {
+              if (! $seen{$1} ) {
+                $first_instance_unconditional{$1} = 1;
+              }
               $unconditional_targets{$1}++;
             }
+            $seen{$1} = 1;
 
             if (/^pkgconfig_DATA/) {
                 $installable_pkgconfig= 1;
@@ -246,6 +251,11 @@ sub write_comps {
       }
     }
   }
+
+  #
+  # Clear seen hash
+  #
+  %seen = ();
 
   ## Print out the Makefile.am.
   my($wsHelper) = WorkspaceHelper::get($self);
@@ -291,7 +301,9 @@ sub write_comps {
     my $count;
 
     while ( ($primary, $count) = each %conditional_targets) {
-      if ($unconditional_targets{$primary} || ($count > 1)) {
+      if (! $first_instance_unconditional{$primary}
+          && ($unconditional_targets{$primary} || ($count > 1)))
+      {
         print $fh "$primary =$crlf";
         $seen{$primary} = 1;
       }
