@@ -1,3 +1,16 @@
+Wed Apr  7 06:49:16 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/bmake.mpd:
+        * templates/em3vcp.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          Finished support for the 'pch_postrule' of the Define_Custom which
+          post edits generated source files and places the #include for the
+          precompiled header at the top of the file.
+
 Mon Apr  5 10:43:03 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
