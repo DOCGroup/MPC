@@ -1,3 +1,10 @@
+Thu Oct 28 06:23:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/cbx.mpd:
+          Added needed compiler options and generate the needed include paths
+          in the bcc32 part, removed generate of $(BCB) includes, these are
+          not needed.
+
 Mon Oct 25 12:18:27 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/BMakeWorkspaceCreator.pm:
