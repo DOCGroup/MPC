@@ -70,22 +70,32 @@ sub findCallback {
                  );
 
     if ($matches) {
-      $matches = (! /^.*\.dsp\z/s    &&
-                  ! /^.*\.dsw\z/s    &&
-                  ! /^.*\.vcproj\z/s &&
-                  ! /^.*\.sln\z/s    &&
-                  ! /^Makefile.*\z/s &&
-                  ! /^.*\.vcp\z/s    &&
-                  ! /^.*\.vcw\z/s    &&
-                  ! /^.*\.mak\z/s    &&
-                  ! /^.*\.nmake\z/s  &&
-                  ! /^.*\.bld\z/s    &&
-                  ! /^.*\.icc\z/s    &&
-                  ! /^.*\.icp\z/s    &&
-                  ! /^.*\.ncb\z/s    &&
-                  ! /^.*\.opt\z/s    &&
-                  ! /^.*\.bak\z/s    &&
-                  ! /^.*\.ilk\z/s    &&
+      $matches = (! /^.*\.dsp\z/s       &&
+                  ! /^.*\.dsw\z/s       &&
+                  ! /^.*\.vcproj\z/s    &&
+                  ! /^.*\.sln\z/s       &&
+                  ! /^Makefile.*\z/s    &&
+                  ! /^GNUmakefile.*\z/s &&
+                  ! /^.*\.am\z/s        &&
+                  ! /^\.depend\..*\z/s  &&
+                  ! /^.*\.vcn\z/s       &&
+                  ! /^.*\.vcp\z/s       &&
+                  ! /^.*\.vcw\z/s       &&
+                  ! /^.*\.vpj\z/s       &&
+                  ! /^.*\.vpw\z/s       &&
+                  ! /^.*\.cbx\z/s       &&
+                  ! /^.*\.bpgr\z/s      &&
+                  ! /^.*\.bmak\z/s      &&
+                  ! /^.*\.bmake\z/s     &&
+                  ! /^.*\.mak\z/s       &&
+                  ! /^.*\.nmake\z/s     &&
+                  ! /^.*\.bld\z/s       &&
+                  ! /^.*\.icc\z/s       &&
+                  ! /^.*\.icp\z/s       &&
+                  ! /^.*\.ncb\z/s       &&
+                  ! /^.*\.opt\z/s       &&
+                  ! /^.*\.bak\z/s       &&
+                  ! /^.*\.ilk\z/s       &&
                   ! /^.*\.pdb\z/s
                 );
 
