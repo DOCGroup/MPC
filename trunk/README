@@ -374,6 +374,7 @@ postcommand         Allows a user to execute arbitrary commands after
                     <%lt%>        - Project non-specific less than sign.
                     <%and%>       - Project non-specific and sign.
                     <%or%>        - Project non-specific or sign.
+                    <%quote%>     - Project non-specific double quote.
 
                     If any referenced pseudo template variable does
                     not contain a value, then the particular setting

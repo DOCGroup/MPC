@@ -372,8 +372,14 @@ sub linkFiles {
     my($fullbuild) = "$builddir/$build";
 
     ## Create all of the links for this build
-    print "Creating or updating in $fullbuild\n";
-    mkpath($fullbuild, 0, $dmode);
+    if (-d $fullbuild) {
+      print "Updating $fullbuild\n";
+    }
+    else {
+      print "Creating $fullbuild\n";
+      mkpath($fullbuild, 0, $dmode);
+    }
+
     if ($hardlink) {
       $status += hardlinkFiles($files, $fullbuild, $dmode, $startdir);
     }
