@@ -1,3 +1,11 @@
+Wed Sep 29 06:53:40 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Removed a portion of two regular expessions that were causing perl
+          warnings.  Also, switched to use the warning() method instead of
+          the perl builtin warn function.
+
 Wed Sep 29 06:40:50 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WorkspaceCreator.pm:
