@@ -1,3 +1,25 @@
+Wed Nov 24 08:17:01 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where the directory portion would not contain a
+          trailing slash when using gendir.  This would cause some
+          non-existent file to be added automatically.
+
+        * templates/automake.mpd:
+        * templates/bmake.mpd:
+        * templates/em3vcp.mpd:
+        * templates/ghs.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+
+          When gendir is used, attempt to automatically make the specified
+          directory.
+
 Tue Nov 23 07:52:03 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/boost_base.mpb:
