@@ -256,6 +256,7 @@ sub new {
   $self->{'lib_template_input'}    = undef;
   $self->{'dll_template_input'}    = undef;
   $self->{'flag_overrides'}        = {};
+  $self->{'custom_special_output'} = {};
   $self->{'special_supplied'}      = {};
   $self->{'pctype'}                = $self->extractType("$self");
   $self->{'verbatim'}              = {};
@@ -572,14 +573,15 @@ sub parse_line {
               $self->restore_state($self->{'addtemp_state'}, 'addtemp');
               $self->{'addtemp_state'} = undef;
             }
-            $self->{'assign'}               = {};
-            $self->{'verbatim'}             = {};
-            $self->{'verbatim_accessed'}    = {$self->{'pctype'} => {}};
-            $self->{'special_supplied'}     = {};
-            $self->{'flag_overrides'}       = {};
-            $self->{'parents_read'}         = {};
-            $self->{'inheritance_tree'}     = {};
-            $self->{'remove_files'}         = {};
+            $self->{'assign'}                = {};
+            $self->{'verbatim'}              = {};
+            $self->{'verbatim_accessed'}     = {$self->{'pctype'} => {}};
+            $self->{'special_supplied'}      = {};
+            $self->{'flag_overrides'}        = {};
+            $self->{'parents_read'}          = {};
+            $self->{'inheritance_tree'}      = {};
+            $self->{'remove_files'}          = {};
+            $self->{'custom_special_output'} = {};
             $self->reset_generating_types();
           }
         }
@@ -867,6 +869,13 @@ sub process_component_line {
     $line = $self->relative($line);
     if ($self->{'convert_slashes'}) {
       $line =~ s/\\/\//g;
+    }
+
+    ## Now look for specially listed files
+    if ($line =~ /(.*)\s+>>\s+(.*)/) {
+      $line = $1;
+      my(@extra) = split(/\s+/, $2);
+      $self->{'custom_special_output'}->{$line} = \@extra;
     }
 
     ## Set up the files array.  If the line contains a wild card
@@ -3154,10 +3163,27 @@ sub get_custom_value {
         $ainput =~ s/\\/\//g;
       }
 
+      ## Add all of the output files
       foreach my $vc (keys %{$self->{'valid_components'}}, $generic_key) {
         push(@outputs,
              $self->check_custom_output($based, $cinput,
                                         $ainput, $vc, $vcomps{$vc}));
+      }
+
+      ## Add specially listed files avoiding duplicates
+      if (defined $self->{'custom_special_output'}->{$ainput}) {
+        foreach my $file (@{$self->{'custom_special_output'}->{$ainput}}) {
+          my($found) = 0;
+          foreach my $output (@outputs) {
+            if ($output eq $file) {
+              $found = 1;
+              last;
+            }
+          }
+          if (!$found) {
+            push(@outputs, $file);
+          }
+        }
       }
       $self->{'custom_output_files'}->{$input} = \@outputs;
     }

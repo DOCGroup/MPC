@@ -436,6 +436,33 @@ generic_outputext   If the command does not generate any of the other output
                     types listed above, then the extensions should be listed
                     under this.
 
+If the custom output can not be represented with the above output extension
+keywords (*_outputext) and you have knowlege of the output files a priori,
+you can represent them with the '>>' construct.
+
+Below is an example that demonstrates the use of '>>'.  The command takes an
+input file name of foo.prp and produces two files that have a completely
+unrelated filename (i.e. foo !~ hello).
+
+project {
+  Define_Custom(Quogen) {
+    automatic               = 0
+    command                 = perl quogen.pl
+    commandflags            = --debuglevel=1 --language=c++ \
+                              --kernel_language=c++
+    inputext                = .prp
+    keyword quogenflags     = commandflags
+  }
+
+  Quogen_Files {
+    foo.prp >> hello.h hello.cpp
+  }
+
+  Source_Files {
+    hello.cpp
+  }
+}
+
 There is a new construct that can be used within a Define_Custom section.
 It is called 'optional' and can be used to represent optional custom output
 dependent upon particular command line parameters passed to the custom
@@ -471,10 +498,10 @@ optional clause can be read as follows: If 'commandflags' contains -GA then
 add A to source_pre_extension.
 
 Particular output extensions are not required.  However at least one output
-extension type is required in order for MPC to generate a target.  Your
-command doesn't necessarily have to generate output, but an extension type
-is none the less required.  In this case, it's best to use
-generic_outputext.
+extension type is required in order for MPC to generate a target.  Within
+graphical build environments, the custom input file will be listed
+regardless of the presence of an extension definition.  In this case, the
+input file will be "excluded" from the build.
 
 For custom file types, there are a few keywords that can be used within the
 custom file type input lists: command, commandflags, dependent, gendir and
