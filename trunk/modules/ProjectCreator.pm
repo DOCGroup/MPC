@@ -2978,9 +2978,13 @@ sub convert_command_parameters {
       my($key) = $type;
       $key =~ s/s$//gi;
       $nowarn{$key} = 1;
+      $nowarn{$key . '_noext'} = 1;
       foreach my $ext (@{$self->{'valid_components'}->{$type}}) {
         if ($output =~ /$ext$/) {
           $valid{$key} = $output;
+          $valid{$key . '_noext'} = $output;
+          $valid{$key . '_noext'} =~ s/\.[^\.]+$//;
+          last;
         }
       }
     }

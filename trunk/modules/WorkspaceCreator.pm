@@ -354,29 +354,38 @@ sub parse_exclude {
     $typestr = $self->{'wctype'};
   }
 
-  my(@types)   = split(/\s*,\s*/, $typestr);
   my(@exclude) = ();
+  my(%types)   = ();
+  @types{split(/\s*,\s*/, $typestr)} = ();
 
-  while(<$fh>) {
-    my($line) = $self->preprocess_line($fh, $_);
+  if (exists $types{$self->{wctype}}) {
+    while(<$fh>) {
+      my($line) = $self->preprocess_line($fh, $_);
 
-    if ($line eq '') {
+      if ($line eq '') {
+      }
+      elsif ($line =~ /^}/) {
+        $status = 1;
+        $errorString = undef;
+        last;
+      }
+      else {
+        push(@exclude, $line);
+      }
     }
-    elsif ($line =~ /^}/) {
-      $status = 1;
-      $errorString = undef;
-      last;
-    }
-    else {
-      push(@exclude, $line);
+
+    foreach my $type (keys %types) {
+      if (!defined $self->{'exclude'}->{$type}) {
+        $self->{'exclude'}->{$type} = [];
+      }
+      push(@{$self->{'exclude'}->{$type}}, @exclude);
     }
   }
-
-  foreach my $type (@types) {
-    if (!defined $self->{'exclude'}->{$type}) {
-      $self->{'exclude'}->{$type} = [];
-    }
-    push(@{$self->{'exclude'}->{$type}}, @exclude);
+  else {
+    ($status, $errorString) = $self->parse_scope($fh,
+                                                 'exclude',
+                                                 $typestr,
+                                                 \%validNames);
   }
 
   return $status, $errorString;
