@@ -14,6 +14,7 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 
 use strict;
 use Cwd;
+use Config;
 use File::Basename;
 
 my($basePath) = getExecutePath($0);
@@ -25,13 +26,18 @@ require MWC;
 # Subroutine Section
 # ************************************************************
 
+sub getBasePath {
+  return $basePath;
+}
+
+
 sub which {
-  my($prog)   = shift;
-  my($exec)   = $prog;
-  my($part)   = '';
-  my($envSep) = ($^O eq 'MSWin32' ? ';' : ':');
+  my($prog) = shift;
+  my($exec) = $prog;
 
   if (defined $ENV{'PATH'}) {
+    my($part)   = '';
+    my($envSep) = $Config{'path_sep'};
     foreach $part (split(/$envSep/, $ENV{'PATH'})) {
       $part .= "/$prog";
       if ( -x $part ) {
