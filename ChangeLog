@@ -1,47 +1,69 @@
+Thu Jul  1 09:35:27 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/MakeWorkspaceCreator.pm:
+
+          Added a .PHONY: target for sub targets.  This only has an effect
+          when using GNU make, but does not have an adverse effect when
+          using other versions of make.
+
+        * README:
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+        * templates/bmake.mpd:
+        * templates/em3vcp.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          Added support for a new custom build keyword 'postcommand'.  The
+          postcommand can be used to run arbitrary commands after the main
+          custom command is run.  See the README for more details.
+
 Thu Jul  1 10:16:38 2004  Steve Huston  <shuston@riverace.com>
 
-	* modules/AutomakeWorkspaceCreator.pm (write_comps): Write a
-	  configure.ac.Makefiles entry for the top-level workspace as
-	  well, else there's no starting point in the configured tree.
+        * modules/AutomakeWorkspaceCreator.pm (write_comps): Write a
+          configure.ac.Makefiles entry for the top-level workspace as
+          well, else there's no starting point in the configured tree.
 
-	* modules/TemplateParser.pm: Added new template <%normalize%>
-	  that takes a exename as a parameter. Converts '-' to '_' to
-	  make the name palatable prepended to a special automake name
-	  such as _SOURCES.
+        * modules/TemplateParser.pm: Added new template <%normalize%>
+          that takes a exename as a parameter. Converts '-' to '_' to
+          make the name palatable prepended to a special automake name
+          such as _SOURCES.
 
-	* templates/automake.mpd: Applied a patch from Chad that makes
-	  grouped sources work better. Also, added <%normalize%> to
-	  exename_SOURCES generation so exe names with '-' in them get
-	  changed to '_' for their SOURCES. This is the same normalization
-	  Automake will do when trying to find the SOURCES for a bin_ target.
-	  Removed the support for being able to select library subsets to
-	  build at configure time. It disn't work right, and the subset
-	  selection capability is not in the MPC-generated GNUmakefiles
-	  either. It can be (re)attempted later if needed, but the longer-term
-	  goal in ACE land seems to be to find other ways to reduce footprint.
-	  Also changed the _PROGRAMS generation to switch between bin_ and
-	  noinst_ depending on presence of an 'install' directive.
+        * templates/automake.mpd: Applied a patch from Chad that makes
+          grouped sources work better. Also, added <%normalize%> to
+          exename_SOURCES generation so exe names with '-' in them get
+          changed to '_' for their SOURCES. This is the same normalization
+          Automake will do when trying to find the SOURCES for a bin_ target.
+          Removed the support for being able to select library subsets to
+          build at configure time. It didn't work right, and the subset
+          selection capability is not in the MPC-generated GNUmakefiles
+          either. It can be (re)attempted later if needed, but the longer-term
+          goal in ACE land seems to be to find other ways to reduce footprint.
+          Also changed the _PROGRAMS generation to switch between bin_ and
+          noinst_ depending on presence of an 'install' directive.
 
 Tue Jun 22 20:53:12 2004  Ossama Othman  <ossama@dre.vanderbilt.edu>
 
-	* modules/AutomakeWorkspaceCreator.pm (AUTOMAKE_OPTIONS):
+        * modules/AutomakeWorkspaceCreator.pm (AUTOMAKE_OPTIONS):
 
-	  Removed generation of this make variable.  All Automake options
-	  should generally be set via the AM_INIT_AUTOMAKE autoconf macro
-	  in the application's `configure.ac' file.
+          Removed generation of this make variable.  All Automake options
+          should generally be set via the AM_INIT_AUTOMAKE autoconf macro
+          in the application's `configure.ac' file.
 
 Tue Jun 22 20:35:36 2004  Ossama Othman  <ossama@dre.vanderbilt.edu>
 
-	* templates/automake.mpd (AUTOMAKE_OPTIONS):
+        * templates/automake.mpd (AUTOMAKE_OPTIONS):
 
-	  Removed this make variable.  All Automake options should
-	  generally be set via the AM_INIT_AUTOMAKE autoconf macro in the
-	  application's `configure.ac' file.
+          Removed this make variable.  All Automake options should
+          generally be set via the AM_INIT_AUTOMAKE autoconf macro in the
+          application's `configure.ac' file.
 
-	  (pkginclude_HEADERS):
+          (pkginclude_HEADERS):
 
-	  Corrected make variable for template files.
-	  "$(INLINE_FILES)" -> "$(TEMPLATE_FILES)".
+          Corrected make variable for template files.
+          "$(INLINE_FILES)" -> "$(TEMPLATE_FILES)".
 
 Tue Jun 15 07:02:12 2004  Chad Elliott  <elliott_c@ociweb.com>
 

@@ -90,7 +90,8 @@ sub write_comps {
   ## Print out each target separately
   foreach my $project (@list) {
     my($dname) = dirname($project);
-    print $fh $crlf . $$pjs{$project}->[0] . ':';
+    print $fh $crlf, '.PHONY: ', $$pjs{$project}->[0],
+              $crlf, $$pjs{$project}->[0], ':';
     if (defined $targnum{$project}) {
       foreach my $number (@{$targnum{$project}}) {
         print $fh " $$pjs{$list[$number]}->[0]";

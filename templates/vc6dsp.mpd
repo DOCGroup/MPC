@@ -183,7 +183,7 @@ SOURCE="<%resource_file%>"
 # End Group
 <%endif%>
 <%foreach(custom_types)%>
-# Begin Group "<%custom_type%>"
+# Begin Group "<%ucw(custom_type)%>"
 
 # PROP Default_Filter "<%foreach(custom_type->inputexts)%><%custom_type->inputext%><%fornotlast(";")%><%endfor%>"
 <%foreach(custom_type->input_files)%>
@@ -200,26 +200,31 @@ USERDEP__<%basenoextension(custom_type->input_file)%>=<%custom_type->command%>.e
 <%endif%>
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Invoking <%custom_type->command%> on $(InputPath)
-InputPath=<%custom_type->input_file%>
-InputName=<%basenoextension(custom_type->input_file)%>
-InputDir=<%dirname(custom_type->input_file)%>
+InputPath="<%custom_type->input_file%>"
 
-<%foreach(custom_type->input_file->output_files)%>
-"<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+BuildCmds= \
 <%if(custom_type->libpath)%>
-   PATH=%PATH%;<%custom_type->libpath%>
+	PATH=%PATH%;<%custom_type->libpath%> \
 <%endif%>
-   <%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(InputPath)<%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endif%>
+	<%custom_type->command%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(InputPath)<%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_files)%><%else%><%custom_type->input_file->output_files%><%endif%><%endif%> \
+<%if(custom_type->postcommand)%>
+<%foreach(custom_type->input_file->output_files)%>
+	<%custom_type->postcommand()%> \
+<%endfor%>
+<%endif%>
 <%if(pch_header)%>
 <%if(custom_type->pch_postrule)%>
 <%foreach(custom_type->input_file->source_output_files)%>
-   echo #include "<%pch_header%>" > temporary.src
-   type <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temporary.src
-   move /y temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
+	echo #include "<%pch_header%>" > temporary.src \
+	type <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temporary.src \
+	move /y temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
 <%endfor%>
 <%endif%>
 <%endif%>
+<%foreach(custom_type->input_file->output_files)%>
 
+"<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
 <%endfor%>
 # End Custom Build
 
