@@ -185,7 +185,7 @@ sub write_comps {
         }
       }
       if ($seen_ace_builddir) {
-        if (seen_tao_root || $seen_tao_builddir) {
+        if ($seen_tao_root || $seen_tao_builddir) {
           print $fh "ACE_BUILDDIR = \$(top_builddir)/..", $crlf;
         } else {
           print $fh "ACE_BUILDDIR = \$(top_builddir)", $crlf;
@@ -195,7 +195,7 @@ sub write_comps {
         print $fh "TAO_ROOT = \$(top_srcdir)", $crlf;
       }
       if ($seen_tao_builddir) {
-        print $fh "TAO_BUILDDIR= \$(top_builddir)", $crlf;
+        print $fh "TAO_BUILDDIR = \$(top_builddir)", $crlf;
       }
 
       print $fh $crlf;
