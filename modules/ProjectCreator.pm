@@ -824,6 +824,136 @@ sub handle_unknown_assignment {
 }
 
 
+sub process_component_line {
+  my($self)    = shift;
+  my($tag)     = shift;
+  my($line)    = shift;
+  my($flags)   = shift;
+  my($grname)  = shift;
+  my($current) = shift;
+  my($excarr)  = shift;
+  my($comps)   = shift;
+  my($count)   = shift;
+  my($status)  = 1;
+  my(%exclude) = ();
+
+  my(@values) = ();
+  ## If this returns true, then we've found an assignment
+  if ($self->parse_assignment($line, \@values)) {
+    $status = $self->parse_scoped_assignment($tag, @values, $flags);
+  }
+  else {
+    ## If we successfully remove a '!' from the front, then
+    ## the file(s) listed are to be excluded
+    my($rem) = ($line =~ s/^\^//);
+    my($exc) = $rem || ($line =~ s/^!//);
+
+    ## Convert any $(...) in this line before we process any
+    ## wild card characters.  If we do not, scoped assignments will
+    ## not work nor will we get the correct wild carded file list.
+    $line = $self->relative($line);
+
+    ## Set up the files array.  If the line contains a wild card
+    ## character use CORE::glob() to get the files specified.
+    my(@files) = ();
+    if ($line =~ /^"([^"]+)"$/) {
+      push(@files, $1);
+    }
+    elsif ($line =~ /[\?\*\[\]]/) {
+      @files = glob($line);
+    }
+    else {
+      push(@files, $line);
+    }
+
+    ## If we want to remove these files at the end too, then
+    ## add them to our remove_files hash array.
+    if ($rem) {
+      if (!defined $self->{'remove_files'}->{$tag}) {
+        $self->{'remove_files'}->{$tag} = {};
+      }
+      foreach my $file (@files) {
+        $self->{'remove_files'}->{$tag}->{$file} = 1;
+      }
+    }
+
+    ## If we're excluding these files, then put them in the hash
+    if ($exc) {
+      $$grname = $current;
+      @exclude{@files} = (@files);
+      @$excarr = @files;
+    }
+    else {
+      ## Set the flag overrides for each file
+      my($over) = $self->{'flag_overrides'}->{$tag};
+      if (defined $over) {
+        foreach my $file (@files) {
+          $$over{$file} = $flags;
+        }
+      }
+
+      foreach my $file (@files) {
+        ## Add the file if we're not excluding it
+        if (!defined $exclude{$file}) {
+          push(@{$$comps{$current}}, $file);
+        }
+
+        ## The user listed a file explicitly, whether we
+        ## excluded it or not.
+        ++$$count;
+      }
+    }
+  }
+
+  return $status;
+}
+
+
+sub parse_conditional {
+  my($self)    = shift;
+  my($fh)      = shift;
+  my($types)   = shift;
+  my($tag)     = shift;
+  my($flags)   = shift;
+  my($grname)  = shift;
+  my($current) = shift;
+  my($exclude) = shift;
+  my($comps)   = shift;
+  my($count)   = shift;
+  my($status)  = 1;
+  my($add)     = 0;
+
+  foreach my $type (split(/\s*,\s*/, $types)) {
+    if ($type eq $self->{'pctype'}) {
+      $add = 1;
+      last;
+    }
+  }
+
+  while(<$fh>) {
+    my($line) = $self->preprocess_line($fh, $_);
+
+    if ($line eq '') {
+    }
+    elsif ($line =~ /^}\s*else\s*{$/) {
+      $add ^= 1;
+    }
+    elsif ($line =~ /^}$/) {
+      last;
+    }
+    elsif ($add) {
+      $status = $self->process_component_line($tag, $line, $flags,
+                                              $grname, $current,
+                                              $exclude, $comps, $count);
+      if (!$status) {
+        last;
+      }
+    }
+  }
+
+  return $status;
+}
+
 sub parse_components {
   my($self)    = shift;
   my($fh)      = shift;
@@ -835,7 +965,7 @@ sub parse_components {
   my($comps)   = {};
   my($set)     = 0;
   my(%flags)   = ();
-  my(%exclude) = ();
+  my(@exclude) = ();
   my($custom)  = defined $self->{'generated_exts'}->{$tag};
   my($grtag)   = $grouped_key . $tag;
   my($grname)  = undef;
@@ -902,6 +1032,14 @@ sub parse_components {
         last;
       }
     }
+    elsif ($line =~ /^conditional\s*(\(([^\)]+)\))\s*{$/) {
+      $status = $self->parse_conditional($fh, $2, $tag, \%flags, \$grname,
+                                         $current, \@exclude, $comps,
+                                         \$count);
+      if (!$status) {
+        last;
+      }
+    }
     elsif ($line =~ /^}/) {
       if (defined $current && $set) {
         $current = undef;
@@ -913,74 +1051,12 @@ sub parse_components {
       }
     }
     elsif (defined $current) {
-      my(@values) = ();
-      ## If this returns true, then we've found an assignment
-      if ($self->parse_assignment($line, \@values)) {
-        $status = $self->parse_scoped_assignment($tag, @values, \%flags);
-        if (!$status) {
-          last;
-        }
-      }
-      else {
-        ## If we successfully remove a '!' from the front, then
-        ## the file(s) listed are to be excluded
-        my($rem) = ($line =~ s/^\^//);
-        my($exc) = $rem || ($line =~ s/^!//);
-
-        ## Convert any $(...) in this line before we process any
-        ## wild card characters.  If we do not, scoped assignments will
-        ## not work nor will we get the correct wild carded file list.
-        $line = $self->relative($line);
-
-        ## Set up the files array.  If the line contains a wild card
-        ## character use CORE::glob() to get the files specified.
-        my(@files) = ();
-        if ($line =~ /^"([^"]+)"$/) {
-          push(@files, $1);
-        }
-        elsif ($line =~ /[\?\*\[\]]/) {
-          @files = glob($line);
-        }
-        else {
-          push(@files, $line);
-        }
-
-        ## If we want to remove these files at the end too, then
-        ## add them to our remove_files hash array.
-        if ($rem) {
-          if (!defined $self->{'remove_files'}->{$tag}) {
-            $self->{'remove_files'}->{$tag} = {};
-          }
-          foreach my $file (@files) {
-            $self->{'remove_files'}->{$tag}->{$file} = 1;
-          }
-        }
-
-        ## If we're excluding these files, then put them in the hash
-        if ($exc) {
-          $grname = $current;
-          @exclude{@files} = (@files);
-        }
-        else {
-          ## Set the flag overrides for each file
-          my($over) = $self->{'flag_overrides'}->{$tag};
-          if (defined $over) {
-            foreach my $file (@files) {
-              $$over{$file} = \%flags;
-            }
-          }
-
-          foreach my $file (@files) {
-            ## Add the file if we're not excluding it
-            if (!defined $exclude{$file}) {
-              push(@{$$comps{$current}}, $file);
-            }
-
-            ## The user listed a file explicitly, whether we
-            ## excluded it or not.
-            ++$count;
-          }
-        }
+      $status = $self->process_component_line($tag, $line, \%flags,
+                                              \$grname, $current,
+                                              \@exclude, $comps,
+                                              \$count);
+      if (!$status) {
+        last;
       }
     }
     else {
@@ -993,9 +1069,8 @@ sub parse_components {
   ## listed and we attempted to exclude files, then we need to find the
   ## set of files that don't match the excluded files and add them.
   if ($status && $count == 0 && defined $grname) {
-    my(@exc)    = keys %exclude;
     my($alldir) = $self->get_assignment('recurse') || $flags{'recurse'};
-    my(@files)  = $self->generate_default_file_list('.', \@exc, $alldir);
+    my(@files)  = $self->generate_default_file_list('.', \@exclude, $alldir);
     $self->sift_files(\@files,
                       $self->{'valid_components'}->{$tag},
                       $self->get_assignment('pch_header'),

@@ -1,3 +1,14 @@
+Thu Nov 11 10:17:43 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/ProjectCreator.pm:
+
+          Added a new construct (similar to specific) which can only be used
+          with component lists (Source_Files, Header_Files, etc.).  The
+          construct is called 'conditional' and can be used to conditionally
+          add or exclude files based on project type.  See the README for
+          more detail.
+
 Tue Nov  9 12:19:43 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
