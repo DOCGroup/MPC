@@ -66,7 +66,6 @@ sub new {
   $self->{'sstack'}     = [];
   $self->{'lstack'}     = [];
   $self->{'if_skip'}    = 0;
-  $self->{'parameters'} = [];
 
   $self->{'foreach'}  = {};
   $self->{'foreach'}->{'count'}      = -1;
@@ -169,25 +168,6 @@ sub set_current_values {
 }
 
 
-sub get_nested_value {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = undef;
-
-  if ($name =~ /^(.*)\->(\w+)/) {
-    my($pre)  = $1;
-    my($post) = $2;
-    my($base) = $self->get_value($pre);
-    if (defined $base) {
-      $value = $self->{'prjc'}->get_special_value($pre, $post, $base,
-                                                  @{$self->{'parameters'}});
-    }
-  }
-
-  return $value;
-}
-
-
 sub get_value {
   my($self)    = shift;
   my($name)    = shift;
@@ -237,8 +217,17 @@ sub get_value {
             ## Call back onto the project creator to allow
             ## it to fill in the value before defaulting to undef.
             $value = $self->{'prjc'}->fill_value($name);
-            if (!defined $value && $name =~ /\->/) {
-              $value = $self->get_nested_value($name);
+            if (!defined $value && $name =~ /^(.*)\->(\w+)/) {
+              my($pre)  = $1;
+              my($post) = $2;
+              my($base) = $self->get_value($pre);
+
+              if (defined $base) {
+                $value = $self->{'prjc'}->get_special_value(
+                            $pre, $post, $base,
+                            ($self->{'prjc'}->requires_parameters($post) ?
+                                $self->prepare_parameters($pre) : undef));
+              }
             }
           }
         }
@@ -429,15 +418,19 @@ sub get_flag_overrides {
   my($self)  = shift;
   my($name)  = shift;
   my($type)  = shift;
-  my($value) = undef;
   my($file)  = $self->get_value($name);
-  my($prjc)  = $self->{'prjc'};
-  my($fo)    = $prjc->{'flag_overrides'};
 
   if (defined $file) {
-    my($ustyle) = $file;
-    $ustyle =~ s/\\/\//g;
-    my($dir)   = $self->mpc_dirname($ustyle);
+    my($value) = undef;
+    my($prjc)  = $self->{'prjc'};
+    my($fo)    = $prjc->{'flag_overrides'};
+
+    ## Save the name prefix (if there is one) for
+    ## command parameter conversion at the end
+    my($pre) = undef;
+    if ($name =~ /(\w+)->/) {
+      $pre = $1;
+    }
 
     ## Replace the custom_type key with the actual custom type
     if ($name =~ /^custom_type\->/) {
@@ -447,33 +440,44 @@ sub get_flag_overrides {
       }
     }
 
-    foreach my $key (keys %$fo) {
-      if ($key =~ /^$name/) {
-        foreach my $of (keys %{$$fo{$key}}) {
-          my($cv) = ($self->{'cslashes'} ? $prjc->slash_to_backslash($of) :
-                                           $of);
-          if ($cv eq $file || $cv eq $dir) {
-            foreach my $ma (keys %{$prjc->{'matching_assignments'}}) {
-              if ($ma eq $key) {
-                foreach my $aname (@{$prjc->{'matching_assignments'}->{$ma}}) {
-                  if ($aname eq $type &&
-                      defined $$fo{$key}->{$of}->{$aname}) {
-                    $value = $$fo{$key}->{$of}->{$aname};
-                    last;
-                  }
-                }
-                last;
-              }
+    my($key) = (defined $$fo{$name} ? $name :
+                   (defined $$fo{$name . 's'} ? $name . 's' : undef));
+    if (defined $key) {
+      if (defined $prjc->{'matching_assignments'}->{$key}) {
+        ## Convert the file name into a unix style file name
+        my($ustyle) = $file;
+        $ustyle =~ s/\\/\//g;
+
+        ## Save the directory portion for checking in the foreach
+        my($dir) = $self->mpc_dirname($ustyle);
+
+        my($of) = (defined $$fo{$key}->{$ustyle} ? $ustyle :
+                      (defined $$fo{$key}->{$dir} ? $dir : undef));
+        if (defined $of) {
+          foreach my $aname (@{$prjc->{'matching_assignments'}->{$key}}) {
+            if ($aname eq $type && defined $$fo{$key}->{$of}->{$aname}) {
+              $value = $$fo{$key}->{$of}->{$aname};
+              last;
             }
-            last;
           }
         }
-        last;
       }
     }
+
+    ## If the name that we're overriding has a value and
+    ## requires parameters, then we will convert all of the
+    ## pseudo variables and provide parameters.
+    if (defined $pre &&
+        defined $value && $prjc->requires_parameters($type)) {
+      $value = $prjc->convert_command_parameters(
+                              $value,
+                              $self->prepare_parameters($pre));
+    }
+
+    return $prjc->relative($value);
   }
 
-  return $prjc->relative($value);
+  return undef;
 }
 
 
@@ -739,9 +743,8 @@ sub handle_marker {
 }
 
 
-sub handle_function {
+sub prepare_parameters {
   my($self)   = shift;
-  my($name)   = shift;
   my($prefix) = shift;
   my($input)  = $self->get_value($prefix . '->input_file');
   my($output) = undef;
@@ -765,14 +768,18 @@ sub handle_function {
   }
 
   ## Set the parameters array with the determined input and output files
-  $self->{'parameters'} = [ $input, $output ];
+  return $input, $output;
+}
+
+
+## TBD: Remove this deprecated function
+sub handle_function {
+  my($self) = shift;
+  my($name) = shift;
 
   ## Append the value returned by get_value_with_default.  It will use
   ## the parameters when it calls get_special_value on the ProjectCreator
   $self->append_current($self->get_value_with_default($name));
-
-  ## Reset the parameters arary
-  $self->{'parameters'} = [];
 }
 
 
@@ -795,11 +802,17 @@ sub process_name {
 
     $length += length($name);
     if (defined $val) {
+      ## Check for the parenthesis
+      if ($val =~ /\(/ && $val !~ /\)/) {
+        $status = 0;
+        $errorString = 'Missing the closing parenthesis';
+      }
+
       ## Add the length of the value plus 2 for the surrounding ()
       $length += length($val) + 2;
     }
 
-    if (defined $keywords{$name}) {
+    if ($status && defined $keywords{$name}) {
       if ($name eq 'endif') {
         ($status, $errorString) = $self->handle_endif($name);
       }
@@ -884,6 +897,7 @@ sub process_name {
       }
     }
   }
+  ## TBD: Remove this deprecated elsif
   elsif ($line =~ /^((\w+)(->\w+)+)\(\)%>/) {
     my($name) = $1;
     ## Handle all "function calls" separately
@@ -962,7 +976,7 @@ sub parse_line {
   ## not need to add a newline to the end.
   if ($self->{'foreach'}->{'processing'} == 0) {
     my($is_only_keyword) = undef;
-    if ($line =~ /^\s*<%(\w+)(\([^\)]+\))?%>$/) {
+    if ($line =~ /^[ ]*<%(\w+)(\((flag_overrides\([^\)]+\)|[^\)]+)\))?%>$/) {
       $is_only_keyword = defined $keywords{$1};
     }
 
