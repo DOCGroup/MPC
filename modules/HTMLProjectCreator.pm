@@ -84,7 +84,7 @@ sub fill_value {
     $value = [];
     for(my $i = 0; $i <= $#nodes; ++$i) {
       my($file) = $nodes[$i]->[1];
-      my($dir)  = dirname($file);
+      my($dir)  = $self->mpc_dirname($file);
       my($base) = basename($file);
 
       ## Relative paths do not work at all in a web browser

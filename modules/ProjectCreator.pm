@@ -15,10 +15,6 @@ use FileHandle;
 use File::Path;
 use File::Compare;
 use File::Basename;
-if ( $^O eq 'VMS' ) {
-  require VMS::Filespec;
-  import VMS::Filespec qw(unixify);
-}
 
 use Creator;
 use TemplateInputReader;
@@ -1624,7 +1620,7 @@ sub add_generated_files {
       foreach my $key (keys %{$$names{$name}}) {
         push(@all, @{$$names{$name}->{$key}});
         foreach my $file (@{$$names{$name}->{$key}}) {
-          $dircomp{dirname($file)} = $key;
+          $dircomp{$self->mpc_dirname($file)} = $key;
         }
       }
     }
@@ -1642,7 +1638,7 @@ sub add_generated_files {
     ## If we have files to add, make sure we add them to a group
     ## that has the same directory location as the files we're adding.
     if ($#oktoadd >= 0) {
-      my($key) = $dircomp{dirname($oktoadd[0])};
+      my($key) = $dircomp{$self->mpc_dirname($oktoadd[0])};
       if (!defined $key) {
         $key = $self->get_default_element_name();
       }
@@ -2952,13 +2948,7 @@ sub write_output_file {
           }
 
           my($fh)  = new FileHandle();
-          my($dir) = '';
-          if ( $^O eq 'VMS' ) {
-            $dir = unixify(dirname($name));
-          }
-          else  {
-            $dir = dirname($name);
-          }
+          my($dir) = $self->mpc_dirname($name);
 
           if ($dir ne '.') {
             mkpath($dir, 0, 0777);
