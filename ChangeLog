@@ -1,3 +1,14 @@
+Mon Jan 10 10:55:51 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+
+	  Added support for pkgconfig_files.
+
+	* modules/AutomakeWorkspaceCreator.pm:
+
+	  Added pkgconfigdata_DATA to list of automake primaries we detect
+	  for converting = to +=.
+
 Mon Jan 10 06:27:33 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeWorkspaceCreator.pm:
