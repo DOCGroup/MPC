@@ -114,8 +114,9 @@ my(@default_matching_assignments) = ('recurse',
                                     );
 
 ## Deal with these components in a special way
-my(%specialComponents) = ('header_files' => 1,
-                          'inline_files' => 1,
+my(%specialComponents) = ('header_files'   => 1,
+                          'inline_files'   => 1,
+                          'template_files' => 1,
                          );
 my(%sourceComponents)  = ('source_files'   => 1,
                           'template_files' => 1,
@@ -2111,53 +2112,51 @@ sub generate_default_components {
 
           $self->{'defaulted'}->{$tag} = 1;
 
-          if (!defined $specialComponents{$tag}) {
+          if (defined $sourceComponents{$tag}) {
             $self->sift_files($files, $exts, $pchh, $pchc, $tag, $array);
-            if (defined $sourceComponents{$tag}) {
-              foreach my $gentype (keys %{$self->{'generated_exts'}}) {
-                ## If we are auto-generating the source_files, then
-                ## we need to make sure that any generated source
-                ## files that are added are put at the front of the list.
-                my(@front)  = ();
-                my(@copy)   = @$array;
-                my(@input)  = $self->get_component_list($gentype, 1);
+            foreach my $gentype (keys %{$self->{'generated_exts'}}) {
+              ## If we are auto-generating the source_files, then
+              ## we need to make sure that any generated source
+              ## files that are added are put at the front of the list.
+              my(@front)  = ();
+              my(@copy)   = @$array;
+              my(@input)  = $self->get_component_list($gentype, 1);
 
-                @$array = ();
-                foreach my $file (@copy) {
-                  my($found) = 0;
-                  foreach my $input (@input) {
-                    my($part) = $input;
-                    foreach my $wanted (@{$self->{'valid_components'}->{$gentype}}) {
-                      if ($part =~ s/$wanted$//) {
-                        last;
-                      }
-                    }
-                    $part = $self->escape_regex_special($part);
-                    foreach my $re ($self->generated_filenames($part, $gentype,
-                                                               $tag, $input,
-                                                               0)) {
-                      if ($file =~ /$re$/) {
-                        ## No need to check for previously added files
-                        ## here since there are none.
-                        push(@front, $file);
-                        $found = 1;
-                        last;
-                      }
-                    }
-                    if ($found) {
+              @$array = ();
+              foreach my $file (@copy) {
+                my($found) = 0;
+                foreach my $input (@input) {
+                  my($part) = $input;
+                  foreach my $wanted (@{$self->{'valid_components'}->{$gentype}}) {
+                    if ($part =~ s/$wanted$//) {
                       last;
                     }
                   }
-                  if (!$found) {
-                    ## No need to check for previously added files
-                    ## here since there are none.
-                    push(@$array, $file);
+                  $part = $self->escape_regex_special($part);
+                  foreach my $re ($self->generated_filenames($part, $gentype,
+                                                             $tag, $input,
+                                                             0)) {
+                    if ($file =~ /$re$/) {
+                      ## No need to check for previously added files
+                      ## here since there are none.
+                      push(@front, $file);
+                      $found = 1;
+                      last;
+                    }
+                  }
+                  if ($found) {
+                    last;
                   }
                 }
-
-                if (defined $front[0]) {
-                  unshift(@$array, @front);
+                if (!$found) {
+                  ## No need to check for previously added files
+                  ## here since there are none.
+                  push(@$array, $file);
                 }
+              }
+
+              if (defined $front[0]) {
+                unshift(@$array, @front);
               }
             }
           }
@@ -2262,10 +2261,10 @@ sub list_default_generated {
       }
 
       foreach my $type (@$tags) {
-        ## Do not add generated files if they are "special".
-        ## They are a special case and are added in a different
-        ## location.
-        if (!$specialComponents{$type}) {
+        ## Do not add generated files if they are "special"
+        ## unless they haven't been explicitly supplied.
+        if (!$specialComponents{$type} ||
+            !$self->{'special_supplied'}->{$type}) {
           if (!$self->generated_source_listed(
                                 $gentype, $type, \@arr,
                                 $self->{'valid_components'}->{$gentype})) {

@@ -1,10 +1,19 @@
+Mon Oct 18 08:09:59 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Changed the defaulting behavior for Template_Files.  If a template
+          file resulted from generation, it used to always be added (like
+          source files).  Now, it will only be added if Template_Files is
+          not supplied (defaulted).
+
 Thu Oct  7 16:44:29 2004  Steve Huston  <shuston@riverace.com>
 
-	* modules/AutomakeWorkspaceCreator.pm: Changed the library relocator
-	  adjustment so it doesn't add the $top_builddir relativity to
-	  libraries being built in the same directory. This allows the
-	  automake/make dependencies to work correctly and have things
-	  built in the right order.
+        * modules/AutomakeWorkspaceCreator.pm: Changed the library relocator
+          adjustment so it doesn't add the $top_builddir relativity to
+          libraries being built in the same directory. This allows the
+          automake/make dependencies to work correctly and have things
+          built in the right order.
 
 Thu Oct  7 13:06:54 2004  Chad Elliott  <elliott_c@ociweb.com>
 
