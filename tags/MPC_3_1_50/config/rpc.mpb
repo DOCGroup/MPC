@@ -1,0 +1,14 @@
+// -*- MPC -*-
+// $Id$
+
+project {
+  requires += rpc
+  Define_Custom(rpcgen) {
+    command          = rpcgen
+    commandflags     = -C
+    pch_postrule     = 1
+    inputext         = .x
+    source_outputext = _svc.c, _clnt.c
+    header_outputext = .h
+  }
+}

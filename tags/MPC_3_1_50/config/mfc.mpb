@@ -1,0 +1,15 @@
+// -*- MPC -*-
+// $Id$
+
+project {
+  requires += mfc
+  macros   += _AFX_DLL
+  specific(em3, nmake, vc6) {
+    subsystem = windows
+    use_mfc   = 2
+  }
+  specific(vc7, vc71, vc8) {
+    subsystem = 2
+    use_mfc   = 2
+  }
+}
