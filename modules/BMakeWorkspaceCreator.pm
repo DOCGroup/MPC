@@ -89,9 +89,9 @@ sub write_project_targets {
   my($crlf)     = $self->crlf();
 
   foreach my $project (@$list) {
-    my($dir)    = $self->mpc_dirname($project);
-    my($chdir)  = 0;
-    my($back)   = '';
+    my($dir)   = $self->mpc_dirname($project);
+    my($chdir) = 0;
+    my($back)  = '';
 
     ## If the directory isn't '.' then we need
     ## to figure out how to get back to our starting point
@@ -106,8 +106,8 @@ sub write_project_targets {
       }
     }
 
-    print $fh ($chdir ? "\t\@cd $dir$crlf" : '') .
-              "\t\$(MAKE) -f " . basename($project) . " $target$crlf" .
+    print $fh ($chdir ? "\t\@cd $dir$crlf" : ''),
+              "\t\$(MAKE) -f ", basename($project), " $target$crlf",
               ($chdir ? "\t\@cd $back$crlf" : '');
   }
 }
@@ -129,12 +129,12 @@ sub write_comps {
             '!endif', $crlf;
 
   ## Construct the "all" target
-  my($all) = $crlf . 'all:';
+  my($all) = 'all:';
   foreach my $project (@list) {
     $all .= " $$pjs{$project}->[0]";
   }
   if (length($all) < $max_line_length) {
-    print $fh $all, $crlf;
+    print $fh $crlf, $all, $crlf;
   }
   else {
     unshift(@ltargets, 'all');
@@ -142,14 +142,13 @@ sub write_comps {
 
   ## Print out all other targets here
   foreach my $target (@ltargets) {
-    print $fh $crlf .
-              $target . ':' . $crlf;
+    print $fh $crlf, $target, ':', $crlf;
     $self->write_project_targets($fh, $target, \@list);
   }
 
   ## Print out each target separately
   foreach my $project (@list) {
-    print $fh $crlf . $$pjs{$project}->[0] . ':';
+    print $fh $crlf, $$pjs{$project}->[0], ':';
     if (defined $targnum{$project}) {
       foreach my $number (@{$targnum{$project}}) {
         print $fh " $$pjs{$list[$number]}->[0]";
@@ -161,7 +160,7 @@ sub write_comps {
   }
 
   ## Print out the project_name_list target
-  print $fh $crlf . "project_name_list:$crlf";
+  print $fh $crlf, 'project_name_list:', $crlf;
   foreach my $project (sort @list) {
     print $fh "\t\@echo $$pjs{$project}->[0]$crlf";
   }

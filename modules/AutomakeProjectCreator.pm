@@ -58,18 +58,6 @@ sub fill_value {
       $value = \@vec;
     }
   }
-  elsif ($name eq 'rev_avoids') {
-    my($avoids) =  $self->get_assignment('avoids');
-    if (defined $avoids) {
-      $value = join(' ', reverse split(' ', $avoids));
-    }
-  }
-  elsif ($name eq 'rev_requires') {
-    my($requires) =  $self->get_assignment('requires');
-    if (defined $requires) {
-      $value = join(' ', reverse split(' ', $requires));
-    }
-  }
   elsif ($name eq 'am_version') {
     $value = $self->get_assignment('version');
     if (defined $value) {
