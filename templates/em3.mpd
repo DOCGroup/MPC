@@ -286,7 +286,7 @@ SOURCE="<%custom_type->input_file%>"
 !<%fornotfirst("ELSE")%>IF  "$(CFG)" == "<%project_name%> - <%operating_system%> (<%platform%>) <%configuration%>"
 
 <%if(custom_type->dependent)%>
-USERDEP__<%basenoextension(custom_type->input_file)%>=<%custom_type->command%>.exe
+USERDEP__<%basenoextension(custom_type->input_file)%>=<%custom_type->dependent%>.exe
 <%endif%>
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Invoking <%custom_type->command%> on $(InputPath)

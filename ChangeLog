@@ -1,6 +1,24 @@
+Thu Nov 18 11:56:57 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+
+          Document the change to 'dependent'.  It now represents the command
+          upon which generated files are dependent.
+
+        * templates/em3vcp.mpd:
+        * templates/make.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          Changed to use the new form of 'dependent'.
+
+        * templates/makedll.mpt:
+
+          Added initial support for the NCC compiler.
+
 Fri Nov 12 18:17:20 2004  Steve Huston  <shuston@riverace.com>
 
-	* templates/automake.mpd: Added a 'bottom' marker.
+        * templates/automake.mpd: Added a 'bottom' marker.
 
 Thu Nov 11 10:17:43 2004  Chad Elliott  <elliott_c@ociweb.com>
 
@@ -211,6 +229,9 @@ Tue Oct  5 10:21:20 2004  Chad Elliott  <elliott_c@ociweb.com>
 Tue Oct  5 08:53:10 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/rpc.mpb:
+
+          Modified to use source_pre_extension instead of just
+          source_outputext.
 
         * modules/ProjectCreator.pm:
 

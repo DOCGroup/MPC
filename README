@@ -278,9 +278,9 @@ automatic           If set to 1, then attempt to automatically determine
                     adding files to Source_Files, Inline_Files, Header_Files
                     Template_Files, Resource_Files and Documentation_Files
                     depending on which extension types the command generates.
-dependent           If this value is set, then a dependency upon the command
-                    will be placed upon all of the generated files.  The
-                    default for this is unset and no dependency will be
+dependent           If this is given a value, then a dependency upon that
+                    value will be placed upon all of the generated files.
+                    The default for this is unset and no dependency will be
                     generated.
 command             The name of the command that should be used to process
                     the input files for the custom type.
