@@ -4,7 +4,7 @@
 // ***********************************************************************
 // The default configuration for the 'make' project type is gcc.  This
 // is controlled by the configurations template variable.  It may be
-// changed on the MPC command line via the -value_template option. 
+// changed on the MPC command line via the -value_template option.
 // Additionally, each compiler has a default platform.  The default
 // platform for gcc is linux.  This too can be changed via the
 // -value_template option.  Below are some examples.

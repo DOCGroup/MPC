@@ -1,3 +1,17 @@
+Fri May 28 14:03:13 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * LICENSE:
+
+          Added a license file with the content from the MPC section of
+          http://theaceorb.com/product/license.html.
+
+        * config/openssl.mpb:
+        * templates/automake.mpd:
+        * templates/bmake.mpd:
+        * templates/makedll.mpt:
+
+          Removed trailing whitespace.
+
 Fri May 28 13:06:01 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3vcplib.mpt:
