@@ -1,3 +1,38 @@
+Mon Dec 13 10:27:04 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Added a warning when an mpc file is processed, but no output
+          project file will be created.  If it is an implicit project, the
+          message is only informational.
+
+        * templates/automake.mpd:
+
+          Made the -stamp file go to the output directory of the generated
+          files.  Also rearranged the libs, lit_libs and pure_libs to be
+          consistent with other project types.
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Modifications to add a 'targetoutdir' template variable which
+          determines the output location of object files, exes and
+          libraries.  By default, this template variable is not set and does
+          not affect anything.  Also rearranged the libs, lit_libs and
+          pure_libs to be consistent with other project types.
+
+        * templates/bmake.mpd:
+        * templates/em3vcp.mpd:
+        * templates/nmake.mpd:
+        * templates/sle.mpd:
+        * templates/va4icc.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          Rearranged the libs, lit_libs and pure_libs to be consistent with
+          other project types.  The order in which they are added to the
+          project is now libs, lit_libs and then pure_libs.
+
 Mon Dec  6 09:39:01 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/bison.mpb:
