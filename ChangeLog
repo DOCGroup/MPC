@@ -1,3 +1,12 @@
+Wed Jan  5 11:24:36 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/nmake.mpd:
+
+          Fixed precompiled header problems where the pch source isn't in
+          the current directory.  Also, changed the location of the
+          intermediate files to use the project name instead of the project
+          file without the extension.
+
 Wed Jan  5 07:08:57 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeProjectCreator.pm:
