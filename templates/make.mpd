@@ -158,7 +158,7 @@ GENERATED_DIRTY    =<%foreach(custom_types)%><%foreach(custom_type->input_files)
 <%if(pch_header)%>
 <%if(custom_type->pch_postrule)%>
 <%foreach(custom_type->input_file->source_output_files)%>
-	@echo '#include "<%pch_header%>"' > temp.$$ && cat <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temp.$$ && mv temp.$$ <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
+	@echo '#include "<%pch_header%>"' > temp.$$$$ && cat <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temp.$$$$ && mv temp.$$$$ <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
 <%endfor%>
 <%endif%>
 <%endif%>

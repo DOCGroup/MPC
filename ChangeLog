@@ -1,3 +1,11 @@
+Thu Apr  8 09:51:28 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/make.mpd:
+
+          Corrected a problem with the pch_postrule commands.  I forgot that
+          $$ was interpreted by make, so what I really wanted was $$$$ to
+          get $$ passed out to the shell.
+
 Thu Apr  8 07:02:25 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * USAGE:
