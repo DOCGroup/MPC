@@ -1,3 +1,10 @@
+Fri Feb 25 08:13:09 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/bmake.mpd:
+
+          Reworked the realclean target to avoid the long command lines and
+          situations where "del" was invoked with no file name arguments.
+
 Thu Feb 24 06:44:30 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/automakedll.mpt:
