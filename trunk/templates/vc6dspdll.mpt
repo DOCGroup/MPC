@@ -2,6 +2,7 @@
 // $Id$
 
 conditional_include "common"
+conditional_include "vccommon"
 
 configurations  = Release Debug
 type_is_binary  = 1

@@ -28,6 +28,7 @@ CFG=<%project_name%> - <%platform("Win32")%> <%default_configuration("Debug")%>
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
+MTL=midl.exe
 RSC=rc.exe
 
 <%foreach(configurations)%>
@@ -56,6 +57,8 @@ LINK32=link.exe -lib
 <%if(compile_flags_removed)%>
 # SUBTRACT CPP <%compile_flags_removed%>
 <%endif%>
+<%if(midl_includes)%># ADD MTL <%foreach(midl_includes)%>/I "<%midl_include%>" <%endfor%><%endif%>
+# ADD MTL <%foreach(defines)%>/D "<%define%>" <%endfor%><%foreach(midl_defines)%>/D "<%midl_define%>" <%endfor%><%midl_flags%>
 # ADD RSC /l 0x409<%foreach(defines macros)%> /d <%define%><%endfor%><%foreach(includes)%> /i "<%include%>"<%endfor%>
 BSC32=bscmake.exe
 # ADD BSC32 /nologo <%if(sharedname || staticname)%>/o"<%libout%>\<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.bsc"<%endif%>
