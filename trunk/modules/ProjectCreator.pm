@@ -2993,21 +2993,26 @@ sub relative {
             ## back-slashes, we also have a case-insensitive file system.
             my($icwd) = ($self->{'convert_slashes'} ? lc($cwd) : $cwd);
             my($ival) = ($self->{'convert_slashes'} ? lc($val) : $val);
+            my($iclen) = length($icwd);
+            my($ivlen) = length($ival);
 
             ## If the relative value contains the current working
             ## directory plus additional subdirectories, we must pull
             ## off the additional directories into a temporary where
             ## it can be put back after the relative replacement is done.
             my($append) = undef;
-            if (index($ival, $icwd) == 0) {
-              my($iclen) = length($icwd);
+            if (index($ival, $icwd) == 0 && $iclen != $ivlen &&
+                substr($ival, $iclen, 1) eq '/') {
+              my($diff) = $ivlen - $iclen;
               $append = substr($ival, $iclen);
-              substr($ival, $iclen, length($append)) = '';
+              substr($ival, $iclen, $diff) = '';
+              $ivlen -= $diff;
             }
 
-            if (index($icwd, $ival) == 0) {
+            if (index($icwd, $ival) == 0 &&
+                ($iclen == $ivlen || substr($icwd, $ivlen, 1) eq '/')) {
               my($current) = $icwd;
-              substr($current, 0, length($ival)) = '';
+              substr($current, 0, $ivlen) = '';
 
               my($dircount) = ($current =~ tr/\///);
               if ($dircount == 0) {
