@@ -102,24 +102,10 @@ noinst_HEADERS += \
 <%endfor%>
 <%endif%>
 <%else%>
-<%if(template_files)%>
-TEMPLATE_FILES += \
-<%foreach(template_files)%>
-  <%template_file%><%fornotlast(" \\")%>
-<%endfor%>
-
-<%endif%>
-<%if(header_files)%>
-HEADER_FILES += \
-<%foreach(header_files)%>
+<%if(header_files || inline_files || template_files)%>
+nobase_pkginclude_HEADERS += \
+<%foreach(header_files inline_files template_files)%>
   <%header_file%><%fornotlast(" \\")%>
-<%endfor%>
-
-<%endif%>
-<%if(inline_files)%>
-INLINE_FILES += \
-<%foreach(inline_files)%>
-  <%inline_file%><%fornotlast(" \\")%>
 <%endfor%>
 
 <%endif%>
