@@ -828,7 +828,7 @@ sub parse_components {
         ## Convert any $(...) in this line before we process any
         ## wildcard characters.  If we do not, scoped assignments will
         ## not work nor will we get the correct wildcarded file list.
-        $line = $self->relative($line);
+        $line = $self->relative($line, 0, 1);
 
         ## Set up the files array.  If the line contains a wildcard
         ## character use CORE::glob() to get the files specified.
@@ -1155,7 +1155,7 @@ sub parse_define_custom {
                 $self->{'generated_exts'}->{$tag} = {};
               }
               ## First try to convert the value into a relative path
-              $value = $self->relative($value);
+              $value = $self->relative($value, 0, 1);
 
               ## If that didn't work, try to convert it to the
               ## right environment variable form.
@@ -3032,12 +3032,13 @@ sub relative {
   my($self)            = shift;
   my($value)           = shift;
   my($expand_template) = shift;
+  my($expand_env)      = shift;
 
   if (defined $value) {
     if (UNIVERSAL::isa($value, 'ARRAY')) {
       my(@built) = ();
       foreach my $val (@$value) {
-        push(@built, $self->relative($val));
+        push(@built, $self->relative($val, $expand_template, $expand_env));
       }
       $value = \@built;
     }
@@ -3103,7 +3104,7 @@ sub relative {
               $whole = $ival;
             }
             else {
-              if ($self->convert_macros_to_env()) {
+              if ($expand_env && $self->convert_macros_to_env()) {
                 my($envstart, $envend) = $self->get_env_accessor();
                 if (defined $envstart) {
                   if (!defined $envend) {

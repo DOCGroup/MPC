@@ -1,3 +1,18 @@
+Tue Jun 15 07:02:12 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+        * modules/Options.pm:
+
+          Updated the usage information to provide more details on using the
+          -base option.
+
+        * modules/ProjectCreator.pm:
+
+          We need to ensure that macros only get expanded to environment
+          variables when converting source file, header file, etc. related
+          macros.  Thanks to Phil Mesnier <mesnier_p@ociweb.com> for
+          reporting this.
+
 Thu Jun 10 08:33:08 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Driver.pm:
