@@ -1,3 +1,11 @@
+Wed Sep 22 16:27:39 2004  Steve Huston  <shuston@riverace.com>
+
+	* modules/AutomakeWorkspaceCreator.pm: When combining the project
+	  Makefile.<project>.am files, detect usage of automake conditionals
+	  bracketing automake targets and emit blank assignments for those
+	  (i.e. bin_PROGRAMS, lib_LTLIBRARIES, etc.) to have things work
+	  correctly regardless of the condition test at build time.
+
 Mon Sep 20 11:15:13 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
