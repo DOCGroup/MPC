@@ -1,0 +1,204 @@
+package Parser;
+
+# ************************************************************
+# Description   : A basic parser that requires a parse_line override
+# Author        : Chad Elliott
+# Create Date   : 5/16/2002
+# ************************************************************
+
+# ************************************************************
+# Pragmas
+# ************************************************************
+
+use strict;
+use FileHandle;
+
+use OutputMessage;
+use StringProcessor;
+use DirectoryManager;
+
+use vars qw(@ISA);
+@ISA = qw(OutputMessage StringProcessor DirectoryManager);
+
+# ************************************************************
+# Subroutine Section
+# ************************************************************
+
+sub new {
+  my($class) = shift;
+  my($inc)   = shift;
+  my($info)  = (defined $ENV{MPC_SILENT} ||
+                !defined $ENV{MPC_INFORMATION} ? 0 : 1);
+  my($warn)  = (defined $ENV{MPC_SILENT} ? 0 : 1);
+  my($diag)  = (defined $ENV{MPC_SILENT} ? 0 : 1);
+  my($self)  = $class->SUPER::new($info, $warn, $diag);
+
+  $self->{'line_number'} = 0;
+  $self->{'include'}     = $inc;
+
+  return $self;
+}
+
+
+sub strip_line {
+  my($self) = shift;
+  my($line) = shift;
+
+  ++$self->{'line_number'};
+  $line =~ s/\/\/.*//;
+  $line =~ s/^\s+//;
+  $line =~ s/\s+$//;
+
+  return $line;
+}
+
+
+sub preprocess_line {
+  #my($self) = shift;
+  #my($fh)   = shift;
+  #my($line) = shift;
+  return $_[0]->strip_line($_[2]);
+}
+
+
+sub read_file {
+  my($self)        = shift;
+  my($input)       = shift;
+  my($cache)       = shift;
+  my($ih)          = new FileHandle();
+  my($status)      = 1;
+  my($errorString) = undef;
+
+  $self->{'line_number'} = 0;
+  if (open($ih, $input)) {
+    if ($cache) {
+      while(<$ih>) {
+        my($line) = $self->preprocess_line($ih, $_);
+        $self->cache_line($input, $line);
+        ($status, $errorString) = $self->parse_line($ih, $line);
+
+        if (!$status) {
+          last;
+        }
+      }
+    }
+    else {
+      while(<$ih>) {
+        ($status, $errorString) = $self->parse_line(
+                                    $ih, $self->preprocess_line($ih, $_));
+
+        if (!$status) {
+          last;
+        }
+      }
+    }
+    close($ih);
+  }
+  else {
+    $errorString = "Unable to open \"$input\" for reading";
+    $status = 0;
+  }
+
+  return $status, $errorString;
+}
+
+
+sub cached_file_read {
+  my($self)  = shift;
+  my($input) = shift;
+  my($lines) = $self->get_cache($input);
+
+  if (defined $lines) {
+    my($status) = 1;
+    my($error)  = undef;
+    $self->{'line_number'} = 0;
+    foreach my $line (@$lines) {
+      ++$self->{'line_number'};
+      ($status, $error) = $self->parse_line(undef, $line);
+
+      if (!$status) {
+        last;
+      }
+    }
+    return $status, $error;
+  }
+
+  return $self->read_file($input, 1);
+}
+
+
+sub get_line_number {
+  my($self) = shift;
+  return $self->{'line_number'};
+}
+
+
+sub set_line_number {
+  my($self)   = shift;
+  my($number) = shift;
+  $self->{'line_number'} = $number;
+}
+
+
+sub slash_to_backslash {
+  my($self) = shift;
+  my($file) = shift;
+  $file =~ s/\//\\/g;
+  return $file;
+}
+
+
+sub get_include_path {
+  my($self) = shift;
+  return $self->{'include'};
+}
+
+
+sub search_include_path {
+  my($self)  = shift;
+  my($file)  = shift;
+
+  foreach my $include ('.', @{$self->{'include'}}) {
+    if (-r "$include/$file") {
+      return "$include/$file";
+    }
+  }
+
+  return undef;
+}
+
+
+sub escape_regex_special {
+  my($self) = shift;
+  my($name) = shift;
+
+  $name =~ s/([\+\-\\\$\[\]\(\)\.])/\\$1/g;
+  return $name;
+}
+
+
+# ************************************************************
+# Virtual Methods To Be Overridden
+# ************************************************************
+
+sub parse_line {
+  #my($self) = shift;
+  #my($ih)   = shift;
+  #my($line) = shift;
+}
+
+
+sub get_cache {
+  #my($self) = shift;
+  #my($key)  = shift;
+}
+
+
+sub cache_line {
+  #my($self) = shift;
+  #my($key)  = shift;
+  #my($line) = shift;
+}
+
+
+1;

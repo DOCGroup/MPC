@@ -1,0 +1,10 @@
+// -*- MPC -*-
+// $Id$
+
+conditional_include "common"
+
+optimize       = 1
+syslibdirs     =
+deflibdirs     =
+libprefix      = lib
+libdecorator   =
