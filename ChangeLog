@@ -1,45 +1,67 @@
+Thu Mar 17 08:03:31 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/openssl.mpb:
+
+          Added support for Shining Light Productions prepackaged OpenSSL.
+
+        * modules/AutomakeProjectCreator.pm:
+        * modules/ProjectCreator.pm:
+
+          Made it so the automake project type does not perform relative
+          replacement.  So, -noreldefs is not necessary for that type
+          anymore.
+
+        * modules/Creator.pm:
+        * modules/Parser.pm:
+        * modules/TemplateParser.pm:
+
+          Speed improvements which improve generation times by ~15%.
+          Also, in the template parser, I fixed a bug that allowed an if
+          statement to have multiple else's and removed two deprecated
+          sections of code.
+
 Wed Mar 16 22:04:35 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeWorkspaceCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
 
-	  Only emit empty primary definition if the first instance seen in
-	  the project Makefile.am's is not unconditional.
+          Only emit empty primary definition if the first instance seen in
+          the project Makefile.am's is not unconditional.
 
 Wed Mar 16 14:44:51 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeWorkspaceCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
 
-	  Fix stray assignment that was marking all primaries as
-	  "seen".
+          Fix stray assignment that was marking all primaries as
+          "seen".
 
 Wed Mar 16 13:59:13 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeWorkspaceCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
 
-	  Only emit empty primary definition if it is found in more
-	  than one conditional or if it is found in both conditional
-	  and unconditional contexts.
+          Only emit empty primary definition if it is found in more
+          than one conditional or if it is found in both conditional
+          and unconditional contexts.
 
-	  Fixes unexpected consequences of earlier change to use +=
-	  instead of = for _MANS, _SCRIPTS, and _HEADERS.
+          Fixes unexpected consequences of earlier change to use +=
+          instead of = for _MANS, _SCRIPTS, and _HEADERS.
 
 Wed Mar 16 12:53:13 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Don't add libraries to _LIBADD for convenience libraries.
+          Don't add libraries to _LIBADD for convenience libraries.
 
 Wed Mar 16 12:31:52 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Don't add -version-number to LDFLAGS for convenience libraries.
+          Don't add -version-number to LDFLAGS for convenience libraries.
 
 Wed Mar 16 10:42:45 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Use += instead of = for _MANS, _SCRIPTS, and _HEADERS.
+          Use += instead of = for _MANS, _SCRIPTS, and _HEADERS.
 
 Fri Mar 11 07:56:49 2005  Chad Elliott  <elliott_c@ociweb.com>
 

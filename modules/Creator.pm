@@ -198,28 +198,27 @@ sub parse_assignment {
   my($self)   = shift;
   my($line)   = shift;
   my($values) = shift;
-  my($status) = 1;
 
   if ($line =~ /^(\w+)\s*\+=\s*(.*)?/) {
     my($name)  = lc($1);
     my($value) = $2;
     push(@$values, 'assign_add', $name, $value);
+    return 1;
   }
   elsif ($line =~ /^(\w+)\s*=\s*(.*)?/) {
     my($name)  = lc($1);
     my($value) = $2;
     push(@$values, 'assignment', $name, $value);
+    return 1;
   }
   elsif ($line =~ /^(\w+)\s*\-=\s*(.*)?/) {
     my($name)  = lc($1);
     my($value) = $2;
     push(@$values, 'assign_sub', $name, $value);
-  }
-  else {
-    $status = 0;
+    return 1;
   }
 
-  return $status;
+  return 0;
 }
 
 

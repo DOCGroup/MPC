@@ -6,10 +6,11 @@
 // default. If we ever add a new ssl library, then you
 // would likely enable only one ssl library feature.
 feature(openssl) {
+  includes += $(SSL_ROOT)/include
+  libpaths += $(SSL_ROOT)/lib
+
   specific(gnuace, make, sle, automake, ghs) {
     lit_libs += ssl crypto
-    includes += $(SSL_ROOT)/include
-    libpaths += $(SSL_ROOT)/lib
 
     // Some Linux OpenSSL installations compile in Kerberos support.  Add
     // the Kerberos include path to preprocessor include path.
@@ -18,5 +19,14 @@ feature(openssl) {
     lit_libs += libeay32 ssleay32
     includes += $(SSL_ROOT)/inc32
     libpaths += $(SSL_ROOT)/out32dll $(SSL_ROOT)/out32
+  }
+
+  // Some prepackaged installations of OpenSSL have libraries in different
+  // locations.
+  specific(bmake) {
+    libpaths += $(SSL_ROOT)/lib/Builder5
+  }
+  specific(vc6, vc7, vc71, vc8) {
+    libpaths += $(SSL_ROOT)/lib/VC
   }
 }
