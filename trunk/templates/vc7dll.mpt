@@ -7,6 +7,7 @@ configurations     = Release Debug
 common_defines     = WIN32 _WINDOWS
 type_is_dynamic    = 1
 type_is_binary     = 1
+use_lib_modifier   = 1
 
 Release {
   optimize         = 3

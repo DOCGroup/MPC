@@ -11,7 +11,7 @@ default_configuration = Debug
 type_is_binary        = 1
 common_defines        = WIN32 _CONSOLE
 subsystem             = console
-use_modifier          =
+use_exe_modifier      =
 
 Win32 {
   machine_description = x86
