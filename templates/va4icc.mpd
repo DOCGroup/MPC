@@ -94,14 +94,14 @@ option
                        source type (lib) "ws2_32.lib"
                        source type (lib) "wsock32.lib"
                        source type (lib) "mswsock.lib"
-<%foreach(pure_libs)%>
-                       source type (lib) "<%pure_lib%>"
+<%foreach(libs)%>
+                       source type (lib) "<%lib%><%lib_modifier%>.lib"
 <%endfor%>
 <%foreach(lit_libs)%>
                        source type (lib) "<%lit_lib%>.lib"
 <%endfor%>
-<%foreach(libs default_libs)%>
-                       source type (lib) "<%lib%><%lib_modifier%>.lib"
+<%foreach(pure_libs)%>
+                       source type (lib) "<%pure_lib%>"
 <%endfor%>
                }
             }
@@ -125,11 +125,11 @@ option
 <%endif%>
 
                        // Libraries needed during linking
-<%foreach(pure_libs)%>
-                       source type (lib) "<%pure_lib%>"
-<%endfor%>
 <%foreach(libs lit_libs)%>
                        source type (lib) "lib<%lib%>.a"
+<%endfor%>
+<%foreach(pure_libs)%>
+                       source type (lib) "<%pure_lib%>"
 <%endfor%>
 
 <%if(type_is_dynamic)%>
