@@ -383,9 +383,15 @@ sub parse_exclude {
 
       if ($line eq '') {
       }
-      elsif ($line =~ /^}/) {
-        $status = 1;
-        $errorString = undef;
+      elsif ($line =~ /^}(.*)$/) {
+        if (defined $1 && $1 ne '') {
+          $status = 0;
+          $errorString = "Trailing characters found: '$1'";
+        }
+        else {
+          $status = 1;
+          $errorString = undef;
+        }
         last;
       }
       else {
