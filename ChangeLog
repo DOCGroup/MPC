@@ -1,3 +1,11 @@
+Tue Nov  9 12:19:43 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where generated files that are defaulted may become
+          "invisible" because of automatic grouping of other non-generated
+          files of the same type (inline, header, etc.).
+
 Fri Nov  5 13:42:11 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/bmake.mpd:
