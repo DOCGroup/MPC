@@ -537,9 +537,10 @@ sub extension_recursive_input_list {
 
 sub modify_assignment_value {
   my($self)  = shift;
+  my($name)  = shift;
   my($value) = shift;
 
-  if ($self->{'convert_slashes'}) {
+  if ($self->{'convert_slashes'} && $name !~ /flags/) {
     $value = $self->slash_to_backslash($value);
   }
   return $value;
@@ -589,7 +590,7 @@ sub process_assignment {
     $value =~ s/\s+$//;
 
     ## Modify the assignment value before saving it
-    $$assign{$name} = $self->modify_assignment_value($value);
+    $$assign{$name} = $self->modify_assignment_value($name, $value);
   }
   else {
     $$assign{$name} = undef;
