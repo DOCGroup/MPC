@@ -15,5 +15,9 @@ project {
     macros   += XML_USE_PTHREADS
     xerceslib = xerces-c
   }
-  libs += $(XERCESLIB)
+
+  // We have to use lit_libs here as the library decorator
+  // does not necessarily match what MPC uses (particularly for
+  // static builds).
+  lit_libs += $(XERCESLIB)
 }
