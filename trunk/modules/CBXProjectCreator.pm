@@ -13,13 +13,20 @@ package CBXProjectCreator;
 use strict;
 
 use ProjectCreator;
+use WinProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(ProjectCreator);
+@ISA = qw(WinProjectBase ProjectCreator);
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
+
+sub crlf {
+  #my($self) = shift;
+  return "\n";
+}
+
 
 sub project_file_extension {
   #my($self) = shift;
