@@ -3,6 +3,7 @@
 
 feature(zzip) {
   includes += $(ZZIP_ROOT)/include
+  macros   += USE_ZZIP
   libpaths += $(ZZIP_ROOT)/lib
   lit_libs += zzlib
 }

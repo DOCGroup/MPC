@@ -6,7 +6,7 @@ project {
     commandflags     = -t
     output_option    = >
     pch_postrule     = 1
-    inputext         = .l
+    inputext         = .ll, .l
     source_outputext = .c
   }
 }
