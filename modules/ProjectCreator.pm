@@ -2229,7 +2229,9 @@ sub add_corresponding_component_files {
       my($array) = [];
       my($comp)  = $filecomp{$sfile};
       foreach my $name (keys %$names) {
-        $array = $$names{$name}->{$comp};
+        if (defined $$names{$name}->{$comp}) {
+          $array = $$names{$name}->{$comp};
+        }
       }
 
       ## First check to see if the file exists
