@@ -1250,31 +1250,49 @@ sub sort_within_group {
   my($deps)    = undef;
   my($ccount)  = 0;
   my($cmax)    = ($end - $start) + 1;
-
-  ## If we go more than twice the number of elements in this group
-  ## factorial, then there is a circular dependency.
-  my($f) = $cmax - 1;
-  while($f > 1) {
-    $cmax *= $f--;
-  }
-  $cmax = ($cmax * 2) + 1;
+  my($previ)   = -1;
+  my($prevpjs) = [];
+  my($movepjs) = [];
 
   ## Put the projects in the order specified
   ## by the project dpendencies.
   for(my $i = $start; $i <= $end; ++$i) {
+    ## If our moved project equals our previously moved project then
+    ## we count this as a possible circular dependency.
+    if (defined $$movepjs[0] && defined $$prevpjs[0] &&
+        $$movepjs[0] == $$prevpjs[0] && $$movepjs[1] == $$prevpjs[1]) {
+      ++$ccount;
+    }
+    else {
+      $ccount = 0;
+    }
+
     ## Detect circular dependencies
     if ($ccount > $cmax) {
-      my($cprojs) = '';
-      for(my $j = $i; $j <= $end; ++$j) {
-        $cprojs .= ($j != $i ? ', ' : '') . $$list[$j];
+      my(@prjs) = ();
+      foreach my $mvgr (@$movepjs) {
+        push(@prjs, $$list[$mvgr]);
+      }
+      my($other) = $$movepjs[0] - 1;
+      if ($other < $start || $other == $$movepjs[1] || !defined $$list[$other]) {
+        $other = undef;
       }
       $self->warning('Circular dependency detected while processing the ' .
                      ($self->{'current_input'} eq '' ?
                        'default' : $self->{'current_input'}) .
                      ' workspace. ' .
-                     "The following projects are involved: $cprojs");
+                     'The following projects are involved: ' .
+                     (defined $other ? "$$list[$other], " : '') .
+                     join(' and ', @prjs));
       return;
     }
+
+    ## Keep track of the previous project movement
+    $prevpjs = $movepjs;
+    if ($previ < $i) {
+      $movepjs = [];
+    }
+    $previ = $i;
 
     $deps = $self->get_validated_ordering($$list[$i]);
     if ($deps ne '') {
@@ -1287,6 +1305,7 @@ sub sort_within_group {
           ## See if the dependency is listed after this project
           for(my $j = $i + 1; $j <= $end; ++$j) {
             if (basename($$list[$j]) eq $dep) {
+              $movepjs = [$i, $j];
               ## If so, move it in front of the current project.
               ## The original code, which had splices, didn't always
               ## work correctly (especially on AIX for some reason).
@@ -1307,7 +1326,6 @@ sub sort_within_group {
         $i--;
       }
     }
-    ++$ccount;
   }
 }
 
