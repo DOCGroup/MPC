@@ -1,3 +1,19 @@
+Tue May 11 10:53:11 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+        * modules/Driver.pm:
+        * modules/Options.pm:
+
+          Added a -version option to print the MPC version and exit.
+
+        * modules/ProjectCreator.pm:
+
+          Added libraries and executables to the install script generation.
+
+        * prj_install.pl:
+
+          Added support for installation of libraries and executables.
+
 Fri May  7 07:41:55 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/bmakelib.mpt:

@@ -2740,6 +2740,29 @@ sub write_install_file {
         }
       }
     }
+    if ($self->exe_target()) {
+      my($install) = $self->get_assignment('install');
+      print $fh "exe_output:\n",
+                (defined $install ? $self->relative($install) : ''),
+                ' ', $self->get_assignment('exename'), "\n";
+    }
+    elsif ($self->lib_target()) {
+      my($shared) = $self->get_assignment('sharedname');
+      my($static) = $self->get_assignment('staticname');
+      my($dllout) = $self->relative($self->get_assignment('dllout'));
+      my($libout) = $self->relative($self->get_assignment('libout'));
+
+      print $fh "lib_output:\n";
+
+      if (defined $shared && $shared ne '') {
+        print $fh (defined $dllout ? $dllout : $libout), " $shared\n";
+      }
+      if ((defined $static && $static ne '') &&
+          (defined $dllout || !defined $shared ||
+               (defined $shared && $shared ne $static))) {
+        print $fh "$libout $static\n";
+      }
+    }
 
     close($fh);
     return 1, undef;

@@ -30,7 +30,7 @@ sub completion_command {
                "'c/-/(genins global include type template relative " .
                "ti static noreldefs notoplevel feature_file " .
                "value_template value_project make_coexistence " .
-               "hierarchy exclude name_modifier apply_project)/' " .
+               "hierarchy exclude name_modifier apply_project version)/' " .
                "'c/dll:/f/' 'c/dll_exe:/f/' 'c/lib_exe:/f/' 'c/lib:/f/' " .
                "'n/-ti/(dll lib dll_exe lib_exe)/:' 'n/-type/(";
 
@@ -281,6 +281,10 @@ sub options {
           $self->optionError('Invalid option to -value_project');
         }
       }
+    }
+    elsif ($arg eq '-version') {
+      print 'MPC v', Version::get(), "\n";
+      return undef;
     }
     elsif ($arg eq '-static') {
       $static  = 1;
