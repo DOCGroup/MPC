@@ -17,7 +17,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]
               [-feature_file <file name>] [-make_coexistence]
               [-exclude <directories>] [-name_modifier <pattern>]
-              [-apply_project] [-version]
+              [-apply_project] [-version] [-into <directory>]
               [-type <automake | bmake | cbx | em3 | ghs | html |
                       make | nmake | sle | va4 | vc6 | vc7 |
                       vc71 | vc8>]
@@ -37,17 +37,8 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
        -include        Specifies a directory to search when looking for base
                        projects, template input files and templates.  This
                        option can be used multiple times to add directories.
-       -ti             Specifies the template input file (with no extension)
-                       for the specific type as shown above
-                       (ex. -ti dll_exe:vc8exe)
-       -template       Specifies the template name (with no extension).
-       -static         Specifies that only static projects will be generated.
-                       By default, only dynamic projects will be generated.
-       -recurse        Recurse from the current directory and generate from
-                       all found input files.
-       -relative       Any $() variable in an mpc that is matched to NAME
-                       is replaced by VAR only if VAR can be made into a
-                       relative path based on the current working directory.
+       -into           Place all output files in a mirrored directory
+                       structure starting at <directory>.
        -make_coexistence If multiple 'make' based project types are
                        generated, they will be named such that they can coexist.
        -name_modifier  Modify output names.  The pattern passed to this
@@ -58,19 +49,30 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
        -noreldefs      Do not try to generate default relative definitions.
        -notoplevel     Do not generate the top level target file.  Files
                        are still process, but no top level file is created.
-       -value_template This option allows modification of a template input
-                       name value pair.  Use += to add VAL to the NAME's
-                       value.  Use -= to subtract and = to override the value.
+       -recurse        Recurse from the current directory and generate from
+                       all found input files.
+       -relative       Any $() variable in an mpc that is matched to NAME
+                       is replaced by VAR only if VAR can be made into a
+                       relative path based on the current working directory.
+       -static         Specifies that only static projects will be generated.
+                       By default, only dynamic projects will be generated.
+       -ti             Specifies the template input file (with no extension)
+                       for the specific type as shown above
+                       (ex. -ti dll_exe:vc8exe)
+       -template       Specifies the template name (with no extension).
+       -type           Specifies the type of project file to generate.  This
+                       option can be used multiple times to generate multiple
+                       types.  If -type is not used, it defaults to 'make'.
        -value_project  This option allows modification of a project variable
                        assignment .  Use += to add VAL to the NAME's value.
                        Use -= to subtract and = to override the value.
                        This can be used to introduce new name value pairs to
                        a project.  However, it must be a valid project
                        assignment.
+       -value_template This option allows modification of a template input
+                       name value pair.  Use += to add VAL to the NAME's
+                       value.  Use -= to subtract and = to override the value.
        -version        Print the MPC version and exit.
-       -type           Specifies the type of project file to generate.  This
-                       option can be used multiple times to generate multiple
-                       types.  If -type is not used, it defaults to 'make'.
 
 The default global input file (config/global.mpb) is used if -global
 is not specified on the command line.

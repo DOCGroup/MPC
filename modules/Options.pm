@@ -65,6 +65,7 @@ sub options {
   my($template)   = undef;
   my($feature_f)  = undef;
   my($nmodifier)  = undef;
+  my($into)       = undef;
   my($hierarchy)  = 0;
   my($dynamic)    = ($defaults ? 1 : undef);
   my($reldefs)    = ($defaults ? 1 : undef);
@@ -157,6 +158,13 @@ sub options {
       }
       else {
         push(@include, $include);
+      }
+    }
+    elsif ($arg eq '-into') {
+      $i++;
+      $into = $args[$i];
+      if (!defined $into) {
+        $self->optionError('-into requires a directory argument');
       }
     }
     elsif ($arg eq '-make_coexistence') {
@@ -325,6 +333,7 @@ sub options {
                   'name_modifier' => $nmodifier,
                   'apply_project' => $applypj,
                   'genins'        => $genins,
+                  'into'          => $into,
                  );
 
   return \%options;

@@ -50,8 +50,7 @@ sub write_comps {
   my($self) = shift;
   my($fh)   = shift;
   my($crlf) = $self->crlf();
-  my(@list) = $self->sort_dependencies($self->get_projects(),
-                                       $self->get_project_info());
+  my(@list) = $self->sort_dependencies($self->get_projects());
 
   print $fh "\t<Projects>$crlf";
   foreach my $project (@list) {
@@ -61,7 +60,7 @@ sub write_comps {
 }
 
 
-sub post_workspace {    
+sub post_workspace {
   my($self) = shift;
   my($fh)   = shift;
   print $fh '</Workspace>' . $self->crlf();

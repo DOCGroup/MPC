@@ -70,11 +70,13 @@ sub new {
   my($nmod)      = shift;
   my($applypj)   = shift;
   my($genins)    = shift;
+  my($into)      = shift;
   my($self)      = Creator::new($class, $global, $inc,
                                 $template, $ti, $dynamic, $static,
                                 $relative, $addtemp, $addproj,
                                 $progress, $toplevel, $baseprojs,
                                 $feature, $hierarchy, $nmod, $applypj,
+                                $into,
                                 'workspace');
 
   $self->{'workspace_name'}      = undef;
@@ -676,7 +678,18 @@ sub write_workspace {
       $self->{'per_project_workspace_name'} = 1;
     }
 
-    my($name) = $self->transform_file_name($self->workspace_file_name());
+    my($name)   = $self->transform_file_name($self->workspace_file_name());
+    my($into)   = $self->get_into();
+    my($outdir) = '.';
+    my($oname)  = $name;
+
+    if (defined $into) {
+      $outdir = $self->getcwd();
+      my($re) = $self->escape_regex_special($self->getstartdir());
+      $outdir =~ s/^$re//;
+      $outdir = $into . $outdir;
+      $name = "$outdir/$name";
+    }
 
     my($abort_creation) = 0;
     if ($duplicates > 0) {
@@ -708,7 +721,7 @@ sub write_workspace {
       if ($addfile || !$self->file_written($name)) {
         if ($self->compare_output()) {
           ## First write the output to a temporary file
-          my($tmp) = "MWC$>.$$";
+          my($tmp) = "$outdir/MWC$>.$$";
           my($different) = 1;
           if (open($fh, ">$tmp")) {
             $self->pre_workspace($fh);
@@ -731,7 +744,7 @@ sub write_workspace {
               unlink($name);
               if (rename($tmp, $name)) {
                 if ($addfile) {
-                  $self->add_file_written($name);
+                  $self->add_file_written($oname);
                 }
               }
               else {
@@ -744,7 +757,7 @@ sub write_workspace {
               ## We will pretend that we wrote the file
               unlink($tmp);
               if ($addfile) {
-                $self->add_file_written($name);
+                $self->add_file_written($oname);
               }
             }
           }
@@ -757,7 +770,7 @@ sub write_workspace {
             close($fh);
 
             if ($addfile) {
-              $self->add_file_written($name);
+              $self->add_file_written($oname);
             }
           }
           else {
@@ -1225,7 +1238,6 @@ sub get_first_level_directory {
 sub sort_within_group {
   my($self)    = shift;
   my($list)    = shift;
-  my($pjs)     = shift;
   my($start)   = shift;
   my($end)     = shift;
   my($deps)    = undef;
@@ -1375,7 +1387,6 @@ sub sort_by_groups {
 sub sort_dependencies {
   my($self)     = shift;
   my($projects) = shift;
-  my($pjs)      = shift;
   my(@list)     = sort @$projects;
 
   ## Put the projects in the order specified
@@ -1400,7 +1411,7 @@ sub sort_dependencies {
     ## Next, sort the individual groups
     foreach my $gr (@grindex) {
       if ($$gr[0] != $$gr[1]) {
-        $self->sort_within_group(\@list, $pjs, @$gr);
+        $self->sort_within_group(\@list, @$gr);
       }
     }
 
@@ -1419,7 +1430,7 @@ sub number_target_deps {
   my($projects) = shift;
   my($pjs)      = shift;
   my($targets)  = shift;
-  my(@list)     = $self->sort_dependencies($projects, $pjs);
+  my(@list)     = $self->sort_dependencies($projects);
 
   ## This block of code must be done after the list of dependencies
   ## has been sorted in order to get the correct project numbers.
@@ -1525,6 +1536,9 @@ sub process_cmdline {
       if (defined $options->{'genins'}) {
         $self->optionError('-genins is ignored');
       }
+      if (defined $options->{'into'}) {
+        $self->optionError('-into is ignored');
+      }
       if (defined $options->{'input'}->[0]) {
         $self->optionError('Command line files ' .
                            'specified in a workspace are ignored');
@@ -1594,7 +1608,8 @@ sub project_creator {
                    $self->make_coexistence(),
                    $parameters{'name_modifier'},
                    $parameters{'apply_project'},
-                   $self->{'generate_ins'});
+                   $self->{'generate_ins'},
+                   $parameters{'into'});
 }
 
 
