@@ -223,7 +223,7 @@ sub write_comps {
             if ($in_condition) {
               $conditional_targets{$1}++;
             } else {
-              $unconditional_targets{$1}++
+              $unconditional_targets{$1}++;
             }
 
             if (/^pkgconfig_DATA/) {
