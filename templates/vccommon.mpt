@@ -2,5 +2,5 @@
 // $Id$
 
 midl_defines =
-midl_flags = /nologo /mktyplib203 /win32
+midl_flags = /nologo /win32
 midl_includes =
