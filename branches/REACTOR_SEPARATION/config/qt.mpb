@@ -2,6 +2,7 @@
 // $Id$
 
 project {
+  requires += qt
   includes += $(QTDIR)/include
   libpaths += $(QTDIR)/lib
   macros   += QT_THREAD_SUPPORT
