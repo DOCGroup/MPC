@@ -53,7 +53,7 @@ NAME         = <%staticname%>$(LIBMODIFIER)
 <%endif%>
 <%endif%>
 CPPDIR       = <%cppdir%>
-UNICODE_CFLAGS = -DACE_USES_WCHAR -WU
+UNICODE_CFLAGS = <%unicode_flags%>
 
 <%if(exename || sharedname || staticname)%>
 
@@ -90,7 +90,6 @@ RESOURCE = \
 <%endif%>
 
 CFLAGS = \
-          -DACE_LD_DECORATOR_STR=ACE_LIB_TEXT(\"$(LIBMODIFIER)\") \
 <%if(pch_header)%>
 <%foreach(pch_defines)%>
 # Borland precompiled headers choke on some header files.
@@ -254,7 +253,7 @@ realclean: clean
 <%endif%>
         if exist "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" del $(OUTPUTDIR)$(NAME)$(POSTLINKRM)
 <%if(sharedname)%>
-                if exist "$(OUTPUTDIR)$(NAME)$(DLL_EXT)" del $(OUTPUTDIR)$(NAME)$(DLL_EXT)
+        if exist "$(OUTPUTDIR)$(NAME)$(DLL_EXT)" del $(OUTPUTDIR)$(NAME)$(DLL_EXT)
 <%endif%>
 
 <%marker(bottom)%>
