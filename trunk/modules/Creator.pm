@@ -26,8 +26,8 @@ use vars qw(@ISA);
 my(@statekeys) = ('global', 'include', 'template', 'ti',
                   'dynamic', 'static', 'relative', 'addtemp',
                   'addproj', 'progress', 'toplevel', 'baseprojs',
-                  'feature_file', 'hierarchy', 'name_modifier',
-                  'apply_project', 'into', 'expand_env',
+                  'feature_file', 'features', 'hierarchy',
+                  'name_modifier', 'apply_project', 'into', 'expand_env',
                  );
 
 my(%all_written) = ();
@@ -51,6 +51,7 @@ sub new {
   my($toplevel)   = shift;
   my($baseprojs)  = shift;
   my($feature)    = shift;
+  my($features)   = shift;
   my($hierarchy)  = shift;
   my($nmodifier)  = shift;
   my($applypj)    = shift;
@@ -81,6 +82,7 @@ sub new {
   $self->{'dynamic'}         = $dynamic;
   $self->{'static'}          = $static;
   $self->{'feature_file'}    = $feature;
+  $self->{'features'}        = $features;
   $self->{'hierarchy'}       = $hierarchy;
   $self->{'name_modifier'}   = $nmodifier;
   $self->{'apply_project'}   = $applypj;

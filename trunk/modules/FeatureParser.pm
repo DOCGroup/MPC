@@ -26,6 +26,7 @@ sub new {
   my($class)       = shift;
   my($global_file) = shift;
   my($file)        = shift;
+  my($features)    = shift;
   my($self)        = $class->SUPER::new();
 
   ## Set the values associative array
@@ -41,6 +42,16 @@ sub new {
         my($lnumber) = $self->get_line_number();
         $self->warning(basename($f) . ": line $lnumber: $warn");
       }
+    }
+  }
+
+  ## Process each feature definition
+  foreach my $feature (@$features) {
+    my($status, $warn) = $self->parse_line(undef, $feature);
+    if (!$status) {
+      ## We only want to warn the user about problems
+      ## with the feature file.
+      $self->warning("-features parameter: $warn");
     }
   }
 
