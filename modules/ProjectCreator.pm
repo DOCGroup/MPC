@@ -3437,6 +3437,17 @@ sub write_project {
         ($status, $error) = $self->write_install_file();
       }
     }
+    else {
+      my($msg) = $self->transform_file_name($self->project_file_name()) .
+                 " has no useful targets.";
+
+      if ($self->{'current_input'} eq '') {
+        $self->information($msg);
+      }
+      else {
+        $self->warning($msg);
+      }
+    }
   }
   else {
     $status = 2;

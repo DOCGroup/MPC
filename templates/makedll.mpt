@@ -29,6 +29,7 @@ exeext         =
 cppflags       =
 arflags        =
 pchsupport     = 1
+targetoutdir   =
 
 // ***********************************************************************
 // Configuration Section

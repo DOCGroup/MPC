@@ -34,11 +34,11 @@ CLEANFILES += \
 <%foreach(custom_type->input_file->output_files)%>
   <%custom_type->input_file->output_file%> \
 <%endfor%>
-  <%basenoextension(custom_type->input_file)%>-stamp
+  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%endif%><%basenoextension(custom_type->input_file)%>-stamp
 
-<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%basenoextension(custom_type->input_file)%>-stamp
+<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%endif%><%basenoextension(custom_type->input_file)%>-stamp
 
-<%basenoextension(custom_type->input_file)%>-stamp: $(srcdir)/<%custom_type->input_file%>
+<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%endif%><%basenoextension(custom_type->input_file)%>-stamp: $(srcdir)/<%custom_type->input_file%>
 <%if(flag_overrides(custom_type->input_file, gendir))%>
 	mkdir -p <%flag_overrides(custom_type->input_file, gendir)%>
 <%endif%>
@@ -150,7 +150,7 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%normalize(exename)%>_LDADD = \
 <%else%>
 lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LIBADD = \<%endif%>
-<%foreach(libs)%> lib<%lib%>.la<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%>
+<%foreach(libs)%> lib<%lib%>.la<%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>
 <%endif%>
 <%if(!exename)%>
 <%if(header_files || inline_files || template_files || idl_files || pidl_files)%>

@@ -82,11 +82,11 @@ LIBFILES = \
 <%foreach(libs)%>
            <%lib%>$(LIBMODIFIER)$(LIB_EXT) \
 <%endfor%>
-<%foreach(pure_libs)%>
-           <%pure_lib%> \
-<%endfor%>
 <%foreach(lit_libs)%>
            <%lit_lib%>$(LIB_EXT) \
+<%endfor%>
+<%foreach(pure_libs)%>
+           <%pure_lib%> \
 <%endfor%>
            <%common_libs%>
 <%if(resource_files && !type_is_static)%>
