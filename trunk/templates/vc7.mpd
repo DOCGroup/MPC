@@ -70,8 +70,12 @@
 <%endif%>
 <%else%>
 				Name="VCLinkerTool"
+<%if(!source_files)%>
+                                AdditionalOptions="/noentry <%link_options%>"
+<%else%>
 <%if(link_options)%>
                                 AdditionalOptions="<%link_options%>"
+<%endif%>
 <%endif%>
 <%if(type_is_binary)%>
 				AdditionalDependencies="<%foreach(libs)%><%fornotfirst(" ")%><%lib%><%lib_modifier%>.lib<%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"
