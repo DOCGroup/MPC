@@ -1257,9 +1257,15 @@ sub sort_within_group {
   for(my $i = $start; $i <= $end; ++$i) {
     ## Detect circular dependencies
     if ($ccount > $cmax) {
+      my($cprojs) = '';
+      for(my $j = $i; $j <= $end; ++$j) {
+        $cprojs .= ($j != $i ? ', ' : '') . $$list[$j];
+      }
       $self->warning('Circular dependency detected while processing the ' .
                      ($self->{'current_input'} eq '' ?
-                       'default' : $self->{'current_input'}) . ' workspace');
+                       'default' : $self->{'current_input'}) .
+                     ' workspace. ' .
+                     "The following projects are involved: $cprojs");
       return;
     }
 
@@ -1318,9 +1324,15 @@ sub sort_by_groups {
   for(my $gi = 0; $gi <= $#groups; ++$gi) {
     ## Detect circular dependencies
     if ($ccount > $cmax) {
+      my($cprojs) = '';
+      for(my $j = $groups[$gi]->[0]; $j <= $groups[$gi]->[1]; ++$j) {
+        $cprojs .= ($j != $groups[$gi]->[0] ? ', ' : '') . $$list[$j];
+      }
       $self->warning('Circular dependency detected while processing the ' .
                      ($self->{'current_input'} eq '' ?
-                       'default' : $self->{'current_input'}) . ' workspace');
+                       'default' : $self->{'current_input'}) .
+                     ' workspace. ' .
+                     "The following projects are involved: $cprojs");
       return;
     }
 
