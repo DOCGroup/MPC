@@ -1,3 +1,11 @@
+Thu Oct  7 16:44:29 2004  Steve Huston  <shuston@riverace.com>
+
+	* modules/AutomakeWorkspaceCreator.pm: Changed the library relocator
+	  adjustment so it doesn't add the $top_builddir relativity to
+	  libraries being built in the same directory. This allows the
+	  automake/make dependencies to work correctly and have things
+	  built in the right order.
+
 Thu Oct  7 13:06:54 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/EM3ProjectCreator.pm:
