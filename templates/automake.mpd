@@ -153,13 +153,20 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%if(am_version && install_this_target)%> -version-number <%am_version%><%endif%><%if(linkflags)%> <%linkflags%><%endif%>
 <%endif%>
 <%endif%>
+<%if(exename)%>
 <%if(libs || pure_libs || lit_libs)%>
 
-<%if(exename)%>
 <%normalize(exename)%>_LDADD = \
+  <%foreach(libs)%> lib<%lib%>.la<%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>
+<%endif%>
 <%else%>
-lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LIBADD = \<%endif%>
-<%foreach(libs)%> lib<%lib%>.la<%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>
+<%if(install_this_target)%>
+<%if(libs || pure_libs || lit_libs)%>
+
+lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LIBADD = \
+  <%foreach(libs)%> lib<%lib%>.la<%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>
+<%endif%>
+<%endif%>
 <%endif%>
 <%if(!exename)%>
 <%if(header_files || inline_files || template_files || idl_files || pidl_files)%>

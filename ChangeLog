@@ -1,3 +1,9 @@
+Wed Mar 16 12:53:13 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+
+	  Don't add libraries to _LIBADD for convenience libraries.
+
 Wed Mar 16 12:31:52 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
