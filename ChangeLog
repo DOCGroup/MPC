@@ -1,3 +1,14 @@
+Wed Aug  4 11:23:04 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+	  The automake documentation recommends that header files for
+	  programs and convienence libraries be listed in _SOURCES and not
+	  _HEADERS.  This has been done for programs (as we don't yet have
+	  a way to reliably distinguish between convienence libraries from
+	  installed libraries).  I've done this with rather ugly template
+	  macros to avoid having to do the $(DUMMY_VALUE...) hack.  This
+	  results in more readable Makefile.am's.
+
 Wed Aug  4 09:23:03 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * modules/AutomakeWorkspaceCreator:
