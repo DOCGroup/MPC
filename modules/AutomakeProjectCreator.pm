@@ -35,7 +35,7 @@ sub expand_variables_from_template_values {
 
 sub sort_files {
   #my($self) = shift;
-  return 0;
+  return 1;
 }
 
 
