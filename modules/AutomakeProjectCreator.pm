@@ -22,6 +22,12 @@ use vars qw(@ISA);
 # Subroutine Section
 # ************************************************************
 
+sub escape_spaces {
+  #my($self) = shift;
+  return 1;
+}
+
+
 sub use_reldefs {
   #my($self) = shift;
   return 0;

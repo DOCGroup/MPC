@@ -62,6 +62,8 @@ sub create_array {
   ## Replace all escaped double and single quotes with special characters
   my($escaped) = ($line =~ s/\\\"/\01/g);
   $escaped |= ($line =~ s/\\\'/\02/g);
+  $escaped |= ($line =~ s/\\ /\03/g);
+  $escaped |= ($line =~ s/\\\t/\04/g);
 
   foreach my $part (grep(!/^\s*$/,
                          split(/(\"[^\"]+\"|\'[^\']+\'|\s+)/, $line))) {
@@ -73,6 +75,8 @@ sub create_array {
     if ($escaped) {
       $part =~ s/\01/\"/g;
       $part =~ s/\02/\'/g;
+      $part =~ s/\03/ /g;
+      $part =~ s/\04/\t/g;
     }
 
     ## Push it onto the array
