@@ -11,7 +11,6 @@ default_configuration = Debug
 type_is_binary        = 1
 common_defines        = WIN32 _CONSOLE
 subsystem             = console
-pdb                   = 1
 use_modifier          =
 
 Win32 {
@@ -46,6 +45,8 @@ Debug {
   output_dir            = .
   intermediate_dir      = Debug
   lib_modifier          = d
+  pdbl                  = 1
+  pdbc                  = 1
 }
 
 Static Release {
@@ -71,6 +72,8 @@ Static Debug {
   need_staticflags      = 1
   output_dir            = Static_Debug
   intermediate_dir      = Static_Debug
+  pdbl                  = 1
+  pdbc                  = 1
 }
 
 MFC Release {
@@ -96,6 +99,8 @@ MFC Debug {
   output_dir            = MFC_Debug
   intermediate_dir      = MFC_Debug
   lib_modifier          = mfcd
+  pdbl                  = 1
+  pdbc                  = 1
 }
 
 Static MFC Release {
@@ -123,6 +128,8 @@ Static MFC Debug {
   need_staticflags      = 1
   output_dir            = Static_MFC_Debug
   intermediate_dir      = Static_MFC_Debug
+  pdbl                  = 1
+  pdbc                  = 1
 }
 
 conditional_include "vcfullmacros"

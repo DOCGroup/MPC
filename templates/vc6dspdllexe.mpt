@@ -10,7 +10,6 @@ configurations   = Release Debug
 type_is_binary   = 1
 common_defines   = WIN32 _CONSOLE
 subsystem        = console
-pdb              = 1
 use_modifier     =
 
 Release {
@@ -33,6 +32,8 @@ Debug {
   intermediate_dir      = Debug
   output_dir            = .
   lib_modifier          = d
+  pdbl                  = 1
+  pdbc                  = 1
 }
 
 MFC Release {
@@ -61,6 +62,8 @@ MFC Debug {
   intermediate_dir      = MFC_Debug
   output_dir            = MFC_Debug
   lib_modifier          = mfcd
+  pdbl                  = 1
+  pdbc                  = 1
   use_mfc               = 2
 }
 
