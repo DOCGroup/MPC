@@ -168,8 +168,12 @@ PATH := $(PATH);<%custom_type->libpath%>
 <%endif%>
 <%endfor%>
 <%endfor%>
+<%if(exename || sharedname || staticname)%>
 <%if(source_files)%>
 $(OBJFILES): $(GENERATED_DIRTY)
+<%else%>
+all: $(GENERATED_DIRTY)
+<%endif%>
 <%else%>
 all: $(GENERATED_DIRTY)
 <%endif%>
