@@ -1,3 +1,17 @@
+Thu Feb 17 10:09:21 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * LICENSE:
+
+          Corrected a spelling error.
+
+        * templates/automake.mpd:
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+        * templates/sle.mpd:
+
+          Added the 'compile_flags' template variable.  This variable
+          already exists in other templates.
+
 Tue Feb 15 08:29:47 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/bmake.mpd:
