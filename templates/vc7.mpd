@@ -65,7 +65,7 @@
 <%if(type_is_static)%>
 				Name="VCLibrarianTool"
 <%if(staticname)%>
-				OutputFile="$(OutDir)\<%staticname%><%lib_modifier%>.lib"
+				OutputFile="<%libout%>\<%staticname%><%lib_modifier%>.lib"
 <%endif%>
 <%else%>
 				Name="VCLinkerTool"
@@ -96,7 +96,7 @@
 				EnableCOMDATFolding="<%opticf("2")%>"
 <%endif%>
 <%if(type_is_dynamic)%>
-				ImportLibrary="$(OutDir)\<%sharedname%><%lib_modifier%>.lib"
+				ImportLibrary="<%libout%>\<%sharedname%><%lib_modifier%>.lib"
 <%endif%>
 <%endif%>
 				TargetMachine="<%machine("1")%>"/>

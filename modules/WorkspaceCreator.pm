@@ -1556,6 +1556,28 @@ sub number_target_deps {
 }
 
 
+sub project_target_translation {
+  my($self)  = shift;
+  my($cased) = shift;
+  my(%map)   = ();
+
+  ## Translate project names to avoid target collision with
+  ## some versions of make.
+  foreach my $key (keys %{$self->{'project_info'}}) {
+    my($dir)  = $self->mpc_dirname($key);
+    my($name) = $self->{'project_info'}->{$key}->[0];
+
+    if (($cased && $dir eq $name) || (!$cased && lc($dir) eq lc($name))) {
+      $map{$key} = "$name-target";
+    }
+    else {
+      $map{$key} = $name;
+    }
+  }
+  return \%map;
+}
+
+
 sub optionError {
   my($self) = shift;
   my($str)  = shift;
