@@ -56,7 +56,7 @@ sub pre_workspace {
             $crlf,
             '## The number in AUTOMAKE_OPTIONS is the minimum required version automake', $crlf,
             '## needed to process this file.', $crlf,
-            'AUTOMAKE_OPTIONS = 1.4', $crlf, $crlf;
+            'AUTOMAKE_OPTIONS = 1.7 foreign', $crlf, $crlf;
 }
 
 
