@@ -1,3 +1,8 @@
+Sat May 22 17:28:31 2004  Steve Huston  <shuston@riverace.com>
+
+	* modules/AutomakeWorkspaceCreator.pm: Changed AUTOMAKE_OPTIONS to
+	  "1.7 foreign" to match what's used at the project level.
+
 Tue May 18 19:48:33 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
