@@ -23,7 +23,8 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my(@targets) = ('DEPEND', 'CLEAN', 'REALCLEAN', '$(CUSTOM_TARGETS)');
+my(@targets) = ('CLEAN', 'DEPEND', 'GENERATED', 'REALCLEAN',
+                '$(CUSTOM_TARGETS)');
 
 # ************************************************************
 # Subroutine Section

@@ -24,7 +24,7 @@ use vars qw(@ISA);
 # ************************************************************
 
 my($max_line_length) = 32767; ## Borland Make's maximum line length
-my(@targets) = ('clean', 'realclean', '$(CUSTOM_TARGETS)');
+my(@targets) = ('clean', 'generated', 'realclean', '$(CUSTOM_TARGETS)');
 
 # ************************************************************
 # Subroutine Section

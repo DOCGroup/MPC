@@ -30,8 +30,7 @@ UC_CFLAGS    = <%unicode_flags%>
 UNICODE_DIR  = Unicode\\
 !endif
 
-INTERMEDIATE = $(CFG_DIR)$(UNICODE_DIR)<%noextension(project_file)%>
-
+INTERMEDIATE = $(CFG_DIR)$(UNICODE_DIR)<%noextension(project_name)%>
 <%foreach(compilers)%>
 OBJ_EXT      = <%obj_ext%>
 DLL_EXT      = <%dll_ext%>
@@ -98,13 +97,20 @@ RESOURCE = \
 <%endfor%>
 <%endif%>
 
-CFLAGS = \
 <%if(pch_header)%>
+# Borland precompiled headers can choke on some header files.
+# Set NO_USE_PCH if you do not want to use precompiled headers.
+!ifndef NO_USE_PCH
+PCH_CFLAGS = \
 <%foreach(pch_defines)%>
-# Borland precompiled headers choke on some header files.
-#         -D<%pch_define%> \
+             -D<%pch_define%> \
 <%endfor%>
+             -H=$(INTERMEDIATE)\<%noextension(project_name)%>.csm -Hh=<%pch_header%>
+!endif
 <%endif%>
+
+CFLAGS = \
+         $(PCH_CFLAGS) \
 <%foreach(cc_flags)%>
          <%cc_flags%> \
 <%endfor%>
@@ -132,10 +138,6 @@ CFLAGS = \
 <%endfor%>
          $(DUMMY_VALUE_NOT_ENDING_IN_BACKSLASH)
 
-<%if(pch_header)%>
-# Borland precompiled headers choke on some header files.
-#PCH_HEADER=<%pch_header%>
-<%endif%>
 <%marker(macros)%>
 <%marker(local)%>
 <%if(custom_types)%>
@@ -164,7 +166,7 @@ PATH := $(PATH);<%custom_type->libpath%>
 <%if(pch_header)%>
 <%if(custom_type->pch_postrule)%>
 <%foreach(custom_type->input_file->source_output_files)%>
-	@echo #include "<%pch_header%>" > temporary.src
+	@echo \#include "<%pch_header%>" > temporary.src
 	@type <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temporary.src
 	@move /y temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
 <%endfor%>
@@ -185,6 +187,9 @@ all: $(GENERATED_DIRTY)
 <%endif%>
 
 <%endif%>
+generated: $(GENERATED_DIRTY)
+	@-rem
+
 <%if(exename)%>
 OUTPUTDIR = <%if(install)%><%install%>\\<%else%>$(EXEOUTPUTDIR)<%endif%>
 all: $(OUTPUTDIR)$(NAME)$(EXE_EXT)
@@ -267,11 +272,13 @@ realclean: clean
 <%if(exename)%>
 	if exist "$(OUTPUTDIR)$(NAME)$(EXE_EXT)" del $(OUTPUTDIR)$(NAME)$(EXE_EXT)
 <%else%>
-	if exist "$(OUTPUTDIR)$(NAME)$(LIB_EXT)" del $(OUTPUTDIR)$(NAME)$(LIB_EXT)
-<%endif%>
-        if exist "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" del $(OUTPUTDIR)$(NAME)$(POSTLINKRM)
 <%if(sharedname)%>
         if exist "$(OUTPUTDIR)$(NAME)$(DLL_EXT)" del $(OUTPUTDIR)$(NAME)$(DLL_EXT)
 <%endif%>
+<%if(staticname)%>
+	if exist "$(OUTPUTDIR)$(NAME)$(LIB_EXT)" del $(OUTPUTDIR)$(NAME)$(LIB_EXT)
+<%endif%>
+<%endif%>
+        if exist "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" del $(OUTPUTDIR)$(NAME)$(POSTLINKRM)
 
 <%marker(bottom)%>
