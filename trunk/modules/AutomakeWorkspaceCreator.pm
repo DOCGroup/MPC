@@ -20,6 +20,12 @@ use vars qw(@ISA);
 @ISA = qw(WorkspaceCreator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my($acfile) = 'configure.ac.Makefiles';
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -71,9 +77,9 @@ sub write_comps {
   ## of all the involved Makefiles.
   my($mfh);
   if ($toplevel) {
-    unlink('configure.ac.Makefiles');
+    unlink($acfile);
     $mfh = new FileHandle();
-    open($mfh, '>configure.ac.Makefiles');
+    open($mfh, ">$acfile");
     ## The top-level is never listed as a dependency, so it needs to be
     ## added explicitly.
     print $mfh "AC_CONFIG_FILES([ Makefile ])$crlf";
@@ -116,11 +122,12 @@ sub write_comps {
     ## Get a unique list of next-level directories for SUBDIRS.
     my($dir) = $self->get_first_level_directory($dep);
     if ($dir ne '.') {
-        if (!defined $unique{$dir}) {
-          $unique{$dir} = 1;
-          unshift(@dirs, $dir);
-        }
-    } else {
+      if (!defined $unique{$dir}) {
+        $unique{$dir} = 1;
+        unshift(@dirs, $dir);
+      }
+    }
+    else {
       ## At each directory level, each project is written into a separate
       ## Makefile.<project>.am file. To bring these back into the build
       ## process, they'll be sucked back into the workspace Makefile.am file.
@@ -171,83 +178,86 @@ sub write_comps {
   ## then delete it.
   if (@locals) {
     foreach my $local (@locals) {
-      my($pfh);
-      $pfh = new FileHandle();
-      open($pfh,$local) || print "Error opening $local" . $crlf;
-      print $fh "## $local $crlf";
+      my($pfh) = new FileHandle();
+      if (open($pfh,$local)) {
+        print $fh "## $local $crlf";
 
-      while (<$pfh>) {
-        # Don't emit comments
-        next if (/^#/);
+        while (<$pfh>) {
+          # Don't emit comments
+          next if (/^#/);
 
-        if (/^bin_PROGRAMS\s*\+=\s*/) {
-          if (! $seen_bin_programs) {
-            s/\+=/=/;
-            $seen_bin_programs = 1;
+          if (/^bin_PROGRAMS\s*\+=\s*/) {
+            if (! $seen_bin_programs) {
+              s/\+=/=/;
+              $seen_bin_programs = 1;
+            }
+          } elsif (/^noinst_PROGRAMS\s*\+=\s*/) {
+            if (! $seen_noinst_programs) {
+              s/\+=/=/;
+              $seen_noinst_programs = 1;
+            }
+          } elsif (/^lib_LIBRARIES\s*\+=\s*/) {
+            if (! $seen_lib_libraries ) {
+              s/\+=/=/;
+              $seen_lib_libraries = 1;
+            }
+          } elsif (/^noinst_LIBRARIES\s*\+=\s*/) {
+            if (! $seen_noinst_libraries ) {
+              s/\+=/=/;
+              $seen_noinst_libraries = 1;
+            }
+          } elsif (/^lib_LTLIBRARIES\s*\+=\s*/) {
+            if (! $seen_lib_ltlibraries ) {
+              s/\+=/=/;
+              $seen_lib_ltlibraries = 1;
+            }
+          } elsif (/^noinst_LTLIBRARIES\s*\+=\s*/) {
+            if (! $seen_noinst_ltlibraries ) {
+              s/\+=/=/;
+              $seen_noinst_ltlibraries = 1;
+            }
+          } elsif (/^noinst_HEADERS\s*\+=\s*/) {
+            if (! $seen_noinst_headers) {
+              s/\+=/=/;
+              $seen_noinst_headers = 1;
+            }
+          } elsif (/^BUILT_SOURCES\s*\+=\s*/) {
+            if (! $seen_built_sources) {
+              s/\+=/=/;
+              $seen_built_sources = 1;
+            }
+          } elsif (/^CLEANFILES\s*\+=\s*/) {
+            if (! $seen_cleanfiles) {
+              s/\+=/=/;
+              $seen_cleanfiles = 1;
+            }
+          } elsif (/^TEMPLATE_FILES\s*\+=\s*/) {
+            if (! $seen_template_files) {
+              s/\+=/=/;
+              $seen_template_files = 1;
+            }
+          } elsif (/^HEADER_FILES\s*\+=\s*/) {
+            if (! $seen_header_files) {
+              s/\+=/=/;
+              $seen_header_files = 1;
+            }
+          } elsif (/^INLINE_FILES\s*\+=\s*/) {
+            if (! $seen_inline_files) {
+              s/\+=/=/;
+              $seen_inline_files = 1;
+            }
           }
-        } elsif (/^noinst_PROGRAMS\s*\+=\s*/) {
-          if (! $seen_noinst_programs) {
-            s/\+=/=/;
-            $seen_noinst_programs = 1;
-          }
-        } elsif (/^lib_LIBRARIES\s*\+=\s*/) {
-          if (! $seen_lib_libraries ) {
-            s/\+=/=/;
-            $seen_lib_libraries = 1;
-          }
-        } elsif (/^noinst_LIBRARIES\s*\+=\s*/) {
-          if (! $seen_noinst_libraries ) {
-            s/\+=/=/;
-            $seen_noinst_libraries = 1;
-          }
-        } elsif (/^lib_LTLIBRARIES\s*\+=\s*/) {
-          if (! $seen_lib_ltlibraries ) {
-            s/\+=/=/;
-            $seen_lib_ltlibraries = 1;
-          }
-        } elsif (/^noinst_LTLIBRARIES\s*\+=\s*/) {
-          if (! $seen_noinst_ltlibraries ) {
-            s/\+=/=/;
-            $seen_noinst_ltlibraries = 1;
-          }
-        } elsif (/^noinst_HEADERS\s*\+=\s*/) {
-          if (! $seen_noinst_headers) {
-            s/\+=/=/;
-            $seen_noinst_headers = 1;
-          }
-        } elsif (/^BUILT_SOURCES\s*\+=\s*/) {
-          if (! $seen_built_sources) {
-            s/\+=/=/;
-            $seen_built_sources = 1;
-          }
-        } elsif (/^CLEANFILES\s*\+=\s*/) {
-          if (! $seen_cleanfiles) {
-            s/\+=/=/;
-            $seen_cleanfiles = 1;
-          }
-        } elsif (/^TEMPLATE_FILES\s*\+=\s*/) {
-          if (! $seen_template_files) {
-            s/\+=/=/;
-            $seen_template_files = 1;
-          }
-        } elsif (/^HEADER_FILES\s*\+=\s*/) {
-          if (! $seen_header_files) {
-            s/\+=/=/;
-            $seen_header_files = 1;
-          }
-        } elsif (/^INLINE_FILES\s*\+=\s*/) {
-          if (! $seen_inline_files) {
-            s/\+=/=/;
-            $seen_inline_files = 1;
-          }
+
+          print $fh $_;
         }
 
-        print $fh $_;
+        close($pfh);
+##        unlink($local);
+        print $fh $crlf;
       }
-
-      close($pfh);
-##      unlink($local);
-      print $fh $crlf;
+      else {
+        $self->error("Unable to open $local for reading.");
+      }
     }
   }
 
@@ -255,11 +265,11 @@ sub write_comps {
   ## autoconf/automake flags down the tree when running autoconf.
   ## *** This may be too closely tied to how we have things set up in ACE,
   ## even though it's recommended practice. ***
-  if ($self->getstartdir() eq $self->getcwd()) {
-    print $fh $crlf;
-    print $fh 'ACLOCAL = @ACLOCAL@' . $crlf;
-    print $fh 'ACLOCAL_AMFLAGS = -I m4' . $crlf;
-    print $fh $crlf;
+  if ($toplevel) {
+    print $fh $crlf,
+              'ACLOCAL = @ACLOCAL@', $crlf,
+              'ACLOCAL_AMFLAGS = -I m4', $crlf,
+              $crlf;
   }
 
   ## Insert pkginclude_HEADERS if we saw TEMPLATE_FILES, HEADER_FILES,
@@ -269,16 +279,17 @@ sub write_comps {
     print $fh ' $(TEMPLATE_FILES)' if ($seen_template_files);
     print $fh ' $(INLINE_FILES)' if ($seen_inline_files);
     print $fh ' $(HEADER_FILES)' if ($seen_header_files);
-    print $fh $crlf;
-    print $fh $crlf;
+    print $fh $crlf,
+              $crlf;
   }
 
   ## Finish up with the cleanup specs.
-  print $fh '## Clean up template repositories, etc.' . $crlf;
-  print $fh 'clean-local:' . $crlf;
-  print $fh "\t-rm -f *.bak *.rpo *.sym lib*.*_pure_* Makefile.old core" . $crlf;
-  print $fh "\t-rm -f gcctemp.c gcctemp so_locations" . $crlf;
-  print $fh "\t-rm -rf ptrepository SunWS_cache Templates.DB" . $crlf;
+  print $fh '## Clean up template repositories, etc.', $crlf,
+            'clean-local:', $crlf,
+            "\t-rm -f *.bak *.rpo *.sym lib*.*_pure_* Makefile.old core",
+            $crlf,
+            "\t-rm -f gcctemp.c gcctemp so_locations", $crlf,
+            "\t-rm -rf ptrepository SunWS_cache Templates.DB", $crlf;
 }
 
 
