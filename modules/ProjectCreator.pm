@@ -638,7 +638,7 @@ sub parse_scoped_assignment {
 
   ## Map the assignment name on a scoped assignment
   my($mapped) = $self->{'valid_names'}->{$name};
-  if (UNIVERSAL::isa($mapped, 'ARRAY')) {
+  if (defined $mapped && UNIVERSAL::isa($mapped, 'ARRAY')) {
     $name = $$mapped[1];
   }
 

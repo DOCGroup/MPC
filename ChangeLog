@@ -1,10 +1,37 @@
+Fri Apr 30 11:47:48 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+
+          Fixed spelling errors.
+
+        * config/mfc.mpb:
+
+          Added a non-ACE specific version of the mfc base project.
+
+        * modules/Creator.pm:
+        * modules/Driver.pm:
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+
+          Made modifications to avoid Perl warnings when working with
+          version 5.005 or earlier.
+
+        * prj_install.pl:
+
+          Added additional information to the usage that describes the
+          default set of install tags.
+
+        * templates/cbx.mpd:
+
+          Removed ACE specific lines.
+
 Thu Apr 29 14:50:00 2004  Justin Michel <michel_j@ociweb.com>
 
-	* templates/nmake.mpd:
+        * templates/nmake.mpd:
 
-	  The custom build output should be the first thing listed for 
-	the ALL target, to ensure that any generated files are available
-	for the rest of the commands.
+          The custom build output should be the first thing listed for
+          the ALL target, to ensure that any generated files are available
+          for the rest of the commands.
 
 Mon Apr 26 09:55:25 2004  Chad Elliott  <elliott_c@ociweb.com>
 

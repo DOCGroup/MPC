@@ -27,7 +27,7 @@ use vars qw(@ISA);
 my($index)    = 0;
 my(@progress) = ('|', '/', '-', '\\');
 my($cmdenv)   = 'MPC_COMMANDLINE';
-my($minperl)  = 5.006;
+my($minperl)  = 5.005;
 
 # ************************************************************
 # Subroutine Section

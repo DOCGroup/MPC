@@ -17,17 +17,23 @@ use FileHandle;
 use File::Copy;
 use File::Basename;
 
-# ************************************************************
+# ******************************************************************
 # Data Section
-# ************************************************************
+# ******************************************************************
 
-my($insext) = 'ins';
+my($insext)  = 'ins';
 my($version) = '$Id$';
 $version =~ s/.*\s+(\d+[\.\d]+)\s+.*/$1/;
 
-# ************************************************************
+my(%defaults) = ('header_files'   => 1,
+                 'idl_files'      => 1,
+                 'inline_files'   => 1,
+                 'template_files' => 1,
+                );
+
+# ******************************************************************
 # Subroutine Section
-# ************************************************************
+# ******************************************************************
 
 sub copyFiles {
   my($files)   = shift;
@@ -67,10 +73,10 @@ sub loadInsFiles {
   my($files)   = shift;
   my($tags)    = shift;
   my($verbose) = shift;
+  my($fh)      = new FileHandle();
   my(@copy)    = ();
 
   foreach my $file (@$files) {
-    my($fh) = new FileHandle();
     if (open($fh, $file)) {
       if ($verbose) {
         print "Loading $file\n";
@@ -149,23 +155,28 @@ sub usageAndExit {
                "in $insext files.\n\n",
                "-a  Adds to the default set of tags that get copied.\n",
                "-s  Sets the tags that get copied.\n",
-               "-v  Enables verbose mode.\n";
+               "-v  Enables verbose mode.\n",
+               "\n",
+               "The default set of tags are:\n";
+  my($first) = 1;
+  foreach my $key (sort keys %defaults) {
+    print STDERR '', ($first ? '' : ', '), $key;
+    $first = 0;
+  }
+  print STDERR "\n";
+
   exit(0);
 }
 
-# ************************************************************
+# ******************************************************************
 # Main Section
-# ************************************************************
+# ******************************************************************
 
 my($verbose)  = undef;
 my($first)    = 1;
 my($insdir)   = undef;
 my(@insfiles) = ();
-my(%tags)     = ('header_files'   => 1,
-                 'idl_files'      => 1,
-                 'inline_files'   => 1,
-                 'template_files' => 1,
-                );
+my(%tags)     = %defaults;
 
 for(my $i = 0; $i <= $#ARGV; ++$i) {
   my($arg) = $ARGV[$i];
