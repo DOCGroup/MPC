@@ -1,3 +1,16 @@
+Mon Sep 20 11:15:13 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+
+          Added documentation about excluding directories and mpc files
+          within workspaces.
+
+        * templates/nmake.mpd:
+
+          Added support to the template for generation of nmakefiles that
+          contain both Win32 and Win64 targets.  Previously, only one or the
+          other could be generated.
+
 Thu Sep 16 09:32:09 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:

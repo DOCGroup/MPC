@@ -56,6 +56,26 @@ to the directory in which the main workspace is found.  These "aggregated"
 workspaces should not inherit from any other base workspace.  The workspace
 files should have an 'mwc' extension.
 
+You can exclude directories from a workspace using the 'exclude' scope
+operator:
+
+workspace {
+  dir1
+  dir2
+
+  // exclude this_dir for all project types
+  exclude {
+    dir2/this_dir
+  }
+
+  // exclude other_dir for vc6, vc71 and vc8 types
+  exclude(vc6, vc71, vc8) {
+    dir2/other_dir
+  }
+
+  dir3
+}
+
 
 Project Declarations
 --------------------
