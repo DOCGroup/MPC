@@ -200,17 +200,15 @@ sub write_comps {
               || /(^noinst_HEADERS)\s*\+=\s*/
               || /(^BUILT_SOURCES)\s*\+=\s*/
               || /(^CLEANFILES)\s*\+=\s*/
-              || /(^$inc_pattern)\s*=\s*/
-              || /(^$pkg_pattern)\s*=\s*/
               || /(^EXTRA_DIST)\s*\+=\s*/
              ) {
             if ($in_condition && !defined ($conditional_targets{$1})) {
               $conditional_targets{$1} = 1;
               unshift(@need_blanks, $1);
             }
-            if ($1 eq $inc_pattern || $1 eq $pkg_pattern) {
-              $installable_headers = 1;
-            }
+          }
+          elsif (/^$inc_pattern\s*=\s*/ || /^$pkg_pattern\s*=\s*/) {
+            $installable_headers = 1;
           }
           elsif (/includedir\s*=\s*(.*)/) {
             $includedir = $1;
@@ -228,11 +226,13 @@ sub write_comps {
 
   ## Print out the Makefile.am.
   my($wsHelper) = WorkspaceHelper::get($self);
+  my($convert_header_name) = undef;
   if (!defined $includedir && $installable_headers) {
     my($incdir) = $wsHelper->modify_value('includedir',
                                           $self->get_includedir());
     if ($incdir ne '') {
       print $fh "includedir = \@includedir\@$incdir$crlf$crlf";
+      $convert_header_name = 1;
     }
   }
 
@@ -270,6 +270,7 @@ sub write_comps {
     my($here) = $self->getcwd();
     my($start) = $self->getstartdir();
     foreach my $local (reverse @locals) {
+
       if (open($pfh, $local)) {
         print $fh "## $local $crlf";
 
@@ -293,6 +294,28 @@ sub write_comps {
             if (!defined ($seen{$1})) {
               $seen{$1} = 1;
               s/\+=/=/;
+            }
+          }
+          elsif ($convert_header_name) {
+            if ($local =~ /Makefile\.(.*)\.am/) {
+              $project_name = $1;
+            }
+            else {
+              $project_name = 'nobase';
+            }
+            my($inc_pattern) = $project_name . '_include_HEADERS';
+            my($pkg_pattern) = $project_name . '_pkginclude_HEADERS';
+            if (/^$inc_pattern\s*=\s*/ || /^$pkg_pattern\s*=\s*/) {
+              $_ =~ s/^$project_name/nobase/;
+              if (/^(nobase_include_HEADERS)\s*=\s*/ ||
+                  /^(nobase_pkginclude_HEADERS)\s*=\s*/) {
+                if (defined $seen{$1}) {
+                  $_ =~ s/=/+=/;
+                }
+                else {
+                  $seen{$1} = 1;
+                }
+              }
             }
           }
 
