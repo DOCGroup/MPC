@@ -3302,17 +3302,10 @@ sub write_output_file {
         }
 
         if ($self->get_toplevel()) {
-          my($into)   = $self->get_into();
-          my($outdir) = '.';
+          my($outdir) = $self->get_outdir();
           my($oname)  = $name;
 
-          if (defined $into) {
-            $outdir = $self->getcwd();
-            my($re) = $self->escape_regex_special($self->getstartdir());
-            $outdir =~ s/^$re//;
-            $outdir = $into . $outdir;
-            $name = "$outdir/$name";
-          }
+          $name = "$outdir/$name";
 
           my($fh)  = new FileHandle();
           my($dir) = $self->mpc_dirname($name);
@@ -3394,15 +3387,9 @@ sub write_install_file {
   my($insfile) = $self->transform_file_name(
                            $self->get_assignment('project_name')) .
                  '.ins';
-  my($into)    = $self->get_into();
+  my($outdir)  = $self->get_outdir();
 
-  if (defined $into) {
-    my($outdir) = $self->getcwd();
-    my($re)     = $self->escape_regex_special($self->getstartdir());
-    $outdir =~ s/^$re//;
-    $outdir = $into . $outdir;
-    $insfile = $outdir . '/' . $insfile;
-  }
+  $insfile = "$outdir/$insfile";
 
   unlink($insfile);
   if (open($fh, ">$insfile")) {
