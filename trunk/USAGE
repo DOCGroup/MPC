@@ -18,6 +18,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-feature_file <file name>] [-make_coexistence]
               [-exclude <directories>] [-name_modifier <pattern>]
               [-apply_project] [-version] [-into <directory>]
+              [-language <cplusplus | csharp | java | vb>]
               [-type <automake | bmake | cbx | em3 | ghs | html |
                       make | nmake | sle | va4 | vc6 | vc7 |
                       vc71 | vc8>]
@@ -41,6 +42,8 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        option can be used multiple times to add directories.
        -into           Place all output files in a mirrored directory
                        structure starting at <directory>.
+       -language       Specify the language preference.  The default is
+                       cplusplus.
        -make_coexistence If multiple 'make' based project types are
                        generated, they will be named such that they can coexist.
        -name_modifier  Modify output names.  The pattern passed to this

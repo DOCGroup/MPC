@@ -21,7 +21,10 @@ conditional_include "common"
 
 configurations = gcc
 ln             = ln -s
+libprefix      = lib
+arext          = a
 soext          = so
+objext         = o
 exeext         =
 cppflags       =
 arflags        =
@@ -30,6 +33,17 @@ pchsupport     = 1
 // ***********************************************************************
 // Configuration Section
 // ***********************************************************************
+
+java {
+  cxx            = javac
+  ld             = echo
+  objext         = class
+  output_option  =
+  compile_option =
+  ar             = jar
+  arflags        = cvf
+  platforms      = jvm
+}
 
 cxx {
   cxx        = cxx
@@ -108,6 +122,12 @@ wrspentium {
 // ***********************************************************************
 // Platform Section
 // ***********************************************************************
+
+jvm {
+  libprefix =
+  soext     =
+  arext     = jar
+}
 
 tru64 {
   shflags       = -shared /usr/lib/libcxxstd.a

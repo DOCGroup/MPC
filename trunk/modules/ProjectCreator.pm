@@ -117,25 +117,75 @@ my(%sourceComponents)  = ('source_files'   => 1,
                           'template_files' => 1,
                          );
 
-## Valid component names within a project along with the valid file extensions
-my(%vc) = ('source_files'        => [ "\\.cpp", "\\.cxx", "\\.cc", "\\.c", "\\.C", ],
-           'template_files'      => [ "_T\\.cpp", "_T\\.cxx", "_T\\.cc", "_T\\.c", "_T\\.C", ],
-           'header_files'        => [ "\\.h", "\\.hpp", "\\.hxx", "\\.hh", ],
-           'inline_files'        => [ "\\.i", "\\.inl", ],
-           'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
-           'resource_files'      => [ "\\.rc", ],
-          );
-
-## Exclude these extensions when auto generating the component values
-my(%ec) = ('source_files' => $vc{'template_files'},
-          );
-
-## Match up assignments with the valid components
-my(%ma) = ();
-
 my(%genext) = ();
 
 my($grouped_key) = 'grouped_';
+
+# ************************************************************
+# C++ Specific Component Settings
+# ************************************************************
+
+## Valid component names within a project along with the valid file extensions
+my(%cppvc) = ('source_files'        => [ "\\.cpp", "\\.cxx", "\\.cc", "\\.c", "\\.C", ],
+              'template_files'      => [ "_T\\.cpp", "_T\\.cxx", "_T\\.cc", "_T\\.c", "_T\\.C", ],
+              'header_files'        => [ "\\.h", "\\.hpp", "\\.hxx", "\\.hh", ],
+              'inline_files'        => [ "\\.i", "\\.inl", ],
+              'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
+              'resource_files'      => [ "\\.rc", ],
+             );
+
+## Exclude these extensions when auto generating the component values
+my(%cppec) = ('source_files' => $cppvc{'template_files'},
+             );
+
+# ************************************************************
+# C# Specific Component Settings
+# ************************************************************
+
+## Valid component names within a project along with the valid file extensions
+my(%csvc) = ('source_files'        => [ "\\.cs" ],
+             'config_files'        => [ "\\.config" ],
+             'resx_files'          => [ "\\.resx" ],
+             'ico_files'           => [ "\\.ico" ],
+             'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
+            );
+
+my(%csma) = ('source_files' => [ 'subtype' ],
+            );
+
+# ************************************************************
+# Java Specific Component Settings
+# ************************************************************
+
+## Valid component names within a project along with the valid file extensions
+my(%jvc) = ('source_files'        => [ "\\.java" ],
+            'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
+           );
+
+# ************************************************************
+# Visual Basic Specific Component Settings
+# ************************************************************
+
+## Valid component names within a project along with the valid file extensions
+my(%vbvc) = ('source_files'        => [ "\\.vb" ],
+             'config_files'        => [ "\\.config" ],
+             'resx_files'          => [ "\\.resx" ],
+             'ico_files'           => [ "\\.ico" ],
+             'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
+            );
+
+my(%vbma) = ('source_files' => [ 'subtype' ],
+            );
+
+# ************************************************************
+# Language Specific Component Settings
+# ************************************************************
+
+my(%language) = ('cplusplus' => [ \%cppvc, \%cppec, {}    , 'main' ],
+                 'csharp'    => [ \%csvc,  {},      \%csma, 'Main' ],
+                 'java'      => [ \%jvc,   {},      {}    , 'Main' ],
+                 'vb'        => [ \%vbvc,  {},      \%vbma, 'Main' ],
+                );
 
 # ************************************************************
 # Subroutine Section
@@ -164,12 +214,13 @@ sub new {
   my($applypj)   = shift;
   my($genins)    = shift;
   my($into)      = shift;
+  my($language)  = shift;
   my($self)      = $class->SUPER::new($global, $inc,
                                       $template, $ti, $dynamic, $static,
                                       $relative, $addtemp, $addproj,
                                       $progress, $toplevel, $baseprojs,
                                       $feature, $hierarchy, $nmod, $applypj,
-                                      $into,
+                                      $into, $language,
                                       'project');
 
   $self->{$self->{'type_check'}}   = 0;
@@ -1663,12 +1714,13 @@ sub generate_default_target_names {
       my(@sources) = $self->get_component_list('source_files', 1);
       foreach my $file (@sources) {
         if (open($fh, $file)) {
+          my($main) = $language{$self->get_language()}->[3];
           while(<$fh>) {
             ## Remove c++ comments (ignore c style comments for now)
             $_ =~ s/\/\/.*//;
 
             ## Check for main
-            if (/(main|ACE_MAIN|ACE_WMAIN|ACE_TMAIN)\s*\(/) {
+            if (/\s+($main)\s*\(/ || /^\s*($main)\s*\(/) {
               ## If we found a main, set the exename to the basename
               ## of the cpp file with the extension removed
               $exename = basename($file);
@@ -1883,95 +1935,98 @@ sub generate_default_components {
   my($recurse) = $self->get_assignment('recurse');
 
   foreach my $tag (@tags) {
-    my($exts) = $$vc{$tag};
-    if (defined $$exts[0]) {
-      if (defined $self->{$tag}) {
-        ## If the tag is defined, then process directories
-        my($names) = $self->{$tag};
-        foreach my $name (keys %$names) {
-          my($comps) = $$names{$name};
-          foreach my $comp (keys %$comps) {
-            my($array) = $$comps{$comp};
-            if (defined $passed) {
-              $self->sift_files($files, $exts, $pchh, $pchc, $tag, $array);
-            }
-            else {
-              my(@built) = ();
-              foreach my $file (@$array) {
-                if (-d $file) {
-                  my($alldir) = $recurse ||
-                      $self->{'flag_overrides'}->{$tag}->{$file}->{'recurse'};
-                  my(@gen) = $self->generate_default_file_list(
-                                      $file, [], $alldir);
-                  $self->sift_files(\@gen, $exts, $pchh,
-                                    $pchc, $tag, \@built, $alldir);
-                }
-                else {
-                  if (!$self->already_added(\@built, $file)) {
-                    push(@built, $file);
+    if (!defined $self->{'generated_exts'}->{$tag} ||
+        $self->{'generated_exts'}->{$tag}->{'automatic'}) {
+      my($exts) = $$vc{$tag};
+      if (defined $$exts[0]) {
+        if (defined $self->{$tag}) {
+          ## If the tag is defined, then process directories
+          my($names) = $self->{$tag};
+          foreach my $name (keys %$names) {
+            my($comps) = $$names{$name};
+            foreach my $comp (keys %$comps) {
+              my($array) = $$comps{$comp};
+              if (defined $passed) {
+                $self->sift_files($files, $exts, $pchh, $pchc, $tag, $array);
+              }
+              else {
+                my(@built) = ();
+                foreach my $file (@$array) {
+                  if (-d $file) {
+                    my($alldir) = $recurse ||
+                        $self->{'flag_overrides'}->{$tag}->{$file}->{'recurse'};
+                    my(@gen) = $self->generate_default_file_list(
+                                        $file, [], $alldir);
+                    $self->sift_files(\@gen, $exts, $pchh,
+                                      $pchc, $tag, \@built, $alldir);
+                  }
+                  else {
+                    if (!$self->already_added(\@built, $file)) {
+                      push(@built, $file);
+                    }
                   }
                 }
+                $$comps{$comp} = \@built;
               }
-              $$comps{$comp} = \@built;
             }
           }
         }
-      }
-      else {
-        ## Generate default values for undefined tags
-        my($defcomp) = $self->get_default_element_name();
-        my($names) = {};
-        $self->{$tag} = $names;
-        my($comps) = {};
-        $$names{$self->get_default_component_name()} = $comps;
-        $$comps{$defcomp} = [];
-        my($array) = $$comps{$defcomp};
+        else {
+          ## Generate default values for undefined tags
+          my($defcomp) = $self->get_default_element_name();
+          my($names) = {};
+          $self->{$tag} = $names;
+          my($comps) = {};
+          $$names{$self->get_default_component_name()} = $comps;
+          $$comps{$defcomp} = [];
+          my($array) = $$comps{$defcomp};
 
-        $self->{'defaulted'}->{$tag} = 1;
+          $self->{'defaulted'}->{$tag} = 1;
 
-        if (!defined $specialComponents{$tag}) {
-          $self->sift_files($files, $exts, $pchh, $pchc, $tag, $array);
-          if (defined $sourceComponents{$tag}) {
-            foreach my $gentype (keys %{$self->{'generated_exts'}}) {
-              ## If we are auto-generating the source_files, then
-              ## we need to make sure that any generated source
-              ## files that are added are put at the front of the list.
-              my(@front)  = ();
-              my(@copy)   = @$array;
-              my(@input)  = $self->get_component_list($gentype, 1);
-              my($wanted) = $self->{'valid_components'}->{$gentype}->[0];
+          if (!defined $specialComponents{$tag}) {
+            $self->sift_files($files, $exts, $pchh, $pchc, $tag, $array);
+            if (defined $sourceComponents{$tag}) {
+              foreach my $gentype (keys %{$self->{'generated_exts'}}) {
+                ## If we are auto-generating the source_files, then
+                ## we need to make sure that any generated source
+                ## files that are added are put at the front of the list.
+                my(@front)  = ();
+                my(@copy)   = @$array;
+                my(@input)  = $self->get_component_list($gentype, 1);
+                my($wanted) = $self->{'valid_components'}->{$gentype}->[0];
 
-              @$array = ();
-              foreach my $file (@copy) {
-                my($found) = 0;
-                foreach my $input (@input) {
-                  my($part) = $input;
-                  $part =~ s/$wanted$//;
-                  $part = $self->escape_regex_special($part);
-                  foreach my $re ($self->generated_filenames($part, $gentype,
-                                                             $tag, $input,
-                                                             0)) {
-                    if ($file =~ /$re$/) {
-                      ## No need to check for previously added files
-                      ## here since there are none.
-                      push(@front, $file);
-                      $found = 1;
+                @$array = ();
+                foreach my $file (@copy) {
+                  my($found) = 0;
+                  foreach my $input (@input) {
+                    my($part) = $input;
+                    $part =~ s/$wanted$//;
+                    $part = $self->escape_regex_special($part);
+                    foreach my $re ($self->generated_filenames($part, $gentype,
+                                                               $tag, $input,
+                                                               0)) {
+                      if ($file =~ /$re$/) {
+                        ## No need to check for previously added files
+                        ## here since there are none.
+                        push(@front, $file);
+                        $found = 1;
+                        last;
+                      }
+                    }
+                    if ($found) {
                       last;
                     }
                   }
-                  if ($found) {
-                    last;
+                  if (!$found) {
+                    ## No need to check for previously added files
+                    ## here since there are none.
+                    push(@$array, $file);
                   }
                 }
-                if (!$found) {
-                  ## No need to check for previously added files
-                  ## here since there are none.
-                  push(@$array, $file);
-                }
-              }
 
-              if (defined $front[0]) {
-                unshift(@$array, @front);
+                if (defined $front[0]) {
+                  unshift(@$array, @front);
+                }
               }
             }
           }
@@ -3171,12 +3226,13 @@ sub reset_values {
 
 
 sub add_default_matching_assignments {
-  #my($self) = shift;
-  foreach my $key (keys %vc) {
-    if (!defined $ma{$key}) {
-      $ma{$key} = [];
+  my($self) = shift;
+  my($lang) = $self->get_language();
+  foreach my $key (keys %{$language{$lang}->[0]}) {
+    if (!defined $language{$lang}->[2]->{$key}) {
+       $language{$lang}->[2]->{$key} = [];
       foreach my $keyword (@default_matching_assignments) {
-        push(@{$ma{$key}}, $keyword);
+        push(@{$language{$lang}->[2]->{$key}}, $keyword);
       }
     }
   }
@@ -3185,10 +3241,11 @@ sub add_default_matching_assignments {
 
 sub reset_generating_types {
   my($self)  = shift;
-  my(%reset) = ('matching_assignments' => \%ma,
-                'valid_components'     => \%vc,
+  my($lang)  = $self->get_language();
+  my(%reset) = ('valid_components'     => $language{$lang}->[0],
+                'exclude_components'   => $language{$lang}->[1],
+                'matching_assignments' => $language{$lang}->[2],
                 'generated_exts'       => \%genext,
-                'exclude_components'   => \%ec,
                 'valid_names'          => \%validNames,
                );
 

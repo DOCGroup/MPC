@@ -1,0 +1,19 @@
+// -*- MPC -*-
+// $Id$
+
+conditional_include "common"
+
+configurations     = Release Debug
+common_defines     = TRACE
+
+Release {
+  optimize         = 1
+  defines          =
+  output_dir       = Release
+}
+
+Debug {
+  optimize         =
+  defines          = DESIGN DEBUG
+  output_dir       = Debug
+}
