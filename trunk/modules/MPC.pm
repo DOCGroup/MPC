@@ -28,7 +28,6 @@ sub new {
                                       'CBXProjectCreator',
                                       'GHSProjectCreator',
                                       'EM3ProjectCreator',
-                                      'VA4ProjectCreator',
                                       'AutomakeProjectCreator',
                                       'BMakeProjectCreator',
                                       'HTMLProjectCreator',
