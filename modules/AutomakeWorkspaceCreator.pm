@@ -70,6 +70,7 @@ sub write_comps {
   my(@dirs)          = ();
   my(@locals)        = ();
   my(%proj_dir_seen) = ();
+  my($have_subdirs)  = 0;
 
   ## This step writes a configure.ac.Makefiles list into the starting
   ## directory. The list contains of all the Makefiles generated down
@@ -120,19 +121,23 @@ sub write_comps {
     }
 
     ## Get a unique list of next-level directories for SUBDIRS.
+    ## To make sure we keep the dependencies correct, insert the '.' for
+    ## any local projects in the proper place. Remember if any subdirs
+    ## are seen to know if we need a SUBDIRS entry generated.
     my($dir) = $self->get_first_level_directory($dep);
-    if ($dir ne '.') {
-      if (!defined $unique{$dir}) {
-        $unique{$dir} = 1;
-        unshift(@dirs, $dir);
-      }
+    if (!defined $unique{$dir}) {
+      $unique{$dir} = 1;
+      unshift(@dirs, $dir);
     }
-    else {
+    if ($dir eq '.') {
       ## At each directory level, each project is written into a separate
       ## Makefile.<project>.am file. To bring these back into the build
       ## process, they'll be sucked back into the workspace Makefile.am file.
       ## Remember which ones to pull in at this level.
       unshift(@locals, $dep);
+    }
+    else {
+      $have_subdirs = 1;
     }
   }
   if ($mfh) {
@@ -150,11 +155,8 @@ sub write_comps {
   }
 
   ## If there are local projects, insert "." as the first SUBDIR entry.
-  if (@dirs) {
+  if ($have_subdirs == 1) {
     print $fh 'SUBDIRS =';
-    if (@locals) {
-      print $fh " \\$crlf        .";
-    }
     foreach my $dir (reverse @dirs) {
       print $fh " \\$crlf        $dir";
     }
