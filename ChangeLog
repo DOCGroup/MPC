@@ -1,3 +1,10 @@
+Mon Aug  2 09:29:31 2004  Steve Huston  <shuston@riverace.com>
+
+	* templates/automake.mpd: For non-installed libraries, generate
+	  noinst_LTLIBRARIES instead of lib_LTLIBRARIES.
+	  For libraries, assume that "libs" are libtool-created libraries
+	  and "lit_libs" are not.
+
 Mon Aug  2 08:04:27 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/bmake.mpd:
