@@ -1,3 +1,14 @@
+Mon Dec 20 13:49:42 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/mfc.mpb:
+
+          Fixed the AFX macro.  It was _AFX_DLL and should have been
+          _AFXDLL.
+
+        * modules/ProjectCreator.pm:
+
+          Added more resource file extensions.
+
 Mon Dec 13 10:27:04 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
