@@ -21,6 +21,9 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
+<%if(compile_flags)%>
+				AdditionalOptions="<%compile_flags%>"
+<%endif%>
 <%if(optimize)%>
 				Optimization="<%optimize%>"
 <%else%>

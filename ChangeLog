@@ -1,3 +1,10 @@
+Tue Jun  8 11:30:15 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/vc7.mpd:
+
+          Added the ability to add additional compiler options through the
+          use of the compile_flags template value.
+
 Fri May 28 14:03:13 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * LICENSE:
