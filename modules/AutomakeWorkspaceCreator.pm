@@ -69,10 +69,9 @@ sub write_comps {
   my(%unique)   = ();
   my(@dirs)     = ();
 
-  ## Get a unique list of directories while
-  ## preserving the order of the original @list
-  foreach my $dep (@list) {
-    my($dir) = dirname($dep);
+  ## Get a unique list of next-level directories for SUBDIRS.
+  foreach my $dep (reverse @list) {
+    my($dir) = $self->get_first_level_directory($dep);
     if (!defined $unique{$dir}) {
       $unique{$dir} = 1;
       unshift(@dirs, $dir);
