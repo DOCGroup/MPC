@@ -3,7 +3,6 @@
 
 conditional_include "bmakecommon"
 
-need_staticflags = 1
 startup_obj      = c0x32$(OBJ_EXT)
 compile_flags    = -tWR -tWD
 use_exe_modifier =

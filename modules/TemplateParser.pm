@@ -1068,6 +1068,30 @@ sub collect_data {
     }
   }
 
+  ## If there is a staticname and no sharedname then this project
+  ## 'type_is_static'.  If we are generating static projects, let
+  ## all of the templates know that we 'need_staticflags'.
+  ## If there is a sharedname then this project 'type_is_dynamic'.
+  my($sharedname) = $prjc->get_assignment('sharedname');
+  my($staticname) = $prjc->get_assignment('staticname');
+  if (!defined $sharedname && defined $staticname) {
+    $self->{'values'}->{'type_is_static'}   = 1;
+    $self->{'values'}->{'need_staticflags'} = 1;
+  }
+  elsif ($prjc->get_static() == 1) {
+    $self->{'values'}->{'need_staticflags'} = 1;
+  }
+  elsif (defined $sharedname) {
+    $self->{'values'}->{'type_is_dynamic'} = 1;
+  }
+
+  ## If there is a sharedname or exename then this project
+  ## 'type_is_binary'.
+  if (defined $sharedname ||
+      defined $prjc->get_assignment('exename')) {
+    $self->{'values'}->{'type_is_binary'} = 1;
+  }
+
   ## A tiny hack (mainly for VC6 projects)
   ## for the workspace creator.  It needs to know the
   ## target names to match up with the project name.

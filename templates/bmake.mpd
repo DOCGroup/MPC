@@ -274,7 +274,7 @@ clean:
 
 realclean: clean
 <%if(custom_types)%>
-	if not "$(GENERATED_DIRTY)" == "" del $(GENERATED_DIRTY)
+	del /q $(GENERATED_DIRTY)
 <%endif%>
 <%if(exename)%>
 	if exist "$(OUTPUTDIR)$(NAME)$(EXE_EXT)" del $(OUTPUTDIR)$(NAME)$(EXE_EXT)

@@ -82,7 +82,7 @@ default:
 <%endfor%>
 <%endif%>
 <%endif%>
-<%if(need_dynamicflags)%>
+<%if(sharedname)%>
 <%foreach(dynamicflags)%>
 	:defines=<%dynamicflag%>
 <%endfor%>

@@ -94,15 +94,15 @@ CLEANFILES += \
 lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_CPPFLAGS = \
 <%endif%>
 <%foreach(am_includes)%>
-  -I<%am_include%><%if(defines || common_defines || macros || type_is_static || need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
+  -I<%am_include%><%if(defines || common_defines || macros || need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
 <%foreach(defines common_defines macros)%>
-  -D<%define%><%if(compile_flags || type_is_static || need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
+  -D<%define%><%if(compile_flags || need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
 <%if(compile_flags)%>
-<%compile_flags%><%if(type_is_static || need_staticflags || dynamicflags)%> \<%endif%>
+<%compile_flags%><%if(need_staticflags || dynamicflags)%> \<%endif%>
 <%endif%>
-<%if(type_is_static || need_staticflags)%>
+<%if(need_staticflags)%>
 <%if(staticflags)%>
 <%foreach(staticflags)%>
   -D<%staticflag%><%fornotlast(" \\")%>

@@ -3,7 +3,6 @@
 
 conditional_include "bmakecommon"
 
-type_is_static   = 1
 use_lib_modifier = 1
 
 Release {
