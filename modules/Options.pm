@@ -12,6 +12,8 @@ package Options;
 
 use strict;
 
+use DirectoryManager;
+
 # ************************************************************
 # Data Section
 # ************************************************************
@@ -294,6 +296,13 @@ sub options {
         $self->optionError('-include requires a directory argument');
       }
       else {
+        ## If the specified include path is relative, expand it based on
+        ## the current working directory.
+        if ($include !~ /^[\/\\]/ &&
+            $include !~ /^[A-Za-z]:[\/\\]?/) {
+          $include = DirectoryManager::getcwd() . '/' . $include;
+        }
+
         push(@include, $include);
       }
     }
@@ -358,7 +367,7 @@ sub options {
           $relative{$name} = $val;
         }
         else {
-          $self->optionError('Invalid option to -relative');
+          $self->optionError('Invalid argument to -relative');
         }
       }
     }
@@ -411,7 +420,7 @@ sub options {
           $addtemp{$name} = [$op, $val];
         }
         else {
-          $self->optionError('Invalid option to -value_template');
+          $self->optionError('Invalid argument to -value_template');
         }
       }
     }
@@ -440,7 +449,7 @@ sub options {
           $addproj{$name} = [$op, $val];
         }
         else {
-          $self->optionError('Invalid option to -value_project');
+          $self->optionError('Invalid argument to -value_project');
         }
       }
     }
@@ -449,11 +458,6 @@ sub options {
       return undef;
     }
     elsif ($arg eq '-static') {
-      $static  = 1;
-      $dynamic = 0;
-    }
-    elsif ($arg eq '-static_only') {
-      ## This option is deprecated and will eventually be removed.
       $static  = 1;
       $dynamic = 0;
     }

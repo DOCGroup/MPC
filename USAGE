@@ -177,3 +177,21 @@ Most of what is stated about the Workspace Generator applies to the Project
 Generator except that it only generates projects.  If an input file (.mpc
 file) is not provided, the project creator will attempt to create a default
 project in the directory from which the script was started.
+
+Environment Variables
+---------------------
+
+MPC_COMMANDLINE - The value of this environment variable will be prepended
+to the options passed to mwc.pl or mpc.pl (if any are passed).
+
+MPC_VERBOSE_ORDERING - If this is set, mwc.pl will warn the user about
+references to projects in the 'after' keyword that have not been processed.
+
+MPC_DEPENDENCY_COMBINED_STATIC_LIBRARY - See the -static section above.
+
+MPC_SILENT - If this is set, MPC will not print out any information or
+warnings when processing projects or workspaces.  Errors are always printed
+if any are encountered.
+
+MPC_INFORMATION - If this is set, MPC will print out informational messages
+in addition to diagnostic and warning messages.
