@@ -1,3 +1,8 @@
+Mon Aug  9 07:04:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmakecommon.mpt:
+          Use cw32mti.lib instead of cw32mt.lib
+
 Sat Aug  7 23:19:33 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
