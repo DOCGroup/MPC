@@ -1,0 +1,6 @@
+// -*- MPC -*-
+// $Id$
+
+project: boost_base {
+  lit_libs += boost_unit_test_framework$(BOOST_CFG)
+}
