@@ -150,7 +150,7 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%if(linkflags || am_version)%>
 
 lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LDFLAGS = \
-<%if(am_version)%> -version-number <%am_version%><%endif%> <%linkflags%>
+<%if(am_version)%> -version-number <%am_version%><%endif%><%if(linkflags)%> <%linkflags%><%endif%>
 <%endif%>
 <%endif%>
 <%if(libs || pure_libs || lit_libs)%>
@@ -178,7 +178,7 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%if(pkgconfig_files)%>
 <%foreach(pkgconfig_files)%>
 
-pkgconfigdata_DATA += <%basenoextension(pkgconfig_file)%>
+pkgconfig_DATA += <%basenoextension(pkgconfig_file)%>
 
 <%basenoextension(pkgconfig_file)%>: ${top_builddir}/config.status ${srcdir}/<%pkgconfig_file%>
 	${top_builddir}/config.status --file $@:${srcdir}/<%pkgconfig_file%>

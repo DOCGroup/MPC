@@ -1,3 +1,12 @@
+Wed Feb 23 20:36:31 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+
+	  Remove trailing whitespace after version number if no
+	  linkflags were specified.
+
+	  Rename pkgconfigdata_DATA to pkgconfig_DATA.
+
 Wed Feb 23 20:34:58 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* modules/AutomakeWorkspaceCreator.pm:
