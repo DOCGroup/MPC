@@ -1,3 +1,15 @@
+Fri May  7 07:41:55 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/bmakelib.mpt:
+        * templates/bmakelibexe.mpt:
+        * templates/em3vcplib.mpt:
+        * templates/em3vcplibexe.mpt:
+        * templates/vc6dsplib.mpt:
+        * templates/vc6dsplibexe.mpt:
+
+          Consistently name the intermediate and output directories across
+          all Windows based templates.
+
 Thu May  6 10:50:53 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
