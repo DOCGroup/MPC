@@ -18,7 +18,7 @@ INCLUDES =<%foreach(includes)%> -I<%include%><%endfor%>
 <%if(exename)%>
 bin_PROGRAMS = <%exename%>
 
-<%exename%>_SOURCES = \
+<%normalize(exename)%>_SOURCES = \
 <%foreach(source_files)%>
   <%source_file%><%fornotlast(" \\")%>
 <%endfor%>
@@ -32,39 +32,21 @@ noinst_HEADERS = \
 <%else%>
 <%if(grouped_source_files)%>
 <%foreach(grouped_source_files)%>
-lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_<%uc(grouped_source_file)%>_la_SOURCES = \
+<%grouped_source_file%> = \
 <%foreach(grouped_source_file->files)%>
   <%grouped_source_file->file%><%fornotlast(" \\")%>
 <%endfor%>
-
-<%endfor%>
-<%foreach(grouped_source_files)%>
-if BUILD_<%uc(grouped_source_file)%>_FILES
-LIB<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_<%uc(grouped_source_file)%> = lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_<%grouped_source_file%>.la
-else
-LIB<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_<%uc(grouped_source_file)%> =
-endif
 
 <%endfor%>
 
 lib_LTLIBRARIES = \
-  $(LIB<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>) \
-<%foreach(grouped_source_files)%>
-  $(LIB<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_<%uc(grouped_source_file)%>)<%fornotlast(" \\")%>
-<%endfor%>
+  lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
 
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_SOURCES = \
 <%foreach(grouped_source_files)%>
-  $(lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_<%uc(grouped_source_file)%>_la_SOURCES)<%fornotlast(" \\")%>
+  $(<%grouped_source_file%>)<%fornotlast(" \\")%>
 <%endfor%>
 
-<%foreach(grouped_source_files)%>
-lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_<%uc(grouped_source_file)%>_la_SOURCES = \
-<%foreach(grouped_source_file->files)%>
-  <%grouped_source_file->file%><%fornotlast(" \\")%>
-<%endfor%>
-
-<%endfor%>
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LDFLAGS = $(X_LIBS)
 
 lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_LIBADD = $(X_PRE_LIBS) $(<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_XLIBS) $(X_EXTRA_LIBS)
@@ -100,15 +82,9 @@ INLINE_FILES = \
 <%endif%>
 
 pkginclude_HEADERS = \
-<%if(template_files)%>
   $(TEMPLATE_FILES) \
-<%endif%>
-<%if(inline_files)%>
   $(INLINE_FILES) \
-<%endif%>
-<%if(header_files)%>
   $(HEADER_FILES)
-<%endif%>
 <%endif%>
 <%vpath%>
 

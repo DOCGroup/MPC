@@ -1,3 +1,25 @@
+Thu Jul  1 10:16:38 2004  Steve Huston  <shuston@riverace.com>
+
+	* modules/AutomakeWorkspaceCreator.pm (write_comps): Write a
+	  configure.ac.Makefiles entry for the top-level workspace as
+	  well, else there's no starting point in the configured tree.
+
+	* modules/TemplateParser.pm: Added new template <%normalize%>
+	  that takes a exename as a parameter. Converts '-' to '_' to
+	  make the name palatable prepended to a special automake name
+	  such as _SOURCES.
+
+	* templates/automake.mpd: Applied a patch from Chad that makes
+	  grouped sources work better. Also, added <%normalize%> to
+	  exename_SOURCES generation so exe names with '-' in them get
+	  changed to '_' for their SOURCES. This is the same normalization
+	  Automake will do when trying to find the SOURCES for a bin_ target.
+	  Removed the support for being able to select library subsets to
+	  build at configure time. It disn't work right, and the subset
+	  selection capability is not in the MPC-generated GNUmakefiles
+	  either. It can be (re)attempted later if needed, but the longer-term
+	  goal in ACE land seems to be to find other ways to reduce footprint.
+
 Tue Jun 22 20:53:12 2004  Ossama Othman  <ossama@dre.vanderbilt.edu>
 
 	* modules/AutomakeWorkspaceCreator.pm (AUTOMAKE_OPTIONS):

@@ -85,14 +85,11 @@ sub write_comps {
     if ($mfh) {
       ## There should be a Makefile at each level, but it's not a project,
       ## it's a workspace; therefore, it's not in the list of projects. But
-      ## it's needed in the configure process so add it here. But don't
-      ## add it for "." - that's the one we're generating now.
+      ## it's needed in the configure process so add it here.
       my($dep_dir) = dirname($dep);
-      if ($dep_dir ne '.') {
-        if (!defined $proj_dir_seen{$dep_dir}) {
-          $proj_dir_seen{$dep_dir} = 1;
-          print $mfh "AC_CONFIG_FILES([ $dep_dir" . "/Makefile ])$crlf";
-        }
+      if (!defined $proj_dir_seen{$dep_dir}) {
+        $proj_dir_seen{$dep_dir} = 1;
+        print $mfh "AC_CONFIG_FILES([ $dep_dir" . "/Makefile ])$crlf";
       }
       print $mfh "AC_CONFIG_FILES([ $dep ])$crlf";
     }
