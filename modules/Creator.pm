@@ -440,7 +440,7 @@ sub generate_default_file_list {
 
 sub windows_crlf {
   #my($self) = shift;
-  if ($^O eq 'MSWin32' || $^O eq 'cygwin') {
+  if ($^O eq 'MSWin32' || $^O eq 'cygwin' || $^O eq 'os2') {
     return "\n";
   }
   else {

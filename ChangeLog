@@ -1,3 +1,22 @@
+Fri Jul  2 08:17:48 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Return the same kind of crlf on OS/2 as we do on Windows.  Just in
+          case someone tries to use MPC on OS/2.
+
+        * modules/ProjectCreator.pm:
+
+          When returning the list of grouped source files, convert the
+          slashes if it is necessary.
+
+        * templates/vc7.mpd:
+
+          The above change allows us to use file grouping for vc7.
+          Previously, files would have a forward slash in the name (if they
+          were in sub-directories) which confused vc7 and would cause link
+          errors.
+
 Thu Jul  1 09:35:27 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/MakeWorkspaceCreator.pm:
