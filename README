@@ -73,6 +73,11 @@ workspace {
     dir2/other_dir
   }
 
+  // exclude unix_only for every type except gnuace and make
+  exclude(!gnuace, !make) {
+    dir2/unix_only
+  }
+
   dir3
 }
 
