@@ -1,19 +1,27 @@
+Fri Mar 11 07:03:04 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/nmake.mpd:
+
+          Fixed a bug in the intermediate directory for the precompiled
+          header object file.  Also, move some targets around such that
+          'all' is the first target in the generated makefile.
+
 Thu Mar 10 21:08:24 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeWorkspaceCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
 
-	  Emit the RCS/CVS Id in the boilerplate at the beginning of the
-	  workspace Makefile.am in three separate substrings so that it's
-	  not expanded each time this file is changed.
+          Emit the RCS/CVS Id in the boilerplate at the beginning of the
+          workspace Makefile.am in three separate substrings so that it's
+          not expanded each time this file is changed.
 
 Thu Mar 10 20:13:58 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeWorkspaceCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
 
-	  Scan project Makefile.am's for pkgconfig_DATA, if it is present
-	  emit "pkgconfigdir = @libdir@/pkgconfig" at the begining of the
-	  workspace Makefile.am.  This will help avoid typos like the ACE
-	  pkgconfigdir definition in 5.4.4.
+          Scan project Makefile.am's for pkgconfig_DATA, if it is present
+          emit "pkgconfigdir = @libdir@/pkgconfig" at the begining of the
+          workspace Makefile.am.  This will help avoid typos like the ACE
+          pkgconfigdir definition in 5.4.4.
 
 Wed Mar  9 08:53:39 2005  Chad Elliott  <elliott_c@ociweb.com>
 
@@ -54,7 +62,7 @@ Mon Mar  7 10:01:34 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
 
-          Added a new operator, '>>' to allow user to specify multiple
+          Added a new operator, '>>', to allow user to specify multiple
           unrelated (file name wise) output files based on a custom input
           file.
 
