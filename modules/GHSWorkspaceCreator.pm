@@ -11,7 +11,6 @@ package GHSWorkspaceCreator;
 # ************************************************************
 
 use strict;
-use File::Basename;
 
 use GHSProjectCreator;
 use WorkspaceCreator;

@@ -79,7 +79,7 @@ sub write_comps {
   ## Print out all other targets here
   print $fh "$crlf$crlf@targets:$crlf";
   foreach my $project (@list) {
-    my($dname) = dirname($project);
+    my($dname) = $self->mpc_dirname($project);
     print $fh "\t\@" .
               ($dname ne '.' ? "cd $dname; " : '') .
               "\$(MAKE) PWD=`pwd` -f " .
@@ -89,7 +89,7 @@ sub write_comps {
 
   ## Print out each target separately
   foreach my $project (@list) {
-    my($dname) = dirname($project);
+    my($dname) = $self->mpc_dirname($project);
     print $fh $crlf, '.PHONY: ', $$pjs{$project}->[0],
               $crlf, $$pjs{$project}->[0], ':';
     if (defined $targnum{$project}) {
