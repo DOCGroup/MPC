@@ -1,3 +1,9 @@
+Wed Aug 11 10:08:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+          Corrected handling of resource files so that we can handle the
+          resource files in the TAO libraries
+
 Tue Aug 10 17:10:38 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* automake.mpd:
