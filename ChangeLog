@@ -1,3 +1,26 @@
+Mon Apr 12 10:00:56 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Switched the files_written structure to a hash array instead of an
+          array to make searches within that structure faster.
+
+        * modules/WorkspaceCreator.pm:
+
+          When generating workspaces, only write out the workspace if it is
+          the main workspace that corresponds to an mwc file or it hasn't
+          been written out yet.
+
+        * templates/vc7.mpd:
+        * templates/vc7dll.mpt:
+        * templates/vc7exe.mpt:
+        * templates/vc7lib.mpt:
+        * templates/vc7libexe.mpt:
+
+          Removed the 'debug' template keyword.  It was unnecessary and
+          conflicted with the Debug configuration now that these are
+          case-insensitive.
+
 Fri Apr  9 21:19:34 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:

@@ -702,63 +702,65 @@ sub write_workspace {
         mkpath($dir, 0, 0777);
       }
 
-      if ($self->compare_output()) {
-        ## First write the output to a temporary file
-        my($tmp) = "MWC$>.$$";
-        my($different) = 1;
-        if (open($fh, ">$tmp")) {
-          $self->pre_workspace($fh);
-          $self->write_comps($fh, $creator);
-          $self->post_workspace($fh);
-          close($fh);
+      if ($addfile || !$self->file_written($name)) {
+        if ($self->compare_output()) {
+          ## First write the output to a temporary file
+          my($tmp) = "MWC$>.$$";
+          my($different) = 1;
+          if (open($fh, ">$tmp")) {
+            $self->pre_workspace($fh);
+            $self->write_comps($fh, $creator);
+            $self->post_workspace($fh);
+            close($fh);
 
-          if (-r $name &&
-              -s $tmp == -s $name && compare($tmp, $name) == 0) {
-            $different = 0;
+            if (-r $name &&
+                -s $tmp == -s $name && compare($tmp, $name) == 0) {
+              $different = 0;
+            }
           }
-        }
-        else {
-          $error = "Unable to open $tmp for output.";
-          $status = 0;
-        }
+          else {
+            $error = "Unable to open $tmp for output.";
+            $status = 0;
+          }
 
-        if ($status) {
-          if ($different) {
-            unlink($name);
-            if (rename($tmp, $name)) {
+          if ($status) {
+            if ($different) {
+              unlink($name);
+              if (rename($tmp, $name)) {
+                if ($addfile) {
+                  $self->add_file_written($name);
+                }
+              }
+              else {
+                $error = 'Unable to open ' . $self->getcwd() .
+                         "/$name for output";
+                $status = 0;
+              }
+            }
+            else {
+              ## We will pretend that we wrote the file
+              unlink($tmp);
               if ($addfile) {
                 $self->add_file_written($name);
               }
             }
-            else {
-              $error = 'Unable to open ' . $self->getcwd() .
-                       "/$name for output";
-              $status = 0;
-            }
           }
-          else {
-            ## We will pretend that we wrote the file
-            unlink($tmp);
+        }
+        else {
+          if (open($fh, ">$name")) {
+            $self->pre_workspace($fh);
+            $self->write_comps($fh, $creator);
+            $self->post_workspace($fh);
+            close($fh);
+
             if ($addfile) {
               $self->add_file_written($name);
             }
           }
-        }
-      }
-      else {
-        if (open($fh, ">$name")) {
-          $self->pre_workspace($fh);
-          $self->write_comps($fh, $creator);
-          $self->post_workspace($fh);
-          close($fh);
-
-          if ($addfile) {
-            $self->add_file_written($name);
+          else {
+            $error = "Unable to open $name for output.";
+            $status = 0;
           }
-        }
-        else {
-          $error = "Unable to open $name for output.";
-          $status = 0;
         }
       }
     }
