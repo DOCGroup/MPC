@@ -2,8 +2,8 @@ package VC8ProjectCreator;
 
 # ************************************************************
 # Description   : A VC8 Project Creator
-# Author        : Chad Elliott
-# Create Date   : 4/17/2003
+# Author        : Johnny Willemsen
+# Create Date   : 4/21/2004
 # ************************************************************
 
 # ************************************************************
@@ -12,7 +12,7 @@ package VC8ProjectCreator;
 
 use strict;
 
-use VC8ProjectCreator;
+use VC7ProjectCreator;
 
 use vars qw(@ISA);
 @ISA = qw(VC7ProjectCreator);
@@ -22,8 +22,8 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub get_vcversion {
-  #my($self)  = shift;
-  return '8,00';
+  #my($self) = shift;
+  return '8.00';
 }
 
 1;
