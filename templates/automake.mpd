@@ -171,7 +171,7 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%if(pkgconfig_files)%>
 <%foreach(pkgconfig_files)%>
 
-pkgconfigdata_DATA = <%pkgconfig_file%>
+pkgconfigdata_DATA += <%basenoextension(pkgconfig_file)%>
 
 <%basenoextension(pkgconfig_file)%>: ${top_srcdir}/config.status ${srcdir}/<%pkgconfig_file%>
         ${top_srcdir}/config.status --file $@:${srcdir}/<%pkgconfig_file%>
@@ -186,9 +186,12 @@ endif !BUILD_<%uc(rev_avoid)%>
 endif BUILD_<%uc(rev_require)%>
 <%endfor%>
 <%endif%>
-<%if(resource_files)%>
+<%if(pkgconfig_files || resource_files)%>
 
 EXTRA_DIST += \
+<%foreach(pkgconfig_files)%>
+  <%pkgconfig_file%><%if(resource_files)%> \<%else%><fornotlast(" \\)%><%endif%>
+<%endfor%>
 <%foreach(resource_files)%>
   <%resource_file%><%fornotlast(" \\")%>
 <%endfor%>
