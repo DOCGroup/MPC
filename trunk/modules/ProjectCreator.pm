@@ -275,6 +275,7 @@ sub new {
   $self->{'generate_ins'}          = $genins;
   $self->{'addtemp_state'}         = undef;
   $self->{'command_subs'}          = $self->get_command_subs();
+  $self->{'use_reldefs'}           = $self->use_reldefs();
 
   $self->add_default_matching_assignments();
   $self->reset_generating_types();
@@ -3774,7 +3775,7 @@ sub relative {
   my($value)           = shift;
   my($expand_template) = shift;
 
-  if (defined $value) {
+  if (defined $value && $self->{'use_reldefs'}) {
     if (UNIVERSAL::isa($value, 'ARRAY')) {
       my(@built) = ();
       foreach my $val (@$value) {
@@ -4039,6 +4040,12 @@ sub remove_non_custom_settings {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub use_reldefs {
+  #my($self) = shift;
+  return 1;
+}
+
 
 sub validated_directory {
   my($self) = shift;
