@@ -834,7 +834,7 @@ sub parse_components {
     }
   }
 
-  if ($status && $count != 0) {
+  if ($status && $count == 0) {
     my(@exc) = keys %exclude;
 
     if (scalar(@exc) != 0) {
