@@ -659,24 +659,32 @@ sub handle_unknown_assignment {
 
   ## If $type is not defined, then we are skipping this section
   if (defined $type) {
-    ## Save the addtemp state if we haven't done so before
-    if (!defined $self->{'addtemp_state'}) {
-      my(%state) = $self->save_state('addtemp');
-      $self->{'addtemp_state'} = \%state;
-    }
+    ## If the template override has already been set, then
+    ## we will ignore this and keep the original value.
+    if (!defined $self->get_addtemp()->{$values[1]}) {
+      ## Save the addtemp state if we haven't done so before
+      if (!defined $self->{'addtemp_state'}) {
+        my(%state) = $self->save_state('addtemp');
+        $self->{'addtemp_state'} = \%state;
+      }
 
-    ## Now modify the addtemp values
-    $self->information("'$values[1]' was used as a template modifier.");
-    if ($values[0] eq 'assign_add') {
-      $values[0] = 1;
-    }
-    elsif ($values[0] eq 'assign_sub') {
-      $values[0] = -1;
+      ## Now modify the addtemp values
+      $self->information("'$values[1]' was used as a template modifier.");
+      if ($values[0] eq 'assign_add') {
+        $values[0] = 1;
+      }
+      elsif ($values[0] eq 'assign_sub') {
+        $values[0] = -1;
+      }
+      else {
+        $values[0] = 0;
+      }
+      $self->get_addtemp()->{$values[1]} = [$values[0], $values[2]];
     }
     else {
-      $values[0] = 0;
+      $self->information("'$values[1]' was used as a template modifier. " .
+                         "It has been set previously and will be ignored.");
     }
-    $self->get_addtemp()->{$values[1]} = [$values[0], $values[2]];
   }
 
   return 1, undef;
@@ -2559,6 +2567,61 @@ sub update_project_info {
 }
 
 
+sub adjust_value {
+  my($self)  = shift;
+  my($name)  = shift;
+  my($value) = shift;
+
+  ## Perform any additions, subtractions
+  ## or overrides for the template values.
+  if (defined $self->get_addtemp()->{lc($name)}) {
+    my($val) = $self->get_addtemp()->{lc($name)};
+    my($arr) = $self->create_array($$val[1]);
+    if ($$val[0] > 0) {
+      if (UNIVERSAL::isa($value, 'ARRAY')) {
+        ## We need to make $value a new array reference ($arr)
+        ## to avoid modifying the array reference pointed to by $value
+        unshift(@$arr, @$value);
+        $value = $arr;
+      }
+      else {
+        $value .= " $$val[1]";
+      }
+    }
+    elsif ($$val[0] < 0) {
+      my($parts) = undef;
+      if (UNIVERSAL::isa($value, 'ARRAY')) {
+        $parts = $value;
+      }
+      else {
+        $parts = $self->create_array($value);
+      }
+
+      $value = [];
+      foreach my $part (@$parts) {
+        if ($part ne '') {
+          my($found) = 0;
+          foreach my $ae (@$arr) {
+            if ($part eq $ae) {
+              $found = 1;
+              last;
+            }
+          }
+          if (!$found) {
+            push(@$value, $part);
+          }
+        }
+      }
+    }
+    else {
+      $value = $arr;
+    }
+  }
+
+  return $value;
+}
+
+
 sub relative {
   my($self)  = shift;
   my($value) = shift;
@@ -2625,6 +2688,21 @@ sub relative {
               }
               substr($value, $start) =~ s/\$\([^)]+\)/$ival/;
               $whole = $ival;
+            }
+          }
+          elsif ($self->expand_variables_from_template_values()) {
+            my($ti) = $self->get_template_input();
+            if (defined $ti) {
+              $val = $ti->get_value($name);
+            }
+            my($arr) = $self->adjust_value($name, (defined $val ? $val : []));
+            if (defined $$arr[0]) {
+              $val = "@$arr";
+              if ($self->{'convert_slashes'}) {
+                $val = $self->slash_to_backslash($val);
+              }
+              substr($value, $start) =~ s/\$\([^)]+\)/$val/;
+              $whole = $val;
             }
           }
           $start += length($whole);
@@ -2756,6 +2834,13 @@ sub dollar_special {
   #my($self) = shift;
   return 0;
 }
+
+
+sub expand_variables_from_template_values {
+  #my($self) = shift;
+  return 1;
+}
+
 
 sub translate_value {
   my($self) = shift;

@@ -54,7 +54,6 @@ sub new {
   $self->{'prjc'}     = $prjc;
   $self->{'ti'}       = $prjc->get_template_input();
   $self->{'cslashes'} = $prjc->convert_slashes();
-  $self->{'addtemp'}  = $prjc->get_addtemp();
   $self->{'crlf'}     = $prjc->crlf();
   $self->{'clen'}     = length($self->{'crlf'});
   $self->{'values'}   = {};
@@ -140,61 +139,6 @@ sub append_current {
 }
 
 
-sub adjust_value {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = shift;
-
-  ## Perform any additions, subtractions
-  ## or overrides for the template values.
-  if (defined $self->{'addtemp'}->{$name}) {
-    my($val) = $self->{'addtemp'}->{$name};
-    my($arr) = $self->create_array($$val[1]);
-    if ($$val[0] > 0) {
-      if (UNIVERSAL::isa($value, 'ARRAY')) {
-        ## We need to make $value a new array reference ($arr)
-        ## to avoid modifying the array reference pointed to by $value
-        unshift(@$arr, @$value);
-        $value = $arr;
-      }
-      else {
-        $value .= " $$val[1]";
-      }
-    }
-    elsif ($$val[0] < 0) {
-      my($parts) = undef;
-      if (UNIVERSAL::isa($value, 'ARRAY')) {
-        $parts = $value;
-      }
-      else {
-        $parts = $self->create_array($value);
-      }
-
-      $value = [];
-      foreach my $part (@$parts) {
-        if ($part ne '') {
-          my($found) = 0;
-          foreach my $ae (@$arr) {
-            if ($part eq $ae) {
-              $found = 1;
-              last;
-            }
-          }
-          if (!$found) {
-            push(@$value, $part);
-          }
-        }
-      }
-    }
-    else {
-      $value = $arr;
-    }
-  }
-
-  return $value;
-}
-
-
 sub set_current_values {
   my($self) = shift;
   my($name) = shift;
@@ -210,7 +154,7 @@ sub set_current_values {
       if (defined $value && UNIVERSAL::isa($value, 'HASH')) {
         my(%copy) = ();
         foreach my $key (keys %$value) {
-          $copy{$key} = $self->adjust_value($key, $$value{$key});
+          $copy{$key} = $self->{'prjc'}->adjust_value($key, $$value{$key});
         }
         $self->{'foreach'}->{'temp_scope'}->[$counter] = \%copy;
         $set = 1;
@@ -259,7 +203,13 @@ sub get_value {
     if (defined $self->{'ti'}) {
       $value = $self->{'ti'}->get_value($name);
       if (defined $value) {
-        $value = $self->adjust_value($name, $value);
+        $value = $self->{'prjc'}->adjust_value($name, $value);
+      }
+      else {
+        my($uvalue) = $self->{'prjc'}->adjust_value($name, []);
+        if (defined $$uvalue[0]) {
+          $value = $uvalue;
+        }
       }
     }
 
@@ -304,7 +254,7 @@ sub get_value_with_default {
     $value = $self->{'defaults'}->{$name};
     if (defined $value) {
       $value = $self->{'prjc'}->relative(
-                       $self->adjust_value($name, $value));
+                       $self->{'prjc'}->adjust_value($name, $value));
     }
     else {
       #$self->warning("$name defaulting to empty string.");
