@@ -20,8 +20,7 @@ Static Release {
 
 Static Debug {
   type_is_static   = 1
-  optimize         = 0
-  debug            = 1
+  optimize         =
   defines          = _DEBUG
   output_dir       = Static_Debug
   intermediate_dir = Static_Debug
@@ -44,8 +43,7 @@ Static MFC Release {
 
 Static MFC Debug {
   type_is_static   = 1
-  optimize         = 0
-  debug            = 1
+  optimize         =
   defines          = _DEBUG
   output_dir       = Static_MFC_Debug
   intermediate_dir = Static_MFC_Debug

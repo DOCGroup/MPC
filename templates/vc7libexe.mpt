@@ -22,8 +22,7 @@ Static Release {
 }
 
 Static Debug {
-  optimize         = 0
-  debug            = 1
+  optimize         =
   defines          = _DEBUG
   output_dir       = Static_Debug
   intermediate_dir = Static_Debug
@@ -44,8 +43,7 @@ Static MFC Release {
 }
 
 Static MFC Debug {
-  optimize         = 0
-  debug            = 1
+  optimize         =
   defines          = _DEBUG _AFXDLL
   output_dir       = Static_MFC_Debug
   intermediate_dir = Static_MFC_Debug

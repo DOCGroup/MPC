@@ -69,7 +69,7 @@ sub new {
   $self->{'addtemp'}         = $addtemp;
   $self->{'addproj'}         = $addproj;
   $self->{'toplevel'}        = $toplevel;
-  $self->{'files_written'}   = [];
+  $self->{'files_written'}   = {};
   $self->{'reading_global'}  = 0;
   $self->{'global_assign'}   = {};
   $self->{'assign'}          = {};
@@ -151,8 +151,8 @@ sub generate {
   my($input)  = shift;
   my($status) = 1;
 
-  ## Reset the files_written array between processing each file
-  $self->{'files_written'}  = [];
+  ## Reset the files_written hash array between processing each file
+  $self->{'files_written'}  = {};
 
   ## Allow subclasses to reset values before
   ## each call to generate().
@@ -464,21 +464,15 @@ sub file_written {
 sub add_file_written {
   my($self) = shift;
   my($file) = shift;
+  my($key)  = lc($file);
 
-  foreach my $written (@{$self->{'files_written'}}) {
-    if ($written eq $file) {
-      $self->warning("$file has been overwritten by a " .
-                     "$self->{'grammar_type'} with a duplicate name.");
-      last;
-    }
-    elsif (lc($written) eq lc($file)) {
-      $self->warning("$file has been overwritten by a " .
-                     "$self->{'grammar_type'} with different casing: " .
-                     "$written.");
-      last;
-    }
+  if (defined $self->{'files_written'}->{$key}) {
+    $self->warning("$self->{'grammar_type'} $file has " .
+                   "possibly been overwritten.");
   }
-  push(@{$self->{'files_written'}}, $file);
+  else {
+    $self->{'files_written'}->{$key} = $file;
+  }
 
   $all_written{$self->getcwd() . '/' . $file} = 1;
 }
@@ -780,7 +774,8 @@ sub get_toplevel {
 
 sub get_files_written {
   my($self) = shift;
-  return $self->{'files_written'};
+  my(@keys) = keys %{$self->{'files_written'}};
+  return \@keys;
 }
 
 
