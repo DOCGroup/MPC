@@ -8,7 +8,7 @@
 <%marker(top)%>
 <%foreach(configurations)%>
 !ifdef <%uc(configuration)%>
-OCFLAGS      = <%if(optimize)%>-O2<%else%>-v -y -Od -vi- -k<%endif%><%foreach(defines)%> -D<%define%><%endfor%>
+OCFLAGS      = <%if(optimize)%>-O2<%else%>-v -y -Od -vi- -k<%endif%><%foreach(defines debug_macros)%> -D<%define%><%endfor%>
 CFG_DIR      = <%intermediate_dir%>\\
 LIBMODIFIER  = <%lib_modifier%>
 EXEMODIFIER  = <%if(use_modifier)%><%lib_modifier%><%endif%>
@@ -267,7 +267,7 @@ clean:
 
 realclean: clean
 <%if(custom_types)%>
-	del $(GENERATED_DIRTY)
+	if not "$(GENERATED_DIRTY)" == "" del $(GENERATED_DIRTY)
 <%endif%>
 <%if(exename)%>
 	if exist "$(OUTPUTDIR)$(NAME)$(EXE_EXT)" del $(OUTPUTDIR)$(NAME)$(EXE_EXT)
