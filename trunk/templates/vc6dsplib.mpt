@@ -45,7 +45,7 @@ MFC Release {
   intermediate_dir      = MFC_Release
   lib_modifier          = mfcs
   debug_switch          =
-  use_mfc               = 1
+  use_mfc               = 2
 }
 
 MFC Debug {
@@ -58,7 +58,7 @@ MFC Debug {
   intermediate_dir      = MFC_Debug
   lib_modifier          = mfcsd
   pdb                   = 1
-  use_mfc               = 1
+  use_mfc               = 2
 }
 
 conditional_include "vcpartialmacros"
