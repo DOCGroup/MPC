@@ -105,7 +105,7 @@ sub tp_dirname {
   for(my $i = length($file) - 1; $i != 0; --$i) {
     my($ch) = substr($file, $i, 1);
     if ($ch eq '/' || $ch eq '\\') {
-      return substr($file, 0, $i);
+      return $self->{'prjc'}->validated_directory(substr($file, 0, $i));
     }
   }
   return '.';
