@@ -41,6 +41,7 @@ my(%keywords) = ('if'              => 0,
                  'fornotlast'      => 0,
                  'forlast'         => 0,
                  'endfor'          => 0,
+                 'eval'            => 0,
                  'comment'         => 0,
                  'marker'          => 0,
                  'uc'              => 0,
@@ -75,6 +76,9 @@ sub new {
   $self->{'sstack'}     = [];
   $self->{'lstack'}     = [];
   $self->{'if_skip'}    = 0;
+  $self->{'eval'}       = 0;
+  $self->{'eval_str'}   = '';
+  $self->{'cmds'}       = $prjc->get_command_subs();
 
   $self->{'foreach'}  = {};
   $self->{'foreach'}->{'count'}      = -1;
@@ -142,6 +146,9 @@ sub append_current {
   if ($_[0]->{'foreach'}->{'count'} >= 0) {
     $_[0]->{'foreach'}->{'text'}->[$_[0]->{'foreach'}->{'count'}] .= $_[1];
   }
+  elsif ($_[0]->{'eval'}) {
+    $_[0]->{'eval_str'} .= $_[1];
+  }
   else {
     $_[0]->{'built'} .= $_[1];
   }
@@ -201,11 +208,11 @@ sub get_value {
       if (defined $value) {
         $value = $self->{'prjc'}->adjust_value($name, $value);
       }
-      else {
-        my($uvalue) = $self->{'prjc'}->adjust_value($name, []);
-        if (defined $$uvalue[0]) {
-          $value = $uvalue;
-        }
+    }
+    if (!defined $value) {
+      my($uvalue) = $self->{'prjc'}->adjust_value($name, []);
+      if (defined $$uvalue[0]) {
+        $value = $uvalue;
       }
     }
 
@@ -954,6 +961,43 @@ sub handle_marker {
 }
 
 
+sub handle_eval {
+  my($self) = shift;
+  my($name) = shift;
+  my($val)  = $self->get_value_with_default($name);
+
+  if (defined $val) {
+    if ($val =~ /<%eval\($name\)%>/) {
+      $self->warning("Infinite recursion detected in '$name'.");
+    }
+    else {
+      ## Enter the eval state
+      ++$self->{'eval'};
+
+      ## Parse the eval line
+      my($status, $error) = $self->parse_line(undef, $val);
+      if ($status) {
+        $self->{'built'} .= $self->{'eval_str'};
+      }
+      else {
+        $self->warning($error);
+      }
+
+      ## Leave the eval state
+      --$self->{'eval'};
+      $self->{'eval_str'} = '';
+    }
+  }
+}
+
+
+sub handle_pseudo {
+  my($self) = shift;
+  my($name) = shift;
+  $self->append_current($self->{'cmds'}->{$name});
+}
+
+
 sub prepare_parameters {
   my($self)   = shift;
   my($prefix) = shift;
@@ -1011,44 +1055,51 @@ sub process_name {
       $length += length($val) + 2;
     }
 
-    if ($status && defined $keywords{$name}) {
-      if ($name eq 'endif') {
-        ($status, $errorString) = $self->handle_endif($name);
-      }
-      elsif ($name eq 'if') {
-        $self->handle_if($val);
-      }
-      elsif ($name eq 'endfor') {
-        ($status, $errorString) = $self->handle_endfor($name);
-      }
-      elsif ($name eq 'foreach') {
-        ($status, $errorString) = $self->handle_foreach($val);
-      }
-      elsif ($name eq 'fornotlast'  || $name eq 'forlast' ||
-             $name eq 'fornotfirst' || $name eq 'forfirst') {
-        if (!$self->{'if_skip'}) {
-          $self->handle_special($name, $self->process_special($val));
+    if ($status) {
+      if (defined $keywords{$name}) {
+        if ($name eq 'endif') {
+          ($status, $errorString) = $self->handle_endif($name);
+        }
+        elsif ($name eq 'if') {
+          $self->handle_if($val);
+        }
+        elsif ($name eq 'endfor') {
+          ($status, $errorString) = $self->handle_endfor($name);
+        }
+        elsif ($name eq 'foreach') {
+          ($status, $errorString) = $self->handle_foreach($val);
+        }
+        elsif ($name eq 'fornotlast'  || $name eq 'forlast' ||
+               $name eq 'fornotfirst' || $name eq 'forfirst') {
+          if (!$self->{'if_skip'}) {
+            $self->handle_special($name, $self->process_special($val));
+          }
+        }
+        elsif ($name eq 'else') {
+          ($status, $errorString) = $self->handle_else();
+        }
+        elsif ($name eq 'comment') {
+          ## Ignore the contents of the comment
+        }
+        else {
+          if (!$self->{'if_skip'}) {
+            my($func) = 'handle_' . $name;
+            $self->$func($val);
+          }
         }
       }
-      elsif ($name eq 'else') {
-        ($status, $errorString) = $self->handle_else();
-      }
-      elsif ($name eq 'comment') {
-        ## Ignore the contents of the comment
+      elsif (defined $self->{'cmds'}->{$name}) {
+        if (!$self->{'if_skip'}) {
+          $self->handle_pseudo($name);
+        }
       }
       else {
         if (!$self->{'if_skip'}) {
-          my($func) = 'handle_' . $name;
-          $self->$func($val);
+          if (defined $val && !defined $self->{'defaults'}->{$name}) {
+            $self->{'defaults'}->{$name} = $self->process_special($val);
+          }
+          $self->append_current($self->get_value_with_default($name));
         }
-      }
-    }
-    else {
-      if (!$self->{'if_skip'}) {
-        if (defined $val && !defined $self->{'defaults'}->{$name}) {
-          $self->{'defaults'}->{$name} = $self->process_special($val);
-        }
-        $self->append_current($self->get_value_with_default($name));
       }
     }
   }
@@ -1063,7 +1114,7 @@ sub process_name {
       }
     }
     $status = 0;
-    $errorString = "Unable to parse line starting at $error";
+    $errorString = "Unable to parse line starting at '$error'";
   }
 
   return $status, $errorString, $length;
@@ -1149,14 +1200,14 @@ sub parse_line {
   ## If processing a foreach or the line only
   ## contains a keyword, then we do
   ## not need to add a newline to the end.
-  if ($self->{'foreach'}->{'processing'} == 0) {
+  if (!$self->{'eval'} && $self->{'foreach'}->{'processing'} == 0) {
     if ($line !~ /^[ ]*<%(\w+)(\(((\w+\s*,\s*)?\w+\(.+\)|[^\)]+)\))?%>$/ ||
         !defined $keywords{$1}) {
       $line .= $self->{'crlf'};
     }
   }
 
-  if ($self->{'foreach'}->{'count'} < 0) {
+  if (!$self->{'eval'} && $self->{'foreach'}->{'count'} < 0) {
     $self->{'built'} = '';
   }
 
@@ -1244,7 +1295,7 @@ sub parse_line {
     }
   }
 
-  if ($self->{'foreach'}->{'count'} < 0) {
+  if (!$self->{'eval'} && $self->{'foreach'}->{'count'} < 0) {
     ## If the line started out empty and we're not
     ## skipping from the start or the built up line is not empty
     if ($startempty ||
@@ -1269,7 +1320,7 @@ sub parse_file {
     if (defined $$sstack[0]) {
       my($lstack) = $self->{'lstack'};
       $status = 0;
-      $errorString = "Missing an $$sstack[0] starting at $$lstack[0]";
+      $errorString = "Missing an '$$sstack[0]' starting at $$lstack[0]";
     }
   }
 

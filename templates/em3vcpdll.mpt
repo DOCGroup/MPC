@@ -2,6 +2,7 @@
 // $Id$
 
 conditional_include "common"
+conditional_include "windowscommon"
 
 type_description      = "Dynamic-Link Library"
 configurations        = Release Debug

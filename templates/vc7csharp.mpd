@@ -35,7 +35,7 @@
                 OutputType = "<%if(exename)%><%if(winapp)%>Win<%endif%>Exe<%else%>Library<%endif%>"
 <%endif%>
                 PreBuildEvent = ""
-                PostBuildEvent = ""
+                PostBuildEvent = "<%if(postbuild)%><%eval(postbuild)%><%endif%>"
                 RootNamespace = ""
                 RunPostBuildEvent = "OnBuildSuccess"
                 StartupObject = "<%startupobject%>"
