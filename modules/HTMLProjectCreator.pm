@@ -141,15 +141,9 @@ sub fill_value {
 }
 
 
-sub project_file_name {
-  my($self) = shift;
-  my($name) = shift;
-
-  if (!defined $name) {
-    $name = $self->project_name();
-  }
-
-  return "$name.html";
+sub project_file_extension {
+  #my($self) = shift;
+  return '.html';
 }
 
 

@@ -71,10 +71,12 @@ CLEANFILES += \
 
 <%endfor%>
 <%endif%>
+<%if(source_files)%>
 <%if(exename)%>
 <%if(install_this_target)%>bin<%else%>noinst<%endif%>_PROGRAMS += <%exename%>
 <%else%>
 <%if(install_this_target)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
+<%endif%>
 <%endif%>
 <%if(am_includes || defines || common_defines || need_staticflags || dynamicflags)%>
 
@@ -107,7 +109,7 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%endif%>
 <%endif%>
 <%endif%>
-<%if(grouped_source_files || source_files)%>
+<%if(source_files)%>
 
 <%if(exename)%>
 <%normalize(exename)%>_SOURCES = \

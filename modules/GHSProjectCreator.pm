@@ -41,15 +41,9 @@ sub convert_slashes {
 }
 
 
-sub project_file_name {
-  my($self) = shift;
-  my($name) = shift;
-
-  if (!defined $name) {
-    $name = $self->project_name();
-  }
-
-  return $self->get_modified_project_file_name("$name", '.bld');
+sub project_file_extension {
+  #my($self) = shift;
+  return '.bld';
 }
 
 

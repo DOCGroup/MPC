@@ -13,31 +13,15 @@ package BMakeProjectCreator;
 use strict;
 
 use ProjectCreator;
+use WinProjectBase;
+use MakeProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(ProjectCreator);
+@ISA = qw(MakeProjectBase WinProjectBase ProjectCreator);
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
-
-sub dollar_special {
-  #my($self) = shift;
-  return 1;
-}
-
-
-sub sort_files {
-  #my($self) = shift;
-  return 0;
-}
-
-
-sub crlf {
-  my($self) = shift;
-  return $self->windows_crlf();
-}
-
 
 sub fill_value {
   my($self)  = shift;
@@ -68,15 +52,9 @@ sub fill_value {
 }
 
 
-sub project_file_name {
-  my($self) = shift;
-  my($name) = shift;
-
-  if (!defined $name) {
-    $name = $self->project_name();
-  }
-
-  return $self->get_modified_project_file_name($name, '.bmak');
+sub project_file_extension {
+  #my($self) = shift;
+  return '.bmak';
 }
 
 

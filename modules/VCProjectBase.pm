@@ -1,9 +1,9 @@
-package MakeProjectCreator;
+package VCProjectBase;
 
 # ************************************************************
-# Description   : A Generic Make Project Creator
+# Description   : A VC Project base module
 # Author        : Chad Elliott
-# Create Date   : 2/18/2003
+# Create Date   : 1/4/2005
 # ************************************************************
 
 # ************************************************************
@@ -12,37 +12,36 @@ package MakeProjectCreator;
 
 use strict;
 
-use MakeProjectBase;
-use ProjectCreator;
+use WinProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(MakeProjectBase ProjectCreator);
+@ISA = qw(WinProjectBase);
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
-sub convert_slashes {
+sub compare_output {
+  #my($self) = shift;
+  return 1;
+}
+
+
+sub require_dependencies {
+  my($self) = shift;
+
+  ## Only write dependencies for non-static projects
+  ## and static exe projects, unless the user wants the
+  ## dependency combined static library.
+  return ($self->get_static() == 0 || $self->exe_target() ||
+          $self->dependency_combined_static_library());
+}
+
+
+sub dependency_is_filename {
   #my($self) = shift;
   return 0;
 }
 
-
-sub get_dll_exe_template_input_file {
-  #my($self) = shift;
-  return 'makeexe';
-}
-
-
-sub get_dll_template_input_file {
-  #my($self) = shift;
-  return 'makedll';
-}
-
-
-sub get_template {
-  #my($self) = shift;
-  return 'make';
-}
 
 1;
