@@ -37,6 +37,7 @@ my(%validNames) = ('cmdline'  => 1,
 ## Singleton hash maps of project information
 my(%allprinfo)   = ();
 my(%allprojects) = ();
+my(%allliblocs)  = ();
 
 ## Global previous workspace names
 my(%previous_workspace_name) = ();
@@ -85,6 +86,7 @@ sub new {
   $self->{$self->{'type_check'}} = 0;
   $self->{'projects'}            = [];
   $self->{'project_info'}        = {};
+  $self->{'lib_locations'}       = {};
   $self->{'reading_parent'}      = [];
   $self->{'project_files'}       = [];
   $self->{'scoped_assign'}       = {};
@@ -804,9 +806,11 @@ sub save_project_info {
   my($self)     = shift;
   my($gen)      = shift;
   my($gpi)      = shift;
+  my($gll)      = shift;
   my($dir)      = shift;
   my($projects) = shift;
   my($pi)       = shift;
+  my($ll)       = shift;
   my($c)        = 0;
 
   ## For each file written
@@ -819,6 +823,10 @@ sub save_project_info {
     ## in the hash map keyed on the full project file name
     $$pi{$full} = $$gpi[$c];
     $c++;
+  }
+
+  foreach my $key (keys %$gll) {
+    $$ll{$key} = $$gll{$key};
   }
 }
 
@@ -920,6 +928,7 @@ sub generate_project_files {
   my($status)    = (scalar @{$self->{'project_files'}} == 0 ? 1 : 0);
   my(@projects)  = ();
   my(%pi)        = ();
+  my(%liblocs)   = ();
   my($creator)   = $self->project_creator();
   my($cwd)       = $self->getcwd();
   my($impl)      = $self->get_assignment('implicit');
@@ -989,11 +998,13 @@ sub generate_project_files {
       ## We must change to the subdirectory for
       ## which this project file is intended
       if ($self->cd($dir)) {
-        my($gen) = [];
-        my($gpi) = [];
+        my($files_written) = [];
+        my($gen_proj_info) = [];
+        my($gen_lib_locs)  = {};
         if ($self->{'cacheok'} && defined $allprojects{$prkey}) {
-          $gen = $allprojects{$prkey};
-          $gpi = $allprinfo{$prkey};
+          $files_written = $allprojects{$prkey};
+          $gen_proj_info = $allprinfo{$prkey};
+          $gen_lib_locs  = $allliblocs{$prkey};
           $status = 1;
         }
         else {
@@ -1009,16 +1020,20 @@ sub generate_project_files {
 
           ## Get the individual project information and
           ## generated file name(s)
-          $gen = $creator->get_files_written();
-          $gpi = $creator->get_project_info();
+          $files_written = $creator->get_files_written();
+          $gen_proj_info = $creator->get_project_info();
+          $gen_lib_locs  = $creator->get_lib_locations();
 
           if ($self->{'cacheok'}) {
-            $allprojects{$prkey} = $gen;
-            $allprinfo{$prkey}   = $gpi;
+            $allprojects{$prkey} = $files_written;
+            $allprinfo{$prkey}   = $gen_proj_info;
+            $allliblocs{$prkey}  = $gen_lib_locs;
           }
         }
         $self->cd($cwd);
-        $self->save_project_info($gen, $gpi, $dir, \@projects, \%pi);
+        $self->save_project_info($files_written, $gen_proj_info,
+                                 $gen_lib_locs, $dir,
+                                 \@projects, \%pi, \%liblocs);
       }
       else {
         ## Unable to change to the directory.
@@ -1053,6 +1068,7 @@ sub generate_project_files {
   }
 
   ## If we are generating the hierarchical workspaces, then do so
+  $self->{'lib_locations'} = \%liblocs;
   if ($self->get_hierarchy() || $self->workspace_per_project()) {
     my($orig) = $self->{'workspace_name'};
     $self->generate_hierarchy($creator, \@projects, \%pi);
@@ -1060,8 +1076,8 @@ sub generate_project_files {
   }
 
   ## Reset the projects and project_info
-  $self->{'projects'}     = \@projects;
-  $self->{'project_info'} = \%pi;
+  $self->{'projects'}      = \@projects;
+  $self->{'project_info'}  = \%pi;
 
   return $status, $creator;
 }
@@ -1228,6 +1244,12 @@ sub get_projects {
 sub get_project_info {
   my($self) = shift;
   return $self->{'project_info'};
+}
+
+
+sub get_lib_locations {
+  my($self) = shift;
+  return $self->{'lib_locations'};
 }
 
 
