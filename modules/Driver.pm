@@ -318,24 +318,25 @@ sub run {
         }
         $file = $base;
       }
-      print 'Generating ' . $self->extractType($name) . ' output using ';
+      my($diag) = 'Generating ' . $self->extractType($name) . ' output using ';
       if ($file eq '') {
-        print 'default input';
+        $diag .= 'default input';
       }
       else {
         my($partial)  = $self->getcwd();
         my($oescaped) = $self->escape_regex_special($orig_dir) . '(/)?';
         $partial =~ s/^$oescaped//;
-        print '' . ($partial ne '' ? "$partial/" : '') . $file;
+        $diag .= ($partial ne '' ? "$partial/" : '') . $file;
       }
-      print "\n" . 'Start Time: ' . scalar(localtime(time())) . "\n";
+      $self->diagnostic($diag);
+      $self->diagnostic('Start Time: ' . scalar(localtime(time())));
       if (!$creator->generate($file)) {
         $self->error("Unable to process: " .
                      ($file eq '' ? 'default input' : $file));
         $status++;
         last;
       }
-      print '  End Time: ' . scalar(localtime(time())) . "\n";
+      $self->diagnostic('  End Time: ' . scalar(localtime(time())));
       $creator->cd($orig_dir);
     }
     if ($status) {
@@ -348,8 +349,7 @@ sub run {
 
 
 sub progress {
-  ## This method will be called before each output
-  ## file (or set of output files in vc6's case) is written.
+  ## This method will be called before each output file is written.
   print "$progress[$index]\r";
   $index++;
   if ($index > $#progress) {
