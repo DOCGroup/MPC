@@ -1,3 +1,10 @@
+Mon Nov 29 11:24:05 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/automake.mpd:
+
+          Added top, macros and local markers.  It already had a bottom
+          marker.
+
 Thu Nov 25 06:55:36 2004  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/MakeWorkspaceCreator.pm:
