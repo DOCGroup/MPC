@@ -1319,27 +1319,34 @@ sub sort_by_groups {
   my(@groups)  = @$grindex;
   my($ccount)  = 0;
   my($cmax)    = $#groups;
-
-  ## If we go more than twice $#groups factorial, then there is
-  ## a circular dependency.
-  my($f) = $cmax - 1;
-  while($f > 1) {
-    $cmax *= $f--;
-  }
-  $cmax = ($cmax * 2) + 1;
+  my($prevgi)  = -1;
+  my($prevgrs) = [];
+  my($movegrs) = [];
 
   for(my $gi = 0; $gi <= $#groups; ++$gi) {
+    ## If our moved group equals our previously moved group then
+    ## we count this as a possible circular dependency.
+    if (defined $$movegrs[0] && defined $$prevgrs[0] &&
+        $$movegrs[0] == $$prevgrs[0] && $$movegrs[1] == $$prevgrs[1]) {
+      ++$ccount;
+    }
+    else {
+      $ccount = 0;
+    }
+
     ## Detect circular dependencies
     if ($ccount > $cmax) {
-      my($cprojs) = '';
-      for(my $j = $groups[$gi]->[0]; $j <= $groups[$gi]->[1]; ++$j) {
-        $cprojs .= ($j != $groups[$gi]->[0] ? ', ' : '') . $$list[$j];
+      my(@dirs) = ();
+      foreach my $mvgr (@$movegrs) {
+        push(@dirs, $$list[$groups[$mvgr]->[0]]);
+        $dirs[$#dirs] =~ s/[\/\\].*//;
       }
       $self->warning('Circular dependency detected while processing the ' .
                      ($self->{'current_input'} eq '' ?
                        'default' : $self->{'current_input'}) .
                      ' workspace. ' .
-                     "The following projects are involved: $cprojs");
+                     'The following directories are involved: ' .
+                     join(' and ', @dirs));
       return;
     }
 
@@ -1355,12 +1362,20 @@ sub sort_by_groups {
       }
     }
 
+    ## Keep track of the previous group movement
+    $prevgrs = $movegrs;
+    if ($prevgi < $gi) {
+      $movegrs = [];
+    }
+    $prevgi = $gi;
+
     ## Search the rest of the groups for any of the group dependencies
     my($moved) = 0;
     for(my $gj = $gi + 1; $gj <= $#groups; ++$gj) {
       for(my $i = $groups[$gj]->[0]; $i <= $groups[$gj]->[1]; ++$i) {
         if (defined $gdeps{basename($$list[$i])}) {
           ## Move this group ($gj) in front of the current group ($gi)
+          $movegrs = [$gj, $gi];
           my(@save) = ();
           for(my $j = $groups[$gi]->[1] + 1; $j <= $groups[$gj]->[1]; ++$j) {
             push(@save, $$list[$j]);
@@ -1398,7 +1413,6 @@ sub sort_by_groups {
         last;
       }
     }
-    ++$ccount;
   }
 }
 

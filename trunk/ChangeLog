@@ -1,52 +1,73 @@
+Thu Aug 26 09:14:57 2004  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeProjectCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Give proper credit to the authors of these files.
+
+        * modules/ProjectCreator.pm:
+        * modules/VC6ProjectCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+
+          Corrected a bug where dependencies would not be placed in the
+          workspace when the -apply_project option was used (in conjunction
+          with -name_modifier).
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a problem with the group circular dependency detection
+          algorithm.  Previously, it could take days to detect a circular
+          dependency if there were a large number of directories.
+
 Wed Aug 18 23:08:35 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeWorkspaceCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
 
-	  Changed to scan the generated project files for the use of
-	  $(ACE_ROOT), $(TAO_ROOT), etc. and provide the appropriate
-	  definition if they are found.  While this behavior is ACE/TAO
-	  specific, there isn't much that can be done without something
-	  like a workspace template.
+          Changed to scan the generated project files for the use of
+          $(ACE_ROOT), $(TAO_ROOT), etc. and provide the appropriate
+          definition if they are found.  While this behavior is ACE/TAO
+          specific, there isn't much that can be done without something
+          like a workspace template.
 
 Wed Aug 18 08:56:01 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Changed to use am_includes, rev_avoids, and rev_requires.
+          Changed to use am_includes, rev_avoids, and rev_requires.
 
-	* modules/AutomakeProjectCreator.pm:
+        * modules/AutomakeProjectCreator.pm:
 
-	  Changed fill_value to understand am_includes, rev_avoids, and
-	  rev_requires.  am_includes prepends $(srcdir) to any relative
-	  include paths; rev_avoids and and rev_requires reverses the
-	  order of the avoids and requires lists.  This is useful for
-	  the trailing comments after the "endif" in conditionals.
+          Changed fill_value to understand am_includes, rev_avoids, and
+          rev_requires.  am_includes prepends $(srcdir) to any relative
+          include paths; rev_avoids and and rev_requires reverses the
+          order of the avoids and requires lists.  This is useful for
+          the trailing comments after the "endif" in conditionals.
 
 Fri Aug 13 18:31:01 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
-	  Use INSTALL_THIS_TARGET to determine whether to use the
-	  noinst_ prefix.
+        * templates/automake.mpd:
+          Use INSTALL_THIS_TARGET to determine whether to use the
+          noinst_ prefix.
 
-	* template/automakedll.mpt:
-	  Define INSTALL_THIS_TARGET for use by automake.mpd.
+        * template/automakedll.mpt:
+          Define INSTALL_THIS_TARGET for use by automake.mpd.
 
 Fri Aug 13 10:53:57 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
-	  Tweak conditionals so that generated files don't have spurious
-	  blank lines.
+        * templates/automake.mpd:
+          Tweak conditionals so that generated files don't have spurious
+          blank lines.
 
 Fri Aug 13 10:25:31 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* modules/AutomakeProjectCreator.pm:
-	  Changed sort_files to return 1.  While this is not required by
-	  automake, it makes the resulting Makefile.am's easier to read.
-	  This is important now that we're still hand-editing the MPC
-	  generated files.
+        * modules/AutomakeProjectCreator.pm:
+          Changed sort_files to return 1.  While this is not required by
+          automake, it makes the resulting Makefile.am's easier to read.
+          This is important now that we're still hand-editing the MPC
+          generated files.
 
-	* templates/automake.mpd:
-	  Add pidl_files to headers so they'll be installed.
+        * templates/automake.mpd:
+          Add pidl_files to headers so they'll be installed.
 
 Thu Aug 12 09:42:55 2004  Chad Elliott  <elliott_c@ociweb.com>
 

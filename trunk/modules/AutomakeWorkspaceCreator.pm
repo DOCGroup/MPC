@@ -2,7 +2,7 @@ package AutomakeWorkspaceCreator;
 
 # ************************************************************
 # Description   : A Automake Workspace (Makefile) creator
-# Author        : Chad Elliott
+# Author        : J.T. Conklin & Steve Huston
 # Create Date   : 5/13/2002
 # ************************************************************
 
