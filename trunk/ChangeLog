@@ -1,3 +1,14 @@
+Thu Aug  5 09:14:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        The following changes are from Martin Corino <mcorino@remedy.nl>
+
+        * modules/Creator.pl:
+        * modules/Driver.pl:
+        * modules/ProjectCreator.pl:
+        * modules/WorkspaceCreator.pl:
+          Added various changes to support autobuild MPC generation on
+          OpenVMS.
+
 Wed Aug  4 11:47:06 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* templates/automake.mpd:
