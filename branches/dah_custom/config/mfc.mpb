@@ -3,7 +3,7 @@
 
 project {
   requires += mfc
-  macros   += _AFX_DLL
+  macros   += _AFXDLL
   specific(em3, nmake, vc6) {
     subsystem = windows
     use_mfc   = 2
