@@ -1,3 +1,9 @@
+Sun Aug  1 08:31:49 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+        * templates/automake.mpd:
+          Fix typo, use <%dynamicflag%> instead of <%dynamicflags%> within
+          foreach loop.
+
 Sun Aug  1 15:13:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmake.mpd:
@@ -1003,7 +1009,6 @@ Mon Apr  5 10:43:03 2004  Chad Elliott  <elliott_c@ociweb.com>
         * templates/vc7libexe.mpt:
 
           Created a new repository for MPC.
-
 
 Local Variables:
 add-log-time-format: current-time-string

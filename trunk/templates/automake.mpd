@@ -59,7 +59,7 @@ lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>_la_CPPFLAGS =
 <%endif%>
 <%else%>
 <%if(dynamicflags)%>
-<%foreach(dynamicflags)%> -D<%dynamicflags%><%endfor%> \
+<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%> \
 <%endif%>
 <%endif%>
  $(DUMMY_VALUE_NOT_ENDING_IN_BACKSLASH)
