@@ -1741,7 +1741,40 @@ sub add_generated_files {
     if ($#oktoadd >= 0) {
       my($key) = $dircomp{$self->mpc_dirname($oktoadd[0])};
       if (!defined $key) {
-        $key = $self->get_default_element_name();
+        my($defel) = $self->get_default_element_name();
+        my($check) = $oktoadd[0];
+        foreach my $regext (@{$self->{'valid_components'}->{$tag}}) {
+          if ($check =~ s/\.inl$//) {
+            last;
+          }
+        }
+        foreach my $vc (keys %{$self->{'valid_components'}}) {
+          if ($vc ne $tag) {
+            foreach my $name (keys %{$self->{$vc}}) {
+              foreach my $ckey (keys %{$self->{$vc}->{$name}}) {
+                if ($ckey ne $defel) {
+                  foreach my $ofile (@{$self->{$vc}->{$name}->{$ckey}}) {
+                    my($file) = $ofile;
+                    foreach my $regext (@{$self->{'valid_components'}->{$vc}}) {
+                      if ($file =~ s/$regext//) {
+                        last;
+                      }
+                    }
+                    if ($file eq $check) {
+                      $key = $ckey;
+                      last;
+                    }
+                  }
+                }
+                last if (defined $key);
+              }
+            }
+            last if (defined $key);
+          }
+        }
+        if (!defined $key) {
+          $key = $defel;
+        }
       }
       foreach my $name (keys %$names) {
         unshift(@{$$names{$name}->{$key}}, @oktoadd);
@@ -2381,9 +2414,15 @@ sub add_corresponding_component_files {
 
   ## Create a hash array keyed off of the existing files of the type
   ## that we plan on adding.
+  my($fexist)  = 0;
   my(%scfiles) = ();
   $names = $self->{$tag};
   foreach my $name (keys %$names) {
+    ## Check to see if files exist in the default group
+    if (defined $$names{$name}->{$defel} &&
+        defined $$names{$name}->{$defel}->[0]) {
+      $fexist = 1;
+    }
     foreach my $comp (keys %{$$names{$name}}) {
       @scfiles{@{$$names{$name}->{$comp}}} = ();
     }
@@ -2455,6 +2494,7 @@ sub add_corresponding_component_files {
           else {
             $self->process_assignment_add($grname, $comp);
             $oktoadddefault = 1;
+            $adddefaultgroup |= $fexist;
           }
         }
 
@@ -2736,7 +2776,7 @@ sub get_special_value {
   if ($type =~ /^custom_type/) {
     return $self->get_custom_value($cmd, $based, @params);
   }
-  elsif ($type =~ /^grouped_/) {
+  elsif ($type =~ /^$grouped_key/) {
     return $self->get_grouped_value($type, $cmd, $based);
   }
 
