@@ -24,7 +24,9 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [files]
 
        -base           Add <project> as a base project to each generated
-                       project file.
+                       project file.  Do not provide a file extension, the
+                       .mpb extension will be tried first; if that fails the
+                       .mpc extension will be tried.
        -exclude        Use this option to exclude directories when searching
                        for input files.
        -feature_file   Specifies the feature file to read before processing.

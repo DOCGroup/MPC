@@ -55,7 +55,9 @@ sub printUsage {
 
   print STDERR
 "       -base           Add <project> as a base project to each generated\n" .
-"                       project file.\n" .
+"                       project file.  Do not provide a file extension, the\n" .
+"                       .mpb extension will be tried first; if that fails the\n" .
+"                       .mpc extension will be tried.\n" .
 "       -exclude        Use this option to exclude directories when searching\n" .
 "                       for input files.\n" .
 "       -feature_file   Specifies the feature file to read before processing.\n" .
