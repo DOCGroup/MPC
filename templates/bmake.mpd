@@ -38,6 +38,8 @@ THREADFLAGS  = <%thflags%>
 DLLFLAGS     = <%dllflags%>
 LIBFLAGS     = <%libflags%>
 EXEFLAGS     = <%exeflags%>
+WARNFLAGS    = <%warnflags%>
+CCFLAGS      = <%ccflags%>
 <%endfor%>
 <%if(exename)%>
 NAME         = <%exename%>$(EXEMODIFIER)
@@ -51,11 +53,13 @@ NAME         = <%staticname%>$(LIBMODIFIER)
 <%endif%>
 <%endif%>
 CPPDIR       = <%cppdir%>
+UNICODE_CFLAGS = -DACE_USES_WCHAR -WU
+
 <%if(exename || sharedname || staticname)%>
 
 OBJFILES = \
 <%foreach(source_files)%>
-           $(INTERMEDIATE)\<%basenoextension(source_file)%>$(OBJ_EXT)<%fornotlast(" \\")%>
+           "$(INTERMEDIATE)\<%basenoextension(source_file)%>$(OBJ_EXT)"<%fornotlast(" \\")%>
 <%endfor%>
 <%endif%>
 <%if(libpaths)%>
@@ -79,7 +83,6 @@ LIBFILES = \
            <%common_libs%>
 
 <%if(resource_files && !type_is_static)%>
-
 RESOURCE = \
 <%foreach(resource_files)%>
            $(INTERMEDIATE)\<%noextension(resource_file)%>.res<%fornotlast(" \\")%>
@@ -87,17 +90,21 @@ RESOURCE = \
 <%endif%>
 
 CFLAGS = \
+          -DACE_LD_DECORATOR_STR=ACE_LIB_TEXT(\"$(LIBMODIFIER)\") \
 <%if(pch_header)%>
 <%foreach(pch_defines)%>
 # Borland precompiled headers choke on some header files.
 #         -D<%pch_define%> \
 <%endfor%>
 <%endif%>
+<%foreach(cc_flags)%>
+         <%cc_flags%> \
+<%endfor%>
+<%foreach(common_flags)%>
+         <%common_flags%> \
+<%endfor%>
 <%foreach(macros common_defines)%>
          -D<%macro%> \
-<%endfor%>
-<%foreach(includes)%>
-         -I"<%include%>" \
 <%endfor%>
 <%if(type_is_static || need_staticflags)%>
 <%if(staticflags)%>
@@ -112,6 +119,9 @@ CFLAGS = \
 <%endfor%>
 <%endif%>
 <%endif%>
+<%foreach(includes)%>
+         -I"<%include%>" \
+<%endfor%>
          $(DUMMY_VALUE_NOT_ENDING_IN_BACKSLASH)
 
 <%if(pch_header)%>
@@ -167,9 +177,6 @@ $(OUTPUTDIR)$(NAME)$(EXE_EXT): $(OBJFILES) $(RESOURCE)
 	$(LINK) @&&!
 	$(EXEFLAGS) $(LFLAGS) <%startup_obj%> $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
 !
-!ifdef POSTLINKRM
-	if exist "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" del $(OUTPUTDIR)$(NAME)$(POSTLINKRM)
-!endif
 
 <%endif%>
 <%if(sharedname)%>
@@ -181,9 +188,6 @@ $(OUTPUTDIR)$(NAME)$(DLL_EXT): $(OBJFILES) $(RESOURCE)
 	$(LINK) @&&!
 	$(DLLFLAGS) $(LFLAGS) <%startup_obj%> $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
 !
-!ifdef POSTLINKRM
-	del $(OUTPUTDIR)$(NAME)$(POSTLINKRM)
-!endif
 
 <%endif%>
 <%if(type_is_static)%>
@@ -205,27 +209,27 @@ $(OUTPUTDIR)$(NAME)$(LIB_EXT): $(OBJFILES)
 .path.cpp = $(CPPDIR)
 .cpp$(OBJ_EXT):
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-	$(CC) $(OCFLAGS) $(THREADFLAGS) $(CFLAGS) -c -n$(@D) $<
+        $(CC) $(OCFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 
 .path.cxx = $(CPPDIR)
 .cxx$(OBJ_EXT):
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-	$(CC) $(OCFLAGS) $(THREADFLAGS) $(CFLAGS) -c -n$(@D) $<
+        $(CC) $(OCFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 
 .path.cc = $(CPPDIR)
 .cc$(OBJ_EXT):
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-	$(CC) $(OCFLAGS) $(THREADFLAGS) $(CFLAGS) -c -n$(@D) $<
+        $(CC) $(OCFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 
 .path.C = $(CPPDIR)
 .C$(OBJ_EXT):
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-	$(CC) $(OCFLAGS) $(THREADFLAGS) $(CFLAGS) -c -n$(@D) $<
+        $(CC) $(OCFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 
 .path.c = $(CPPDIR)
 .c$(OBJ_EXT):
 	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-	$(CC) $(OCFLAGS) $(THREADFLAGS) $(CFLAGS) -c -n$(@D) $<
+        $(CC) $(OCFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 
 <%if(resource_files && !type_is_static)%>
 .path.res = $(INTERMEDIATE)
@@ -248,8 +252,9 @@ realclean: clean
 <%else%>
 	if exist "$(OUTPUTDIR)$(NAME)$(LIB_EXT)" del $(OUTPUTDIR)$(NAME)$(LIB_EXT)
 <%endif%>
+        if exist "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" del $(OUTPUTDIR)$(NAME)$(POSTLINKRM)
 <%if(sharedname)%>
-	if exist "$(OUTPUTDIR)$(NAME)$(DLL_EXT)" del $(OUTPUTDIR)$(NAME)$(DLL_EXT)
+                if exist "$(OUTPUTDIR)$(NAME)$(DLL_EXT)" del $(OUTPUTDIR)$(NAME)$(DLL_EXT)
 <%endif%>
 
 <%marker(bottom)%>

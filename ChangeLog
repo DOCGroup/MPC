@@ -1,3 +1,30 @@
+Sun Aug  1 15:13:12 UTC 2004  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+          Use the new ccflags, common_flags and warnflags. Tried to add
+          some support for unicode builds, this is not complete yet, added
+          "" around the objfiles, to handle ++ in directory/file names. Added
+          setting of define ACE_LD_DECORATOR_STR, which is used in ACE to
+          determine the filename extension of DLL's. Removed the removal
+          of files with postlinkrmext extenion (is .tds) files after the
+          link, instead do this with realclean.
+
+        * templates/bmakecommon.mpt:
+          Updated dllflags, common_defines, added ccflags,
+          common_flags, and warnflags which have to be passed
+          to the compiler
+
+        * templates/bmakedll.mpt:
+        * templates/bmakedllexe.mpt:
+        * templates/bmakelibexe.mpt:
+          Set postlinkrmext to .tds in all these files, we should
+          rework this a little bit more, tds files are needed for
+          the debugger and we shouldn't remove them after the link.
+
+          The bmake target is not complete yet, things that have to be
+          improved are startup objects (gperf just cores now),
+           unicode support, codeguard support, install target, clean target.
+
 Wed Jul 28 20:01:36 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd: Emit a _LDFLAGS definition if linkflags
