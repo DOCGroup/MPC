@@ -1,3 +1,9 @@
+Fri Aug 13 10:53:57 2004  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+	  Tweak conditionals so that generated files don't have spurious
+	  blank lines.
+
 Fri Aug 13 10:25:31 2004  J.T. Conklin  <jtc@acorntoolworks.com>
 
 	* modules/AutomakeProjectCreator.pm:
