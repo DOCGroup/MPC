@@ -144,25 +144,6 @@ sub write_comps {
     close($mfh);
   }
 
-  ## Print out the Makefile.am.
-
-  if (@locals) {
-    my($wsHelper) = WorkspaceHelper::get($self);
-    my($status, $error) = $wsHelper->write_settings($self, $fh, @locals);
-    if (!$status) {
-      $self->error($error);
-    }
-  }
-
-  ## If there are local projects, insert "." as the first SUBDIR entry.
-  if ($have_subdirs == 1) {
-    print $fh 'SUBDIRS =';
-    foreach my $dir (reverse @dirs) {
-      print $fh " \\$crlf        $dir";
-    }
-    print $fh $crlf, $crlf;
-  }
-
   # The Makefile.<project>.am files append values to build target macros
   # for each program/library to build. When using conditionals, however,
   # a plain empty assignment is done outside the conditional to be sure
@@ -179,6 +160,7 @@ sub write_comps {
   my(@need_blanks) = ();
   my(%conditional_targets) = ();
   my(%seen) = ();
+  my($installable_headers) = undef;
 
   ## To avoid unnecessarily emitting blank assignments, rip through the
   ## Makefile.<project>.am files and check for conditions.
@@ -215,6 +197,10 @@ sub write_comps {
               $conditional_targets{$1} = 1;
               unshift(@need_blanks, $1);
             }
+            if ($1 eq 'nobase_include_HEADERS' ||
+                $1 eq 'nobase_pkginclude_HEADERS') {
+              $installable_headers = 1;
+            }
           }
         }
 
@@ -225,6 +211,32 @@ sub write_comps {
         $self->error("Unable to open $local for reading.");
       }
     }
+  }
+
+  ## Print out the Makefile.am.
+  my($wsHelper) = WorkspaceHelper::get($self);
+  if ($installable_headers) {
+    my($incdir)   = $wsHelper->modify_value('includedir',
+                                            $self->get_includedir());
+    if ($incdir ne '') {
+      print $fh "includedir = \@includedir\@$incdir$crlf$crlf";
+    }
+  }
+
+  if (@locals) {
+    my($status, $error) = $wsHelper->write_settings($self, $fh, @locals);
+    if (!$status) {
+      $self->error($error);
+    }
+  }
+
+  ## If there are local projects, insert "." as the first SUBDIR entry.
+  if ($have_subdirs == 1) {
+    print $fh 'SUBDIRS =';
+    foreach my $dir (reverse @dirs) {
+      print $fh " \\$crlf        $dir";
+    }
+    print $fh $crlf, $crlf;
   }
 
   ## Now, for each target used in a conditional, emit a blank assignment
@@ -282,11 +294,10 @@ sub write_comps {
           if ($look_for_libs) {
             my @libs = /\s+(lib(\w+).la)/gm;
             my $libcount = @libs / 2;
-            my $i = 0;
-            while ($i < $libcount) {
+            for(my $i = 0; $i < $libcount; ++$i) {
               my $libfile = (@libs)[$i*2];
               my $libname = (@libs)[$i*2+1];
-              my $reldir = $$liblocs{$libname};
+              my $reldir  = $$liblocs{$libname};
               if ($reldir) {
                 if ("$start/$reldir" ne $here) {
                   s/$libfile/\$(top_builddir)\/$reldir\/$libfile/;
@@ -295,7 +306,6 @@ sub write_comps {
               else {
                 $self->warning("No reldir found for $libname ($libfile).");
               }
-              $i++;
             }
             if ($libcount == 0) {
               $look_for_libs = 0;
@@ -347,5 +357,15 @@ sub write_comps {
   }
 }
 
+
+sub get_includedir {
+  my($self)  = shift;
+  my($value) = $self->getcwd();
+  my($start) = $self->getstartdir();
+
+  ## Take off the starting directory
+  $value =~ s/$start//;
+  return $value;
+}
 
 1;
