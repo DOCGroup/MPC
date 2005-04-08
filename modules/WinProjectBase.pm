@@ -23,7 +23,7 @@ sub validated_directory {
   ## $(...) could contain a drive letter and Windows can not
   ## make a directory that resembles a drive letter.  So, we have
   ## to exclude those directories with $(...).
-  if ($dir =~ /\$\([^\)]+\)/) {
+  if ($dir =~ /\$\([^\)]+\)/ || $dir =~ /\.\.\\/) {
     return '.';
   }
   else {
