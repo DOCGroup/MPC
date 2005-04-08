@@ -191,6 +191,13 @@ pkgconfig_DATA += <%basenoextension(pkgconfig_file)%>
 	${top_builddir}/config.status --file "$@":${srcdir}/<%pkgconfig_file%>
 <%endfor%>
 <%endif%>
+<%if(postbuild)%>
+
+all: __postbuild__
+
+__postbuild__:
+	@<%eval(postbuild)%>
+<%endif%>
 <%if(avoids || requires)%>
 
 <%foreach(reverse(uniq(avoids)))%>
