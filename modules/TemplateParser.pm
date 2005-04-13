@@ -112,16 +112,16 @@ sub basename {
 
 
 sub tp_dirname {
-  my($self) = shift;
-  my($file) = shift;
+  my($self)  = shift;
+  my($file)  = shift;
+  my($index) = rindex($file, ($self->{'cslashes'} ? '\\' : '/'));
 
-  for(my $i = length($file) - 1; $i != 0; --$i) {
-    my($ch) = substr($file, $i, 1);
-    if ($ch eq '/' || ($self->{'cslashes'} && $ch eq '\\')) {
-      return $self->{'prjc'}->validated_directory(substr($file, 0, $i));
-    }
+  if ($index >= 0) {
+    return $self->{'prjc'}->validated_directory(substr($file, 0, $index));
   }
-  return '.';
+  else {
+    return '.';
+  }
 }
 
 
