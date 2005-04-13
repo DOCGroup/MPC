@@ -1,0 +1,23 @@
+// -*- MPC -*-
+// $Id$
+
+project {
+  includes += $(XERCESCROOT)/include
+  libpaths += $(XERCESCROOT)/lib
+
+  specific (em3, vc6, vc7, vc71, vc8, nmake) {
+    xerceslib = xerces-c_2
+  }
+  specific(borland, bmake, cbx) {
+    xerceslib = XercesLib
+  }
+  specific (gnuace, make, sle, automake, ghs) {
+    macros   += XML_USE_PTHREADS
+    xerceslib = xerces-c
+  }
+
+  // We have to use lit_libs here as the library decorator
+  // does not necessarily match what MPC uses (particularly for
+  // static builds).
+  lit_libs += $(XERCESLIB)
+}
