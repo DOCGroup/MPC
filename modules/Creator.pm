@@ -199,21 +199,21 @@ sub parse_assignment {
   my($line)   = shift;
   my($values) = shift;
 
-  if ($line =~ /^(\w+)\s*\+=\s*(.*)?/) {
+  if ($line =~ /^(\w+(::\w+)*)\s*\+=\s*(.*)?/) {
     my($name)  = lc($1);
-    my($value) = $2;
+    my($value) = $3;
     push(@$values, 'assign_add', $name, $value);
     return 1;
   }
-  elsif ($line =~ /^(\w+)\s*=\s*(.*)?/) {
+  elsif ($line =~ /^(\w+(::\w+)*)\s*=\s*(.*)?/) {
     my($name)  = lc($1);
-    my($value) = $2;
+    my($value) = $3;
     push(@$values, 'assignment', $name, $value);
     return 1;
   }
-  elsif ($line =~ /^(\w+)\s*\-=\s*(.*)?/) {
+  elsif ($line =~ /^(\w+(::\w+)*)\s*\-=\s*(.*)?/) {
     my($name)  = lc($1);
-    my($value) = $2;
+    my($value) = $3;
     push(@$values, 'assign_sub', $name, $value);
     return 1;
   }

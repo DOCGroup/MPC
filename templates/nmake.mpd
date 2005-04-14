@@ -39,10 +39,10 @@ NULL=nul
 !ENDIF
 
 !IF "$(DEPGEN)" == ""
-!IF EXISTS("$(DEPGEN_ROOT)\depgen.pl")
-DEPGEN=perl $(DEPGEN_ROOT)\depgen.pl -t nmake
-!ELSEIF EXISTS("$(ACE_ROOT)\bin\depgen.pl")
-DEPGEN=perl $(ACE_ROOT)\bin\depgen.pl -t nmake
+!IF EXISTS("$(DEPGEN_ROOT)/depgen.pl")
+DEPGEN=perl $(DEPGEN_ROOT)/depgen.pl -t nmake
+!ELSEIF EXISTS("$(ACE_ROOT)/bin/depgen.pl")
+DEPGEN=perl $(ACE_ROOT)/bin/depgen.pl -t nmake
 !ENDIF
 !ENDIF
 
@@ -74,7 +74,7 @@ DEPEND :
 	@echo Then set the DEPGEN_ROOT environment variable to the full path of Depgen.
 !ELSE
 <%if(source_files || pch_source)%>
-	$(DEPGEN)<%foreach(includes)%> -I"<%include%>"<%endfor%><%foreach(defines cpu_defines common_defines macros)%> -D<%define%><%endfor%><%if(unicode)%> /D UNICODE /D _UNICODE<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%> -D<%staticflag%><%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%> -f "<%noextension(project_file)%>.dep"<%foreach(source_files)%> "<%source_file%>"<%endfor%><%if(pch_source)%> "<%pch_source%>"<%endif%>
+	$(DEPGEN)<%foreach(includes)%> -I"<%include%>"<%endfor%><%foreach(defines cpu_defines common_defines macros)%> -D<%define%><%endfor%><%if(unicode)%> -DUNICODE -D_UNICODE<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%> -D<%staticflag%><%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%> -f "<%noextension(project_file)%>.dep"<%foreach(source_files)%> "<%source_file%>"<%endfor%><%if(pch_source)%> "<%pch_source%>"<%endif%>
 <%else%>
 	-@rem
 <%endif%>
