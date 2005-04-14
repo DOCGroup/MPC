@@ -1661,10 +1661,10 @@ sub evaluate_optional_option {
   my($value) = shift;
 
   if ($opt =~ /^!\s*(.*)/) {
-    return (index($value, $1) == -1 ? 1 : 0);
+    return (!exists $$value{$1} ? 1 : 0);
   }
   else {
-    return (index($value, $opt) >= 0 ? 1 : 0);
+    return (exists $$value{$opt} ? 1 : 0);
   }
 
   return 0;
@@ -1723,12 +1723,18 @@ sub add_optional_filename_portion {
 
   foreach my $name (keys %{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}}) {
     foreach my $opt (keys %{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}->{$name}}) {
+      ## Get the name value
       my($value) = $self->get_applied_custom_keyword($name,
                                                      $gentype, $file);
-      if (!defined $value) {
-        $value = '';
+
+      ## Convert the value into a hash map for easy lookup
+      my(%values) = ();
+      if (defined $value) {
+        @values{split(/\s+/, $value)} = ();
       }
-      if ($self->process_optional_option($opt, $value)) {
+
+      ## See if the option or options are contained in the value
+      if ($self->process_optional_option($opt, \%values)) {
         ## Add the optional portion
         push(@$array, @{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}->{$name}->{$opt}});
       }
