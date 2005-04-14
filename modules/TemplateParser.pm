@@ -87,9 +87,10 @@ sub new {
   $self->{'foreach'}->{'count'}      = -1;
   $self->{'foreach'}->{'nested'}     = 0;
   $self->{'foreach'}->{'name'}       = [];
-  $self->{'foreach'}->{'names'}      = [];
+  $self->{'foreach'}->{'vars'}       = [];
   $self->{'foreach'}->{'text'}       = [];
   $self->{'foreach'}->{'scope'}      = [];
+  $self->{'foreach'}->{'scope_name'} = [];
   $self->{'foreach'}->{'temp_scope'} = [];
   $self->{'foreach'}->{'processing'} = 0;
 
@@ -176,9 +177,11 @@ sub set_current_values {
       my($value) = $self->{'ti'}->get_value($name);
       if (defined $value && UNIVERSAL::isa($value, 'HASH') &&
           $self->{'ti'}->get_realname($name) eq $name) {
+        $self->{'foreach'}->{'scope_name'}->[$counter] = $name;
         my(%copy) = ();
         foreach my $key (keys %$value) {
-          $copy{$key} = $self->{'prjc'}->adjust_value($key, $$value{$key});
+          $copy{$key} = $self->{'prjc'}->adjust_value(
+                    [$name . '::' . $key, $name], $$value{$key});
         }
         $self->{'foreach'}->{'temp_scope'}->[$counter] = \%copy;
         $set = 1;
@@ -195,9 +198,19 @@ sub get_value {
   my($value)   = undef;
   my($counter) = $self->{'foreach'}->{'count'};
   my($fromprj) = 0;
+  my($scoped)  = undef;
+  my($adjust)  = 1;
 
   ## First, check the temporary scope (set inside a foreach)
   if ($counter >= 0) {
+    ## Find the outer most scope for our variable name
+    for(my $index = $counter; $index >= 0; --$index) {
+      if (defined $self->{'foreach'}->{'scope_name'}->[$index]) {
+        $scoped = $self->{'foreach'}->{'scope_name'}->[$index] .
+                  '::' . $name;
+        last;
+      }
+    }
     while(!defined $value && $counter >= 0) {
       $value = $self->{'foreach'}->{'temp_scope'}->[$counter]->{$name};
       --$counter;
@@ -209,15 +222,15 @@ sub get_value {
     ## Next, check for a template value
     if (defined $self->{'ti'}) {
       $value = $self->{'ti'}->get_value($name);
-      if (defined $value) {
-        $value = $self->{'prjc'}->adjust_value($name, $value);
-      }
     }
 
     if (!defined $value) {
-      my($uvalue) = $self->{'prjc'}->adjust_value($name, []);
+      ## Calling adjust_value here allows us to pick up template
+      ## overrides before getting values elsewhere.
+      my($uvalue) = $self->{'prjc'}->adjust_value([$scoped, $name], []);
       if (defined $$uvalue[0]) {
         $value = $uvalue;
+        $adjust = 0;
       }
 
       if (!defined $value) {
@@ -259,6 +272,12 @@ sub get_value {
     }
   }
 
+  ## Adjust the value even if we haven't obtained one from an outside
+  ## source.
+  if ($adjust && defined $value) {
+    $value = $self->{'prjc'}->adjust_value([$scoped, $name], $value);
+  }
+
   ## If the value did not come from the project creator, we
   ## check the variable name.  If it is a project keyword we then
   ## check to see if we need to add the project value to the template
@@ -289,8 +308,21 @@ sub get_value_with_default {
   if (!defined $value) {
     $value = $self->{'defaults'}->{$name};
     if (defined $value) {
+      my($counter) = $self->{'foreach'}->{'count'};
+      my($scoped)  = undef;
+
+      if ($counter >= 0) {
+        ## Find the outer most scope for our variable name
+        for(my $index = $counter; $index >= 0; --$index) {
+          if (defined $self->{'foreach'}->{'scope_name'}->[$index]) {
+            $scoped = $self->{'foreach'}->{'scope_name'}->[$index] .
+                      '::' . $name;
+            last;
+          }
+        }
+      }
       $value = $self->{'prjc'}->relative(
-                       $self->{'prjc'}->adjust_value($name, $value));
+                       $self->{'prjc'}->adjust_value([$scoped, $name], $value));
     }
     else {
       #$self->warning("$name defaulting to empty string.");
@@ -315,7 +347,7 @@ sub process_foreach {
   my(@values) = ();
   my($name)   = $self->{'foreach'}->{'name'}->[$index];
   my(@cmds)   = ();
-  my($val)    = $self->{'foreach'}->{'names'}->[$index];
+  my($val)    = $self->{'foreach'}->{'vars'}->[$index];
 
   ## Pull out modifying commands first
   while ($val =~ /(\w+)\((.+)\)/) {
@@ -942,13 +974,13 @@ sub handle_foreach {
     }
 
     push(@{$self->{'sstack'}}, $name);
-    ++$self->{'foreach'}->{'count'};
+    my($index) = ++$self->{'foreach'}->{'count'};
 
-    my($index) = $self->{'foreach'}->{'count'};
     $self->{'foreach'}->{'name'}->[$index]  = $vname;
-    $self->{'foreach'}->{'names'}->[$index] = $val;
+    $self->{'foreach'}->{'vars'}->[$index]  = $val;
     $self->{'foreach'}->{'text'}->[$index]  = '';
     $self->{'foreach'}->{'scope'}->[$index] = {};
+    $self->{'foreach'}->{'scope_name'}->[$index] = undef;
   }
   else {
     push(@{$self->{'sstack'}}, "*$name");
