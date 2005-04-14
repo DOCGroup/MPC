@@ -1,3 +1,10 @@
+Thu Apr 14 09:07:41 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Changed the option evaluation code to match the option exactly
+          instead of a portion of it.
+
 Thu Apr 14 07:27:11 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeProjectCreator.pm:
