@@ -277,7 +277,6 @@ sub new {
   $self->{'generate_ins'}          = $genins;
   $self->{'addtemp_state'}         = undef;
   $self->{'command_subs'}          = $self->get_command_subs();
-  $self->{'use_reldefs'}           = $self->use_reldefs();
   $self->{'escape_spaces'}         = $self->escape_spaces();
 
   $self->add_default_matching_assignments();
@@ -1330,6 +1329,10 @@ sub parse_define_custom {
             my($opt)  = $2;
             my(@val)  = split(/\s*,\s*/, $3);
 
+            ## Fix $opt spacing
+            $opt =~ s/(\&\&|\|\|)/ $1 /g;
+            $opt =~ s/!\s+/!/g;
+
             if (!defined $self->{'generated_exts'}->{$tag}->
                                 {'optional'}->{$optname}) {
               $self->{'generated_exts'}->{$tag}->
@@ -1652,6 +1655,65 @@ sub get_applied_custom_keyword {
 }
 
 
+sub evaluate_optional_option {
+  my($self)  = shift;
+  my($opt)   = shift;
+  my($value) = shift;
+
+  if ($opt =~ /^!\s*(.*)/) {
+    return (index($value, $1) == -1 ? 1 : 0);
+  }
+  else {
+    return (index($value, $opt) >= 0 ? 1 : 0);
+  }
+
+  return 0;
+}
+
+
+sub process_optional_option {
+  my($self)   = shift;
+  my($opt)    = shift;
+  my($value)  = shift;
+  my($status) = undef;
+  my(@parts)  = grep(!/^$/, split(/\s+/, $opt));
+
+  for(my $i = 0; $i <= $#parts; $i++) {
+    if ($parts[$i] eq '&&' || $parts[$i] eq '||') {
+      if (defined $status) {
+        if (defined $parts[$i + 1]) {
+          if ($parts[$i] eq '&&') {
+            $status &&= $self->evaluate_optional_option($parts[$i + 1],
+                                                        $value);
+          }
+          else {
+            $status ||= $self->evaluate_optional_option($parts[$i + 1],
+                                                        $value);
+          }
+        }
+        else {
+          $self->warning("Expected token in optional after $parts[$i]");
+        }
+      }
+      else {
+        $self->warning("Unexpected token in optional: $parts[$i]");
+      }
+      ++$i;
+    }
+    else {
+      if (!defined $status) {
+        $status = $self->evaluate_optional_option($parts[$i], $value);
+      }
+      else {
+        $self->warning("Unexpected token in optional: $parts[$i]");
+      }
+    }
+  }
+
+  return $status;
+}
+
+
 sub add_optional_filename_portion {
   my($self)    = shift;
   my($gentype) = shift;
@@ -1661,20 +1723,14 @@ sub add_optional_filename_portion {
 
   foreach my $name (keys %{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}}) {
     foreach my $opt (keys %{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}->{$name}}) {
-      my($ok)    = undef;
       my($value) = $self->get_applied_custom_keyword($name,
                                                      $gentype, $file);
-      if (defined $value) {
-        if ($opt =~ /^!\s*(.*)/) {
-          $ok = (index($value, $1) == -1);
-        }
-        else {
-          $ok = (index($value, $opt) >= 0);
-        }
-        if ($ok) {
-          ## Add the optional portion
-          push(@$array, @{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}->{$name}->{$opt}});
-        }
+      if (!defined $value) {
+        $value = '';
+      }
+      if ($self->process_optional_option($opt, $value)) {
+        ## Add the optional portion
+        push(@$array, @{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}->{$name}->{$opt}});
       }
     }
   }
@@ -3739,54 +3795,58 @@ sub update_project_info {
 
 sub adjust_value {
   my($self)  = shift;
-  my($name)  = shift;
+  my($names) = shift;
   my($value) = shift;
+  my($atemp) = $self->get_addtemp();
 
   ## Perform any additions, subtractions
   ## or overrides for the template values.
-  if (defined $self->get_addtemp()->{lc($name)}) {
-    my($addtemparr) = $self->get_addtemp()->{lc($name)};
-    foreach my $val (@$addtemparr) {
-      my($arr) = $self->create_array($$val[1]);
-      if ($$val[0] > 0) {
-        if (UNIVERSAL::isa($value, 'ARRAY')) {
-          ## We need to make $value a new array reference ($arr)
-          ## to avoid modifying the array reference pointed to by $value
-          unshift(@$arr, @$value);
-          $value = $arr;
+  foreach my $name (@$names) {
+    if (defined $name && defined $atemp->{lc($name)}) {
+      my($addtemparr) = $atemp->{lc($name)};
+      foreach my $val (@$addtemparr) {
+        my($arr) = $self->create_array($$val[1]);
+        if ($$val[0] > 0) {
+          if (UNIVERSAL::isa($value, 'ARRAY')) {
+            ## We need to make $value a new array reference ($arr)
+            ## to avoid modifying the array reference pointed to by $value
+            unshift(@$arr, @$value);
+            $value = $arr;
+          }
+          else {
+            $value .= " $$val[1]";
+          }
         }
-        else {
-          $value .= " $$val[1]";
-        }
-      }
-      elsif ($$val[0] < 0) {
-        my($parts) = undef;
-        if (UNIVERSAL::isa($value, 'ARRAY')) {
-          $parts = $value;
-        }
-        else {
-          $parts = $self->create_array($value);
-        }
+        elsif ($$val[0] < 0) {
+          my($parts) = undef;
+          if (UNIVERSAL::isa($value, 'ARRAY')) {
+            $parts = $value;
+          }
+          else {
+            $parts = $self->create_array($value);
+          }
 
-        $value = [];
-        foreach my $part (@$parts) {
-          if ($part ne '') {
-            my($found) = 0;
-            foreach my $ae (@$arr) {
-              if ($part eq $ae) {
-                $found = 1;
-                last;
+          $value = [];
+          foreach my $part (@$parts) {
+            if ($part ne '') {
+              my($found) = 0;
+              foreach my $ae (@$arr) {
+                if ($part eq $ae) {
+                  $found = 1;
+                  last;
+                }
               }
-            }
-            if (!$found) {
-              push(@$value, $part);
+              if (!$found) {
+                push(@$value, $part);
+              }
             }
           }
         }
+        else {
+          $value = $arr;
+        }
       }
-      else {
-        $value = $arr;
-      }
+      last;
     }
   }
 
@@ -3799,7 +3859,7 @@ sub relative {
   my($value)           = shift;
   my($expand_template) = shift;
 
-  if (defined $value && $self->{'use_reldefs'}) {
+  if (defined $value) {
     if (UNIVERSAL::isa($value, 'ARRAY')) {
       my(@built) = ();
       foreach my $val (@$value) {
@@ -3886,7 +3946,7 @@ sub relative {
             if (defined $ti) {
               $val = $ti->get_value($name);
             }
-            my($arr) = $self->adjust_value($name, (defined $val ? $val : []));
+            my($arr) = $self->adjust_value([$name], (defined $val ? $val : []));
             if (defined $$arr[0]) {
               $val = "@$arr";
               if ($self->{'convert_slashes'}) {
@@ -4091,12 +4151,6 @@ sub remove_non_custom_settings {
 sub escape_spaces {
   #my($self) = shift;
   return 0;
-}
-
-
-sub use_reldefs {
-  #my($self) = shift;
-  return 1;
 }
 
 
