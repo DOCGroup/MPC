@@ -1,3 +1,9 @@
+Mon Apr 18 06:56:20 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/nmake.mpd:
+
+          Updated to work with multiple resource files.
+
 Mon Apr 18 10:19:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmakecommon.mpt:
