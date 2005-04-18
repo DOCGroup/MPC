@@ -130,9 +130,6 @@ CPP_PROJ=/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%><%o
 
 <%if(!type_is_static)%>
 RSC=rc.exe
-<%foreach(resource_files)%>
-RSC_PROJ=/l 0x409 /fo"$(INTDIR)\<%if(dirname(resource_file))%><%noextension(resource_file)%><%else%><%basenoextension(resource_file)%><%endif%>.res"<%foreach(defines cpu_defines macros)%> /d <%define%><%endfor%><%if(unicode)%> /d UNICODE /d _UNICODE<%endif%><%foreach(includes)%> /i "<%include%>"<%endfor%>
-<%endfor%>
 <%endif%>
 
 <%if(exename || sharedname || staticname)%>
@@ -326,7 +323,7 @@ SOURCE=<%resource_file%>
 <%if(dirname(resource_file))%>
 	@if not exist "$(INTDIR)\<%dirname(resource_file)%>\$(NULL)" mkdir "$(INTDIR)\<%dirname(resource_file)%>"
 <%endif%>
-	$(RSC) $(RSC_PROJ) "$(SOURCE)"
+	$(RSC) /l 0x409 /fo"$(INTDIR)\<%if(dirname(resource_file))%><%noextension(resource_file)%><%else%><%basenoextension(resource_file)%><%endif%>.res"<%foreach(defines cpu_defines macros)%> /d <%define%><%endfor%><%if(unicode)%> /d UNICODE /d _UNICODE<%endif%><%foreach(includes)%> /i "<%include%>"<%endfor%> "$(SOURCE)"
 
 
 <%endfor%>
