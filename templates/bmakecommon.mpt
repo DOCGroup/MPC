@@ -19,7 +19,7 @@ bcc {
   rc      = brcc32
   tlib    = tlib
   link    = ilink32
-  thflags = -D_MT -tWM
+  thflags = -tWM
   dllflags = -Tpd -Gi -x -Gn -w-dup
   libflags = /C
   ccflags  = -q
@@ -36,7 +36,7 @@ cbx {
   rc        = brcc32
   tlib      = ar
   link      = ilink
-  thflags   = -D_MT -tWM
+  thflags   = -tWM
   dllflags  = -Tpd -Gi -x -Gn -w-dup
   libflags  = cfrv
   ccflags   = -b
