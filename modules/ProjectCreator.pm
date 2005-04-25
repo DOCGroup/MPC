@@ -995,7 +995,8 @@ sub parse_components {
   my($fh)      = shift;
   my($tag)     = shift;
   my($name)    = shift;
-  my($current) = $self->get_default_element_name();
+  my($defel)   = $self->get_default_element_name();
+  my($current) = $defel;
   my($status)  = 1;
   my($names)   = {};
   my($comps)   = {};
@@ -1044,35 +1045,10 @@ sub parse_components {
     }
     elsif ($line =~ /^(\w+)\s*{$/) {
       if (!defined $current || !$set) {
-        if (defined $current) {
-          if (!defined $$comps{$current}->[0]) {
-            ## The default components name was never used
-            ## so we remove it from the components
-            delete $$comps{$current};
-          }
-          else {
-            ## It was used, so we need to add that name to
-            ## the set of group names unless it's already been added.
-            my($groups)   = $self->get_assignment($grtag);
-            my($addgroup) = 1;
-            if (defined $groups) {
-              foreach my $group (@{$self->create_array($groups)}) {
-                if ($current eq $group) {
-                  $addgroup = 0;
-                  last;
-                }
-              }
-            }
-            if ($addgroup) {
-              $self->process_assignment_add($grtag, $current);
-            }
-          }
-        }
         $current = $1;
         $set = 1;
         if (!defined $$comps{$current}) {
           $$comps{$current} = [];
-          $self->process_assignment_add($grtag, $current);
         }
       }
       else {
@@ -1089,11 +1065,46 @@ sub parse_components {
       }
     }
     elsif ($line =~ /^}$/) {
+      if (defined $current) {
+        if (!defined $$comps{$current}->[0]) {
+          ## The default components name was never used
+          ## so we remove it from the components
+          delete $$comps{$current};
+        }
+        else {
+          ## It was used, so we need to add that name to
+          ## the set of group names unless it's already been added.
+          my($groups)   = $self->get_assignment($grtag);
+          my($addgroup) = 1;
+          if (defined $groups) {
+            foreach my $group (@{$self->create_array($groups)}) {
+              if ($current eq $group) {
+                $addgroup = 0;
+                last;
+              }
+            }
+          }
+          if ($addgroup) {
+            $self->process_assignment_add($grtag, $current);
+          }
+        }
+      }
       if (defined $current && $set) {
-        $current = $self->get_default_element_name();
+        $current = $defel;
         $set = undef;
       }
       else {
+        ## We are at the end of a component.  If the only group
+        ## we added was the default group, then we need to remove
+        ## the group setting altogether.
+        my($groups) = $self->get_assignment($grtag);
+        if (defined $groups) {
+          my(@grarray) = @{$self->create_array($groups)};
+          if ($#grarray == 0 && $grarray[0] eq $defel) {
+            $self->process_assignment($grtag, undef);
+          }
+        }
+
         ## This is not an error,
         ## this is the end of the components
         last;
@@ -3864,12 +3875,13 @@ sub relative {
   my($self)            = shift;
   my($value)           = shift;
   my($expand_template) = shift;
+  my($scope)           = shift;
 
   if (defined $value) {
     if (UNIVERSAL::isa($value, 'ARRAY')) {
       my(@built) = ();
       foreach my $val (@$value) {
-        push(@built, $self->relative($val, $expand_template));
+        push(@built, $self->relative($val, $expand_template, $scope));
       }
       $value = \@built;
     }
@@ -3952,7 +3964,9 @@ sub relative {
             if (defined $ti) {
               $val = $ti->get_value($name);
             }
-            my($arr) = $self->adjust_value([$name], (defined $val ? $val : []));
+            my($sname) = (defined $scope ? $scope . "::$name" : undef);
+            my($arr) = $self->adjust_value([$sname, $name],
+                                           (defined $val ? $val : []));
             if (defined $$arr[0]) {
               $val = "@$arr";
               if ($self->{'convert_slashes'}) {
