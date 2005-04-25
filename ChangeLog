@@ -1,3 +1,18 @@
+Mon Apr 25 10:31:48 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/xerces.mpb:
+
+          Set Debug::xerceslib in addition to xerceslib to ensure that the
+          debug version of xerces is linked into Debug configurations for
+          Visual C++.  Linking the optimized version into debug applications
+          has been reported to cause run-time issues.
+
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where the scope name of a template variable being
+          expanded from $(...) was not taken into account.
+
 Mon Apr 18 13:16:52 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3vcp.mpd:

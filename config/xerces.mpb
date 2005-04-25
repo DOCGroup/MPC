@@ -7,6 +7,11 @@ project {
 
   specific (em3, vc6, vc7, vc71, vc8, nmake) {
     xerceslib = xerces-c_2
+
+    // Linking the optimized version of xerces-c_2 into a debug application
+    // has been known to cause run-time issues (as of 4/25/2005), so we
+    // will link in the debug version for the "Debug" configuration.
+    Debug::xerceslib = xerces-c_2D
   }
   specific(borland, bmake, cbx) {
     xerceslib = XercesLib
