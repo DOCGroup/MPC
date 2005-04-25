@@ -198,7 +198,8 @@ sub get_value {
   my($value)   = undef;
   my($counter) = $self->{'foreach'}->{'count'};
   my($fromprj) = 0;
-  my($scoped)  = undef;
+  my($scope)   = undef;
+  my($sname)   = undef;
   my($adjust)  = 1;
 
   ## First, check the temporary scope (set inside a foreach)
@@ -206,8 +207,8 @@ sub get_value {
     ## Find the outer most scope for our variable name
     for(my $index = $counter; $index >= 0; --$index) {
       if (defined $self->{'foreach'}->{'scope_name'}->[$index]) {
-        $scoped = $self->{'foreach'}->{'scope_name'}->[$index] .
-                  '::' . $name;
+        $scope = $self->{'foreach'}->{'scope_name'}->[$index];
+        $sname = $scope . '::' . $name;
         last;
       }
     }
@@ -227,7 +228,7 @@ sub get_value {
     if (!defined $value) {
       ## Calling adjust_value here allows us to pick up template
       ## overrides before getting values elsewhere.
-      my($uvalue) = $self->{'prjc'}->adjust_value([$scoped, $name], []);
+      my($uvalue) = $self->{'prjc'}->adjust_value([$sname, $name], []);
       if (defined $$uvalue[0]) {
         $value = $uvalue;
         $adjust = 0;
@@ -275,7 +276,7 @@ sub get_value {
   ## Adjust the value even if we haven't obtained one from an outside
   ## source.
   if ($adjust && defined $value) {
-    $value = $self->{'prjc'}->adjust_value([$scoped, $name], $value);
+    $value = $self->{'prjc'}->adjust_value([$sname, $name], $value);
   }
 
   ## If the value did not come from the project creator, we
@@ -296,7 +297,7 @@ sub get_value {
     }
   }
 
-  return $self->{'prjc'}->relative($value);
+  return $self->{'prjc'}->relative($value, undef, $scope);
 }
 
 
@@ -309,20 +310,20 @@ sub get_value_with_default {
     $value = $self->{'defaults'}->{$name};
     if (defined $value) {
       my($counter) = $self->{'foreach'}->{'count'};
-      my($scoped)  = undef;
+      my($sname)   = undef;
 
       if ($counter >= 0) {
         ## Find the outer most scope for our variable name
         for(my $index = $counter; $index >= 0; --$index) {
           if (defined $self->{'foreach'}->{'scope_name'}->[$index]) {
-            $scoped = $self->{'foreach'}->{'scope_name'}->[$index] .
-                      '::' . $name;
+            $sname = $self->{'foreach'}->{'scope_name'}->[$index] .
+                     '::' . $name;
             last;
           }
         }
       }
       $value = $self->{'prjc'}->relative(
-                       $self->{'prjc'}->adjust_value([$scoped, $name], $value));
+                    $self->{'prjc'}->adjust_value([$sname, $name], $value));
     }
     else {
       #$self->warning("$name defaulting to empty string.");
