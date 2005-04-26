@@ -1066,7 +1066,7 @@ sub parse_components {
     }
     elsif ($line =~ /^}$/) {
       if (defined $current) {
-        if (!defined $$comps{$current}->[0]) {
+        if (!defined $$comps{$current}->[0] && !defined $exclude[0]) {
           ## The default components name was never used
           ## so we remove it from the components
           delete $$comps{$current};
