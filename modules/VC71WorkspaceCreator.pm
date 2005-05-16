@@ -49,19 +49,27 @@ sub print_inner_project {
   my($project_name) = shift;
   my($name_to_guid_map) = shift;
 
-  my($crlf) = $self->crlf();
-  print $fh "\tProjectSection(ProjectDependencies) = postProject$crlf";
-  my($darr) = $self->create_array($deps);
-  foreach my $dep (@$darr) {
-    ## Avoid cirular dependencies
-    if ($project_name ne $dep) {
-      my($guid) = $name_to_guid_map->{$dep};
-      if (defined $guid) {
-        print $fh "\t\t{$guid} = {$guid}$crlf";
+  if ($self->allow_empty_dependencies() || length($deps) > 0) {
+    my($crlf) = $self->crlf();
+    print $fh "\tProjectSection(ProjectDependencies) = postProject$crlf";
+    my($darr) = $self->create_array($deps);
+    foreach my $dep (@$darr) {
+      ## Avoid cirular dependencies
+      if ($project_name ne $dep) {
+        my($guid) = $name_to_guid_map->{$dep};
+        if (defined $guid) {
+          print $fh "\t\t{$guid} = {$guid}$crlf";
+        }
       }
     }
+    print $fh "\tEndProjectSection$crlf";
   }
-  print $fh "\tEndProjectSection$crlf";
+}
+
+
+sub allow_empty_dependencies {
+  #my($self) = shift;
+  return 1;
 }
 
 

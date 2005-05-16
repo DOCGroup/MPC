@@ -269,6 +269,10 @@ sub run {
   ## Set up un-buffered output for the progress callback
   $| = 1;
 
+  ## Keep the starting time for the total output
+  my($startTime) = time();
+  my($loopTimes) = 0;
+
   ## Generate the files
   my($status) = 0;
   foreach my $cfile (@{$options->{'input'}}) {
@@ -281,6 +285,8 @@ sub run {
     }
 
     foreach my $name (@{$options->{'creators'}}) {
+      ++$loopTimes;
+
       if (!$loaded{$name}) {
         require "$name.pm";
         $loaded{$name} = 1;
@@ -331,19 +337,31 @@ sub run {
         $diag .= ($partial ne '' ? "$partial/" : '') . $file;
       }
       $self->diagnostic($diag);
-      $self->diagnostic('Start Time: ' . scalar(localtime(time())));
+      my($start) = time();
       if (!$creator->generate($file)) {
         $self->error("Unable to process: " .
                      ($file eq '' ? 'default input' : $file));
         $status++;
         last;
       }
-      $self->diagnostic('  End Time: ' . scalar(localtime(time())));
+      my($total) = time() - $start;
+      $self->diagnostic('Generation Time: ' .
+                        (int($total / 60) > 0 ? int($total / 60) . 'm ' : '') .
+                        ($total % 60) . 's');
       $creator->cd($orig_dir);
     }
     if ($status) {
       last;
     }
+  }
+
+  ## If we went through the loop more than once, we need to print
+  ## out the total amount of time
+  if ($loopTimes > 1) {
+    my($total) = time() - $startTime;
+    $self->diagnostic('     Total Time: ' .
+                      (int($total / 60) > 0 ? int($total / 60) . 'm ' : '') .
+                      ($total % 60) . 's');
   }
 
   return $status;
