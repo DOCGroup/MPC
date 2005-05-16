@@ -50,6 +50,12 @@ my(%info) = ('cplusplus' => {'ext'      => '.vcproj',
 # Subroutine Section
 # ************************************************************
 
+sub get_info_hash {
+  my($self) = shift;
+  my($key)  = shift;
+  return $info{$key};
+}
+
 sub get_quote_symbol {
   #my($self) = shift;
   return '&quot;';
@@ -104,37 +110,37 @@ sub fill_value {
 
 sub project_file_extension {
   my($self) = shift;
-  return $info{$self->get_language()}->{'ext'};
+  return $self->get_info_hash($self->get_language())->{'ext'};
 }
 
 
 sub get_dll_exe_template_input_file {
   my($self) = shift;
-  return $info{$self->get_language()}->{'dllexe'};
+  return $self->get_info_hash($self->get_language())->{'dllexe'};
 }
 
 
 sub get_lib_exe_template_input_file {
   my($self) = shift;
-  return $info{$self->get_language()}->{'libexe'};
+  return $self->get_info_hash($self->get_language())->{'libexe'};
 }
 
 
 sub get_dll_template_input_file {
   my($self) = shift;
-  return $info{$self->get_language()}->{'dll'};
+  return $self->get_info_hash($self->get_language())->{'dll'};
 }
 
 
 sub get_lib_template_input_file {
   my($self) = shift;
-  return $info{$self->get_language()}->{'lib'};
+  return $self->get_info_hash($self->get_language())->{'lib'};
 }
 
 
 sub get_template {
   my($self) = shift;
-  return $info{$self->get_language()}->{'template'};
+  return $self->get_info_hash($self->get_language())->{'template'};
 }
 
 
