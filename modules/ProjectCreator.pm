@@ -3735,11 +3735,14 @@ sub reset_values {
 sub add_default_matching_assignments {
   my($self) = shift;
   my($lang) = $self->get_language();
-  foreach my $key (keys %{$language{$lang}->[0]}) {
-    if (!defined $language{$lang}->[2]->{$key}) {
-       $language{$lang}->[2]->{$key} = [];
-      foreach my $keyword (@default_matching_assignments) {
-        push(@{$language{$lang}->[2]->{$key}}, $keyword);
+
+  if (defined $lang) {
+    foreach my $key (keys %{$language{$lang}->[0]}) {
+      if (!defined $language{$lang}->[2]->{$key}) {
+         $language{$lang}->[2]->{$key} = [];
+        foreach my $keyword (@default_matching_assignments) {
+          push(@{$language{$lang}->[2]->{$key}}, $keyword);
+        }
       }
     }
   }
@@ -3749,18 +3752,21 @@ sub add_default_matching_assignments {
 sub reset_generating_types {
   my($self)  = shift;
   my($lang)  = $self->get_language();
-  my(%reset) = ('valid_components'     => $language{$lang}->[0],
-                'custom_only_removed'  => $language{$lang}->[0],
-                'exclude_components'   => $language{$lang}->[1],
-                'matching_assignments' => $language{$lang}->[2],
-                'generated_exts'       => {},
-                'valid_names'          => \%validNames,
-               );
 
-  foreach my $r (keys %reset) {
-    $self->{$r} = {};
-    foreach my $key (keys %{$reset{$r}}) {
-      $self->{$r}->{$key} = $reset{$r}->{$key};
+  if (defined $lang) {
+    my(%reset) = ('valid_components'     => $language{$lang}->[0],
+                  'custom_only_removed'  => $language{$lang}->[0],
+                  'exclude_components'   => $language{$lang}->[1],
+                  'matching_assignments' => $language{$lang}->[2],
+                  'generated_exts'       => {},
+                  'valid_names'          => \%validNames,
+                 );
+
+    foreach my $r (keys %reset) {
+      $self->{$r} = {};
+      foreach my $key (keys %{$reset{$r}}) {
+        $self->{$r}->{$key} = $reset{$r}->{$key};
+      }
     }
   }
 
