@@ -163,15 +163,16 @@ sub write_comps {
     }
   }
 
-  ## Project Configurations
-  print $fh "Global$crlf" .
-            "\tGlobalSection(SolutionConfiguration) = preSolution$crlf";
+  print $fh "Global$crlf",
+            "\tGlobalSection(",
+            $self->get_solution_config_section_name(),
+            ") = preSolution$crlf";
 
   my(%configs) = ();
   foreach my $project (@list) {
     my($name, $deps, $pguid, @cfgs) = @{$$pjs{$project}};
     foreach my $cfg (@cfgs) {
-      $cfg =~ s/\|.*//;
+      $cfg = $self->get_short_config_name($cfg);
       $configs{$cfg} = 1;
     }
   }
@@ -182,22 +183,55 @@ sub write_comps {
   $self->print_dependencies($fh, $gen, \@list, $pjs);
 
   ## Project Configuration Names
-  print $fh "\tGlobalSection(ProjectConfiguration) = postSolution$crlf";
+  print $fh "\tGlobalSection(",
+            $self->get_project_config_section_name(),
+            ") = postSolution$crlf";
+
   foreach my $project (@list) {
     my($name, $deps, $pguid, @cfgs) = @{$$pjs{$project}};
     foreach my $cfg (sort @cfgs) {
-      my($c) = $cfg;
-      $c =~ s/\|.*//;
+      my($c) = $self->get_short_config_name($cfg);
       print $fh "\t\t{$pguid}.$c.ActiveCfg = $cfg$crlf" .
                 "\t\t{$pguid}.$c.Build.0 = $cfg$crlf";
     }
   }
-  print $fh "\tEndGlobalSection$crlf" .
-            "\tGlobalSection(ExtensibilityGlobals) = postSolution$crlf" .
-            "\tEndGlobalSection$crlf" .
-            "\tGlobalSection(ExtensibilityAddIns) = postSolution$crlf" .
-            "\tEndGlobalSection$crlf" .
-            "EndGlobal$crlf";
+  print $fh "\tEndGlobalSection$crlf";
+
+  $self->print_additional_sections($fh);
+
+  print $fh "EndGlobal$crlf";
+}
+
+
+sub get_short_config_name {
+  my($self) = shift;
+  my($cfg)  = shift;
+  $cfg =~ s/\|.*//;
+  return $cfg;
+}
+
+
+sub get_solution_config_section_name {
+  #my($self) = shift;
+  return 'SolutionConfiguration';
+}
+
+
+sub get_project_config_section_name {
+  #my($self) = shift;
+  return 'ProjectConfiguration';
+}
+
+
+sub print_additional_sections {
+  my($self) = shift;
+  my($fh)   = shift;
+  my($crlf) = $self->crlf();
+
+  print $fh "\tGlobalSection(ExtensibilityGlobals) = postSolution$crlf",
+            "\tEndGlobalSection$crlf",
+            "\tGlobalSection(ExtensibilityAddIns) = postSolution$crlf",
+            "\tEndGlobalSection$crlf";
 }
 
 

@@ -56,6 +56,7 @@ my(%keywords) = ('if'              => 0,
                  'starts_with'     => 5,
                  'ends_with'       => 5,
                  'contains'        => 5,
+                 'duplicate_index' => 5,
                 );
 
 # ************************************************************
@@ -82,6 +83,7 @@ sub new {
   $self->{'if_skip'}    = 0;
   $self->{'eval'}       = 0;
   $self->{'eval_str'}   = '';
+  $self->{'dupfiles'}   = {};
 
   $self->{'foreach'}  = {};
   $self->{'foreach'}->{'count'}      = -1;
@@ -1178,6 +1180,56 @@ sub handle_pseudo {
   my($self) = shift;
   my($name) = shift;
   $self->append_current($self->{'cmds'}->{$name});
+}
+
+
+sub get_duplicate_index {
+  my($self) = shift;
+  my($name) = shift;
+  return $self->doif_duplicate_index($self->get_value_with_default($name));
+}
+
+
+sub doif_duplicate_index {
+  my($self)  = shift;
+  my($value) = shift;
+
+  if (defined $value) {
+    my($base) = $self->basename($value);
+    my($path) = $self->tp_dirname($value);
+
+    if (!defined $self->{'dupfiles'}->{$base}) {
+      $self->{'dupfiles'}->{$base} = [$path];
+    }
+    else {
+      my($index) = 1;
+      foreach my $file (@{$self->{'dupfiles'}->{$base}}) {
+        if ($file eq $path) {
+          return $index;
+        }
+        ++$index;
+      }
+
+      push(@{$self->{'dupfiles'}->{$base}}, $path);
+      return 1;
+    }
+  }
+
+  return undef;
+}
+
+
+sub handle_duplicate_index {
+  my($self) = shift;
+  my($name) = shift;
+
+  if (!$self->{'if_skip'}) {
+    my($value) = $self->doif_duplicate_index(
+                          $self->get_value_with_default($name));
+    if (defined $value) {
+      $self->append_current($value);
+    }
+  }
 }
 
 
