@@ -460,17 +460,17 @@ keywords (*_outputext) and you have knowledge of the output files a priori,
 you can represent them with the '>>' construct.
 
 Below is an example that demonstrates the use of '>>'.  The command takes an
-input file name of foo.prp and produces two files that have a completely
-unrelated filename (i.e. foo !~ hello).
+input file name of foo.prp and produces two files that have completely
+unrelated filenames (i.e. foo !~ hello).
 
 project {
   Define_Custom(Quogen) {
-    automatic               = 0
-    command                 = perl quogen.pl
-    commandflags            = --debuglevel=1 --language=c++ \
-                              --kernel_language=c++
-    inputext                = .prp
-    keyword quogenflags     = commandflags
+    automatic           = 0
+    command             = perl quogen.pl
+    commandflags        = --debuglevel=1 --language=c++ \
+                          --kernel_language=c++
+    inputext            = .prp
+    keyword quogenflags = commandflags
   }
 
   Quogen_Files {
@@ -482,8 +482,16 @@ project {
   }
 }
 
-There is a new construct that can be used within a Define_Custom section.
-It is called 'optional' and can be used to represent optional custom output
+You can use the '<<' construct to represent dependencies for specific custom
+input file.  For instance, in the above example, assume that foo.prp depends
+upon foo.in, we would represent this by adding << foo.in as shown below.
+
+  Quogen_Files {
+    foo.prp >> hello.h hello.cpp << foo.in
+  }
+
+There is a construct that can be used within a Define_Custom section
+called 'optional' and can be used to represent optional custom output
 dependent upon particular command line parameters passed to the custom
 command.
 
