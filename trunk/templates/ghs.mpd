@@ -22,7 +22,7 @@ default:
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
-	:depends=<%custom_type->input_file%>
+	:depends=<%custom_type->input_file%><%if(custom_type->input_file->dependencies)%> <%custom_type->input_file->dependencies%><%endif%>
 <%foreach(custom_type->input_file->output_files)%>
 <%if(flag_overrides(custom_type->input_file, gendir))%>
 	:preexec=<%mkdir("mkdir -p")%> <%flag_overrides(custom_type->input_file, gendir)%><%postmkdir%>

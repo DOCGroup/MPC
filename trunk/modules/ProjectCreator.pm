@@ -259,6 +259,7 @@ sub new {
   $self->{'dll_template_input'}    = undef;
   $self->{'flag_overrides'}        = {};
   $self->{'custom_special_output'} = {};
+  $self->{'custom_special_depend'} = {};
   $self->{'special_supplied'}      = {};
   $self->{'pctype'}                = $self->extractType("$self");
   $self->{'verbatim'}              = {};
@@ -594,6 +595,7 @@ sub parse_line {
             $self->{'inheritance_tree'}      = {};
             $self->{'remove_files'}          = {};
             $self->{'custom_special_output'} = {};
+            $self->{'custom_special_depend'} = {};
             $self->reset_generating_types();
           }
         }
@@ -884,9 +886,26 @@ sub process_component_line {
     }
 
     ## Now look for specially listed files
-    if ($line =~ /(.*)\s+>>\s+(.*)/) {
-      $line = $1;
-      $self->{'custom_special_output'}->{$line} = $self->create_array($2);
+    if ($line =~ /(.*)\s+(>>|<<)\s+(.*)/) {
+      $line    = $1;
+      my($oop) = $2;
+      my($out) = ($oop eq '>>' ? $3 : undef);
+      my($dep) = ($oop eq '<<' ? $3 : undef);
+
+      if ($line =~ /(.*)\s+(>>|<<)\s+(.*)/) {
+        $line = $1;
+        $out  = ($2 eq '>>' ? $3 : $out);
+        $dep  = ($2 eq '<<' ? $3 : $dep);
+
+        $status = ($2 eq $oop ? 0 : 1);
+      }
+
+      if (defined $out) {
+        $self->{'custom_special_output'}->{$line} = $self->create_array($out);
+      }
+      if (defined $dep) {
+        $self->{'custom_special_depend'}->{$line} = $self->create_array($dep);
+      }
     }
 
     ## Set up the files array.  If the line contains a wild card
@@ -3319,6 +3338,9 @@ sub get_custom_value {
     }
     $value = \@array;
   }
+  elsif ($cmd eq 'dependencies') {
+    $value = $self->{'custom_special_depend'}->{$based};
+  }
   elsif (defined $customDefined{$cmd} &&
          ($customDefined{$cmd} & 0x04) != 0) {
     $value = $self->get_assignment($cmd,
@@ -3894,6 +3916,11 @@ sub relative {
       if (defined $keys[0]) {
         my($cwd)   = $self->getcwd();
         my($start) = 0;
+
+        ## Fix up the value for Windows switch the \\'s to /
+        if ($self->{'convert_slashes'}) {
+          $cwd =~ s/\\/\//g;
+        }
 
         while(substr($value, $start) =~ /(\$\(([^)]+)\))/) {
           my($whole)  = $1;

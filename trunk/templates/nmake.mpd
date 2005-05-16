@@ -274,7 +274,7 @@ SOURCE=<%custom_type->input_file%>
 
 InputPath=<%custom_type->input_file%>
 
-<%foreach(custom_type->input_file->output_files)%>"<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>" <%endfor%>: "$(SOURCE)" "$(INTDIR)" "$(OUTDIR)"
+<%foreach(custom_type->input_file->output_files)%>"<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>" <%endfor%>: "$(SOURCE)" "$(INTDIR)" "$(OUTDIR)"<%foreach(custom_type->input_file->dependencies)%> "<%custom_type->input_file->dependencie%>"<%endfor%>
 	<<tempfile.bat
 	@echo off
 <%if(custom_type->libpath)%>

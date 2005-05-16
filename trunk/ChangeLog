@@ -1,3 +1,27 @@
+Mon May 16 06:47:57 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+        * modules/Parser.pm:
+
+          Removed the MPC_INFORMATION environment variable and added
+          MPC_LOGGING which can be used to control all aspects of logging
+          (informational, warning and diagnostic).
+
+        * README:
+        * modules/ProjectCreator.pm:
+        * templates/automake.mpd:
+        * templates/bmake.mpd:
+        * templates/em3vcp.mpd:
+        * templates/ghs.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+
+          Added a new operator, '<<', to allow user to specify additional
+          dependencies for only custom input files.  See the README for more
+          details.
+
 Tue Apr 26 11:29:57 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

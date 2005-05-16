@@ -25,6 +25,8 @@ use vars qw(@ISA);
 # ************************************************************
 
 my(%filecache) = ();
+my($silent)    = 'MPC_SILENT';
+my($logging)   = 'MPC_LOGGING';
 
 # ************************************************************
 # Subroutine Section
@@ -33,11 +35,26 @@ my(%filecache) = ();
 sub new {
   my($class) = shift;
   my($inc)   = shift;
-  my($info)  = (defined $ENV{MPC_SILENT} ||
-                !defined $ENV{MPC_INFORMATION} ? 0 : 1);
-  my($warn)  = (defined $ENV{MPC_SILENT} ? 0 : 1);
-  my($diag)  = (defined $ENV{MPC_SILENT} ? 0 : 1);
-  my($self)  = $class->SUPER::new($info, $warn, $diag);
+  my($log)   = $ENV{$logging};
+
+  ## The order of these array variables must correspond to the
+  ## order of the parameters to OutputMessage::new().
+  my($params) = (defined $ENV{$silent} ||
+                 defined $log ? [0, 0, 0] : [0, 1, 1]);
+
+  if (defined $log) {
+    if ($log =~ /info(rmation)?\s*=\s*(\d+)/i) {
+      $$params[0] = $2;
+    }
+    if ($log =~ /warn(ing)?\s*=\s*(\d+)/i) {
+      $$params[1] = $2;
+    }
+    if ($log =~ /diag(nostic)?\s*=\s*(\d+)/i) {
+      $$params[2] = $2;
+    }
+  }
+
+  my($self) = $class->SUPER::new(@$params);
 
   $self->{'line_number'} = 0;
   $self->{'include'}     = $inc;
