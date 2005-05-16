@@ -202,5 +202,9 @@ MPC_SILENT - If this is set, MPC will not print out any information or
 warnings when processing projects or workspaces.  Errors are always printed
 if any are encountered.
 
-MPC_INFORMATION - If this is set, MPC will print out informational messages
-in addition to diagnostic and warning messages.
+MPC_LOGGING - If this is set, MPC will parse the value and provide
+informational, warning and diagnostic messages depending on it's setting.
+If the MPC_LOGGING value contains info=1, informational messages will be
+printed.  If it contains warn=1, warning messages will be printed.  And
+lastly, if it contains diag=1, diagnostic messages will be printed.  If it
+contains none of these, MPC will act as if MPC_SILENT was set.
