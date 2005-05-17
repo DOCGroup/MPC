@@ -1,6 +1,6 @@
 <?xml version="<%xml_version("1.0")%>" encoding="<%encoding("Windows-1252")%>"?>
 <VisualStudioProject
-	ProjectType="Visual C++"
+	ProjectType="<%vcprojecttype("Visual C++")%>"
 	Version="<%vcversion%>"
 	Name="<%project_name%>"
 	ProjectGUID="{<%guid%>}"
@@ -85,13 +85,13 @@
 <%if(StringPooling)%>
 				StringPooling="<%StringPooling%>"
 <%endif%>
-<%if(!Optimization)%>
+<%if(!optimize)%>
 				MinimalRebuild="<%MinimalRebuild("true")%>"
 <%endif%>
 <%if(ExceptionHandling)%>
 				ExceptionHandling="<%ExceptionHandling("2")%>"
 <%endif%>
-<%if(!Optimization)%>
+<%if(!optimize)%>
 				BasicRuntimeChecks="<%BasicRuntimeChecks("3")%>"
 <%endif%>
 <%if(SmallerTypeCheck)%>
@@ -179,7 +179,7 @@
 				WarnAsError="<%WarnAsError%>"
 <%endif%>
 				Detect64BitPortabilityProblems="<%Detect64BitPortabilityProblems("true")%>"
-<%if(!Optimization)%>
+<%if(!optimize)%>
 				DebugInformationFormat="<%debug_format("3")%>"/>
 <%endif%>
 <%if(CallingConvention)%>
@@ -386,7 +386,7 @@
 <%if(Driver)%>
 				Driver="<%Driver%>"
 <%endif%>
-<%if(Optimization)%>
+<%if(optimize)%>
 				OptimizeReferences="<%OptimizeReferences("2")%>"
 				EnableCOMDATFolding="<%EnableCOMDATFolding("2")%>"
 <%endif%>
@@ -597,10 +597,14 @@
 						Description="Invoking <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> on <%custom_type->input_file%>"
 						CommandLine="<%if(custom_type->libpath)%>PATH=%PATH%;<%custom_type->libpath%>&#x0D;&#x0A;<%endif%><%if(flag_overrides(custom_type->input_file, gendir))%>if not exist <%flag_overrides(custom_type->input_file, gendir)%> mkdir <%flag_overrides(custom_type->input_file, gendir)%>&#x0D;&#x0A;<%endif%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> &quot;<%custom_type->input_file%>&quot;<%if(custom_type->output_option)%> <%custom_type->output_option%> &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_files)%><%else%><%custom_type->input_file->output_files%><%endif%>&quot;<%endif%><%if(flag_overrides(custom_type->input_file, postcommand))%><%foreach(custom_type->input_file->output_files)%>&#x0D;&#x0A;<%flag_overrides(custom_type->input_file, postcommand)%><%endfor%><%else%><%if(custom_type->postcommand)%><%foreach(custom_type->input_file->output_files)%>&#x0D;&#x0A;<%custom_type->postcommand%><%endfor%><%endif%><%endif%><%if(pch_header)%><%if(custom_type->pch_postrule)%><%foreach(custom_type->input_file->source_output_files)%>&#x0D;&#x0A;echo #include &quot;<%pch_header%>&quot; &gt; temporary.src&#x0D;&#x0A;type &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>&quot; &gt;&gt; temporary.src&#x0D;&#x0A;move /y temporary.src &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>&quot;<%endfor%><%endif%><%endif%>"
 <%if(flag_overrides(custom_type->input_file, dependent))%>
-                                                AdditionalDependencies="<%flag_overrides(custom_type->input_file, dependent)%>.exe"
+                                                AdditionalDependencies="<%flag_overrides(custom_type->input_file, dependent)%>.exe<%foreach(custom_type->input_file->dependencies)%>;<%custom_type->input_file->dependencie%><%endfor%>"
 <%else%>
 <%if(custom_type->dependent)%>
-						AdditionalDependencies="<%custom_type->dependent%>.exe"
+						AdditionalDependencies="<%custom_type->dependent%>.exe<%foreach(custom_type->input_file->dependencies)%>;<%custom_type->input_file->dependencie%><%endfor%>"
+<%else%>
+<%if(custom_type->input_file->dependencies)%>
+						AdditionalDependencies="<%foreach(custom_type->input_file->dependencies)%><%custom_type->input_file->dependencie%><%fornotlast(";")%><%endfor%>"
+<%endif%>
 <%endif%>
 <%endif%>
 						Outputs="<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(";")%><%endfor%>"/>
