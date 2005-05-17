@@ -101,9 +101,6 @@ sub fill_value {
                              $self->{'current_input'},
                              $self->getcwd());
   }
-  elsif ($name eq 'vcprojecttype') {
-    $value = 'Visual C++';
-  }
   else {
     $value = $self->get_configurable($name);
   }

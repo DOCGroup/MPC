@@ -1,6 +1,6 @@
 <?xml version="<%xml_version("1.0")%>" encoding="<%encoding("Windows-1252")%>"?>
 <VisualStudioProject
-	ProjectType="<%vcprojecttype%>"
+	ProjectType="<%vcprojecttype("Visual C++")%>"
 	Version="<%vcversion%>"
 	Name="<%project_name%>"
 	ProjectGUID="{<%guid%>}"
