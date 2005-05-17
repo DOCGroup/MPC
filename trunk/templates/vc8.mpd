@@ -180,7 +180,7 @@
 <%endif%>
 				Detect64BitPortabilityProblems="<%Detect64BitPortabilityProblems("true")%>"
 <%if(!optimize)%>
-				DebugInformationFormat="<%debug_format("3")%>"/>
+				DebugInformationFormat="<%debug_format("3")%>"
 <%endif%>
 <%if(CallingConvention)%>
 				CallingConvention="<%CallingConvention%>"

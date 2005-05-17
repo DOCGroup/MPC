@@ -1,3 +1,19 @@
+Tue May 17 13:54:12 2005  Justin Michel  <michel_j@ociweb.com>
+
+        * templates/vc7.mpd:
+
+          Default to enabling wchar_t as a native type. This should now work
+        correctly given my recent changes to ACE.
+
+        * templates/vc8.mpd:
+
+          Remove an extra "/>" that was inadvertently left in the template. Strangely
+        this did not cause an error when opening the solution in the IDE, but only
+        showed up in the nightly builds.
+
+
+
+
 Tue May 17 12:40:35 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WinProjectBase.pm:
