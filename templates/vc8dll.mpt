@@ -13,7 +13,7 @@ MinimalRebuild     = false
 
 Release {
   LinkIncremental  = 1
-  Optimization     = 2
+  optimize         = 2
   defines          = NDEBUG
   output_dir       = Release
   intermediate_dir = Release
@@ -30,7 +30,7 @@ Debug {
 
 MFC Release {
   LinkIncremental  = 1
-  Optimization     = 2
+  optimize         = 2
   defines          = NDEBUG
   output_dir       = MFC_Release
   intermediate_dir = MFC_Release

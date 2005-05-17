@@ -62,6 +62,7 @@ sub findCallback {
   if ($matches) {
     $matches &&= (! -l $_           &&
                   ! /^core\z/s      &&
+                  ! /^.*\.rej\z/s   &&
                   ! /^.*\.state\z/s &&
                   ! /^.*\.so\z/s    &&
                   ! /^.*\.[oa]\z/s  &&
