@@ -3852,6 +3852,9 @@ sub adjust_value {
       foreach my $val (@$addtemparr) {
         my($arr) = $self->create_array($$val[1]);
         if ($$val[0] > 0) {
+          if (!defined $value) {
+            $value = '';
+          }
           if (UNIVERSAL::isa($value, 'ARRAY')) {
             ## We need to make $value a new array reference ($arr)
             ## to avoid modifying the array reference pointed to by $value
@@ -3864,31 +3867,35 @@ sub adjust_value {
         }
         elsif ($$val[0] < 0) {
           my($parts) = undef;
-          if (UNIVERSAL::isa($value, 'ARRAY')) {
-            $parts = $value;
-          }
-          else {
-            $parts = $self->create_array($value);
-          }
+          if (defined $value) {
+            if (UNIVERSAL::isa($value, 'ARRAY')) {
+              $parts = $value;
+            }
+            else {
+              $parts = $self->create_array($value);
+            }
 
-          $value = [];
-          foreach my $part (@$parts) {
-            if ($part ne '') {
-              my($found) = 0;
-              foreach my $ae (@$arr) {
-                if ($part eq $ae) {
-                  $found = 1;
-                  last;
+            $value = [];
+            foreach my $part (@$parts) {
+              if ($part ne '') {
+                my($found) = 0;
+                foreach my $ae (@$arr) {
+                  if ($part eq $ae) {
+                    $found = 1;
+                    last;
+                  }
                 }
-              }
-              if (!$found) {
-                push(@$value, $part);
+                if (!$found) {
+                  push(@$value, $part);
+                }
               }
             }
           }
         }
         else {
-          $value = $arr;
+          ## If the user set the variable to empty, then we need to
+          ## set the value to undef
+          $value = (defined $$arr[0] ? $arr : undef);
         }
       }
       last;
