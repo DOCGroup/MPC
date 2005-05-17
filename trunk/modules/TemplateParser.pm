@@ -326,6 +326,12 @@ sub get_value_with_default {
       }
       $value = $self->{'prjc'}->relative(
                     $self->{'prjc'}->adjust_value([$sname, $name], $value));
+
+      ## If the user set the variable to empty, we will go ahead and use
+      ## the default value (since we know we have one at this point).
+      if (!defined $value) {
+        $value = $self->{'defaults'}->{$name};
+      }
     }
     else {
       #$self->warning("$name defaulting to empty string.");
