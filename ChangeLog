@@ -1,3 +1,14 @@
+Tue May 17 12:40:35 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WinProjectBase.pm:
+
+          Check for paths with drive letters during dirname validation.
+
+        * templates/em3vcp.mpd:
+        * templates/vc6dsp.mpd:
+
+          Brought over the duplicate_index changes from vc7.mpd.
+
 Tue May 17 11:47:45 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

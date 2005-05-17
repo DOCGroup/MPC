@@ -119,11 +119,11 @@ SOURCE="<%pch_source%>"
 # Begin Source File
 
 SOURCE="<%grouped_source_file->file%>"
-<%if(dirname(grouped_source_file->file))%>
+<%if(duplicate_index(grouped_source_file->file))%>
 <%foreach(platforms)%>
 <%foreach(configurations)%>
 !<%fornotfirst("ELSE")%>IF  "$(CFG)" == "<%project_name%> - <%operating_system%> (<%platform%>) <%configuration%>"
-# ADD CPP /Fo"<%intermediate_dir%>\<%noextension(project_file)%>\<%machine%>\<%noextension(grouped_source_file->file)%>.obj"
+# ADD CPP /Fo"<%intermediate_dir%>\<%noextension(project_file)%>\<%machine%>\<%basenoextension(grouped_source_file->file)%><%duplicate_index(grouped_source_file->file)%>.obj"
 <%endfor%>
 !ENDIF
 <%endfor%>
@@ -137,11 +137,11 @@ SOURCE="<%grouped_source_file->file%>"
 # Begin Source File
 
 SOURCE="<%source_file%>"
-<%if(dirname(source_file))%>
+<%if(duplicate_index(source_file))%>
 <%foreach(platforms)%>
 <%foreach(configurations)%>
 !<%fornotfirst("ELSE")%>IF  "$(CFG)" == "<%project_name%> - <%operating_system%> (<%platform%>) <%configuration%>"
-# ADD CPP /Fo"<%intermediate_dir%>\<%noextension(project_file)%>\<%machine%>\<%noextension(source_file)%>.obj"
+# ADD CPP /Fo"<%intermediate_dir%>\<%noextension(project_file)%>\<%machine%>\<%basenoextension(source_file)%><%duplicate_index(source_file)%>.obj"
 <%endfor%>
 !ENDIF
 <%endfor%>
