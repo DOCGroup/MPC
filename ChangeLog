@@ -1,3 +1,11 @@
+Tue May 17 11:47:45 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where a template variable default would not be used if
+          the user set the template variable to empty.
+
 Tue May 17 08:46:33 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * clone_build_tree.pl:
