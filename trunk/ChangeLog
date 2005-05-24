@@ -1,18 +1,34 @@
+Tue May 24 13:57:42 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeProjectCreator.pm:
+
+          Removed unnecessary sort method.  It implemented the default.
+
+        * modules/GHSProjectCreator.pm:
+
+          Call escape_regex_special() before using the starting directory as
+          a regular expression.
+
+        * templates/bmake.mpd:
+        * templates/bmakedll.mpt:
+        * templates/bmakedllexe.mpt:
+        * templates/bmakelibexe.mpt:
+
+          Support Unicode builds by checking the UNICODE make/environment
+          variable.
+
 Tue May 17 13:54:12 2005  Justin Michel  <michel_j@ociweb.com>
 
         * templates/vc7.mpd:
 
           Default to enabling wchar_t as a native type. This should now work
-        correctly given my recent changes to ACE.
+          correctly given my recent changes to ACE.
 
         * templates/vc8.mpd:
 
-          Remove an extra "/>" that was inadvertently left in the template. Strangely
-        this did not cause an error when opening the solution in the IDE, but only
-        showed up in the nightly builds.
-
-
-
+          Remove an extra "/>" that was inadvertently left in the template.
+          Strangely this did not cause an error when opening the solution in
+          the IDE, but only showed up in the nightly builds.
 
 Tue May 17 12:40:35 2005  Chad Elliott  <elliott_c@ociweb.com>
 
