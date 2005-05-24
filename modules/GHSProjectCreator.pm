@@ -56,7 +56,7 @@ sub fill_value {
     $value = $self->relative($self->get_assignment($1));
     if (defined $value &&
         ($value =~ /^\.\.?$/ || $value =~ /^\.\.?\//)) {
-      my($top)  = $self->getstartdir();
+      my($top)  = $self->escape_regex_special($self->getstartdir());
       my($part) = $self->getcwd();
       $part =~ s/^$top[\/]?//;
       if ($part ne '') {
@@ -70,7 +70,7 @@ sub fill_value {
     }
   }
   elsif ($name eq 'reltop') {
-    my($top) = $self->getstartdir();
+    my($top) = $self->escape_regex_special($self->getstartdir());
     $value = $self->getcwd();
     $value =~ s/^$top[\/]?//;
     if ($value eq '') {
