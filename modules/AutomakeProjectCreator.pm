@@ -28,12 +28,6 @@ sub escape_spaces {
 }
 
 
-sub sort_files {
-  #my($self) = shift;
-  return 1;
-}
-
-
 sub convert_slashes {
   #my($self) = shift;
   return 0;
