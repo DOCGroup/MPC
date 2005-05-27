@@ -901,7 +901,10 @@ sub process_component_line {
       }
 
       if (defined $out) {
-        $self->{'custom_special_output'}->{$line} = $self->create_array($out);
+        if (!defined $self->{'custom_special_output'}->{$tag}) {
+          $self->{'custom_special_output'}->{$tag} = {};
+        }
+        $self->{'custom_special_output'}->{$tag}->{$line} = $self->create_array($out);
       }
       if (defined $dep) {
         $self->{'custom_special_depend'}->{$line} = $self->create_array($dep);
@@ -3276,8 +3279,9 @@ sub get_custom_value {
       }
 
       ## Add specially listed files avoiding duplicates
-      if (defined $self->{'custom_special_output'}->{$ainput}) {
-        foreach my $file (@{$self->{'custom_special_output'}->{$ainput}}) {
+      if (defined $self->{'custom_special_output'}->{$based} &&
+          defined $self->{'custom_special_output'}->{$based}->{$ainput}) {
+        foreach my $file (@{$self->{'custom_special_output'}->{$based}->{$ainput}}) {
           my($found) = 0;
           foreach my $output (@outputs) {
             if ($output eq $file) {
