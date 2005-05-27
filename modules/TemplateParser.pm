@@ -161,6 +161,26 @@ sub append_current {
 }
 
 
+sub split_parameters {
+  my($self)   = shift;
+  my($str)    = shift;
+  my(@params) = ();
+
+  while($str =~ /(\w+\([^\)]+\))\s*,\s*(.*)/) {
+    push(@params, $1);
+    $str = $2;
+  }
+  while($str =~ /([^,]+)\s*,\s*(.*)/) {
+    push(@params, $1);
+    $str = $2;
+  }
+
+  ## Return the parameters (which includes whatever is left in the
+  ## string).  Just return it instead of pushing it onto @params.
+  return @params, $str;
+}
+
+
 sub set_current_values {
   my($self) = shift;
   my($name) = shift;
@@ -222,50 +242,56 @@ sub get_value {
   }
 
   if (!defined $value) {
-    ## Next, check for a template value
-    if (defined $self->{'ti'}) {
-      $value = $self->{'ti'}->get_value($name);
+    if ($name =~ /^flag_overrides\((.*)\)$/) {
+      $value = $self->get_flag_overrides($1);
     }
 
     if (!defined $value) {
-      ## Calling adjust_value here allows us to pick up template
-      ## overrides before getting values elsewhere.
-      my($uvalue) = $self->{'prjc'}->adjust_value([$sname, $name], []);
-      if (defined $$uvalue[0]) {
-        $value = $uvalue;
-        $adjust = 0;
+      ## Next, check for a template value
+      if (defined $self->{'ti'}) {
+        $value = $self->{'ti'}->get_value($name);
       }
 
       if (!defined $value) {
-        ## Next, check the inner to outer foreach
-        ## scopes for overriding values
-        while(!defined $value && $counter >= 0) {
-          $value = $self->{'foreach'}->{'scope'}->[$counter]->{$name};
-          --$counter;
+        ## Calling adjust_value here allows us to pick up template
+        ## overrides before getting values elsewhere.
+        my($uvalue) = $self->{'prjc'}->adjust_value([$sname, $name], []);
+        if (defined $$uvalue[0]) {
+          $value = $uvalue;
+          $adjust = 0;
         }
 
-        ## Then get the value from the project creator
         if (!defined $value) {
-          $fromprj = 1;
-          $value = $self->{'prjc'}->get_assignment($name);
+          ## Next, check the inner to outer foreach
+          ## scopes for overriding values
+          while(!defined $value && $counter >= 0) {
+            $value = $self->{'foreach'}->{'scope'}->[$counter]->{$name};
+            --$counter;
+          }
 
-          ## Then get it from our known values
+          ## Then get the value from the project creator
           if (!defined $value) {
-            $value = $self->{'values'}->{$name};
-            if (!defined $value) {
-              ## Call back onto the project creator to allow
-              ## it to fill in the value before defaulting to undef.
-              $value = $self->{'prjc'}->fill_value($name);
-              if (!defined $value && $name =~ /^(.*)\->(\w+)/) {
-                my($pre)  = $1;
-                my($post) = $2;
-                my($base) = $self->get_value($pre);
+            $fromprj = 1;
+            $value = $self->{'prjc'}->get_assignment($name);
 
-                if (defined $base) {
-                  $value = $self->{'prjc'}->get_special_value(
-                              $pre, $post, $base,
-                              ($self->{'prjc'}->requires_parameters($post) ?
-                                  $self->prepare_parameters($pre) : undef));
+            ## Then get it from our known values
+            if (!defined $value) {
+              $value = $self->{'values'}->{$name};
+              if (!defined $value) {
+                ## Call back onto the project creator to allow
+                ## it to fill in the value before defaulting to undef.
+                $value = $self->{'prjc'}->fill_value($name);
+                if (!defined $value && $name =~ /^(.*)\->(\w+)/) {
+                  my($pre)  = $1;
+                  my($post) = $2;
+                  my($base) = $self->get_value($pre);
+
+                  if (defined $base) {
+                    $value = $self->{'prjc'}->get_special_value(
+                               $pre, $post, $base,
+                               ($self->{'prjc'}->requires_parameters($post) ?
+                                   $self->prepare_parameters($pre) : undef));
+                  }
                 }
               }
             }
@@ -634,13 +660,9 @@ sub doif_starts_with {
   my($val)  = shift;
 
   if (defined $val) {
-    my($str) = "@$val";
-    if ($str =~ /([^,]+)\s*,\s*(.*)/) {
-      my($name)    = $1;
-      my($pattern) = $2;
-      if (defined $name && defined $pattern) {
-        return ($self->get_value_with_default($name) =~ /^$pattern/);
-      }
+    my($name, $pattern) = $self->split_parameters("@$val");
+    if (defined $name && defined $pattern) {
+      return ($self->get_value_with_default($name) =~ /^$pattern/);
     }
   }
   return undef;
@@ -676,13 +698,9 @@ sub doif_ends_with {
   my($val)  = shift;
 
   if (defined $val) {
-    my($str) = "@$val";
-    if ($str =~ /([^,]+)\s*,\s*(.*)/) {
-      my($name)    = $1;
-      my($pattern) = $2;
-      if (defined $name && defined $pattern) {
-        return ($self->get_value_with_default($name) =~ /$pattern$/);
-      }
+    my($name, $pattern) = $self->split_parameters("@$val");
+    if (defined $name && defined $pattern) {
+      return ($self->get_value_with_default($name) =~ /$pattern$/);
     }
   }
   return undef;
@@ -718,13 +736,9 @@ sub doif_contains {
   my($val)  = shift;
 
   if (defined $val) {
-    my($str) = "@$val";
-    if ($str =~ /([^,]+)\s*,\s*(.*)/) {
-      my($name)    = $1;
-      my($pattern) = $2;
-      if (defined $name && defined $pattern) {
-        return ($self->get_value_with_default($name) =~ /$pattern/);
-      }
+    my($name, $pattern) = $self->split_parameters("@$val");
+    if (defined $name && defined $pattern) {
+      return ($self->get_value_with_default($name) =~ /$pattern/);
     }
   }
   return undef;
@@ -856,9 +870,17 @@ sub process_compound_if {
     ## Get the value based on the string
     my(@cmds) = ();
     my($val)  = undef;
-    while ($str =~ /(\w+)\((.+)\)/) {
-      push(@cmds, $1);
-      $str = $2;
+    while ($str =~ /(\w+)\((.+)\)(.*)/) {
+      if ($3 eq '') {
+        push(@cmds, $1);
+        $str = $2;
+      }
+      else {
+        ## If there is something trailing the closing parenthesis then
+        ## the whole thing is considered a parameter to the first
+        ## function.
+        last;
+      }
     }
 
     if (defined $cmds[0]) {
@@ -1276,7 +1298,7 @@ sub process_name {
 
   if ($line eq '') {
   }
-  elsif ($line =~ /^\w+(\(([^\)]+|\".*\"|(\w+\s*,\s*)?\w+\(.+\))\)|\->\w+([\w\-\>]+)?)?%>/) {
+  elsif ($line =~ /^\w+(\(([^\)]+|\".*\"|[!]?(\w+\s*,\s*)?\w+\(.+\))\)|\->\w+([\w\-\>]+)?)?%>/) {
     ## Split the line into a name and value
     my($name, $val) = ();
     if ($line =~ /([^%\(]+)(\(([^%]+)\))?%>/) {
