@@ -1,3 +1,14 @@
+Fri May 27 10:24:25 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/em3vcp.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Interpret custom_types->dependent as an array instead of a string.
+          This is completely backward compatible since a string is just a
+          one element array in the template language.
+
 Fri May 27 07:56:11 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
