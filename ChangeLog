@@ -1,3 +1,18 @@
+Tue May 31 15:45:44 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/TemplateParser.pm:
+
+          Support using flag_overrides() within the context of a foreach.
+
+        * templates/em3vcp.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Interpret flag_overrides of the custom_types->dependent setting
+          as an array instead of a string.  This makes things consistent
+          with non-overridden values of dependent.
+
 Tue May 31 09:46:49 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/vc7.mpd:
