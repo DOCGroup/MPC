@@ -349,6 +349,14 @@
 <%foreach(grouped_documentation_file->files)%>
 				<File
 					RelativePath="<%grouped_documentation_file->file%>">
+<%foreach(configurations)%>
+					<FileConfiguration
+						Name="<%configuration%>|<%platform%>"
+						ExcludedFromBuild="TRUE">
+						<Tool
+							Name="VCCustomBuildTool"/>
+					</FileConfiguration>
+<%endfor%>
 				</File>
 <%endfor%>
 			</Filter>
@@ -357,6 +365,14 @@
 <%foreach(documentation_files)%>
 			<File
 				RelativePath="<%documentation_file%>">
+<%foreach(configurations)%>
+				<FileConfiguration
+					Name="<%configuration%>|<%platform%>"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+<%endfor%>
 			</File>
 <%endfor%>
 <%endif%>
