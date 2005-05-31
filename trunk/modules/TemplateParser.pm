@@ -384,32 +384,45 @@ sub process_foreach {
   my(@cmds)   = ();
   my($val)    = $self->{'foreach'}->{'vars'}->[$index];
 
-  ## Pull out modifying commands first
-  while ($val =~ /(\w+)\((.+)\)/) {
-    my($cmd) = $1;
-    $val     = $2;
-    if (($keywords{$cmd} & 0x02) != 0) {
-      push(@cmds, 'perform_' . $cmd);
-    }
-    else {
-      $self->warning("Unable to use $cmd in foreach (no perform_ method).");
-    }
-  }
-
-  ## Get the values for all of the variable names
-  ## contained within the foreach
-  my($names) = $self->create_array($val);
-  foreach my $n (@$names) {
-    my($vals) = $self->get_value($n);
-    if (defined $vals && $vals ne '') {
-      if (!UNIVERSAL::isa($vals, 'ARRAY')) {
-        $vals = $self->create_array($vals);
-      }
-      push(@values, @$vals);
+  if ($val =~ /^((\w+),\s*)?flag_overrides\((.*)\)$/) {
+    my($over) = $self->get_flag_overrides($3);
+    $name = $2;
+    if (defined $over) {
+      $val = $self->create_array($over);
+      @values = @$val;
     }
     if (!defined $name) {
-      $name = $n;
-      $name =~ s/s$//;
+      $name = '__unnamed__';
+    }
+  }
+  else {
+    ## Pull out modifying commands first
+    while ($val =~ /(\w+)\((.+)\)/) {
+      my($cmd) = $1;
+      $val     = $2;
+      if (($keywords{$cmd} & 0x02) != 0) {
+        push(@cmds, 'perform_' . $cmd);
+      }
+      else {
+        $self->warning("Unable to use $cmd in foreach (no perform_ method).");
+      }
+    }
+
+    ## Get the values for all of the variable names
+    ## contained within the foreach
+    my($names) = $self->create_array($val);
+    foreach my $n (@$names) {
+      my($vals) = $self->get_value($n);
+      if (defined $vals && $vals ne '') {
+        if (!UNIVERSAL::isa($vals, 'ARRAY')) {
+          $vals = $self->create_array($vals);
+        }
+        push(@values, @$vals);
+      }
+      if (!defined $name) {
+        $name = $n;
+        $name =~ s/s$//;
+      }
     }
   }
 
@@ -981,7 +994,9 @@ sub handle_foreach {
   push(@{$self->{'lstack'}}, $self->get_line_number());
   if (!$self->{'if_skip'}) {
     my($vname) = undef;
-    if ($val =~ /([^,]+),(.*)/) {
+    if ($val =~ /flag_overrides\([^\)]+\)/) {
+    }
+    elsif ($val =~ /([^,]+),(.*)/) {
       $vname = $1;
       $val   = $2;
       $vname =~ s/^\s+//;
