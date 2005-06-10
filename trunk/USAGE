@@ -203,8 +203,9 @@ warnings when processing projects or workspaces.  Errors are always printed
 if any are encountered.
 
 MPC_LOGGING - If this is set, MPC will parse the value and provide
-informational, warning and diagnostic messages depending on it's setting.
-If the MPC_LOGGING value contains info=1, informational messages will be
-printed.  If it contains warn=1, warning messages will be printed.  And
-lastly, if it contains diag=1, diagnostic messages will be printed.  If it
+informational, warning, diagnostic and detail messages depending on it's
+setting.  If the MPC_LOGGING value contains info=1, informational messages
+will be printed.  If it contains warn=1, warning messages will be printed.
+If it contains diag=1, diagnostic messages will be printed.
+And lastly, if it contains detail=1, detail messages will be printed.  If it
 contains none of these, MPC will act as if MPC_SILENT was set.
