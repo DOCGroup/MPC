@@ -256,7 +256,7 @@ mingw32 {
   dll_ext = .dll
   exe_ext = .exe
   shflags = -shared
-  ln      = mv
+  ln      = move /y
   ldlibs  = -lwsock32 -lnetapi32
   rc      = windres
 }

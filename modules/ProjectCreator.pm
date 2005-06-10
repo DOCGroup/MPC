@@ -900,14 +900,21 @@ sub process_component_line {
         $status = ($2 eq $oop ? 0 : 1);
       }
 
+      ## Since these (custom_special_*) are used by the TemplateParser,
+      ## the keys need to have slashes in the target format.  So, we will
+      ## convert slashes back to target.
+      my($key) = $line;
+      if ($self->{'convert_slashes'}) {
+        $key = $self->slash_to_backslash($key);
+      }
       if (defined $out) {
         if (!defined $self->{'custom_special_output'}->{$tag}) {
           $self->{'custom_special_output'}->{$tag} = {};
         }
-        $self->{'custom_special_output'}->{$tag}->{$line} = $self->create_array($out);
+        $self->{'custom_special_output'}->{$tag}->{$key} = $self->create_array($out);
       }
       if (defined $dep) {
-        $self->{'custom_special_depend'}->{$line} = $self->create_array($dep);
+        $self->{'custom_special_depend'}->{$key} = $self->create_array($dep);
       }
     }
 
@@ -1392,9 +1399,9 @@ sub parse_define_custom {
 
         ## Propagate the custom defined values into the mapped values
         foreach my $key (keys %{$self->{'valid_names'}}) {
-          my($mapped) = $self->{'valid_names'}->{$key};
-          if (UNIVERSAL::isa($mapped, 'ARRAY')) {
-            my($value) = $self->{'generated_exts'}->{$tag}->{$$mapped[1]};
+          if (UNIVERSAL::isa($self->{'valid_names'}->{$key}, 'ARRAY')) {
+            my($value) = $self->{'generated_exts'}->{$tag}->{
+                                   $self->{'valid_names'}->{$key}->[1]};
             if (defined $value) {
               ## Bypass the process_assignment() defined in this class
               ## to avoid unwanted keyword mapping.
@@ -1801,10 +1808,12 @@ sub get_pre_keyword_array {
 
   ## If the current array only has the default,
   ## then we need to remove it
-  if ($#array == 0 && $array[0] eq '' && $#additional >= 0) {
-    pop(@array);
+  if ($#additional >= 0) {
+    if ($#array == 0 && $array[0] eq '') {
+      pop(@array);
+    }
+    push(@array, @additional);
   }
-  push(@array, @additional);
 
   return @array;
 }
@@ -3400,8 +3409,8 @@ sub check_features {
   }
 
   if ($info && !$status) {
-    $self->diagnostic("Skipping " . $self->get_assignment('project_name') .
-                      " ($self->{'current_input'}), it $why.");
+    $self->details("Skipping " . $self->get_assignment('project_name') .
+                   " ($self->{'current_input'}), it $why.");
   }
 
   return $status;
@@ -3640,6 +3649,12 @@ sub write_project {
       }
 
       if ($self->{'escape_spaces'}) {
+        foreach my $name ('exename', 'sharedname', 'staticname') {
+          my($value) = $self->get_assignment($name);
+          if (defined $value && $value =~ s/(\s)/\\$1/g) {
+            $self->process_assignment($name, $value);
+          }
+        }
         foreach my $key (keys %{$self->{'valid_components'}}) {
           my($names) = $self->{$key};
           foreach my $name (keys %$names) {
@@ -3852,8 +3867,7 @@ sub adjust_value {
   ## or overrides for the template values.
   foreach my $name (@$names) {
     if (defined $name && defined $atemp->{lc($name)}) {
-      my($addtemparr) = $atemp->{lc($name)};
-      foreach my $val (@$addtemparr) {
+      foreach my $val (@{$atemp->{lc($name)}}) {
         my($arr) = $self->create_array($$val[1]);
         if ($$val[0] > 0) {
           if (!defined $value) {
@@ -3926,13 +3940,13 @@ sub relative {
     }
     elsif ($value =~ /\$/) {
       my($useenv) = $self->get_use_env();
-      my($expand) = $self->get_expand_vars();
       my($rel)    = ($useenv ? \%ENV : $self->get_relative());
       my(@keys)   = keys %$rel;
 
       if (defined $keys[0]) {
-        my($cwd)   = $self->getcwd();
-        my($start) = 0;
+        my($expand) = $self->get_expand_vars();
+        my($cwd)    = $self->getcwd();
+        my($start)  = 0;
 
         ## Fix up the value for Windows switch the \\'s to /
         if ($self->{'convert_slashes'}) {
@@ -4173,9 +4187,9 @@ sub translate_value {
 
 
 sub requires_parameters {
-  my($self) = shift;
-  my($name) = shift;
-  return $custom{$name};
+  #my($self) = shift;
+  #my($name) = shift;
+  return $custom{$_[1]};
 }
 
 
