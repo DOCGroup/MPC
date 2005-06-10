@@ -40,7 +40,7 @@ sub new {
   ## The order of these array variables must correspond to the
   ## order of the parameters to OutputMessage::new().
   my($params) = (defined $ENV{$silent} ||
-                 defined $log ? [0, 0, 0] : [0, 1, 1]);
+                 defined $log ? [0, 0, 0, 0] : [0, 1, 1, 1]);
 
   if (defined $log) {
     if ($log =~ /info(rmation)?\s*=\s*(\d+)/i) {
@@ -51,6 +51,9 @@ sub new {
     }
     if ($log =~ /diag(nostic)?\s*=\s*(\d+)/i) {
       $$params[2] = $2;
+    }
+    if ($log =~ /detail(s)?\s*=\s*(\d+)/i) {
+      $$params[3] = $2;
     }
   }
 

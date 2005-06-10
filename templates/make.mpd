@@ -237,8 +237,7 @@ $(TEMPINCDIR):
 <%endif%>
 <%endfor%>
 <%endif%>
-<%if(install)%>
-<%if(exename)%>
+<%if(install && exename)%>
 INSTARGET = $(BIN)
 install:
 	@if [ "<%install%>" != "." ]; then \
@@ -248,7 +247,6 @@ install:
 	$(LN) "$(PWD)/$(INSTARGET)" "<%install%><%if(targetoutdir)%>/<%targetoutdir%><%endif%>"; \
 	fi
 
-<%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
 install:
@@ -269,7 +267,7 @@ clean:
 <%endfor%>
 
 realclean: clean
-	-$(RM) -r <%if(exename)%>$(BIN)<%else%>$(SHLIB) $(LIB)<%endif%><%if(install)%> "<%install%>/$(INSTARGET)"<%endif%>
+	-$(RM) -r <%if(exename)%>$(BIN)<%else%>$(SHLIB) $(LIB)<%endif%><%if(install)%> "<%install%>"/$(INSTARGET)<%endif%>
 <%if(custom_types)%>
 	-$(RM) -r $(GENERATED_DIRTY)
 <%endif%>
