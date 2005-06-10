@@ -1,3 +1,28 @@
+Fri Jun 10 06:36:02 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+        * modules/OutputMessage.pm:
+        * modules/Parser.pm:
+
+          Added a 'details' logging message and switched the "Skipping"
+          message to it.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug with the '<<' and '>>' operators and Windows based
+          projects that have custom input files within subdirectories.
+          Also, fixed a bug where exe's and lib's that have spaces in the
+          names were not escaped even if a project type implemented the
+          escape_spaces() method.
+
+        * templates/make.mpd:
+
+          Fixed support for spaces in file names.
+
+        * templates/makedll.mpt:
+
+          Changed the ln setting for mingw32 to 'move /y' instead of 'mv'.
+
 Tue May 31 15:45:44 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/TemplateParser.pm:

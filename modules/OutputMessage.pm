@@ -25,14 +25,16 @@ my($error)       = 'ERROR: ';
 # ************************************************************
 
 sub new {
-  my($class) = shift;
-  my($info)  = shift;
-  my($warn)  = shift;
-  my($diag)  = shift;
-  my($self)  = bless {'information' => $info,
-                      'warnings'    => $warn,
-                      'diagnostic'  => $diag,
-                     }, $class;
+  my($class)   = shift;
+  my($info)    = shift;
+  my($warn)    = shift;
+  my($diag)    = shift;
+  my($details) = shift;
+  my($self)    = bless {'information' => $info,
+                        'warnings'    => $warn,
+                        'diagnostic'  => $diag,
+                        'details'     => $details,
+                       }, $class;
   return $self;
 }
 
@@ -44,6 +46,16 @@ sub split_message {
 
   $msg =~ s/\.\s+/.\n$spc/g;
   return $msg . "\n";
+}
+
+
+sub details {
+  my($self) = shift;
+  my($msg)  = shift;
+
+  if ($self->{'details'}) {
+    print "$msg\n";
+  }
 }
 
 
