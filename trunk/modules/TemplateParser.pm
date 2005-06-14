@@ -56,6 +56,7 @@ my(%keywords) = ('if'              => 0,
                  'starts_with'     => 5,
                  'ends_with'       => 5,
                  'contains'        => 5,
+                 'compares'        => 5,
                  'duplicate_index' => 5,
                 );
 
@@ -764,6 +765,44 @@ sub handle_contains {
 
   if (defined $str) {
     my($val) = $self->doif_contains([$str]);
+
+    if (defined $val) {
+      $self->append_current($val);
+    }
+    else {
+      $self->append_current(0);
+    }
+  }
+}
+
+
+sub get_compares {
+  my($self) = shift;
+  my($str)  = shift;
+  return $self->doif_compares([$str]);
+}
+
+
+sub doif_compares {
+  my($self) = shift;
+  my($val)  = shift;
+
+  if (defined $val) {
+    my($name, $pattern) = $self->split_parameters("@$val");
+    if (defined $name && defined $pattern) {
+      return ($self->get_value_with_default($name) eq $pattern);
+    }
+  }
+  return undef;
+}
+
+
+sub handle_compares {
+  my($self) = shift;
+  my($str)  = shift;
+
+  if (defined $str) {
+    my($val) = $self->doif_compares([$str]);
 
     if (defined $val) {
       $self->append_current($val);

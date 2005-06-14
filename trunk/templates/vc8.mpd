@@ -506,6 +506,23 @@
 <%endif%>
 <%if(grouped_source_files)%>
 <%foreach(grouped_source_files)%>
+<%if(compares(grouped_source_file, default_group))%>
+<%foreach(grouped_source_file->files)%>
+			<File
+				RelativePath="<%grouped_source_file->file%>">
+<%if(duplicate_index(grouped_source_file->file))%>
+<%foreach(configurations)%>
+				<FileConfiguration
+					Name="<%configuration%>|<%platform%>">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(grouped_source_file->file)%>.obj"/>
+				</FileConfiguration>
+<%endfor%>
+<%endif%>
+			</File>
+<%endfor%>
+<%else%>
 			<Filter
 				Name="<%grouped_source_file%>"
 				Filter="">
@@ -525,6 +542,7 @@
 				</File>
 <%endfor%>
 			</Filter>
+<%endif%>
 <%endfor%>
 <%else%>
 <%foreach(source_files)%>
@@ -557,6 +575,13 @@
 <%endif%>
 <%if(grouped_header_files)%>
 <%foreach(grouped_header_files)%>
+<%if(compares(grouped_header_file, default_group))%>
+<%foreach(grouped_header_file->files)%>
+			<File
+				RelativePath="<%grouped_header_file->file%>">
+			</File>
+<%endfor%>
+<%else%>
 			<Filter
 				Name="<%grouped_header_file%>"
 				Filter="">
@@ -566,6 +591,7 @@
 				</File>
 <%endfor%>
 			</Filter>
+<%endif%>
 <%endfor%>
 <%else%>
 <%foreach(header_files)%>
@@ -622,6 +648,13 @@
 			Filter="i;inl">
 <%if(grouped_inline_files)%>
 <%foreach(grouped_inline_files)%>
+<%if(compares(grouped_inline_file, default_group))%>
+<%foreach(grouped_inline_file->files)%>
+				<File
+					RelativePath="<%grouped_inline_file->file%>">
+				</File>
+<%endfor%>
+<%else%>
 			<Filter
 				Name="<%grouped_inline_file%>"
 				Filter="">
@@ -631,6 +664,7 @@
 				</File>
 <%endfor%>
 			</Filter>
+<%endif%>
 <%endfor%>
 <%else%>
 <%foreach(inline_files)%>
@@ -647,6 +681,21 @@
 			Filter="">
 <%if(grouped_template_files)%>
 <%foreach(grouped_template_files)%>
+<%if(compares(grouped_template_file, default_group))%>
+<%foreach(grouped_template_file->files)%>
+			<File
+				RelativePath="<%grouped_template_file->file%>">
+<%foreach(configurations)%>
+				<FileConfiguration
+					Name="<%configuration%>|<%platform%>"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+<%endfor%>
+			</File>
+<%endfor%>
+<%else%>
 			<Filter
 				Name="<%grouped_template_file%>"
 				Filter="">
@@ -664,6 +713,7 @@
 				</File>
 <%endfor%>
 			</Filter>
+<%endif%>
 <%endfor%>
 <%else%>
 <%foreach(template_files)%>
@@ -688,6 +738,21 @@
 			Filter="">
 <%if(grouped_documentation_files)%>
 <%foreach(grouped_documentation_files)%>
+<%if(compares(grouped_documentation_file, default_group))%>
+<%foreach(grouped_documentation_file->files)%>
+			<File
+				RelativePath="<%grouped_documentation_file->file%>">
+<%foreach(configurations)%>
+				<FileConfiguration
+					Name="<%configuration%>|<%platform%>"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+<%endfor%>
+			</File>
+<%endfor%>
+<%else%>
 			<Filter
 				Name="<%grouped_documentation_file%>"
 				Filter="">
@@ -705,6 +770,7 @@
 				</File>
 <%endfor%>
 			</Filter>
+<%endif%>
 <%endfor%>
 <%else%>
 <%foreach(documentation_files)%>
@@ -729,6 +795,13 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe">
 <%if(grouped_resource_files)%>
 <%foreach(grouped_resource_files)%>
+<%if(compares(grouped_resource_file, default_group))%>
+<%foreach(grouped_resource_file->files)%>
+			<File
+				RelativePath="<%grouped_resource_file->file%>">
+			</File>
+<%endfor%>
+<%else%>
 			<Filter
 				Name="<%grouped_resource_file%>"
 				Filter="">
@@ -738,6 +811,7 @@
 				</File>
 <%endfor%>
 			</Filter>
+<%endif%>
 <%endfor%>
 <%else%>
 <%foreach(resource_files)%>
