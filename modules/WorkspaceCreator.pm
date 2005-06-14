@@ -364,6 +364,7 @@ sub parse_exclude {
   my($typestr)     = shift;
   my($status)      = 0;
   my($errorString) = 'Unable to process exclude';
+  my($negated)     = undef;
 
   if ($typestr eq $self->get_default_component_name()) {
     $typestr = $self->{'wctype'};
@@ -376,6 +377,7 @@ sub parse_exclude {
   ## If there is a negation at all, add our
   ## current type, it may be removed below
   if ($typestr =~ /!/) {
+    $negated = 1;
     $types{$self->{wctype}} = 1;
 
     ## Process negated exclusions
@@ -423,10 +425,32 @@ sub parse_exclude {
     }
   }
   else {
-    ($status, $errorString) = $self->SUPER::parse_scope($fh,
-                                                        'exclude',
-                                                        $typestr,
-                                                        \%validNames);
+    if ($negated) {
+      ($status, $errorString) = $self->SUPER::parse_scope($fh,
+                                                          'exclude',
+                                                          $typestr,
+                                                          \%validNames);
+    }
+    else {
+      ## If this exclude block didn't match the current type and the
+      ## exclude wasn't negated, we need to eat the exclude block so that
+      ## these lines don't get included into the workspace.
+      while(<$fh>) {
+        my($line) = $self->preprocess_line($fh, $_);
+
+        if ($line =~ /^}(.*)$/) {
+          if (defined $1 && $1 ne '') {
+            $status = 0;
+            $errorString = "Trailing characters found: '$1'";
+          }
+          else {
+            $status = 1;
+            $errorString = undef;
+          }
+          last;
+        }
+      }
+    }
   }
 
   return $status, $errorString;
