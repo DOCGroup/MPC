@@ -103,6 +103,7 @@ sub new {
   $self->{'ordering_cache'}      = {};
   $self->{'handled_scopes'}      = {};
   $self->{'generate_ins'}        = $genins;
+  $self->{'scoped_basedir'}      = undef;
 
   if (defined $$exclude[0]) {
     my($type) = $self->{'wctype'};
@@ -251,15 +252,10 @@ sub parse_line {
       }
     }
     elsif ($values[0] eq 'component') {
-      if ($values[1] eq 'exclude') {
-        ($status, $error) = $self->parse_exclude($ih, $values[2]);
-      }
-      else {
-        ($status, $error) = $self->parse_scope($ih,
-                                               $values[1],
-                                               $values[2],
-                                               \%validNames);
-      }
+      ($status, $error) = $self->parse_scope($ih,
+                                             $values[1],
+                                             $values[2],
+                                             \%validNames);
     }
     else {
       $error = "Unrecognized line: $line";
@@ -344,6 +340,24 @@ sub aggregated_workspace {
 }
 
 
+sub parse_scope {
+  my($self)        = shift;
+  my($fh)          = shift;
+  my($name)        = shift;
+  my($type)        = shift;
+  my($validNames)  = shift;
+  my($flags)       = shift;
+  my($elseflags)   = shift;
+
+  if ($name eq 'exclude') {
+    return $self->parse_exclude($fh, $type);
+  }
+  else {
+    return $self->SUPER::parse_scope($fh, $name, $type,
+                                     $validNames, $flags, $elseflags);
+  }
+}
+
 sub parse_exclude {
   my($self)        = shift;
   my($fh)          = shift;
@@ -358,7 +372,6 @@ sub parse_exclude {
   my(@exclude) = ();
   my(%types)   = ();
   @types{split(/\s*,\s*/, $typestr)} = ();
-
 
   ## If there is a negation at all, add our
   ## current type, it may be removed below
@@ -395,6 +408,9 @@ sub parse_exclude {
         last;
       }
       else {
+        if (defined $self->{'scoped_basedir'}) {
+          $line = $self->{'scoped_basedir'} . '/' . $line;
+        }
         push(@exclude, $line);
       }
     }
@@ -407,10 +423,10 @@ sub parse_exclude {
     }
   }
   else {
-    ($status, $errorString) = $self->parse_scope($fh,
-                                                 'exclude',
-                                                 $typestr,
-                                                 \%validNames);
+    ($status, $errorString) = $self->SUPER::parse_scope($fh,
+                                                        'exclude',
+                                                        $typestr,
+                                                        \%validNames);
   }
 
   return $status, $errorString;
@@ -450,7 +466,7 @@ sub handle_scoped_end {
     }
 
     ## Go back to the previous directory and add the directory contents
-    ($status, $error) = $self->handle_scoped_unknown($type, $flags, '.');
+    ($status, $error) = $self->handle_scoped_unknown(undef, $type, $flags, '.');
   }
 
   $self->{'handled_scopes'}->{$type} = undef;
@@ -460,12 +476,28 @@ sub handle_scoped_end {
 
 sub handle_scoped_unknown {
   my($self)   = shift;
+  my($fh)     = shift;
   my($type)   = shift;
   my($flags)  = shift;
   my($line)   = shift;
   my($status) = 1;
   my($error)  = undef;
   my($dupchk) = undef;
+
+  if ($line =~ /^\w+.*{/) {
+    if (defined $fh) {
+      my(@values) = ();
+      my($tc) = $self->{$self->{'type_check'}};
+      $self->{$self->{'type_check'}} = 1;
+      ($status, $error, @values) = $self->parse_line($fh, $line);
+      $self->{$self->{'type_check'}} = $tc;
+    }
+    else {
+      $status = 0;
+      $error  = 'Unhandled line: ' . $line;
+    }
+    return $status, $error;
+  }
 
   if ($type eq $aggregated) {
     $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
@@ -503,9 +535,9 @@ sub handle_scoped_unknown {
       @files = @acceptable;
     }
 
-    if (defined $dupchk) {
-      foreach my $file (@files) {
-        if (exists $$dupchk{$file}) {
+    foreach my $file (@files) {
+      if (!$self->excluded($file)) {
+        if (defined $dupchk && exists $$dupchk{$file}) {
           $self->warning("Duplicate mpc file ($file) added by an " .
                          'aggregate workspace.  It will be ignored.');
         }
@@ -515,12 +547,6 @@ sub handle_scoped_unknown {
         }
       }
     }
-    else {
-      foreach my $file (@files) {
-        $self->{'scoped_assign'}->{$file} = $flags;
-        push(@{$self->{'project_files'}}, $file);
-      }
-    }
   }
   else {
     if ($line =~ /\.$wsext$/) {
@@ -528,13 +554,15 @@ sub handle_scoped_unknown {
       ($status, $error) = $self->aggregated_workspace($line);
     }
     else {
-      if (defined $dupchk && exists $$dupchk{$line}) {
-        $self->warning("Duplicate mpc file ($line) added by an " .
-                       'aggregate workspace.  It will be ignored.');
-      }
-      else {
-        $self->{'scoped_assign'}->{$line} = $flags;
-        push(@{$self->{'project_files'}}, $line);
+      if (!$self->excluded($line)) {
+        if (defined $dupchk && exists $$dupchk{$line}) {
+          $self->warning("Duplicate mpc file ($line) added by an " .
+                         'aggregate workspace.  It will be ignored.');
+        }
+        else {
+          $self->{'scoped_assign'}->{$line} = $flags;
+          push(@{$self->{'project_files'}}, $line);
+        }
       }
     }
   }

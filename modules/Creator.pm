@@ -396,7 +396,8 @@ sub parse_scope {
         }
       }
       else {
-        ($status, $errorString) = $self->handle_scoped_unknown($type,
+        ($status, $errorString) = $self->handle_scoped_unknown($fh,
+                                                               $type,
                                                                $flags,
                                                                $line);
         if (!$status) {
@@ -579,7 +580,6 @@ sub process_assignment {
   my($name)   = shift;
   my($value)  = shift;
   my($assign) = shift;
-
 
   ## If no hash table was passed in
   if (!defined $assign) {
@@ -953,6 +953,7 @@ sub handle_unknown_assignment {
 
 sub handle_scoped_unknown {
   my($self)  = shift;
+  my($fh)    = shift;
   my($type)  = shift;
   my($flags) = shift;
   my($line)  = shift;
