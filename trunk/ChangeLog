@@ -1,3 +1,11 @@
+Wed Jun 15 07:33:24 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm (remove_duplicate_addition):
+
+          In order to ensure that duplicates are correctly removed, we need
+          to make sure that addition values have the "right" slashes.
+          Thanks to Johnny Willemsen for bringing this to my attention.
+
 Tue Jun 14 14:21:16 2005  Justin Michel  <michel_j@ociweb.com>
 
         * modules/TemplateParser.pm:
