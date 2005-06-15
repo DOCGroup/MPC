@@ -1558,6 +1558,10 @@ sub remove_duplicate_addition {
       ## Convert the array into keys for a hash table
       @parts{@{$self->create_array($nval)}} = ();
 
+      ## In order to ensure that duplicates are correctly removed, we
+      ## need to get the modified assignment value before we attempt to
+      ## do so.
+      $value = $self->modify_assignment_value($name, $value);
       foreach my $val (@{$self->create_array($value)}) {
         if (!exists $parts{$val}) {
           $allowed .= $val . ' ';
