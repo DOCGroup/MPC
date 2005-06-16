@@ -81,13 +81,13 @@ LFLAGS   = \
 <%endif%>
 
 LIBFILES = \
-<%foreach(libs)%>
+<%foreach(reverse(libs))%>
            <%lib%>$(ILIBMODIFIER)$(LIB_EXT) \
 <%endfor%>
-<%foreach(lit_libs)%>
+<%foreach(reverse(lit_libs))%>
            <%lit_lib%>$(LIB_EXT) \
 <%endfor%>
-<%foreach(pure_libs)%>
+<%foreach(reverse(pure_libs))%>
            <%pure_lib%> \
 <%endfor%>
            <%common_libs%>

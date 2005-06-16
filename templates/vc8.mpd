@@ -4,9 +4,9 @@
 	Version="<%vcversion%>"
 	Name="<%project_name%>"
 	ProjectGUID="{<%guid%>}"
-        RootNamespace="<%project_name%>"
-        Keyword="<%if(UseOfMFC)%>MFCProj<%else%><%platform("Win32")%>Proj<%endif%>"
-        SignManifests="true"
+	RootNamespace="<%project_name%>"
+	Keyword="<%if(UseOfMFC)%>MFCProj<%else%><%platform("Win32")%>Proj<%endif%>"
+	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
@@ -258,14 +258,14 @@
 				UseUnicodeResponseFiles="<%UseUnicodeResponseFiles%>"
 <%endif%>
 <%if(!source_files)%>
-                                AdditionalOptions="/noentry<%if(link_options)%> <%link_options%><%endif%>"
+				AdditionalOptions="/noentry<%if(link_options)%> <%link_options%><%endif%>"
 <%else%>
 <%if(link_options)%>
-                                AdditionalOptions="<%link_options%>"
+				AdditionalOptions="<%link_options%>"
 <%endif%>
 <%endif%>
 <%if(type_is_binary)%>
-				AdditionalDependencies="<%foreach(libs)%><%fornotfirst(" ")%><%lib%><%lib_modifier%><%lib_ext%><%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"
+				AdditionalDependencies="<%foreach(reverse(libs))%><%fornotfirst(" ")%><%lib%><%lib_modifier%><%lib_ext%><%endfor%><%foreach(reverse(lit_libs))%> <%lit_lib%>.lib<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%><%endfor%>"
 <%endif%>
 <%if()%>
 				="<%%>"
@@ -623,7 +623,7 @@
 						Description="Invoking <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> on <%custom_type->input_file%>"
 						CommandLine="<%if(custom_type->libpath)%>PATH=%PATH%;<%custom_type->libpath%>&#x0D;&#x0A;<%endif%><%if(flag_overrides(custom_type->input_file, gendir))%>if not exist <%flag_overrides(custom_type->input_file, gendir)%> mkdir <%flag_overrides(custom_type->input_file, gendir)%>&#x0D;&#x0A;<%endif%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> &quot;<%custom_type->input_file%>&quot;<%if(custom_type->output_option)%> <%custom_type->output_option%> &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_files)%><%else%><%custom_type->input_file->output_files%><%endif%>&quot;<%endif%><%if(flag_overrides(custom_type->input_file, postcommand))%><%foreach(custom_type->input_file->output_files)%>&#x0D;&#x0A;<%flag_overrides(custom_type->input_file, postcommand)%><%endfor%><%else%><%if(custom_type->postcommand)%><%foreach(custom_type->input_file->output_files)%>&#x0D;&#x0A;<%custom_type->postcommand%><%endfor%><%endif%><%endif%><%if(pch_header)%><%if(custom_type->pch_postrule)%><%foreach(custom_type->input_file->source_output_files)%>&#x0D;&#x0A;echo #include &quot;<%pch_header%>&quot; &gt; temporary.src&#x0D;&#x0A;type &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>&quot; &gt;&gt; temporary.src&#x0D;&#x0A;move /y temporary.src &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>&quot;<%endfor%><%endif%><%endif%>"
 <%if(flag_overrides(custom_type->input_file, dependent))%>
-                                                AdditionalDependencies="<%foreach(dep, flag_overrides(custom_type->input_file, dependent))%><%dep%><%if(!ends_with(dep, \.p.))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%foreach(custom_type->input_file->dependencies)%>;<%custom_type->input_file->dependencie%><%endfor%>"
+						AdditionalDependencies="<%foreach(dep, flag_overrides(custom_type->input_file, dependent))%><%dep%><%if(!ends_with(dep, \.p.))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%foreach(custom_type->input_file->dependencies)%>;<%custom_type->input_file->dependencie%><%endfor%>"
 <%else%>
 <%if(custom_type->dependent)%>
 						AdditionalDependencies="<%foreach(custom_type->dependent)%><%custom_type->dependent%><%if(!ends_with(custom_type->dependent, \.p.))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%foreach(custom_type->input_file->dependencies)%>;<%custom_type->input_file->dependencie%><%endfor%>"
