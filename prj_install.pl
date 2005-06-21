@@ -28,6 +28,7 @@ $version =~ s/.*\s+(\d+[\.\d]+)\s+.*/$1/;
 my(%defaults) = ('header_files'   => 1,
                  'idl_files'      => 1,
                  'inline_files'   => 1,
+                 'pidl_files'     => 1,
                  'template_files' => 1,
                 );
 

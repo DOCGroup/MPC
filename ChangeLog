@@ -1,3 +1,66 @@
+Tue Jun 21 11:55:38 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/BMakeProjectCreator.pm:
+
+          Double ampersand, &&, means something special to Borland Make.
+          So, we override the get_and_symbol method to return a string that
+          Borland Make can handle.
+
+        * modules/BMakeWorkspaceCreator.pm:
+
+          Added -$(MAKEFLAGS) to each sub-make call so that options passed
+          to the original make are propagated down.  Thanks to Johnny for
+          informing me know about this.
+
+        * modules/MakeProjectBase.pm:
+
+          Added an environment variable *for testing purposes only* that
+          forces Make based projects to be sorted.
+
+        * modules/ProjectCreator.pm:
+
+          If we are to sort files, the output files (used with custom_types
+          in templates) need to be sorted.
+
+        * modules/TemplateParser.pm:
+
+          Attempt to preserve the original order of template variables when
+          the values of the template variables refer to scoped template
+          variables.  This isn't always possible, but in most cases it is.
+
+        * prj_install.pl:
+
+          Added pidl_files to the list of default installed files.
+
+        * templates/bmake.mpd:
+        * templates/bmakecommon.mpt:
+
+          Support multiple compilers (cbx and bcc) from within a single
+          makefile.
+
+        * templates/em3vcpdll.mpt:
+        * templates/em3vcpdllexe.mpt:
+        * templates/em3vcplib.mpt:
+        * templates/em3vcplibexe.mpt:
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+        * templates/vc6dspdll.mpt:
+        * templates/vc6dspdllexe.mpt:
+        * templates/vc6dsplib.mpt:
+        * templates/vc6dsplibexe.mpt:
+        * templates/vc7csharp.mpt:
+        * templates/vc7dll.mpt:
+        * templates/vc7exe.mpt:
+        * templates/vc7lib.mpt:
+        * templates/vc7libexe.mpt:
+        * templates/vc7vb.mpt:
+        * templates/vc8dll.mpt:
+        * templates/vc8exe.mpt:
+        * templates/vc8lib.mpt:
+        * templates/vc8libexe.mpt:
+
+          Alphabetically sort 'configurations' and 'platforms'.
+
 Mon Jun 20 20:53:50 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

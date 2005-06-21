@@ -32,8 +32,8 @@ UNICODE_DIR  = Unicode\\
 UC_MAIN      = w
 !endif
 
-INTERMEDIATE = $(CFG_DIR)$(UNICODE_DIR)<%noextension(project_name)%>
 <%foreach(compilers)%>
+<%fornotlast("!ifdef")%><%forlast("!else #")%> <%uc(compiler)%>
 OBJ_EXT      = <%obj_ext%>
 DLL_EXT      = <%dll_ext%>
 LIB_EXT      = <%lib_ext%>
@@ -49,6 +49,9 @@ EXEFLAGS     = <%exeflags%>
 WARNFLAGS    = <%warnflags%>
 CCFLAGS      = <%ccflags%><%if(compile_flags)%> <%compile_flags%><%endif%>
 <%endfor%>
+!endif
+
+INTERMEDIATE = $(CFG_DIR)$(UNICODE_DIR)<%noextension(project_name)%>
 <%if(exename)%>
 NAME         = <%exename%>$(EXEMODIFIER)
 <%else%>

@@ -5,8 +5,8 @@ conditional_include "common"
 conditional_include "windowscommon"
 
 type_description      = "Dynamic-Link Library"
-configurations        = Release Debug
-platforms             = "WCE ARM" "WCE ARMV4" "WCE x86" "WCE emulator"
+configurations        = Debug Release
+platforms             = "WCE ARM" "WCE ARMV4" "WCE emulator" "WCE x86"
 default_configuration = Debug
 default_platform      = "WCE ARM"
 common_defines        = UNICODE _UNICODE
