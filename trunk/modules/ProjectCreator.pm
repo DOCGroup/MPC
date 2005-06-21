@@ -3332,6 +3332,10 @@ sub get_custom_value {
           }
         }
       }
+
+      if ($self->{'sort_files'}) {
+        @outputs = sort { $self->file_sorter($a, $b) } @outputs;
+      }
       $self->{'custom_output_files'}->{$input} = \@outputs;
     }
   }

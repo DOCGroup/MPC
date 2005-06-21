@@ -7,7 +7,7 @@ conditional_include "windowscommon"
 
 type_description      = "Static Library"
 type_code             = 0x0104
-configurations        = Release Debug
+configurations        = Debug Release
 common_defines        = WIN32 _WINDOWS
 use_lib_modifier      = 1
 
