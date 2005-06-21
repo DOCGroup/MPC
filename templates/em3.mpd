@@ -3,7 +3,7 @@
 # ** DO NOT EDIT **
 
 <%foreach(platforms)%>
-# TARGTYPE "<%operating_system("Win32")%> (<%platform%>) <%if(exename || sharedname || staticname)%><%type_description%>" <%type_code%><%else%>Generic Project" 0x010a<%endif%>
+# TARGTYPE "<%operating_system("Win32")%> (<%platform%>) <%if(exename || sharedname || staticname)%><%if(type_is_static && staticname)%>Static Library<%else%><%type_description%><%endif%>" <%type_code%><%else%>Generic Project" 0x010a<%endif%>
 <%endfor%>
 
 CFG=<%project_name%> - <%operating_system("Win32")%> (<%default_platform%>) <%default_configuration%>
@@ -22,7 +22,7 @@ CFG=<%project_name%> - <%operating_system("Win32")%> (<%default_platform%>) <%de
 !MESSAGE
 <%foreach(platforms)%>
 <%foreach(configurations)%>
-!MESSAGE "<%project_name%> - <%operating_system%> (<%platform%>) <%configuration%>" (based on "<%operating_system%> (<%platform%>) <%if(exename || sharedname || staticname)%><%type_description%><%else%>Generic Project<%endif%>")
+!MESSAGE "<%project_name%> - <%operating_system%> (<%platform%>) <%configuration%>" (based on "<%operating_system%> (<%platform%>) <%if(exename || sharedname || staticname)%><%if(type_is_static && staticname)%>Static Library<%else%><%type_description%><%endif%><%else%>Generic Project<%endif%>")
 <%endfor%>
 <%endfor%>
 !MESSAGE
@@ -333,12 +333,12 @@ BuildCmds= \
 <%endif%>
 	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(InputPath)<%if(custom_type->output_option)%> <%custom_type->output_option%> "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_files)%><%else%><%custom_type->input_file->output_files%><%endif%>"<%endif%> \
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
-<%foreach(custom_type->input_file->output_files)%>
+<%foreach(custom_type->input_file)%>
 	<%flag_overrides(custom_type->input_file, postcommand)%> \
 <%endfor%>
 <%else%>
 <%if(custom_type->postcommand)%>
-<%foreach(custom_type->input_file->output_files)%>
+<%foreach(custom_type->input_file)%>
 	<%custom_type->postcommand%> \
 <%endfor%>
 <%endif%>
