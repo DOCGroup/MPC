@@ -27,7 +27,7 @@ man_MANS += <%man_files%>
 <%if(custom_type->input_file->output_files)%>
 BUILT_SOURCES += \
 <%foreach(custom_type->input_file->output_files)%>
-  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%custom_type->input_file->output_file%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" \\")%>
+  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" \\")%>
 <%endfor%>
 
 CLEANFILES += \
@@ -35,7 +35,7 @@ CLEANFILES += \
   <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basenoextension(custom_type->input_file)%><%else%><%noextension(custom_type->input_file)%><%endif%>-stamp \
 <%endif%>
 <%foreach(custom_type->input_file->output_files)%>
-  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%custom_type->input_file->output_file%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" \\")%>
+  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" \\")%>
 <%endfor%>
 
 <%if(multiple(custom_type->input_file->output_files))%>
@@ -50,12 +50,12 @@ CLEANFILES += \
 <%endif%>
 	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(srcdir)/<%custom_type->input_file%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_files)%><%else%><%custom_type->input_file->output_files%><%endif%><%endif%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
-<%foreach(custom_type->input_file->output_files)%>
+<%foreach(custom_type->input_file)%>
 	<%flag_overrides(custom_type->input_file, postcommand)%>
 <%endfor%>
 <%else%>
 <%if(custom_type->postcommand)%>
-<%foreach(custom_type->input_file->output_files)%>
+<%foreach(custom_type->input_file)%>
 	<%custom_type->postcommand%>
 <%endfor%>
 <%endif%>
@@ -107,6 +107,8 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%foreach(staticflags)%>
   -D<%staticflag%><%fornotlast(" \\")%>
 <%endfor%>
+<%else%>
+  -D__NO_STATIC_FLAGS_AVAILABLE__
 <%endif%>
 <%else%>
 <%if(dynamicflags)%>

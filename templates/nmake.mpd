@@ -291,12 +291,12 @@ InputPath=<%custom_type->input_file%>
 	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> "$(InputPath)"
 <%endif%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
-<%foreach(custom_type->input_file->output_files)%>
+<%foreach(custom_type->input_file)%>
 	<%flag_overrides(custom_type->input_file, postcommand)%>
 <%endfor%>
 <%else%>
 <%if(custom_type->postcommand)%>
-<%foreach(custom_type->input_file->output_files)%>
+<%foreach(custom_type->input_file)%>
 	<%custom_type->postcommand%>
 <%endfor%>
 <%endif%>

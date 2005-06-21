@@ -1,3 +1,37 @@
+Mon Jun 20 20:53:50 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Provide better error messages for certain situations.
+          Fixed a bug where setting sharedname to empty did not convert the
+          project to a static library (when staticname was set).
+          Always do a case insensitive search for resource files.
+          Fixed a bug where generated files wouldn't be added correctly if
+          some source files existed in the directory.
+          Fixed a bug where the 'postcommand' wouldn't be applied if there
+          was more than one output file per input file.
+
+        * templates/automake.mpd:
+
+          Fixed a bug where gendir wasn't applied correctly to output files.
+
+        * modules/TemplateParser.pm:
+        * templates/bmake.mpd:
+        * templates/em3vcp.mpd:
+        * templates/ghs.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6dsp.mpd:
+        * templates/vc7.mpd:
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+        * templates/vc8.mpd:
+
+          Fixed a bug where the 'postcommand' wouldn't be applied if there
+          was more than one output file per input file.
+          Also, correctly support static projects that come from setting
+          sharedname to empty.
+
 Thu Jun 16 10:21:09 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/bmake.mpd:

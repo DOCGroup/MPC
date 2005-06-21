@@ -200,7 +200,7 @@ my(%vbma) = ('source_files' => [ 'subtype' ],
 # 1     Files automatically excluded from source_files
 # 2     Assignments available in standard file types
 # 3     The entry point for executables
-# 4     The language uses a preprocessor
+# 4     The language uses a C preprocessor
 my(%language) = ('cplusplus' => [ \%cppvc, \%cppec, {}    , 'main', 1 ],
                  'csharp'    => [ \%csvc,  {},      \%csma, 'Main', 0 ],
                  'java'      => [ \%jvc,   {},      {}    , 'Main', 0 ],
@@ -421,8 +421,7 @@ sub begin_project {
           foreach my $currently (@{$self->{'reading_parent'}}) {
             if ($currently eq $file) {
               $status = 0;
-              $error = 'Cyclic inheritance detected: ' .
-                       $parent;
+              $error = 'Cyclic inheritance detected: ' . $parent;
             }
           }
         }
@@ -687,10 +686,7 @@ sub parse_line {
 
       my($vc) = $self->{'valid_components'};
       if (defined $$vc{$comp}) {
-        if (!$self->parse_components($ih, $comp, $name)) {
-          $errorString = "Unable to process $comp";
-          $status = 0;
-        }
+        ($status, $errorString) = $self->parse_components($ih, $comp, $name);
       }
       else {
         if ($comp eq 'verbatim') {
@@ -861,12 +857,16 @@ sub process_component_line {
   my($comps)   = shift;
   my($count)   = shift;
   my($status)  = 1;
+  my($error)   = undef;
   my(%exclude) = ();
 
   my(@values) = ();
   ## If this returns true, then we've found an assignment
   if ($self->parse_assignment($line, \@values)) {
     $status = $self->parse_scoped_assignment($tag, @values, $flags);
+    if (!$status) {
+      $error = 'Unknown keyword: ' . $values[1];
+    }
   }
   else {
     ## If we successfully remove a '!' from the front, then
@@ -897,7 +897,10 @@ sub process_component_line {
         $out  = ($2 eq '>>' ? $3 : $out);
         $dep  = ($2 eq '<<' ? $3 : $dep);
 
-        $status = ($2 eq $oop ? 0 : 1);
+        if ($2 eq $oop) {
+          $status = 0;
+          $error  = "Duplicate $oop used";
+        }
       }
 
       ## Since these (custom_special_*) are used by the TemplateParser,
@@ -970,7 +973,7 @@ sub process_component_line {
     }
   }
 
-  return $status;
+  return $status, $error;
 }
 
 
@@ -986,6 +989,7 @@ sub parse_conditional {
   my($comps)   = shift;
   my($count)   = shift;
   my($status)  = 1;
+  my($error)   = undef;
   my($add)     = 0;
 
   foreach my $type (split(/\s*,\s*/, $types)) {
@@ -1007,7 +1011,8 @@ sub parse_conditional {
       last;
     }
     elsif ($add) {
-      $status = $self->process_component_line($tag, $line, $flags,
+      ($status, $error) = $self->process_component_line(
+                                              $tag, $line, $flags,
                                               $grname, $current,
                                               $exclude, $comps, $count);
       if (!$status) {
@@ -1016,7 +1021,7 @@ sub parse_conditional {
     }
   }
 
-  return $status;
+  return $status, $error;
 }
 
 sub parse_components {
@@ -1027,6 +1032,7 @@ sub parse_components {
   my($defel)   = $self->get_default_element_name();
   my($current) = $defel;
   my($status)  = 1;
+  my($error)   = undef;
   my($names)   = {};
   my($comps)   = {};
   my($set)     = undef;
@@ -1082,11 +1088,13 @@ sub parse_components {
       }
       else {
         $status = 0;
+        $error  = 'Can not nest groups';
         last;
       }
     }
     elsif ($line =~ /^conditional\s*(\(([^\)]+)\))\s*{$/) {
-      $status = $self->parse_conditional($fh, $2, $tag, \%flags, \$grname,
+      ($status, $error) = $self->parse_conditional(
+                                         $fh, $2, $tag, \%flags, \$grname,
                                          $current, \@exclude, $comps,
                                          \$count);
       if (!$status) {
@@ -1140,16 +1148,17 @@ sub parse_components {
       }
     }
     elsif (defined $current) {
-      $status = $self->process_component_line($tag, $line, \%flags,
-                                              \$grname, $current,
-                                              \@exclude, $comps,
-                                              \$count);
+      ($status, $error) = $self->process_component_line($tag, $line, \%flags,
+                                                        \$grname, $current,
+                                                        \@exclude, $comps,
+                                                        \$count);
       if (!$status) {
         last;
       }
     }
     else {
       $status = 0;
+      $error  = 'Syntax error';
       last;
     }
   }
@@ -1168,7 +1177,7 @@ sub parse_components {
                       $$comps{$grname});
   }
 
-  return $status;
+  return $status, $error;
 }
 
 
@@ -2020,6 +2029,10 @@ sub add_generated_files {
         }
       }
       foreach my $name (keys %$names) {
+        if (!defined $$names{$name}->{$key}) {
+          $$names{$name}->{$key} = [];
+          $self->process_assignment_add($grouped_key . $tag, $key);
+        }
         unshift(@{$$names{$name}->{$key}}, @oktoadd);
       }
     }
@@ -2107,10 +2120,15 @@ sub generate_default_target_names {
       $self->process_assignment('staticname', $sharedname);
     }
     my($staticname) = $self->get_assignment('staticname');
-    if (defined $staticname &&
-        !defined $self->get_assignment('sharedname')) {
-      $self->process_assignment('sharedname', $staticname);
-      $sharedname = $staticname;
+    if (defined $staticname) {
+      if (!defined $sharedname) {
+        $sharedname = $staticname;
+        $self->process_assignment('sharedname', $sharedname);
+      }
+      elsif ($sharedname eq '') {
+        $sharedname = undef;
+        $self->process_assignment('sharedname', $sharedname);
+      }
     }
 
     ## If it's neither an exe or library target, we will search
@@ -2320,24 +2338,12 @@ sub sift_files {
       my($pjname) = $self->escape_regex_special(
                               $self->transform_file_name(
                                   $self->get_assignment('project_name')));
-      my($found)  = 0;
+      ## Use a case insensitive search.
+      ## After all, this is a Windows specific file type.
       foreach my $save (@saved) {
-        if ($save =~ /$pjname/) {
+        if ($save =~ /$pjname/i) {
           if (!$self->already_added($array, $save)) {
             push(@$array, $save);
-            $found = 1;
-          }
-        }
-      }
-
-      ## If we didn't find an rc file, try a case insensitive search.
-      ## After all, these are a Windows specific file type.
-      if (!$found) {
-        foreach my $save (@saved) {
-          if ($save =~ /$pjname/i) {
-            if (!$self->already_added($array, $save)) {
-              push(@$array, $save);
-            }
           }
         }
       }
@@ -2400,10 +2406,9 @@ sub generate_default_components {
         else {
           ## Generate default values for undefined tags
           my($defcomp) = $self->get_default_element_name();
-          my($names) = {};
-          $self->{$tag} = $names;
+          $self->{$tag} = {};
           my($comps) = {};
-          $$names{$self->get_default_component_name()} = $comps;
+          $self->{$tag}->{$self->get_default_component_name()} = $comps;
           $$comps{$defcomp} = [];
           my($array) = $$comps{$defcomp};
 
@@ -2416,13 +2421,13 @@ sub generate_default_components {
                 ## If we are auto-generating the source_files, then
                 ## we need to make sure that any generated source
                 ## files that are added are put at the front of the list.
-                my(@front)  = ();
-                my(@copy)   = @$array;
-                my(@input)  = $self->get_component_list($gentype, 1);
+                my(@input) = $self->get_component_list($gentype, 1);
 
-                @$array = ();
-                foreach my $file (@copy) {
-                  my($found) = 0;
+                if ($#input != -1) {
+                  my(@front) = ();
+                  my(@copy)  = @$array;
+
+                  @$array = ();
                   foreach my $input (@input) {
                     my($part) = $input;
                     foreach my $wanted (@{$self->{'valid_components'}->{$gentype}}) {
@@ -2431,30 +2436,42 @@ sub generate_default_components {
                       }
                     }
                     $part = $self->escape_regex_special($part);
-                    foreach my $re ($self->generated_filenames($part, $gentype,
-                                                               $tag, $input,
-                                                               0)) {
-                      if ($file =~ /$re$/) {
-                        ## No need to check for previously added files
-                        ## here since there are none.
-                        push(@front, $file);
-                        $found = 1;
-                        last;
+                    my(@files) = $self->generated_filenames($part, $gentype,
+                                                            $tag, $input, 1);
+                    if ($#copy != -1) {
+                      my($found) = 0;
+                      foreach my $file (@files) {
+                        for(my $i = 0; $i <= $#copy; $i++) {
+                          my($re) = $self->escape_regex_special($copy[$i]);
+                          if ($file eq $copy[$i] || $file =~ /[\/\\]$re$/) {
+                            ## No need to check for previously added files
+                            ## here since there are none.
+                            $found = 1;
+                            push(@front, $file);
+                            splice(@copy, $i, 1);
+                            last;
+                          }
+                        }
+                        if ($found) {
+                          last;
+                        }
+                      }
+                      if (!$found) {
+                        push(@front, @files);
                       }
                     }
-                    if ($found) {
-                      last;
+                    else {
+                      push(@front, @files);
                     }
                   }
-                  if (!$found) {
+                  if ($#copy != -1) {
                     ## No need to check for previously added files
                     ## here since there are none.
-                    push(@$array, $file);
+                    push(@$array, @copy);
                   }
-                }
-
-                if (defined $front[0]) {
-                  unshift(@$array, @front);
+                  if (defined $front[0]) {
+                    unshift(@$array, @front);
+                  }
                 }
               }
             }
@@ -3164,11 +3181,10 @@ sub convert_command_parameters {
   my(%valid)  = %{$self->{'command_subs'}};
 
   ## Add in the values that change for every call to this function
-  $valid{'input'}     = $input;
-  $valid{'output'}    = $output;
   $valid{'temporary'} = 'temp.$$$$.' . int(rand(0xffffffff));
 
   if (defined $input) {
+    $valid{'input'}          = $input;
     $valid{'input_basename'} = basename($input);
     $valid{'input_noext'}    = $input;
     $valid{'input_noext'}    =~ s/(\.[^\.]+)$//;
@@ -3176,10 +3192,17 @@ sub convert_command_parameters {
   }
 
   if (defined $output) {
-    $valid{'output_basename'} = basename($output);
-    $valid{'output_noext'}    = $output;
-    $valid{'output_noext'}    =~ s/(\.[^\.]+)$//;
-    $valid{'output_ext'}      = $1;
+    my($first) = 1;
+    $valid{'output'} = "@$output";
+    foreach my $out (@$output) {
+      my($noext) = $out;
+      $noext =~ s/(\.[^\.]+)$//;
+
+      $valid{'output_ext'}       = $1;
+      $valid{'output_noext'}    .= (!$first ? ' ' : '') . $noext;
+      $valid{'output_basename'} .= (!$first ? ' ' : '') . basename($out);
+      $first = 0;
+    }
   }
 
   ## Add in the specific types of output files
@@ -3190,11 +3213,13 @@ sub convert_command_parameters {
       $nowarn{$key} = 1;
       $nowarn{$key . '_noext'} = 1;
       foreach my $ext (@{$self->{'valid_components'}->{$type}}) {
-        if ($output =~ /$ext$/) {
-          $valid{$key} = $output;
-          $valid{$key . '_noext'} = $output;
-          $valid{$key . '_noext'} =~ s/\.[^\.]+$//;
-          last;
+        foreach my $out (@$output) {
+          if ($out =~ /$ext$/) {
+            $valid{$key} = $out;
+            $valid{$key . '_noext'} = $out;
+            $valid{$key . '_noext'} =~ s/\.[^\.]+$//;
+            last;
+          }
         }
       }
     }

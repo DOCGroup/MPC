@@ -1325,15 +1325,18 @@ sub prepare_parameters {
     if ($self->{'cslashes'}) {
       $input = $self->{'prjc'}->slash_to_backslash($input);
     }
-    $output = $self->get_value($prefix . '->input_file->output_file');
+    $output = $self->get_value($prefix . '->input_file->output_files');
 
     if (defined $output) {
-      my($fo) = $self->get_flag_overrides($prefix . '->input_file, gendir');
-      if (defined $fo) {
-        $output = $fo . '/' . File::Basename::basename($output);
-      }
-      if ($self->{'cslashes'}) {
-        $output = $self->{'prjc'}->slash_to_backslash($output);
+      my($size) = scalar(@$output);
+      for(my $i = 0; $i < $size; ++$i) {
+        my($fo) = $self->get_flag_overrides($prefix . '->input_file, gendir');
+        if (defined $fo) {
+          $$output[$i] = $fo . '/' . File::Basename::basename($$output[$i]);
+        }
+        if ($self->{'cslashes'}) {
+          $$output[$i] = $self->{'prjc'}->slash_to_backslash($$output[$i]);
+        }
       }
     }
   }
