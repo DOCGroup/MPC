@@ -52,6 +52,11 @@ sub fill_value {
 }
 
 
+sub get_and_symbol {
+  #my($self) = shift;
+  return '&$(__TRICK_BORLAND_MAKE__)&';
+}
+
 sub project_file_extension {
   #my($self) = shift;
   return '.bmak';

@@ -24,7 +24,12 @@ sub dollar_special {
 
 sub sort_files {
   #my($self) = shift;
-  return 0;
+  if (defined $ENV{MPC_ALWAYS_SORT}) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
 }
 
 

@@ -7,7 +7,7 @@ conditional_include "windowscommon"
 
 type_description      = "Console Application"
 type_code             = 0x0103
-configurations        = Release Debug
+configurations        = Debug Release
 default_configuration = Debug
 common_defines        = WIN32 _CONSOLE
 subsystem             = console

@@ -107,7 +107,8 @@ sub write_project_targets {
     }
 
     print $fh ($chdir ? "\t\@cd $dir$crlf" : ''),
-              "\t\$(MAKE) -f ", basename($project), " $target$crlf",
+              "\t\$(MAKE) -\$(MAKEFLAGS) -f ", basename($project),
+              " $target$crlf",
               ($chdir ? "\t\@cd $back$crlf" : '');
   }
 }
