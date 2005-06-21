@@ -154,7 +154,7 @@ $(LIB): <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfo
 <%if(custom_types)%>
 GENERATED_DIRTY    =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><%if(custom_type->input_file->output_files)%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%><%endfor%><%endfor%>
 <%foreach(custom_types)%>
-<%if(custom_types->libpath)%>
+<%if(custom_type->libpath)%>
 # These may be needed, but some versions of make do not accept this syntax
 #DYLD_LIBRARY_PATH := $(DYLD_LIBRARY_PATH):<%custom_type->libpath%>
 #LD_LIBRARY_PATH   := $(LD_LIBRARY_PATH):<%custom_type->libpath%>
@@ -171,12 +171,12 @@ GENERATED_DIRTY    =<%foreach(custom_types)%><%foreach(custom_type->input_files)
 <%endif%>
 	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> "$@"<%endif%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
-<%foreach(custom_type->input_file->output_files)%>
+<%foreach(custom_type->input_file)%>
 	<%flag_overrides(custom_type->input_file, postcommand)%>
 <%endfor%>
 <%else%>
 <%if(custom_type->postcommand)%>
-<%foreach(custom_type->input_file->output_files)%>
+<%foreach(custom_type->input_file)%>
 	<%custom_type->postcommand%>
 <%endfor%>
 <%endif%>
