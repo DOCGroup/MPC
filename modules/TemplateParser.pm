@@ -452,11 +452,18 @@ sub process_foreach {
       $mixed |= $mixed{$values[$i]};
     }
     if ($mixed) {
-      @values = ();
+      my(@nvalues) = ();
       foreach my $key (sort keys %mixed) {
         if ($mixed{$key}) {
-          push(@values, $key);
+          push(@nvalues, $key);
         }
+      }
+
+      ## Set the new values only if they are different
+      ## from the original (except for order).
+      my(@sorted) = sort(@values);
+      if (@sorted != @nvalues) {
+        @values = @nvalues;
       }
     }
 

@@ -4,7 +4,7 @@
 conditional_include "common"
 conditional_include "windowscommon"
 
-configurations     = Release Debug
+configurations     = Debug Release
 common_defines     =
 
 Release {
