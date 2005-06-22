@@ -48,8 +48,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-<%if(compile_options)%>
-				AdditionalOptions="<%compile_options%>"
+<%if(compile_flags)%>
+				AdditionalOptions="<%compile_flags%>"
 <%endif%>
 				Optimization="<%optimize("0")%>"
 <%if(InlineFunctionExpansion)%>
@@ -270,9 +270,6 @@
 <%endif%>
 <%if(type_is_binary)%>
 				AdditionalDependencies="<%foreach(reverse(libs))%><%fornotfirst(" ")%><%lib%><%lib_modifier%><%lib_ext%><%endfor%><%foreach(reverse(lit_libs))%> <%lit_lib%>.lib<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%><%endfor%>"
-<%endif%>
-<%if()%>
-				="<%%>"
 <%endif%>
 <%if(exename || sharedname || staticname)%>
 				OutputFile="$(OutDir)\<%if(type_is_dynamic)%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"

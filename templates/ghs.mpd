@@ -103,6 +103,9 @@ default:
 <%foreach(source_files)%>
 <%source_file%>
 	C++
+<%if(compile_flags)%>
+	:cxx_compiler.args=<%compile_flags%>
+<%endif%>
 <%endfor%>
 <%foreach(header_files)%>
 <%header_file%>
