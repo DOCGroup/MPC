@@ -29,15 +29,7 @@ sub compare_output {
 
 sub convert_slashes {
   #my($self) = shift;
-
-  ## This is not a very reliable way to determine
-  ## whether this project will be used on Windows or UNIX.
-  if (defined $ENV{COMSPEC}) {
-    return 1;
-  }
-  else {
-    return 0;
-  }
+  return 0;
 }
 
 
@@ -102,12 +94,6 @@ sub get_lib_template_input_file {
 sub get_dll_template_input_file {
   #my($self) = shift;
   return 'ghsdll';
-}
-
-
-sub get_template {
-  #my($self) = shift;
-  return 'ghs';
 }
 
 

@@ -147,10 +147,4 @@ sub project_file_extension {
 }
 
 
-sub get_template {
-  #my($self) = shift;
-  return 'html';
-}
-
-
 1;
