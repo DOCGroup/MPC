@@ -390,6 +390,7 @@ sub options {
 
           ## Clean up the path as much as possible
           $relative{$name} = File::Spec->canonpath($val);
+          $relative{$name} =~ s/\\/\//g;
         }
         else {
           $self->optionError('Invalid argument to -relative');
