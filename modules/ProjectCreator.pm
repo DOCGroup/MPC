@@ -2362,10 +2362,9 @@ sub generate_default_components {
   my($pchc)    = $self->get_assignment('pch_source');
   my($recurse) = $self->get_assignment('recurse');
 
-  ## The order of @tags may make a difference in the way that generated
+  ## The order of @tags does make a difference in the way that generated
   ## files get added.  And since the tags are user definable, there may be
-  ## a problem with that.  I can not confirm that this can actually cause a
-  ## problem, so I am leaving it alone.
+  ## a problem with that.
   foreach my $tag (@tags) {
     if (!defined $self->{'generated_exts'}->{$tag} ||
         $self->{'generated_exts'}->{$tag}->{'automatic'}) {
@@ -2457,11 +2456,21 @@ sub generate_default_components {
                         }
                       }
                       if (!$found) {
-                        push(@front, @files);
+                        my($ext) = $$exts[0];
+                        foreach my $file (@files) {
+                          if ($file =~ /$ext$/) {
+                            push(@front, $file);
+                          }
+                        }
                       }
                     }
                     else {
-                      push(@front, @files);
+                      my($ext) = $$exts[0];
+                      foreach my $file (@files) {
+                        if ($file =~ /$ext$/) {
+                          push(@front, $file);
+                        }
+                      }
                     }
                   }
                   if ($#copy != -1) {
