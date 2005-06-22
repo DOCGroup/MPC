@@ -892,11 +892,13 @@ sub process_component_line {
       my($out) = ($oop eq '>>' ? $3 : undef);
       my($dep) = ($oop eq '<<' ? $3 : undef);
 
+      $line =~ s/\s+$//;
       if ($line =~ /(.*)\s+(>>|<<)\s+(.*)/) {
         $line = $1;
         $out  = ($2 eq '>>' ? $3 : $out);
         $dep  = ($2 eq '<<' ? $3 : $dep);
 
+        $line =~ s/\s+$//;
         if ($2 eq $oop) {
           $status = 0;
           $error  = "Duplicate $oop used";

@@ -1,3 +1,15 @@
+Wed Jun 22 10:04:44 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Options.pm:
+
+          Convert back slashes to slashes after calling canonpath().  On
+          Windows, it converts slashes to backslashes which fouls up
+          generation of non-Windows based project types.
+
+        * modules/ProjectCreator.pm:
+
+          Remove extra spaces when processing '<<' and '>>'.
+
 Wed Jun 22 07:43:33 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
