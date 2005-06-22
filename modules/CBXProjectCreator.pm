@@ -46,10 +46,4 @@ sub get_dll_template_input_file {
 }
 
 
-sub get_template {
-  #my($self) = shift;
-  return 'cbx';
-}
-
-
 1;
