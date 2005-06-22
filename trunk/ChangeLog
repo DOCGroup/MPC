@@ -1,3 +1,27 @@
+Wed Jun 22 07:43:33 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          When adding generated files (and no generated file is listed),
+          only add those that match the default extension.
+
+        * modules/TemplateParser.pm:
+
+          When generating static projects, override the template settings
+          for the type_is_static, need_staticflags, type_is_dynamic,
+          type_is_binary variables.
+
+        * templates/nmake.mpd:
+
+          Fixed a bug where a custom command that generates multiple output
+          files and defines the output_option would not have the right
+          build rules.
+
+        * templates/ghs.mpd:
+        * templates/vc8.mpd:
+
+          Support the compile_flags template variable.
+
 Tue Jun 21 11:55:38 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/BMakeProjectCreator.pm:

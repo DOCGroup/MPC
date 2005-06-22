@@ -60,6 +60,12 @@ my(%keywords) = ('if'              => 0,
                  'duplicate_index' => 5,
                 );
 
+my(%target_type_vars) = ('type_is_static'   => 1,
+                         'need_staticflags' => 1,
+                         'type_is_dynamic'  => 1,
+                         'type_is_binary'   => 1,
+                        );
+
 # ************************************************************
 # Subroutine Section
 # ************************************************************
@@ -69,22 +75,23 @@ sub new {
   my($prjc)  = shift;
   my($self)  = $class->SUPER::new();
 
-  $self->{'prjc'}       = $prjc;
-  $self->{'ti'}         = $prjc->get_template_input();
-  $self->{'cslashes'}   = $prjc->convert_slashes();
-  $self->{'crlf'}       = $prjc->crlf();
-  $self->{'cmds'}       = $prjc->get_command_subs();
-  $self->{'vnames'}     = $prjc->get_valid_names();
-  $self->{'values'}     = {};
-  $self->{'defaults'}   = {};
-  $self->{'lines'}      = [];
-  $self->{'built'}      = '';
-  $self->{'sstack'}     = [];
-  $self->{'lstack'}     = [];
-  $self->{'if_skip'}    = 0;
-  $self->{'eval'}       = 0;
-  $self->{'eval_str'}   = '';
-  $self->{'dupfiles'}   = {};
+  $self->{'prjc'}                 = $prjc;
+  $self->{'ti'}                   = $prjc->get_template_input();
+  $self->{'cslashes'}             = $prjc->convert_slashes();
+  $self->{'crlf'}                 = $prjc->crlf();
+  $self->{'cmds'}                 = $prjc->get_command_subs();
+  $self->{'vnames'}               = $prjc->get_valid_names();
+  $self->{'values'}               = {};
+  $self->{'defaults'}             = {};
+  $self->{'lines'}                = [];
+  $self->{'built'}                = '';
+  $self->{'sstack'}               = [];
+  $self->{'lstack'}               = [];
+  $self->{'if_skip'}              = 0;
+  $self->{'eval'}                 = 0;
+  $self->{'eval_str'}             = '';
+  $self->{'dupfiles'}             = {};
+  $self->{'override_target_type'} = undef;
 
   $self->{'foreach'}  = {};
   $self->{'foreach'}->{'count'}      = -1;
@@ -240,6 +247,11 @@ sub get_value {
       --$counter;
     }
     $counter = $self->{'foreach'}->{'count'};
+
+    if ($self->{'override_target_type'} &&
+        defined $value && defined $target_type_vars{$name}) {
+      $value = $self->{'values'}->{$name};
+    }
   }
 
   if (!defined $value) {
@@ -1474,6 +1486,7 @@ sub collect_data {
   my($sharedname) = $prjc->get_assignment('sharedname');
   my($staticname) = $prjc->get_assignment('staticname');
   if (!defined $sharedname && defined $staticname) {
+    $self->{'override_target_type'} = 1;
     $self->{'values'}->{'type_is_static'}   = 1;
     $self->{'values'}->{'need_staticflags'} = 1;
   }
