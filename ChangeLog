@@ -1,3 +1,9 @@
+Thu Jun 23 16:24:16 2005  Justin Michel  <michel_j@ociweb.com>
+
+        * templates/vc7.mpd:
+
+          Added support for setting the stack size. This was already in vc8.mpd.
+
 Thu Jun 23 13:44:58 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/make.mpd:

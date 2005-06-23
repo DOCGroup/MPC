@@ -110,6 +110,12 @@
 <%endif%>
 <%endif%>
 				SubSystem="<%subsystem("1")%>"
+<%if(StackReserveSize)%>
+				StackReserveSize="<%StackReserveSize%>"
+<%endif%>
+<%if(StackCommitSize)%>
+				StackCommitSize="<%StackCommitSize%>"
+<%endif%>
 <%if(optimize)%>
 				OptimizeReferences="<%optref("2")%>"
 				EnableCOMDATFolding="<%opticf("2")%>"
