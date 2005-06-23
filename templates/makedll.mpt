@@ -20,13 +20,14 @@
 conditional_include "common"
 conditional_include "unixcommon"
 
-configurations = gcc
-ln             = ln -s
-obj_ext        = .o
-compile_flags  =
-arflags        =
-pchsupport     = 1
-targetoutdir   =
+configurations   = gcc
+obj_ext          = .o
+compile_flags    =
+arflags          =
+pchsupport       = 1
+targetoutdir     =
+slash            = /
+libopt           = -l
 
 // ***********************************************************************
 // Configuration Section
@@ -56,6 +57,7 @@ cxx {
 gcc {
   cxx       = g++
   pic       = -fPIC
+  shflags   = -shared
   platforms = linux
   pchcreate = "-o "
   pchnobj   = 1
@@ -64,6 +66,7 @@ gcc {
 SunCC {
   cxx          = CC
   pic          = -KPIC
+  shflags      = -G
   compileflags = -xarch=v9
   linkflags    = -library=Cstd -library=Crun
   clean        = SunWS_cache ir.out
@@ -73,6 +76,7 @@ SunCC {
 SunCC32 {
   cxx       = CC
   pic       = -KPIC
+  shflags      = -G
   linkflags = -library=Cstd -library=Crun
   clean     = SunWS_cache ir.out
   platforms = solaris
@@ -81,6 +85,7 @@ SunCC32 {
 aCC {
   cxx           = aCC
   pic           = +Z
+  shflags       = -b
   platforms     = hpux
   compilerflags = -AA -D_RWSTD_MULTI_THREAD +W336 +DA2.0W +DS2.0W
   linkflags     = -Wl,+s -Wl,-x -Wl,+h$(@F) -Wl,+b/usr/lib/pa20_64 -ldl
@@ -91,6 +96,7 @@ aCC {
 aCC32 {
   cxx           = aCC
   pic           = +Z
+  shflags       = -b
   platforms     = hpux
   compilerflags = -AA -D_RWSTD_MULTI_THREAD +W336
   linkflags     = -Wl,+s
@@ -117,6 +123,7 @@ xlC_r32 {
 SGICC {
   cxx          = CC
   pic          = -KPIC
+  shflags      = -shared
   compileflags = -64
   linkflags    = -Wl,-woff,84
   clean        = ii_files
@@ -128,7 +135,8 @@ SGICC {
 SGICC32 {
   cxx       = CC
   pic       = -KPIC
-  linkflags = -Wl,-woff,84
+  shflags   = -shared
+  linkflags = -Wl,-woff,84 -ldl
   clean     = ii_files
   platforms = irix
   pchcreate = -LANG:create_pch=
@@ -182,20 +190,17 @@ tru64 {
 }
 
 linux {
-  shflags       = -shared
   ldlibs        = -ldl -lpthread
   extracppflags = -D_REENTRANT
 }
 
 solaris {
-  shflags       = -G
   ldlibs        = -lsocket -ldl -lnsl -lgen -lposix4 -lthread
   extracppflags = -D_REENTRANT
 }
 
 hpux {
   dll_ext       = .sl
-  shflags       = -b
   ldlibs        = -lxti -lpthread -lrt -ldld
   extracppflags = -D_REENTRANT
 }
@@ -207,8 +212,7 @@ aix {
 }
 
 irix {
-  shflags = -shared
-  ldlibs  = -lsocket -ldl -lgen -lpthread
+  ldlibs  = -lsocket -lgen -lpthread
 }
 
 lynxos {
@@ -218,20 +222,19 @@ lynxos {
 
 macos {
   dld     = libtool
+  ranlib  = 1
   dll_ext = .dylib
   shflags = -dynamic
   ldlibs  = -lcc_dynamic -lstdc++ -lSystem -ldl
 }
 
 unixware {
-  shflags       = -G
   ldlibs        = -lsocket -ldl -lnsl -lgen -lposix4 -lthread
   extracppflags = -D_REENTRANT
 
 }
 
 qnx {
-  shflags       = -shared
   ldlibs        = -lsocket
   extracppflags = -D__GCC_BUILTIN
 }
@@ -247,18 +250,19 @@ vxworks {
 cygwin32 {
   dll_ext = .dll
   exe_ext = .exe
-  shflags = -shared
-  ln      = mv
   rc      = windres
 }
 
 mingw32 {
-  dll_ext = .dll
-  exe_ext = .exe
-  shflags = -shared
-  ln      = move /y
-  ldlibs  = -lwsock32 -lnetapi32
-  rc      = windres
+  lib_prefix =
+  dll_ext    = .dll
+  exe_ext    = .exe
+  ldlibs     = -lwsock32 -lnetapi32
+  rc         = windres
+  devnull    = nul
+  delete     = del /f/s/q
+  copy       = copy /y
+  makedir    = mkdir
 }
 
 tandem {
