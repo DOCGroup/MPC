@@ -1,3 +1,30 @@
+Fri Jun 24 12:47:06 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * PROBLEM-REPORT-FORM:
+
+          Adding a problem report form with requirements for submitting a
+          support request.
+
+        * modules/EM3ProjectCreator.pm:
+        * modules/VC6ProjectCreator.pm:
+
+          Removing the implementation of the get_template method since I
+          have renamed the templates for these project types.
+
+        * modules/MakeWorkspaceCreator.pm:
+
+          Removed the setting of PWD since it isn't used in the project
+          makefiles anymore.
+
+        * templates/make.mpd:
+
+        * templates/em3.mpd:
+        * templates/vc6.mpd:
+        * templates/em3vcp.mpd:
+        * templates/vc6dsp.mpd:
+
+          Renamed vc6dsp.mpd to vc6.mpd and em3vcp.mpd to em3.mpd.
+
 Fri Jun 24 08:39:56 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3vcp.mpd:

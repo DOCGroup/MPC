@@ -9,9 +9,7 @@ LD            = <%ld%>
 <%else%>
 LD            = $(CXX) $(CCFLAGS) $(CPPFLAGS)
 <%endif%>
-<%if(ar)%>
-AR            = <%ar%>
-<%endif%>
+AR            = <%if(ar)%><%ar%><%else%>ar<%endif%>
 <%if(nm)%>
 NM            = <%nm%>
 <%endif%>
@@ -40,7 +38,8 @@ CCC           = $(CXX)
 MAKEFILE      = <%project_file%>
 DEPENDENCIES  = .depend.$(MAKEFILE)
 <%if(exename)%>
-BIN           = <%if(install)%><%install%><%slash%><%endif%><%targetoutdir%><%exename%>$(EXEEXT)
+BTARGETDIR    = <%if(install)%><%install%><%else%>.<%endif%><%slash%><%targetoutdir%>
+BIN           = $(BTARGETDIR)<%exename%>$(EXEEXT)
 <%endif%>
 <%foreach(configurations)%>
 <%foreach(platforms)%>
@@ -52,16 +51,18 @@ EXEEXT        = <%exe_ext%>
 LIBPREFIX     = <%lib_prefix%>
 LDLIBS        =<%foreach(libs lit_libs)%> <%libopt%><%lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%> <%ldlibs%>
 OBJS          =<%if(pch_source && pchsupport)%> <%targetoutdir%><%noextension(pch_source)%>$(OBJEXT)<%endif%><%foreach(source_files)%> <%targetoutdir%><%noextension(source_file)%>$(OBJEXT)<%endfor%><%if(rc)%><%foreach(resource_files)%> <%targetoutdir%><%resource_file%>$(OBJEXT)<%endfor%><%endif%>
+LTARGETDIR    = <%libout%><%slash%><%targetoutdir%>
 <%if(lib_ext)%>
 <%if(staticname)%>
 AREXT         = <%lib_ext%>
-LIB           = <%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%slash%><%targetoutdir%>$(LIBPREFIX)<%staticname%>$(AREXT)
+LIB           = $(LTARGETDIR)$(LIBPREFIX)<%staticname%>$(AREXT)
 <%endif%>
 <%endif%>
 <%if(dll_ext)%>
 <%if(sharedname)%>
 SOEXT         = <%dll_ext%>
-SHLIB         = <%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%slash%><%targetoutdir%>$(LIBPREFIX)<%sharedname%>$(SOEXT)
+SHTARGETDIR   = <%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%slash%><%targetoutdir%>
+SHLIB         = $(SHTARGETDIR)$(LIBPREFIX)<%sharedname%>$(SOEXT)
 <%if(shflags)%>
 SHFLAGS       = <%shflags%>
 <%endif%>
@@ -109,17 +110,28 @@ specialscript:
 <%endif%>
 <%endfor%>
 <%endfor%>
-$(BIN): <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%><%targetoutdir%> $(OBJS) <%foreach(configurations)%><%foreach(platforms)%><%if(prelink)%><%targetoutdir%><%noextension(prelink)%>$(OBJEXT)<%endif%><%endfor%><%endfor%>
+$(BTARGETDIR):
+	@$(MKDIR) "$@"
+
+$(BIN): $(BTARGETDIR) <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%>$(OBJS) <%foreach(configurations)%><%foreach(platforms)%><%if(prelink)%><%targetoutdir%><%noextension(prelink)%>$(OBJEXT)<%endif%><%endfor%><%endfor%>
 	$(LINK.cc) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
 
 <%endif%>
+$(LTARGETDIR):
+	@$(MKDIR) "$@"
+
 <%foreach(configurations)%>
 <%foreach(platforms)%>
 <%if(dll_ext)%>
 <%if(sharedname)%>
 all: $(SHLIB)<%if(postbuild)%> __postbuild__<%endif%>
 
-$(SHLIB): <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%><%targetoutdir%> $(OBJS)
+<%if(dllout)%>
+$(SHTARGETDIR):
+	@$(MKDIR) "$@"
+
+<%endif%>
+$(SHLIB): $(SHTARGETDIR) <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%>$(OBJS)
 	<%foreach(configurations)%><%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%><%endfor%> $(SHFLAGS) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
 <%else%>
 <%if(staticname)%>
@@ -136,7 +148,7 @@ all: $(LIB)<%if(postbuild)%> __postbuild__<%endif%>
 <%endfor%>
 <%endfor%>
 <%if(staticname)%>
-$(LIB): <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%><%targetoutdir%> $(OBJS)
+$(LIB): $(LTARGETDIR) <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%>$(OBJS)
 <%foreach(configurations)%>
 <%foreach(platforms)%>
 	$(AR) $(ARFLAGS) $(LIB) $(OBJS)<%if(tempinc)%> `find $(TEMPINCDIR) -type f`<%endif%>
@@ -145,11 +157,6 @@ $(LIB): <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfo
 <%endif%>
 <%endfor%>
 <%endfor%>
-
-<%endif%>
-<%if(targetoutdir)%>
-<%targetoutdir%>:
-	@-test -d <%targetoutdir%> || $(MKDIR) <%targetoutdir%> 2> $(NUL) || true
 
 <%endif%>
 <%if(custom_types)%>

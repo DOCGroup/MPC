@@ -79,10 +79,4 @@ sub get_dll_template_input_file {
 }
 
 
-sub get_template {
-  #my($self) = shift;
-  return 'vc6dsp';
-}
-
-
 1;
