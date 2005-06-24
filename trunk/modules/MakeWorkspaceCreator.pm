@@ -84,7 +84,7 @@ sub write_comps {
     my($dname) = $self->mpc_dirname($project);
     print $fh "\t\@",
               ($dname ne '.' ? "cd $dname; " : ''),
-              "\$(MAKE) PWD=`pwd` -f ",
+              "\$(MAKE) -f ",
               ($dname eq '.' ? $project : basename($project)),
               " \$(\@)$crlf";
   }
@@ -102,7 +102,7 @@ sub write_comps {
     print $fh $crlf,
               "\t\@",
               ($dname ne '.' ? "cd $dname; " : ''),
-              "\$(MAKE) PWD=`pwd` -f ",
+              "\$(MAKE) -f ",
               ($dname eq '.' ? $project : basename($project)),
               ' generated all', $crlf;
   }
