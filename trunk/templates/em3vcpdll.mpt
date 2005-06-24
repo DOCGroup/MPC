@@ -10,7 +10,6 @@ platforms             = "WCE ARM" "WCE ARMV4" "WCE emulator" "WCE x86"
 default_configuration = Debug
 default_platform      = "WCE ARM"
 common_defines        = UNICODE _UNICODE
-stack                 =
 unicode               = 1
 use_lib_modifier      = 1
 
