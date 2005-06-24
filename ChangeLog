@@ -18,6 +18,9 @@ Fri Jun 24 12:47:06 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/make.mpd:
 
+          Fixed a problem where the output directory wouldn't be created for
+          exe or library targets if it didn't exist.
+
         * templates/em3.mpd:
         * templates/vc6.mpd:
         * templates/em3vcp.mpd:
