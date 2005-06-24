@@ -266,7 +266,7 @@ $(DEPENDENCIES):
 
 depend:
 <%if(source_files || pch_source)%>
-	<%depgen("makedepend -Y")%> $(CFLAGS) $(CCFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> $(NUL)
+	-<%depgen("makedepend -Y")%> $(CFLAGS) $(CCFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> $(NUL)
 <%else%>
 	@-:
 <%endif%>
