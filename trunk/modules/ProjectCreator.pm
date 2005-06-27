@@ -1268,7 +1268,7 @@ sub process_feature {
       if ($line =~ /{$/) {
         ++$curly;
       }
-      elsif ($line =~ /^}$/) {
+      if ($line =~ /^}/) {
         --$curly;
       }
       if ($curly == 0) {
