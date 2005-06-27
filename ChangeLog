@@ -1,3 +1,11 @@
+Mon Jun 27 06:28:54 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/zzip.mpb:
+
+          Developers insist on naming libraries differently for Windows.
+          So, for UNIX related projects we use zzip and for all others we
+          use zziplib.
+
 Fri Jun 24 12:47:06 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * PROBLEM-REPORT-FORM:
