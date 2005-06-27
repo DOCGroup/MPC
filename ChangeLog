@@ -1,3 +1,11 @@
+Mon Jun 27 07:25:08 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          My previous checkin uncovered a serious bug in MPC dealing with
+          features that weren't enabled and used the specific/else
+          construct.
+
 Mon Jun 27 06:28:54 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/zzip.mpb:
