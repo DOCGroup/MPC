@@ -1,3 +1,11 @@
+Tue Jun 28 07:20:08 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/ProjectCreator.pm:
+
+          Added the functionality to negate the project type in 'specific'
+          and 'conditional' clauses.
+
 Tue Jun 28 06:31:26 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/zlib.mpb:
