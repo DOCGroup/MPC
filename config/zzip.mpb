@@ -9,8 +9,8 @@ feature(zzip) {
   // @@ Notice: If you are building with Cygwin, you may need to manually
   //            change the following library to zziplib.
   specific(gnuace, make, sle, automake, ghs) {
-    lit_libs += zzip
+    libs += zzip
   } else {
-    lit_libs += zziplib
+    libs += zziplib
   }
 }
