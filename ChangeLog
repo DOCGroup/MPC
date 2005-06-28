@@ -1,3 +1,12 @@
+Tue Jun 28 11:33:07 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+
+	Sort custom type's output files so output is easier to inspect
+	when hand-tweaking MPC output.
+
+	Add Pkgconfig_Files output to CLEANFILES.
+
 Tue Jun 28 07:39:34 2005  Ming Xiong  <mxiong@tango.dre.vanderbilt.edu>
 
 	* config/ziparchive.mpb
