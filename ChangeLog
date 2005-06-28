@@ -1,3 +1,10 @@
+Tue Jun 28 06:31:26 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/zlib.mpb:
+        * config/zzip.mpb:
+
+          Changed to use 'libs' instead of lit_libs for some project types.
+
 Mon Jun 27 07:25:08 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
