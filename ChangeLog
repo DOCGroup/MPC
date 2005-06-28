@@ -2,7 +2,8 @@ Tue Jun 28 07:39:34 2005  Ming Xiong  <mxiong@tango.dre.vanderbilt.edu>
 
 	* config/ziparchive.mpb
 
-	Added the ziparchive feature to support DAnCE/ComponentPackager
+	Added a .mpb file to support ziparchive feature which is needed by
+	DAnCE/ComponentPackager
 
 Tue Jun 28 07:20:08 2005  Chad Elliott  <elliott_c@ociweb.com>
 
