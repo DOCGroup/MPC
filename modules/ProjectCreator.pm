@@ -697,6 +697,15 @@ sub parse_line {
           my($scope_parsed) = 0;
           my($defcomp) = $self->get_default_component_name();
           foreach my $type (split(/\s*,\s*/, $name)) {
+            my($not) = ($type =~ s/^!\s*//);
+            if ($not) {
+              if ($type eq $self->{'pctype'}) {
+                $type = '';
+              }
+              else {
+                $type = $self->{'pctype'};
+              }
+            }
             if ($type eq $self->{'pctype'} || $type eq $defcomp) {
               ($status, $errorString) = $self->parse_scope(
                                           $ih, $values[1], $type,
@@ -995,6 +1004,15 @@ sub parse_conditional {
   my($add)     = 0;
 
   foreach my $type (split(/\s*,\s*/, $types)) {
+    my($not) = ($type =~ s/^!\s*//);
+    if ($not) {
+      if ($type eq $self->{'pctype'}) {
+        $type = '';
+      }
+      else {
+        $type = $self->{'pctype'};
+      }
+    }
     if ($type eq $self->{'pctype'}) {
       $add = 1;
       last;
