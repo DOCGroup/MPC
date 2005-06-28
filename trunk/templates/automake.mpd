@@ -26,20 +26,20 @@ man_MANS += <%man_files%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
 BUILT_SOURCES += \
-<%foreach(custom_type->input_file->output_files)%>
-  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" \\")%>
+<%foreach(output_file, sort(custom_type->input_file->output_files))%>
+  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(output_file)%><%else%><%output_file%><%endif%><%fornotlast(" \\")%>
 <%endfor%>
 
 CLEANFILES += \
 <%if(multiple(custom_type->input_file->output_files))%>
   <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basenoextension(custom_type->input_file)%><%else%><%noextension(custom_type->input_file)%><%endif%>-stamp \
 <%endif%>
-<%foreach(custom_type->input_file->output_files)%>
-  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" \\")%>
+<%foreach(output_file, sort(custom_type->input_file->output_files))%>
+  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(output_file)%><%else%><%output_file%><%endif%><%fornotlast(" \\")%>
 <%endfor%>
 
 <%if(multiple(custom_type->input_file->output_files))%>
-<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%endif%><%basenoextension(custom_type->input_file)%>-stamp
+<%foreach(output_file, sort(custom_type->input_file->output_files))%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(output_file)%><%else%><%output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%endif%><%basenoextension(custom_type->input_file)%>-stamp
 
 <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basenoextension(custom_type->input_file)%><%else%><%noextension(custom_type->input_file)%><%endif%>-stamp: $(srcdir)/<%custom_type->input_file%><%if(custom_type->input_file->dependencies)%> <%custom_type->input_file->dependencies%><%endif%>
 <%else%>
@@ -185,9 +185,17 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%endif%>
 <%endif%>
 <%if(pkgconfig_files)%>
-<%foreach(pkgconfig_files)%>
 
-pkgconfig_DATA += <%basenoextension(pkgconfig_file)%>
+pkgconfig_DATA += \
+<%foreach(pkgconfig_files)%>
+  <%basenoextension(pkgconfig_file)%><%fornotlast(" \\")%>
+<%endfor%>
+
+CLEANFILES += \
+<%foreach(pkgconfig_files)%>
+  <%basenoextension(pkgconfig_file)%><%fornotlast(" \\")%>
+<%endfor%>
+<%foreach(pkgconfig_files)%>
 
 <%basenoextension(pkgconfig_file)%>: ${top_builddir}/config.status ${srcdir}/<%pkgconfig_file%>
 	${top_builddir}/config.status --file "$@":${srcdir}/<%pkgconfig_file%>
