@@ -223,8 +223,8 @@ specific        This scope allows assignments that are specific to a
                   ...
                 }
 
-                Due to limited parsing capabilities, the else is required to
-                be on the same line as the closing curly brace.  You may
+                If the else is provided, it is required to be on
+                the same line as the closing curly brace.  You may
                 also negate the project type (using '!') which will cause
                 the specific to be evaluated for all types except the type
                 specified.
@@ -254,8 +254,8 @@ conditional     This scope allows addition of source files conditionally
                   ...
                 }
 
-                Due to limited parsing capabilities, the else is required to
-                be on the same line as the closing curly brace.  You may
+                If the else is provided, it is required to be on
+                the same line as the closing curly brace.  You may
                 also negate the project type (using '!') which will cause
                 the conditional to be evaluated for all types except the
                 type specified.
