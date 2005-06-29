@@ -40,6 +40,8 @@ DEPENDENCIES  = .depend.$(MAKEFILE)
 <%if(exename)%>
 BTARGETDIR    = <%if(install)%><%install%><%else%>.<%endif%><%slash%><%targetoutdir%>
 BIN           = $(BTARGETDIR)<%exename%>$(EXEEXT)
+<%else%>
+LTARGETDIR    = <%libout%><%slash%><%targetoutdir%>
 <%endif%>
 <%foreach(configurations)%>
 <%foreach(platforms)%>
@@ -51,7 +53,6 @@ EXEEXT        = <%exe_ext%>
 LIBPREFIX     = <%lib_prefix%>
 LDLIBS        =<%foreach(libs lit_libs)%> <%libopt%><%lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%> <%ldlibs%>
 OBJS          =<%if(pch_source && pchsupport)%> <%targetoutdir%><%noextension(pch_source)%>$(OBJEXT)<%endif%><%foreach(source_files)%> <%targetoutdir%><%noextension(source_file)%>$(OBJEXT)<%endfor%><%if(rc)%><%foreach(resource_files)%> <%targetoutdir%><%resource_file%>$(OBJEXT)<%endfor%><%endif%>
-LTARGETDIR    = <%libout%><%slash%><%targetoutdir%>
 <%if(lib_ext)%>
 <%if(staticname)%>
 AREXT         = <%lib_ext%>
@@ -116,9 +117,10 @@ $(BTARGETDIR):
 $(BIN): $(BTARGETDIR) <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%>$(OBJS) <%foreach(configurations)%><%foreach(platforms)%><%if(prelink)%><%targetoutdir%><%noextension(prelink)%>$(OBJEXT)<%endif%><%endfor%><%endfor%>
 	$(LINK.cc) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
 
-<%endif%>
+<%else%>
 $(LTARGETDIR):
 	@$(MKDIR) "$@"
+<%endif%>
 
 <%foreach(configurations)%>
 <%foreach(platforms)%>
