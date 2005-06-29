@@ -609,11 +609,13 @@ sub search_for_files {
                          $self->{'exclude'}->{$self->{'wctype'}});
       $self->search_for_files(\@f, $array, $impl);
       if ($impl) {
+        $file =~ s/^\.\///;
         unshift(@$array, $file);
       }
     }
     else {
       if ($file =~ /\.mpc$/) {
+        $file =~ s/^\.\///;
         unshift(@$array, $file);
       }
     }

@@ -1,18 +1,34 @@
+Wed Jun 29 06:55:10 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+
+          Modified the documentation for 'specific' and 'conditional'.
+
+        * modules/WorkspaceCreator.pm:
+
+          Remove ./ from the beginning of located files and directories to
+          ensure that workspaces that change directory back to the original
+          go back to the correct directory.
+
+        * templates/make.mpd:
+
+          Only create the $(LTARGETDIR) rule if the project is not an exe.
+
 Tue Jun 28 11:33:07 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	Sort custom type's output files so output is easier to inspect
-	when hand-tweaking MPC output.
+        Sort custom type's output files so output is easier to inspect
+        when hand-tweaking MPC output.
 
-	Add Pkgconfig_Files output to CLEANFILES.
+        Add Pkgconfig_Files output to CLEANFILES.
 
 Tue Jun 28 07:39:34 2005  Ming Xiong  <mxiong@tango.dre.vanderbilt.edu>
 
-	* config/ziparchive.mpb
+        * config/ziparchive.mpb
 
-	Added a .mpb file to support ziparchive feature which is needed by
-	DAnCE/ComponentPackager
+          Added a .mpb file to support ziparchive feature which is needed by
+          DAnCE/ComponentPackager.
 
 Tue Jun 28 07:20:08 2005  Chad Elliott  <elliott_c@ociweb.com>
 
