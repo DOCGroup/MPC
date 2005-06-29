@@ -332,7 +332,7 @@ sub process_assignment {
   ## Support keyword mapping here only at the project level scope. The
   ## scoped keyword mapping is done through the parse_scoped_assignment()
   ## method.
-  if (!defined $assign) {
+  if (!defined $assign || $assign == $self->get_assignment_hash()) {
     my($mapped) = $self->{'valid_names'}->{$name};
     if (defined $mapped && UNIVERSAL::isa($mapped, 'ARRAY')) {
       $self->parse_scoped_assignment($$mapped[0], 'assignment',
@@ -3381,7 +3381,19 @@ sub get_custom_value {
       foreach my $file (@{$self->{'custom_output_files'}->{$based}}) {
         foreach my $ext (@{$self->{'valid_components'}->{'source_files'}}) {
           if ($file =~ /$ext$/) {
-            push(@$value, $file);
+            ## We've found a file that matches one of the source file
+            ## extensions.  Now we have to make sure that it doesn't
+            ## match a template file extension.
+            my($matched) = 0;
+            foreach my $text (@{$self->{'valid_components'}->{'template_files'}}) {
+              if ($file =~ /$text$/) {
+                $matched = 1;
+                last;
+              }
+            }
+            if (!$matched) {
+              push(@$value, $file);
+            }
             last;
           }
         }
