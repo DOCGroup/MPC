@@ -1,3 +1,9 @@
+Fri Jul  1 10:03:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+          Added support for StackReserveSize and StackCommitSize
+          template variables.
+
 Wed Jun 29 12:15:46 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
