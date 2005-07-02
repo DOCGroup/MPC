@@ -490,6 +490,33 @@ sub begin_project {
 }
 
 
+sub get_process_project_type {
+  my($self)    = shift;
+  my($types)   = shift;
+  my($type)    = '';
+  my($defcomp) = $self->get_default_component_name();
+
+  foreach my $t (split(/\s*,\s*/, $types)) {
+    my($not) = ($t =~ s/^!\s*//);
+    if ($not) {
+      if ($t eq $self->{'pctype'}) {
+        $type = '';
+        last;
+      }
+      else {
+        $type = $self->{'pctype'};
+      }
+    }
+    elsif ($t eq $self->{'pctype'} || $t eq $defcomp) {
+      $type = $t;
+      last;
+    }
+  }
+
+  return $type;
+}
+
+
 sub parse_line {
   my($self)   = shift;
   my($ih)     = shift;
@@ -694,29 +721,16 @@ sub parse_line {
           ($status, $errorString) = $self->parse_verbatim($ih, $type, $loc);
         }
         elsif ($comp eq 'specific') {
-          my($scope_parsed) = 0;
-          my($defcomp) = $self->get_default_component_name();
-          foreach my $type (split(/\s*,\s*/, $name)) {
-            my($not) = ($type =~ s/^!\s*//);
-            if ($not) {
-              if ($type eq $self->{'pctype'}) {
-                $type = '';
-              }
-              else {
-                $type = $self->{'pctype'};
-              }
-            }
-            if ($type eq $self->{'pctype'} || $type eq $defcomp) {
-              ($status, $errorString) = $self->parse_scope(
-                                          $ih, $values[1], $type,
-                                          $self->{'valid_names'},
-                                          $self->get_assignment_hash(),
-                                          {});
-              $scope_parsed = 1;
-              last;
-            }
+          my($type) = $self->get_process_project_type($name);
+          if ($type eq $self->{'pctype'} ||
+              $type eq $self->get_default_component_name()) {
+            ($status, $errorString) = $self->parse_scope(
+                                        $ih, $values[1], $type,
+                                        $self->{'valid_names'},
+                                        $self->get_assignment_hash(),
+                                        {});
           }
-          if (!$scope_parsed) {
+          else {
             ## We still need to parse the scope, but we will be
             ## throwing away whatever is processed.  However, it
             ## could still be invalid code that will cause an error.
@@ -1002,21 +1016,10 @@ sub parse_conditional {
   my($status)  = 1;
   my($error)   = undef;
   my($add)     = 0;
+  my($type)    = $self->get_process_project_type($types);
 
-  foreach my $type (split(/\s*,\s*/, $types)) {
-    my($not) = ($type =~ s/^!\s*//);
-    if ($not) {
-      if ($type eq $self->{'pctype'}) {
-        $type = '';
-      }
-      else {
-        $type = $self->{'pctype'};
-      }
-    }
-    if ($type eq $self->{'pctype'}) {
-      $add = 1;
-      last;
-    }
+  if ($type eq $self->{'pctype'}) {
+    $add = 1;
   }
 
   while(<$fh>) {
@@ -1186,7 +1189,7 @@ sub parse_components {
   ## If we didn't encounter an error, didn't have any files explicitly
   ## listed and we attempted to exclude files, then we need to find the
   ## set of files that don't match the excluded files and add them.
-  if ($status && $count == 0 && defined $grname) {
+  if ($status && $#exclude != -1 && defined $grname) {
     my($alldir) = $self->get_assignment('recurse') || $flags{'recurse'};
     my(@files)  = $self->generate_default_file_list('.', \@exclude, $alldir);
     $self->sift_files(\@files,
