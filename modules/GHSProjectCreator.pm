@@ -18,6 +18,12 @@ use vars qw(@ISA);
 @ISA = qw(ProjectCreator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my($startre) = undef;
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -44,13 +50,15 @@ sub fill_value {
   my($name)  = shift;
   my($value) = undef;
 
+  if (!defined $startre) {
+    $startre =  $self->escape_regex_special($self->getstartdir());
+  }
+
   if ($name =~ /^reltop_(\w+)/) {
     $value = $self->relative($self->get_assignment($1));
-    if (defined $value &&
-        ($value =~ /^\.\.?$/ || $value =~ /^\.\.?\//)) {
-      my($top)  = $self->escape_regex_special($self->getstartdir());
+    if (defined $value) {
       my($part) = $self->getcwd();
-      $part =~ s/^$top[\/]?//;
+      $part =~ s/^$startre[\/]?//;
       if ($part ne '') {
         if ($value eq '.') {
           $value = $part;
@@ -62,9 +70,8 @@ sub fill_value {
     }
   }
   elsif ($name eq 'reltop') {
-    my($top) = $self->escape_regex_special($self->getstartdir());
     $value = $self->getcwd();
-    $value =~ s/^$top[\/]?//;
+    $value =~ s/^$startre[\/]?//;
     if ($value eq '') {
       $value = '.';
     }

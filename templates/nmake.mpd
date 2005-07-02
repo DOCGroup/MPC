@@ -60,7 +60,7 @@ INSTALLDIR=<%if(install)%><%install%><%else%><%output_dir%><%endif%>
 OUTDIR=<%output_dir(".")%>
 <%endif%>
 <%if(type_is_dynamic)%>
-OUTDIR=<%libout%>
+OUTDIR=<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
 <%endif%>
 INTDIR=<%intermediate_dir%>\<%project_name%>\<%machine%>
 
