@@ -1,3 +1,32 @@
+Sat Jul  2 10:57:13 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/GHSProjectCreator.pm:
+
+          Corrected a problem with determining the reltop value.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed specific and conditional where multiple negated project types
+          are used.  It would only look at the first type and decide that
+          the current project type wasn't negated.
+
+          When '!' was combined with a wildcard, MPC wasn't adding the files
+          that didn't match if the user had specified at least one file (in
+          addition to the negated wildcard).
+
+        * templates/bmake.mpd:
+        * templates/make.mpd:
+
+          Moved the local marker to a location after the all target.
+
+        * templates/ghs.mpd:
+
+          Fixed custom build support.
+
+        * templates/nmake.mpd:
+
+          Correctly support the use of dllout.
+
 Fri Jul  1 10:03:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmake.mpd:

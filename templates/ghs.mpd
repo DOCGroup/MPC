@@ -21,38 +21,39 @@ default:
 <%endif%>
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
+<%custom_type->input_file%>
+	custom
+	:custom_processor.name=echo
 <%if(custom_type->input_file->output_files)%>
 	:depends=<%if(flag_overrides(custom_type->input_file, dependent))%><%foreach(dep, flag_overrides(custom_type->input_file, dependent))%><%dep%><%if(!ends_with(dep, \.p.))%><%exe_ext%><%endif%> <%endfor%><%else%><%foreach(custom_type->dependent)%><%custom_type->dependent%><%if(!ends_with(custom_type->dependent, \.p.))%><%exe_ext%><%endif%> <%endfor%><%endif%><%custom_type->input_file%><%if(custom_type->input_file->dependencies)%> <%custom_type->input_file->dependencies%><%endif%>
 <%if(flag_overrides(custom_type->input_file, gendir))%>
-	:preexec=<%mkdir("mkdir -p")%> <%flag_overrides(custom_type->input_file, gendir)%><%postmkdir%>
+	:preexec=cd <%reltop%>; <%mkdir("mkdir -p")%> <%flag_overrides(custom_type->input_file, gendir)%><%postmkdir%>
 <%endif%>
 <%if(custom_type->output_option)%>
 <%foreach(custom_type->input_file->output_files)%>
-	:preexec=<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%custom_type->input_file->output_file%><%endif%>
+	:preexec=cd <%reltop%>; <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%custom_type->input_file->output_file%><%endif%>
 <%endfor%>
 <%else%>
-	:preexec=<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%><%endif%>
+	:preexec=cd <%reltop%>; <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%><%endif%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
 <%foreach(custom_type->input_file)%>
-	:preexec=<%flag_overrides(custom_type->input_file, postcommand)%>
+	:preexec=cd <%reltop%>; <%flag_overrides(custom_type->input_file, postcommand)%>
 <%endfor%>
 <%else%>
 <%if(custom_type->postcommand)%>
 <%foreach(custom_type->input_file)%>
-	:preexec=<%custom_type->postcommand%>
+	:preexec=cd <%reltop%>; <%custom_type->postcommand%>
 <%endfor%>
 <%endif%>
 <%endif%>
 <%if(pch_header && custom_type->pch_postrule)%>
 <%foreach(custom_type->input_file->source_output_files)%>
-	:preexec=echo #include "<%pch_header%>" > temporary.src
-        :preexec=<%cat("cat")%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temporary.src
-        :preexec=<%mv("mv -f")%> temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
+	:preexec=cd <%reltop%>; echo #include "<%pch_header%>" > temporary.src
+        :preexec=cd <%reltop%>; <%cat("cat")%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temporary.src
+        :preexec=cd <%reltop%>; <%mv("mv -f")%> temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
 <%endfor%>
 <%endif%>
-<%else%>
-<%custom_type->input_file%>
-	documentation
+
 <%endif%>
 <%endfor%>
 <%endfor%>

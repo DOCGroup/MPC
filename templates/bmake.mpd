@@ -189,7 +189,6 @@ all:<%if(postbuild)%> __postbuild__<%endif%>
 	@-rem
 
 <%endif%>
-<%marker(local)%>
 <%if(custom_types)%>
 GENERATED_DIRTY =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><%if(custom_type->input_file->output_files)%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%><%endfor%><%endfor%>
 <%foreach(custom_types)%>
@@ -326,4 +325,5 @@ __postbuild__:
 	@<%eval(postbuild)%>
 
 <%endif%>
+<%marker(local)%>
 <%marker(bottom)%>
