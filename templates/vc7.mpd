@@ -19,11 +19,16 @@
 <%if(type_is_static && staticname)%>
 			ConfigurationType="4"
 <%else%>
+<%if(custom_only)%>
+			ConfigurationType="10"
+<%else%>
 			ConfigurationType="<%configuration_type("2")%>"
+<%endif%>
 <%endif%>
 			UseOfMFC="<%use_mfc("0")%>"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="<%charset("0")%>">
+<%if(!custom_only)%>
 			<Tool
 				Name="VCCLCompilerTool"
 <%if(compile_flags)%>
@@ -67,8 +72,10 @@
 				SuppressStartupBanner="TRUE"
 				Detect64BitPortabilityProblems="<%Detect64BitPortabilityProblems("FALSE")%>"
 				DebugInformationFormat="<%debug_format("3")%>"/>
+<%endif%>
 			<Tool
 				Name="VCCustomBuildTool"/>
+<%if(!custom_only)%>
 			<Tool
 <%if(type_is_static)%>
 				Name="VCLibrarianTool"
@@ -128,6 +135,7 @@
 <%endif%>
 <%endif%>
 				TargetMachine="<%machine("1")%>"/>
+<%endif%>
 			<Tool
 				Name="VCPostBuildEventTool"
 <%if(postbuild)%>
@@ -136,6 +144,7 @@
 			/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
+<%if(!custom_only)%>
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
@@ -147,6 +156,7 @@
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
 				Name="VCWebDeploymentTool"/>
+<%endif%>
 		</Configuration>
 <%endfor%>
 	</Configurations>
