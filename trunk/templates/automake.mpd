@@ -86,7 +86,7 @@ CLEANFILES += \
 <%if(install_this_target)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += lib<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
 <%endif%>
 <%endif%>
-<%if(am_includes || defines || common_defines || need_staticflags || dynamicflags)%>
+<%if(am_includes || defines || common_defines || macros || need_staticflags || dynamicflags || compile_flags)%>
 
 <%if(exename)%>
 <%normalize(exename)%>_CPPFLAGS = \
