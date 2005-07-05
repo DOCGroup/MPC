@@ -24,7 +24,11 @@
 <%if(type_is_static && staticname)%>
 			ConfigurationType="4"
 <%else%>
+<%if(custom_only)%>
+			ConfigurationType="10"
+<%else%>
 			ConfigurationType="<%ConfigurationType%>"
+<%endif%>
 <%endif%>
 <%if(UseOfMFC)%>
 			UseOfMFC="<%UseOfMFC%>"
@@ -37,6 +41,7 @@
 			<Tool
 				Name="VCCustomBuildTool"
 			/>
+<%if(!custom_only)%>
 			<Tool
 				Name="VCXMLDataGeneratorTool"
 			/>
@@ -476,6 +481,7 @@
 			<Tool
 				Name="VCFxCopTool"
 			/>
+<%endif%>
 			<Tool
 				Name="VCPostBuildEventTool"
 <%if(postbuild)%>
