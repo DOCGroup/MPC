@@ -1,3 +1,11 @@
+Tue Jul  5 10:25:18 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/automake.mpd:
+
+          Added macros and compile_flags to outter if check to allow these
+          to be part of the CPPFLAGS (if none of the other variables in the
+          if are not defined).
+
 Tue Jul  5 07:23:07 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/vc7.mpd:
