@@ -129,6 +129,7 @@ my(%sourceComponents)  = ('source_files'   => 1,
                           'template_files' => 1,
                          );
 
+my($defgroup)    = 'default_group';
 my($grouped_key) = 'grouped_';
 
 ## Matches with generic_outputext
@@ -1052,8 +1053,7 @@ sub parse_components {
   my($fh)      = shift;
   my($tag)     = shift;
   my($name)    = shift;
-  my($defel)   = $self->get_default_element_name();
-  my($current) = $defel;
+  my($current) = $defgroup;
   my($status)  = 1;
   my($error)   = undef;
   my($names)   = {};
@@ -1150,7 +1150,7 @@ sub parse_components {
         }
       }
       if (defined $current && $set) {
-        $current = $defel;
+        $current = $defgroup;
         $set = undef;
       }
       else {
@@ -1160,7 +1160,7 @@ sub parse_components {
         my($groups) = $self->get_assignment($grtag);
         if (defined $groups) {
           my(@grarray) = @{$self->create_array($groups)};
-          if ($#grarray == 0 && $grarray[0] eq $defel) {
+          if ($#grarray == 0 && $grarray[0] eq $defgroup) {
             $self->process_assignment($grtag, undef);
           }
         }
@@ -1962,7 +1962,11 @@ sub add_generated_files {
   my($self)    = shift;
   my($gentype) = shift;
   my($tag)     = shift;
+  my($group)   = shift;
   my($arr)     = shift;
+
+  ## This method is called by list_default_generated.  It performs the
+  ## actual file insertion and grouping.
 
   my($wanted) = $self->{'valid_components'}->{$gentype}->[0];
   if (defined $wanted) {
@@ -2014,9 +2018,9 @@ sub add_generated_files {
     ## If we have files to add, make sure we add them to a group
     ## that has the same directory location as the files we're adding.
     if ($#oktoadd >= 0) {
-      my($key) = $dircomp{$self->mpc_dirname($oktoadd[0])};
+      my($key) = (defined $group ? $group :
+                          $dircomp{$self->mpc_dirname($oktoadd[0])});
       if (!defined $key) {
-        my($defel) = $self->get_default_element_name();
         my($check) = $oktoadd[0];
         foreach my $regext (@{$self->{'valid_components'}->{$tag}}) {
           if ($check =~ s/$regext$//) {
@@ -2027,7 +2031,7 @@ sub add_generated_files {
           if ($vc ne $tag) {
             foreach my $name (keys %{$self->{$vc}}) {
               foreach my $ckey (keys %{$self->{$vc}->{$name}}) {
-                if ($ckey ne $defel) {
+                if ($ckey ne $defgroup) {
                   foreach my $ofile (@{$self->{$vc}->{$name}->{$ckey}}) {
                     my($file) = $ofile;
                     foreach my $regext (@{$self->{'valid_components'}->{$vc}}) {
@@ -2048,11 +2052,16 @@ sub add_generated_files {
           }
         }
         if (!defined $key) {
-          $key = $defel;
+          $key = $defgroup;
         }
       }
       foreach my $name (keys %$names) {
         if (!defined $$names{$name}->{$key}) {
+          if ($key ne $defgroup &&
+              defined $$names{$name}->{$defgroup} &&
+              defined $$names{$name}->{$defgroup}->[0]) {
+            $self->process_assignment_add($grouped_key . $tag, $defgroup);
+          }
           $$names{$name}->{$key} = [];
           $self->process_assignment_add($grouped_key . $tag, $key);
         }
@@ -2427,23 +2436,33 @@ sub generate_default_components {
         }
         else {
           ## Generate default values for undefined tags
-          my($defcomp) = $self->get_default_element_name();
+          my($defcomp) = $self->get_default_component_name();
           $self->{$tag} = {};
           my($comps) = {};
-          $self->{$tag}->{$self->get_default_component_name()} = $comps;
-          $$comps{$defcomp} = [];
-          my($array) = $$comps{$defcomp};
+          $self->{$tag}->{$defcomp} = $comps;
+          $$comps{$defgroup} = [];
+          my($array) = $$comps{$defgroup};
 
           $self->{'defaulted'}->{$tag} = 1;
 
           if (!defined $specialComponents{$tag}) {
             $self->sift_files($files, $exts, $pchh, $pchc, $tag, $array);
             if (defined $sourceComponents{$tag}) {
+              my($grtag) = $grouped_key . $tag;
               foreach my $gentype (keys %{$self->{'generated_exts'}}) {
                 ## If we are auto-generating the source_files, then
                 ## we need to make sure that any generated source
                 ## files that are added are put at the front of the list.
-                my(@input) = $self->get_component_list($gentype, 1);
+                my($newgroup) = undef;
+                my(@input) = ();
+                foreach my $name (keys %{$self->{$gentype}}) {
+                  foreach my $key (keys %{$self->{$gentype}->{$name}}) {
+                    push(@input, @{$self->{$gentype}->{$name}->{$key}});
+                    if ($key ne $defgroup) {
+                      $newgroup = $key;
+                    }
+                  }
+                }
 
                 if ($#input != -1) {
                   my(@front) = ();
@@ -2500,9 +2519,21 @@ sub generate_default_components {
                     ## No need to check for previously added files
                     ## here since there are none.
                     push(@$array, @copy);
+                    if (defined $self->get_assignment($grtag)) {
+                      $self->process_assignment_add($grtag, $defgroup);
+                    }
                   }
                   if (defined $front[0]) {
-                    unshift(@$array, @front);
+                    if (defined $newgroup) {
+                      if ($#copy != -1) {
+                        $self->process_assignment_add($grtag, $defgroup);
+                      }
+                      $self->{$tag}->{$defcomp}->{$newgroup} = \@front;
+                      $self->process_assignment_add($grtag, $newgroup);
+                    }
+                    else {
+                      unshift(@$array, @front);
+                    }
                   }
                 }
               }
@@ -2585,17 +2616,27 @@ sub list_default_generated {
   my($gentype) = shift;
   my($tags)    = shift;
 
+  ## This method is called when the user has custom input files and has
+  ## provided source files.  If the user defaults the component (i.e.
+  ## source_files, resource_files, etc.) they are filled in by the
+  ## generate_default_components method.
+
   if ($self->{'generated_exts'}->{$gentype}->{'automatic'}) {
     ## After all source and headers have been defaulted, see if we
     ## need to add the generated files
     if (defined $self->{$gentype}) {
       ## Build up the list of files
-      my(@arr)    = ();
-      my($names)  = $self->{$gentype};
+      my(@arr)   = ();
+      my($names) = $self->{$gentype};
+      my($group) = undef;
       foreach my $name (keys %$names) {
-        my($comps) = $$names{$name};
-        foreach my $key (keys %$comps) {
-          my($array) = $$comps{$key};
+        foreach my $key (keys %{$$names{$name}}) {
+          my($array) = $$names{$name}->{$key};
+
+          if ($key ne $defgroup) {
+            $group = $key;
+          }
+
           foreach my $val (@$array) {
             my($f) = $val;
             foreach my $wanted (@{$self->{'valid_components'}->{$gentype}}) {
@@ -2625,7 +2666,7 @@ sub list_default_generated {
           if (!$self->generated_source_listed(
                                 $gentype, $type, \@arr,
                                 $self->{'valid_components'}->{$gentype})) {
-            $self->add_generated_files($gentype, $type, \@arr);
+            $self->add_generated_files($gentype, $type, $group, \@arr);
           }
         }
       }
@@ -2726,7 +2767,6 @@ sub add_corresponding_component_files {
   my($tag)    = shift;
   my($names)  = undef;
   my($grname) = $grouped_key . $tag;
-  my($defel)  = $self->get_default_element_name();
 
   ## Collect up all of the files that have already been listed
   ## with the extension removed.
@@ -2751,8 +2791,8 @@ sub add_corresponding_component_files {
   $names = $self->{$tag};
   foreach my $name (keys %$names) {
     ## Check to see if files exist in the default group
-    if (defined $$names{$name}->{$defel} &&
-        defined $$names{$name}->{$defel}->[0]) {
+    if (defined $$names{$name}->{$defgroup} &&
+        defined $$names{$name}->{$defgroup}->[0]) {
       $fexist = 1;
     }
     foreach my $comp (keys %{$$names{$name}}) {
@@ -2820,7 +2860,7 @@ sub add_corresponding_component_files {
         }
 
         if (!$compexists) {
-          if ($comp eq $defel) {
+          if ($comp eq $defgroup) {
             $adddefaultgroup = 1;
           }
           else {
@@ -2843,7 +2883,7 @@ sub add_corresponding_component_files {
   ## by some other name.  Otherwise, defaulted files would always be
   ## in a group, which is not what we want.
   if ($adddefaultgroup && $oktoadddefault) {
-    $self->process_assignment_add($grname, $defel);
+    $self->process_assignment_add($grname, $defgroup);
   }
 }
 
@@ -2895,6 +2935,7 @@ sub remove_excluded {
   }
 }
 
+
 sub generate_defaults {
   my($self) = shift;
 
@@ -2923,9 +2964,12 @@ sub generate_defaults {
   ## once, we need to remove the extras
   $self->remove_extra_pch_listings();
 
-  ## Generate the default generated list of files
-  ## only if we defaulted the generated file list
-  my(@vc) = keys %{$self->{'valid_components'}};
+  ## Generate the default generated list of files only if we defaulted
+  ## the generated file list.  I want to ensure that source_files comes
+  ## first in the list to pick up group information (since source_files
+  ## are most likely going to be grouped than anything else).
+  my(@vc) = reverse sort { return 1 if $a eq 'source_files';
+                           return $a cmp $b; } keys %{$self->{'valid_components'}};
   foreach my $gentype (keys %{$self->{'generated_exts'}}) {
     $self->list_default_generated($gentype, \@vc);
   }
@@ -4163,12 +4207,6 @@ sub generate_recursive_input_list {
   return $self->extension_recursive_input_list($dir,
                                                $exclude,
                                                $ProjectCreatorExtension);
-}
-
-
-sub get_default_element_name {
-  #my($self) = shift;
-  return 'default_group';
 }
 
 
