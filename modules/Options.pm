@@ -222,6 +222,8 @@ sub options {
   ## Process the command line arguments
   for(my $i = 0; $i <= $#args; $i++) {
     my($arg) = $args[$i];
+    $arg =~ s/^--/-/;
+
     if ($arg eq '-apply_project') {
       $applypj = 1;
     }
