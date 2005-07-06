@@ -34,7 +34,7 @@ UC_MAIN      = w
 
 !ifdef CODEGUARD
 CG_CFLAGS = -vG
-CG_LIB    = gc32.lib
+CG_LIB    = cg32.lib
 !endif
 
 <%foreach(compilers)%>
