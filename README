@@ -23,7 +23,7 @@ tool specific information for dynamic and static library and binary
 executable projects.
 
 Together, the generic input files and the template input files are applied
-toward a platform and build specific template (mpt file) to create the final
+toward a platform and build specific template (mpd file) to create the final
 product (a build tool specific input file).  These templates contain
 "variables" that are filled in by the project creator with information
 gathered through the mpc and mpd files and possibly by default values set
@@ -275,8 +275,8 @@ project {
   Define_Custom(MOC) {
     automatic        = 0
     command          = $(QTDIR)/bin/moc
-    postcommand      = echo "#include <some.h>" > <%temporary%> && \
-                       <%cat%> <%output%> >> <%temporary%> && \
+    postcommand      = echo <%quote%>#include <%lt%>some.h<%gt%><%quote%> <%gt%> <%temporary%> <%and%> \
+                       <%cat%> <%output%> <%gt%><%gt%> <%temporary%> <%and%> \
                        <%mv%> <%temporary%> <%output%>
     output_option    = -o
     inputext         = .h
@@ -311,7 +311,7 @@ automatic           If set to 1, then attempt to automatically determine
                     Template_Files, Resource_Files and Documentation_Files
                     depending on which extension types the command generates.
 dependent           If this is given a value, then a dependency upon that
-                    value will be placed upon all of the generated files.
+                    value will be given to all of the generated files.
                     The default for this is unset and no dependency will be
                     generated.
 command             The name of the command that should be used to process
