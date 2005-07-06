@@ -70,15 +70,6 @@ CLEANFILES += \
 <%endif%>
 <%marker(local)%>
 <%if(exename || sharedname || staticname)%>
-<%if(grouped_source_files)%>
-<%foreach(grouped_source_files)%>
-<%grouped_source_file%> = \
-<%foreach(grouped_source_file->files)%>
-  <%grouped_source_file->file%><%fornotlast(" \\")%>
-<%endfor%>
-
-<%endfor%>
-<%endif%>
 <%if(source_files)%>
 <%if(exename)%>
 <%if(install_this_target)%>bin<%else%>noinst<%endif%>_PROGRAMS += <%exename%>
@@ -125,15 +116,9 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%else%>
 lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_SOURCES = \
 <%endif%>
-<%if(grouped_source_files)%>
-<%foreach(grouped_source_files)%>
-  $(<%grouped_source_file%>)<%if(exename)%><%if(header_files || inline_files)%> \<%else%><%fornotlast(" \\")%><%endif%><%else%><%fornotlast(" \\")%><%endif%>
-<%endfor%>
-<%else%>
 <%foreach(source_files)%>
   <%source_file%><%if(exename)%><%if(header_files || inline_files)%> \<%else%><%fornotlast(" \\")%><%endif%><%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
-<%endif%>
 <%if(exename)%>
 <%if(header_files || inline_files)%>
 <%foreach(header_files inline_files)%>
