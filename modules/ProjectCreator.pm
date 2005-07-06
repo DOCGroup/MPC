@@ -1190,8 +1190,18 @@ sub parse_components {
   ## listed and we attempted to exclude files, then we need to find the
   ## set of files that don't match the excluded files and add them.
   if ($status && $#exclude != -1 && defined $grname) {
-    my($alldir) = $self->get_assignment('recurse') || $flags{'recurse'};
-    my(@files)  = $self->generate_default_file_list('.', \@exclude, $alldir);
+    my($alldir)  = $self->get_assignment('recurse') || $flags{'recurse'};
+    my(%checked) = ();
+    my(@files)   = ();
+    foreach my $exc (@exclude) {
+      my($dname) = dirname($exc);
+      if (!defined $checked{$dname}) {
+        $checked{$dname} = 1;
+        push(@files, $self->generate_default_file_list($dname,
+                                                       \@exclude, $alldir));
+      }
+    }
+
     $self->sift_files(\@files,
                       $self->{'valid_components'}->{$tag},
                       $self->get_assignment('pch_header'),
