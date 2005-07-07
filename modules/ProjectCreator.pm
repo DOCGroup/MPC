@@ -4327,7 +4327,7 @@ sub project_file_name {
   }
 
   return $self->get_modified_project_file_name(
-                                     $name,
+                                     $self->project_file_prefix() . $name,
                                      $self->project_file_extension());
 }
 
@@ -4420,6 +4420,12 @@ sub fill_value {
   #my($self) = shift;
   #my($name) = shift;
   return undef;
+}
+
+
+sub project_file_prefix {
+  #my($self) = shift;
+  return '';
 }
 
 
