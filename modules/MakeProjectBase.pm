@@ -33,17 +33,9 @@ sub sort_files {
 }
 
 
-sub project_file_name {
-  my($self) = shift;
-  my($name) = shift;
-
-  if (!defined $name) {
-    $name = $self->project_name();
-  }
-
-  return $self->get_modified_project_file_name(
-                                     "Makefile.$name",
-                                     $self->project_file_extension());
+sub project_file_prefix {
+  #my($self) = shift;
+  return 'Makefile.';
 }
 
 1;
