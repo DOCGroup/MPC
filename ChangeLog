@@ -1,3 +1,16 @@
+Thu Jul  7 14:05:44 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/MakeProjectBase.pm:
+        * modules/ProjectCreator.pm:
+
+          Factor code out of MakeProjectBase into ProjectCreator which will
+          allow for less code in future Make based modules.
+
+        * templates/make.mpd:
+
+          Modified to generate Makefiles that do not have lines that end in
+          spaces.
+
 Wed Jul  6 13:00:22 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Options.pm:
