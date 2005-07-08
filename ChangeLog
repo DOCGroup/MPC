@@ -1,3 +1,10 @@
+Fri Jul  8 11:47:37 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Modified code using a hash reference within a hash reference to
+          work correctly with Perl 5.6.1.
+
 Thu Jul  7 14:05:44 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/MakeProjectBase.pm:
