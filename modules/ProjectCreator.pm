@@ -2465,9 +2465,14 @@ sub generate_default_components {
                 ## files that are added are put at the front of the list.
                 my($newgroup) = undef;
                 my(@input) = ();
-                foreach my $name (keys %{$self->{$gentype}}) {
-                  foreach my $key (keys %{$self->{$gentype}->{$name}}) {
-                    push(@input, @{$self->{$gentype}->{$name}->{$key}});
+
+                ## If I call keys %{$self->{$gentype}} using perl 5.6.1
+                ## it returns nothing.  I have to put it in an
+                ## intermediate variable to ensure that I get the keys.
+                my($names) = $self->{$gentype};
+                foreach my $name (keys %$names) {
+                  foreach my $key (keys %{$$names{$name}}) {
+                    push(@input, @{$$names{$name}->{$key}});
                     if ($key ne $defgroup) {
                       $newgroup = $key;
                     }
