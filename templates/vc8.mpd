@@ -33,7 +33,7 @@
 <%if(UseOfMFC)%>
 			UseOfMFC="<%UseOfMFC%>"
 <%endif%>
-			CharacterSet="<%charset("1")%>"
+			CharacterSet="<%charset("0")%>"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
