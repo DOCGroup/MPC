@@ -382,7 +382,7 @@ sub parse_exclude {
 
     ## Process negated exclusions
     foreach my $key (keys %types) {
-      if ($key =~ /^!(\w+)/) {
+      if ($key =~ /^!\s*(\w+)/) {
         ## Remove the negated key
         delete $types{$key};
 
