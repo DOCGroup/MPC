@@ -895,8 +895,8 @@ sub process_component_line {
   else {
     ## If we successfully remove a '!' from the front, then
     ## the file(s) listed are to be excluded
-    my($rem) = ($line =~ s/^\^//);
-    my($exc) = $rem || ($line =~ s/^!//);
+    my($rem) = ($line =~ s/^\^\s*//);
+    my($exc) = $rem || ($line =~ s/^!\s*//);
 
     ## Convert any $(...) in this line before we process any
     ## wild card characters.  If we do not, scoped assignments will
@@ -2157,20 +2157,23 @@ sub generate_default_target_names {
 
   if (!$self->exe_target()) {
     my($sharedname) = $self->get_assignment('sharedname');
-    if (defined $sharedname &&
-        !defined $self->get_assignment('staticname')) {
-      $self->process_assignment('staticname', $sharedname);
-    }
     my($staticname) = $self->get_assignment('staticname');
-    if (defined $staticname) {
-      if (!defined $sharedname) {
-        $sharedname = $staticname;
-        $self->process_assignment('sharedname', $sharedname);
-      }
-      elsif ($sharedname eq '') {
+    my($shared_empty) = undef;
+
+    if (defined $sharedname) {
+      if ($sharedname eq '') {
+        $shared_empty = 1;
         $sharedname = undef;
         $self->process_assignment('sharedname', $sharedname);
       }
+      elsif (!defined $staticname) {
+        $staticname = $sharedname;
+        $self->process_assignment('staticname', $staticname);
+      }
+    }
+    if (defined $staticname && !$shared_empty && !defined $sharedname) {
+      $sharedname = $staticname;
+      $self->process_assignment('sharedname', $sharedname);
     }
 
     ## If it's neither an exe or library target, we will search
@@ -2192,14 +2195,16 @@ sub generate_default_target_names {
       }
 
       ## If we still don't have a project type, then we will
-      ## default to a library if there are source files
-      if (!$self->exe_target()) {
+      ## default to a library if there are source or resource files
+      if (!defined $exename) {
         if ($#sources < 0) {
           @sources = $self->get_component_list('resource_files', 1);
         }
         if ($#sources >= 0) {
-          $self->process_assignment('sharedname',
-                                    $self->{'unmodified_project_name'});
+          if (!$shared_empty) {
+            $self->process_assignment('sharedname',
+                                      $self->{'unmodified_project_name'});
+          }
           $self->process_assignment('staticname',
                                     $self->{'unmodified_project_name'});
         }
