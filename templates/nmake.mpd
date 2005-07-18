@@ -55,12 +55,14 @@ GENERATED_DIRTY =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><
 <%if(exename)%>
 OUTDIR=<%output_dir(".")%>
 INSTALLDIR=<%if(install)%><%install%><%else%><%output_dir%><%endif%>
-<%endif%>
+<%else%>
 <%if(type_is_static)%>
-OUTDIR=<%output_dir(".")%>
-<%endif%>
+OUTDIR=<%libout%>
+<%else%>
 <%if(type_is_dynamic)%>
 OUTDIR=<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
+<%endif%>
+<%endif%>
 <%endif%>
 INTDIR=<%intermediate_dir%>\<%project_name%>\<%machine%>
 
