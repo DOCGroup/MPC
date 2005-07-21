@@ -1,0 +1,6 @@
+// -*- MPC -*-
+// $Id$
+
+project: boost_base {
+  lit_libs += boost_filesystem$(BOOST_CFG)
+}
