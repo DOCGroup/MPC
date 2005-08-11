@@ -34,6 +34,7 @@ use File::Basename;
 
 my($exclude)    = undef;
 my($verbose)    = 0;
+my($lbuildf)    = 0;
 my(@foundFiles) = ();
 my($version)    = '$Id$';
 $version =~ s/.*\s+(\d+[\.\d]+)\s+.*/$1/;
@@ -72,38 +73,40 @@ sub findCallback {
                   ! /^.*~\z/s       &&
                   ! /^\.\z/s        &&
                   ! /^\.#.*\z/s     &&
+                  ! /^.*\.ncb\z/s   &&
+                  ! /^.*\.opt\z/s   &&
+                  ! /^.*\.bak\z/s   &&
+                  ! /^.*\.ilk\z/s   &&
+                  ! /^.*\.pdb\z/s   &&
                   ! /^.*\.log\z/s
                  );
 
     if ($matches) {
-      $matches = (! /^.*\.dsp\z/s       &&
-                  ! /^.*\.dsw\z/s       &&
-                  ! /^.*\.vcproj\z/s    &&
-                  ! /^.*\.sln\z/s       &&
-                  ! /^Makefile.*\z/s    &&
-                  ! /^GNUmakefile.*\z/s &&
-                  ! /^.*\.am\z/s        &&
-                  ! /^\.depend\..*\z/s  &&
-                  ! /^.*\.vcn\z/s       &&
-                  ! /^.*\.vcp\z/s       &&
-                  ! /^.*\.vcw\z/s       &&
-                  ! /^.*\.vpj\z/s       &&
-                  ! /^.*\.vpw\z/s       &&
-                  ! /^.*\.cbx\z/s       &&
-                  ! /^.*\.bpgr\z/s      &&
-                  ! /^.*\.bmak\z/s      &&
-                  ! /^.*\.bmake\z/s     &&
-                  ! /^.*\.mak\z/s       &&
-                  ! /^.*\.nmake\z/s     &&
-                  ! /^.*\.bld\z/s       &&
-                  ! /^.*\.icc\z/s       &&
-                  ! /^.*\.icp\z/s       &&
-                  ! /^.*\.ncb\z/s       &&
-                  ! /^.*\.opt\z/s       &&
-                  ! /^.*\.bak\z/s       &&
-                  ! /^.*\.ilk\z/s       &&
-                  ! /^.*\.pdb\z/s
-                );
+      if (!$lbuildf) {
+        $matches = (! /^.*\.dsp\z/s       &&
+                    ! /^.*\.dsw\z/s       &&
+                    ! /^.*\.vcproj\z/s    &&
+                    ! /^.*\.sln\z/s       &&
+                    ! /^Makefile.*\z/s    &&
+                    ! /^GNUmakefile.*\z/s &&
+                    ! /^.*\.am\z/s        &&
+                    ! /^\.depend\..*\z/s  &&
+                    ! /^.*\.vcn\z/s       &&
+                    ! /^.*\.vcp\z/s       &&
+                    ! /^.*\.vcw\z/s       &&
+                    ! /^.*\.vpj\z/s       &&
+                    ! /^.*\.vpw\z/s       &&
+                    ! /^.*\.cbx\z/s       &&
+                    ! /^.*\.bpgr\z/s      &&
+                    ! /^.*\.bmak\z/s      &&
+                    ! /^.*\.bmake\z/s     &&
+                    ! /^.*\.mak\z/s       &&
+                    ! /^.*\.nmake\z/s     &&
+                    ! /^.*\.bld\z/s       &&
+                    ! /^.*\.icc\z/s       &&
+                    ! /^.*\.icp\z/s
+                  );
+      }
 
       if ($matches) {
         ## Remove the beginning dot slash as we save the file
@@ -411,7 +414,7 @@ sub usageAndExit {
                "Create a tree identical in layout to the current directory\n",
                "with the use of ", ($hasSymlink ? "symbolic links or " : ''),
                "hard links.\n\n",
-               "Usage: $base [-b <builddir>] [-d <dmode>] ",
+               "Usage: $base [-b <builddir>] [-d <dmode>] [-f] ",
                ($hasSymlink ? "[-a] [-l] " : ''),
                "[-v]\n",
                $spc, "[build names...]\n\n",
@@ -421,6 +424,7 @@ sub usageAndExit {
                "-b  Set the build directory. It defaults to the ",
                "<current directory>/build.\n",
                "-d  Set the directory permissions mode.\n",
+               "-f  Link build files (Makefile, .dsw, .sln, .etc).\n",
                "-v  Enable verbose mode.\n";
 
   exit(0);
@@ -468,6 +472,9 @@ for(my $i = 0; $i <= $#ARGV; ++$i) {
     else {
       usageAndExit('-d requires an argument');
     }
+  }
+  elsif ($ARGV[$i] eq '-f') {
+    $lbuildf = 1;
   }
   elsif ($ARGV[$i] eq '-l') {
     $hardlink = 1;

@@ -115,14 +115,13 @@ sub printUsage {
 "                       are still process, but no top level file is created.\n" .
 "       -recurse        Recurse from the current directory and generate from\n" .
 "                       all found input files.\n" .
-"       -relative       Any \$() variable in an mpc that is matched to NAME\n" .
+"       -relative       Any \$() variable in an mpc file that is matched to NAME\n" .
 "                       is replaced by VAR only if VAR can be made into a\n" .
 "                       relative path based on the current working directory.\n" .
 "       -static         Specifies that only static projects will be generated.\n" .
-"                       By default, only dynamic projects will be generated.\n" .
+"                       By default, only dynamic projects are generated.\n" .
 "       -ti             Specifies the template input file (with no extension)\n" .
-"                       for the specific type as shown above\n" .
-"                       (ex. -ti dll_exe:vc8exe)\n" .
+"                       for the specific type (ex. -ti dll_exe:vc8exe).\n" .
 "       -template       Specifies the template name (with no extension).\n" .
 "       -type           Specifies the type of project file to generate.  This\n" .
 "                       option can be used multiple times to generate multiple\n" .
