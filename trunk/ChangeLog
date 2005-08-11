@@ -1,3 +1,51 @@
+Thu Aug 11 06:42:33 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+
+          Updated the Defaulting Behavior section.
+
+        * USAGE:
+        * modules/Options.pm:
+
+          Fixed poorly worded portions of the usage.
+
+        * clone_build_tree.pl:
+
+          Added an option to link build related files (Makefile, .dsw,
+          .etc).
+
+        * combine_dsw.pl:
+
+          Fixed a spelling error.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Added calls for modifying the library path with the
+          WorkspaceHelper.
+
+        * modules/Creator.pm:
+
+          Fixed a bug where using * in the 'after' setting wouldn't always
+          be expanded.
+
+        * modules/Driver.pm:
+
+          The minimum version of perl needs to be 5.6 since
+          File::Spec::canonpath is used in Options.pm.
+
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Only call fill_type_name if the name has a * in it.
+
+        * modules/WorkspaceHelper.pm:
+
+          Added the hooks for modifying the library path.
+
+        * templates/automake.mpd:
+
+          Cosmetic change for spacing.
+
 Mon Jul 18 10:26:15 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

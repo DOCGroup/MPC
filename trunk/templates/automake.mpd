@@ -144,14 +144,14 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%if(libs || pure_libs || lit_libs)%>
 
 <%normalize(exename)%>_LDADD = \
-  <%foreach(libs)%> lib<%lib%>.la<%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>
+ <%foreach(libs)%> lib<%lib%>.la<%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>
 <%endif%>
 <%else%>
 <%if(install_this_target)%>
 <%if(libs || pure_libs || lit_libs)%>
 
 lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LIBADD = \
-  <%foreach(libs)%> lib<%lib%>.la<%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>
+ <%foreach(libs)%> lib<%lib%>.la<%endfor%><%foreach(lit_libs)%> -l<%lit_lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>
 <%endif%>
 <%endif%>
 <%endif%>

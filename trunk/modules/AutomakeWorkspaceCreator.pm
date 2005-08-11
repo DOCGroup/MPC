@@ -365,12 +365,18 @@ sub write_comps {
             my @libs = /\s+(lib(\w+).la)/gm;
             my $libcount = @libs / 2;
             for(my $i = 0; $i < $libcount; ++$i) {
-              my $libfile = (@libs)[$i*2];
-              my $libname = (@libs)[$i*2+1];
+              my $libfile = $libs[$i * 2];
+              my $libname = $libs[$i * 2 + 1];
               my $reldir  = $$liblocs{$libname};
               if ($reldir) {
                 if ("$start/$reldir" ne $here) {
-                  s/$libfile/\$(top_builddir)\/$reldir\/$libfile/;
+                  my($mod) = $wsHelper->modify_libpath($_, $reldir, $libfile);
+                  if (defined $mod) {
+                    $_ = $mod;
+                  }
+                  else {
+                    s/$libfile/\$(top_builddir)\/$reldir\/$libfile/;
+                  }
                 }
               }
               else {
@@ -406,6 +412,7 @@ sub write_comps {
     print $fh $crlf,
               'ACLOCAL = @ACLOCAL@', $crlf,
               'ACLOCAL_AMFLAGS = -I m4', $crlf,
+              'AUTOMAKE_OPTIONS = foreign', $crlf,
               $crlf;
   }
 
