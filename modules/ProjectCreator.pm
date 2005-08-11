@@ -2401,6 +2401,24 @@ sub sift_files {
 }
 
 
+sub sift_default_file_list {
+  my($self)    = shift;
+  my($tag)     = shift;
+  my($file)    = shift;
+  my($built)   = shift;
+  my($exts)    = shift;
+  my($recurse) = shift;
+  my($pchh)    = shift;
+  my($pchc)    = shift;
+  my($alldir)  = $recurse ||
+                 $self->{'flag_overrides'}->{$tag}->{$file}->{'recurse'};
+  my(@gen)     = $self->generate_default_file_list($file, [], $alldir);
+
+  $self->sift_files(\@gen, $exts, $pchh, $pchc, $tag, $built, $alldir);
+
+}
+
+
 sub generate_default_components {
   my($self)    = shift;
   my($files)   = shift;
@@ -2433,12 +2451,8 @@ sub generate_default_components {
                 my(@built) = ();
                 foreach my $file (@$array) {
                   if (-d $file) {
-                    my($alldir) = $recurse ||
-                        $self->{'flag_overrides'}->{$tag}->{$file}->{'recurse'};
-                    my(@gen) = $self->generate_default_file_list(
-                                        $file, [], $alldir);
-                    $self->sift_files(\@gen, $exts, $pchh,
-                                      $pchc, $tag, \@built, $alldir);
+                    $self->sift_default_file_list($tag, $file, \@built,
+                                                  $exts, $recurse, $pchh, $pchc);
                   }
                   else {
                     if (!$self->already_added(\@built, $file)) {
@@ -3382,7 +3396,31 @@ sub get_custom_value {
   my($value)  = undef;
 
   if ($cmd eq 'input_files') {
+    ## Get the component list for the component type
     my(@array) = $self->get_component_list($based);
+
+    ## Check for directories in the component list.  If the component
+    ## type is not automatic, we may have directories here and will need
+    ## to get the file list for that type.
+    my($once) = undef;
+    for(my $i = 0; $i <= $#array; ++$i) {
+      if (-d $array[$i]) {
+        if (!defined $once) {
+          $once = {'recurse' => $self->get_assignment('recurse'),
+                   'pchh'    => $self->get_assignment('pch_header'),
+                   'pchc'    => $self->get_assignment('pch_source'),
+                  };
+        }
+        my(@built) = ();
+        $self->sift_default_file_list($based, $array[$i], \@built,
+                                      $self->{'valid_components'}->{$based},
+                                      $$once{'recurse'},
+                                      $$once{'pchh'}, $$once{'pchc'});
+        splice(@array, $i, 1, @built);
+        $i += $#built;
+      }
+    }
+
     $value = \@array;
 
     $self->{'custom_output_files'} = {};
