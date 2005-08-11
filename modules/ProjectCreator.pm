@@ -649,9 +649,11 @@ sub parse_line {
                 $name = $self->transform_file_name($name);
 
                 ## Replace any *'s with the default name
-                $name = $self->fill_type_name(
+                if ($name =~ /\*/) {
+                  $name = $self->fill_type_name(
                                     $name,
                                     $self->get_default_project_name());
+                }
 
                 $self->set_project_name($name);
               }

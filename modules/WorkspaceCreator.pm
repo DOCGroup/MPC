@@ -215,8 +215,11 @@ sub parse_line {
             $name =~ s/\s*\)$//;
 
             ## Replace any *'s with the default name
-            my($def) = $self->get_default_workspace_name();
-            $name = $self->fill_type_name($name, $def);
+            if ($name =~ /\*/) {
+              $name = $self->fill_type_name(
+                                    $name,
+                                    $self->get_default_workspace_name());
+            }
 
             $self->{'workspace_name'} = $name;
           }

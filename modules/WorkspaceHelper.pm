@@ -67,7 +67,19 @@ sub modify_value {
 }
 
 
+sub modify_libpath {
+  #my($self)    = shift;
+  #my($str)     = shift;
+  #my($reldir)  = shift;
+  #my($libname) = shift;
+  return undef;
+}
+
+
 sub write_settings {
+  #my($self)   = shift;
+  #my($fh)     = shift;
+  #my(@locals) = @_;
   return 1, undef;
 }
 

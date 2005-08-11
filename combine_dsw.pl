@@ -38,7 +38,7 @@ sub usageAndExit {
                " [-u] <output file> <input files...>\n\n",
                "-u  Each input file will be removed after successful ",
                "combination\n\n",
-               "Combined multiple dsw's into a single dsw.  You can use ",
+               "Combine multiple dsw's into a single dsw.  You can use ",
                "MPC to generate\n",
                "dynamic projects and then generate static projects using ",
                "the -static,\n",
@@ -59,7 +59,7 @@ my(@input)  = ();
 for(my $i = 0; $i <= $#ARGV; $i++) {
   my($arg) = $ARGV[$i];
   if ($arg =~ /^-/) {
-    if ($arg eq "-u") {
+    if ($arg eq '-u') {
       $unlink = 1;
     }
     else {

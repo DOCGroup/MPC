@@ -664,44 +664,51 @@ sub process_assignment_sub {
 
 
 sub fill_type_name {
-  my($self) = shift;
-  my($name) = shift;
-  my($def)  = shift;
+  my($self)  = shift;
+  my($names) = shift;
+  my($def)   = shift;
+  my($array) = ($names =~ /\s/ ? $self->create_array($names) : [$names]);
 
-  if ($name =~ /\*/) {
-    my($pre)  = $def . '_';
-    my($mid)  = '_' . $def . '_';
-    my($post) = '_' . $def;
+  $names = '';
+  foreach my $name (@$array) {
+    if ($name =~ /\*/) {
+      my($pre)  = $def . '_';
+      my($mid)  = '_' . $def . '_';
+      my($post) = '_' . $def;
 
-    ## Replace the beginning and end first then the middle
-    $name =~ s/^\*/$pre/;
-    $name =~ s/\*$/$post/;
-    $name =~ s/\*/$mid/g;
+      ## Replace the beginning and end first then the middle
+      $name =~ s/^\*/$pre/;
+      $name =~ s/\*$/$post/;
+      $name =~ s/\*/$mid/g;
 
-    ## Remove any trailing underscore or any underscore that is followed
-    ## by a space.  This value could be a space separated list.
-    $name =~ s/_$//;
-    $name =~ s/_\s/ /g;
-    $name =~ s/\s_/ /g;
+      ## Remove any trailing underscore or any underscore that is followed
+      ## by a space.  This value could be a space separated list.
+      $name =~ s/_$//;
+      $name =~ s/_\s/ /g;
+      $name =~ s/\s_/ /g;
 
-    ## If any one word is capitalized then capitalize each word
-    if ($name =~ /[A-Z][0-9a-z_]+/) {
-      ## Do the first word
-      if ($name =~ /^([a-z])([^_]+)/) {
-        my($first) = uc($1);
-        my($rest)  = $2;
-        $name =~ s/^[a-z][^_]+/$first$rest/;
-      }
-      ## Do subsequent words
-      while($name =~ /(_[a-z])([^_]+)/) {
-        my($first) = uc($1);
-        my($rest)  = $2;
-        $name =~ s/_[a-z][^_]+/$first$rest/;
+      ## If any one word is capitalized then capitalize each word
+      if ($name =~ /[A-Z][0-9a-z_]+/) {
+        ## Do the first word
+        if ($name =~ /^([a-z])([^_]+)/) {
+          my($first) = uc($1);
+          my($rest)  = $2;
+          $name =~ s/^[a-z][^_]+/$first$rest/;
+        }
+        ## Do subsequent words
+        while($name =~ /(_[a-z])([^_]+)/) {
+          my($first) = uc($1);
+          my($rest)  = $2;
+          $name =~ s/_[a-z][^_]+/$first$rest/;
+        }
       }
     }
-  }
 
-  return $name;
+    $names .= $name . ' ';
+  }
+  $names =~ s/\s+$//;
+
+  return $names;
 }
 
 
