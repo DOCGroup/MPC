@@ -28,6 +28,7 @@ pchsupport       = 1
 targetoutdir     =
 slash            = /
 libopt           = -l
+build64bit       = 1
 
 // ***********************************************************************
 // Configuration Section
@@ -64,107 +65,71 @@ gcc {
 }
 
 SunCC {
-  cxx          = CC
-  pic          = -KPIC
-  shflags      = -G
-  compileflags = -xarch=v9
-  linkflags    = -library=Cstd -library=Crun
-  clean        = SunWS_cache ir.out
-  platforms    = solaris
-}
-
-SunCC32 {
-  cxx       = CC
-  pic       = -KPIC
-  shflags      = -G
-  linkflags = -library=Cstd -library=Crun
-  clean     = SunWS_cache ir.out
-  platforms = solaris
+  cxx             = CC
+  pic             = -KPIC
+  shflags         = -G
+  compilerflags64 = -xarch=v9
+  linkflags       = -library=Cstd -library=Crun
+  clean           = SunWS_cache ir.out
+  platforms       = solaris
 }
 
 aCC {
-  cxx           = aCC
-  pic           = +Z
-  shflags       = -b
-  platforms     = hpux
-  compilerflags = -AA -D_RWSTD_MULTI_THREAD +W336 +DA2.0W +DS2.0W
-  linkflags     = -Wl,+s -Wl,-x -Wl,+h$(@F) -Wl,+b/usr/lib/pa20_64 -ldl
-  pchcreate     = "+hdr_create "
-  pchuse        = "+hdr_use "
-}
-
-aCC32 {
-  cxx           = aCC
-  pic           = +Z
-  shflags       = -b
-  platforms     = hpux
-  compilerflags = -AA -D_RWSTD_MULTI_THREAD +W336
-  linkflags     = -Wl,+s
-  pchcreate     = "+hdr_create "
-  pchuse        = "+hdr_use "
+  cxx             = aCC
+  pic             = +Z
+  shflags         = -b
+  platforms       = hpux
+  compilerflags   = -AA -D_RWSTD_MULTI_THREAD +W336
+  compilerflags64 = +DA2.0W +DS2.0W
+  linkflags       = -Wl,+s
+  linkflags64     = -Wl,-x -Wl,+h$(@F) -ldl
+  pchcreate       = "+hdr_create "
+  pchuse          = "+hdr_use "
 }
 
 xlC_r {
-  cxx           = xlC_r
-  arflags      += -X64 -rv
-  compilerflags = -q64
-  platforms     = aix
-  pchcreate     = -qgenpcomp=
-  pchuse        = -qusepcomp=
-}
-
-xlC_r32 {
-  cxx       = xlC_r
-  platforms = aix
-  pchcreate = -qgenpcomp=
-  pchuse    = -qusepcomp=
+  cxx             = xlC_r
+  arflags64      += -X64 -rv
+  compilerflags64 = -q64
+  platforms       = aix
+  pchcreate       = -qgenpcomp=
+  pchuse          = -qusepcomp=
 }
 
 SGICC {
-  cxx          = CC
-  pic          = -KPIC
-  shflags      = -shared
-  compileflags = -64
-  linkflags    = -Wl,-woff,84
-  clean        = ii_files
-  platforms    = irix
-  pchcreate    = -LANG:create_pch=
-  pchuse       = -diag_suppress 3056 -LANG:use_pch=
-}
-
-SGICC32 {
-  cxx       = CC
-  pic       = -KPIC
-  shflags   = -shared
-  linkflags = -Wl,-woff,84 -ldl
-  clean     = ii_files
-  platforms = irix
-  pchcreate = -LANG:create_pch=
-  pchuse    = -diag_suppress 3056 -LANG:use_pch=
+  cxx             = CC
+  pic             = -KPIC
+  shflags         = -shared
+  compilerflags64 = -64
+  linkflags       = -Wl,-woff,84
+  clean           = ii_files
+  platforms       = irix
+  pchcreate       = -LANG:create_pch=
+  pchuse          = -diag_suppress 3056 -LANG:use_pch=
 }
 
 wrsppc {
-  cxx          = g++ppc
-  ld           = ldppc
-  cputype      = ppc
-  cpu          = PPC604
-  ar           = arppc
-  nm           = nmppc
-  compileflags = -mlongcall -nostdlib
-  linkflags    = -X -r
-  platforms    = vxworks
+  cxx           = g++ppc
+  ld            = ldppc
+  cputype       = ppc
+  cpu           = PPC604
+  ar            = arppc
+  nm            = nmppc
+  compilerflags = -mlongcall -nostdlib
+  linkflags     = -X -r
+  platforms     = vxworks
 }
 
 wrspentium {
-  cxx          = g++pentium
-  ld           = ldpentium
-  cputype      = pentium
-  cpu          = PENTIUM
-  ar           = arpentium
-  nm           = nmpentium
-  compileflags = -nostdlib
-  linkflags    = -X -r
-  platforms    = vxworks
+  cxx           = g++pentium
+  ld            = ldpentium
+  cputype       = pentium
+  cpu           = PENTIUM
+  ar            = arpentium
+  nm            = nmpentium
+  compilerflags = -nostdlib
+  linkflags     = -X -r
+  platforms     = vxworks
 }
 
 NCC {
@@ -247,13 +212,13 @@ vxworks {
   extracppflags = -I$(WIND_BASE)/target/h
 }
 
-cygwin32 {
+cygwin {
   dll_ext = .dll
   exe_ext = .exe
   rc      = windres
 }
 
-mingw32 {
+mingw {
   lib_prefix =
   dll_ext    = .dll
   exe_ext    = .exe
