@@ -1,3 +1,15 @@
+Fri Aug 12 12:30:19 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/FeatureParser.pm:
+        * modules/ProjectCreator.pm:
+
+          Added a new type of feature file that is specific to the project
+          type.  If a file of the form <type>.features is located in the
+          config directory, it is read after global.features but before the
+          file specified by -feature_file (if any).  See the README for more
+          details.
+
 Fri Aug 12 11:44:23 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/make.mpd:

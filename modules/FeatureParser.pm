@@ -23,17 +23,16 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub new {
-  my($class)       = shift;
-  my($global_file) = shift;
-  my($file)        = shift;
-  my($features)    = shift;
-  my($self)        = $class->SUPER::new();
+  my($class)    = shift;
+  my($features) = shift;
+  my(@files)    = @_;
+  my($self)     = $class->SUPER::new();
 
   ## Set the values associative array
   $self->{'values'} = {};
 
   ## Process each feature file
-  foreach my $f ($global_file, $file) {
+  foreach my $f (@files) {
     if (defined $f) {
       my($status, $warn) = $self->cached_file_read($f);
       if (!$status) {
