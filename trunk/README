@@ -634,6 +634,20 @@ project: qt_specific {
 }
 
 
+Feature Files
+-------------
+Features are enabled and disable within feature files or through the use of
+the -features option (see USAGE for more details).  The first feature file
+read is always global.features found in the config directory.  The second
+feature file read is the project type name with .features appended
+(ex. vc71.features, make.features, etc.) which must be located in the same
+directory as the global.features file.  Lastly, the file specified by the
+-feature_file option is read if this option is used.
+
+Each successive feature file has precedence over the previous.  That is,
+if a feature has already been set previously it is overridden.  The
+-features option has precedence over feature files.
+
 Special Keywords Available to Templates
 ---------------------------------------
 project_name    This contains the name of the project.

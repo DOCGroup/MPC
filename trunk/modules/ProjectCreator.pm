@@ -270,8 +270,14 @@ sub new {
   $self->{'parents_read'}          = {};
   $self->{'inheritance_tree'}      = {};
   $self->{'remove_files'}          = {};
-  $self->{'feature_parser'}        = new FeatureParser($gfeature, $feature,
-                                                       $features);
+
+  my($typefeaturef) = dirname($gfeature) . '/' .
+                      $self->{'pctype'} . '.features';
+  $typefeaturef = undef if (! -r $typefeaturef);
+  $self->{'feature_parser'}        = new FeatureParser($features,
+                                                       $gfeature,
+                                                       $typefeaturef,
+                                                       $feature);
   $self->{'convert_slashes'}       = $self->convert_slashes();
   $self->{'sort_files'}            = $self->sort_files();
   $self->{'source_callback'}       = undef;
