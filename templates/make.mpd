@@ -26,13 +26,15 @@ CPPFLAGS      = $(PICFLAGS) $(GENFLAGS)<%if(compile_flags)%> <%compile_flags%><%
 OBJEXT        = <%obj_ext%>
 OUTPUT_OPTION = <%output_option(-o \"$@\")%>
 COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) <%compile_option("-c")%>
+<%foreach(platforms)%>
 <%if(build64bit && arflags64)%>
-ARFLAGS       = <%arflags64%>
+ARFLAGS       = <%if(extraarflags)%><%extraarflags%> <%endif%><%arflags64%>
 <%else%>
 <%if(arflags)%>
-ARFLAGS       = <%arflags%>
+ARFLAGS       = <%if(extraarflags)%><%extraarflags%> <%endif%><%arflags%>
 <%endif%>
 <%endif%>
+<%endfor%>
 <%if(tempinc)%>
 TEMPINCDIR    = <%tempinc%><%slash%><%project_name%>
 <%endif%>
