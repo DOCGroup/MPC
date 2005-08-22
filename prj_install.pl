@@ -36,6 +36,11 @@ my(%special)  = ('exe_output' => 1,
                  'lib_output' => 1,
                 );
 
+my(%actual)    = ();
+my(%base)      = ();
+my(%override)  = ();
+my($keepgoing) = 0;
+
 # ******************************************************************
 # Subroutine Section
 # ******************************************************************
@@ -46,7 +51,10 @@ sub copyFiles {
   my($verbose) = shift;
 
   foreach my $file (@$files) {
-    my($fulldir) = $insdir . '/' . dirname($file);
+    my($dest) = $insdir . '/' .
+                (defined $actual{$file} ?
+                         "$actual{$file}/" . basename($file) : $file);
+    my($fulldir) = dirname($dest);
     if (! -d $fulldir) {
       my($tmp) = '';
       foreach my $part (split(/[\/\\]/, $fulldir)) {
@@ -55,13 +63,15 @@ sub copyFiles {
       }
     }
 
-    if (! -e "$insdir/$file" || (-M $file) < (-M "$insdir/$file")) {
+    if (! -e $dest || (-M $file) < (-M $dest)) {
       if ($verbose) {
-        print "Copying to $insdir/$file\n";
+        print "Copying to $dest\n";
       }
-      if (!copy($file, "$insdir/$file")) {
-        print STDERR "ERROR: Unable to copy $file to $insdir/$file\n";
-        return 0;
+      if (!copy($file, $dest)) {
+        print STDERR "ERROR: Unable to copy $file to $dest\n";
+        if (!$keepgoing) {
+          return 0;
+        }
       }
     }
     else {
@@ -122,6 +132,18 @@ sub determineSpecialName {
 }
 
 
+sub replaceVariables {
+  my($line) = shift;
+  while($line =~ /(\$\(([^)]+)\))/) {
+    my($whole) = $1;
+    my($name)  = $2;
+    my($val)   = (defined $ENV{$name} ? $ENV{$name} : '');
+    $line =~ s/\$\([^)]+\)/$val/;
+  }
+  return $line;
+}
+
+
 sub loadInsFiles {
   my($files)   = shift;
   my($tags)    = shift;
@@ -159,11 +181,24 @@ sub loadInsFiles {
             }
           }
           elsif (defined $current) {
+            $line = replaceVariables($line);
+            my($start) = $#copy + 1;
             if (defined $special{$current}) {
               push(@copy, determineSpecialName($current, $base, $line));
             }
             else {
               push(@copy, "$base$line");
+            }
+            if (defined $override{$current}) {
+              for(my $i = $start; $i <= $#copy; ++$i) {
+                $actual{$copy[$i]} = $override{$current};
+              }
+            }
+            elsif (defined $base{$current}) {
+              for(my $i = $start; $i <= $#copy; ++$i) {
+                $actual{$copy[$i]} = $base{$current} . '/' .
+                                     dirname($copy[$i]);
+              }
             }
           }
         }
@@ -208,11 +243,14 @@ sub usageAndExit {
   my($base) = basename($0);
   my($spc)  = ' ' x (length($base) + 8);
   print STDERR "$base v$version\n",
-               "Usage: $base [-a tag1[,tagN]] [-s tag1[,tagN]] [-v]\n",
-               $spc, "[install directory] [$insext files or directories]\n\n",
+               "Usage: $base [-a tag1[,tagN]] [-b tag=dir] [-o tag=dir]\n",
+               $spc, "[-s tag1[,tagN]] [-v] [install directory]\n",
+               $spc, "[$insext files or directories]\n\n",
                "Install files matching the tag specifications found ",
                "in $insext files.\n\n",
                "-a  Adds to the default set of tags that get copied.\n",
+               "-b  Install tag into dir underneath the install directory.\n",
+               "-o  Install tag into dir.\n",
                "-s  Sets the tags that get copied.\n",
                "-v  Enables verbose mode.\n",
                "\n",
@@ -251,6 +289,37 @@ for(my $i = 0; $i <= $#ARGV; ++$i) {
         usageAndExit('-a requires a parameter.');
       }
     }
+    elsif ($arg eq '-b') {
+      ++$i;
+      if (defined $ARGV[$i]) {
+        if ($ARGV[$i] =~ /([^=]+)=(.*)/) {
+          $base{$1} = $2;
+        }
+        else {
+          usageAndExit("Invalid parameter to -b: $ARGV[$i]");
+        }
+      }
+      else {
+        usageAndExit('-b requires a parameter.');
+      }
+    }
+    elsif ($arg eq '-k') {
+      $keepgoing = 1;
+    }
+    elsif ($arg eq '-o') {
+      ++$i;
+      if (defined $ARGV[$i]) {
+        if ($ARGV[$i] =~ /([^=]+)=(.*)/) {
+          $override{$1} = $2;
+        }
+        else {
+          usageAndExit("Invalid parameter to -o: $ARGV[$i]");
+        }
+      }
+      else {
+        usageAndExit('-o requires a parameter.');
+      }
+    }
     elsif ($arg eq '-s') {
       ++$i;
       if (defined $ARGV[$i]) {
@@ -259,7 +328,6 @@ for(my $i = 0; $i <= $#ARGV; ++$i) {
           $tags{$tag} = 1;
         }
       }
-
       else {
         usageAndExit('-s requires a parameter.');
       }
