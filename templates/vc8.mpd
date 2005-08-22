@@ -276,7 +276,6 @@
 <%if(type_is_binary)%>
 				AdditionalDependencies="<%foreach(reverse(libs))%><%fornotfirst(" ")%><%lib%><%lib_modifier%><%lib_ext%><%endfor%><%foreach(reverse(lit_libs))%> <%lit_lib%>.lib<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%><%endfor%>"
 <%endif%>
-<%endif%>
 <%if(exename || sharedname || staticname)%>
 				OutputFile="$(OutDir)\<%if(type_is_dynamic)%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
 <%endif%>
@@ -289,23 +288,8 @@
 <%if(ShowProgress)%>
 				ShowProgress="<%ShowProgress%>"
 <%endif%>
-<%if(OutputFile)%>
-				OutputFile="<%OutputFile%>"
-<%endif%>
-<%if(Version)%>
-				Version="<%Version%>"
-<%endif%>
-<%if(LinkIncremental)%>
-				LinkIncremental="<%LinkIncremental%>"
-<%endif%>
 <%if(ignore_default_library_names)%>
 				IgnoreDefaultLibraryNames="<%foreach(ignore_default_library_names)%><%ignore_default_library_name%><%fornotlast(";")%><%endfor%>"
-<%endif%>
-<%if(SuppressStartupBanner)%>
-				SuppressStartupBanner="<%SuppressStartupBanner%>"
-<%endif%>
-<%if(AdditionalLibraryDirectories)%>
-				AdditionalLibraryDirectories="<%AdditionalLibraryDirectories%>"
 <%endif%>
 <%if(GenerateManifest)%>
 				GenerateManifest="<%GenerateManifest%>"
@@ -318,9 +302,6 @@
 <%endif%>
 <%if(IgnoreAllDefaultLibraries)%>
 				IgnoreAllDefaultLibraries="<%IgnoreAllDefaultLibraries%>"
-<%endif%>
-<%if(IgnoreDefaultLibraryNames)%>
-				IgnoreDefaultLibraryNames="<%IgnoreDefaultLibraryNames%>"
 <%endif%>
 <%if(ModuleDefinitionFile)%>
 				ModuleDefinitionFile="<%ModuleDefinitionFile%>"
@@ -467,6 +448,7 @@
 <%endif%>
 <%if(ErrorReporting)%>
 				ErrorReporting="<%ErrorReporting%>"
+<%endif%>
 <%endif%>
 			/>
 			<Tool
