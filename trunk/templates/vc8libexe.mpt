@@ -12,6 +12,7 @@ Detect64BitPortabilityProblems = false
 MinimalRebuild     = false
 
 Release {
+  LinkIncremental  = 1
   optimize         = 2
   defines          = NDEBUG
   output_dir       = Static_Release
@@ -29,6 +30,7 @@ Debug {
 }
 
 MFC Release {
+  LinkIncremental  = 1
   optimize          = 2
   defines           = NDEBUG _AFXDLL
   output_dir        = Static_MFC_Release
