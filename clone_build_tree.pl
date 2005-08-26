@@ -76,6 +76,7 @@ sub findCallback {
                   ! /^.*\.ncb\z/s   &&
                   ! /^.*\.opt\z/s   &&
                   ! /^.*\.bak\z/s   &&
+                  ! /^.*\.suo\z/s   &&
                   ! /^.*\.ilk\z/s   &&
                   ! /^.*\.pdb\z/s   &&
                   ! /^.*\.log\z/s
