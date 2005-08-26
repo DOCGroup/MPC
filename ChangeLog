@@ -1,3 +1,10 @@
+Fri Aug 26 14:32:48 2005  Justin Michel  <michel_j@ociweb.com>
+
+        * clone_build_tree.pl:
+
+	  Updated to prevent cloning of .suo files, which are used to store
+	solution settings for VC++ 7+.
+
 Fri Aug 26 13:46:47 2005  Justin Michel  <michel_j@ociweb.com>
 
         * templates/vc7libexe.mpt:
