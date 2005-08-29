@@ -1,3 +1,9 @@
+Mon Aug 29 11:48:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/nmake.mpd:
+          Made it possible to overrule cc, link and rc when generating the
+          nmake project files
+
 Fri Aug 26 14:32:48 2005  Justin Michel  <michel_j@ociweb.com>
 
         * clone_build_tree.pl:
