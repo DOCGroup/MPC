@@ -25,6 +25,13 @@ Win64 {
   add_compile         = /Wp64
 }
 
+WinX86_64 {
+  machine_description = X86_64
+  machine             = X64
+  cpu_defines         = WIN64
+  add_compile         = /Wp64
+}
+
 Release {
   use_debug_libraries   = 0
   optimize              = 1
