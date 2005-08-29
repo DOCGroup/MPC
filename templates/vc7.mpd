@@ -100,7 +100,7 @@
 <%if(win_version)%>
 				Version="<%win_version%>"
 <%endif%>
-				LinkIncremental="<%LinkIncremental("1")%>"
+				LinkIncremental="<%LinkIncremental("2")%>"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="<%foreach(libpaths)%><%libpath%><%fornotlast(";")%><%endfor%>"
 <%if(ignore_default_library_names)%>
