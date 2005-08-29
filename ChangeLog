@@ -1,3 +1,9 @@
+Mon Aug 29 12:41:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+          Added WinX86_64 as platform. This is Windows 64bit on EMT64.
+
 Mon Aug 29 11:48:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/nmake.mpd:
