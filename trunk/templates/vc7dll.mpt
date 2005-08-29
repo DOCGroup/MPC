@@ -9,6 +9,7 @@ common_defines     = WIN32 _WINDOWS
 use_lib_modifier   = 1
 
 Release {
+  LinkIncremental  = 1
   optimize         = 3
   defines          = NDEBUG
   output_dir       = Release
@@ -28,6 +29,7 @@ Debug {
 }
 
 MFC Release {
+  LinkIncremental  = 1
   optimize         = 3
   defines          = NDEBUG
   output_dir       = MFC_Release
