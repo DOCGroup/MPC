@@ -1,3 +1,15 @@
+Mon Aug 29 08:52:15 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/vc7.mpd:
+
+          Enabled incremental linking as the default.
+
+        * templates/vc7dll.mpt:
+        * templates/vc7exe.mpt:
+
+          Disable incremental linking in release mode as was done in
+          Justin's change on Fri Aug 26 13:46:47 2005.
+
 Mon Aug 29 12:41:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/nmakedll.mpt:
@@ -14,16 +26,16 @@ Fri Aug 26 14:32:48 2005  Justin Michel  <michel_j@ociweb.com>
 
         * clone_build_tree.pl:
 
-	  Updated to prevent cloning of .suo files, which are used to store
-	solution settings for VC++ 7+.
+          Updated to prevent cloning of .suo files, which are used to store
+          solution settings for VC++ 7+.
 
 Fri Aug 26 13:46:47 2005  Justin Michel  <michel_j@ociweb.com>
 
         * templates/vc7libexe.mpt:
         * templates/vc8libexe.mpt:
 
-	  It is invalid to enable incremental linking on release builds, because
-	we also enabled comdat folding and reference optimization.
+          It is invalid to enable incremental linking on release builds,
+          because we also enabled comdat folding and reference optimization.
 
 Mon Aug 22 11:57:03 2005  Chad Elliott  <elliott_c@ociweb.com>
 

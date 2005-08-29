@@ -11,6 +11,7 @@ subsystem          = 1
 use_exe_modifier   =
 
 Release {
+  LinkIncremental  = 1
   optimize         = 3
   defines          = NDEBUG
   output_dir       = Release
@@ -30,6 +31,7 @@ Debug {
 }
 
 MFC Release {
+  LinkIncremental  = 1
   optimize          = 3
   common_defines    = WIN32 _WINDOWS
   defines           = NDEBUG _AFXDLL
