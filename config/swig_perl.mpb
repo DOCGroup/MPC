@@ -3,9 +3,8 @@ project {
   Define_Custom(SWIG) {
     automatic         = 1
     command           = swig -perl -c++
-    output_option     = -o
     inputext          = .swg, .swig, .i
-    source_outputext  = _wrap.cpp
+    source_outputext  = _wrap.cxx
     generic_outputext = .pm
   }
 }
