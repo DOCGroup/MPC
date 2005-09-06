@@ -110,7 +110,7 @@ specialscript:
 	@$(RM) specialscript
 
 <%targetoutdir%><%noextension(prelink)%>$(OBJEXT): <%prelink%>
-	$(COMPILE.cc) <%prelink%> $(OUTPUT_OPTION)
+	$(COMPILE.cc) $(OUTPUT_OPTION) <%prelink%>
 	@$(RM) <%prelink%>
 
 <%endif%>
@@ -184,7 +184,7 @@ GENERATED_DIRTY    =<%foreach(custom_types)%><%foreach(custom_type->input_files)
 <%if(flag_overrides(custom_type->input_file, gendir))%>
 	@$(MKDIR) <%flag_overrides(custom_type->input_file, gendir)%>
 <%endif%>
-	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%><%if(custom_type->output_option)%> <%custom_type->output_option%> "$@"<%endif%>
+	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%><%if(custom_type->output_option)%> <%custom_type->output_option%> "$@"<%endif%> <%custom_type->input_file%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
 <%foreach(custom_type->input_file)%>
 	<%flag_overrides(custom_type->input_file, postcommand)%>
@@ -226,7 +226,7 @@ $(TEMPINCDIR):
 <%endif%>
 <%if(pch_source && pchsupport)%>
 <%targetoutdir%><%noextension(pch_source)%>$(OBJEXT): <%pch_source%>
-	$(COMPILE.cc) <%if(pchcreate)%><%pchcreate%><%targetoutdir%><%pch_header%>.gch <%endif%>$(EXPORTFLAGS) <%pch_source%><%if(!pchnobj)%> $(OUTPUT_OPTION)<%endif%>
+	$(COMPILE.cc) <%if(pchcreate)%><%pchcreate%><%targetoutdir%><%pch_header%>.gch <%endif%>$(EXPORTFLAGS)<%if(!pchnobj)%> $(OUTPUT_OPTION)<%endif%> <%pch_source%>
 <%if(pchnobj)%>
 	@$(CP) <%pch_header%>.gch <%targetoutdir%><%noextension(pch_source)%>$(OBJEXT)
 <%endif%>
@@ -237,7 +237,7 @@ $(TEMPINCDIR):
 <%if(targetoutdir)%>
 	@$(MKDIR) <%targetoutdir%><%dirname(source_file)%>
 <%endif%>
-	$(COMPILE.cc) <%if(pchuse && pch_source && pchsupport)%><%pchuse%><%pch_header%>.gch <%endif%>$(EXPORTFLAGS) <%source_file%> $(OUTPUT_OPTION)
+	$(COMPILE.cc) <%if(pchuse && pch_source && pchsupport)%><%pchuse%><%pch_header%>.gch <%endif%>$(EXPORTFLAGS) $(OUTPUT_OPTION) <%source_file%>
 
 <%endfor%>
 <%endfor%>

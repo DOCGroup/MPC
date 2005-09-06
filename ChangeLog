@@ -1,3 +1,24 @@
+Tue Sep  6 10:34:24 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/swig_perl.mpb:
+
+          Added a base project for using SWIG with perl.
+
+        * templates/automake.mpd:
+        * templates/bmake.mpd:
+        * templates/em3.mpd:
+        * templates/ghs.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6.mpd:
+        * templates/vc7.mpd:
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+        * templates/vc8.mpd:
+
+          Change the position of the use of custom 'output_option' setting.
+          Ensure that the input file is the last thing on the command line.
+
 Mon Aug 29 08:52:15 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/vc7.mpd:
