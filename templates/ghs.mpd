@@ -31,7 +31,7 @@ default:
 <%endif%>
 <%if(custom_type->output_option)%>
 <%foreach(custom_type->input_file->output_files)%>
-	:preexec=cd <%reltop%>; <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%custom_type->input_file->output_file%><%endif%>
+	:preexec=cd <%reltop%>; <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%custom_type->input_file->output_file%><%endif%> <%custom_type->input_file%>
 <%endfor%>
 <%else%>
 	:preexec=cd <%reltop%>; <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%><%endif%>

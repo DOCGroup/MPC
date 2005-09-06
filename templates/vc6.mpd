@@ -317,7 +317,7 @@ BuildCmds= \
 <%if(flag_overrides(custom_type->input_file, gendir))%>
 	mkdir <%flag_overrides(custom_type->input_file, gendir)%> 2> nul \
 <%endif%>
-	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> $(InputPath)<%if(custom_type->output_option)%> <%custom_type->output_option%><%foreach(custom_type->input_file->output_files)%> "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>"<%endfor%><%endif%> \
+	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%><%if(custom_type->output_option)%> <%custom_type->output_option%><%foreach(custom_type->input_file->output_files)%> "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>"<%endfor%><%endif%> $(InputPath) \
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
 <%foreach(custom_type->input_file)%>
 	<%flag_overrides(custom_type->input_file, postcommand)%> \
