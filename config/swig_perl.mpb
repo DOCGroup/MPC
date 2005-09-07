@@ -2,7 +2,8 @@
 project {
   Define_Custom(SWIG) {
     automatic         = 1
-    command           = swig -perl -c++
+    command           = swig
+    commandflags      = -perl -c++
     inputext          = .swg, .swig, .i
     source_outputext  = _wrap.cxx
     generic_outputext = .pm
