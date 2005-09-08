@@ -91,7 +91,9 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
   -D<%define%><%if(compile_flags || need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
 <%if(compile_flags)%>
-<%compile_flags%><%if(need_staticflags || dynamicflags)%> \<%endif%>
+<%foreach(compile_flags)%>
+  <%compile_flags%><%if(need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
+<%endfor%>
 <%endif%>
 <%if(need_staticflags)%>
 <%if(staticflags)%>
@@ -116,12 +118,12 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%else%>
 lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_SOURCES = \
 <%endif%>
-<%foreach(source_files)%>
+<%foreach(source_file, sort(source_files))%>
   <%source_file%><%if(exename)%><%if(header_files || inline_files)%> \<%else%><%fornotlast(" \\")%><%endif%><%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
 <%if(exename)%>
 <%if(header_files || inline_files)%>
-<%foreach(header_files inline_files)%>
+<%foreach(header_file, sort(header_files inline_files))%>
   <%header_file%><%fornotlast(" \\")%>
 <%endfor%>
 <%endif%>
