@@ -79,6 +79,7 @@ sub findCallback {
                   ! /^.*\.suo\z/s   &&
                   ! /^.*\.ilk\z/s   &&
                   ! /^.*\.pdb\z/s   &&
+                  ! /^.*\.pch\z/s   &&
                   ! /^.*\.log\z/s
                  );
 
