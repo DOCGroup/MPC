@@ -1,18 +1,38 @@
+Tue Sep 20 08:47:21 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/swig_perl.mpb:
+
+          Added an include for $(PERL5_INCLUDE).
+
+        * modules/TemplateInputReader.pm:
+
+          Allow "()." in scope names within .mpt files.
+
+        * modules/WorkspaceCreator.pm:
+
+          Provide the user with more information as to why workspace
+          creation failed.
+
+        * templates/makedll.mpt:
+
+          Shared libraries are created on Solaris using the -G option (not
+          -shared).
+
 Mon Sep 12 10:47:28 2005  Justin Michel  <michel_j@ociweb.com>
 
         * clone_build_tree.pl:
 
-	  Prevent cloning of .pch files, which are precompiled headers when
-	using VC++.
+          Prevent cloning of .pch files, which are precompiled headers when
+          using VC++.
 
 Thu Sep  8 08:06:18 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
-	  Changed to output compile_flags on separate lines.
+          Changed to output compile_flags on separate lines.
 
-	  Changed to sort lists of source, header, and inline files
-	  to make output more deterministic.
+          Changed to sort lists of source, header, and inline files
+          to make output more deterministic.
 
 Tue Sep  6 10:34:24 2005  Chad Elliott  <elliott_c@ociweb.com>
 
