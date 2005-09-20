@@ -8,4 +8,5 @@ project {
     source_outputext  = _wrap.cxx
     generic_outputext = .pm
   }
+  includes += $(PERL5_INCLUDE)/.
 }
