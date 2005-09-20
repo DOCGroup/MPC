@@ -158,13 +158,13 @@ sub parse_line {
 
           ## End of workspace; Have subclass write out the file
           ## Generate the project files
-          my($gstat, $creator) = $self->generate_project_files();
+          my($gstat, $creator, $err) = $self->generate_project_files();
           if ($gstat) {
             ($status, $error) = $self->write_workspace($creator, 1);
             $self->{'assign'} = {};
           }
           else {
-            $error = 'Unable to generate all of the project files';
+            $error = $err;
             $status = 0;
           }
 
@@ -1109,8 +1109,9 @@ sub generate_project_files {
           ## processing altogether.
           if (!$status) {
             ## We don't restore the state before we leave,
-            ## but that's ok since we will be exiting soon.
-            return $status, $creator;
+            ## but that's ok since we will be exiting right now.
+            return $status, $creator,
+                   "Unable to process " . ($file eq '' ? " in $dir" : $file);
           }
 
           ## Get the individual project information and
@@ -1134,7 +1135,7 @@ sub generate_project_files {
         ## Unable to change to the directory.
         ## We don't restore the state before we leave,
         ## but that's ok since we will be exiting soon.
-        return 0, $creator;
+        return 0, $creator, "Unable to change directory to $dir";
       }
 
       ## Return things to the way they were

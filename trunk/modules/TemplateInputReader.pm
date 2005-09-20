@@ -51,7 +51,7 @@ sub parse_line {
 
   if ($line eq '') {
   }
-  elsif ($line =~ /^([\w\s]+)\s*{$/) {
+  elsif ($line =~ /^([\w\s\(\)\.]+)\s*{$/) {
     ## Entering a new scope
     my($rname) = $1;
     $rname =~ s/\s+$//;
