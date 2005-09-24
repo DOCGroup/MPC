@@ -1,3 +1,5 @@
+// -*- MPC -*-
+// $Id$
 
 project {
   Define_Custom(SWIG) {
