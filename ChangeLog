@@ -1,9 +1,27 @@
+Mon Sep 26 07:10:17 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/ProjectCreator.pm:
+
+          Added generic_pre_extension and generic_pre_filename custom build
+          settings.
+
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Added support for the builtin Visual Studio MIDL.
+
+        * templates/vccommon.mpt:
+
+          Added a comment that this file is not common to Visual C++, just
+          vc6.
+
 Thu Sep 22 12:43:43 2005  J.T. Conklin  <jtc@acorntoolworks.com>
 
-	* templates/automake.mpd:
+        * templates/automake.mpd:
 
           Changed to output libs, lit_libs, and pure_libs on separate
-	  lines.
+          lines.
 
 Tue Sep 20 08:47:21 2005  Chad Elliott  <elliott_c@ociweb.com>
 
