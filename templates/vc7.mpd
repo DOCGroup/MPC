@@ -137,6 +137,13 @@
 				TargetMachine="<%machine("1")%>"/>
 <%endif%>
 			<Tool
+				Name="VCMIDLTool"
+				AdditionalOptions="<%foreach(midl_defines)%>/D <%midl_define%> <%endfor%><%midl_flags%>"
+				AdditionalIncludeDirectories="<%foreach(midl_includes)%><%midl_include%><%fornotlast(",")%><%endfor%>"
+				TypeLibraryName="$(InputName).tlb"
+				HeaderFileName="$(InputName).h"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 <%if(postbuild)%>
 				CommandLine="<%eval(postbuild)%>"
