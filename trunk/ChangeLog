@@ -1,3 +1,18 @@
+Fri Sep 30 07:46:54 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+
+          Corrected the directory changing code to take 2 or more deep
+          relative paths into account.  Thanks to Johnny Willemsen
+          <jwillemsen@remedy.nl> for reporting this.
+
+        * templates/automake.mpd:
+
+          Optimized this template with respect to checking a variable before
+          using foreach.  The foreach already does this, so checking the
+          variable before hand is a waste of time.
+
 Mon Sep 26 07:10:17 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
