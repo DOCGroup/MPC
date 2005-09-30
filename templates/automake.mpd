@@ -90,11 +90,9 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%foreach(defines common_defines macros)%>
   -D<%define%><%if(compile_flags || need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
-<%if(compile_flags)%>
 <%foreach(compile_flags)%>
   <%compile_flags%><%if(need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
-<%endif%>
 <%if(need_staticflags)%>
 <%if(staticflags)%>
 <%foreach(staticflags)%>
@@ -104,11 +102,9 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
   -D__NO_STATIC_FLAGS_AVAILABLE__
 <%endif%>
 <%else%>
-<%if(dynamicflags)%>
 <%foreach(dynamicflags)%>
   -D<%dynamicflag%><%fornotlast(" \\")%>
 <%endfor%>
-<%endif%>
 <%endif%>
 <%endif%>
 <%if(source_files)%>
@@ -122,11 +118,9 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
   <%source_file%><%if(exename)%><%if(header_files || inline_files)%> \<%else%><%fornotlast(" \\")%><%endif%><%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
 <%if(exename)%>
-<%if(header_files || inline_files)%>
 <%foreach(header_file, sort(header_files inline_files))%>
   <%header_file%><%fornotlast(" \\")%>
 <%endfor%>
-<%endif%>
 <%endif%>
 <%endif%>
 <%if(exename)%>
@@ -146,42 +140,30 @@ lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><
 <%if(libs || pure_libs || lit_libs)%>
 
 <%normalize(exename)%>_LDADD = \
-<%if(libs)%>
 <%foreach(libs)%>
   lib<%lib%>.la<%if(lit_libs || pure_libs)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
-<%endif%>
-<%if(lit_libs)%>
 <%foreach(lit_libs)%>
   -l<%lit_lib%><%if(pure_libs)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
-<%endif%>
-<%if(pure_libs)%>
 <%foreach(pure_libs)%>
   <%pure_lib%><%fornotlast(" \\")%>
 <%endfor%>
-<%endif%>
 <%endif%>
 <%else%>
 <%if(install_this_target)%>
 <%if(libs || pure_libs || lit_libs)%>
 
 lib<%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LIBADD = \
-<%if(libs)%>
 <%foreach(libs)%>
   lib<%lib%>.la<%if(lit_libs || pure_libs)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
-<%endif%>
-<%if(lit_libs)%>
 <%foreach(lit_libs)%>
   -l<%lit_lib%><%if(pure_libs)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
-<%endif%>
-<%if(pure_libs)%>
 <%foreach(pure_libs)%>
   <%pure_lib%><%fornotlast(" \\")%>
 <%endfor%>
-<%endif%>
 <%endif%>
 <%endif%>
 <%endif%>
