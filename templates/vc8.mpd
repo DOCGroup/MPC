@@ -54,6 +54,8 @@
 				AdditionalIncludeDirectories="<%foreach(midl_includes)%><%midl_include%><%fornotlast(",")%><%endfor%>"
 				TypeLibraryName="$(InputName).tlb"
 				HeaderFileName="$(InputName).h"
+				InterfaceIdentifierFileName="$(InputName)_i.c"
+				ProxyFileName="$(InputName)_p.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
