@@ -1,3 +1,11 @@
+Tue Oct  4 06:35:13 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Improved MIDL support by adding generated files to the generated
+          project to ensure that these generated files get cleaned up.
+
 Fri Sep 30 07:46:54 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/BMakeWorkspaceCreator.pm:
