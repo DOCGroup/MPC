@@ -11,6 +11,8 @@ use_lib_modifier   = 1
 Detect64BitPortabilityProblems = false
 MinimalRebuild     = false
 
+conditional_include "vc8platforms"
+
 Release {
   LinkIncremental  = 1
   optimize         = 2
