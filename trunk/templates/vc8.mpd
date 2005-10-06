@@ -9,18 +9,21 @@
 	SignManifests="true"
 	>
 	<Platforms>
+<%foreach(platforms)%>
 		<Platform
-			Name="<%platform("Win32")%>"
+			Name="<%platform%>"
 		/>
+<%endfor%>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
+<%foreach(platforms)%>
 <%foreach(configurations)%>
 		<Configuration
 			Name="<%configuration%>|<%platform%>"
-			OutputDirectory="<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%else%><%if(type_is_static)%><%libout%><%else%><%if(install)%><%install%><%else%><%output_dir%><%endif%><%endif%><%endif%>"
-			IntermediateDirectory="<%intermediate_dir%>\<%noextension(project_file)%>"
+			OutputDirectory="<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%else%><%if(type_is_static)%><%libout%><%else%><%if(install)%><%install%><%else%><%output_dir%><%endif%><%endif%><%endif%><%if(output_subdir)%>\<%output_subdir%><%endif%>"
+			IntermediateDirectory="<%intermediate_dir%>\<%noextension(project_file)%><%if(output_subdir)%>\<%output_subdir%><%endif%>"
 <%if(type_is_static && staticname)%>
 			ConfigurationType="4"
 <%else%>
@@ -87,7 +90,7 @@
 <%if(AdditionalUsingDirectories)%>
 				AdditionalUsingDirectories="<%AdditionalUsingDirectories%>"
 <%endif%>
-				PreprocessorDefinitions="<%if(unicode)%>UNICODE;_UNICODE;<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%><%dynamicflag%>;<%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%><%staticflag%>;<%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%><%pch_define%>;<%endfor%><%endif%><%foreach(defines common_defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
+				PreprocessorDefinitions="<%if(unicode)%>UNICODE;_UNICODE;<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%><%dynamicflag%>;<%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%><%staticflag%>;<%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%><%pch_define%>;<%endfor%><%endif%><%foreach(defines common_defines cpu_defines platform_defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
 <%if(IgnoreStandardIncludePath)%>
 				IgnoreStandardIncludePath="<%IgnoreStandardIncludePath%>"
 <%endif%>
@@ -170,7 +173,7 @@
 				ObjectFile="<%ObjectFile%>"
 <%endif%>
 <%if(pdbc)%>
-				ProgramDataBaseFileName="<%if(type_is_static)%><%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%>/<%endif%>"
+				ProgramDataBaseFileName="<%if(output_subdir)%><%output_subdir%>\<%endif%><%if(type_is_static)%><%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%><%endif%><%if(output_subdir)%>\<%output_subdir%><%endif%>/"
 <%else%>
 <%if(ProgramDataBaseFileName)%>
 				ProgramDataBaseFileName="<%ProgramDataBaseFileName%>"
@@ -478,6 +481,7 @@
 			/>
 		</Configuration>
 <%endfor%>
+<%endfor%>
 	</Configurations>
 	<References>
 	</References>
@@ -490,6 +494,7 @@
 <%if(pch_source)%>
 			<File
 				RelativePath="<%pch_source%>">
+<%foreach(platforms)%>
 <%foreach(configurations)%>
 				<FileConfiguration
 					Name="<%configuration%>|<%platform%>">
@@ -497,6 +502,7 @@
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"/>
 				</FileConfiguration>
+<%endfor%>
 <%endfor%>
 			</File>
 <%endif%>
@@ -507,6 +513,7 @@
 			<File
 				RelativePath="<%grouped_source_file->file%>">
 <%if(duplicate_index(grouped_source_file->file))%>
+<%foreach(platforms)%>
 <%foreach(configurations)%>
 				<FileConfiguration
 					Name="<%configuration%>|<%platform%>">
@@ -514,6 +521,7 @@
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(grouped_source_file->file)%>.obj"/>
 				</FileConfiguration>
+<%endfor%>
 <%endfor%>
 <%endif%>
 			</File>
@@ -526,6 +534,7 @@
 				<File
 					RelativePath="<%grouped_source_file->file%>">
 <%if(duplicate_index(grouped_source_file->file))%>
+<%foreach(platforms)%>
 <%foreach(configurations)%>
 					<FileConfiguration
 						Name="<%configuration%>|<%platform%>">
@@ -533,6 +542,7 @@
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(grouped_source_file->file)%>.obj"/>
 					</FileConfiguration>
+<%endfor%>
 <%endfor%>
 <%endif%>
 				</File>
@@ -545,6 +555,7 @@
 			<File
 				RelativePath="<%source_file%>">
 <%if(duplicate_index(source_file))%>
+<%foreach(platforms)%>
 <%foreach(configurations)%>
 					<FileConfiguration
 						Name="<%configuration%>|<%platform%>">
@@ -552,6 +563,7 @@
 							Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(source_file)%>.obj"/>
 					</FileConfiguration>
+<%endfor%>
 <%endfor%>
 <%endif%>
 			</File>
@@ -606,6 +618,7 @@
 <%foreach(custom_type->input_files)%>
 			<File
 				RelativePath="<%custom_type->input_file%>">
+<%foreach(platforms)%>
 <%foreach(configurations)%>
 				<FileConfiguration
 					Name="<%configuration%>|<%platform%>"
@@ -632,6 +645,7 @@
 						Outputs="<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(";")%><%endfor%>"/>
 <%endif%>
 				</FileConfiguration>
+<%endfor%>
 <%endfor%>
 			</File>
 <%endfor%>
@@ -681,6 +695,7 @@
 <%foreach(grouped_template_file->files)%>
 			<File
 				RelativePath="<%grouped_template_file->file%>">
+<%foreach(platforms)%>
 <%foreach(configurations)%>
 				<FileConfiguration
 					Name="<%configuration%>|<%platform%>"
@@ -688,6 +703,7 @@
 					<Tool
 						Name="VCCLCompilerTool"/>
 				</FileConfiguration>
+<%endfor%>
 <%endfor%>
 			</File>
 <%endfor%>
@@ -698,6 +714,7 @@
 <%foreach(grouped_template_file->files)%>
 				<File
 					RelativePath="<%grouped_template_file->file%>">
+<%foreach(platforms)%>
 <%foreach(configurations)%>
 					<FileConfiguration
 						Name="<%configuration%>|<%platform%>"
@@ -705,6 +722,7 @@
 						<Tool
 							Name="VCCLCompilerTool"/>
 					</FileConfiguration>
+<%endfor%>
 <%endfor%>
 				</File>
 <%endfor%>
@@ -715,6 +733,7 @@
 <%foreach(template_files)%>
 			<File
 				RelativePath="<%template_file%>">
+<%foreach(platforms)%>
 <%foreach(configurations)%>
 				<FileConfiguration
 					Name="<%configuration%>|<%platform%>"
@@ -722,6 +741,7 @@
 					<Tool
 						Name="VCCLCompilerTool"/>
 				</FileConfiguration>
+<%endfor%>
 <%endfor%>
 			</File>
 <%endfor%>
@@ -738,6 +758,7 @@
 <%foreach(grouped_documentation_file->files)%>
 			<File
 				RelativePath="<%grouped_documentation_file->file%>">
+<%foreach(platforms)%>
 <%foreach(configurations)%>
 				<FileConfiguration
 					Name="<%configuration%>|<%platform%>"
@@ -745,6 +766,7 @@
 					<Tool
 						Name="VCCustomBuildTool"/>
 				</FileConfiguration>
+<%endfor%>
 <%endfor%>
 			</File>
 <%endfor%>
@@ -755,6 +777,7 @@
 <%foreach(grouped_documentation_file->files)%>
 				<File
 					RelativePath="<%grouped_documentation_file->file%>">
+<%foreach(platforms)%>
 <%foreach(configurations)%>
 					<FileConfiguration
 						Name="<%configuration%>|<%platform%>"
@@ -762,6 +785,7 @@
 						<Tool
 							Name="VCCustomBuildTool"/>
 					</FileConfiguration>
+<%endfor%>
 <%endfor%>
 				</File>
 <%endfor%>
@@ -772,6 +796,7 @@
 <%foreach(documentation_files)%>
 			<File
 				RelativePath="<%documentation_file%>">
+<%foreach(platforms)%>
 <%foreach(configurations)%>
 				<FileConfiguration
 					Name="<%configuration%>|<%platform%>"
@@ -779,6 +804,7 @@
 					<Tool
 						Name="VCCustomBuildTool"/>
 				</FileConfiguration>
+<%endfor%>
 <%endfor%>
 			</File>
 <%endfor%>

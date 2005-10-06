@@ -1,0 +1,59 @@
+// -*- MPC -*-
+// $Id$
+//
+// Any of these platforms can set using value_template platforms=
+// when generating solutions/projects.
+//
+//platforms = Win32 WinX86_64 "Pocket PC 2003 (ARMV4)" "Smartphone 2003 (ARMV4)" "Windows Mobile 5.0 Pocket PC SDK (ARMV4I)" "Windows Mobile 5.0 Smartphone SDK (ARMV4I)"
+
+platforms = Win32
+default_platform = Win32
+
+Win32 {
+  cpu_defines      = _M_IX86
+}
+
+WinX86_64 {
+  output_subdir    = Win64
+  cpu_defines      = _M_AXP64
+  platform_defines = _WIN64
+}
+
+Pocket PC 2003 (ARMV4) {
+  output_subdir    = PocketPC2003_ARMV4
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE $(PLATFORMDEFINES) _WINDOWS _UNICODE UNICODE POCKETPC2003_UI_MODEL
+  link_options     = /subsystem:windowsce,4.20 /machine:ARM /ARMPADCODE
+  lit_libs        += ccrtrtti
+  subsystem        = "0"
+  TargetMachine    = "3"
+}
+
+Smartphone 2003 (ARMV4) {
+  output_subdir    = Smartphone2003_ARMV4
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE $(PLATFORMDEFINES) _WINDOWS _UNICODE UNICODE SMARTPHONE2003_UI_MODEL
+  link_options     = /subsystem:windowsce,4.20 /machine:ARM /ARMPADCODE
+  subsystem        = "0"
+  TargetMachine    = "3"
+}
+
+Windows Mobile 5.0 Pocket PC SDK (ARMV4I) {
+  output_subdir    = WinMobile50_PocketPC_ARMV4I
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE $(PLATFORMDEFINES) _WINDOWS _UNICODE UNICODE POCKETPC2003_UI_MODEL
+  link_options     = /subsystem:windowsce,5.01 /machine:THUMB
+  subsystem        = "0"
+  TargetMachine    = "3"
+}
+
+Windows Mobile 5.0 Smartphone SDK (ARMV4I) {
+  output_subdir    = WinMobile50_Smartphone_ARMV4I
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE $(PLATFORMDEFINES) _WINDOWS _UNICODE UNICODE SMARTPHONE2003_UI_MODEL
+  link_options     = /subsystem:windowsce,5.01 /machine:THUMB
+  subsystem        = "0"
+  TargetMachine    = "3"
+}
+
+
