@@ -1,3 +1,9 @@
+Fri Oct  7 09:33:41 2005  J.T. Conklin  <jtc@acorntoolworks.com>
+
+	* templates/automake.mpd:
+
+	  Add support for custom file dependents.
+
 Thu Oct  6 17:52:41 2005  Steve Huston  <shuston@riverace.com>
 
 	* templates/vc8.mpd:
