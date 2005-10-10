@@ -151,14 +151,11 @@
 				OpenMP="<%OpenMP%>"
 <%endif%>
 <%if(pch_header)%>
-<%if(pch_source)%>
 				UsePrecompiledHeader="2"
-<%else%>
-				UsePrecompiledHeader="2"
-<%endif%>
 				PrecompiledHeaderThrough="<%pch_header%>"
 <%if(PrecompiledHeaderFile)%>
 				PrecompiledHeaderFile="<%PrecompiledHeaderFile%>"
+<%endif%>
 <%endif%>
 <%if(ExpandAttributedSource)%>
 				ExpandAttributedSource="<%ExpandAttributedSource%>"
@@ -190,7 +187,6 @@
 <%endif%>
 <%if(BrowseInformationFile)%>
 				BrowseInformationFile="<%BrowseInformationFile%>"
-<%endif%>
 <%endif%>
 				WarningLevel="<%warning_level("3")%>"
 <%if(WarnAsError)%>
