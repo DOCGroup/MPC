@@ -232,6 +232,9 @@ sub get_value {
   my($sname)   = undef;
   my($adjust)  = 1;
 
+  ## $name should always be all lower-case
+  $name = lc($name);
+
   ## First, check the temporary scope (set inside a foreach)
   if ($counter >= 0) {
     ## Find the outer most scope for our variable name
