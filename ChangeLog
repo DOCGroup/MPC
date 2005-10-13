@@ -1,3 +1,9 @@
+Thu Oct 13 17:24:21 2005  Steve Huston  <shuston@riverace.com>
+
+	* modules/VC8WorkspaceCreator.pm: Add the 3 magic bytes to the start
+	  of the .sln file that allow double-clicking on the .sln file's icon
+	  to auto-start Visual Studio.
+
 Mon Oct 10 07:02:30 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/TemplateParser.pm:
