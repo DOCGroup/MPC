@@ -28,7 +28,7 @@ sub pre_workspace {
   my($fh)   = shift;
   my($crlf) = $self->crlf();
 
-  print $fh $crlf,
+  print $fh '﻿', $crlf,
             'Microsoft Visual Studio Solution File, Format Version 9.00', $crlf,
             '# Visual Studio 2005', $crlf,
             '# $Id$', $crlf,
