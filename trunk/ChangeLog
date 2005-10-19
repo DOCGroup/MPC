@@ -1,8 +1,26 @@
+Wed Oct 19 10:06:50 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/boost_date_time.mpb:
+        * config/boost_filesystem.mpb:
+        * config/boost_prg_exec_monitor.mpb:
+        * config/boost_regex.mpb:
+        * config/boost_signals.mpb:
+        * config/boost_test_exec_monitor.mpb:
+        * config/boost_thread.mpb:
+        * config/boost_unit_test_framework.mpb:
+
+          Added a $(BOOST_STATIC_LIB_PREFIX) to the library name for all
+          boost libraries.  For some reason, they insist on prepend 'lib' to
+          the name of all static libraries on Windows.  For
+          unit_test_framework, prg_exec_monitor and test_exec_monitor, 'lib'
+          is always prepended on Windows since these are currently always
+          static.  Thanks to Kevin Heifner for pointing this out.
+
 Thu Oct 13 17:24:21 2005  Steve Huston  <shuston@riverace.com>
 
-	* modules/VC8WorkspaceCreator.pm: Add the 3 magic bytes to the start
-	  of the .sln file that allow double-clicking on the .sln file's icon
-	  to auto-start Visual Studio.
+        * modules/VC8WorkspaceCreator.pm: Add the 3 magic bytes to the start
+          of the .sln file that allow double-clicking on the .sln file's icon
+          to auto-start Visual Studio.
 
 Mon Oct 10 07:02:30 2005  Chad Elliott  <elliott_c@ociweb.com>
 
