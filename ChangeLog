@@ -1,3 +1,8 @@
+Sun Oct 23 08:14:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+          Generate also includes for the resource compiler
+
 Wed Oct 19 10:06:50 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/boost_date_time.mpb:
