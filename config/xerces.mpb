@@ -2,6 +2,7 @@
 // $Id$
 
 project {
+  requires += xerces
   includes += $(XERCESCROOT)/include
   libpaths += $(XERCESCROOT)/lib
 
