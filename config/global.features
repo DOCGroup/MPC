@@ -18,5 +18,6 @@ boost         = 0
 mfc           = 0
 qt            = 0
 rpc           = 0
+xerces        = 0
 zlib          = 0
 zzip          = 0
