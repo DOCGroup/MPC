@@ -11,4 +11,5 @@ project {
     generic_outputext = .pm
   }
   includes += $(PERL5_INCLUDE)/.
+  libpaths += $(PERL5_INCLUDE)/.
 }

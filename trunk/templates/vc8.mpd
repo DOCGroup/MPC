@@ -170,7 +170,7 @@
 				ObjectFile="<%ObjectFile%>"
 <%endif%>
 <%if(pdbc)%>
-				ProgramDataBaseFileName="<%if(output_subdir)%><%output_subdir%>\<%endif%><%if(type_is_static)%><%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%><%endif%><%if(output_subdir)%>\<%output_subdir%><%endif%>/"
+				ProgramDataBaseFileName="<%if(type_is_static)%><%if(output_subdir)%><%output_subdir%>\<%endif%><%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%><%if(output_subdir)%>\<%output_subdir%><%endif%>/<%endif%>"
 <%else%>
 <%if(ProgramDataBaseFileName)%>
 				ProgramDataBaseFileName="<%ProgramDataBaseFileName%>"
