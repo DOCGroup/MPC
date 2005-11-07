@@ -2514,12 +2514,10 @@ sub generate_default_components {
 
                   @$array = ();
                   foreach my $input (@input) {
-                    my($part) = $input;
-                    foreach my $wanted (@{$self->{'valid_components'}->{$gentype}}) {
-                      if ($part =~ s/$wanted$//) {
-                        last;
-                      }
-                    }
+                    my($part) = $self->remove_wanted_extension(
+                                   $input,
+                                   $self->{'valid_components'}->{$gentype});
+
                     $part = $self->escape_regex_special($part);
                     my(@files) = $self->generated_filenames($part, $gentype,
                                                             $tag, $input, 1);
@@ -2682,21 +2680,9 @@ sub list_default_generated {
           }
 
           foreach my $val (@$array) {
-            my($f) = $val;
-            foreach my $wanted (@{$self->{'valid_components'}->{$gentype}}) {
-              if ($f =~ s/$wanted$//) {
-                last;
-              }
-            }
-
-            ## If the user provided file does not match any of the
-            ## extensions specified by the custom definition, we need
-            ## to remove the extension or else this file will not be
-            ## added to the project.
-            if ($f eq $val) {
-              $f =~ s/\.[^\.]+$//;
-            }
-
+            my($f) = $self->remove_wanted_extension(
+                              $val,
+                              $self->{'valid_components'}->{$gentype});
             push(@arr, $f);
           }
         }
@@ -3000,6 +2986,8 @@ sub generate_defaults {
   ## are skipped in the initial default components generation
   $self->generate_default_components(\@files);
 
+my(@z) = $self->get_component_list('source_files');
+print "DEBUG: @z\n";
   ## Remove source files that are also listed in the template files
   ## If we do not do this, then generated projects can be invalid.
   $self->remove_duplicated_files('source_files', 'template_files');
@@ -4403,6 +4391,30 @@ sub remove_non_custom_settings {
   $self->process_assignment('exename',    undef);
   $self->process_assignment('sharedname', undef);
   $self->process_assignment('staticname', undef);
+}
+
+
+sub remove_wanted_extension {
+  my($self)  = shift;
+  my($name)  = shift;
+  my($array) = shift;
+  my($orig)  = $name;
+
+  foreach my $wanted (@$array) {
+    if ($name =~ s/$wanted$//) {
+      last;
+    }
+  }
+
+  ## If the user provided file does not match any of the
+  ## extensions specified by the custom definition, we need
+  ## to remove the extension or else this file will not be
+  ## added to the project.
+  if ($name eq $orig) {
+    $name =~ s/\.[^\.]+$//;
+  }
+
+  return $name;
 }
 
 # ************************************************************
