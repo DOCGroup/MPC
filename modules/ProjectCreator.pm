@@ -2986,8 +2986,6 @@ sub generate_defaults {
   ## are skipped in the initial default components generation
   $self->generate_default_components(\@files);
 
-my(@z) = $self->get_component_list('source_files');
-print "DEBUG: @z\n";
   ## Remove source files that are also listed in the template files
   ## If we do not do this, then generated projects can be invalid.
   $self->remove_duplicated_files('source_files', 'template_files');
