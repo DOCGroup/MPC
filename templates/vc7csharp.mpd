@@ -24,7 +24,7 @@
 <%endif%>
                 AssemblyKeyContainerName = ""
 <%if(exename || sharedname || staticname)%>
-                AssemblyName = "<%if(exename)%><%exename%><%else%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>"
+                AssemblyName = "<%if(exename)%><%exename%><%else%><%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>"
 <%endif%>
                 AssemblyOriginatorKeyFile = ""
                 DefaultClientScript = "JScript"
@@ -66,7 +66,13 @@
 <%endfor%>
             </Settings>
             <References>
-<%foreach(libs lit_libs pure_libs)%>
+<%foreach(libs)%>
+                <Reference
+                    Name = "<%libname_prefix%><%lib%>"
+                    AssemblyName = "<%libname_prefix%><%lib%>"
+                />
+<%endfor%>
+<%foreach(lib, lit_libs pure_libs)%>
                 <Reference
                     Name = "<%lib%>"
                     AssemblyName = "<%lib%>"

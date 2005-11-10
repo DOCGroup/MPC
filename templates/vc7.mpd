@@ -58,7 +58,7 @@
 <%endif%>
 				RuntimeTypeInfo="<%rtti("TRUE")%>"
 <%if(pdbc)%>
-				ProgramDataBaseFileName="<%if(type_is_static)%><%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%>/<%endif%>"
+				ProgramDataBaseFileName="<%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%>/<%endif%>"
 <%endif%>
 <%if(pch_header)%>
 <%if(pch_source)%>
@@ -80,7 +80,7 @@
 <%if(type_is_static)%>
 				Name="VCLibrarianTool"
 <%if(staticname)%>
-				OutputFile="<%libout%>\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
+				OutputFile="<%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
 <%else%>
 				Name="VCLinkerTool"
@@ -92,10 +92,10 @@
 <%endif%>
 <%endif%>
 <%if(type_is_binary)%>
-				AdditionalDependencies="<%foreach(reverse(libs))%><%fornotfirst(" ")%><%lib%><%lib_modifier%><%lib_ext%><%endfor%><%foreach(reverse(lit_libs))%> <%lit_lib%>.lib<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%><%endfor%>"
+				AdditionalDependencies="<%foreach(reverse(libs))%><%fornotfirst(" ")%><%libname_prefix%><%lib%><%lib_modifier%><%lib_ext%><%endfor%><%foreach(reverse(lit_libs))%> <%lit_lib%>.lib<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%><%endfor%>"
 <%endif%>
 <%if(exename || sharedname || staticname)%>
-				OutputFile="$(OutDir)\<%if(type_is_dynamic)%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
+				OutputFile="$(OutDir)\<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
 <%endif%>
 <%if(win_version)%>
 				Version="<%win_version%>"
@@ -109,7 +109,7 @@
 				GenerateDebugInformation="TRUE"
 <%if(pdbl)%>
 <%if(sharedname)%>
-				ProgramDatabaseFile="$(OutDir)\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
+				ProgramDatabaseFile="$(OutDir)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
 <%else%>
 <%if(exename)%>
 				ProgramDatabaseFile="$(OutDir)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.pdb"
@@ -131,7 +131,7 @@
 				EntryPointSymbol="<%unicode_mfc_entry%>"
 <%endif%>
 <%if(type_is_dynamic && sharedname)%>
-				ImportLibrary="<%libout%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
+				ImportLibrary="<%libout%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
 <%endif%>
 				TargetMachine="<%machine("1")%>"/>

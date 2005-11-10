@@ -61,10 +61,10 @@ INTERMEDIATE = $(CFG_DIR)$(UNICODE_DIR)<%noextension(project_name)%>
 NAME         = <%exename%>$(EXEMODIFIER)
 <%else%>
 <%if(sharedname)%>
-NAME         = <%sharedname%>$(OLIBMODIFIER)
+NAME         = <%libname_prefix%><%sharedname%>$(OLIBMODIFIER)
 <%else%>
 <%if(staticname)%>
-NAME         = <%staticname%>$(OLIBMODIFIER)
+NAME         = <%libname_prefix%><%staticname%>$(OLIBMODIFIER)
 <%endif%>
 <%endif%>
 <%endif%>
@@ -96,7 +96,7 @@ LFLAGS   = \
 
 LIBFILES = \
 <%foreach(reverse(libs))%>
-           <%lib%>$(ILIBMODIFIER)$(LIB_EXT) \
+           <%libname_prefix%><%lib%>$(ILIBMODIFIER)$(LIB_EXT) \
 <%endfor%>
 <%foreach(reverse(lit_libs))%>
            <%lit_lib%>$(LIB_EXT) \

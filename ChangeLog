@@ -1,3 +1,23 @@
+Thu Nov 10 09:01:25 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/automake.mpd:
+        * templates/bmake.mpd:
+        * templates/em3.mpd:
+        * templates/ghs.mpd:
+        * templates/html.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/sle.mpd:
+        * templates/vc6.mpd:
+        * templates/vc7.mpd:
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+        * templates/vc8.mpd:
+
+          Added a template variable, libname_prefix, that can be set to
+          prefix all library names (sharedname, staticname and libs).  Note
+          that lit_libs and pure_libs are not affected.
+
 Mon Nov  7 10:15:31 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
