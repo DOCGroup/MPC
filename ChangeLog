@@ -1,3 +1,11 @@
+Thu Nov 10 12:23:43 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/TemplateParser.pm:
+
+          When checking for duplicate source files in duplicate_index(),
+          always use lowercase (since this is currently only used on
+          Windows).
+
 Thu Nov 10 09:01:25 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/automake.mpd:
