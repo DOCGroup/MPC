@@ -9,11 +9,11 @@ default:
 <%else%>
 <%if(sharedname)%>
 	shared_library
-	:outputname=<%if(dllout)%><%reltop_dllout%><%else%><%reltop_libout%><%endif%>/<%lib_prefix%><%sharedname%><%libdecorator%><%libext%>
+	:outputname=<%if(dllout)%><%reltop_dllout%><%else%><%reltop_libout%><%endif%>/<%lib_prefix%><%libname_prefix%><%sharedname%><%libdecorator%><%libext%>
 <%else%>
 <%if(staticname)%>
 	library
-	:outputname=<%reltop_libout%>/<%lib_prefix%><%staticname%><%libdecorator%><%libext%>
+	:outputname=<%reltop_libout%>/<%lib_prefix%><%libname_prefix%><%staticname%><%libdecorator%><%libext%>
 <%else%>
 	subproject
 <%endif%>
@@ -79,7 +79,7 @@ default:
 <%if(libs || lit_libs || pure_libs)%>
 <%if(exename || sharedname)%>
 <%foreach(libs)%>
-	:libraries=-l<%lib%><%libdecorator%>
+	:libraries=-l<%libname_prefix%><%lib%><%libdecorator%>
 <%endfor%>
 <%foreach(lit_libs)%>
 	:libraries=-l<%lit_lib%>
