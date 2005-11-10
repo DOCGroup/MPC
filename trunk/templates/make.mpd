@@ -56,8 +56,8 @@ CP            = <%copy("cp -p")%>
 NUL           = <%devnull("/dev/null")%>
 MKDIR         = <%makedir("mkdir -p")%>
 EXEEXT        = <%exe_ext%>
-LIBPREFIX     = <%lib_prefix%>
-LDLIBS        =<%foreach(libs lit_libs)%> <%libopt%><%lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%> <%ldlibs%>
+LIBPREFIX     = <%lib_prefix%><%libname_prefix%>
+LDLIBS        =<%foreach(libs)%> <%libopt%><%libname_prefix%><%lib%><%endfor%><%foreach(lit_libs)%> <%libopt%><%lit_lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%> <%ldlibs%>
 OBJS          =<%if(pch_source && pchsupport)%> <%targetoutdir%><%noextension(pch_source)%>$(OBJEXT)<%endif%><%foreach(source_files)%> <%targetoutdir%><%noextension(source_file)%>$(OBJEXT)<%endfor%><%if(rc)%><%foreach(resource_files)%> <%targetoutdir%><%resource_file%>$(OBJEXT)<%endfor%><%endif%>
 <%if(lib_ext)%>
 <%if(staticname)%>

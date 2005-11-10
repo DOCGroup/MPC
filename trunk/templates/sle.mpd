@@ -9,7 +9,7 @@
 		Type="gnuc"
 		DebugCallbackName="gdb"
 		Version="1"
-                OutputFile="<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(exename)%><%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>">
+                OutputFile="<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(exename)%><%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>">
 		<Menu>
 			<Target
 				Name="Compile"
@@ -35,7 +35,7 @@
 				RunFromDir="%rw">
 				<Exec
 					CmdLine='g++ %xup -g -o "%o" %f %libs %~other'
-                                        OtherOptions="-Wl,--enable-auto-import -Wl,-E -lws2_32 -lmswsock -lwsock32 -lnetapi32 <%foreach(libs)%>-l<%lib%><%lib_modifier%><%lib_ext%> <%endfor%><%foreach(lit_libs)%>-l<%lit_lib%>.lib <%endfor%><%foreach(pure_libs)%>-l<%pure_lib%> <%endfor%><%foreach(libpaths)%>-L'<%libpath%>' <%endfor%>"/>
+                                        OtherOptions="-Wl,--enable-auto-import -Wl,-E -lws2_32 -lmswsock -lwsock32 -lnetapi32 <%foreach(libs)%>-l<%libname_prefix%><%lib%><%lib_modifier%><%lib_ext%> <%endfor%><%foreach(lit_libs)%>-l<%lit_lib%>.lib <%endfor%><%foreach(pure_libs)%>-l<%pure_lib%> <%endfor%><%foreach(libpaths)%>-L'<%libpath%>' <%endfor%>"/>
 			</Target>
 			<Target
 				Name="Build"
@@ -104,7 +104,7 @@
 		Type="gnuc"
 		DebugCallbackName="gdb"
 		Version="1"
-                OutputFile="<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(exename)%><%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>">
+                OutputFile="<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(exename)%><%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>">
 		<Menu>
 			<Target
 				Name="Compile"
@@ -130,7 +130,7 @@
 				RunFromDir="%rw">
 				<Exec
 					CmdLine='g++ %xup -o "%o" %f %libs %~other'
-                                        OtherOptions="-Wl,--enable-auto-import -Wl,-E -lws2_32 -lmswsock -lwsock32 -lnetapi32 <%foreach(libs)%>-l<%lib%><%lib_modifier%><%lib_ext%> <%endfor%><%foreach(lit_libs)%>-l<%lit_lib%>.lib <%endfor%><%foreach(pure_libs)%>-l<%pure_lib%> <%endfor%><%foreach(libpaths)%>-L'<%libpath%>' <%endfor%>"/>
+                                        OtherOptions="-Wl,--enable-auto-import -Wl,-E -lws2_32 -lmswsock -lwsock32 -lnetapi32 <%foreach(libs)%>-l<%libname_prefix%><%lib%><%lib_modifier%><%lib_ext%> <%endfor%><%foreach(lit_libs)%>-l<%lit_lib%>.lib <%endfor%><%foreach(pure_libs)%>-l<%pure_lib%> <%endfor%><%foreach(libpaths)%>-L'<%libpath%>' <%endfor%>"/>
 			</Target>
 			<Target
 				Name="Build"
