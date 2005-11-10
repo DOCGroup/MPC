@@ -1299,7 +1299,7 @@ sub doif_duplicate_index {
   my($value) = shift;
 
   if (defined $value) {
-    my($base) = $self->basename($value);
+    my($base) = lc($self->basename($value));
     my($path) = $self->tp_dirname($value);
 
     if (!defined $self->{'dupfiles'}->{$base}) {
