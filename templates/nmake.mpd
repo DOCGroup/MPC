@@ -83,19 +83,22 @@ DEPEND :
 !ENDIF
 
 REALCLEAN : CLEAN
-<%if(pdbl)%>
-<%if(exename)%>
+<%if(pdbl && exename)%>
 	-@del /f/q "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.pdb"
 <%endif%>
 <%if(sharedname && type_is_dynamic)%>
+<%if(pdbl)%>
 	-@del /f/q "$(OUTDIR)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
+<%endif%>
         -@del /f/q "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>"
         -@del /f/q "$(OUTDIR)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
         -@del /f/q "$(OUTDIR)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.exp"
         -@del /f/q "$(OUTDIR)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.ilk"
 <%else%>
 <%if(staticname && type_is_dynamic)%>
+<%if(pdbl || pdbc)%>
 	-@del /f/q "$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
+<%endif%>
         -@del /f/q "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>"
 <%endif%>
 <%endif%>
@@ -104,11 +107,8 @@ REALCLEAN : CLEAN
         -@del /f/q "$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.exp"
         -@del /f/q "$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.ilk"
 <%endif%>
-<%endif%>
-<%if(pdbc)%>
-<%if(type_is_static)%>
+<%if(pdbc && type_is_static)%>
 	-@del /f/q "<%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
-<%endif%>
 <%endif%>
 <%if(exename)%>
         -@del /f/q "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>"
