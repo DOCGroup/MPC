@@ -953,15 +953,7 @@ sub generate_hierarchy {
   ## It is necessary to sort the projects to get the correct ordering.
   ## Projects in the current directory must come before projects in
   ## other directories.
-  my(@projects)  = sort { my($sa) = ($a =~ /\//);
-                          my($sb) = ($b =~ /\//);
-                          if ($sa && !$sb) {
-                            return 1;
-                          }
-                          elsif ($sb && !$sa) {
-                            return -1;
-                          }
-                          return $a cmp $b;
+  my(@projects)  = sort { return $self->sort_projects_by_directory($a, $b) + 0;
                         } @{$origproj};
   my(%projinfo)  = %{$originfo};
 
@@ -1486,7 +1478,7 @@ sub sort_by_groups {
                      ($self->{'current_input'} eq '' ?
                        'default' : $self->{'current_input'}) .
                      ' workspace. ' .
-                     'The following directories are involved: ' .
+                     'The following directories or projects are involved: ' .
                      join(' and ', @dirs));
       return;
     }
@@ -1561,7 +1553,8 @@ sub sort_by_groups {
 sub sort_dependencies {
   my($self)     = shift;
   my($projects) = shift;
-  my(@list)     = sort @$projects;
+  my(@list)     = sort { return $self->sort_projects_by_directory($a, $b) + 0;
+                       } @$projects;
 
   ## Put the projects in the order specified
   ## by the project dpendencies.  We only need to do
@@ -1580,7 +1573,7 @@ sub sort_dependencies {
         $previous = [$li, $dir];
       }
     }
-     push(@grindex, [$previous->[0], $#list]);
+    push(@grindex, [$previous->[0], $#list]);
 
     ## Next, sort the individual groups
     foreach my $gr (@grindex) {
@@ -1950,6 +1943,23 @@ sub source_listing_callback {
   my($cwd)          = $self->getcwd();
   $self->{'project_file_list'}->{$project_name} = [ $project_file,
                                                     $cwd, \@files ];
+}
+
+
+sub sort_projects_by_directory {
+  my($self)  = shift;
+  my($left)  = shift;
+  my($right) = shift;
+  my($sa)    = ($left =~ /\//);
+  my($sb)    = ($right =~ /\//);
+
+  if ($sa && !$sb) {
+    return 1;
+  }
+  elsif ($sb && !$sa) {
+    return -1;
+  }
+  return $left cmp $right;
 }
 
 # ************************************************************
