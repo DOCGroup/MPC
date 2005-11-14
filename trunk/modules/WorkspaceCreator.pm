@@ -1637,9 +1637,9 @@ sub number_target_deps {
 
 
 sub project_target_translation {
-  my($self)  = shift;
-  my($cased) = shift;
-  my(%map)   = ();
+  my($self) = shift;
+  my($case) = shift;
+  my(%map)  = ();
 
   ## Translate project names to avoid target collision with
   ## some versions of make.
@@ -1647,7 +1647,10 @@ sub project_target_translation {
     my($dir)  = $self->mpc_dirname($key);
     my($name) = $self->{'project_info'}->{$key}->[0];
 
-    if (($cased && $dir eq $name) || (!$cased && lc($dir) eq lc($name))) {
+    ## We want to compare to the upper most directory.  This will be the
+    ## one that may conflict with the project name.
+    $dir =~ s/[\/\\].*//;
+    if (($case && $dir eq $name) || (!$case && lc($dir) eq lc($name))) {
       $map{$key} = "$name-target";
     }
     else {
