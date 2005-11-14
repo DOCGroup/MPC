@@ -1,3 +1,11 @@
+Mon Nov 14 09:50:38 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where a project name that conflicts with a directory
+          name would not get mapped in cases where the directory had
+          multiple levels.
+
 Mon Nov 14 07:40:19 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WorkspaceCreator.pm:
