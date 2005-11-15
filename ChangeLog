@@ -1,3 +1,9 @@
+Thu Nov 15 18:59:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/boost_filesystem.mpb:
+          Added specific for windows environments, should resolve the
+          compile errors with cidlc on windows
+
 Mon Nov 14 12:06:15 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/nmake.mpd:
