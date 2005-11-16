@@ -659,6 +659,15 @@ sub process_assignment_sub {
     if ($nval =~ s/$value\s+// || $nval =~ s/$value$//) {
       $self->process_assignment($name, $nval, $assign);
     }
+    else {
+      ## Try the same thing only with double quotes around the value.
+      ## Double quotes will be preserved in the value when the value
+      ## contains spaces.
+      $value = '"' . $value . '"';
+      if ($nval =~ s/$value\s+// || $nval =~ s/$value$//) {
+        $self->process_assignment($name, $nval, $assign);
+      }
+    }
   }
 }
 
