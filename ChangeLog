@@ -1,3 +1,8 @@
+Wed Nov 16 15:22:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/boost_filesystem.mpb:
+          Reverted my change of Thu Nov 15 18:59:12 UTC 2005
+
 Wed Nov 16 08:30:51 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
