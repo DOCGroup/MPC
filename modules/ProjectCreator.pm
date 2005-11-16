@@ -1616,7 +1616,8 @@ sub remove_duplicate_addition {
       $value = $self->modify_assignment_value($name, $value);
       foreach my $val (@{$self->create_array($value)}) {
         if (!exists $parts{$val}) {
-          $allowed .= $val . ' ';
+          my($qt) = ($val =~ /\s/ ? '"' : '');
+          $allowed .= $qt . $val . $qt . ' ';
         }
       }
       $allowed =~ s/\s+$//;
