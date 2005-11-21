@@ -2,5 +2,7 @@
 // $Id$
 
 project: boost_base {
-  lit_libs += $(BOOST_STATIC_LIB_PREFIX)boost_filesystem$(BOOST_CFG)
+  specific(gnuace,local) {
+    lit_libs += $(BOOST_STATIC_LIB_PREFIX)boost_filesystem$(BOOST_CFG)
+  }
 }

@@ -2,6 +2,8 @@
 // $Id$
 
 project: boost_base {
-  macros   += BOOST_REGEX_NO_LIB
-  lit_libs += $(BOOST_STATIC_LIB_PREFIX)boost_regex$(BOOST_CFG)
+  specific(gnuace,local) {
+    macros   += BOOST_REGEX_NO_LIB
+    lit_libs += $(BOOST_STATIC_LIB_PREFIX)boost_regex$(BOOST_CFG)
+  }
 }
