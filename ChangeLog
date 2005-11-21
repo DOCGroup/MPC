@@ -1,3 +1,12 @@
+Mon Nov 21 15:23:40 2005  William Otte  <wotte@dre.vanderbilt.edu>
+
+	* config/boost_filesystem.mpb
+	* config/boost_regex.mpb
+
+	Scoped the lit_libs directive inside of a gnuace specific
+	block to take advantage of automatic library resolution provided
+	by the Windows version of boost.
+
 Mon Nov 21 09:26:35 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
