@@ -22,7 +22,7 @@ CPU           = <%cpu%>
 <%if(pic)%>
 PICFLAGS      = <%pic%>
 <%endif%>
-CPPFLAGS      = $(PICFLAGS) $(GENFLAGS)<%if(compile_flags)%> <%compile_flags%><%endif%><%if(cpu)%> -DCPU=$(CPU)<%endif%><%if(tempinc)%> <%tempincopt%>$(TEMPINCDIR)<%endif%><%if(compilerflags)%> <%compilerflags%><%endif%><%if(build64bit && compilerflags64)%> <%compilerflags64%><%endif%><%if(pch_source && pchsupport)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%><%foreach(platforms)%><%if(extracppflags)%> <%extracppflags%><%endif%><%endfor%><%if(includes)%><%foreach(includes)%> -I<%include%><%endfor%><%endif%><%if(macros)%><%foreach(macros)%> -D<%macro%><%endfor%><%endif%>
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS)<%if(compile_flags)%> <%compile_flags%><%endif%><%if(cpu)%> -DCPU=$(CPU)<%endif%><%if(tempincopt)%> <%tempincopt%>$(TEMPINCDIR)<%endif%><%if(compilerflags)%> <%compilerflags%><%endif%><%if(build64bit && compilerflags64)%> <%compilerflags64%><%endif%><%if(pch_source && pchsupport)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%><%foreach(platforms)%><%if(extracppflags)%> <%extracppflags%><%endif%><%endfor%><%if(includes)%><%foreach(includes)%> -I"<%include%>"<%endfor%><%endif%><%if(macros)%><%foreach(macros)%> -D<%macro%><%endfor%><%endif%>
 OBJEXT        = <%obj_ext%>
 OUTPUT_OPTION = <%output_option(-o \"$@\")%>
 COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) <%compile_option("-c")%>
@@ -36,9 +36,9 @@ ARFLAGS       = <%if(extraarflags)%><%extraarflags%> <%endif%><%arflags%>
 <%endif%>
 <%endfor%>
 <%if(tempinc)%>
-TEMPINCDIR    = <%tempinc%><%slash%><%project_name%>
+TEMPINCDIR    = <%tempinc%><%if(tempincopt)%><%slash%><%project_name%><%endif%>
 <%endif%>
-LDFLAGS       =<%if(libpaths)%><%foreach(libpaths)%> -L<%libpath%><%endfor%><%endif%><%if(linkflags)%> <%linkflags%><%endif%><%if(build64bit && linkflags64)%> <%linkflags64%><%endif%>
+LDFLAGS       =<%if(libpaths)%><%foreach(libpaths)%> -L"<%libpath%>"<%endfor%><%endif%><%if(linkflags)%> <%linkflags%><%endif%><%if(build64bit && linkflags64)%> <%linkflags64%><%endif%>
 <%endfor%>
 CCC           = $(CXX)
 MAKEFILE      = <%project_file%>
@@ -57,7 +57,7 @@ NUL           = <%devnull("/dev/null")%>
 MKDIR         = <%makedir("mkdir -p")%>
 EXEEXT        = <%exe_ext%>
 LIBPREFIX     = <%lib_prefix%><%libname_prefix%>
-LDLIBS        =<%foreach(libs)%> <%libopt%><%libname_prefix%><%lib%><%endfor%><%foreach(lit_libs)%> <%libopt%><%lit_lib%><%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%> <%ldlibs%>
+LDLIBS        =<%foreach(libs)%> <%libopt%>"<%libname_prefix%><%lib%>"<%endfor%><%foreach(lit_libs)%> <%libopt%>"<%lit_lib%>"<%endfor%><%foreach(pure_libs)%> "<%pure_lib%>"<%endfor%> <%ldlibs%>
 OBJS          =<%if(pch_source && pchsupport)%> <%targetoutdir%><%noextension(pch_source)%>$(OBJEXT)<%endif%><%foreach(source_files)%> <%targetoutdir%><%noextension(source_file)%>$(OBJEXT)<%endfor%><%if(rc)%><%foreach(resource_files)%> <%targetoutdir%><%resource_file%>$(OBJEXT)<%endfor%><%endif%>
 <%if(lib_ext)%>
 <%if(staticname)%>
@@ -158,7 +158,7 @@ all: $(LIB)<%if(postbuild)%> __postbuild__<%endif%>
 $(LIB): $(LTARGETDIR) <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%>$(OBJS)
 <%foreach(configurations)%>
 <%foreach(platforms)%>
-	$(AR) $(ARFLAGS) $(LIB) $(OBJS)<%if(tempinc)%> `find $(TEMPINCDIR) -type f`<%endif%>
+	$(AR) $(ARFLAGS) $(LIB) $(OBJS)<%if(tempinc)%> `find $(TEMPINCDIR) -name \*.o\*`<%endif%>
 <%if(ranlib)%>
 	ranlib $(LIB)
 <%endif%>
