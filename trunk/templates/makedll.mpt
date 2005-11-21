@@ -55,6 +55,17 @@ cxx {
   pchuse     = "-nopch_messages -use_pch "
 }
 
+cxx_vms {
+  cxx             = cxx
+  arflags         = r
+  compilerflags   = -ieee -names_as_is_short
+  linkflags       = -threads
+  shflags         = -shared -auto_symvec
+  clean           = cxx_repository
+  tempinc         = cxx_repository
+  platforms       = openvms
+}
+
 gcc {
   cxx       = g++
   pic       = -fPIC
@@ -159,6 +170,16 @@ jvm {
 tru64 {
   shflags       = -shared /usr/lib/libcxxstd.a
   ldlibs        = -ltli -lrt
+  extracppflags = -D__USE_STD_IOSTREAM -D_REENTRANT
+}
+
+openvms {
+  // If you want to create shareable images, you can
+  // set dll_ext to .exe using the -value_template option of MPC.
+  lib_prefix    =
+  dll_ext       =
+  exe_ext       = .exe
+  ldlibs        = -lpthread
   extracppflags = -D__USE_STD_IOSTREAM -D_REENTRANT
 }
 

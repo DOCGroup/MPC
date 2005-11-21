@@ -272,8 +272,9 @@ sub new {
   $self->{'parents_read'}          = {};
   $self->{'inheritance_tree'}      = {};
   $self->{'remove_files'}          = {};
+  $self->{'expanded'}              = {};
 
-  my($typefeaturef) = dirname($gfeature) . '/' .
+  my($typefeaturef) = $self->mpc_dirname($gfeature) . '/' .
                       $self->{'pctype'} . '.features';
   $typefeaturef = undef if (! -r $typefeaturef);
   $self->{'feature_parser'}        = new FeatureParser($features,
@@ -631,6 +632,7 @@ sub parse_line {
             $self->{'remove_files'}          = {};
             $self->{'custom_special_output'} = {};
             $self->{'custom_special_depend'} = {};
+            $self->{'expanded'}              = {};
             $self->reset_generating_types();
           }
         }
@@ -736,7 +738,7 @@ sub parse_line {
           if ($type eq $self->{'pctype'} ||
               $type eq $self->get_default_component_name()) {
             ($status, $errorString) = $self->parse_scope(
-                                        $ih, $values[1], $type,
+                                        $ih, $comp, $type,
                                         $self->{'valid_names'},
                                         $self->get_assignment_hash(),
                                         {});
@@ -746,7 +748,7 @@ sub parse_line {
             ## throwing away whatever is processed.  However, it
             ## could still be invalid code that will cause an error.
             ($status, $errorString) = $self->parse_scope(
-                                        $ih, $values[1], undef,
+                                        $ih, $comp, undef,
                                         $self->{'valid_names'},
                                         undef,
                                         $self->get_assignment_hash());
@@ -754,6 +756,9 @@ sub parse_line {
         }
         elsif ($comp eq 'define_custom') {
           ($status, $errorString) = $self->parse_define_custom($ih, $name);
+        }
+        elsif ($comp eq 'expand') {
+          ($status, $errorString) = $self->parse_scope($ih, $comp, $name);
         }
         else {
           $errorString = "Invalid component name: $comp";
@@ -880,6 +885,46 @@ sub handle_unknown_assignment {
 }
 
 
+sub handle_scoped_unknown {
+  my($self)  = shift;
+  my($fh)    = shift;
+  my($type)  = shift;
+  my($flags) = shift;
+  my($line)  = shift;
+
+  if (defined $type) {
+    if ($type eq $self->get_default_component_name()) {
+      return 0, 'Can not set expansion in this context';
+    }
+    else {
+      if (!defined $self->{'expanded'}->{$type}) {
+        my($ok) = 1;
+        while($line =~ /\$(\w+)/) {
+          my($name) = $1;
+          my($val)  = '';
+          if ($name eq 'PWD') {
+            $val = $self->getcwd();
+          }
+          elsif (defined $ENV{$name}) {
+            $val = $ENV{$name};
+          }
+          else {
+            $ok = undef;
+            last;
+          }
+          $line =~ s/\$\w+/$val/;
+        }
+        $self->{'expanded'}->{$type} = $line if ($ok);
+      }
+      return 1, undef;
+    }
+  }
+
+  ## If the type is not defined, then this is something other than an
+  ## assignment in a 'specific' section and should be flagged as an error
+  return 0, "Unrecognized line: $line";
+}
+
 sub process_component_line {
   my($self)    = shift;
   my($tag)     = shift;
@@ -964,7 +1009,7 @@ sub process_component_line {
       push(@files, $1);
     }
     elsif ($line =~ /[\?\*\[\]]/) {
-      @files = glob($line);
+      @files = $self->mpc_glob($line);
     }
     else {
       push(@files, $line);
@@ -1204,7 +1249,7 @@ sub parse_components {
     my(%checked) = ();
     my(@files)   = ();
     foreach my $exc (@exclude) {
-      my($dname) = dirname($exc);
+      my($dname) = $self->mpc_dirname($exc);
       if (!defined $checked{$dname}) {
         $checked{$dname} = 1;
         push(@files, $self->generate_default_file_list($dname,
@@ -4100,6 +4145,120 @@ sub adjust_value {
 }
 
 
+sub expand_variables {
+  my($self)            = shift;
+  my($value)           = shift;
+  my($keys)            = shift;
+  my($rel)             = shift;
+  my($expand_template) = shift;
+  my($scope)           = shift;
+  my($expand)          = shift;
+  my($warn)            = shift;
+  my($cwd)             = $self->getcwd();
+  my($start)           = 0;
+
+  ## Fix up the value for Windows switch the \\'s to /
+  if ($self->{'convert_slashes'}) {
+    $cwd =~ s/\\/\//g;
+  }
+
+  while(substr($value, $start) =~ /(\$\(([^)]+)\))/) {
+    my($whole)  = $1;
+    my($name)   = $2;
+    my($val)    = $$rel{$name};
+
+    if (defined $val) {
+      if ($expand) {
+        if ($self->{'convert_slashes'}) {
+          $val = $self->slash_to_backslash($val);
+        }
+        substr($value, $start) =~ s/\$\([^)]+\)/$val/;
+        $whole = $val;
+      }
+      else {
+        ## Fix up the value for Windows switch the \\'s to /
+        if ($self->{'convert_slashes'}) {
+          $val =~ s/\\/\//g;
+        }
+
+        ## Here we make an assumption that if we convert slashes to
+        ## back-slashes, we also have a case-insensitive file system.
+        my($icwd) = ($self->{'convert_slashes'} ? lc($cwd) : $cwd);
+        my($ival) = ($self->{'convert_slashes'} ? lc($val) : $val);
+        my($iclen) = length($icwd);
+        my($ivlen) = length($ival);
+
+        ## If the relative value contains the current working
+        ## directory plus additional subdirectories, we must pull
+        ## off the additional directories into a temporary where
+        ## it can be put back after the relative replacement is done.
+        my($append) = undef;
+        if (index($ival, $icwd) == 0 && $iclen != $ivlen &&
+            substr($ival, $iclen, 1) eq '/') {
+          my($diff) = $ivlen - $iclen;
+          $append = substr($ival, $iclen);
+          substr($ival, $iclen, $diff) = '';
+          $ivlen -= $diff;
+        }
+
+        if (index($icwd, $ival) == 0 &&
+            ($iclen == $ivlen || substr($icwd, $ivlen, 1) eq '/')) {
+          my($current) = $icwd;
+          substr($current, 0, $ivlen) = '';
+
+          my($dircount) = ($current =~ tr/\///);
+          if ($dircount == 0) {
+            $ival = '.';
+          }
+          else {
+            $ival = '../' x $dircount;
+            $ival =~ s/\/$//;
+          }
+          if (defined $append) {
+            $ival .= $append;
+          }
+          if ($self->{'convert_slashes'}) {
+            $ival = $self->slash_to_backslash($ival);
+          }
+          substr($value, $start) =~ s/\$\([^)]+\)/$ival/;
+          $whole = $ival;
+        }
+      }
+    }
+    elsif ($expand_template ||
+           $self->expand_variables_from_template_values()) {
+      my($ti) = $self->get_template_input();
+      if (defined $ti) {
+        $val = $ti->get_value($name);
+      }
+      my($sname) = (defined $scope ? $scope . "::$name" : undef);
+      my($arr) = $self->adjust_value([$sname, $name],
+                                     (defined $val ? $val : []));
+      if (defined $$arr[0]) {
+        $val = "@$arr";
+        if ($self->{'convert_slashes'}) {
+          $val = $self->slash_to_backslash($val);
+        }
+        substr($value, $start) =~ s/\$\([^)]+\)/$val/;
+
+        ## We have replaced the template value, but that template
+        ## value may contain a $() construct that may need to get
+        ## replaced too.
+        $whole = '';
+      }
+      else {
+        if ($expand && $warn) {
+          $self->warning("Unable to expand $name.");
+        }
+      }
+    }
+    $start += length($whole);
+  }
+
+  return $value;
+}
+
+
 sub relative {
   my($self)            = shift;
   my($value)           = shift;
@@ -4110,119 +4269,41 @@ sub relative {
     if (UNIVERSAL::isa($value, 'ARRAY')) {
       my(@built) = ();
       foreach my $val (@$value) {
-        push(@built, $self->relative($val, $expand_template, $scope));
+        my($rel) = $self->relative($val, $expand_template, $scope);
+        if (UNIVERSAL::isa($rel, 'ARRAY')) {
+          push(@built, @$rel);
+        }
+        else {
+          push(@built, $rel);
+        }
       }
       $value = \@built;
     }
     elsif ($value =~ /\$/) {
-      my($useenv) = $self->get_use_env();
-      my($rel)    = ($useenv ? \%ENV : $self->get_relative());
-      my(@keys)   = keys %$rel;
-
+      my($ovalue) = $value;
+      my(@keys) = keys %{$self->{'expanded'}};
       if (defined $keys[0]) {
-        my($expand) = $self->get_expand_vars();
-        my($cwd)    = $self->getcwd();
-        my($start)  = 0;
+        $value = $self->expand_variables($value, \@keys,
+                                         $self->{'expanded'},
+                                         $expand_template, $scope, 1);
+      }
 
-        ## Fix up the value for Windows switch the \\'s to /
-        if ($self->{'convert_slashes'}) {
-          $cwd =~ s/\\/\//g;
-        }
-
-        while(substr($value, $start) =~ /(\$\(([^)]+)\))/) {
-          my($whole)  = $1;
-          my($name)   = $2;
-          my($val)    = $$rel{$name};
-
-          if (defined $val) {
-            if ($expand) {
-              if ($self->{'convert_slashes'}) {
-                $val = $self->slash_to_backslash($val);
-              }
-              substr($value, $start) =~ s/\$\([^)]+\)/$val/;
-              $whole = $val;
-            }
-            else {
-              ## Fix up the value for Windows switch the \\'s to /
-              if ($self->{'convert_slashes'}) {
-                $val =~ s/\\/\//g;
-              }
-
-              ## Here we make an assumption that if we convert slashes to
-              ## back-slashes, we also have a case-insensitive file system.
-              my($icwd) = ($self->{'convert_slashes'} ? lc($cwd) : $cwd);
-              my($ival) = ($self->{'convert_slashes'} ? lc($val) : $val);
-              my($iclen) = length($icwd);
-              my($ivlen) = length($ival);
-
-              ## If the relative value contains the current working
-              ## directory plus additional subdirectories, we must pull
-              ## off the additional directories into a temporary where
-              ## it can be put back after the relative replacement is done.
-              my($append) = undef;
-              if (index($ival, $icwd) == 0 && $iclen != $ivlen &&
-                  substr($ival, $iclen, 1) eq '/') {
-                my($diff) = $ivlen - $iclen;
-                $append = substr($ival, $iclen);
-                substr($ival, $iclen, $diff) = '';
-                $ivlen -= $diff;
-              }
-
-              if (index($icwd, $ival) == 0 &&
-                  ($iclen == $ivlen || substr($icwd, $ivlen, 1) eq '/')) {
-                my($current) = $icwd;
-                substr($current, 0, $ivlen) = '';
-
-                my($dircount) = ($current =~ tr/\///);
-                if ($dircount == 0) {
-                  $ival = '.';
-                }
-                else {
-                  $ival = '../' x $dircount;
-                  $ival =~ s/\/$//;
-                }
-                if (defined $append) {
-                  $ival .= $append;
-                }
-                if ($self->{'convert_slashes'}) {
-                  $ival = $self->slash_to_backslash($ival);
-                }
-                substr($value, $start) =~ s/\$\([^)]+\)/$ival/;
-                $whole = $ival;
-              }
-            }
-          }
-          elsif ($expand_template ||
-                 $self->expand_variables_from_template_values()) {
-            my($ti) = $self->get_template_input();
-            if (defined $ti) {
-              $val = $ti->get_value($name);
-            }
-            my($sname) = (defined $scope ? $scope . "::$name" : undef);
-            my($arr) = $self->adjust_value([$sname, $name],
-                                           (defined $val ? $val : []));
-            if (defined $$arr[0]) {
-              $val = "@$arr";
-              if ($self->{'convert_slashes'}) {
-                $val = $self->slash_to_backslash($val);
-              }
-              substr($value, $start) =~ s/\$\([^)]+\)/$val/;
-
-              ## We have replaced the template value, but that template
-              ## value may contain a $() construct that may need to get
-              ## replaced too.
-              $whole = '';
-            }
-            else {
-              if ($expand) {
-                $self->warning("Unable to expand $name.");
-              }
-            }
-          }
-          $start += length($whole);
+      if ($ovalue eq $value) {
+        my($rel) = ($self->get_use_env() ? \%ENV : $self->get_relative());
+        @keys = keys %$rel;
+        if (defined $keys[0]) {
+          $value = $self->expand_variables($value, \@keys, $rel,
+                                           $expand_template, $scope,
+                                           $self->get_expand_vars(), 1);
         }
       }
     }
+  }
+
+  ## Values that have strings enclosed in double quotes are to
+  ## be interpreted as elements of an array
+  if (defined $value && $value =~ /^"[^"]+"(\s+"[^"]+")+$/) {
+    $value = $self->create_array($value);
   }
 
   return $value;
