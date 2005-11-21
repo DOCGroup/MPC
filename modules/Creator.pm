@@ -356,25 +356,32 @@ sub parse_scope {
       ($status, $errorString) = $self->handle_scoped_end($type, $flags);
       last;
     }
-    elsif (defined $elseflags && $line =~ /^}\s*else\s*{$/) {
-      ## From here on out anything after this goes into the $elseflags
-      $flags = $elseflags;
-      $elseflags = undef;
+    elsif ($line =~ /^}\s*else\s*{$/) {
+      if (defined $elseflags) {
+        ## From here on out anything after this goes into the $elseflags
+        $flags = $elseflags;
+        $elseflags = undef;
 
-      ## We need to adjust the type also.  If there was a type
-      ## then the first part of the clause was used.  If there was
-      ## no type, then the first part was ignored and the second
-      ## part will be used.
-      if (defined $type) {
-        $type = undef;
+        ## We need to adjust the type also.  If there was a type
+        ## then the first part of the clause was used.  If there was
+        ## no type, then the first part was ignored and the second
+        ## part will be used.
+        if (defined $type) {
+          $type = undef;
+        }
+        else {
+          $type = $self->get_default_component_name();
+        }
       }
       else {
-        $type = $self->get_default_component_name();
+        $status = 0;
+        $errorString = 'An else is not allowed in this context';
+        last;
       }
     }
     else {
       my(@values) = ();
-      if ($self->parse_assignment($line, \@values)) {
+      if (defined $validNames && $self->parse_assignment($line, \@values)) {
         if (defined $$validNames{$values[1]}) {
           if ($values[0] eq 'assignment') {
             $self->process_assignment($values[1], $values[2], $flags);
@@ -428,9 +435,8 @@ sub generate_default_file_list {
     my($need_dir) = ($dir ne '.');
     my($skip)     = 0;
     foreach my $file (grep(!/^\.\.?$/, readdir($dh))) {
-      if ($^O eq 'VMS') {
-        $file =~ s/\.dir$//;
-      }
+      $file =~ s/\.dir$// if ($^O eq 'VMS');
+
       ## Prefix each file name with the directory only if it's not '.'
       my($full) = ($need_dir ? "$dir/" : '') . $file;
 
@@ -511,9 +517,8 @@ sub extension_recursive_input_list {
 
   if (opendir($fh, $dir)) {
     foreach my $file (grep(!/^\.\.?$/, readdir($fh))) {
-      if ($^O eq 'VMS') {
-        $file =~ s/\.dir$//;
-      }
+      $file =~ s/\.dir$// if ($^O eq 'VMS');
+
       my($skip) = 0;
       my($full) = ($dir ne '.' ? "$dir/" : '') . $file;
 

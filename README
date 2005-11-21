@@ -234,6 +234,23 @@ specific        This scope allows assignments that are specific to a
                 the -value_template command line option.  See the USAGE file
                 for more information.
 
+expand          This scope allows the specification for a variable that is
+                found within $() to be expanded from the list of possible
+                values.  These possible values can contain environment
+                variables (specified by $VAR_NAME) and plain text.  If a
+                possible value contains an environment variable and that
+                variable is defined then this value is used to expand the
+                $() variable.  If the environment variable is not defined
+                then this possible value is not used.  The syntax is as
+                follows:
+
+                specific(<variable name>) {
+                  <possible value 1>
+                  .
+                  .
+                  <possible value n>
+                }
+
 conditional     This scope allows addition of source files conditionally
                 based on a particular project type.  The syntax is as
                 follows:

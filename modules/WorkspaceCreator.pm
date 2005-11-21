@@ -356,6 +356,13 @@ sub parse_scope {
     return $self->parse_exclude($fh, $type);
   }
   else {
+    ## We need to make a copy of the current assignment hash
+    ## to ensure that multiply scoped assignments/additions/subtractions
+    ## work and contain the non-scoped assignments/additions/subtractions
+    if (!defined $flags) {
+      my(%copy) = %{$self->get_assignment_hash()};
+      $flags = \%copy;
+    }
     return $self->SUPER::parse_scope($fh, $name, $type,
                                      $validNames, $flags, $elseflags);
   }

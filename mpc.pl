@@ -15,9 +15,10 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 use strict;
 use Cwd;
 use Config;
+use FindBin;
 use File::Basename;
 
-my($basePath) = getExecutePath($0);
+my($basePath) = $FindBin::Bin;
 unshift(@INC, $basePath . '/modules');
 
 require MPC;
@@ -29,56 +30,6 @@ require MPC;
 sub getBasePath {
   return $basePath;
 }
-
-
-sub which {
-  my($prog) = shift;
-  my($exec) = $prog;
-
-  if (defined $ENV{'PATH'}) {
-    my($part)   = '';
-    my($envSep) = $Config{'path_sep'};
-    foreach $part (split(/$envSep/, $ENV{'PATH'})) {
-      $part .= "/$prog";
-      if ( -x $part ) {
-        $exec = $part;
-        last;
-      }
-    }
-  }
-
-  return $exec;
-}
-
-
-sub getExecutePath {
-  my($prog) = shift;
-  my($loc)  = '';
-
-  if ($prog ne basename($prog)) {
-    if ($prog =~ /^[\/\\]/ ||
-        $prog =~ /^[A-Za-z]:[\/\\]?/) {
-      $loc = dirname($prog);
-    }
-    else {
-      $loc = getcwd() . '/' . dirname($prog);
-    }
-  }
-  else {
-    $loc = dirname(which($prog));
-  }
-
-  if ($loc eq '.') {
-    $loc = getcwd();
-  }
-
-  if ($loc ne '') {
-    $loc .= '/';
-  }
-
-  return $loc;
-}
-
 
 # ************************************************************
 # Main Section

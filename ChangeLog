@@ -1,3 +1,26 @@
+Mon Nov 21 09:26:35 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+
+          Added a new clause (expand) that can be used to set the expansion
+          values of a particular variable.  This lets users define to what
+          $(VAR_NAME) gets expanded within an mpc file.  See the README for
+          more information.
+
+        * mpc.pl:
+        * mwc.pl:
+        * modules/DirectoryManager.pm:
+        * modules/WorkspaceCreator.pm:
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Added better support for OpenVMS.  This mainly entailed dealing
+          with the .dir extension on directories and [] within wildcard
+          specifications (as the OpenVMS glob() function does not handle
+          these).
+
 Wed Nov 16 08:30:51 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
