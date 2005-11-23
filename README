@@ -244,7 +244,7 @@ expand          This scope allows the specification for a variable that is
                 then this possible value is not used.  The syntax is as
                 follows:
 
-                specific(<variable name>) {
+                expand(<variable name>) {
                   <possible value 1>
                   .
                   .
