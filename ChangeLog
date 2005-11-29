@@ -1,3 +1,19 @@
+Tue Nov 29 10:11:14 2005  William Otte  <wotte@dre.vanderbilt.edu>
+
+	* config/boost_date_time.mpb
+	* config/boost_filesystem.mpb
+	* config/boost_prg_exec_monitor.mpb
+	* config/boost_regex.mpb
+	* config/boost_signals.mpb
+	* config/boost_test_exec_monitor.mpb
+	* config/boost_thread.mpb
+	* config/boost_unit_test_framework.mpb
+
+	Corrected a problem with my previous commit that broke boost
+	on platforms other than gnuace and windows.  Thanks to Chad
+	Elliot and Kitty B. for pointing out the problem and suggesting
+	a fix.
+
 Mon Nov 21 15:23:40 2005  William Otte  <wotte@dre.vanderbilt.edu>
 
 	* config/boost_filesystem.mpb
