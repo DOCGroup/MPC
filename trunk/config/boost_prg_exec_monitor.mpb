@@ -2,11 +2,7 @@
 // $Id$
 
 project: boost_base {
-  // The people at boost have to be difficult.  All static
-  // libraries are prefixed with lib on Windows.
-  specific(bmake, borland, cbx, em3, nmake, vc6, vc7, vc71, vc8) {
-    lit_libs += libboost_prg_exec_monitor$(BOOST_CFG)
-  } else {
+  specific(!vc6, !vc7, !vc71, !vc8, !nmake, !em3, !bmake, !cbx) {
     lit_libs += $(BOOST_STATIC_LIB_PREFIX)boost_prg_exec_monitor$(BOOST_CFG)
   }
 }
