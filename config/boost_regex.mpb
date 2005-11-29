@@ -2,8 +2,7 @@
 // $Id$
 
 project: boost_base {
-  specific(gnuace,local) {
-    macros   += BOOST_REGEX_NO_LIB
+  specific(!vc6, !vc7, !vc71, !vc8, !nmake, !em3, !bmake, !cbx) {
     lit_libs += $(BOOST_STATIC_LIB_PREFIX)boost_regex$(BOOST_CFG)
   }
 }
