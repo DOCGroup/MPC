@@ -1,34 +1,44 @@
+Tue Dec  6 06:36:27 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where MPC would go into an infinite loop (while
+          generating an intermediate workspace) if there were duplicate
+          project names within a single workspace.  The sort_by_groups()
+          method is being called prior to the method that checks for
+          duplicate projects.
+
 Mon Dec  5 14:17:35 2005  William Otte  <wotte@dre.vanderbilt.edu>
 
-	* config/boost_unit_test_framework.mpb
+        * config/boost_unit_test_framework.mpb
 
-	Automatic linking is not supported for the unit test
-	framework, see http://boost.org/more/getting_started.html#auto-link.
+        Automatic linking is not supported for the unit test
+        framework, see http://boost.org/more/getting_started.html#auto-link.
 
 Tue Nov 29 10:11:14 2005  William Otte  <wotte@dre.vanderbilt.edu>
 
-	* config/boost_date_time.mpb
-	* config/boost_filesystem.mpb
-	* config/boost_prg_exec_monitor.mpb
-	* config/boost_regex.mpb
-	* config/boost_signals.mpb
-	* config/boost_test_exec_monitor.mpb
-	* config/boost_thread.mpb
-	* config/boost_unit_test_framework.mpb
+        * config/boost_date_time.mpb
+        * config/boost_filesystem.mpb
+        * config/boost_prg_exec_monitor.mpb
+        * config/boost_regex.mpb
+        * config/boost_signals.mpb
+        * config/boost_test_exec_monitor.mpb
+        * config/boost_thread.mpb
+        * config/boost_unit_test_framework.mpb
 
-	Corrected a problem with my previous commit that broke boost
-	on platforms other than gnuace and windows.  Thanks to Chad
-	Elliot and Kitty B. for pointing out the problem and suggesting
-	a fix.
+        Corrected a problem with my previous commit that broke boost
+        on platforms other than gnuace and windows.  Thanks to Chad
+        Elliott and Kitty B. for pointing out the problem and suggesting
+        a fix.
 
 Mon Nov 21 15:23:40 2005  William Otte  <wotte@dre.vanderbilt.edu>
 
-	* config/boost_filesystem.mpb
-	* config/boost_regex.mpb
+        * config/boost_filesystem.mpb
+        * config/boost_regex.mpb
 
-	Scoped the lit_libs directive inside of a gnuace specific
-	block to take advantage of automatic library resolution provided
-	by the Windows version of boost.
+        Scoped the lit_libs directive inside of a gnuace specific
+        block to take advantage of automatic library resolution provided
+        by the Windows version of boost.
 
 Mon Nov 21 09:26:35 2005  Chad Elliott  <elliott_c@ociweb.com>
 
