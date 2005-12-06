@@ -1463,6 +1463,19 @@ sub sort_by_groups {
   my($prevgrs) = [];
   my($movegrs) = [];
 
+  ## Check for duplicates first before we attempt to sort the groups.
+  ## If there is a duplicate, we quietly return immediately.  The
+  ## duplicates will be flagged as an error when creating the main
+  ## workspace.
+  my(%dupcheck) = ();
+  foreach my $proj (@$list) {
+    my($base) = basename($proj);
+    if (defined $dupcheck{$base}) {
+      return;
+    }
+    $dupcheck{$base} = 1;
+  }
+
   for(my $gi = 0; $gi <= $#groups; ++$gi) {
     ## If our moved group equals our previously moved group then
     ## we count this as a possible circular dependency.
