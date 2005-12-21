@@ -34,12 +34,14 @@ sub pre_workspace {
   my($fh)   = shift;
   my($crlf) = $self->crlf();
 
-  print $fh '<html>', $crlf,
+  print $fh '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">', $crlf,
+            '<html>', $crlf,
             '<!-- $Id$ -->', $crlf,
             '<!-- MPC Command: -->', $crlf,
             "<!-- $0@ARGV -->", $crlf,
             '<head>', $crlf,
-            '  <style>', $crlf,
+            '<title>', $self->get_workspace_name(), '</title>', $crlf,
+            '  <style type="text/css">', $crlf,
             '    a {font: 12pt bold verdana, lucida; color: white; padding: 3px;}', $crlf,
             '    td {font: 12pt bold verdana, lucida; color: white; padding: 3px; background-color: cadetblue;}', $crlf,
             '    thead tr td {font: 18pt "trebuchet ms", helvetica; color: white; padding: 3px; background-color: teal;}', $crlf,
@@ -57,7 +59,8 @@ sub write_comps {
   my($project_info) = $self->get_project_info();
   my($crlf)         = $self->crlf();
 
-  print $fh "<table style=\"table-layout:fixed\" width=\"400\">$crlf" .
+  print $fh "<table style=\"table-layout:fixed\" width=\"400\" " .
+            "summary=\"MPC Projects\">$crlf" .
             "<col style=\"background-color: darkcyan;\">$crlf" .
             "<thead>$crlf" .
             "<tr><td>Projects</td></tr>$crlf" .

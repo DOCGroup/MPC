@@ -392,6 +392,7 @@ sub get_value_with_default {
 sub process_foreach {
   my($self)   = shift;
   my($index)  = $self->{'foreach'}->{'count'};
+  my($base)   = $self->{'foreach'}->{'base'}->[$index];
   my($text)   = $self->{'foreach'}->{'text'}->[$index];
   my($status) = 1;
   my($error)  = undef;
@@ -399,6 +400,7 @@ sub process_foreach {
   my($name)   = $self->{'foreach'}->{'name'}->[$index];
   my(@cmds)   = ();
   my($val)    = $self->{'foreach'}->{'vars'}->[$index];
+  my($check_for_mixed) = undef;
 
   if ($val =~ /^((\w+),\s*)?flag_overrides\((.*)\)$/) {
     my($over) = $self->get_flag_overrides($3);
@@ -439,6 +441,9 @@ sub process_foreach {
         $name = $n;
         $name =~ s/s$//;
       }
+      if (!$check_for_mixed && !$self->{'prjc'}->is_keyword($n)) {
+        $check_for_mixed = 1;
+      }
     }
   }
 
@@ -460,25 +465,27 @@ sub process_foreach {
 
     ## If the foreach values are mixed (HASH and SCALAR), then
     ## remove the SCALAR values.
-    my(%mixed) = ();
-    my($mixed) = 0;
-    for(my $i = 0; $i <= $#values; ++$i) {
-      $mixed{$values[$i]} = $self->set_current_values($values[$i]);
-      $mixed |= $mixed{$values[$i]};
-    }
-    if ($mixed) {
-      my(@nvalues) = ();
-      foreach my $key (sort keys %mixed) {
-        if ($mixed{$key}) {
-          push(@nvalues, $key);
-        }
+    if ($check_for_mixed) {
+      my(%mixed) = ();
+      my($mixed) = 0;
+      for(my $i = 0; $i <= $#values; ++$i) {
+        $mixed{$values[$i]} = $self->set_current_values($values[$i]);
+        $mixed |= $mixed{$values[$i]};
       }
+      if ($mixed) {
+        my(@nvalues) = ();
+        foreach my $key (sort keys %mixed) {
+          if ($mixed{$key}) {
+            push(@nvalues, $key);
+          }
+        }
 
-      ## Set the new values only if they are different
-      ## from the original (except for order).
-      my(@sorted) = sort(@values);
-      if (@sorted != @nvalues) {
-        @values = @nvalues;
+        ## Set the new values only if they are different
+        ## from the original (except for order).
+        my(@sorted) = sort(@values);
+        if (@sorted != @nvalues) {
+          @values = @nvalues;
+        }
       }
     }
 
@@ -498,7 +505,7 @@ sub process_foreach {
         $$scope{'forlast'}    = 1;
         $$scope{'fornotlast'} = '';
       }
-      $$scope{'forcount'} = $i + 1;
+      $$scope{'forcount'} = $i + $base;
 
       ## We don't use adjust_value here because these names
       ## are generated from a foreach and should not be adjusted.
@@ -1054,10 +1061,11 @@ sub handle_foreach {
 
   push(@{$self->{'lstack'}}, $self->get_line_number());
   if (!$self->{'if_skip'}) {
+    my($base)  = 1;
     my($vname) = undef;
     if ($val =~ /flag_overrides\([^\)]+\)/) {
     }
-    elsif ($val =~ /([^,]+),(.*)/) {
+    elsif ($val =~ /([^,]*),(.*)/) {
       $vname = $1;
       $val   = $2;
       $vname =~ s/^\s+//;
@@ -1065,24 +1073,50 @@ sub handle_foreach {
       $val   =~ s/^\s+//;
       $val   =~ s/\s+$//;
 
+      if ($vname eq '') {
+        $status = 0;
+        $errorString = 'The foreach variable name is not valid';
+      }
+
+      if ($val =~ /([^,]*),(.*)/) {
+        $base = $1;
+        $val  = $2;
+        $base =~ s/^\s+//;
+        $base =~ s/\s+$//;
+        $val  =~ s/^\s+//;
+        $val  =~ s/\s+$//;
+
+        if ($base !~ /^\d+$/) {
+          $status = 0;
+          $errorString = 'The forcount specified is not a valid number';
+        }
+      }
+      elsif ($vname =~ /^\d+$/) {
+        $base  = $vname;
+        $vname = undef;
+      }
+
       ## Due to the way flag_overrides works, we can't allow
       ## the user to name the foreach variable when dealing
-      ## with custom types.
-      if ($val =~ /^custom_type\->/ || $val eq 'custom_types') {
-        $status = 0;
-        $errorString = 'The foreach variable can not be ' .
-                       'named when dealing with custom types';
-      }
-      elsif ($val =~ /^grouped_.*_file\->/ || $val =~ /^grouped_.*files$/) {
-        $status = 0;
-        $errorString = 'The foreach variable can not be ' .
-                       'named when dealing with grouped files';
+      ## with custom types or groupd files.
+      if (defined $vname) {
+        if ($val =~ /^custom_type\->/ || $val eq 'custom_types') {
+          $status = 0;
+          $errorString = 'The foreach variable can not be ' .
+                         'named when dealing with custom types';
+        }
+        elsif ($val =~ /^grouped_.*_file\->/ || $val =~ /^grouped_.*files$/) {
+          $status = 0;
+          $errorString = 'The foreach variable can not be ' .
+                         'named when dealing with grouped files';
+        }
       }
     }
 
     push(@{$self->{'sstack'}}, $name);
     my($index) = ++$self->{'foreach'}->{'count'};
 
+    $self->{'foreach'}->{'base'}->[$index]  = $base;
     $self->{'foreach'}->{'name'}->[$index]  = $vname;
     $self->{'foreach'}->{'vars'}->[$index]  = $val;
     $self->{'foreach'}->{'text'}->[$index]  = '';

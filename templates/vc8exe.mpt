@@ -19,7 +19,6 @@ Release {
   defines          = NDEBUG
   output_dir       = Release
   intermediate_dir = Release
-  RuntimeLibrary   = 2
 }
 
 Debug {
@@ -27,7 +26,6 @@ Debug {
   output_dir       = .
   intermediate_dir = Debug
   lib_modifier     = d
-  RuntimeLibrary   = 3
 }
 
 MFC Release {
@@ -38,7 +36,6 @@ MFC Release {
   output_dir        = MFC_Release
   intermediate_dir  = MFC_Release
   lib_modifier      = mfc
-  RuntimeLibrary    = 2
   UseOfMFC          = 2
   unicode_mfc_entry = wWinMainCRTStartup
 }
@@ -49,7 +46,6 @@ MFC Debug {
   output_dir        = MFC_Debug
   intermediate_dir  = MFC_Debug
   lib_modifier      = mfcd
-  RuntimeLibrary    = 3
   UseOfMFC          = 2
   unicode_mfc_entry = wWinMainCRTStartup
 }

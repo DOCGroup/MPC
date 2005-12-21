@@ -1,3 +1,5 @@
+.:: 3/13/2002 ::.
+
 The Makefile, Project and Workspace Creator.
 Designed by Justin Michel (michel_j@ociweb.com) and Chad Elliott.
 Implemented by Chad Elliott (elliott_c@ociweb.com).
@@ -685,7 +687,18 @@ fornotlast      Insert the text on every foreach iteration except the last.
 forlast         Insert the text only on the last foreach iteration.
 fornotfirst     Insert the text on every foreach iteration except the first.
 forfirst        Insert the text only on the first foreach iteration.
-forcount        A one based index number of the foreach iterations.
+forcount        By default, a one based index number of the foreach
+                iterations.  The base can be modified by providing a base
+                number in the foreach as in the following examples:
+
+<%foreach(4, includes)%>
+  ...
+<%endfor%>
+
+
+<%foreach(include, 4, includes)%>
+  ...
+<%endfor%>
 
 Project Variable and Template Input Variable Interaction
 --------------------------------------------------------

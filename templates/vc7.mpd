@@ -49,7 +49,11 @@
 <%if(StringPooling)%>
 				StringPooling="<%StringPooling%>"
 <%endif%>
-				RuntimeLibrary="<%if(!optimize)%><%runtime_library("3")%><%else%><%runtime_library("2")%><%endif%>"
+<%if(runtime_library)%>
+				RuntimeLibrary="<%runtime_library%>"
+<%else%>
+				RuntimeLibrary="<%if(type_is_static)%><%if(!optimize)%>1<%else%>0<%endif%><%else%><%if(!optimize)%>3<%else%>2<%endif%><%endif%>"
+<%endif%>
 				BufferSecurityCheck="<%BufferSecurityCheck("TRUE")%>"
 				EnableFunctionLevelLinking="<%EnableFunctionLevelLinking("TRUE")%>"
 				TreatWChar_tAsBuiltInType="<%wchar_t("TRUE")%>"

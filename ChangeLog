@@ -1,3 +1,138 @@
+Wed Dec 21 06:28:04 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+        * MPC.ico:
+        * registry.pl:
+
+          Added the ability to register the .mpc and .mwc file types as well
+          as create context menus within the Windows explorer.
+
+        * PROBLEM-REPORT-FORM:
+
+          Fixed the URL for the MPC FAQ.
+
+        * README:
+        * modules/TemplateParser.pm:
+
+          Added the ability to set the base for the <%forcount%> variable.
+          See the README for details as to how to use this.  Also, added
+          code to only check for mixed values (scalars and hash maps) if the
+          foreach value is not the name of an MPC project keyword.
+
+        * config/swig_java.mpb:
+
+          Added support for using SWIG with Java.
+
+        * modules/AutomakeProjectCreator.pm:
+        * modules/Driver.pm:
+        * modules/GHSProjectCreator.pm:
+        * modules/HTMLProjectCreator.pm:
+        * modules/MakeProjectCreator.pm:
+
+          Removed the convert_slashes() method.  And use the default from
+          DirectoryManager.pm.
+
+        * modules/Creator.pm:
+
+          Use File::Spec to determine file system capabilities to give the
+          right warning message.  Also added the ability to determine if any
+          files were excluded when generating the default file list.
+
+        * modules/DirectoryManager.pm:
+
+          Corrected problems with using Cwd::getcwd() on VMS as it always
+          leaves a trailing slash on the end which no other implementation
+          does.  Also, switched the convert_slashes() method to return zero
+          as the default (which will require slightly less code overall in
+          MPC).
+
+        * modules/HTMLWorkspaceCreator.pm:
+        * templates/html.mpd:
+
+          Make the HTML acceptable by WC3 standards.
+
+        * modules/MakeWorkspaceCreator.pm:
+
+          Added a .PHONY: target for each named target.  This will only work
+          with GNU Make and won't hurt with other versions of make.
+
+        * modules/ProjectCreator.pm:
+
+          1) Check for case insensitivity (from a new method) when check
+             whether we should use upper or lower case in the
+             expand_variables() method.
+          2) Added an is_keyword() method to allow the TemplateParser to
+             determine if a variable is an MPC project keyword or not.
+          3) When adding the built-in OS compatibility methods, check the
+             base class to see if it's a WinProjectBase to determine if the
+             project type will be used on Windows or not.
+
+        * modules/WinProjectBase.pm:
+
+          For Windows based project types, define the convert_slashes() and
+          case_insensitive() methods.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where file exclusions given on the command line
+          wouldn't work because somewhere down the line MPC would change
+          directory and nothing would match up.  Also, fixed a related bug
+          where if all of the .mpc files normally contained within a
+          workspace were excluded a default workspace would then be used
+          possibly adding unwanted .mpc files.
+
+        * mpc.pl:
+        * mwc.pl:
+
+          Finally corrected support for VMS.  FindBin doesn't work on VMS if
+          you use a relative directory, so we just use rel2abs() on the
+          dirname of $0 in this situation.
+
+        * templates/bmake.mpd:
+        * templates/bmakedll.mpt:
+        * templates/bmakedllexe.mpt:
+        * templates/bmakelibexe.mpt:
+
+          Modified these to move the binary compile flags into the template
+          such that correct makefiles would be created if the user set the
+          staticname to a valid name and set sharedname to empty.
+
+        * templates/ghs.mpd:
+        * templates/ghsdll.mpt:
+        * templates/ghsdllexe.mpt:
+        * templates/ghslib.mpt:
+
+          Modified these to move the library extensions into the template
+          such that correct build files would be created if the user set the
+          staticname to a valid name and set sharedname to empty.
+
+        * templates/make.mpd:
+
+          Moved the output file to the last part of the link command line.
+          Made "all" the default target for libraries.  Parameterized the
+          pch extension.  Added better support for precompiled headers.
+
+        * templates/makedll.mpt:
+
+          Set the default pch extension to .gch.  Renamed the cxx
+          configurationt to cxx_tru64.  Added precompiled header support for
+          SunCC (which was there as of SunCC 5.5).  For SunCC 5.4 and below,
+          use -value_template pchsupport= to turn off precompiled header
+          support.
+
+        * templates/vc7.mpd:
+        * templates/vc7dll.mpt:
+        * templates/vc7exe.mpt:
+        * templates/vc7lib.mpt:
+        * templates/vc7libexe.mpt:
+        * templates/vc8.mpd:
+        * templates/vc8dll.mpt:
+        * templates/vc8exe.mpt:
+        * templates/vc8lib.mpt:
+        * templates/vc8libexe.mpt:
+
+          Modified the RuntimeLibrary setting to choose the right value for
+          static/dynamic configurations.
+
 Tue Dec  6 06:36:27 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WorkspaceCreator.pm:
