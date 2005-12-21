@@ -1,3 +1,8 @@
+Wed Dec 21 19:17:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc8platforms.mpt:
+          Set the TargetMachine when building for EM64T
+
 Wed Dec 21 18:55:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bds.mpd:
