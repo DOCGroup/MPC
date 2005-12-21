@@ -16,6 +16,18 @@ use strict;
 # Subroutine Section
 # ************************************************************
 
+sub convert_slashes {
+  #my($self) = shift;
+  return 1;
+}
+
+
+sub case_insensitive {
+  #my($self) = shift;
+  return 1;
+}
+
+
 sub validated_directory {
   my($self) = shift;
   my($dir)  = shift;

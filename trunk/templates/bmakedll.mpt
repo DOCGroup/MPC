@@ -4,7 +4,6 @@
 conditional_include "bmakecommon"
 
 startup_obj      = c0d32
-compile_flags    = -tWR -tWD
 use_lib_modifier = 1
 
 Release {

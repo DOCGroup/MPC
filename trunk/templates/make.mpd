@@ -38,7 +38,7 @@ ARFLAGS       = <%if(extraarflags)%><%extraarflags%> <%endif%><%arflags%>
 <%if(tempinc)%>
 TEMPINCDIR    = <%tempinc%><%if(tempincopt)%><%slash%><%project_name%><%endif%>
 <%endif%>
-LDFLAGS       =<%if(libpaths)%><%foreach(libpaths)%> -L"<%libpath%>"<%endfor%><%endif%><%if(linkflags)%> <%linkflags%><%endif%><%if(build64bit && linkflags64)%> <%linkflags64%><%endif%>
+LDFLAGS       =<%if(libpaths)%><%foreach(libpaths)%> <%libpathopt(-L)%>"<%libpath%>"<%endfor%><%endif%><%if(linkflags)%> <%linkflags%><%endif%><%if(build64bit && linkflags64)%> <%linkflags64%><%endif%>
 <%endfor%>
 CCC           = $(CXX)
 MAKEFILE      = <%project_file%>
@@ -120,13 +120,9 @@ $(BTARGETDIR):
 	@$(MKDIR) "$@"
 
 $(BIN): $(BTARGETDIR)<%foreach(configurations)%><%if(tempinc)%> $(TEMPINCDIR)<%endif%><%foreach(platforms)%><%if(prelink)%> <%targetoutdir%><%noextension(prelink)%>$(OBJEXT)<%endif%><%endfor%><%endfor%> $(OBJS)
-	$(LINK.cc) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
+	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 
-<%else%>
-$(LTARGETDIR):
-	@$(MKDIR) "$@"
 <%endif%>
-
 <%foreach(configurations)%>
 <%foreach(platforms)%>
 <%if(dll_ext)%>
@@ -139,7 +135,7 @@ $(SHTARGETDIR):
 
 <%endif%>
 $(SHLIB): $(SHTARGETDIR) <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%>$(OBJS)
-	<%foreach(configurations)%><%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%><%endfor%> $(SHFLAGS) $(OUTPUT_OPTION) $(OBJS) $(LDLIBS)
+	<%foreach(configurations)%><%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%><%endfor%> $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 <%else%>
 <%if(staticname)%>
 all: $(LIB)<%if(postbuild)%> __postbuild__<%endif%>
@@ -154,6 +150,11 @@ all: $(LIB)<%if(postbuild)%> __postbuild__<%endif%>
 <%endif%>
 <%endfor%>
 <%endfor%>
+<%if(!exename)%>
+$(LTARGETDIR):
+	@$(MKDIR) "$@"
+
+<%endif%>
 <%if(staticname)%>
 $(LIB): $(LTARGETDIR) <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%>$(OBJS)
 <%foreach(configurations)%>
@@ -226,9 +227,9 @@ $(TEMPINCDIR):
 <%endif%>
 <%if(pch_source && pchsupport)%>
 <%targetoutdir%><%noextension(pch_source)%>$(OBJEXT): <%pch_source%>
-	$(COMPILE.cc) <%if(pchcreate)%><%pchcreate%><%targetoutdir%><%pch_header%>.gch <%endif%>$(EXPORTFLAGS)<%if(!pchnobj)%> $(OUTPUT_OPTION)<%endif%> <%pch_source%>
+	$(COMPILE.cc) <%if(pchcreate)%><%pchcreate%><%targetoutdir%><%pch_header%><%pchext%> <%endif%>$(EXPORTFLAGS)<%if(!pchnobj)%> $(OUTPUT_OPTION)<%endif%> <%pch_source%>
 <%if(pchnobj)%>
-	@$(CP) <%pch_header%>.gch <%targetoutdir%><%noextension(pch_source)%>$(OBJEXT)
+	@$(CP) <%pch_header%><%pchext%> <%targetoutdir%><%noextension(pch_source)%>$(OBJEXT)
 <%endif%>
 
 <%endif%>
@@ -237,7 +238,7 @@ $(TEMPINCDIR):
 <%if(targetoutdir)%>
 	@$(MKDIR) <%targetoutdir%><%dirname(source_file)%>
 <%endif%>
-	$(COMPILE.cc) <%if(pchuse && pch_source && pchsupport)%><%pchuse%><%pch_header%>.gch <%endif%>$(EXPORTFLAGS) $(OUTPUT_OPTION) <%source_file%>
+	$(COMPILE.cc) <%if(pchuse && pch_source && pchsupport)%><%pchuse%><%pch_header%><%pchext%> <%if(pchstop)%><%pchstop%><%pch_header%><%endif%><%endif%>$(EXPORTFLAGS) $(OUTPUT_OPTION) <%source_file%>
 
 <%endfor%>
 <%endfor%>
@@ -253,8 +254,11 @@ $(TEMPINCDIR):
 <%endfor%>
 <%endif%>
 clean:
-	-$(RM) $(OBJS)<%if(pch_source && pchsupport)%> <%pch_header%>.gch<%endif%>
+	-$(RM) $(OBJS)
 <%foreach(configurations)%>
+<%if(pch_source && pchsupport)%>
+	-$(RM) <%pch_header%><%pchext%>
+<%endif%>
 <%if(clean)%>
 	-$(RM) <%clean%>
 <%endif%>

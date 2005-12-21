@@ -28,12 +28,6 @@ sub escape_spaces {
 }
 
 
-sub convert_slashes {
-  #my($self) = shift;
-  return 0;
-}
-
-
 sub get_dll_exe_template_input_file {
   #my($self) = shift;
   return 'makeexe';

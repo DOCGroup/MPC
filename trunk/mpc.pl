@@ -13,12 +13,16 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 # ******************************************************************
 
 use strict;
-use Cwd;
 use Config;
 use FindBin;
+use File::Spec;
 use File::Basename;
 
 my($basePath) = $FindBin::Bin;
+if ($^O eq 'VMS') {
+  $basePath = File::Spec->rel2abs(dirname($0)) if ($basePath eq '');
+  $basePath = VMS::Filespec::unixify($basePath);
+}
 unshift(@INC, $basePath . '/modules');
 
 require MPC;

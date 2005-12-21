@@ -29,6 +29,7 @@ targetoutdir     =
 slash            = /
 libopt           = -l
 build64bit       = 1
+pchext           = .gch
 
 // ***********************************************************************
 // Configuration Section
@@ -45,7 +46,7 @@ java {
   platforms      = jvm
 }
 
-cxx {
+cxx_tru64 {
   cxx        = cxx
   clean      = cxx_repository so_locations
   tempincopt = "-ptr "
@@ -83,6 +84,10 @@ SunCC {
   linkflags       = -library=Cstd -library=Crun
   clean           = SunWS_cache ir.out
   platforms       = solaris
+  pchcreate       = -xpch=collect:
+  pchuse          = -xpch=use:
+  pchstop         = -xpchstop=
+  pchext          = .Cpch
 }
 
 aCC {
@@ -184,7 +189,7 @@ openvms {
 }
 
 linux {
-  ldlibs        = -ldl -lpthread
+  ldlibs        = -ldl -lpthread $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so)))))
   extracppflags = -D_REENTRANT
 }
 

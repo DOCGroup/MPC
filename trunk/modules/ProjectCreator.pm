@@ -289,11 +289,19 @@ sub new {
   $self->{'addtemp_state'}         = undef;
   $self->{'command_subs'}          = $self->get_command_subs();
   $self->{'escape_spaces'}         = $self->escape_spaces();
+  $self->{'case_insensitive'}      = $self->case_insensitive();
 
   $self->add_default_matching_assignments();
   $self->reset_generating_types();
 
   return $self;
+}
+
+
+sub is_keyword {
+  my($self) = shift;
+  my($name) = shift;
+  return $validNames{$name};
 }
 
 
@@ -1157,7 +1165,7 @@ sub parse_components {
     if ($line eq '') {
     }
     elsif ($line =~ /^(\w+)\s*{$/) {
-      if (!defined $current || !$set) {
+      if (!$set) {
         $current = $1;
         $set = 1;
         if (!defined $$comps{$current}) {
@@ -1180,31 +1188,29 @@ sub parse_components {
       }
     }
     elsif ($line =~ /^}$/) {
-      if (defined $current) {
-        if (!defined $$comps{$current}->[0] && !defined $exclude[0]) {
-          ## The default components name was never used
-          ## so we remove it from the components
-          delete $$comps{$current};
-        }
-        else {
-          ## It was used, so we need to add that name to
-          ## the set of group names unless it's already been added.
-          my($groups)   = $self->get_assignment($grtag);
-          my($addgroup) = 1;
-          if (defined $groups) {
-            foreach my $group (@{$self->create_array($groups)}) {
-              if ($current eq $group) {
-                $addgroup = 0;
-                last;
-              }
+      if (!defined $$comps{$current}->[0] && !defined $exclude[0]) {
+        ## The default components name was never used
+        ## so we remove it from the components
+        delete $$comps{$current};
+      }
+      else {
+        ## It was used, so we need to add that name to
+        ## the set of group names unless it's already been added.
+        my($groups)   = $self->get_assignment($grtag);
+        my($addgroup) = 1;
+        if (defined $groups) {
+          foreach my $group (@{$self->create_array($groups)}) {
+            if ($current eq $group) {
+              $addgroup = 0;
+              last;
             }
           }
-          if ($addgroup) {
-            $self->process_assignment_add($grtag, $current);
-          }
+        }
+        if ($addgroup) {
+          $self->process_assignment_add($grtag, $current);
         }
       }
-      if (defined $current && $set) {
+      if ($set) {
         $current = $defgroup;
         $set = undef;
       }
@@ -1225,7 +1231,7 @@ sub parse_components {
         last;
       }
     }
-    elsif (defined $current) {
+    else {
       ($status, $error) = $self->process_component_line($tag, $line, \%flags,
                                                         \$grname, $current,
                                                         \@exclude, $comps,
@@ -1233,11 +1239,6 @@ sub parse_components {
       if (!$status) {
         last;
       }
-    }
-    else {
-      $status = 0;
-      $error  = 'Syntax error';
-      last;
     }
   }
 
@@ -1253,7 +1254,8 @@ sub parse_components {
       if (!defined $checked{$dname}) {
         $checked{$dname} = 1;
         push(@files, $self->generate_default_file_list($dname,
-                                                       \@exclude, $alldir));
+                                                       \@exclude,
+                                                       undef, $alldir));
       }
     }
 
@@ -1637,18 +1639,18 @@ sub parse_define_custom {
 
 
 sub remove_duplicate_addition {
-  my($self)    = shift;
-  my($name)    = shift;
-  my($value)   = shift;
-  my($nval)    = shift;
+  my($self)  = shift;
+  my($name)  = shift;
+  my($value) = shift;
+  my($nval)  = shift;
 
-  ## If we are modifying the libs, libpaths, macros or includes
-  ## assignment with either addition or subtraction, we are going to
-  ## perform a little fix on the value to avoid multiple
-  ## libraries and to try to insure the correct linking order
-  if ($name eq 'macros'   ||
-      $name eq 'libpaths' || $name eq 'includes' || $name =~ /libs$/) {
-    if (defined $nval) {
+  if (defined $nval) {
+    ## If we are modifying the libs, libpaths, macros or includes
+    ## assignment with either addition or subtraction, we are going to
+    ## perform a little fix on the value to avoid multiple
+    ## libraries and to try to insure the correct linking order
+    if ($name eq 'macros'   ||
+        $name eq 'libpaths' || $name eq 'includes' || $name =~ /libs$/) {
       my($allowed) = '';
       my(%parts)   = ();
 
@@ -2466,10 +2468,9 @@ sub sift_default_file_list {
   my($pchc)    = shift;
   my($alldir)  = $recurse ||
                  $self->{'flag_overrides'}->{$tag}->{$file}->{'recurse'};
-  my(@gen)     = $self->generate_default_file_list($file, [], $alldir);
+  my(@gen)     = $self->generate_default_file_list($file, [], undef, $alldir);
 
   $self->sift_files(\@gen, $exts, $pchh, $pchc, $tag, $built, $alldir);
-
 }
 
 
@@ -3022,7 +3023,8 @@ sub generate_defaults {
 
   ## Generate the default pch file names (if needed)
   my(@files) = $self->generate_default_file_list(
-                                 '.', [], $self->get_assignment('recurse'));
+                                 '.', [],
+                                 undef, $self->get_assignment('recurse'));
   $self->generate_default_pch_filenames(\@files);
 
   ## If the pch file names are empty strings then we need to fix that
@@ -3296,7 +3298,7 @@ sub get_command_subs {
   my(%valid) = ();
 
   ## Add the built-in OS compatibility commands
-  if ($self->{'convert_slashes'}) {
+  if (UNIVERSAL::isa($self, 'WinProjectBase')) {
     $valid{'cat'}   = 'type';
     $valid{'cp'}    = 'copy /y';
     $valid{'mkdir'} = 'mkdir';
@@ -4045,23 +4047,23 @@ sub update_project_info {
   my($tparser) = shift;
   my($append)  = shift;
   my($names)   = shift;
-  my($sep)     = shift;
+  my($sep)     = shift || '';
   my($pi)      = $self->get_project_info();
   my($value)   = '';
   my($arr)     = ($append && defined $$pi[0] ? pop(@$pi) : []);
 
   ## Set up the hash table when we are starting a new project_info
-  if ($append == 0) {
+  if (!$append) {
     $self->{'project_info_hash_table'} = {};
   }
 
   ## Append the values of all names into one string
   my(@narr) = @$names;
   for(my $i = 0; $i <= $#narr; $i++) {
-    my($key) = $narr[$i];
-    $value .= $self->translate_value($key,
-                                     $tparser->get_value_with_default($key)) .
-              (defined $sep && $i != $#narr ? $sep : '');
+    $value .= $self->translate_value(
+                               $narr[$i],
+                               $tparser->get_value_with_default($narr[$i]));
+    $value .= $sep if ($i != $#narr);
   }
 
   ## If we haven't seen this value yet, put it on the array
@@ -4148,7 +4150,6 @@ sub adjust_value {
 sub expand_variables {
   my($self)            = shift;
   my($value)           = shift;
-  my($keys)            = shift;
   my($rel)             = shift;
   my($expand_template) = shift;
   my($scope)           = shift;
@@ -4181,10 +4182,8 @@ sub expand_variables {
           $val =~ s/\\/\//g;
         }
 
-        ## Here we make an assumption that if we convert slashes to
-        ## back-slashes, we also have a case-insensitive file system.
-        my($icwd) = ($self->{'convert_slashes'} ? lc($cwd) : $cwd);
-        my($ival) = ($self->{'convert_slashes'} ? lc($val) : $val);
+        my($icwd) = ($self->{'case_insensitive'} ? lc($cwd) : $cwd);
+        my($ival) = ($self->{'case_insensitive'} ? lc($val) : $val);
         my($iclen) = length($icwd);
         my($ivlen) = length($ival);
 
@@ -4283,7 +4282,7 @@ sub relative {
       my($ovalue) = $value;
       my(@keys) = keys %{$self->{'expanded'}};
       if (defined $keys[0]) {
-        $value = $self->expand_variables($value, \@keys,
+        $value = $self->expand_variables($value,
                                          $self->{'expanded'},
                                          $expand_template, $scope, 1);
       }
@@ -4292,7 +4291,7 @@ sub relative {
         my($rel) = ($self->get_use_env() ? \%ENV : $self->get_relative());
         @keys = keys %$rel;
         if (defined $keys[0]) {
-          $value = $self->expand_variables($value, \@keys, $rel,
+          $value = $self->expand_variables($value, $rel,
                                            $expand_template, $scope,
                                            $self->get_expand_vars(), 1);
         }
@@ -4500,6 +4499,12 @@ sub remove_wanted_extension {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub case_insensitive {
+  #my($self) = shift;
+  return 0;
+}
+
 
 sub escape_spaces {
   #my($self) = shift;
