@@ -26,6 +26,7 @@ sub new {
                                       'VC71WorkspaceCreator',
                                       'VC8WorkspaceCreator',
                                       'CBXWorkspaceCreator',
+                                      'BDSWorkspaceCreator',
                                       'GHSWorkspaceCreator',
                                       'EM3WorkspaceCreator',
                                       'AutomakeWorkspaceCreator',
