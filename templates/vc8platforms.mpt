@@ -17,6 +17,7 @@ WinX86_64 {
   output_subdir    = Win64
   cpu_defines      = _M_AXP64
   platform_defines = _WIN64
+  TargetMachine    = "17"
 }
 
 Pocket PC 2003 (ARMV4) {
