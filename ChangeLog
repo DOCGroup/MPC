@@ -1,3 +1,20 @@
+Wed Dec 21 18:55:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bds.mpd:
+        * templates/bdsdll.mpt:
+        * templates/bdsexe.mpt:
+        * modules/BDSProjectCreator.pm:
+        * modules/BDSWorkspaceCreator.pm:
+          Initial version of Borland Developer Studio template. Work is
+          being done for the C++ personality. All files, compiler flags
+          and libs are generated but some more work has to be done to
+          use these for a full build. Now they are already usefull for
+          debugging apps that are build from the command line.
+
+        * modules/MPC.pm:
+        * modules/MWC.pm:
+          Added BDS files
+
 Wed Dec 21 06:28:04 2005  Chad Elliott  <elliott_c@ociweb.com>
 
         * MPC.ico:
