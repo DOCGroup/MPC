@@ -13,11 +13,6 @@ package DirectoryManager;
 use strict;
 use File::Basename;
 
-if ($^O eq 'VMS') {
-  require VMS::Filespec;
-  import VMS::Filespec qw(unixify);
-}
-
 # ************************************************************
 # Data Section
 # ************************************************************
@@ -31,7 +26,8 @@ if ($^O eq 'cygwin' && $cwd !~ /[A-Za-z]:/) {
   }
 }
 elsif ($^O eq 'VMS') {
-  $cwd = unixify($cwd);
+  $cwd = VMS::Filespec::unixify($cwd);
+  $cwd =~ s!/$!!g;
 }
 my($start) = $cwd;
 
@@ -62,7 +58,8 @@ sub cd {
         }
       }
       elsif ($^O eq 'VMS') {
-        $cwd = unixify($cwd);
+        $cwd = VMS::Filespec::unixify($cwd);
+        $cwd =~ s!/$!!g;
       }
     }
     else {
@@ -95,7 +92,9 @@ sub mpc_dirname {
 
   if ($^O eq 'VMS') {
     if ($dir =~ /\//) {
-      return unixify(dirname($dir));
+      $dir = VMS::Filespec::unixify(dirname($dir));
+      $dir =~ s!/$!!g;
+      return $dir;
     }
     else {
       return '.';
@@ -121,7 +120,6 @@ sub mpc_glob {
     my($post) = $3;
     for(my $i = 0; $i < length($mid); $i++) {
       my($p) = $pre . substr($mid, $i, 1) . $post;
-      my(@new) = $self->mpc_glob($p);
       foreach my $new ($self->mpc_glob($p)) {
         my($found) = undef;
         foreach my $file (@files) {
@@ -149,7 +147,7 @@ sub mpc_glob {
 
 sub convert_slashes {
   #my($self) = shift;
-  return 1;
+  return 0;
 }
 
 

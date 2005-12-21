@@ -28,12 +28,6 @@ sub escape_spaces {
 }
 
 
-sub convert_slashes {
-  #my($self) = shift;
-  return 0;
-}
-
-
 sub fill_value {
   my($self)  = shift;
   my($name)  = shift;

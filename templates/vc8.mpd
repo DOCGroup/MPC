@@ -115,7 +115,11 @@
 <%if(SmallerTypeCheck)%>
 				SmallerTypeCheck="<%SmallerTypeCheck%>"
 <%endif%>
-				RuntimeLibrary="<%RuntimeLibrary("3")%>"
+<%if(runtime_library)%>
+				RuntimeLibrary="<%runtime_library%>"
+<%else%>
+				RuntimeLibrary="<%if(type_is_static)%><%if(!optimize)%>1<%else%>0<%endif%><%else%><%if(!optimize)%>3<%else%>2<%endif%><%endif%>"
+<%endif%>
 <%if(StructMemberAlignment)%>
 				StructMemberAlignment="<%StructMemberAlignment%>"
 <%endif%>

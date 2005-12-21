@@ -20,7 +20,6 @@ Release {
   output_dir       = Static_Release
   intermediate_dir = Static_Release
   lib_modifier     = s
-  RuntimeLibrary   = 2
 }
 
 Debug {
@@ -28,7 +27,6 @@ Debug {
   output_dir       = Static_Debug
   intermediate_dir = Static_Debug
   lib_modifier     = sd
-  RuntimeLibrary   = 3
 }
 
 MFC Release {
@@ -38,7 +36,6 @@ MFC Release {
   output_dir        = Static_MFC_Release
   intermediate_dir  = Static_MFC_Release
   lib_modifier      = mfcs
-  RuntimeLibrary    = 2
   UseOfMFC          = 2
   unicode_mfc_entry = wWinMainCRTStartup
 }
@@ -48,7 +45,6 @@ MFC Debug {
   output_dir        = Static_MFC_Debug
   intermediate_dir  = Static_MFC_Debug
   lib_modifier      = mfcsd
-  RuntimeLibrary    = 3
   UseOfMFC          = 2
   unicode_mfc_entry = wWinMainCRTStartup
 }

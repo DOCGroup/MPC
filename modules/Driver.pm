@@ -52,12 +52,6 @@ sub new {
 }
 
 
-sub convert_slashes {
-  #my($self) = shift;
-  return 0;
-}
-
-
 sub parse_line {
   my($self)        = shift;
   my($ih)          = shift;
@@ -333,6 +327,7 @@ sub run {
       else {
         my($partial)  = $self->getcwd();
         my($oescaped) = $self->escape_regex_special($orig_dir) . '(/)?';
+        $partial =~ s!\\!/!g;
         $partial =~ s/^$oescaped//;
         $diag .= ($partial ne '' ? "$partial/" : '') . $file;
       }

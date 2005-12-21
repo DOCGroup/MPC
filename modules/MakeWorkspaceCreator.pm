@@ -92,7 +92,8 @@ sub write_comps {
   ## Print out each target separately
   foreach my $project (@list) {
     my($dname) = $self->mpc_dirname($project);
-    print $fh $crlf, $$trans{$project}, ':';
+    print $fh $crlf, '.PHONY: ', $$trans{$project},
+              $crlf, $$trans{$project}, ':';
     if (defined $targnum{$project}) {
       foreach my $number (@{$targnum{$project}}) {
         print $fh " $$trans{$list[$number]}";
