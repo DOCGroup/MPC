@@ -36,12 +36,6 @@ sub file_sorter {
 }
 
 
-sub convert_slashes {
-  #my($self) = shift;
-  return 0;
-}
-
-
 sub label_nodes {
   my($self)  = shift;
   my($hash)  = shift;

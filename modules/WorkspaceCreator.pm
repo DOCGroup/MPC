@@ -607,16 +607,18 @@ sub handle_scoped_unknown {
 
 
 sub search_for_files {
-  my($self)  = shift;
-  my($files) = shift;
-  my($array) = shift;
-  my($impl)  = shift;
+  my($self)     = shift;
+  my($files)    = shift;
+  my($array)    = shift;
+  my($impl)     = shift;
+  my($excluded) = 0;
 
   foreach my $file (@$files) {
     if (-d $file) {
       my(@f) = $self->generate_default_file_list(
                          $file,
-                         $self->{'exclude'}->{$self->{'wctype'}});
+                         $self->{'exclude'}->{$self->{'wctype'}},
+                         \$excluded);
       $self->search_for_files(\@f, $array, $impl);
       if ($impl) {
         $file =~ s/^\.\///;
@@ -630,6 +632,8 @@ sub search_for_files {
       }
     }
   }
+
+  return $excluded;
 }
 
 
@@ -653,10 +657,11 @@ sub remove_duplicate_projects {
 
 
 sub generate_default_components {
-  my($self)  = shift;
-  my($files) = shift;
-  my($impl)  = shift;
-  my($pjf)   = $self->{'project_files'};
+  my($self)     = shift;
+  my($files)    = shift;
+  my($impl)     = shift;
+  my($excluded) = shift;
+  my($pjf)      = $self->{'project_files'};
 
   if (defined $$pjf[0]) {
     ## If we have files, then process directories
@@ -692,7 +697,7 @@ sub generate_default_components {
   else {
     ## Add all of the wanted files in this directory
     ## and in the subdirectories.
-    $self->search_for_files($files, $pjf, $impl);
+    $excluded |= $self->search_for_files($files, $pjf, $impl);
 
     ## If the workspace is set to implicit
     if ($impl) {
@@ -703,7 +708,7 @@ sub generate_default_components {
     ## If no files were found, then we push the empty
     ## string, so the Project Creator will generate
     ## the default project file.
-    if (!defined $$pjf[0]) {
+    if (!defined $$pjf[0] && !$excluded) {
       push(@$pjf, '');
     }
   }
@@ -738,13 +743,34 @@ sub generate_defaults {
     $self->{'workspace_name'} = $self->get_default_workspace_name();
   }
 
+  ## Modify the exclude list if we have changed directory from the original
+  ## starting directory.  Just take off the difference from the front.
+  my(@original) = ();
+  my($top)      = $self->getcwd() . '/';
+  my($start)    = $self->getstartdir() . '/';
+
+  if ($start ne $top && $top =~ s/^$start//) {
+    foreach my $exclude (@{$self->{'exclude'}->{$self->{'wctype'}}}) {
+      push(@original, $exclude);
+      $exclude =~ s/^$top//;
+    }
+  }
+
+  my($excluded) = 0;
   my(@files) = $self->generate_default_file_list(
                         '.',
-                        $self->{'exclude'}->{$self->{'wctype'}});
+                        $self->{'exclude'}->{$self->{'wctype'}},
+                        \$excluded);
 
   ## Generate default components
   $self->generate_default_components(\@files,
-                                     $self->get_assignment('implicit'));
+                                     $self->get_assignment('implicit'),
+                                     $excluded);
+
+  ## Return the actual exclude list of we modified it
+  if (defined $original[0]) {
+    $self->{'exclude'}->{$self->{'wctype'}} = \@original;
+  }
 }
 
 

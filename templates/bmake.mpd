@@ -52,7 +52,7 @@ DLLFLAGS     = <%dllflags%>
 LIBFLAGS     = <%libflags%>
 EXEFLAGS     = <%exeflags%>
 WARNFLAGS    = <%warnflags%>
-CCFLAGS      = <%ccflags%><%if(compile_flags)%> <%compile_flags%><%endif%>
+CCFLAGS      = <%ccflags%><%if(type_is_binary)%> <%binary_compile_flags("-tWR -tWD")%><%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
 <%endfor%>
 !endif
 

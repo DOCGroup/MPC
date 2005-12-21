@@ -12,6 +12,7 @@ package Creator;
 
 use strict;
 use FileHandle;
+use File::Spec;
 use File::Basename;
 
 use Parser;
@@ -93,6 +94,7 @@ sub new {
   $self->{'use_env'}         = $use_env;
   $self->{'expand_vars'}     = $expandvars;
   $self->{'convert_slashes'} = $self->convert_slashes();
+  $self->{'case_tolerant'}   = File::Spec->case_tolerant();
 
   return $self;
 }
@@ -427,6 +429,7 @@ sub generate_default_file_list {
   my($self)    = shift;
   my($dir)     = shift;
   my($exclude) = shift;
+  my($fileexc) = shift;
   my($recurse) = shift;
   my($dh)      = new FileHandle();
   my(@files)   = ();
@@ -451,11 +454,13 @@ sub generate_default_file_list {
 
       if ($skip) {
         $skip = 0;
+        $$fileexc = 1 if (defined $fileexc);
       }
       else {
         if ($recurse && -d $full) {
           push(@files,
-               $self->generate_default_file_list($full, $exclude, $recurse));
+               $self->generate_default_file_list($full, $exclude,
+                                                 $fileexc, $recurse));
         }
         else {
           push(@files, $full);
@@ -495,8 +500,10 @@ sub add_file_written {
   my($key)  = lc($file);
 
   if (defined $self->{'files_written'}->{$key}) {
-    $self->warning("$self->{'grammar_type'} $file has " .
-                   "possibly been overwritten.");
+    $self->warning("$self->{'grammar_type'} $file " .
+                   ($self->{'case_tolerant'} ?
+                           "has been overwritten." :
+                           "of differing case has been processed."));
   }
   else {
     $self->{'files_written'}->{$key} = $file;

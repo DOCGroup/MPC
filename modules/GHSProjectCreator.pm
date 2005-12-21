@@ -33,12 +33,6 @@ sub compare_output {
 }
 
 
-sub convert_slashes {
-  #my($self) = shift;
-  return 0;
-}
-
-
 sub project_file_extension {
   #my($self) = shift;
   return '.bld';
@@ -51,7 +45,7 @@ sub fill_value {
   my($value) = undef;
 
   if (!defined $startre) {
-    $startre =  $self->escape_regex_special($self->getstartdir());
+    $startre = $self->escape_regex_special($self->getstartdir());
   }
 
   if ($name =~ /^reltop_(\w+)/) {

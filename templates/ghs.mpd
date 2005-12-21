@@ -9,11 +9,11 @@ default:
 <%else%>
 <%if(sharedname)%>
 	shared_library
-	:outputname=<%if(dllout)%><%reltop_dllout%><%else%><%reltop_libout%><%endif%>/<%lib_prefix%><%libname_prefix%><%sharedname%><%libdecorator%><%libext%>
+	:outputname=<%if(dllout)%><%reltop_dllout%><%else%><%reltop_libout%><%endif%>/<%lib_prefix%><%libname_prefix%><%sharedname%><%libdecorator%><%libext(".so")%>
 <%else%>
 <%if(staticname)%>
 	library
-	:outputname=<%reltop_libout%>/<%lib_prefix%><%libname_prefix%><%staticname%><%libdecorator%><%libext%>
+	:outputname=<%reltop_libout%>/<%lib_prefix%><%libname_prefix%><%staticname%><%libdecorator%><%libext(".a")%>
 <%else%>
 	subproject
 <%endif%>

@@ -1,7 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <style>
+  <title><%project_name%></title>
+  <style type="text/css">
     p {font: 9pt verdana, lucida; width:800px; color: slategray;}
     h1 {font: 36pt verdana, lucida; width: 800px; color: darkcyan;}
     h2 {font: 16pt "trebuchet ms", helvetica; color: white; padding: 3px; background-color: teal;}
@@ -27,7 +28,7 @@
     <%tree_style%>
 <%endfor%>
   </style>
-  <script>
+  <script type="text/javascript">
   <!--
   function popup(mylink, windowname) {
     if (!window.focus) {
@@ -49,7 +50,6 @@
   </script>
 </head>
 <body>
-<title><%project_name%></title>
 <h1><%project_name%></h1>
 
 <%foreach(inheritance_nodes)%>
@@ -58,7 +58,7 @@
 <%forlast("<br>")%>
 <%endfor%>
 
-<table style="table-layout:fixed" width="800">
+<table style="table-layout:fixed" width="800" summary="MPC Project Information">
 <col width="200">
 <col width="600">
 <thead>
@@ -88,10 +88,12 @@
 <tr><td>tagname *</td><td><%tagname%></td></tr>
 <tr><td>tagchecks *</td><td><%tagchecks%></td></tr>
 <tr><td>version</td><td><%version%></td></tr>
+</tbody>
 <thead>
 <tr><td colspan="2">MPC Project Files</td></tr>
 <tr><th>Name</th><th>Value</th></tr>
 </thead>
+<tbody>
 <tr><td>Source Files</td><td><%source_files%></td></tr>
 <tr><td>Header Files</td><td><%header_files%></td></tr>
 <tr><td>Inline Files</td><td><%inline_files%></td></tr>
@@ -102,10 +104,12 @@
 <tr><td><%ucw(custom_type)%></td><td><%custom_type->input_files%></td></tr>
 <%endfor%>
 <%if(configurations || pch_defines || postbuild)%>
+</tbody>
 <thead>
 <tr><td colspan="2">MPC Template Settings</td></tr>
 <tr><th>Name</th><th>Value</th></tr>
 </thead>
+<tbody>
 <%comment("common to all mpt files")%>
 <%if(postbuild)%>
 <tr><td>postbuild</td><td><%postbuild%></td></tr>
@@ -163,7 +167,7 @@
 </table>
 
 <p>
-*   This keyword is specific to the gnuace project type
+*   This keyword is specific to the gnuace project type.
 </p>
 
 </body>

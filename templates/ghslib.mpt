@@ -3,6 +3,4 @@
 
 conditional_include "ghscommon"
 
-libext = .a
-
 conditional_include "user_ghslib"
