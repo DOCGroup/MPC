@@ -99,7 +99,7 @@
           <property category="win32.*.win32b.bcc32" name="option.I.arg.1" value="$(BDS)\include"/>
           <property category="win32.*.win32b.bcc32" name="option.I.arg.2" value="$(BDS)\include\dinkumware"/>
           <property category="win32.*.win32b.bcc32" name="option.I.arg.3" value="$(BDS)\include\vcl"/>
-<%foreach(includes)%>
+<%foreach(4, includes)%>
           <property category="win32.*.win32b.bcc32" name="option.I.arg.<%forcount%>" value="<%include%>"/>
 <%endfor%>
           <property category="win32.*.win32b.bcc32" name="option.I.arg.merge" value="1"/>

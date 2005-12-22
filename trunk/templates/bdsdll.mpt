@@ -6,4 +6,4 @@ conditional_include "windowscommon"
 
 common_defines  = WIN32
 
-conditional_include "user_cbxdll"
+conditional_include "user_bdsdll"
