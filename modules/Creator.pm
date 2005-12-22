@@ -655,7 +655,7 @@ sub process_assignment_sub {
   my($name)   = shift;
   my($value)  = shift;
   my($assign) = shift;
-  my($nval)   = $self->get_assignment_for_modification($name, $assign, 1);
+  my($nval)   = $self->get_assignment_for_modification($name, $assign);
 
   if (defined $nval) {
     ## Remove double quotes if there are any
@@ -664,21 +664,30 @@ sub process_assignment_sub {
     ## Escape any regular expression special characters
     $value = $self->escape_regex_special($value);
 
-    ## Due to the way process_assignment() works, we only need to
-    ## attempt to remove a value that is either followed by a space
-    ## or at the end of the line (single values are always at the end
-    ## of the line).
-    if ($nval =~ s/$value\s+// || $nval =~ s/$value$//) {
-      $self->process_assignment($name, $nval, $assign);
-    }
-    else {
-      ## Try the same thing only with double quotes around the value.
-      ## Double quotes will be preserved in the value when the value
-      ## contains spaces.
-      $value = '"' . $value . '"';
-      if ($nval =~ s/$value\s+// || $nval =~ s/$value$//) {
-        $self->process_assignment($name, $nval, $assign);
+    my($last)  = 1;
+    my($found) = undef;
+    for(my $i = 0; $i <= $last; $i++) {
+      if ($i == $last) {
+        ## If we did not find the string to subtract in the original
+        ## value, try again after expanding template variables for
+        ## subtraction.
+        $nval = $self->get_assignment_for_modification($name, $assign, 1);
       }
+      for(my $j = 0; $j <= $last; $j++) {
+        ## If we didn't find it the first time, try again with quotes
+        my($re) = ($j == $last ? '"' . $value . '"' : $value);
+
+        ## Due to the way process_assignment() works, we only need to
+        ## attempt to remove a value that is either followed by a space
+        ## or at the end of the line (single values are always at the end
+        ## of the line).
+        if ($nval =~ s/$re\s+// || $nval =~ s/$re$//) {
+          $self->process_assignment($name, $nval, $assign);
+          $found = 1;
+          last;
+        }
+      }
+      last if ($found);
     }
   }
 }
