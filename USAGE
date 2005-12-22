@@ -20,9 +20,9 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-exclude <directories>] [-name_modifier <pattern>]
               [-apply_project] [-version] [-into <directory>]
               [-language <cplusplus | csharp | java | vb>]
-              [-type <automake | bmake | cbx | em3 | ghs | html |
-                      make | nmake | sle | vc6 | vc7 | vc71 |
-                      vc8>]
+              [-type <automake | bds | bmake | cbx | em3 | ghs |
+                      html | make | nmake | sle | vc6 | vc7 |
+                      vc71 | vc8>]
               [files]
 
        -base           Add <project> as a base project to each generated
