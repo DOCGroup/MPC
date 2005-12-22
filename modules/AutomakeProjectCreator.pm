@@ -37,11 +37,13 @@ sub fill_value {
     my($incs) = $self->get_assignment('includes');
     if (defined $incs) {
       my(@vec) = split(' ', $incs);
-      foreach(@vec) {
-        if (/^[^\$\/]/) {
-          $_ = '$(srcdir)/' . $_;
-        }
-      }
+
+#      # The following prefixes include paths with $(srcdir)/.
+#      foreach(@vec) {
+#        if (/^[^\$\/]/) {
+#          $_ = '$(srcdir)/' . $_;
+#        }
+#      }
 
       $value = \@vec;
     }
