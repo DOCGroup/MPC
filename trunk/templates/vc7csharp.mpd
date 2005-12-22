@@ -24,7 +24,7 @@
 <%endif%>
                 AssemblyKeyContainerName = ""
 <%if(exename || sharedname || staticname)%>
-                AssemblyName = "<%if(exename)%><%exename%><%else%><%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>"
+                AssemblyName = "<%if(exename)%><%exename%><%else%><%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%><%endif%>"
 <%endif%>
                 AssemblyOriginatorKeyFile = ""
                 DefaultClientScript = "JScript"
