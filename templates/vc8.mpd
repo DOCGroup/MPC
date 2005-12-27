@@ -118,7 +118,7 @@
 <%if(runtime_library)%>
 				RuntimeLibrary="<%runtime_library%>"
 <%else%>
-				RuntimeLibrary="<%if(type_is_static)%><%if(!optimize)%>1<%else%>0<%endif%><%else%><%if(!optimize)%>3<%else%>2<%endif%><%endif%>"
+				RuntimeLibrary="<%if(type_is_static || need_staticflags)%><%if(!optimize)%>1<%else%>0<%endif%><%else%><%if(!optimize)%>3<%else%>2<%endif%><%endif%>"
 <%endif%>
 <%if(StructMemberAlignment)%>
 				StructMemberAlignment="<%StructMemberAlignment%>"
