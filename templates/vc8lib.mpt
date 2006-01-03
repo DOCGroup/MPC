@@ -22,6 +22,7 @@ Release {
 }
 
 Debug {
+  debug_prj        = 1
   defines          = _DEBUG
   output_dir       = Static_Debug
   intermediate_dir = Static_Debug
@@ -38,6 +39,7 @@ MFC Release {
 }
 
 MFC Debug {
+  debug_prj        = 1
   defines          = _DEBUG
   output_dir       = Static_MFC_Debug
   intermediate_dir = Static_MFC_Debug

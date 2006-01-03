@@ -46,7 +46,8 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        option can be used multiple times to add directories.
        -into           Place all output files in a mirrored directory
                        structure starting at <directory>.
-       -language       Specify the language preference.  The default is
+       -language       Specify the language preference; possible values are
+                       [cplusplus csharp java vb].  The default is
                        cplusplus.
        -make_coexistence If multiple 'make' based project types are
                        generated, they will be named such that they can coexist.

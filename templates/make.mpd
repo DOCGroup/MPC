@@ -77,7 +77,7 @@ SHFLAGS       = <%shflags%>
 <%endif%>
 <%endfor%>
 <%endfor%>
-GENFLAGS      = <%genflags(-g)%>
+GENFLAGS      = <%if(optimize)%><%genflags(-O)%><%else%><%genflags(-g)%><%endif%>
 SRC           =<%if(pch_source && pchsupport)%> <%pch_source%><%endif%> <%source_files%>
 LINK.cc       = $(LD) $(LDFLAGS)
 <%if(dynamicflags)%>
