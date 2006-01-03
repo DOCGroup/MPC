@@ -20,6 +20,7 @@ Release {
 
 Debug {
   optimize         =
+  debug_prj        = 1
   defines          = _DEBUG
   output_dir       = .
   intermediate_dir = Debug
@@ -29,7 +30,7 @@ Debug {
 }
 
 MFC Release {
-  LinkIncremental  = 1
+  LinkIncremental   = 1
   optimize          = 3
   common_defines    = WIN32 _WINDOWS
   defines           = NDEBUG _AFXDLL
@@ -42,6 +43,7 @@ MFC Release {
 
 MFC Debug {
   optimize          =
+  debug_prj         = 1
   common_defines    = WIN32 _WINDOWS
   defines           = _DEBUG _AFXDLL
   output_dir        = MFC_Debug

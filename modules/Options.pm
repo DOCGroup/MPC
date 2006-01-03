@@ -18,6 +18,7 @@ use DirectoryManager;
 # Data Section
 # ************************************************************
 
+my($deflang)   = 'cplusplus';
 my(%languages) = ('cplusplus' => 1,
                   'csharp'    => 1,
                   'java'      => 1,
@@ -101,8 +102,9 @@ sub printUsage {
 "                       option can be used multiple times to add directories.\n" .
 "       -into           Place all output files in a mirrored directory\n" .
 "                       structure starting at <directory>.\n" .
-"       -language       Specify the language preference.  The default is\n".
-"                       cplusplus.\n" .
+"       -language       Specify the language preference; possible values are\n",
+"                       [", join(' ', sort keys %languages), "].  The default is\n".
+"                       $deflang.\n",
 "       -make_coexistence If multiple 'make' based project types are\n" .
 "                       generated, they will be named such that they can coexist.\n" .
 "       -name_modifier  Modify output names.  The pattern passed to this\n" .
@@ -206,7 +208,7 @@ sub options {
   my($nmodifier)  = undef;
   my($into)       = undef;
   my($hierarchy)  = 0;
-  my($language)   = ($defaults ? 'cplusplus' : undef);
+  my($language)   = ($defaults ? $deflang : undef);
   my($dynamic)    = ($defaults ? 1 : undef);
   my($reldefs)    = ($defaults ? 1 : undef);
   my($toplevel)   = ($defaults ? 1 : undef);

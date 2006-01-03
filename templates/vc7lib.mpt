@@ -19,6 +19,7 @@ Release {
 
 Debug {
   optimize         =
+  debug_prj        = 1
   defines          = _DEBUG
   output_dir       = Static_Debug
   intermediate_dir = Static_Debug
@@ -37,6 +38,7 @@ MFC Release {
 
 MFC Debug {
   optimize         =
+  debug_prj        = 1
   defines          = _DEBUG
   output_dir       = Static_MFC_Debug
   intermediate_dir = Static_MFC_Debug
