@@ -21,6 +21,7 @@ Release {
 
 Debug {
   optimize         =
+  debug_prj        = 1
   defines          = _DEBUG
   output_dir       = Static_Debug
   intermediate_dir = Static_Debug
@@ -30,7 +31,7 @@ Debug {
 }
 
 MFC Release {
-  LinkIncremental  = 1
+  LinkIncremental   = 1
   optimize          = 3
   defines           = NDEBUG _AFXDLL
   output_dir        = Static_MFC_Release
@@ -42,6 +43,7 @@ MFC Release {
 
 MFC Debug {
   optimize          =
+  debug_prj         = 1
   defines           = _DEBUG _AFXDLL
   output_dir        = Static_MFC_Debug
   intermediate_dir  = Static_MFC_Debug

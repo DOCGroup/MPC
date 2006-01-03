@@ -29,6 +29,7 @@ targetoutdir     =
 slash            = /
 libopt           = -l
 build64bit       = 1
+optimize         = 1
 pchext           = .gch
 
 // ***********************************************************************
