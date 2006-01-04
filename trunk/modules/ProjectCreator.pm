@@ -1196,19 +1196,7 @@ sub parse_components {
       else {
         ## It was used, so we need to add that name to
         ## the set of group names unless it's already been added.
-        my($groups)   = $self->get_assignment($grtag);
-        my($addgroup) = 1;
-        if (defined $groups) {
-          foreach my $group (@{$self->create_array($groups)}) {
-            if ($current eq $group) {
-              $addgroup = 0;
-              last;
-            }
-          }
-        }
-        if ($addgroup) {
-          $self->process_assignment_add($grtag, $current);
-        }
+        $self->process_assignment_add($grtag, $current);
       }
       if ($set) {
         $current = $defgroup;
@@ -1649,8 +1637,8 @@ sub remove_duplicate_addition {
     ## assignment with either addition or subtraction, we are going to
     ## perform a little fix on the value to avoid multiple
     ## libraries and to try to insure the correct linking order
-    if ($name eq 'macros'   ||
-        $name eq 'libpaths' || $name eq 'includes' || $name =~ /libs$/) {
+    if ($name eq 'macros' || $name eq 'libpaths' ||
+        $name eq 'includes' || $name =~ /libs$/ || $name =~ /^$grouped_key/) {
       my($allowed) = '';
       my(%parts)   = ();
 
