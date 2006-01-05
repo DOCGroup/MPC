@@ -1,3 +1,13 @@
+Thu Jan  5 09:45:54 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+        * modules/DirectoryManager.pm:
+        * modules/ProjectCreator.pm:
+
+          Made MPC more tolerant of file systems that are case insensitive.
+          This will help with the relative path replacement on Windows and
+          others that have this problematic type of file system.
+
 Wed Jan  4 08:09:20 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
