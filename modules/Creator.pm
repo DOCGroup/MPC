@@ -12,7 +12,6 @@ package Creator;
 
 use strict;
 use FileHandle;
-use File::Spec;
 use File::Basename;
 
 use Parser;
@@ -94,7 +93,7 @@ sub new {
   $self->{'use_env'}         = $use_env;
   $self->{'expand_vars'}     = $expandvars;
   $self->{'convert_slashes'} = $self->convert_slashes();
-  $self->{'case_tolerant'}   = File::Spec->case_tolerant();
+  $self->{'case_tolerant'}   = $self->case_insensitive();
 
   return $self;
 }

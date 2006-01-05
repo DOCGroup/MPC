@@ -11,12 +11,14 @@ package DirectoryManager;
 # ************************************************************
 
 use strict;
+use File::Spec;
 use File::Basename;
 
 # ************************************************************
 # Data Section
 # ************************************************************
 
+my($case_insensitive) = File::Spec->case_tolerant();
 my($cwd) = Cwd::getcwd();
 if ($^O eq 'cygwin' && $cwd !~ /[A-Za-z]:/) {
   my($cyg) = `cygpath -w $cwd`;
@@ -24,6 +26,7 @@ if ($^O eq 'cygwin' && $cwd !~ /[A-Za-z]:/) {
     $cyg =~ s/\\/\//g;
     chop($cwd = $cyg);
   }
+  $case_insensitive = 1;
 }
 elsif ($^O eq 'VMS') {
   $cwd = VMS::Filespec::unixify($cwd);
@@ -150,5 +153,9 @@ sub convert_slashes {
   return 0;
 }
 
+sub case_insensitive {
+  #my($self) = shift;
+  return $case_insensitive;
+}
 
 1;
