@@ -4488,12 +4488,6 @@ sub remove_wanted_extension {
 # Virtual Methods To Be Overridden
 # ************************************************************
 
-sub case_insensitive {
-  #my($self) = shift;
-  return 0;
-}
-
-
 sub escape_spaces {
   #my($self) = shift;
   return 0;
