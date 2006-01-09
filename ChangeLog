@@ -1,3 +1,12 @@
+Mon Jan  9 08:30:14 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/nmake.mpd:
+
+          Corrected a bug reported by Johnny Willemsen where object files
+          were not getting cleaned up if they contained a relative path with
+          ".." in the name.  In the process, I cleaned up the template a bit
+          which should allow this type to be generated slightly faster.
+
 Thu Jan  5 09:45:54 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
@@ -271,14 +280,14 @@ Mon Dec  5 14:17:35 2005  William Otte  <wotte@dre.vanderbilt.edu>
 
 Tue Nov 29 10:11:14 2005  William Otte  <wotte@dre.vanderbilt.edu>
 
-        * config/boost_date_time.mpb
-        * config/boost_filesystem.mpb
-        * config/boost_prg_exec_monitor.mpb
-        * config/boost_regex.mpb
-        * config/boost_signals.mpb
-        * config/boost_test_exec_monitor.mpb
-        * config/boost_thread.mpb
-        * config/boost_unit_test_framework.mpb
+        * config/boost_date_time.mpb:
+        * config/boost_filesystem.mpb:
+        * config/boost_prg_exec_monitor.mpb:
+        * config/boost_regex.mpb:
+        * config/boost_signals.mpb:
+        * config/boost_test_exec_monitor.mpb:
+        * config/boost_thread.mpb:
+        * config/boost_unit_test_framework.mpb:
 
         Corrected a problem with my previous commit that broke boost
         on platforms other than gnuace and windows.  Thanks to Chad
@@ -287,8 +296,8 @@ Tue Nov 29 10:11:14 2005  William Otte  <wotte@dre.vanderbilt.edu>
 
 Mon Nov 21 15:23:40 2005  William Otte  <wotte@dre.vanderbilt.edu>
 
-        * config/boost_filesystem.mpb
-        * config/boost_regex.mpb
+        * config/boost_filesystem.mpb:
+        * config/boost_regex.mpb:
 
         Scoped the lit_libs directive inside of a gnuace specific
         block to take advantage of automatic library resolution provided
@@ -400,8 +409,8 @@ Mon Nov  7 13:59:12 UTC 2005  Johnny Willemsen  <jwillemsen@remedy.nl>
 
 Fri Oct 28 14:58:59 2005  William Otte  <wotte@dre.vanderbilt.edu>
 
-        * config/global.features
-        * config/xerces.mpb
+        * config/global.features:
+        * config/xerces.mpb:
 
         Added a xerces feature to the xerces base project, similar to
         boost/zlib/zzip to allow disabling xerces specific projects.
