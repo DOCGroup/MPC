@@ -1,3 +1,10 @@
+Tue Jan 10 16:30:32 2006  Ossama Othman  <ossama@dre.vanderbilt.edu>
+
+        From Russell More <russell_mora at symantec dot com>
+        * templates/nmake.mpd:
+
+	  Add to manifest files, if `.manifest' file exists.
+
 Mon Jan  9 08:30:14 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/nmake.mpd:
