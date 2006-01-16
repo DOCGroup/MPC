@@ -79,10 +79,17 @@ sub parse_line {
 }
 
 
+sub get_names {
+  my($self)  = shift;
+  my(@names) = keys %{$self->{'values'}};
+  return \@names;
+}
+
+
 sub get_value {
   my($self) = shift;
   my($tag)  = shift;
-  return $self->{'values'}->{$tag};
+  return $self->{'values'}->{lc($tag)};
 }
 
 

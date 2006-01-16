@@ -1,9 +1,54 @@
+Mon Jan 16 11:17:45 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * MPC.ico:
+
+          Modified the MPC project icon to have the (P) on the left side
+          instead of the right so that it looks better with Tortoise.
+
+        * modules/Creator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Added support for using -language within a workspace.  Previously,
+          this was disallowed but there was no real reason for that.
+
+        * modules/FeatureParser.pm:
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+
+          Added support for accessing MPC features and their values.
+
+        * templates/html.mpd:
+
+          Added all of the MPC project keywords.
+
+        * templates/nmake.mpd:
+
+          Added the -i parameter to the depgen.pl script.
+
+        * templates/vc6dspdll.mpt:
+
+          Added the _WINDLL and _AFXDLL macros for the MFC configurations.
+
+        * templates/vc7.mpd:
+
+          Added the ability to set the GenerateMapFile setting.  Thanks to
+          David Hauck for providing the modification.
+
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+
+          Added the ReferencePath setting so that libraries can be located
+          (if referenced) and ensured that the 'install' setting worked as
+          it does in all other templates.  Thanks to Dan Troesser for
+          providing the ReferencePath setting and pointing out the 'install'
+          discrepancy.
+
 Tue Jan 10 16:30:32 2006  Ossama Othman  <ossama@dre.vanderbilt.edu>
 
         From Russell Mora <russell_mora at symantec dot com>
         * templates/nmake.mpd:
 
-	  Add to manifest files, if `.manifest' file exists.
+          Add to manifest files, if `.manifest' file exists.
 
 Mon Jan  9 08:30:14 2006  Chad Elliott  <elliott_c@ociweb.com>
 
