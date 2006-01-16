@@ -28,7 +28,7 @@ my(@statekeys) = ('global', 'include', 'template', 'ti',
                   'addproj', 'progress', 'toplevel', 'baseprojs',
                   'feature_file', 'features', 'hierarchy',
                   'name_modifier', 'apply_project', 'into', 'use_env',
-                  'expand_vars',
+                  'expand_vars', 'language',
                  );
 
 my(%all_written) = ();
