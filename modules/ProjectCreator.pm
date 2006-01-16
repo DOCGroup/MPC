@@ -584,6 +584,13 @@ sub parse_line {
           }
 
           if ($status) {
+            ## Generate default target names after all source files are added
+            ## and after we've added in all of the options from the
+            ## command line.  If the user set exename on the command line
+            ## and no "main" is found, sharedname will be set too and
+            ## most templates do not handle that well.
+            $self->generate_default_target_names();
+
             ## End of project; Write out the file.
             ($status, $errorString) = $self->write_project();
 
@@ -1740,6 +1747,12 @@ sub read_template_input {
     }
   }
 
+  if ($status && defined $self->{$tag}) {
+    ## Put the features into the template input set
+    my($features) = $self->{'feature_parser'}->get_names();
+    $self->{$tag}->parse_line(undef, "features = @$features");
+  }
+
   return $status, $errorString;
 }
 
@@ -2141,29 +2154,29 @@ sub search_for_entry {
     my($commented) = 0;
 
     while(<$fh>) {
-      if (!$preproc || !$commented) {
+      if (!$commented) {
         ## Remove c++ style comments
         $_ =~ s/\/\/.*//;
       }
 
-      ## If the current language supports a c preprocessor, we
-      ## will perform a minimal check for #if 0 and c style comments.
-      if ($preproc) {
-        ## Remove one line c style comments
-        $_ =~ s/\/\*.*\*\///g;
+      ## Remove one line c style comments
+      $_ =~ s/\/\*.*\*\///g;
 
-        if ($commented) {
-          if (/\*\//) {
-            ## Found the end of a multi-line c style comment
-            --$commented;
-          }
+      if ($commented) {
+        if (/\*\//) {
+          ## Found the end of a multi-line c style comment
+          --$commented;
         }
-        else {
-          if (/\/\*/) {
-            ## Found the beginning of a multi-line c style comment
-            ++$commented;
-          }
-          elsif (/#\s*if\s+0/) {
+      }
+      else {
+        if (/\/\*/) {
+          ## Found the beginning of a multi-line c style comment
+          ++$commented;
+        }
+        elsif ($preproc) {
+          ## If the current language supports a c preprocessor, we
+          ## will perform a minimal check for #if 0
+          if (/#\s*if\s+0/) {
             ## Found the beginning of a #if 0
             ++$poundifed;
           }
@@ -3083,9 +3096,6 @@ sub generate_defaults {
   if ($#rmkeys != -1) {
     $self->remove_excluded(@rmkeys);
   }
-
-  ## Generate default target names after all source files are added
-  $self->generate_default_target_names();
 }
 
 
@@ -3215,11 +3225,31 @@ sub get_special_value {
   my($based)  = shift;
   my(@params) = @_;
 
-  if ($type =~ /^custom_type/) {
+
+  if ($type eq 'feature') {
+    return $self->get_feature_value($cmd, $based);
+  }
+  elsif ($type =~ /^custom_type/) {
     return $self->get_custom_value($cmd, $based, @params);
   }
   elsif ($type =~ /^$grouped_key/) {
     return $self->get_grouped_value($type, $cmd, $based);
+  }
+
+  return undef;
+}
+
+
+sub get_feature_value {
+  my($self)   = shift;
+  my($cmd)    = shift;
+  my($based)  = shift;
+
+  if ($cmd eq 'value') {
+    my($val) = $self->{'feature_parser'}->get_value($based);
+    if (defined $val && $val != 0) {
+      return 1;
+    }
   }
 
   return undef;
@@ -3956,9 +3986,11 @@ sub reset_values {
 
   ## Only put data structures that need to be cleared
   ## out when the mpc file is done being read, not at the
-  ## end of each project within the mpc file.
+  ## end of each project within the mpc file.  Those go in
+  ## the closing curly brace section of parse_line().
   $self->{'project_info'}  = [];
   $self->{'lib_locations'} = {};
+  $self->reset_generating_types();
 }
 
 

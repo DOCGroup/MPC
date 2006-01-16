@@ -38,7 +38,7 @@ MFC Release {
   use_debug_libraries   = 0
   optimize              = 1
   compile_flags         = /W3 /GX /MD /GR
-  defines               = NDEBUG
+  defines               = NDEBUG _WINDLL _AFXDLL
   compile_flags_removed = /YX
   output_dir            = MFC_Release
   intermediate_dir      = MFC_Release
@@ -51,7 +51,7 @@ MFC Debug {
   use_debug_libraries   = 1
   optimize              =
   compile_flags         = /W3 /Gm /GX /Zi /MDd /GR /Gy
-  defines               = _DEBUG
+  defines               = _DEBUG _WINDLL _AFXDLL
   compile_flags_removed = /Fr /YX
   output_dir            = MFC_Debug
   intermediate_dir      = MFC_Debug

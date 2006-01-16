@@ -68,6 +68,7 @@
 <tbody>
 <tr><td>after</td><td><%after%></td></tr>
 <tr><td>avoids</td><td><%avoids%></td></tr>
+<tr><td>custom_only</td><td><%custom_only%></td></tr>
 <tr><td>dllout</td><td><%dllout%></td></tr>
 <tr><td>dynamicflags</td><td><%dynamicflags%></td></tr>
 <tr><td>exename</td><td><%exename%></td></tr>
@@ -80,7 +81,9 @@
 <tr><td>macros</td><td><%macros%></td></tr>
 <tr><td>pch_header</td><td><%pch_header%></td></tr>
 <tr><td>pch_source</td><td><%pch_source%></td></tr>
+<tr><td>postbuild</td><td><%postbuild%></td></tr>
 <tr><td>pure_libs</td><td><%pure_libs%></td></tr>
+<tr><td>recurse</td><td><%recurse%></td></tr>
 <tr><td>requires</td><td><%requires%></td></tr>
 <tr><td>sharedname</td><td><%libname_prefix%><%sharedname%></td></tr>
 <tr><td>staticflags</td><td><%staticflags%></td></tr>
@@ -103,7 +106,7 @@
 <%foreach(custom_types)%>
 <tr><td><%ucw(custom_type)%></td><td><%custom_type->input_files%></td></tr>
 <%endfor%>
-<%if(configurations || pch_defines || postbuild)%>
+<%if(configurations || pch_defines)%>
 </tbody>
 <thead>
 <tr><td colspan="2">MPC Template Settings</td></tr>
@@ -111,9 +114,6 @@
 </thead>
 <tbody>
 <%comment("common to all mpt files")%>
-<%if(postbuild)%>
-<tr><td>postbuild</td><td><%postbuild%></td></tr>
-<%endif%>
 <%if(pch_defines)%>
 <tr><td>pch_defines</td><td><%pch_defines%></td></tr>
 <%endif%>

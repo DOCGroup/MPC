@@ -39,6 +39,9 @@
                 OptionStrict = "Off"
                 RootNamespace = ""
                 StartupObject = "<%startupobject%>"
+<%if(libpaths)%>
+                ReferencePath = "<%foreach(libpaths)%><%libpath%><%fornotlast(";")%><%endfor%>"
+<%endif%>
             >
 <%foreach(configurations)%>
                 <Config
@@ -52,7 +55,7 @@
                    IncrementalBuild = "<%incremental("false")%>"
                    Optimize = "<%if(optimize)%>true<%else%>false<%endif%>"
 <%if(exename || sharedname || staticname)%>
-                   OutputPath = "<%if(exename)%><%if(install)%><%install%><%else%>.<%endif%><%else%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%endif%>\<%output_dir%>\"
+                   OutputPath = "<%if(exename)%><%if(install)%><%install%><%else%>.\<%output_dir%><%endif%><%else%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%output_dir%><%endif%>\"
 <%endif%>
                    RegisterForComInterop = "false"
                    RemoveIntegerChecks = "false"
