@@ -66,6 +66,11 @@ my(%target_type_vars) = ('type_is_static'   => 1,
                          'type_is_binary'   => 1,
                         );
 
+my(%arrow_op_ref) = ('custom_type'     => 'custom types',
+                     'grouped_.*_file' => 'grouped files',
+                     'feature'         => 'features',
+                    );
+
 # ************************************************************
 # Subroutine Section
 # ************************************************************
@@ -1098,17 +1103,17 @@ sub handle_foreach {
 
       ## Due to the way flag_overrides works, we can't allow
       ## the user to name the foreach variable when dealing
-      ## with custom types or groupd files.
+      ## with variables that can be used with the -> operator
       if (defined $vname) {
-        if ($val =~ /^custom_type\->/ || $val eq 'custom_types') {
-          $status = 0;
-          $errorString = 'The foreach variable can not be ' .
-                         'named when dealing with custom types';
-        }
-        elsif ($val =~ /^grouped_.*_file\->/ || $val =~ /^grouped_.*files$/) {
-          $status = 0;
-          $errorString = 'The foreach variable can not be ' .
-                         'named when dealing with grouped files';
+        foreach my $ref (keys %arrow_op_ref) {
+          my($arrow_re) = $ref;
+          my($name_re)  = $ref . 's';
+          if ($val =~ /^$arrow_re\->/ || $val =~ /^$name_re$/) {
+            $status = 0;
+            $errorString = 'The foreach variable can not be ' .
+                           'named when dealing with ' .
+                           $arrow_op_ref{$ref};
+          }
         }
       }
     }

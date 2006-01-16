@@ -40,9 +40,9 @@ NULL=nul
 
 !IF "$(DEPGEN)" == ""
 !IF EXISTS("$(DEPGEN_ROOT)/depgen.pl")
-DEPGEN=perl $(DEPGEN_ROOT)/depgen.pl -t nmake
+DEPGEN=perl $(DEPGEN_ROOT)/depgen.pl -i -t nmake
 !ELSEIF EXISTS("$(ACE_ROOT)/bin/depgen.pl")
-DEPGEN=perl $(ACE_ROOT)/bin/depgen.pl -t nmake
+DEPGEN=perl $(ACE_ROOT)/bin/depgen.pl -i -t nmake
 !ENDIF
 !ENDIF
 

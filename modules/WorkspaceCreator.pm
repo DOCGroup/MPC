@@ -1777,9 +1777,6 @@ sub process_cmdline {
       if (defined $options->{'into'}) {
         $self->optionError('-into is ignored');
       }
-      if (defined $options->{'language'}) {
-        $self->optionError('-language is ignored');
-      }
       if (defined $options->{'input'}->[0]) {
         $self->optionError('Command line files ' .
                            'specified in a workspace are ignored');
@@ -1787,7 +1784,7 @@ sub process_cmdline {
 
       ## Determine if it's ok to use the cache
       my(@cacheInvalidating) = ('global', 'include', 'baseprojs',
-                                'template', 'ti', 'relative',
+                                'template', 'ti', 'relative', 'language',
                                 'addtemp', 'addproj', 'feature_file',
                                 'features', 'use_env', 'expand_vars');
       foreach my $key (@cacheInvalidating) {
@@ -1853,7 +1850,7 @@ sub project_creator {
                    $parameters{'apply_project'},
                    $self->{'generate_ins'},
                    $parameters{'into'},
-                   $self->get_language(),
+                   $parameters{'language'},
                    $parameters{'use_env'},
                    $parameters{'expand_vars'});
 }

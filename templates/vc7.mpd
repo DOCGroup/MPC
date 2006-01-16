@@ -120,6 +120,9 @@
 <%endif%>
 <%endif%>
 <%endif%>
+<%if(GenerateMapFile)%>
+				GenerateMapFile="<%GenerateMapFile%>"
+<%endif%>
 				SubSystem="<%subsystem("1")%>"
 <%if(StackReserveSize)%>
 				StackReserveSize="<%StackReserveSize%>"
