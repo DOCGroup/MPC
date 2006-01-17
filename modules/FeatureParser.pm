@@ -68,7 +68,7 @@ sub parse_line {
   if ($line eq '') {
   }
   elsif ($line =~ /^(\w+)\s*=\s*(\d+)$/) {
-    $self->{'values'}->{$1} = $2;
+    $self->{'values'}->{lc($1)} = $2;
   }
   else {
     $status = 0;
