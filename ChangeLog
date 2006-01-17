@@ -1,3 +1,11 @@
+Tue Jan 17 07:25:29 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/FeatureParser.pm:
+
+          The previous change included a change to make features
+          case-insensitive.  This change was not complete and has been
+          corrected.
+
 Mon Jan 16 11:17:45 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * MPC.ico:
