@@ -139,7 +139,7 @@ sub write_comps {
 
   ## Determine the default configuration
   foreach my $project (keys %$pjs) {
-    my($name, $deps, $pguid, @cfgs) = @{$pjs->{$project}};
+    my($name, $deps, $pguid, $lang, @cfgs) = @{$pjs->{$project}};
     @cfgs = sort @cfgs;
     if (defined $cfgs[0]) {
       $default = $cfgs[0];
