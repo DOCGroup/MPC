@@ -1,3 +1,11 @@
+Wed Jan 18 15:12:40 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/nmake.mpd:
+
+          Modified the clean rule to just use del /s/f/q instead of listing
+          out each object file.  Thanks to Johnny Willemsen for debugging
+          this.
+
 Wed Jan 18 13:04:27 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/NMakeWorkspaceCreator.pm:

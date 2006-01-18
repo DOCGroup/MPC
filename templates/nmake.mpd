@@ -174,7 +174,6 @@ __postbuild__:
 <%endfor%>
 
 CLEAN :
-	-@del /f/q $(LINK32_OBJS)
 	-@del /f/s/q "$(INTDIR)"
 
 <%if(install)%>
