@@ -101,6 +101,9 @@ sub fill_value {
                              $self->{'current_input'},
                              $self->getcwd());
   }
+  elsif ($name eq 'language') {
+    $value = $self->get_language();
+  }
   else {
     $value = $self->get_configurable($name);
   }

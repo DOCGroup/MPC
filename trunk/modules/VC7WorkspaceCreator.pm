@@ -133,8 +133,6 @@ sub write_comps {
   my($fh)       = shift;
   my($gen)      = shift;
   my($projects) = $self->get_projects();
-  my($language) = $self->get_language();
-  my($vc7guid)  = $guids{$language};
   my($pjs)      = $self->get_project_info();
   my(@list)     = sort @$projects;
   my($crlf)     = $self->crlf();
@@ -149,17 +147,18 @@ sub write_comps {
 
   ## Project Information
   foreach my $project (@list) {
-    my($name, $rawdeps, $guid) = @{$$pjs{$project}};
+    my($name, $rawdeps, $guid, $language) = @{$$pjs{$project}};
+    my($pguid) = $guids{$language};
     my($deps) = $self->get_validated_ordering($project);
     ## Convert all /'s to \
     my($cpy) = $self->slash_to_backslash($project);
-    print $fh "Project(\"{$vc7guid}\") = \"$name\", \"$cpy\", \"{$guid}\"$crlf";
+    print $fh "Project(\"{$pguid}\") = \"$name\", \"$cpy\", \"{$guid}\"$crlf";
     $self->print_inner_project($fh, $gen, $guid, $deps, $name, \%name_to_guid_map);
     print $fh "EndProject$crlf";
 
     if ($deps ne '' &&
         ($language eq 'csharp' || $language eq 'vb')) {
-      $self->add_references($project, $vc7guid, $deps, \%name_to_guid_map);
+      $self->add_references($project, $pguid, $deps, \%name_to_guid_map);
     }
   }
 
@@ -170,7 +169,7 @@ sub write_comps {
 
   my(%configs) = ();
   foreach my $project (@list) {
-    my($name, $deps, $pguid, @cfgs) = @{$$pjs{$project}};
+    my($name, $deps, $pguid, $lang, @cfgs) = @{$$pjs{$project}};
     foreach my $cfg (@cfgs) {
       $cfg = $self->get_short_config_name($cfg);
       $configs{$cfg} = 1;
@@ -188,7 +187,7 @@ sub write_comps {
             ") = postSolution$crlf";
 
   foreach my $project (@list) {
-    my($name, $deps, $pguid, @cfgs) = @{$$pjs{$project}};
+    my($name, $deps, $pguid, $lang, @cfgs) = @{$$pjs{$project}};
     foreach my $cfg (sort @cfgs) {
       my($c) = $self->get_short_config_name($cfg);
       print $fh "\t\t{$pguid}.$c.ActiveCfg = $cfg$crlf" .
