@@ -1,3 +1,14 @@
+Wed Jan 18 13:04:27 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/VC7ProjectCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+
+          We need to keep track of the language for each project processed.
+          This allows the VC7, VC71 and VC8 WorkspaceCreator's to put the
+          right GUID in for the individual projects.
+
 Tue Jan 17 07:25:29 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/FeatureParser.pm:
@@ -722,4 +733,5 @@ Mon Aug 22 07:17:17 2005  Chad Elliott  <elliott_c@ociweb.com>
 
 Local Variables:
 add-log-time-format: current-time-string
+indent-tabs-mode: nil
 End:

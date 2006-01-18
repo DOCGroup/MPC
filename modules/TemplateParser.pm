@@ -1561,6 +1561,10 @@ sub collect_data {
   my($guid) = $prjc->update_project_info($self, 1, ['guid']);
   $self->{'values'}->{'guid'} = $guid;
 
+  ## In order for VC7 to mix languages, we need to keep track
+  ## of the language associated with each project.
+  $prjc->update_project_info($self, 1, ['language']);
+
   ## Some Windows based projects can't deal with certain version
   ## values.  So, for those we provide a translated version.
   my($version) = $prjc->get_assignment('version');
