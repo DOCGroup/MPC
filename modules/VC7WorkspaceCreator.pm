@@ -155,11 +155,6 @@ sub write_comps {
     print $fh "Project(\"{$pguid}\") = \"$name\", \"$cpy\", \"{$guid}\"$crlf";
     $self->print_inner_project($fh, $gen, $guid, $deps, $name, \%name_to_guid_map);
     print $fh "EndProject$crlf";
-
-    if ($deps ne '' &&
-        ($language eq 'csharp' || $language eq 'vb')) {
-      $self->add_references($project, $pguid, $deps, \%name_to_guid_map);
-    }
   }
 
   print $fh "Global$crlf",
@@ -231,47 +226,6 @@ sub print_additional_sections {
             "\tEndGlobalSection$crlf",
             "\tGlobalSection(ExtensibilityAddIns) = postSolution$crlf",
             "\tEndGlobalSection$crlf";
-}
-
-
-sub add_references {
-  my($self)   = shift;
-  my($proj)   = shift;
-  my($pguid)  = shift;
-  my($deps)   = shift;
-  my($gmap)   = shift;
-  my($crlf)   = $self->crlf();
-  my($fh)     = new FileHandle();
-  my($outdir) = $self->get_outdir();
-
-  if (open($fh, "$outdir/$proj")) {
-    my($write) = 0;
-    my(@read)  = ();
-    while(<$fh>) {
-      if (/MPC\s+ADD\s+REFERENCES/) {
-        $write = 1;
-        my($darr) = $self->create_array($deps);
-        foreach my $dep (@$darr) {
-          push(@read, "                <Reference$crlf",
-                      "                    Name = \"$dep\"$crlf",
-                      "                    Project = \"{$$gmap{$dep}}\"$crlf",
-                      "                    Package = \"{$pguid}\"$crlf",
-                      "                />$crlf");
-        }
-      }
-      else {
-        push(@read, $_);
-      }
-    }
-    close($fh);
-
-    if ($write && open($fh, ">$outdir/$proj")) {
-      foreach my $line (@read) {
-        print $fh $line;
-      }
-      close($fh);
-    }
-  }
 }
 
 

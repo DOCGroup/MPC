@@ -24,7 +24,17 @@ my(%info) = ('cplusplus' => {'ext'      => '.vcproj',
                              'lib'      => 'vc8lib',
                              'template' => 'vc8',
                             },
+             'csharp' => {'ext'      => '.csproj',
+                          'dllexe'   => 'vc8csharp',
+                          'libexe'   => 'vc8csharp',
+                          'dll'      => 'vc8csharp',
+                          'lib'      => 'vc8csharp',
+                          'template' => 'vc8csharp',
+                         },
             );
+
+my(%config) = ('vcversion' => '8.00',
+              );
 
 # ************************************************************
 # Subroutine Section
@@ -33,8 +43,6 @@ my(%info) = ('cplusplus' => {'ext'      => '.vcproj',
 sub get_configurable {
   my($self)   = shift;
   my($name)   = shift;
-  my(%config) = ('vcversion' => '8.00',
-                );
   return $config{$name};
 }
 
@@ -46,6 +54,20 @@ sub get_info_hash {
     return $info{$key};
   }
   return $self->SUPER::get_info_hash($key);
+}
+
+sub translate_value {
+  my($self) = shift;
+  my($key)  = shift;
+  my($val)  = shift;
+
+  if ($key eq 'platform' && $val eq 'AnyCPU') {
+    ## Microsoft uses AnyCPU in the project file, but
+    ## uses Any CPU in the solution file.
+    $val = 'Any CPU';
+  }
+
+  return $val;
 }
 
 1;

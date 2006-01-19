@@ -46,6 +46,10 @@ my(%info) = ('cplusplus' => {'ext'      => '.vcproj',
                             },
             );
 
+my(%config) = ('vcversion'    => '7.00',
+               'forloopscope' => 'TRUE',
+              );
+
 # ************************************************************
 # Subroutine Section
 # ************************************************************
@@ -81,11 +85,8 @@ sub get_and_symbol {
 
 
 sub get_configurable {
-  my($self)   = shift;
-  my($name)   = shift;
-  my(%config) = ('vcversion'    => '7.00',
-                 'forloopscope' => 'TRUE',
-                );
+  my($self) = shift;
+  my($name) = shift;
   return $config{$name};
 }
 

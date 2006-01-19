@@ -18,15 +18,20 @@ use vars qw(@ISA);
 @ISA = qw(VC7ProjectCreator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my(%config) = ('vcversion'    => '7.10',
+               'forloopscope' => 'TRUE',
+              );
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub get_configurable {
-  my($self)   = shift;
-  my($name)   = shift;
-  my(%config) = ('vcversion'    => '7.10',
-                 'forloopscope' => 'TRUE',
-                );
+  my($self) = shift;
+  my($name) = shift;
   return $config{$name};
 }
 
