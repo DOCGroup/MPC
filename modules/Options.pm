@@ -52,6 +52,7 @@ sub printUsage {
                $spaces . "[-expand_vars] [-features <feature definitions>]\n" .
                $spaces . "[-exclude <directories>] [-name_modifier <pattern>]\n" .
                $spaces . "[-apply_project] [-version] [-into <directory>]\n" .
+               $spaces . "[-gfeature_file <file name>]\n" .
                $spaces . "[-language <";
 
   my(@keys) = sort keys %languages;
@@ -94,6 +95,9 @@ sub printUsage {
 "                       config directory.\n" .
 "       -features       Specifies the feature list to set before processing.\n" .
 "       -genins         Generate .ins files for use with prj_install.pl.\n" .
+"       -gfeature_file  Specifies the global feature file.  The\n" .
+"                       default value is global.features under the\n" .
+"                       config directory.\n" .
 "       -global         Specifies the global input file.  Values stored\n" .
 "                       within this file are applied to all projects.\n" .
 "       -hierarchy      Generate a workspace in a hierarchical fashion.\n" .
@@ -160,7 +164,7 @@ sub completion_command {
                "ti static noreldefs notoplevel feature_file use_env " .
                "value_template value_project make_coexistence language " .
                "hierarchy exclude name_modifier apply_project version " .
-               "expand_vars)/' " .
+               "expand_vars gfeature_file)/' " .
                "'c/dll:/f/' 'c/dll_exe:/f/' 'c/lib_exe:/f/' 'c/lib:/f/' " .
                "'n/-ti/(dll lib dll_exe lib_exe)/:' ";
 
@@ -204,6 +208,7 @@ sub options {
   my($global)     = undef;
   my($template)   = undef;
   my($feature_f)  = undef;
+  my($gfeature_f) = undef;
   my(@features)   = ();
   my($nmodifier)  = undef;
   my($into)       = undef;
@@ -293,6 +298,14 @@ sub options {
       }
       else {
         $self->optionError('-features requires a comma separated list argument');
+      }
+    }
+    elsif ($arg eq '-gfeature_file') {
+      $i++;
+      $gfeature_f = $args[$i];
+      if (!defined $gfeature_f) {
+        $self->optionError('-gfeature_file ' .
+                           'requires a file name argument');
       }
     }
     elsif ($arg eq '-genins') {
@@ -506,6 +519,7 @@ sub options {
 
   my(%options) = ('global'        => $global,
                   'feature_file'  => $feature_f,
+                  'gfeature_file' => $gfeature_f,
                   'features'      => \@features,
                   'include'       => \@include,
                   'input'         => \@input,
