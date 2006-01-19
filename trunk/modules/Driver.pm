@@ -192,7 +192,9 @@ sub run {
   }
 
   ## Set the global feature file
-  my($global_feature_file) = $self->{'path'} . '/config/global.features';
+  my($global_feature_file) = (defined $options->{'gfeature_file'} ?
+                                $options->{'gfeature_file'} :
+                                $self->{'path'} . '/config/global.features');
 
   ## Set up default values
   if (!defined $options->{'input'}->[0]) {

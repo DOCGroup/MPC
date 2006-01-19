@@ -19,6 +19,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-expand_vars] [-features <feature definitions>]
               [-exclude <directories>] [-name_modifier <pattern>]
               [-apply_project] [-version] [-into <directory>]
+              [-gfeature_file <file name>]
               [-language <cplusplus | csharp | java | vb>]
               [-type <automake | bds | bmake | cbx | em3 | ghs |
                       html | make | nmake | sle | vc6 | vc7 |
@@ -38,6 +39,9 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        config directory.
        -features       Specifies the feature list to set before processing.
        -genins         Generate .ins files for use with prj_install.pl.
+       -gfeature_file  Specifies the global feature file.  The
+                       default value is global.features under the
+                       config directory.
        -global         Specifies the global input file.  Values stored
                        within this file are applied to all projects.
        -hierarchy      Generate a workspace in a hierarchical fashion.
