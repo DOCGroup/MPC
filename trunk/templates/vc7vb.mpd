@@ -2,7 +2,7 @@
     <VisualBasic
         ProjectType = "Local"
         ProductVersion = "<%prversion("7.10.3077")%>"
-        SchemaVersion = "<%schemaversion("2.0)%>"
+        SchemaVersion = "<%schemaversion("2.0")%>"
         ProjectGuid = "{<%guid%>}"
 <%if(scc)%>
         SccProjectName = "<%scc%>"
@@ -77,7 +77,6 @@
                     AssemblyName = "<%lib%>"
                 />
 <%endfor%>
-            <!-- MPC ADD REFERENCES -->
             </References>
         </Build>
         <Files>
