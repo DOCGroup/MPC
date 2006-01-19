@@ -1,3 +1,12 @@
+Thu Jan 19 12:59:55 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+        * modules/Driver.pm:
+        * modules/Options.pm:
+
+          Added a new option, -gfeature_file, to specify the global feature
+          file.
+
 Thu Jan 19 12:30:18 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/VC71ProjectCreator.pm:
