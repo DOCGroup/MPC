@@ -1,3 +1,26 @@
+Thu Jan 19 12:30:18 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/VC71ProjectCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+
+          Moved a static hash table out of a method and into the local
+          namespace (for performace reasons).
+
+        * modules/VC7WorkspaceCreator.pm:
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+
+          Removed the code that added references for csharp or vb.  This was
+          not necessary and in fact broke the projects.
+
+        * modules/VC8ProjectCreator.pm:
+        * templates/vc8csharp.mpd:
+        * templates/vc8csharp.mpt:
+
+          Added support for the vc8 style projects for csharp.  Previously,
+          the vc7 version for csharp was used and required conversion within
+          vc8.
+
 Wed Jan 18 15:12:40 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/nmake.mpd:
