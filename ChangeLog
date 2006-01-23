@@ -1,3 +1,26 @@
+Mon Jan 23 12:08:25 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/MakeWorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+
+          Tell the number_target_deps() method that we do not want sorting
+          by directory groups.
+
+        * modules/VC6WorkspaceCreator.pm:
+        * modules/VC71WorkspaceCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+
+          No need to check for circular dependencies here, it is now done
+          when validating the dependencies.
+
+        * modules/WorkspaceCreator.pm:
+
+          Re-wrote the circular directory dependency detection code in order
+          to detect multi-directory (3 or more) dependencies.  This slowed
+          things down a bit, so I had to find performance in other locations
+          throughout the workspace creator.
+
 Thu Jan 19 12:59:55 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * USAGE:
