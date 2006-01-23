@@ -247,11 +247,14 @@ CPP_SWITCHES=/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%
 <%foreach(source_files)%>
 SOURCE="<%source_file%>"
 
-"$(INTDIR)\<%noextension(source_file)%>.obj" : $(SOURCE) "$(INTDIR)"
 <%if(dirname(source_file))%>
+"$(INTDIR)\<%noextension(source_file)%>.obj" : $(SOURCE) "$(INTDIR)"
 	@if not exist "$(INTDIR)\<%dirname(source_file)%>\$(NULL)" mkdir "$(INTDIR)\<%dirname(source_file)%>"
-<%endif%>
 	$(CPP) $(CPP_COMMON) /Fo"$(INTDIR)\<%noextension(source_file)%>.obj" $(SOURCE)
+<%else%>
+"$(INTDIR)\<%basenoextension(source_file)%>.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_COMMON) /Fo"$(INTDIR)\<%basenoextension(source_file)%>.obj" $(SOURCE)
+<%endif%>
 
 <%endfor%>
 <%endif%>
