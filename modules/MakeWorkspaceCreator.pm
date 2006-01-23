@@ -70,7 +70,7 @@ sub write_comps {
   my($trans)    = $self->project_target_translation(1);
   my(%targnum)  = ();
   my($pjs)      = $self->get_project_info();
-  my(@list)     = $self->number_target_deps($projects, $pjs, \%targnum);
+  my(@list)     = $self->number_target_deps($projects, $pjs, \%targnum, 0);
 
   ## Print out the "all" target
   print $fh $crlf . 'all:';

@@ -133,7 +133,7 @@ sub write_comps {
   my($pjs)      = $self->get_project_info();
   my($trans)    = $self->project_target_translation();
   my(%targnum)  = ();
-  my(@list)     = $self->number_target_deps($projects, $pjs, \%targnum);
+  my(@list)     = $self->number_target_deps($projects, $pjs, \%targnum, 0);
   my($crlf)     = $self->crlf();
   my($default)  = 'Win32 Debug';
 
