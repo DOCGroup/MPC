@@ -117,7 +117,7 @@ sub print_dependencies {
       my($i)    = 0;
       foreach my $dep (@$darr) {
         my($guid) = $name_to_guid_map{$dep};
-        if (defined $guid && $guid ne $project_guid) {
+        if (defined $guid) {
           print $fh "\t\t{$project_guid}.$i = {$guid}$crlf";
           $i++;
         }

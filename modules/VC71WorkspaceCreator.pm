@@ -54,12 +54,9 @@ sub print_inner_project {
     print $fh "\tProjectSection(ProjectDependencies) = postProject$crlf";
     my($darr) = $self->create_array($deps);
     foreach my $dep (@$darr) {
-      ## Avoid cirular dependencies
-      if ($project_name ne $dep) {
-        my($guid) = $name_to_guid_map->{$dep};
-        if (defined $guid) {
-          print $fh "\t\t{$guid} = {$guid}$crlf";
-        }
+      my($guid) = $name_to_guid_map->{$dep};
+      if (defined $guid) {
+        print $fh "\t\t{$guid} = {$guid}$crlf";
       }
     }
     print $fh "\tEndProjectSection$crlf";
