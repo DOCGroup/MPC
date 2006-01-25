@@ -112,10 +112,9 @@ sub print_dependencies {
   foreach my $project (@$list) {
     my($name, $rawdeps, $project_guid) = @{$$pjs{$project}};
     my($deps) = $self->get_validated_ordering($project);
-    if (defined $deps && $deps ne '') {
-      my($darr) = $self->create_array($deps);
-      my($i)    = 0;
-      foreach my $dep (@$darr) {
+    if (defined $$deps[0]) {
+      my($i) = 0;
+      foreach my $dep (@$deps) {
         my($guid) = $name_to_guid_map{$dep};
         if (defined $guid) {
           print $fh "\t\t{$project_guid}.$i = {$guid}$crlf";
