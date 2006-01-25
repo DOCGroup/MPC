@@ -1,3 +1,18 @@
+Wed Jan 25 11:40:37 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Return an array reference from the get_validated_ordering() method
+          instead of a string.  In every place get_validated_ordering() was
+          called, the return value was immediately converted to an array.
+
+        * modules/VC6WorkspaceCreator.pm:
+        * modules/VC71WorkspaceCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+
+          Use the returned array instead of converting the string into an
+          array.
+
 Wed Jan 25 09:02:34 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/DirectoryManager.pm:

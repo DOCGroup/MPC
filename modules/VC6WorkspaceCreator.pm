@@ -83,9 +83,8 @@ sub write_comps {
               "Package=<4>$crlf" .
               "{{{$crlf";
 
-    if (defined $deps && $deps ne '') {
-      my($darr) = $self->create_array($deps);
-      foreach my $dep (@$darr) {
+    if (defined $$deps[0]) {
+      foreach my $dep (@$deps) {
         print $fh "    Begin Project Dependency$crlf" .
                   "    Project_Dep_Name $dep$crlf" .
                   "    End Project Dependency$crlf";

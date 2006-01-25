@@ -1442,12 +1442,10 @@ sub sort_within_group {
     $previ = $i;
 
     $deps = $self->get_validated_ordering($$list[$i]);
-    if ($deps ne '') {
+    if (defined $$deps[0]) {
       my($baseproj) = basename($$list[$i]);
-      my($darr) = $self->create_array($deps);
-
       my($moved) = 0;
-      foreach my $dep (@$darr) {
+      foreach my $dep (@$deps) {
         if ($baseproj ne $dep) {
           ## See if the dependency is listed after this project
           for(my $j = $i + 1; $j <= $end; ++$j) {
@@ -1489,8 +1487,8 @@ sub build_dependency_chain {
   my($gdeps)  = shift;
   my($deps)   = $self->get_validated_ordering($name);
 
-  if ($deps ne '') {
-    foreach my $dep (@{$self->create_array($deps)}) {
+  if (defined $$deps[0]) {
+    foreach my $dep (@$deps) {
       ## Find the item in the list that matches our current dependency
       my($mapped) = $$map{$dep};
       for(my $i = 0; $i < $len; $i++) {
@@ -1595,9 +1593,8 @@ sub sort_by_groups {
     my(%gdeps) = ();
     for(my $i = $groups[$gi]->[0]; $i <= $groups[$gi]->[1]; ++$i) {
       my($deps) = $self->get_validated_ordering($$list[$i]);
-      if ($deps ne '') {
-        my($darr) = $self->create_array($deps);
-        @gdeps{@$darr} = ();
+      if (defined $$deps[0]) {
+        @gdeps{@$deps} = ();
       }
     }
 
@@ -1998,13 +1995,14 @@ sub get_validated_ordering {
     $deps = $self->{'ordering_cache'}->{$project};
   }
   else {
-    $deps = '';
+    $deps = [];
     if (defined $self->{'project_info'}->{$project}) {
-      my($name) = undef;
-      ($name, $deps) = @{$self->{'project_info'}->{$project}};
-      if (defined $deps && $deps ne '') {
-        my($darr) = $self->create_array($deps);
-        foreach my $dep (@$darr) {
+      my($name, $dstr) = @{$self->{'project_info'}->{$project}};
+      if (defined $dstr && $dstr ne '') {
+        $deps = $self->create_array($dstr);
+        my($dlen) = scalar(@$deps);
+        for(my $i = 0; $i < $dlen; $i++) {
+          my($dep)   = $$deps[$i];
           my($found) = 0;
           ## Avoid circular dependencies
           if ($dep ne $name && $dep ne basename($project)) {
@@ -2020,20 +2018,19 @@ sub get_validated_ordering {
                 $self->warning("'$name' references '$dep' which has " .
                                "not been processed.");
               }
-              my($reg) = $self->escape_regex_special($dep);
-              $deps =~ s/\s*"$reg"\s*/ /g;
+              splice(@$deps, $i, 1);
+              --$dlen;
+              --$i;
             }
           }
           else {
             ## If a project references itself, we must remove it
             ## from the list of dependencies.
-            my($reg) = $self->escape_regex_special($dep);
-            $deps =~ s/\s*"$reg"\s*/ /g;
+            splice(@$deps, $i, 1);
+            --$dlen;
+            --$i;
           }
         }
-
-        $deps =~ s/^\s+//;
-        $deps =~ s/\s+$//;
       }
 
       $self->{'ordering_cache'}->{$project} = $deps;
