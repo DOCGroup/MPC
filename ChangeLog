@@ -1,3 +1,20 @@
+Wed Jan 25 09:02:34 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/DirectoryManager.pm:
+        * modules/TemplateParser.pm:
+        * modules/WinProjectBase.pm:
+
+          Added a new template function called transdir which will translate
+          a directory portion of a filename into a "usable" object file
+          directory.  It entails changing .. into the word 'dotdot' and for
+          windows based projects it will also change drive letters and $()
+          variables.
+
+        * templates/nmake.mpd:
+
+          Use the new transdir function to deal with relative directories
+          and other problematic directory names.
+
 Mon Jan 23 13:05:12 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/nmake.mpd:
