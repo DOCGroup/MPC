@@ -148,6 +148,20 @@ sub mpc_glob {
 # Virtual Methods To Be Overridden
 # ************************************************************
 
+sub translate_directory {
+  my($self) = shift;
+  my($dir)  = shift;
+  my($dd)   = 'dotdot';
+
+  if ($dir =~ /\.\./) {
+    $dir =~ s/^\.\.([\/\\])/$dd$1/;
+    $dir =~ s/([\/\\])\.\.$/$1$dd/;
+    $dir =~ s/([\/\\])\.\.([\/\\])/$1$dd$2/g;
+  }
+  return $dir;
+}
+
+
 sub convert_slashes {
   #my($self) = shift;
   return 0;

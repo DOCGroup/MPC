@@ -28,6 +28,17 @@ sub case_insensitive {
 }
 
 
+sub translate_directory {
+  my($self) = shift;
+  my($dir)  = shift;
+
+  $dir = $self->DirectoryManager::translate_directory($dir);
+  $dir =~ s/^([A-Z]):/$1/i;
+  $dir =~ s/\$\(([^\)]+)\)/$1/g;
+  return $dir;
+}
+
+
 sub validated_directory {
   my($self) = shift;
   my($dir)  = shift;
