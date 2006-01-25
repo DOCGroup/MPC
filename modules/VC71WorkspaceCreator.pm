@@ -49,11 +49,10 @@ sub print_inner_project {
   my($project_name) = shift;
   my($name_to_guid_map) = shift;
 
-  if ($self->allow_empty_dependencies() || length($deps) > 0) {
+  if ($self->allow_empty_dependencies() || defined $$deps[0]) {
     my($crlf) = $self->crlf();
     print $fh "\tProjectSection(ProjectDependencies) = postProject$crlf";
-    my($darr) = $self->create_array($deps);
-    foreach my $dep (@$darr) {
+    foreach my $dep (@$deps) {
       my($guid) = $name_to_guid_map->{$dep};
       if (defined $guid) {
         print $fh "\t\t{$guid} = {$guid}$crlf";
