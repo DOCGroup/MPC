@@ -58,6 +58,7 @@ my(%keywords) = ('if'              => 0,
                  'contains'        => 5,
                  'compares'        => 5,
                  'duplicate_index' => 5,
+                 'transdir'        => 5,
                 );
 
 my(%target_type_vars) = ('type_is_static'   => 1,
@@ -127,13 +128,27 @@ sub basename {
 }
 
 
-sub tp_dirname {
+sub validated_dirname {
   my($self)  = shift;
   my($file)  = shift;
   my($index) = rindex($file, ($self->{'cslashes'} ? '\\' : '/'));
 
   if ($index >= 0) {
     return $self->{'prjc'}->validated_directory(substr($file, 0, $index));
+  }
+  else {
+    return '.';
+  }
+}
+
+
+sub tp_dirname {
+  my($self)  = shift;
+  my($file)  = shift;
+  my($index) = rindex($file, ($self->{'cslashes'} ? '\\' : '/'));
+
+  if ($index >= 0) {
+    return substr($file, 0, $index);
   }
   else {
     return '.';
@@ -663,10 +678,9 @@ sub get_flag_overrides {
 sub get_multiple {
   my($self)  = shift;
   my($name)  = shift;
-  my($value) = $self->get_value_with_default($name);
-  return (defined $value ?
-              $self->doif_multiple($self->create_array($value)) :
-              undef);
+  return $self->doif_multiple(
+                  $self->create_array(
+                           $self->get_value_with_default($name)));
 }
 
 
@@ -1217,9 +1231,7 @@ sub handle_noextension {
 sub get_dirname {
   my($self)  = shift;
   my($name)  = shift;
-  my($value) = $self->get_value_with_default($name);
-  return (defined $value ?
-              $self->doif_dirname($value) : undef);
+  return $self->doif_dirname($self->get_value_with_default($name));
 }
 
 
@@ -1228,7 +1240,7 @@ sub doif_dirname {
   my($value) = shift;
 
   if (defined $value) {
-    $value = $self->tp_dirname($value);
+    $value = $self->validated_dirname($value);
     return ($value ne '.');
   }
   return undef;
@@ -1239,10 +1251,8 @@ sub handle_dirname {
   my($self) = shift;
   my($name) = shift;
 
-  if (!$self->{'if_skip'}) {
-    $self->append_current(
-              $self->tp_dirname($self->get_value_with_default($name)));
-  }
+  $self->append_current(
+            $self->validated_dirname($self->get_value_with_default($name)));
 }
 
 
@@ -1250,10 +1260,8 @@ sub handle_basename {
   my($self) = shift;
   my($name) = shift;
 
-  if (!$self->{'if_skip'}) {
-    $self->append_current(
-              $self->basename($self->get_value_with_default($name)));
-  }
+  $self->append_current(
+            $self->basename($self->get_value_with_default($name)));
 }
 
 
@@ -1339,7 +1347,7 @@ sub doif_duplicate_index {
 
   if (defined $value) {
     my($base) = lc($self->basename($value));
-    my($path) = $self->tp_dirname($value);
+    my($path) = $self->validated_dirname($value);
 
     if (!defined $self->{'dupfiles'}->{$base}) {
       $self->{'dupfiles'}->{$base} = [$path];
@@ -1366,12 +1374,41 @@ sub handle_duplicate_index {
   my($self) = shift;
   my($name) = shift;
 
-  if (!$self->{'if_skip'}) {
-    my($value) = $self->doif_duplicate_index(
-                          $self->get_value_with_default($name));
-    if (defined $value) {
-      $self->append_current($value);
-    }
+  my($value) = $self->doif_duplicate_index(
+                        $self->get_value_with_default($name));
+  if (defined $value) {
+    $self->append_current($value);
+  }
+}
+
+
+sub get_transdir {
+  my($self)  = shift;
+  my($name)  = shift;
+  return $self->doif_transdir($self->get_value_with_default($name));
+}
+
+
+sub doif_transdir {
+  my($self)  = shift;
+  my($value) = shift;
+
+  if ($value =~ /([\/\\])/) {
+    return $self->{'prjc'}->translate_directory(
+                                  $self->tp_dirname($value)) . $1;
+  }
+
+  return undef;
+}
+
+
+sub handle_transdir {
+  my($self)  = shift;
+  my($name)  = shift;
+  my($value) = $self->doif_transdir($self->get_value_with_default($name));
+
+  if (defined $value) {
+    $self->append_current($value);
   }
 }
 
