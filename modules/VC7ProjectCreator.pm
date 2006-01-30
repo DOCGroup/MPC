@@ -15,9 +15,10 @@ use strict;
 use GUID;
 use ProjectCreator;
 use VCProjectBase;
+use XMLProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(VCProjectBase ProjectCreator);
+@ISA = qw(XMLProjectBase VCProjectBase ProjectCreator);
 
 # ************************************************************
 # Data Section
@@ -58,29 +59,6 @@ sub get_info_hash {
   my($self) = shift;
   my($key)  = shift;
   return $info{$key};
-}
-
-sub get_quote_symbol {
-  #my($self) = shift;
-  return '&quot;';
-}
-
-
-sub get_gt_symbol {
-  #my($self) = shift;
-  return '&gt;';
-}
-
-
-sub get_lt_symbol {
-  #my($self) = shift;
-  return '&lt;';
-}
-
-
-sub get_and_symbol {
-  #my($self) = shift;
-  return '&amp;&amp;';
 }
 
 

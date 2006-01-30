@@ -50,10 +50,9 @@ sub write_comps {
   my($self) = shift;
   my($fh)   = shift;
   my($crlf) = $self->crlf();
-  my(@list) = $self->sort_dependencies($self->get_projects());
 
   print $fh "\t<Projects>$crlf";
-  foreach my $project (@list) {
+  foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     print $fh "\t\t<Project File=\"$project\"/>$crlf";
   }
   print $fh "\t</Projects>$crlf";

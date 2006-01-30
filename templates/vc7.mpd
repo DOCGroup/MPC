@@ -43,7 +43,11 @@
 				PreprocessorDefinitions="<%if(unicode)%>UNICODE;_UNICODE;<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%><%dynamicflag%>;<%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%><%staticflag%>;<%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%><%pch_define%>;<%endfor%><%endif%><%foreach(defines common_defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
 				MinimalRebuild="<%MinimalRebuild("FALSE")%>"
 				ExceptionHandling="TRUE"
-<%if(!optimize)%>
+<%if(optimize)%>
+<%if(BasicRuntimeChecks)%>
+				BasicRuntimeChecks="<%BasicRuntimeChecks%>"
+<%endif%>
+<%else%>
 				BasicRuntimeChecks="<%BasicRuntimeChecks("3")%>"
 <%endif%>
 <%if(StringPooling)%>
@@ -140,6 +144,9 @@
 <%if(type_is_dynamic && sharedname)%>
 				ImportLibrary="<%libout%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
+<%endif%>
+<%if(FixedBaseAddress)%>
+				FixedBaseAddress="<%FixedBaseAddress%>"
 <%endif%>
 				TargetMachine="<%machine("1")%>"/>
 <%endif%>
