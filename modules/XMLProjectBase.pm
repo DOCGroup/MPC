@@ -1,9 +1,9 @@
-package CBXProjectCreator;
+package XMLProjectBase;
 
 # ************************************************************
-# Description   : The Borland C++ BuilderX Project Creator
-# Author        : Johnny Willemsen
-# Create Date   : 10/12/2003
+# Description   : An XML base module for Project Creators
+# Author        : Chad Elliott
+# Create Date   : 1/30/2006
 # ************************************************************
 
 # ************************************************************
@@ -12,38 +12,31 @@ package CBXProjectCreator;
 
 use strict;
 
-use ProjectCreator;
-use WinProjectBase;
-use XMLProjectBase;
-
-use vars qw(@ISA);
-@ISA = qw(XMLProjectBase WinProjectBase ProjectCreator);
-
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
-sub crlf {
+sub get_quote_symbol {
   #my($self) = shift;
-  return "\n";
+  return '&quot;';
 }
 
 
-sub project_file_extension {
+sub get_gt_symbol {
   #my($self) = shift;
-  return '.cbx';
+  return '&gt;';
 }
 
 
-sub get_dll_exe_template_input_file {
+sub get_lt_symbol {
   #my($self) = shift;
-  return 'cbxexe';
+  return '&lt;';
 }
 
 
-sub get_dll_template_input_file {
+sub get_and_symbol {
   #my($self) = shift;
-  return 'cbxdll';
+  return '&amp;&amp;';
 }
 
 

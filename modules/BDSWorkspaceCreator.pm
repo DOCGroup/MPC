@@ -49,11 +49,9 @@ sub pre_workspace {
 
 
 sub write_comps {
-  my($self)     = shift;
-  my($fh)       = shift;
-  my($projects) = $self->get_projects();
-  my(@list)     = $self->sort_dependencies($projects);
-  my($crlf)     = $self->crlf();
+  my($self) = shift;
+  my($fh)   = shift;
+  my($crlf) = $self->crlf();
 
   print $fh '<BorlandProject>', $crlf;
   print $fh '  <PersonalityInfo>', $crlf;
@@ -68,7 +66,7 @@ sub write_comps {
   print $fh '    ', $crlf;
   print $fh '    <Projects>', $crlf;
 
-  foreach my $project (@list) {
+  foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     print $fh '      <Projects Name="$project">$project</Projects>', $crlf,
   }
 

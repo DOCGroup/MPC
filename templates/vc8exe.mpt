@@ -29,6 +29,28 @@ Debug {
   lib_modifier     = d
 }
 
+Memcheck Release {
+  LinkIncremental    = 1
+  optimize           = 2
+  defines            = NDEBUG
+  output_dir         = Release
+  intermediate_dir   = Release
+  BasicRuntimeChecks = 0
+  LinkIncremental    = 1
+  FixedBaseAddress   = 1
+}
+
+Memcheck Debug {
+  debug_prj          = 1
+  defines            = _DEBUG
+  output_dir         = .
+  intermediate_dir   = Debug
+  lib_modifier       = d
+  BasicRuntimeChecks = 0
+  LinkIncremental    = 1
+  FixedBaseAddress   = 1
+}
+
 MFC Release {
   LinkIncremental   = 1
   optimize          = 2
