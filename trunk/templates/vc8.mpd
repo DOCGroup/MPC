@@ -109,7 +109,11 @@
 <%if(ExceptionHandling)%>
 				ExceptionHandling="<%ExceptionHandling("2")%>"
 <%endif%>
-<%if(!optimize)%>
+<%if(optimize)%>
+<%if(BasicRuntimeChecks)%>
+				BasicRuntimeChecks="<%BasicRuntimeChecks%>"
+<%endif%>
+<%else%>
 				BasicRuntimeChecks="<%BasicRuntimeChecks("3")%>"
 <%endif%>
 <%if(SmallerTypeCheck)%>

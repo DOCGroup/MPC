@@ -30,6 +30,28 @@ Debug {
   lib_modifier     = sd
 }
 
+Memcheck Release {
+  optimize           = 2
+  defines            = NDEBUG
+  output_dir         = Static_Release
+  intermediate_dir   = Static_Release
+  lib_modifier       = s
+  BasicRuntimeChecks = 0
+  LinkIncremental    = 1
+  FixedBaseAddress   = 1
+}
+
+Memcheck Debug {
+  debug_prj          = 1
+  defines            = _DEBUG
+  output_dir         = Static_Debug
+  intermediate_dir   = Static_Debug
+  lib_modifier       = sd
+  BasicRuntimeChecks = 0
+  LinkIncremental    = 1
+  FixedBaseAddress   = 1
+}
+
 MFC Release {
   LinkIncremental  = 1
   optimize          = 2

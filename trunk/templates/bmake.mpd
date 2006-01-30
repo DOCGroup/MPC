@@ -74,7 +74,7 @@ RESDIR       = <%rcdir%>
 
 OBJFILES = \
 <%foreach(source_files)%>
-           "$(INTERMEDIATE)\<%if(dirname(source_file))%><%noextension(source_file)%><%else%><%basenoextension(source_file)%><%endif%>$(OBJ_EXT)"<%fornotlast(" \\")%>
+           "$(INTERMEDIATE)\<%transdir(source_file)%><%basenoextension(source_file)%>$(OBJ_EXT)"<%fornotlast(" \\")%>
 <%endfor%>
 <%endif%>
 <%if(libpaths)%>
@@ -109,7 +109,7 @@ LIBFILES = \
 
 RESOURCE = \
 <%foreach(resource_files)%>
-           $(INTERMEDIATE)\<%noextension(resource_file)%>.res<%fornotlast(" \\")%>
+           $(INTERMEDIATE)\<%transdir(resource_file)%><%basenoextension(resource_file)%>.res<%fornotlast(" \\")%>
 <%endfor%>
 <%if(includes)%>
 
@@ -277,9 +277,9 @@ generated: $(GENERATED_DIRTY)
         $(CC) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 
 <%foreach(source_files)%>
-<%if(dirname(source_file))%>
-"$(INTERMEDIATE)\<%noextension(source_file)%>$(OBJ_EXT)":
-	@if not exist "$(INTERMEDIATE)\<%dirname(source_file)%>" mkdir "$(INTERMEDIATE)\<%dirname(source_file)%>"
+<%if(transdir(source_file))%>
+"$(INTERMEDIATE)\<%transdir(source_file)%><%basenoextension(source_file)%>$(OBJ_EXT)":
+	@if not exist "$(INTERMEDIATE)\<%transdir(source_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(source_file)%>"
 	$(CC) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) <%source_file%>
 
 <%endif%>
@@ -293,9 +293,9 @@ generated: $(GENERATED_DIRTY)
         $(RC) $(RC_FLAGS) -fo$@ $<
 
 <%foreach(resource_files)%>
-<%if(dirname(resource_file))%>
-"$(INTERMEDIATE)\<%noextension(resource_file)%>.res":
-	@if not exist "$(INTERMEDIATE)\<%dirname(resource_file)%>" mkdir "$(INTERMEDIATE)\<%dirname(resource_file)%>"
+<%if(transdir(resource_file))%>
+"$(INTERMEDIATE)\<%transdir(resource_file)%><%basenoextension(resource_file)%>.res":
+	@if not exist "$(INTERMEDIATE)\<%transdir(resource_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(resource_file)%>"
 	$(RC) -fo$@ <%resource_file%>
 
 <%endif%>

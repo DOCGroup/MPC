@@ -37,6 +37,7 @@ my($TemplateInputExtension)  = 'mpt';
 ## Bit Meaning
 ## 0   Preserve the order for additions (1) or invert it (0)
 ## 1   Add this value to template input value (if there is one)
+## 2   Preserve <% %> settings for evaluation within the template
 my(%validNames) = ('exename'         => 1,
                    'sharedname'      => 1,
                    'staticname'      => 1,
@@ -50,7 +51,7 @@ my(%validNames) = ('exename'         => 1,
                    'pure_libs'       => 2,
                    'pch_header'      => 1,
                    'pch_source'      => 1,
-                   'postbuild'       => 1,
+                   'postbuild'       => 5,
                    'dllout'          => 1,
                    'libout'          => 1,
                    'dynamicflags'    => 3,
@@ -281,7 +282,6 @@ sub new {
                                                        $gfeature,
                                                        $typefeaturef,
                                                        $feature);
-  $self->{'convert_slashes'}       = $self->convert_slashes();
   $self->{'sort_files'}            = $self->sort_files();
   $self->{'source_callback'}       = undef;
   $self->{'dollar_special'}        = $self->dollar_special();
@@ -301,7 +301,7 @@ sub new {
 sub is_keyword {
   my($self) = shift;
   my($name) = shift;
-  return $validNames{$name};
+  return $self->{'valid_names'}->{$name};
 }
 
 
@@ -338,12 +338,18 @@ sub process_assignment {
   ## Support the '*' mechanism as in the project name, to allow
   ## the user to correctly depend on another project within the same
   ## directory.
-  if ($name eq 'after' && $value =~ /\*/) {
-    $value = $self->fill_type_name($value,
-                                   $self->get_default_project_name());
-  }
-  if (defined $value && !$self->{'dollar_special'} && $value =~ /\$\$/) {
-    $value =~ s/\$\$/\$/g;
+  if (defined $value) {
+    if ($name eq 'after' && $value =~ /\*/) {
+      $value = $self->fill_type_name($value,
+                                     $self->get_default_project_name());
+    }
+    if (!$self->{'dollar_special'} && $value =~ /\$\$/) {
+      $value =~ s/\$\$/\$/g;
+    }
+    if (defined $self->{'valid_names'}->{$name} &&
+        ($self->{'valid_names'}->{$name} & 0x04) == 0 && $value =~ /<%/) {
+      $value = $self->replace_parameters($value, $self->{'command_subs'});
+    }
   }
   $self->SUPER::process_assignment($name, $value, $assign);
 
@@ -1215,8 +1221,8 @@ sub parse_components {
         ## the group setting altogether.
         my($groups) = $self->get_assignment($grtag);
         if (defined $groups) {
-          my(@grarray) = @{$self->create_array($groups)};
-          if ($#grarray == 0 && $grarray[0] eq $defgroup) {
+          my($grarray) = $self->create_array($groups);
+          if (scalar(@$grarray) == 1 && $$grarray[0] eq $defgroup) {
             $self->process_assignment($grtag, undef);
           }
         }
@@ -3344,6 +3350,65 @@ sub get_command_subs {
 }
 
 
+sub replace_parameters {
+  my($self)   = shift;
+  my($str)    = shift;
+  my($valid)  = shift;
+  my($nowarn) = shift;
+  my($input)  = shift;
+  my($output) = shift;
+
+  while ($str =~ /<%(\w+)(\(\w+\))?%>/) {
+    my($name)     = $1;
+    my($modifier) = $2;
+    if (defined $modifier) {
+      my($tmp) = $name;
+      $name = $modifier;
+      $name =~ s/[\(\)]//g;
+      $modifier = $tmp;
+    }
+
+    if (exists $$valid{$name}) {
+      if (defined $$valid{$name}) {
+        my($replace) = $$valid{$name};
+        if (defined $modifier) {
+          if ($modifier eq 'noextension') {
+            $replace =~ s/\.[^\.]+$//;
+          }
+          else {
+            $self->warning("Uknown parameter modifier $modifier.");
+          }
+        }
+        $str =~ s/<%\w+(\(\w+\))?%>/$replace/;
+      }
+      else {
+        $str =~ s/<%\w+(\(\w+\))?%>//;
+      }
+    }
+    else {
+      $str =~ s/<%\w+(\(\w+\))?%>//;
+
+      ## We only want to warn the user that we did not recognize the
+      ## pseudo template parameter if there was an input and an output
+      ## file passed to this function.  If this variable was used
+      ## without the parenthesis (as in an if statement), then we don't
+      ## want to warn the user.
+      if (defined $input && defined $output) {
+        if (!defined $$nowarn{$name}) {
+          $self->warning("<%$name%> was not recognized.");
+        }
+
+        ## If we didn't recognize the pseudo template parameter then
+        ## we don't want to return anything back.
+        return undef;
+      }
+    }
+  }
+
+  return $str;
+}
+
+
 sub convert_command_parameters {
   my($self)   = shift;
   my($str)    = shift;
@@ -3397,54 +3462,7 @@ sub convert_command_parameters {
     }
   }
 
-  while ($str =~ /<%(\w+)(\(\w+\))?%>/) {
-    my($name)     = $1;
-    my($modifier) = $2;
-    if (defined $modifier) {
-      my($tmp) = $name;
-      $name = $modifier;
-      $name =~ s/[\(\)]//g;
-      $modifier = $tmp;
-    }
-
-    if (exists $valid{$name}) {
-      if (defined $valid{$name}) {
-        my($replace) = $valid{$name};
-        if (defined $modifier) {
-          if ($modifier eq 'noextension') {
-            $replace =~ s/\.[^\.]+$//;
-          }
-          else {
-            $self->warning("Uknown parameter modifier $modifier.");
-          }
-        }
-        $str =~ s/<%\w+(\(\w+\))?%>/$replace/;
-      }
-      else {
-        $str =~ s/<%\w+(\(\w+\))?%>//;
-      }
-    }
-    else {
-      $str =~ s/<%\w+(\(\w+\))?%>//;
-
-      ## We only want to warn the user that we did not recognize the
-      ## pseudo template parameter if there was an input and an output
-      ## file passed to this function.  If this variable was used
-      ## without the parenthesis (as in an if statement), then we don't
-      ## want to warn the user.
-      if (defined $input && defined $output) {
-        if (!defined $nowarn{$name}) {
-          $self->warning("<%$name%> was not recognized.");
-        }
-
-        ## If we didn't recognize the pseudo template parameter then
-        ## we don't want to return anything back.
-        return undef;
-      }
-    }
-  }
-
-  return $str;
+  return $self->replace_parameters($str, \%valid, \%nowarn, $input, $output);
 }
 
 
@@ -4534,7 +4552,7 @@ sub validated_directory {
 
 sub get_quote_symbol {
   #my($self) = shift;
-  return '"';
+  return '\\"';
 }
 
 sub get_gt_symbol {

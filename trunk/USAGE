@@ -183,6 +183,14 @@ specified by this option overwrite values from features files.
 Example:
 mwc.pl -features "qos=1,ssl=0" ace.mwc
 
+The -value_template option can be used to set various template variables.
+If a template variable value will contain spaces, it is best to enclose the
+whole setting in double quotes and use single quotes within the value to
+retain spaces (if it is necessary).  Below is an example where the value
+will have spaces and some spaces need to be retained.
+
+mwc.pl -value_template "configurations=Debug Release 'Memcheck Debug' 'Memcheck Release'"
+
 
 Running only the Project Generator
 ----------------------------------

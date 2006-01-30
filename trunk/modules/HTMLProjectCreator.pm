@@ -14,9 +14,10 @@ use strict;
 use File::Basename;
 
 use ProjectCreator;
+use XMLProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(ProjectCreator);
+@ISA = qw(XMLProjectBase ProjectCreator);
 
 # ************************************************************
 # Data Section

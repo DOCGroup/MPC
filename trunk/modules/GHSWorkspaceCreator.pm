@@ -103,7 +103,7 @@ sub write_comps {
   my($crlf) = $self->crlf();
 
   ## Print out each projet
-  foreach my $project ($self->sort_dependencies($self->get_projects())) {
+  foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     print $fh "$project$crlf",
               $self->mix_settings($project);
   }
