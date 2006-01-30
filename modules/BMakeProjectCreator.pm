@@ -38,7 +38,7 @@ sub fill_value {
       if ($dirname eq '') {
         $dirname = '.';
       }
-      elsif ($self->convert_slashes()) {
+      else {
         $dirname = $self->slash_to_backslash($dirname);
       }
       $dirnames{$dirname} = 1;

@@ -13,9 +13,10 @@ package SLEProjectCreator;
 use strict;
 
 use ProjectCreator;
+use XMLProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(ProjectCreator);
+@ISA = qw(XMLProjectBase ProjectCreator);
 
 # ************************************************************
 # Subroutine Section

@@ -14,9 +14,10 @@ use strict;
 
 use ProjectCreator;
 use WinProjectBase;
+use XMLProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(WinProjectBase ProjectCreator);
+@ISA = qw(XMLProjectBase WinProjectBase ProjectCreator);
 
 # ************************************************************
 # Subroutine Section

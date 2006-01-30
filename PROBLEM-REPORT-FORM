@@ -13,6 +13,8 @@ When requesting MPC support please provide the following items:
 
   MPC version (using mwc.pl -version):
 
+  Perl version (using perl --version):
+
   ACE or TAO version (if using either):
 
   The contents of default.features (if any):
