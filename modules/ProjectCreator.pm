@@ -998,19 +998,17 @@ sub process_component_line {
         $out  = ($2 eq '>>' ? $3 : $out);
         $dep  = ($2 eq '<<' ? $3 : $dep);
 
-        $line =~ s/\s+$//;
         if ($2 eq $oop) {
           $status = 0;
           $error  = "Duplicate $oop used";
         }
+        $line =~ s/\s+$//;
       }
 
-      ## Since these (custom_special_*) are used by the TemplateParser,
-      ## the keys need to have slashes in the target format.  So, we will
-      ## convert slashes back to target.
+      ## Keys used internally to MPC need to be in forward slash format.
       my($key) = $line;
       if ($self->{'convert_slashes'}) {
-        $key = $self->slash_to_backslash($key);
+        $key =~ s/\\/\//g;
       }
       if (defined $out) {
         if (!defined $self->{'custom_special_output'}->{$tag}) {
@@ -3594,7 +3592,16 @@ sub get_custom_value {
         foreach my $ext (@{$self->{'valid_components'}->{'source_files'}}) {
           if ($file =~ /$ext$/) {
             $source = 1;
-            last;
+            ## We've found a file that matches one of the source file
+            ## extensions.  Now we have to make sure that it doesn't
+            ## match a template file extension.
+            foreach my $text (@{$self->{'valid_components'}->{'template_files'}}) {
+              if ($file =~ /$text$/) {
+                $source = 0;
+                last;
+              }
+            }
+            last if ($source);
           }
         }
         if (!$source) {
@@ -3611,6 +3618,8 @@ sub get_custom_value {
     $value = \@array;
   }
   elsif ($cmd eq 'dependencies') {
+    ## If we are converting slashes, change them back for this parameter
+    $based =~ s/\\/\//g if ($self->{'convert_slashes'});
     $value = $self->{'custom_special_depend'}->{$based};
   }
   elsif (defined $customDefined{$cmd} &&
