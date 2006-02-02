@@ -48,6 +48,7 @@ my($hasSymlink) = ($@ eq '');
 
 sub findCallback {
   my($matches) = !(/^CVS\z/s && ($File::Find::prune = 1)            ||
+                   /^\.svn\z/s && ($File::Find::prune = 1)          ||
                    defined $exclude &&
                    /^$exclude\z/s && ($File::Find::prune = 1)       ||
                    /^\.cvsignore\z/s && ($File::Find::prune = 1)    ||
