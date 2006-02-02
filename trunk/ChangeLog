@@ -1,3 +1,16 @@
+Thu Feb  2 07:02:19 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Do not clone the .svn directory.  It's administrative just like
+          the CVS directory.
+
+        * modules/ProjectCreator.pm:
+
+          There was a bug where file with a path specified using the '>>'
+          operator would not be processed correctly on Windows based project
+          types.  Thanks to Thomas Rothfuss for reporting this.
+
 Mon Jan 30 12:07:35 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * PROBLEM-REPORT-FORM:
