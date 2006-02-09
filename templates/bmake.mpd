@@ -8,7 +8,7 @@
 <%marker(top)%>
 <%foreach(configurations)%>
 !ifdef <%uc(configuration)%>
-OCFLAGS      = <%if(optimize)%>-O2<%else%>-v -y -Od -vi- -k<%endif%><%foreach(defines debug_macros)%> -D<%define%><%endfor%>
+OCFLAGS      = <%if(optimize)%>-O2<%else%><%if(debug_prj)%>-v -y -Od -vi- -k<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
 CFG_DIR      = <%intermediate_dir%>\\
 ILIBMODIFIER = <%lib_modifier%>
 OLIBMODIFIER = <%if(use_lib_modifier)%><%lib_modifier%><%endif%>

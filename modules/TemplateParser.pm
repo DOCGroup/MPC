@@ -1710,6 +1710,7 @@ sub parse_line {
           }
         }
       }
+      last if (!$status);
     }
   }
   else {

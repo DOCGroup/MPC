@@ -511,7 +511,7 @@
 			</File>
 <%endif%>
 <%if(grouped_source_files)%>
-<%foreach(grouped_source_files)%>
+<%foreach(sort(grouped_source_files))%>
 <%if(compares(grouped_source_file, default_group))%>
 <%foreach(grouped_source_file->files)%>
 			<File
@@ -586,7 +586,7 @@
 			</File>
 <%endif%>
 <%if(grouped_header_files)%>
-<%foreach(grouped_header_files)%>
+<%foreach(sort(grouped_header_files))%>
 <%if(compares(grouped_header_file, default_group))%>
 <%foreach(grouped_header_file->files)%>
 			<File
@@ -661,7 +661,7 @@
 			Name="Inline Files"
 			Filter="i;inl">
 <%if(grouped_inline_files)%>
-<%foreach(grouped_inline_files)%>
+<%foreach(sort(grouped_inline_files))%>
 <%if(compares(grouped_inline_file, default_group))%>
 <%foreach(grouped_inline_file->files)%>
 				<File
@@ -694,7 +694,7 @@
 			Name="Template Files"
 			Filter="">
 <%if(grouped_template_files)%>
-<%foreach(grouped_template_files)%>
+<%foreach(sort(grouped_template_files))%>
 <%if(compares(grouped_template_file, default_group))%>
 <%foreach(grouped_template_file->files)%>
 			<File
@@ -757,7 +757,7 @@
 			Name="Documentation"
 			Filter="">
 <%if(grouped_documentation_files)%>
-<%foreach(grouped_documentation_files)%>
+<%foreach(sort(grouped_documentation_files))%>
 <%if(compares(grouped_documentation_file, default_group))%>
 <%foreach(grouped_documentation_file->files)%>
 			<File
@@ -820,7 +820,7 @@
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe">
 <%if(grouped_resource_files)%>
-<%foreach(grouped_resource_files)%>
+<%foreach(sort(grouped_resource_files))%>
 <%if(compares(grouped_resource_file, default_group))%>
 <%foreach(grouped_resource_file->files)%>
 			<File

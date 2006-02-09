@@ -1,3 +1,64 @@
+Thu Feb  9 12:50:52 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/boost_iostreams.mpb:
+        * config/boost_program_options.mpb:
+        * config/boost_python.mpb:
+        * config/boost_serialization.mpb:
+        * config/boost_wave.mpb:
+
+          Added support for other boost libraries.
+
+        * modules/DirectoryManager.pm:
+        * modules/Options.pm:
+
+          Added support for wildcards when using the -exclude option.
+
+        * modules/ProjectCreator.pm:
+
+          When the Define_Custom has the automatic flag set to 1,
+          automatically add the files generated that are specified by the >>
+          operator.
+
+          Fixed a bug where <% %> variables used within a 'specific' section
+          were not translated.
+
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where errors within a <%foreach%> would be silently
+          ignored.
+
+        * modules/WorkspaceCreator.pm:
+
+          Added support for wildcards.
+
+        * templates/bmake.mpd:
+        * templates/bmakedll.mpt:
+        * templates/bmakedllexe.mpt:
+        * templates/bmakelib.mpt:
+        * templates/bmakelibexe.mpt:
+
+          Fixed a bug where debug_flags was being placed in all
+          configurations, not just debug.  And modified these, so that debug
+          flags are only emitted in a debug configuration (when optimze is
+          overriden to be zero).
+
+        * templates/em3.mpd:
+        * templates/em3vcpdll.mpt:
+        * templates/em3vcpdllexe.mpt:
+        * templates/em3vcplibexe.mpt:
+
+          EVC 4.0 doesn't support "utility" projects, so when custom_only is
+          set to 1, just create a DLL project that has no target.  Also,
+          fixed link issues for the emulator and x86 targets. And, sort the
+          grouped files so that a project can be reproduced consistently.
+
+        * templates/vc6.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Sort the grouped files so that a project can be reproduced
+          consistently.
+
 Thu Feb  2 07:02:19 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * clone_build_tree.pl:
