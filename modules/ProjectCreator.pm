@@ -1928,6 +1928,42 @@ sub get_pre_keyword_array {
 }
 
 
+sub add_explicit_output {
+  my($self)  = shift;
+  my($file)  = shift;
+  my($type)  = shift;
+  my($tag)   = shift;
+  my($array) = shift;
+
+  if (defined $self->{'valid_components'}->{$tag} &&
+      defined $self->{'custom_special_output'}->{$type} &&
+      defined $self->{'custom_special_output'}->{$type}->{$file}) {
+    my(@files) = ();
+    foreach my $check (@{$self->{'custom_special_output'}->{$type}->{$file}}) {
+      foreach my $regext (@{$self->{'valid_components'}->{$tag}}) {
+        if ($check =~ /$regext$/) {
+          my($add) = 1;
+          if ($tag eq 'source_files') {
+            foreach my $tregext (@{$self->{'valid_components'}->{'template_files'}}) {
+              if ($check =~ /$tregext$/) {
+                $add = undef;
+                last;
+              }
+            }
+          }
+          if ($add) {
+            push(@files, $check);
+            last;
+          }
+        }
+      }
+    }
+    if (defined $files[0]) {
+      push(@$array, \@files);
+    }
+  }
+}
+
 sub generated_filename_arrays {
   my($self)  = shift;
   my($part)  = shift;
@@ -2007,6 +2043,7 @@ sub generated_filename_arrays {
     }
   }
 
+  $self->add_explicit_output($file, $type, $tag, \@array);
   return @array;
 }
 
@@ -2779,11 +2816,11 @@ sub prepend_gendir {
   if (defined $key) {
     foreach my $ma (@{$self->{'matching_assignments'}->{$gentype}}) {
       if ($ma eq 'gendir') {
-        if (defined $self->{'flag_overrides'}->{$gentype}->{$key}->{$ma}) {
+        my($dir) = $self->{'flag_overrides'}->{$gentype}->{$key}->{$ma};
+        if (defined $dir) {
           ## Convert the file to unix style for basename
           $created =~ s/\\/\//g;
-          return "$self->{'flag_overrides'}->{$gentype}->{$key}->{$ma}/" .
-                 basename($created);
+          return ($dir eq '.' ? '' : "$dir/") . basename($created);
         }
       }
     }
@@ -4137,7 +4174,15 @@ sub adjust_value {
   ## or overrides for the template values.
   foreach my $name (@$names) {
     if (defined $name && defined $atemp->{lc($name)}) {
+      my($base) = $name;
+      $base =~ s/.*:://;
+      my($replace) = (defined $self->{'valid_names'}->{$base} &&
+                      ($self->{'valid_names'}->{$base} & 0x04) == 0);
       foreach my $val (@{$atemp->{lc($name)}}) {
+        if ($replace && $$val[1] =~ /<%/) {
+          $$val[1] = $self->replace_parameters($$val[1],
+                                               $self->{'command_subs'});
+        }
         my($arr) = $self->create_array($$val[1]);
         if ($$val[0] > 0) {
           if (!defined $value) {

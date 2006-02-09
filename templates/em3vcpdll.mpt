@@ -19,6 +19,8 @@ WCE x86 {
   platform_id = 8A9A2F80-6887-11D3-842E-005004848CBA
   machine     = IX86
   cpu_defines = _i386_ _X86_ x86
+  ignore_libs = OLDNAMES.lib
+  pure_libs  += $(CEx86Corelibc)
 }
 
 WCE emulator {
@@ -27,6 +29,8 @@ WCE emulator {
   platform_id = 8A9A2F80-6887-11D3-842E-005004848CBA
   machine     = IX86
   cpu_defines = _i386_ _X86_ x86
+  ignore_libs = OLDNAMES.lib
+  pure_libs  += $(CEx86Corelibc)
 }
 
 WCE ARM {

@@ -266,12 +266,16 @@ sub parse_line {
     }
   }
   elsif ($status == -1) {
-    if ($line =~ /\.$wsext$/) {
-      ($status, $error) = $self->aggregated_workspace($line);
-    }
-    else {
-      push(@{$self->{'project_files'}}, $line);
-      $status = 1;
+    foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
+                                                 $line) {
+      if ($expfile =~ /\.$wsext$/) {
+        ($status, $error) = $self->aggregated_workspace($expfile);
+        last if (!$status);
+      }
+      else {
+        push(@{$self->{'project_files'}}, $expfile);
+        $status = 1;
+      }
     }
   }
 
@@ -420,10 +424,18 @@ sub parse_exclude {
         last;
       }
       else {
+        if ($line =~ /^"([^"]+)"$/) {
+          $line = $1;
+        }
         if (defined $self->{'scoped_basedir'}) {
           $line = $self->{'scoped_basedir'} . '/' . $line;
         }
-        push(@exclude, $line);
+        if ($line =~ /[\?\*\[\]]/) {
+          push(@exclude, $self->mpc_glob($line));
+        }
+        else {
+          push(@exclude, $line);
+        }
       }
     }
 
@@ -583,19 +595,23 @@ sub handle_scoped_unknown {
     }
   }
   else {
-    if ($line =~ /\.$wsext$/) {
-      ## An aggregated workspace within an aggregated workspace.
-      ($status, $error) = $self->aggregated_workspace($line);
-    }
-    else {
-      if (!$self->excluded($line)) {
-        if (defined $dupchk && exists $$dupchk{$line}) {
-          $self->warning("Duplicate mpc file ($line) added by an " .
-                         'aggregate workspace.  It will be ignored.');
-        }
-        else {
-          $self->{'scoped_assign'}->{$line} = $flags;
-          push(@{$self->{'project_files'}}, $line);
+    foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
+                                                 $line) {
+      if ($expfile =~ /\.$wsext$/) {
+        ## An aggregated workspace within an aggregated workspace.
+        ($status, $error) = $self->aggregated_workspace($expfile);
+        last if (!$status);
+      }
+      else {
+        if (!$self->excluded($expfile)) {
+          if (defined $dupchk && exists $$dupchk{$expfile}) {
+            $self->warning("Duplicate mpc file ($expfile) added by an " .
+                           'aggregate workspace.  It will be ignored.');
+          }
+          else {
+            $self->{'scoped_assign'}->{$expfile} = $flags;
+            push(@{$self->{'project_files'}}, $expfile);
+          }
         }
       }
     }

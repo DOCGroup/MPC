@@ -3,7 +3,7 @@
 # ** DO NOT EDIT **
 
 <%foreach(platforms)%>
-# TARGTYPE "<%operating_system("Win32")%> (<%platform%>) <%if(exename || sharedname || staticname)%><%if(type_is_static && staticname)%>Static Library<%else%><%type_description%><%endif%>" <%type_code%><%else%>Generic Project" 0x010a<%endif%>
+# TARGTYPE "<%operating_system("Win32")%> (<%platform%>) <%if(exename || sharedname || staticname)%><%if(type_is_static && staticname)%>Static Library<%else%><%type_description%><%endif%><%else%>Dynamic-Link Library<%endif%>" <%type_code%>
 <%endfor%>
 
 CFG=<%project_name%> - <%operating_system("Win32")%> (<%default_platform%>) <%default_configuration%>
@@ -22,7 +22,7 @@ CFG=<%project_name%> - <%operating_system("Win32")%> (<%default_platform%>) <%de
 !MESSAGE
 <%foreach(platforms)%>
 <%foreach(configurations)%>
-!MESSAGE "<%project_name%> - <%operating_system%> (<%platform%>) <%configuration%>" (based on "<%operating_system%> (<%platform%>) <%if(exename || sharedname || staticname)%><%if(type_is_static && staticname)%>Static Library<%else%><%type_description%><%endif%><%else%>Generic Project<%endif%>")
+!MESSAGE "<%project_name%> - <%operating_system%> (<%platform%>) <%configuration%>" (based on "<%operating_system%> (<%platform%>) <%if(exename || sharedname || staticname)%><%if(type_is_static && staticname)%>Static Library<%else%><%type_description%><%endif%><%else%>Dynamic-Link Library<%endif%>")
 <%endfor%>
 <%endfor%>
 !MESSAGE
@@ -69,7 +69,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo <%if(sharedname || staticname)%>/o"<%libout%>\<%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.bsc"<%endif%>
 <%if(type_is_binary)%>
 LINK32=link.exe
-# ADD LINK32 <%systemlibs("winsock.lib commctrl.lib coredll.lib iphlpapi.lib")%><%if(link_options)%> <%link_options%><%endif%> /INCREMENTAL:<%incremental("NO")%> <%foreach(reverse(libs))%><%libname_prefix%><%lib%><%lib_modifier%><%lib_ext%> <%endfor%><%foreach(reverse(lit_libs))%><%lit_lib%>.lib <%endfor%><%foreach(reverse(pure_libs))%><%pure_lib%> <%endfor%><%foreach(libpaths)%>/libpath:"<%libpath%>\<%machine%>" <%endfor%>/nologo /base:"<%base("0x00100000")%>" <%if(type_is_dynamic)%> /implib:"<%libout%>\<%machine%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>" /entry:"_DllMainCRTStartup"<%endif%> /nodefaultlib:"$(CENoDefaultLib)"<%if(win_version)%> /version:<%win_version%><%endif%><%if(StackReserveSize)%> /stack:<%StackReserveSize%><%if(StackCommitSize)%>,<%StackCommitSize%><%endif%><%endif%> /subsystem:$(CESubsystem) /align:"<%align("4096")%>"<%if(pdbl)%><%if(sharedname)%> /pdb:"<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%machine%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"<%else%><%if(exename)%> /pdb:"<%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%machine%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.pdb"<%endif%><%endif%><%else%> /pdb:none<%endif%> <%if(type_is_dynamic)%> <%if(!source_files)%>/noentry <%endif%>/dll<%endif%> <%if(unicode && unicode_mfc_entry && exename && source_files)%>/entry:"<%unicode_mfc_entry%>" <%endif%><%if(use_debug_libraries)%>/debug<%endif%> /machine:<%machine%> /out:"<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%machine%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(exename)%><%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%machine%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
+# ADD LINK32 <%systemlibs("winsock.lib commctrl.lib coredll.lib iphlpapi.lib")%><%if(link_options)%> <%link_options%><%endif%> /INCREMENTAL:<%incremental("NO")%> <%foreach(reverse(libs))%><%libname_prefix%><%lib%><%lib_modifier%><%lib_ext%> <%endfor%><%foreach(reverse(lit_libs))%><%lit_lib%>.lib <%endfor%><%foreach(reverse(pure_libs))%><%pure_lib%> <%endfor%><%foreach(libpaths)%>/libpath:"<%libpath%>\<%machine%>" <%endfor%>/nologo /base:"<%base("0x00100000")%>" <%if(type_is_dynamic)%> /implib:"<%libout%>\<%machine%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>" /entry:"_DllMainCRTStartup"<%endif%> /nodefaultlib:"$(CENoDefaultLib)<%foreach(ignore_libs)%>,<%ignore_lib%><%endfor%>"<%if(win_version)%> /version:<%win_version%><%endif%><%if(StackReserveSize)%> /stack:<%StackReserveSize%><%if(StackCommitSize)%>,<%StackCommitSize%><%endif%><%endif%> /subsystem:$(CESubsystem) /align:"<%align("4096")%>"<%if(pdbl)%><%if(sharedname)%> /pdb:"<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%machine%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"<%else%><%if(exename)%> /pdb:"<%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%machine%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.pdb"<%endif%><%endif%><%else%> /pdb:none<%endif%> <%if(type_is_dynamic)%> <%if(!source_files)%>/noentry <%endif%>/dll<%endif%> <%if(unicode && unicode_mfc_entry && exename && source_files)%>/entry:"<%unicode_mfc_entry%>" <%endif%><%if(use_debug_libraries)%>/debug<%endif%> /machine:<%machine%> /out:"<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%machine%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(exename)%><%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%machine%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
 <%if(link_flags_removed)%>
 # SUBTRACT LINK32 <%link_flags_removed%>
 <%endif%>
@@ -111,7 +111,7 @@ SOURCE="<%pch_source%>"
 <%endif%>
 <%endif%>
 <%if(grouped_source_files)%>
-<%foreach(grouped_source_files)%>
+<%foreach(sort(grouped_source_files))%>
 # Begin Group "<%grouped_source_file%>"
 
 # PROP Default_Filter ""
@@ -162,7 +162,7 @@ SOURCE="<%pch_header%>"
 # End Source File
 <%endif%>
 <%if(grouped_header_files)%>
-<%foreach(grouped_header_files)%>
+<%foreach(sort(grouped_header_files))%>
 # Begin Group "<%grouped_header_file%>"
 
 # PROP Default_Filter ""
@@ -189,7 +189,7 @@ SOURCE="<%header_file%>"
 
 # PROP Default_Filter "i;inl"
 <%if(grouped_inline_files)%>
-<%foreach(grouped_inline_files)%>
+<%foreach(sort(grouped_inline_files))%>
 # Begin Group "<%grouped_inline_file%>"
 
 # PROP Default_Filter ""
@@ -216,7 +216,7 @@ SOURCE="<%inline_file%>"
 
 # PROP Default_Filter ""
 <%if(grouped_template_files)%>
-<%foreach(grouped_template_files)%>
+<%foreach(sort(grouped_template_files))%>
 # Begin Group "<%grouped_template_file%>"
 
 # PROP Default_Filter ""
@@ -245,7 +245,7 @@ SOURCE="<%template_file%>"
 
 # PROP Default_Filter ""
 <%if(grouped_documentation_files)%>
-<%foreach(grouped_documentation_files)%>
+<%foreach(sort(grouped_documentation_files))%>
 # Begin Group "<%grouped_documentation_file%>"
 
 # PROP Default_Filter ""
@@ -272,7 +272,7 @@ SOURCE="<%documentation_file%>"
 
 # PROP Default_Filter "rc;ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 <%if(grouped_resource_files)%>
-<%foreach(grouped_resource_files)%>
+<%foreach(sort(grouped_resource_files))%>
 # Begin Group "<%grouped_resource_file%>"
 
 # PROP Default_Filter ""

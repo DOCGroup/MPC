@@ -14,6 +14,7 @@ Release {
 
 Debug {
   optimize         =
+  debug_prj        = 1
   defines          = _DEBUG
   intermediate_dir = Static_Debug
   lib_modifier     = sd
