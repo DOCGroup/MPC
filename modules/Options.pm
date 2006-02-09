@@ -274,7 +274,9 @@ sub options {
     elsif ($arg eq '-exclude') {
       $i++;
       if (defined $args[$i]) {
-        @exclude = split(',', $args[$i]);
+        foreach my $exclude (split(',', $args[$i])) {
+          push(@exclude, DirectoryManager::mpc_glob(undef, $args[$i]));
+        }
       }
       else {
         $self->optionError('-exclude requires a ' .
