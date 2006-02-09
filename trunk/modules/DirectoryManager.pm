@@ -123,7 +123,7 @@ sub mpc_glob {
     my($post) = $3;
     for(my $i = 0; $i < length($mid); $i++) {
       my($p) = $pre . substr($mid, $i, 1) . $post;
-      foreach my $new ($self->mpc_glob($p)) {
+      foreach my $new (DirectoryManager::mpc_glob($self, $p)) {
         my($found) = undef;
         foreach my $file (@files) {
           if ($file eq $new) {

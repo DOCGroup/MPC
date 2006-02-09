@@ -16,6 +16,7 @@ Release {
 
 Debug {
   optimize         =
+  debug_prj        = 1
   defines          = _DEBUG
   exeoutputdir     = .
   intermediate_dir = Debug
