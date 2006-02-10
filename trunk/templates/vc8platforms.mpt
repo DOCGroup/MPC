@@ -18,6 +18,7 @@ WinX86_64 {
   cpu_defines      = _M_AXP64
   platform_defines = _WIN64
   TargetMachine    = "17"
+  link_options     = /machine:AMD64
 }
 
 Pocket PC 2003 (ARMV4) {
