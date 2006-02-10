@@ -76,7 +76,7 @@ DEPEND :
 	@echo Then set the DEPGEN_ROOT environment variable to the full path of Depgen.
 !ELSE
 <%if(source_files || pch_source)%>
-        $(DEPGEN)<%foreach(includes)%> -I"<%include%>"<%endfor%><%foreach(defines cpu_defines common_defines platform_defines macros)%> -D<%define%><%endfor%><%if(unicode)%> -DUNICODE -D_UNICODE<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%> -D<%staticflag%><%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%> -f "<%noextension(project_file)%>.dep"<%foreach(source_files)%> "<%source_file%>"<%endfor%><%if(pch_source)%> "<%pch_source%>"<%endif%>
+	$(DEPGEN)<%foreach(includes)%> -I"<%include%>"<%endfor%><%foreach(defines cpu_defines common_defines platform_defines macros)%> -D<%define%><%endfor%><%if(unicode)%> -DUNICODE -D_UNICODE<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%> -D<%staticflag%><%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%> -f "<%noextension(project_file)%>.dep"<%foreach(source_files)%> "<%source_file%>"<%endfor%><%if(pch_source)%> "<%pch_source%>"<%endif%>
 <%else%>
 	-@rem
 <%endif%>
@@ -305,7 +305,7 @@ SOURCE="<%resource_file%>"
 <%if(transdir(resource_file))%>
 	@if not exist "$(INTDIR)\<%transdir(resource_file)%>$(NULL)" mkdir "$(INTDIR)\<%transdir(resource_file)%>"
 <%endif%>
-        $(RSC) /l 0x409 /fo"$(INTDIR)\<%transdir(resource_file)%><%basenoextension(resource_file)%>.res"<%foreach(defines cpu_defines platform_defines macros)%> /d <%define%><%endfor%><%if(unicode)%> /d UNICODE /d _UNICODE<%endif%><%foreach(includes)%> /i "<%include%>"<%endfor%> $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\<%transdir(resource_file)%><%basenoextension(resource_file)%>.res"<%foreach(defines cpu_defines platform_defines macros)%> /d <%define%><%endfor%><%if(unicode)%> /d UNICODE /d _UNICODE<%endif%><%foreach(includes)%> /i "<%include%>"<%endfor%> $(SOURCE)
 
 
 <%endfor%>
