@@ -1,3 +1,17 @@
+Fri Feb 10 11:26:12 UTC 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc8platforms.mpt:
+          For x86_64 specify an explicit link option
+
+        * templates/nmake.mpd:
+          Added platform_defines to the list of defines being generated,
+          this is as with the normal vc templates
+
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+          Added platform_defines and updated cpu_define to the same
+          value used as with the normal vc templates for WinX86_64
+
 Thu Feb  9 12:50:52 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/boost_iostreams.mpb:
