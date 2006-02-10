@@ -27,9 +27,10 @@ Win64 {
 
 WinX86_64 {
   machine_description = X86_64
-  machine             = X64
-  cpu_defines         = WIN64
+  machine             = AMD64
+  cpu_defines         = _M_AXP64
   add_compile         = /Wp64
+  platform_defines    = _WIN64
 }
 
 Release {
