@@ -1,3 +1,16 @@
+Fri Feb 10 06:36:59 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Options.pm:
+
+          Fixed a bug where a -exclude argument with a comma in it would not
+          be split.
+
+        * templates/ghs.mpd:
+        * templates/ghscommon.mpt:
+
+          Changed libdecorator to lib_modifier to be consistent with all of
+          the other templates.
+
 Fri Feb 10 11:26:12 UTC 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc8platforms.mpt:
