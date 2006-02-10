@@ -5,6 +5,11 @@ Fri Feb 10 06:36:59 2006  Chad Elliott  <elliott_c@ociweb.com>
           Fixed a bug where a -exclude argument with a comma in it would not
           be split.
 
+        * modules/ProjectCreator.pm:
+
+          Reverted a change that affected the way files were listed in
+          templates when gendir = . was used.
+
         * templates/ghs.mpd:
         * templates/ghscommon.mpt:
 

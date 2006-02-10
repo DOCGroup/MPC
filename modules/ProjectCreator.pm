@@ -2820,7 +2820,7 @@ sub prepend_gendir {
         if (defined $dir) {
           ## Convert the file to unix style for basename
           $created =~ s/\\/\//g;
-          return ($dir eq '.' ? '' : "$dir/") . basename($created);
+          return "$dir/" . basename($created);
         }
       }
     }
