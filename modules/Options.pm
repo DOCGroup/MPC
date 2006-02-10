@@ -275,7 +275,7 @@ sub options {
       $i++;
       if (defined $args[$i]) {
         foreach my $exclude (split(',', $args[$i])) {
-          push(@exclude, DirectoryManager::mpc_glob(undef, $args[$i]));
+          push(@exclude, DirectoryManager::mpc_glob(undef, $exclude));
         }
       }
       else {

@@ -7,4 +7,4 @@ conditional_include "unixcommon"
 optimize       = 1
 syslibdirs     =
 deflibdirs     =
-libdecorator   =
+lib_modifier   =
