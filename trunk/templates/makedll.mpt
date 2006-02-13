@@ -2,25 +2,26 @@
 // $Id$
 
 // ***********************************************************************
-// The default configuration for the 'make' project type is gcc.  This
-// is controlled by the configurations template variable.  It may be
+// The default compiler for the 'make' project type is gcc.  This
+// is controlled by the compilers template variable.  It may be
 // changed on the MPC command line via the -value_template option.
 // Additionally, each compiler has a default platform.  The default
 // platform for gcc is linux.  This too can be changed via the
 // -value_template option.  Below are some examples.
 //
 // Use SunCC on the default platform (solaris):
-//   mwc.pl -type make -value_template configurations=SunCC
-// Use the default configuration (gcc) on LynxOS:
+//   mwc.pl -type make -value_template compilers=SunCC
+// Use the default compiler (gcc) on LynxOS:
 //   mwc.pl -type make -value_template platforms=lynxos
 // Use HP-UX aCC on the default platform (HP-UX):
-//   mwc.pl -type make -value_template configurations=aCC
+//   mwc.pl -type make -value_template compilers=aCC
 // ***********************************************************************
 
 conditional_include "common"
 conditional_include "unixcommon"
 
-configurations   = gcc
+configurations   = Release
+compilers        = gcc
 obj_ext          = .o
 compile_flags    =
 arflags          =
@@ -29,11 +30,22 @@ targetoutdir     =
 slash            = /
 libopt           = -l
 build64bit       = 1
-optimize         = 1
 pchext           = .gch
 
 // ***********************************************************************
 // Configuration Section
+// ***********************************************************************
+
+Debug {
+  lib_modifier = d
+}
+
+Release {
+  optimize = 1
+}
+
+// ***********************************************************************
+// Compiler Section
 // ***********************************************************************
 
 java {

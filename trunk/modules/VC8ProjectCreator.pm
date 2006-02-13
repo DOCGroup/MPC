@@ -40,6 +40,17 @@ my(%config) = ('vcversion' => '8.00',
 # Subroutine Section
 # ************************************************************
 
+sub post_file_creation {
+  my($self) = shift;
+  my($file) = shift;
+
+  ## VC8 stores information in a .user file that may conflict
+  ## with information stored in the project file.  If we have
+  ## created a new project file, we will remove the corresponding
+  ## .user file to avoid strange conflicts.
+  unlink("$file.user");
+}
+
 sub get_configurable {
   my($self)   = shift;
   my($name)   = shift;

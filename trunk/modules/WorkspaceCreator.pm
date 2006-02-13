@@ -1841,9 +1841,6 @@ sub process_cmdline {
       if (defined $options->{'coexistence'}) {
         $self->optionError('-make_coexistence is ignored');
       }
-      if (defined $options->{'genins'}) {
-        $self->optionError('-genins is ignored');
-      }
       if (defined $options->{'into'}) {
         $self->optionError('-into is ignored');
       }
@@ -1918,7 +1915,7 @@ sub project_creator {
                    $self->make_coexistence(),
                    $parameters{'name_modifier'},
                    $parameters{'apply_project'},
-                   $self->{'generate_ins'},
+                   $self->{'generate_ins'} || $parameters{'genins'},
                    $parameters{'into'},
                    $parameters{'language'},
                    $parameters{'use_env'},

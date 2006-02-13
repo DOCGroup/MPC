@@ -114,7 +114,7 @@ sub new {
 }
 
 
-sub basename {
+sub tp_basename {
   my($self) = shift;
   my($file) = shift;
 
@@ -1261,14 +1261,14 @@ sub handle_basename {
   my($name) = shift;
 
   $self->append_current(
-            $self->basename($self->get_value_with_default($name)));
+            $self->tp_basename($self->get_value_with_default($name)));
 }
 
 
 sub handle_basenoextension {
   my($self) = shift;
   my($name) = shift;
-  my($val)  = $self->basename($self->get_value_with_default($name));
+  my($val)  = $self->tp_basename($self->get_value_with_default($name));
 
   $val =~ s/\.[^\.]+$//;
   $self->append_current($val);
@@ -1346,7 +1346,7 @@ sub doif_duplicate_index {
   my($value) = shift;
 
   if (defined $value) {
-    my($base) = lc($self->basename($value));
+    my($base) = lc($self->tp_basename($value));
     my($path) = $self->validated_dirname($value);
 
     if (!defined $self->{'dupfiles'}->{$base}) {
@@ -1430,7 +1430,7 @@ sub prepare_parameters {
       for(my $i = 0; $i < $size; ++$i) {
         my($fo) = $self->get_flag_overrides($prefix . '->input_file, gendir');
         if (defined $fo) {
-          $$output[$i] = $fo . '/' . File::Basename::basename($$output[$i]);
+          $$output[$i] = $fo . '/' . $self->tp_basename($$output[$i]);
         }
         if ($self->{'cslashes'}) {
           $$output[$i] = $self->{'prjc'}->slash_to_backslash($$output[$i]);
