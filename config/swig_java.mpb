@@ -11,5 +11,6 @@ project {
     generic_pre_extension = , JNI
     generic_outputext     = .java
   }
+  requires += swig_java
   includes += $(JAVA_ROOT)/include $(JAVA_ROOT)/include/$(JAVA_PLATFORM)
 }

@@ -2,7 +2,7 @@
 #       Macros
 #----------------------------------------------------------------------------
 <%marker(top)%>
-<%foreach(configurations)%>
+<%foreach(compilers)%>
 CXX           = <%cxx%>
 <%if(ld)%>
 LD            = <%ld%>
@@ -45,11 +45,11 @@ MAKEFILE      = <%project_file%>
 DEPENDENCIES  = .depend.$(MAKEFILE)
 <%if(exename)%>
 BTARGETDIR    = <%if(install)%><%install%><%else%>.<%endif%><%slash%><%targetoutdir%>
-BIN           = $(BTARGETDIR)<%exename%>$(EXEEXT)
+BIN           = $(BTARGETDIR)<%exename%>$(EXESUFFIX)$(EXEEXT)
 <%else%>
 LTARGETDIR    = <%libout%><%slash%><%targetoutdir%>
 <%endif%>
-<%foreach(configurations)%>
+<%foreach(compilers)%>
 <%foreach(platforms)%>
 RM            = <%delete("rm -rf")%>
 CP            = <%copy("cp -p")%>
@@ -57,19 +57,30 @@ NUL           = <%devnull("/dev/null")%>
 MKDIR         = <%makedir("mkdir -p")%>
 EXEEXT        = <%exe_ext%>
 LIBPREFIX     = <%lib_prefix%><%libname_prefix%>
-LDLIBS        =<%foreach(libs)%> <%libopt%>"<%libname_prefix%><%lib%>"<%endfor%><%foreach(lit_libs)%> <%libopt%>"<%lit_lib%>"<%endfor%><%foreach(pure_libs)%> "<%pure_lib%>"<%endfor%> <%ldlibs%>
+<%foreach(configurations)%>
+LIBSUFFIX     = <%lib_modifier%>
+<%if(use_modifier)%>
+EXESUFFIX     = <%lib_modifier%>
+<%endif%>
+<%if(optimize)%>
+GENFLAGS      = <%genflags("-O")%>
+<%else%>
+GENFLAGS      = <%genflags("-g")%>
+<%endif%>
+<%endfor%>
+LDLIBS        =<%foreach(libs)%> <%libopt%>"<%libname_prefix%><%lib%>$(LIBSUFFIX)"<%endfor%><%foreach(lit_libs)%> <%libopt%>"<%lit_lib%>"<%endfor%><%foreach(pure_libs)%> "<%pure_lib%>"<%endfor%> <%ldlibs%>
 OBJS          =<%if(pch_source && pchsupport)%> <%targetoutdir%><%noextension(pch_source)%>$(OBJEXT)<%endif%><%foreach(source_files)%> <%targetoutdir%><%noextension(source_file)%>$(OBJEXT)<%endfor%><%if(rc)%><%foreach(resource_files)%> <%targetoutdir%><%resource_file%>$(OBJEXT)<%endfor%><%endif%>
 <%if(lib_ext)%>
 <%if(staticname)%>
 AREXT         = <%lib_ext%>
-LIB           = $(LTARGETDIR)$(LIBPREFIX)<%staticname%>$(AREXT)
+LIB           = $(LTARGETDIR)$(LIBPREFIX)<%staticname%>$(LIBSUFFIX)$(AREXT)
 <%endif%>
 <%endif%>
 <%if(dll_ext)%>
 <%if(sharedname)%>
 SOEXT         = <%dll_ext%>
 SHTARGETDIR   = <%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%slash%><%targetoutdir%>
-SHLIB         = $(SHTARGETDIR)$(LIBPREFIX)<%sharedname%>$(SOEXT)
+SHLIB         = $(SHTARGETDIR)$(LIBPREFIX)<%sharedname%>$(LIBSUFFIX)$(SOEXT)
 <%if(shflags)%>
 SHFLAGS       = <%shflags%>
 <%endif%>
@@ -77,7 +88,6 @@ SHFLAGS       = <%shflags%>
 <%endif%>
 <%endfor%>
 <%endfor%>
-GENFLAGS      = <%if(optimize)%><%genflags(-O)%><%else%><%genflags(-g)%><%endif%>
 SRC           =<%if(pch_source && pchsupport)%> <%pch_source%><%endif%> <%source_files%>
 LINK.cc       = $(LD) $(LDFLAGS)
 <%if(dynamicflags)%>
@@ -86,7 +96,7 @@ DYNAMICFLAGS  =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
 <%if(staticflags)%>
 STATICFLAGS   =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
 <%endif%>
-EXPORTFLAGS   = <%if(exename)%><%if(need_staticflags)%>$(STATICFLAGS)<%endif%><%else%><%foreach(configurations)%><%foreach(platforms)%><%if(dll_ext && sharedname)%>$(DYNAMICFLAGS)<%else%>$(STATICFLAGS)<%endif%><%endfor%><%endfor%><%endif%>
+EXPORTFLAGS   = <%if(exename)%><%if(need_staticflags)%>$(STATICFLAGS)<%endif%><%else%><%foreach(compilers)%><%foreach(platforms)%><%if(dll_ext && sharedname)%>$(DYNAMICFLAGS)<%else%>$(STATICFLAGS)<%endif%><%endfor%><%endfor%><%endif%>
 <%marker(macros)%>
 
 #----------------------------------------------------------------------------
@@ -96,7 +106,7 @@ EXPORTFLAGS   = <%if(exename)%><%if(need_staticflags)%>$(STATICFLAGS)<%endif%><%
 <%if(exename)%>
 all: $(BIN)<%if(postbuild)%> __postbuild__<%endif%>
 
-<%foreach(configurations)%>
+<%foreach(compilers)%>
 <%foreach(platforms)%>
 <%if(specialscript)%>
 specialscript:
@@ -119,11 +129,11 @@ specialscript:
 $(BTARGETDIR):
 	@$(MKDIR) "$@"
 
-$(BIN): $(BTARGETDIR)<%foreach(configurations)%><%if(tempinc)%> $(TEMPINCDIR)<%endif%><%foreach(platforms)%><%if(prelink)%> <%targetoutdir%><%noextension(prelink)%>$(OBJEXT)<%endif%><%endfor%><%endfor%> $(OBJS)
+$(BIN): $(BTARGETDIR)<%foreach(compilers)%><%if(tempinc)%> $(TEMPINCDIR)<%endif%><%foreach(platforms)%><%if(prelink)%> <%targetoutdir%><%noextension(prelink)%>$(OBJEXT)<%endif%><%endfor%><%endfor%> $(OBJS)
 	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 
 <%endif%>
-<%foreach(configurations)%>
+<%foreach(compilers)%>
 <%foreach(platforms)%>
 <%if(dll_ext)%>
 <%if(sharedname)%>
@@ -134,8 +144,8 @@ $(SHTARGETDIR):
 	@$(MKDIR) "$@"
 
 <%endif%>
-$(SHLIB): $(SHTARGETDIR) <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%>$(OBJS)
-	<%foreach(configurations)%><%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%><%endfor%> $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+$(SHLIB): $(SHTARGETDIR) <%foreach(compilers)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%>$(OBJS)
+	<%foreach(compilers)%><%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%><%endfor%> $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 <%else%>
 <%if(staticname)%>
 all: $(LIB)<%if(postbuild)%> __postbuild__<%endif%>
@@ -156,8 +166,8 @@ $(LTARGETDIR):
 
 <%endif%>
 <%if(staticname)%>
-$(LIB): $(LTARGETDIR) <%foreach(configurations)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%>$(OBJS)
-<%foreach(configurations)%>
+$(LIB): $(LTARGETDIR) <%foreach(compilers)%><%if(tempinc)%>$(TEMPINCDIR) <%endif%><%endfor%>$(OBJS)
+<%foreach(compilers)%>
 <%foreach(platforms)%>
 	$(AR) $(ARFLAGS) $(LIB) $(OBJS)<%if(tempinc)%> `find $(TEMPINCDIR) -name \*.o\*`<%endif%>
 <%if(ranlib)%>
@@ -219,7 +229,7 @@ all: $(GENERATED_DIRTY)<%if(postbuild)%> __postbuild__<%endif%>
 generated: $(GENERATED_DIRTY)
 	@-:
 
-<%foreach(configurations)%>
+<%foreach(compilers)%>
 <%if(tempinc)%>
 $(TEMPINCDIR):
 	@-test -d $(TEMPINCDIR) || $(MKDIR) $(TEMPINCDIR) 2> $(NUL) || true
@@ -255,7 +265,7 @@ $(TEMPINCDIR):
 <%endif%>
 clean:
 	-$(RM) $(OBJS)
-<%foreach(configurations)%>
+<%foreach(compilers)%>
 <%if(pch_source && pchsupport)%>
 	-$(RM) <%pch_header%><%pchext%>
 <%endif%>
