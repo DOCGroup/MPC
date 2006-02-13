@@ -208,7 +208,7 @@ GENERATED_DIRTY =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><
 <%if(custom_type->input_file->output_files)%>
 <%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%custom_type->input_file%><%if(custom_type->input_file->dependencies)%> <%custom_type->input_file->dependencies%><%endif%>
 <%if(flag_overrides(custom_type->input_file, gendir))%>
-        @if not exist <%flag_overrides(custom_type->input_file, gendir)%> mkdir <%flag_overrides(custom_type->input_file, gendir)%>
+        @if not exist "<%flag_overrides(custom_type->input_file, gendir)%>" mkdir "<%flag_overrides(custom_type->input_file, gendir)%>"
 <%endif%>
 	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%><%if(custom_type->output_option)%> <%custom_type->output_option%> $@<%endif%> <%custom_type->input_file%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
@@ -302,7 +302,7 @@ generated: $(GENERATED_DIRTY)
 <%endfor%>
 <%endif%>
 clean:
-	if exist "$(INTERMEDIATE)" rmdir /s/q $(INTERMEDIATE)
+	-if exist "$(INTERMEDIATE)" rmdir /s/q $(INTERMEDIATE)
 
 realclean: clean
 <%foreach(custom_types)%>
@@ -310,26 +310,26 @@ realclean: clean
 <%if(custom_type->input_file->output_files)%>
 <%foreach(custom_type->input_file->output_files)%>
 <%if(flag_overrides(custom_type->input_file, gendir))%>
-	if exist "<%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%>" del <%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%>
+	-if exist "<%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%>" del "<%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%>"
 <%else%>
-	if exist "<%custom_type->input_file->output_file%>" del <%custom_type->input_file->output_file%>
+	-if exist "<%custom_type->input_file->output_file%>" del "<%custom_type->input_file->output_file%>"
 <%endif%>
 <%endfor%>
 <%endif%>
 <%endfor%>
 <%endfor%>
 <%if(exename)%>
-	if exist "$(OUTPUTDIR)$(NAME)$(EXE_EXT)" del $(OUTPUTDIR)$(NAME)$(EXE_EXT)
+	-if exist "$(OUTPUTDIR)$(NAME)$(EXE_EXT)" del "$(OUTPUTDIR)$(NAME)$(EXE_EXT)"
 <%else%>
 <%if(sharedname)%>
-        if exist "$(OUTPUTDIR)$(NAME)$(DLL_EXT)" del $(OUTPUTDIR)$(NAME)$(DLL_EXT)
+        -if exist "$(OUTPUTDIR)$(NAME)$(DLL_EXT)" del "$(OUTPUTDIR)$(NAME)$(DLL_EXT)"
 <%endif%>
 <%if(staticname)%>
-	if exist "$(OUTPUTDIR)$(NAME)$(LIB_EXT)" del $(OUTPUTDIR)$(NAME)$(LIB_EXT)
+	-if exist "$(OUTPUTDIR)$(NAME)$(LIB_EXT)" del "$(OUTPUTDIR)$(NAME)$(LIB_EXT)"
 <%endif%>
 <%endif%>
 <%if(exename || sharedname || staticname)%>
-        if exist "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" del $(OUTPUTDIR)$(NAME)$(POSTLINKRM)
+        -if exist "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" del "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)"
 <%endif%>
 
 <%if(postbuild)%>

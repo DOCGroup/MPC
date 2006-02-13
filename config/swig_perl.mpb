@@ -10,6 +10,7 @@ project {
     source_outputext  = _wrap.cxx
     generic_outputext = .pm
   }
+  requires += swig_perl
   includes += $(PERL5_INCLUDE)/.
   libpaths += $(PERL5_INCLUDE)/.
 }
