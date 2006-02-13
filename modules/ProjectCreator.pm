@@ -1770,16 +1770,14 @@ sub already_added {
   ## name will be unix style
   $name =~ s/\\/\//g;
 
+  ## Remove the leading ./
+  $name =~ s/^\.\///;
+  my($dsname) = "./$name";
+
   foreach my $file (@$array) {
-    if ($file eq $name) {
+    if ($file eq $name || $file eq $dsname) {
       return 1;
     }
-  }
-
-  ## If we haven't matched the name yet and the name
-  ## begins with ./, we will remove it and try again.
-  if ($name =~ s/^\.\///) {
-    return $self->already_added($array, $name);
   }
 
   return 0;
@@ -1952,7 +1950,20 @@ sub add_explicit_output {
             }
           }
           if ($add) {
-            push(@files, $check);
+            ## If gendir was specified, then we need to account for that
+            my($dir) = '';
+            if (defined $self->{'flag_overrides'}->{$type} &&
+                defined $self->{'flag_overrides'}->{$type}->{$file} &&
+                defined $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'}) {
+              if ($self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} eq '.') {
+                $dir = '';
+              }
+              else {
+                $dir = $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} . '/';
+              }
+            }
+
+            push(@files, "$dir$check");
             last;
           }
         }
@@ -2837,7 +2848,13 @@ sub list_generated_file {
   my($array)   = shift;
   my($file)    = shift;
   my($ofile)   = shift;
+  my($count)   = 0;
 
+  ## Save the length of the basename for later
+  $file =~ s/\\/\//g;
+  my($blen) = length(basename($file));
+
+  ## Turn it into a regular expression
   $file = $self->escape_regex_special($file);
 
   foreach my $gen ($self->get_component_list($gentype, 1)) {
@@ -2861,7 +2878,7 @@ sub list_generated_file {
     ## See if we need to add the file.  We only need to bother
     ## if the length of $gen is less than or equal to the length of
     ## $file because they couldn't possibly match if they weren't.
-    if (length(basename($gen)) <= length(basename($file))) {
+    if (length(basename($gen)) <= $blen) {
       foreach my $re ($self->generated_filenames($gen, $gentype,
                                                  $tag, $input, 1)) {
         if ($re =~ /$file(.*)?$/) {
@@ -2871,12 +2888,14 @@ sub list_generated_file {
           }
           if (!$self->already_added($array, $created)) {
             push(@$array, $created);
+            ++$count;
           }
           last;
         }
       }
     }
   }
+  return $count;
 }
 
 
@@ -2948,19 +2967,22 @@ sub add_corresponding_component_files {
         }
       }
 
-      ## First check to see if the file exists
-      foreach my $ext (@exts) {
-        if (-r "$sfile$ext") {
-          push(@$array, "$sfile$ext");
-          $found = 1;
-          last;
-        }
+      ## First, see if it will be generated so that we can correctly
+      ## deal with 'gendir' settings.
+      foreach my $gentype (keys %{$self->{'generated_exts'}}) {
+        $found += $self->list_generated_file($gentype, $tag, $array, $sfile);
       }
 
-      ## If it doesn't exist, see if it will be generated
+      ## Next check to see if the file exists
       if (!$found) {
-        foreach my $gentype (keys %{$self->{'generated_exts'}}) {
-          $self->list_generated_file($gentype, $tag, $array, $sfile);
+        foreach my $ext (@exts) {
+          if (-r "$sfile$ext") {
+            my($file) = "$sfile$ext";
+            if (!$self->already_added($array, $file)) {
+              push(@$array, $file);
+            }
+            last;
+          }
         }
       }
 
@@ -3835,6 +3857,7 @@ sub write_output_file {
               if ($different) {
                 unlink($name);
                 if (rename($tmp, $name)) {
+                  $self->post_file_creation($name);
                   $self->add_file_written($oname);
                 }
                 else {
@@ -4591,6 +4614,12 @@ sub remove_wanted_extension {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub post_file_creation {
+  #my($self) = shift;
+  #my($file) = shift;
+}
+
 
 sub escape_spaces {
   #my($self) = shift;

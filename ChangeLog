@@ -1,3 +1,63 @@
+Mon Feb 13 11:15:04 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/global.features:
+
+          Set the swig_perl, swig_java and python features to zero.
+
+        * config/python.mpb:
+
+          Added a base project for building against the python library.
+
+        * config/swig_java.mpb:
+
+          Added a requires += swig_java.
+
+        * config/swig_perl.mpb:
+
+          Added a requires += swig_perl.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a problem where if a file is automatically generated and
+          gendir is set to '.', the file name may be added twice to a
+          project.
+
+          When automatically adding files specified by >>, take into account
+          the gendir setting.
+
+          Added a post project creation hook so that sub-classes of
+          ProjectCreator can perform an action after a project file is
+          created.
+
+        * modules/TemplateParser.pm:
+
+          Renamed the basename() function to tp_basename().
+
+        * modules/VC8ProjectCreator.pm:
+
+          Use the post file creation hook to remove the .user files created
+          by VC8.  The .user file will only be removed if the project file
+          is different than what was created by prior runs of MPC.
+
+        * README:
+        * modules/WorkspaceCreator.pm:
+
+          Allow the user of -genins within a workspace.
+
+        * templates/bmake.mpd:
+
+          Put double quotes around gendir related files just in case gendir
+          has a directory with spaces in the name.  Also, prefix all del and
+          rmdir commands with - to continue on if there is an error.
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Changed the way that the 'configurations' template variable is used.
+          The existing use has been renamed to 'compilers' and the
+          'configurations' template variable is now used as it is in many of
+          the other project types, as Debug or Release.
+
 Fri Feb 10 06:36:59 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Options.pm:
