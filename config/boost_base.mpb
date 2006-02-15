@@ -3,6 +3,6 @@
 
 project {
   requires += boost
-  includes += $(BOOST_ROOT)/include/$(BOOST_VERSION)
+  includes += $(BOOST_ROOT)/include/$(BOOST_VERSION) $(BOOST_ROOT)/.
   libpaths += $(BOOST_ROOT)/lib
 }
