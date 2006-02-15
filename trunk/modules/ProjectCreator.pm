@@ -3381,17 +3381,21 @@ sub get_command_subs {
   ## Add the built-in OS compatibility commands
   if (UNIVERSAL::isa($self, 'WinProjectBase')) {
     $valid{'cat'}   = 'type';
+    $valid{'cmp'}   = 'fc';
     $valid{'cp'}    = 'copy /y';
     $valid{'mkdir'} = 'mkdir';
     $valid{'mv'}    = 'move /y';
+    $valid{'os'}    = 'win32';
     $valid{'rm'}    = 'del /f/s/q';
     $valid{'nul'}   = 'nul';
   }
   else {
     $valid{'cat'}   = 'cat';
+    $valid{'cmp'}   = 'cmp';
     $valid{'cp'}    = 'cp -f';
     $valid{'mkdir'} = 'mkdir -p';
     $valid{'mv'}    = 'mv -f';
+    $valid{'os'}    = 'unix';
     $valid{'rm'}    = 'rm -rf';
     $valid{'nul'}   = '/dev/null';
   }
