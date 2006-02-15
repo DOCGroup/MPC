@@ -9,8 +9,8 @@ feature(zlib) {
   // @@ Notice: If you are building with Cygwin, you may need to manually
   //            change the following library to zlib.
   specific(gnuace, make, sle, automake, ghs) {
-    libs += z
+    lit_libs += z
   } else {
-    libs += zlib
+    lit_libs += zlib
   }
 }

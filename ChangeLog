@@ -1,3 +1,34 @@
+Wed Feb 15 16:03:06 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/boost_base.mpb:
+
+          Added an include path for $(BOOST_ROOT).
+
+        * config/bzip2.mpb:
+        * config/global.features:
+
+          Added a bzip2 feature project and set the bzip2 feature to zero by
+          default.
+
+        * config/zlib.mpb:
+
+          Switch from libs to lit_libs so that no decorator is added to the
+          library name.
+
+        * modules/ProjectCreator.pm:
+
+          Accept .ipp as inline files.
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Provide library versioning on platforms that support it.  Added
+          initial support for the intel compiler on Linux.
+
+        * templates/vc7.mpd:
+
+          Allow switching off exception handling.
+
 Tue Feb 14 17:06:40 2006  Steve Huston  <shuston@riverace.com>
 
         * templates/vc8platforms.mpt: Changed the WinX86_64 platform to be
