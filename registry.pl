@@ -124,6 +124,8 @@ if (defined $ARGV[0]) {
     delete_key('HKEY_CLASSES_ROOT/mwcfile/');
     delete_key('HKEY_CLASSES_ROOT/.mpc/');
     delete_key('HKEY_CLASSES_ROOT/mpcfile/');
+    delete_key('HKEY_CLASSES_ROOT/.mpb/');
+    delete_key('HKEY_CLASSES_ROOT/mpbfile/');
 
     foreach my $type (keys %types) {
       delete_key('HKEY_CLASSES_ROOT/Directory/shell/MPC' . uc($type) . '/');
@@ -143,6 +145,7 @@ $Registry->{'HKEY_CURRENT_USER/Environment/MPC_ROOT'} = [$MPC_ROOT, 'REG_SZ'];
 
 set_ext_icon('mwc', 0);
 set_ext_icon('mpc', 1);
+set_ext_icon('mpb', 1);
 
 foreach my $type (keys %types) {
   set_mwc_command($type, $types{$type});

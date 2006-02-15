@@ -160,9 +160,11 @@ postbuild       If this is defined in the project, the value will be
                 can be used.
 
                   <%cat%>   - Platform non-specific command to cat a file.
+                  <%cmp%>   - Platform non-specific compare command.
                   <%cp%>    - Platform non-specific copy command.
                   <%mkdir%> - Platform non-specific mkdir command.
                   <%mv%>    - Platform non-specific move command.
+                  <%os%>    - Returns either win32 or unix.
                   <%rm%>    - Platform non-specific delete command.
                   <%nul%>   - Platform non-specific null device.
                   <%gt%>    - Project non-specific greater than sign.
