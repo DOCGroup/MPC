@@ -1,3 +1,13 @@
+Wed Feb 15 17:56:02 2006  Steve Huston  <shuston@riverace.com>
+
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt: Changed WinX86_64 platform name to x64 to be
+          consistent with vc8platforms.mpt. Also set _M_AMD64 in cpu_defines,
+          not _M_AXP64 to be consistent with what Microsoft headers are
+          expecting; also added _AMD64_ to ensure it gets set - windows.h
+          sets it, but if including winnt.h first, it doesn't get set.
+          Thanks to Johnny Willemsen for motivating this change.
+
 Wed Feb 15 18:42:30 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
