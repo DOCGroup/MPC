@@ -23,6 +23,7 @@ conditional_include "unixcommon"
 configurations   = Release
 compilers        = gcc
 obj_ext          = .o
+res_ext          = .res
 compile_flags    =
 arflags          =
 pchsupport       = 1
@@ -31,6 +32,8 @@ slash            = /
 libopt           = -l
 build64bit       = 1
 pchext           = .gch
+versupport       = 1
+dependencies     = 1
 
 // ***********************************************************************
 // Configuration Section
@@ -80,6 +83,16 @@ cxx_vms {
   platforms       = openvms
 }
 
+dmc {
+  cxx          = dmc
+  dmclink      = 1
+  ar           = lib
+  arflags      = -c
+  obj_ext      = .obj
+  dependencies =
+  platforms    = dmc_win
+}
+
 gcc {
   cxx       = g++
   pic       = -fPIC
@@ -87,6 +100,13 @@ gcc {
   platforms = linux
   pchcreate = "-o "
   pchnobj   = 1
+}
+
+Intel {
+  cxx       = icpc
+  pic       = -fPIC
+  shflags   = -shared
+  platforms = linux
 }
 
 SunCC {
@@ -180,6 +200,7 @@ ghsppc {
 // ***********************************************************************
 
 jvm {
+  versupport =
   lib_prefix =
   dll_ext    =
   lib_ext    = .jar
@@ -194,6 +215,7 @@ tru64 {
 openvms {
   // If you want to create shareable images, you can
   // set dll_ext to .exe using the -value_template option of MPC.
+  versupport    =
   lib_prefix    =
   dll_ext       =
   exe_ext       = .exe
@@ -244,7 +266,6 @@ macos {
 unixware {
   ldlibs        = -lsocket -ldl -lnsl -lgen -lposix4 -lthread
   extracppflags = -D_REENTRANT
-
 }
 
 qnx {
@@ -253,6 +274,7 @@ qnx {
 }
 
 vxworks {
+  versupport    =
   dll_ext       =
   specialscript = "#!/bin/sh\nfor i in $$3; do\nfor j in $$4; do\ni=`echo $$i | sed sa\^-laa`\n[ -r \"$$j/lib$$i.a\" ] && libs=\"$$libs $$j/lib$$i.a\" && break\ndone\ndone\n$$1 $$2 $$libs | munch | grep -v \\.cpp > $$5"
   prelink       = __ctordtor.c
@@ -261,21 +283,43 @@ vxworks {
 }
 
 cygwin {
-  dll_ext = .dll
-  exe_ext = .exe
-  rc      = windres
+  versupport =
+  dll_ext    = .dll
+  exe_ext    = .exe
+  rc         = windres
+  res_ext    = .o
 }
 
 mingw {
+  versupport =
   lib_prefix =
   dll_ext    = .dll
+  lib_ext    = .lib
   exe_ext    = .exe
   ldlibs     = -lwsock32 -lnetapi32
-  rc         = windres
+  rc         = rc
   devnull    = nul
   delete     = del /f/s/q
+  type       = type
   copy       = copy /y
   makedir    = mkdir
+  move       = move /y
+}
+
+dmc_win {
+  versupport =
+  lib_prefix =
+  dll_ext    = .dll
+  lib_ext    = .lib
+  exe_ext    = .exe
+  ldlibs     = wsock32+kernel32
+  rc         = rc
+  devnull    = nul
+  delete     = del /f/s/q
+  type       = type
+  copy       = copy /y
+  makedir    = mkdir
+  move       = move /y
 }
 
 tandem {
@@ -294,6 +338,7 @@ tandem {
 // TARGET_LD   The full path to your target ld file.
 //
 integrity {
+  versupport    =
   dll_ext       =
   ldlibs        = -lshm_client -lnet -livfssca -lposixsca
   extraarflags  = -bspname=$(RTOSROOT)/target/$(BSP).bld

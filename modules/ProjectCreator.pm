@@ -146,7 +146,7 @@ my($generic_key) = 'generic_files';
 my(%cppvc) = ('source_files'        => [ "\\.cpp", "\\.cxx", "\\.cc", "\\.c", "\\.C", ],
               'template_files'      => [ "_T\\.cpp", "_T\\.cxx", "_T\\.cc", "_T\\.c", "_T\\.C", ],
               'header_files'        => [ "\\.h", "\\.hpp", "\\.hxx", "\\.hh", ],
-              'inline_files'        => [ "\\.i", "\\.inl", ],
+              'inline_files'        => [ "\\.i", "\\.ipp", "\\.inl", ],
               'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
               'resource_files'      => [ "\\.rc", ],
              );
