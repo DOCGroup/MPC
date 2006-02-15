@@ -25,10 +25,10 @@ Win64 {
   add_compile         = /Wp64
 }
 
-WinX86_64 {
-  machine_description = X86_64
+x64 {
+  machine_description = x64
   machine             = AMD64
-  cpu_defines         = _M_AXP64
+  cpu_defines         = _M_AMD64 _AMD64_
   add_compile         = /Wp64
   platform_defines    = _WIN64
 }
