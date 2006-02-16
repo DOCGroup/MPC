@@ -275,7 +275,7 @@ sub run {
   foreach my $cfile (@{$options->{'input'}}) {
     ## To correctly reference any pathnames in the input file, chdir to
     ## its directory if there's any directory component to the specified path.
-    my($base) = basename($cfile);
+    my($base) = ($cfile eq '' ? '' : basename($cfile));
 
     if (-d $cfile) {
       $base = '';
