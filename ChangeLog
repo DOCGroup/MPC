@@ -1,3 +1,12 @@
+Wed Feb 15 19:41:59 2006  J.T. Conklin  <jtc@acorntoolworks.com>
+
+        * templates/automake.mpd:
+
+          Process header_files, inline_files, template_files, idl_files,
+          and pidl_files even if we're not building a executable or lib.
+          This ensures the files will be listed in the Makefile.am (for
+          "make distcheck" and/or for "make install").
+
 Wed Feb 15 17:56:02 2006  Steve Huston  <shuston@riverace.com>
 
         * templates/nmakedll.mpt:
