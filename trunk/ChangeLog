@@ -1,3 +1,27 @@
+Thu Feb 16 19:53:13 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * highlight_template.pl:
+
+          Added a tool which can be helpful in debugging MPC template code.
+          This utility will color highlight an MPC template and output html.
+
+        * modules/Driver.pm:
+
+          Perl 5.8.8 has a "feature" where basename('') returns './' instead
+          of '' as all other versions do.  In the case where we may call
+          basename() with an empty string, avoid calling basename() and just
+          use '' instead.  Thanks to Johnny Willemsen for helping me debug
+          this one.
+
+        * modules/HTMLWorkspaceCreator.pm:
+
+          Output the projects in build order instead of alphabetical order.
+
+        * templates/make.mpd:
+
+          Greatly simplified this template by removing many little foreach's
+          and enclose most of the template in two big foreach's.
+
 Wed Feb 15 19:41:59 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:
