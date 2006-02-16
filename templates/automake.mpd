@@ -167,6 +167,7 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%endif%>
 <%endif%>
 <%endif%>
+<%endif%>
 <%if(!exename)%>
 <%if(header_files || inline_files || template_files || idl_files || pidl_files)%>
 
@@ -178,7 +179,6 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%foreach(header, sort(header_files inline_files template_files idl_files pidl_files))%>
   <%header%><%fornotlast(" \\")%>
 <%endfor%>
-<%endif%>
 <%endif%>
 <%endif%>
 <%if(pkgconfig_files)%>
