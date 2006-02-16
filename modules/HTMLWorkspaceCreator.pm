@@ -55,7 +55,6 @@ sub write_comps {
   my($self)         = shift;
   my($fh)           = shift;
   my($creator)      = shift;
-  my($projects)     = $self->get_projects();
   my($project_info) = $self->get_project_info();
   my($crlf)         = $self->crlf();
 
@@ -63,11 +62,12 @@ sub write_comps {
             "summary=\"MPC Projects\">$crlf" .
             "<col style=\"background-color: darkcyan;\">$crlf" .
             "<thead>$crlf" .
-            "<tr><td>Projects</td></tr>$crlf" .
+            "<tr><td>Projects In Build Order</td></tr>$crlf" .
             "</thead>$crlf" .
             "<tbody>$crlf";
 
-  foreach my $project (sort { $creator->file_sorter($a, $b) } @$projects) {
+  ## Sort the projects in build order instead of alphabetical order
+  foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     my($name) = $$project_info{$project}->[0];
     print $fh "<tr><td>" .
               "<a href='$project'>$name</a>" .
