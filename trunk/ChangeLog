@@ -1,3 +1,10 @@
+Thu Feb 16 21:36:37 UTC 2006  Wallace Zhang  <zhangw@ociweb.com>
+
+        * highlight_template.pl:
+
+          Added a newline at the end of the file which is required
+          by fuzz.pl.
+
 Thu Feb 16 19:53:13 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * highlight_template.pl:
