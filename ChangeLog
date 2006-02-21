@@ -1,3 +1,11 @@
+Tue Feb 21 18:14:21 2006  Steve Huston  <shuston@riverace.com>
+
+        * templates/vc8.mpd: Put .lib files with .dll files in $(OutDir).
+          When emitting AdditionalLibraryDirectories and there is a specified
+          output_subdir, append output_subdir to each libpath, then the
+          plain libpath. This picks up output_subdir specs and hopefully
+          won't hurt anything for libpaths that don't have the subdirs.
+
 Thu Feb 16 21:36:37 UTC 2006  Wallace Zhang  <zhangw@ociweb.com>
 
         * highlight_template.pl:
@@ -29,6 +37,7 @@ Thu Feb 16 19:53:13 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
           Greatly simplified this template by removing many little foreach's
           and enclose most of the template in two big foreach's.
 
+>>>>>>> 1.380
 Wed Feb 15 19:41:59 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:
