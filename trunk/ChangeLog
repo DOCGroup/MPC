@@ -37,7 +37,6 @@ Thu Feb 16 19:53:13 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
           Greatly simplified this template by removing many little foreach's
           and enclose most of the template in two big foreach's.
 
->>>>>>> 1.380
 Wed Feb 15 19:41:59 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:
