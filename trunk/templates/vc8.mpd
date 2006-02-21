@@ -297,7 +297,7 @@
 <%endif%>
 				LinkIncremental="<%LinkIncremental("2")%>"
 				SuppressStartupBanner="<%SuppressStartupBanner("true")%>"
-				AdditionalLibraryDirectories="<%foreach(libpaths)%><%libpath%><%fornotlast(";")%><%endfor%>"
+				AdditionalLibraryDirectories="<%foreach(libpaths)%><%if(output_subdir)%><%libpath%>\<%output_subdir%>;<%endif%><%libpath%><%fornotlast(";")%><%endfor%>"
 <%if(ShowProgress)%>
 				ShowProgress="<%ShowProgress%>"
 <%endif%>
@@ -423,7 +423,7 @@
 				TurnOffAssemblyGeneration="<%TurnOffAssemblyGeneration%>"
 <%endif%>
 <%if(type_is_dynamic && sharedname)%>
-				ImportLibrary="<%libout%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
+				ImportLibrary="$(OutDir)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
 <%if(SupportUnloadOfDelayLoadedDLL)%>
 				SupportUnloadOfDelayLoadedDLL="<%SupportUnloadOfDelayLoadedDLL%>"
