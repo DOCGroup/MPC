@@ -23,7 +23,7 @@ CPU           = <%cpu%>
 <%if(pic)%>
 PICFLAGS      = <%pic%>
 <%endif%>
-CPPFLAGS      = $(PICFLAGS) $(GENFLAGS)<%if(compile_flags)%> <%compile_flags%><%endif%><%if(cpu)%> -DCPU=$(CPU)<%endif%><%if(tempincopt)%> <%tempincopt%>$(TEMPINCDIR)<%endif%><%if(compilerflags)%> <%compilerflags%><%endif%><%if(build64bit && compilerflags64)%> <%compilerflags64%><%endif%><%if(pch_source && pchsupport)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%><%if(extracppflags)%> <%extracppflags%><%endif%><%if(includes)%><%foreach(includes)%> -I"<%include%>"<%endfor%><%endif%><%if(macros)%><%foreach(macros)%> -D<%macro%><%endfor%><%endif%>
+CPPFLAGS      = <%if(visibility && visopt)%><%visopt%> <%endif%>$(PICFLAGS) $(GENFLAGS)<%if(compile_flags)%> <%compile_flags%><%endif%><%if(cpu)%> -DCPU=$(CPU)<%endif%><%if(tempincopt)%> <%tempincopt%>$(TEMPINCDIR)<%endif%><%if(compilerflags)%> <%compilerflags%><%endif%><%if(build64bit && compilerflags64)%> <%compilerflags64%><%endif%><%if(pch_source && pchsupport)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%><%if(extracppflags)%> <%extracppflags%><%endif%><%if(includes)%><%foreach(includes)%> -I"<%include%>"<%endfor%><%endif%><%if(macros)%><%foreach(macros)%> -D<%macro%><%endfor%><%endif%>
 OBJEXT        = <%obj_ext%>
 OUTPUT_OPTION = <%output_option(-o \"$@\")%>
 COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) <%compile_option("-c")%>
@@ -77,8 +77,7 @@ AREXT         = <%lib_ext%>
 LIB           = $(LTARGETDIR)$(LIBPREFIX)<%staticname%>$(LIBSUFFIX)$(AREXT)
 <%endif%>
 <%endif%>
-<%if(dll_ext)%>
-<%if(sharedname)%>
+<%if(dll_ext && sharedname)%>
 SOEXT         = <%dll_ext%>
 SHTARGETDIR   = <%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%slash%><%targetoutdir%>
 <%if(version && versupport)%>
@@ -87,7 +86,6 @@ SHLIB_BASE    = $(LIBPREFIX)<%sharedname%>$(LIBSUFFIX)$(SOEXT)
 SHLIB         = $(SHTARGETDIR)$(LIBPREFIX)<%sharedname%>$(LIBSUFFIX)$(SOEXT)
 <%if(shflags)%>
 SHFLAGS       = <%shflags%>
-<%endif%>
 <%endif%>
 <%endif%>
 SRC           =<%if(pch_source && pchsupport)%> <%pch_source%><%endif%> <%source_files%>
@@ -131,8 +129,7 @@ $(BIN): $(BTARGETDIR)<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelink)%> <%tar
 	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 
 <%endif%>
-<%if(dll_ext)%>
-<%if(sharedname)%>
+<%if(dll_ext && sharedname)%>
 all:<%if(version && versupport)%> $(SHLIB).<%version%><%endif%> $(SHLIB)<%if(postbuild)%> __postbuild__<%endif%>
 
 <%if(dllout)%>
@@ -150,11 +147,6 @@ $(SHLIB)<%if(version && versupport)%>.<%version%><%endif%>: $(SHTARGETDIR) <%if(
 	link /impl <%if(pch_source && pchsupport)%><%targetoutdir%><%noextension(pch_source)%>$(OBJEXT)+<%endif%><%foreach(source_files)%><%targetoutdir%><%noextension(source_file)%>$(OBJEXT)<%fornotlast("+")%><%endfor%>,$@,<%foreach(platforms)%><%ldlibs%><%endfor%><%if(rc)%><%foreach(resource_files)%><%forfirst(",,")%><%targetoutdir%><%resource_file%>$(RESEXT)<%fornotlast("+")%><%endfor%><%endif%>
 <%else%>
 	<%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%> $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
-<%endif%>
-<%else%>
-<%if(staticname)%>
-all: $(LIB)<%if(postbuild)%> __postbuild__<%endif%>
-<%endif%>
 <%endif%>
 
 <%else%>
@@ -264,11 +256,11 @@ clean:
 	-$(RM) <%pch_header%><%pchext%>
 <%endif%>
 <%if(clean)%>
-	-$(RM) <%clean%>
+	-$(RM) <%clean%><%if(sharedname)%><%foreach(dir, clean)%> $(SHTARGETDIR)<%dir%><%endfor%><%endif%><%if(staticname || sharedname)%><%foreach(dir, clean)%> $(LTARGETDIR)<%dir%><%endfor%><%endif%><%if(exename)%><%foreach(dir, clean)%> $(BTARGETDIR)<%dir%><%endfor%><%endif%>
 <%endif%>
 
 realclean: clean
-	-$(RM) <%if(exename)%>$(BIN)<%else%><%if(version && versupport)%>$(SHLIB).<%version%> <%endif%>$(SHLIB) $(LIB)<%endif%>
+	-$(RM) <%if(exename)%>$(BIN)<%else%><%if(dll_ext && sharedname && version && versupport)%>$(SHLIB).<%version%> <%endif%>$(SHLIB) $(LIB)<%endif%>
 <%if(custom_types)%>
 	-$(RM) $(GENERATED_DIRTY)
 <%endif%>
@@ -279,7 +271,6 @@ __postbuild__:
 
 <%endif%>
 <%marker(local)%>
-<%if(dependencies)%>
 #----------------------------------------------------------------------------
 #       Dependencies
 #----------------------------------------------------------------------------
@@ -294,6 +285,7 @@ depend:
 	@-:
 <%endif%>
 
+<%if(dependencies)%>
 include $(DEPENDENCIES)
 <%endif%>
 <%endfor%>

@@ -1,3 +1,48 @@
+Wed Feb 22 20:06:00 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * combine_dsw.pl:
+
+          Support combining .vcw files too.  They are almost identical to
+          .dsw files.
+
+        * modules/ProjectCreator.pm:
+
+          Removed the $rmesc parameter from the generated_filenames() and
+          generated_filename_arrys() methods.  We will always remove the
+          escape sequences from the generated file names.  In the one place
+          where the escapes are needed, we use escape_regex_special() to
+          ensure that the whole file name (including the path) is escaped.
+
+        * modules/VC6WorkspaceCreator.pm:
+
+          Sort the projects so that the generated workspace will be
+          deterministic.
+
+        * modules/WinProjectBase.pm:
+
+          Modified translate_directory() to remove the current working
+          directory from the directory passed in and then limit the length
+          of that to avoid issues with maximum directory/file length on
+          NTFS.
+
+        * templates/bmake.mpd:
+        * templates/bmakecommon.mpt:
+        * templates/bmakedll.mpt:
+        * templates/bmakedllexe.mpt:
+        * templates/bmakelibexe.mpt:
+
+          Support building with VCL.  Also, add the custom_type libpath
+          setting to the PATH variable.
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Added support for visibility attributes.  They are off by default,
+          so set the 'visibility' template variable to 1 to then them on.
+          Also, when generating the clean target, clean the extra
+          directories relative to the output location of the makefile
+          target.
+
 Tue Feb 21 18:14:21 2006  Steve Huston  <shuston@riverace.com>
 
         * templates/vc8.mpd: Put .lib files with .dll files in $(OutDir).
