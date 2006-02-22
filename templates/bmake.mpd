@@ -37,6 +37,14 @@ CG_CFLAGS = -vG
 CG_LIB    = cg32.lib
 !endif
 
+<%if(use_vcl)%>
+STARTUP_LETTER = <%if(exename)%>w<%else%><%startup_letter%><%endif%>
+<%else%>
+VCL_CFLAGS     = -D_NO_VCL
+STARTUP_LETTER = <%startup_letter%>
+<%endif%>
+STARTUP_OBJ    = c0$(STARTUP_LETTER)32$(UC_MAIN)$(OBJ_EXT)
+
 <%foreach(compilers)%>
 <%fornotlast("!ifdef")%><%forlast("!else #")%> <%uc(compiler)%>
 OBJ_EXT      = <%obj_ext%>
@@ -133,7 +141,6 @@ PCH_CFLAGS = \
 <%endif%>
 
 CFLAGS = \
-         $(PCH_CFLAGS) \
 <%foreach(cc_flags)%>
          <%cc_flags%> \
 <%endfor%>
@@ -159,7 +166,8 @@ CFLAGS = \
 <%foreach(includes)%>
          -I"<%include%>" \
 <%endfor%>
-         $(DUMMY_VALUE_NOT_ENDING_IN_BACKSLASH)
+         $(PCH_CFLAGS) \
+         $(VCL_CFLAGS)
 
 <%marker(macros)%>
 <%if(exename)%>
@@ -169,7 +177,7 @@ all: $(OUTPUTDIR)$(NAME)$(EXE_EXT)<%if(postbuild)%> __postbuild__<%endif%>
 $(OUTPUTDIR)$(NAME)$(EXE_EXT): $(OBJFILES) $(RESOURCE)
 	@if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
 	$(LINK) @&&!
-	$(EXEFLAGS) $(LFLAGS) <%startup_obj%>$(UC_MAIN)$(OBJ_EXT) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
+	$(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
 !
 
 <%endif%>
@@ -180,7 +188,7 @@ all: $(OUTPUTDIR)$(NAME)$(DLL_EXT)<%if(postbuild)%> __postbuild__<%endif%>
 $(OUTPUTDIR)$(NAME)$(DLL_EXT): $(OBJFILES) $(RESOURCE)
 	@if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
 	$(LINK) @&&!
-	$(DLLFLAGS) $(LFLAGS) <%startup_obj%>$(UC_MAIN)$(OBJ_EXT) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
+	$(DLLFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
 !
 
 <%endif%>
@@ -204,6 +212,9 @@ all:<%if(postbuild)%> __postbuild__<%endif%>
 <%if(custom_types)%>
 GENERATED_DIRTY =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><%if(custom_type->input_file->output_files)%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%><%endfor%><%endfor%>
 <%foreach(custom_types)%>
+<%if(custom_type->libpath)%>
+PATH = $(PATH);<%custom_type->libpath%>
+<%endif%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
 <%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%custom_type->input_file%><%if(custom_type->input_file->dependencies)%> <%custom_type->input_file->dependencies%><%endif%>
