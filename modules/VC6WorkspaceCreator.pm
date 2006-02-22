@@ -63,11 +63,12 @@ sub pre_workspace {
 sub write_comps {
   my($self)     = shift;
   my($fh)       = shift;
+  my($gen)      = shift;
   my($projects) = $self->get_projects();
   my($pjs)      = $self->get_project_info();
   my($crlf)     = $self->crlf();
 
-  foreach my $project (@$projects) {
+  foreach my $project (sort { $gen->file_sorter($a, $b) } @$projects) {
     my($name) = $$pjs{$project}->[0];
     my($deps) = $self->get_validated_ordering($project);
 
