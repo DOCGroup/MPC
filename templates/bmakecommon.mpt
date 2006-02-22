@@ -7,7 +7,7 @@ conditional_include "common"
 // then the template needs to be modified to support that
 compilers      = cbx bcc
 configurations = Debug Release
-common_defines = WIN32 _WINDOWS _NO_VCL
+common_defines = WIN32 _WINDOWS
 common_libs    = import32$(LIB_EXT) cw32mti.lib ws2_32.lib
 common_flags   = -a8
 unicode_flags  = -WU

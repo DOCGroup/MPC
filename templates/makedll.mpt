@@ -34,6 +34,7 @@ build64bit       = 1
 pchext           = .gch
 versupport       = 1
 dependencies     = 1
+visibility       =
 
 // ***********************************************************************
 // Configuration Section
@@ -100,6 +101,7 @@ gcc {
   platforms = linux
   pchcreate = "-o "
   pchnobj   = 1
+  visopt    = -fvisibility=hidden -fvisibility-inlines-hidden
 }
 
 Intel {
@@ -107,6 +109,7 @@ Intel {
   pic       = -fPIC
   shflags   = -shared
   platforms = linux
+  visopt    = -fvisibility=hidden
 }
 
 SunCC {
@@ -121,6 +124,7 @@ SunCC {
   pchuse          = -xpch=use:
   pchstop         = -xpchstop=
   pchext          = .Cpch
+  visopt          = -xldscope=hidden
 }
 
 aCC {
@@ -143,6 +147,7 @@ xlC_r {
   platforms       = aix
   pchcreate       = -qgenpcomp=
   pchuse          = -qusepcomp=
+  dependencies    =
 }
 
 SGICC {

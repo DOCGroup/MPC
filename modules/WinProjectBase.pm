@@ -13,6 +13,12 @@ package WinProjectBase;
 use strict;
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my($max_win_env) = 'MPC_MAX_WIN_FILE_LENGTH';
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -32,9 +38,40 @@ sub translate_directory {
   my($self) = shift;
   my($dir)  = shift;
 
+  ## Call the base class version
   $dir = $self->DirectoryManager::translate_directory($dir);
+
+  ## Remove the current working directory from $dir (if it is contained)
+  my($cwd)  = $self->slash_to_backslash($self->getcwd());
+  my($cwdl) = length($cwd);
+  if (index($dir, $cwd) == 0) {
+    $dir = substr($dir, $cwdl + 1);
+  }
+
+  ## Change drive letters and $() macros
   $dir =~ s/^([A-Z]):/$1/i;
   $dir =~ s/\$\(([^\)]+)\)/$1/g;
+
+  ## We need to make sure that we do not exceed the maximum file name
+  ## limitation (including the cwd (- c:\) and object file name).  So, we
+  ## check the total length against a predetermined "acceptable" value.
+  ## This acceptable value is modifiable through the environment.
+  my($maxenv) = $ENV{$max_win_env};
+  my($maxlen) = (defined $maxenv && $maxenv =~ /^\d+$/ ? $maxenv : 128) + 3;
+  my($dirlen) = length($dir);
+  my($diff)   = ($cwdl + $dirlen + 1) - $maxlen;
+
+  if ($diff > 0) {
+    if ($diff > $dirlen) {
+      $dir = substr($dir, $dirlen - 1);
+    }
+    else {
+      $dir = substr($dir, $diff);
+    }
+    while($dir =~ s/^\\//) {
+    }
+  }
+
   return $dir;
 }
 

@@ -38,6 +38,7 @@ sub usageAndExit {
                " [-u] <output file> <input files...>\n\n",
                "-u  Each input file will be removed after successful ",
                "combination\n\n",
+               "NOTE: This script will work for vcw's too.\n\n",
                "Combine multiple dsw's into a single dsw.  You can use ",
                "MPC to generate\n",
                "dynamic projects and then generate static projects using ",
@@ -93,7 +94,7 @@ if (open($oh, ">$tmp")) {
     if (open($fh, $input)) {
       my($in_global) = 0;
       while(<$fh>) {
-        if (/Microsoft\s+Developer\s+Studio/) {
+        if (/Microsoft\s+(Developer\s+Studio|eMbedded\s+Visual)/) {
           if ($msident == 0) {
             $msident = 1;
             print $oh $_;
