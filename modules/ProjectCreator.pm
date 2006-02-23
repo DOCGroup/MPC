@@ -2663,10 +2663,11 @@ sub generate_default_components {
                         $self->process_assignment_add($grtag, $defgroup);
                       }
                       if (!defined $self->{$tag}->{$defcomp}->{$newgroup}) {
-                        $self->{$tag}->{$defcomp}->{$newgroup} = [];
+                        $self->{$tag}->{$defcomp}->{$newgroup} = \@front;
                       }
-                      push(@{$self->{$tag}->{$defcomp}->{$newgroup}}, @front);
-                      $self->{$tag}->{$defcomp}->{$newgroup} = \@front;
+                      else {
+                        push(@{$self->{$tag}->{$defcomp}->{$newgroup}}, @front);
+                      }
                       $self->process_assignment_add($grtag, $newgroup);
                     }
                     else {
