@@ -959,8 +959,8 @@ sub process_component_line {
   my($status)  = 1;
   my($error)   = undef;
   my(%exclude) = ();
+  my(@values)  = ();
 
-  my(@values) = ();
   ## If this returns true, then we've found an assignment
   if ($self->parse_assignment($line, \@values)) {
     $status = $self->parse_scoped_assignment($tag, @values, $flags);
@@ -2662,6 +2662,10 @@ sub generate_default_components {
                       if ($#copy != -1) {
                         $self->process_assignment_add($grtag, $defgroup);
                       }
+                      if (!defined $self->{$tag}->{$defcomp}->{$newgroup}) {
+                        $self->{$tag}->{$defcomp}->{$newgroup} = [];
+                      }
+                      push(@{$self->{$tag}->{$defcomp}->{$newgroup}}, @front);
                       $self->{$tag}->{$defcomp}->{$newgroup} = \@front;
                       $self->process_assignment_add($grtag, $newgroup);
                     }
@@ -2843,9 +2847,13 @@ sub list_generated_file {
   my($ofile)   = shift;
   my($count)   = 0;
 
-  ## Save the length of the basename for later
-  $file =~ s/\\/\//g;
-  my($blen) = length(basename($file));
+  ## Save the length of the basename for later.  We can not convert the
+  ## slashes on $file as it needs to keep the back slashes since that's
+  ## what comes from generated_filenames() below.  This is, of course, if
+  ## we are converting slashes in the first place.
+  my($fcopy) = $file;
+  $fcopy =~ s/.*[\/\\]//;
+  my($blen) = length($fcopy);
 
   ## Turn it into a regular expression
   $file = $self->escape_regex_special($file);

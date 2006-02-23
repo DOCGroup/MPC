@@ -1,3 +1,21 @@
+Thu Feb 23 14:10:30 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * README:
+
+          Added a paragraph explaining that MPC expects *all* file names
+          that contain a directory portion to use forward slashes regardless
+          of what the platform natively uses.
+
+        * modules/ProjectCreator.pm:
+
+          Corrected two bugs pertaining to automatic file addition.  The
+          first happens when two different custom file sections have the
+          same group name; the second group would overwrite the first.  The
+          second bug would only happen on Windows based project types if the
+          'gendir' setting contained a slash, MPC wouldn't be able to match
+          up the generated files (this was introduced with my change from
+          Mon Feb 13 11:15:04 2006).
+
 Wed Feb 22 23:58:03 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:
