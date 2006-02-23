@@ -91,7 +91,7 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
   -D<%define%><%if(compile_flags || need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
 <%foreach(compile_flags)%>
-  <%compile_flags%><%if(need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
+  <%compile_flag%><%if(need_staticflags || dynamicflags)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
 <%if(need_staticflags)%>
 <%if(staticflags)%>
