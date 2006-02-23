@@ -1,3 +1,10 @@
+Wed Feb 22 23:58:03 2006  J.T. Conklin  <jtc@acorntoolworks.com>
+
+        * templates/automake.mpd:
+
+          Fix typo which caused compile_flags to be emitted for each
+          individual compile_flag.
+
 Wed Feb 22 20:06:00 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * combine_dsw.pl:
