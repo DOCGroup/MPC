@@ -109,6 +109,10 @@ project(project_name) : baseproject, anotherbaseproject {
 }
 
 
+MPC expects all files to be listed with forward slashes (/) if a file name
+contains a directory.  Providing files with back slashes (\) can cause
+unexpected results during generation.
+
 When listing files within components (Source_Files, Header_Files, etc.), you
 can use wild cards (*?[]) to include groups of files as can be done in shells.
 You can exclude files by preceding the name (or wild card) with the '!', but
