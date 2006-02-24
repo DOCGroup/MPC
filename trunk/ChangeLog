@@ -1,3 +1,11 @@
+Fri Feb 24 00:23:57 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Removed calls to escape_regex_special() before calling
+          generated_filenames().  This was breaking when files with regular
+          expression special characters (like .) were listed.
+
 Thu Feb 23 10:33:25 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd
