@@ -2610,7 +2610,6 @@ sub generate_default_components {
                                    $input,
                                    $self->{'valid_components'}->{$gentype});
 
-                    $part = $self->escape_regex_special($part);
                     my(@files) = $self->generated_filenames($part, $gentype,
                                                             $tag, $input);
                     if ($#copy != -1) {
@@ -2729,12 +2728,11 @@ sub generated_source_listed {
     foreach my $key (keys %$comps) {
       foreach my $val (@{$$comps{$key}}) {
         foreach my $i (@$arr) {
-          my($ifile) = $self->escape_regex_special($i);
           foreach my $wanted (@$sext) {
             ## Remove any escape characters from the extension
             my($oext) = $wanted;
             $oext =~ s/\\//g;
-            foreach my $re ($self->generated_filenames($ifile, $gent,
+            foreach my $re ($self->generated_filenames($i, $gent,
                                                        $tag, "$i$oext")) {
               $re = $self->escape_regex_special($re);
               if ($val =~ /$re$/) {
