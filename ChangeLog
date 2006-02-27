@@ -1,3 +1,12 @@
+Mon Feb 27 17:35:55 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/zlib.mpb:
+
+          Changed the Windows section of the zlib library to use libs
+          instead of lit_libs.  It is necessary to match up debug to
+          debug and release to release when linking an application with this
+          library.
+
 Fri Feb 24 00:23:57 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
