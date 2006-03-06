@@ -257,7 +257,7 @@ irix {
 
 lynxos {
   dll_ext       =
-  extracppflags = -D__NO_INCLUDE_WARN__
+  extracppflags = -D__NO_INCLUDE_WARN__ -mthreads -mminimal-toc
 }
 
 macos {

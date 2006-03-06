@@ -6,14 +6,7 @@ project {
   includes += $(QTDIR)/include
   libpaths += $(QTDIR)/lib
   macros   += QT_THREAD_SUPPORT
-
-  // @@ Notice: If you are building with Cygwin, you may need to manually
-  //            change the following Qt library to qt-mt230nc.
-  specific(gnuace, make, sle, automake, ghs) {
-    lit_libs += qt-mt
-  } else {
-    lit_libs += qt-mt230nc
-  }
+  lit_libs += qt-mt$(QT_VERSION)
 
   Define_Custom(UIC) {
     automatic        = 1
@@ -33,5 +26,4 @@ project {
     pre_extension    = _moc
     source_outputext = .cpp
   }
-
 }

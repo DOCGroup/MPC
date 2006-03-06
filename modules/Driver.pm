@@ -68,8 +68,7 @@ sub parse_line {
       $value =~ s/^\s+//;
       $value =~ s/\s+$//;
     }
-    if ($name =~ /\*/) {
-      $name =~ s/\*/.*/g;
+    if ($name =~ s/\*/.*/g) {
       foreach my $key (keys %ENV) {
         if ($key =~ /^$name$/ && !exists $self->{'reldefs'}->{$key}) {
           ## Put this value at the front since it doesn't need
