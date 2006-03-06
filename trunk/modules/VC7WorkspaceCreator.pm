@@ -150,7 +150,8 @@ sub write_comps {
     my($pguid) = $guids{$language};
     my($deps) = $self->get_validated_ordering($project);
     ## Convert all /'s to \
-    my($cpy) = $self->slash_to_backslash($project);
+    my($cpy) = $project;
+    $cpy =~ s/\//\\/g;
     print $fh "Project(\"{$pguid}\") = \"$name\", \"$cpy\", \"{$guid}\"$crlf";
     $self->print_inner_project($fh, $gen, $guid, $deps, $name, \%name_to_guid_map);
     print $fh "EndProject$crlf";
