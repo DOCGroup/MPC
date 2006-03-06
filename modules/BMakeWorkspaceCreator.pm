@@ -99,7 +99,7 @@ sub write_project_targets {
     if ($dir ne '.') {
       $chdir = 1;
       my($count) = ($dir =~ tr/\///) + 1;
-      if ($dir =~ /^\.\.\//) {
+      if (index($dir, '../') == 0) {
         ## Find out how many directories we went down
         my($rel) = $dir;
         while($rel =~ s/^\.\.\///) {

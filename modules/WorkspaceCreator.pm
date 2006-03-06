@@ -227,7 +227,7 @@ sub parse_line {
         $self->{$self->{'type_check'}} = 1;
       }
     }
-    elsif ($values[0] eq 'assignment') {
+    elsif ($values[0] eq '=') {
       if (defined $validNames{$values[1]}) {
         $self->process_assignment($values[1], $values[2]);
       }
@@ -236,7 +236,7 @@ sub parse_line {
         $status = 0;
       }
     }
-    elsif ($values[0] eq 'assign_add') {
+    elsif ($values[0] eq '+=') {
       if (defined $validNames{$values[1]}) {
         $self->process_assignment_add($values[1], $values[2]);
       }
@@ -245,7 +245,7 @@ sub parse_line {
         $status = 0;
       }
     }
-    elsif ($values[0] eq 'assign_sub') {
+    elsif ($values[0] eq '-=') {
       if (defined $validNames{$values[1]}) {
         $self->process_assignment_sub($values[1], $values[2]);
       }
@@ -2058,10 +2058,9 @@ sub source_listing_callback {
   my($self)         = shift;
   my($project_file) = shift;
   my($project_name) = shift;
-  my(@files)        = @_;
   my($cwd)          = $self->getcwd();
   $self->{'project_file_list'}->{$project_name} = [ $project_file,
-                                                    $cwd, \@files ];
+                                                    $cwd, \@_ ];
 }
 
 

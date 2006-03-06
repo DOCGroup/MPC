@@ -39,7 +39,7 @@ sub fill_value {
         $dirname = '.';
       }
       else {
-        $dirname = $self->slash_to_backslash($dirname);
+        $dirname =~ s/\//\\/g;
       }
       $dirnames{$dirname} = 1;
     }
