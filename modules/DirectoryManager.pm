@@ -18,6 +18,7 @@ use File::Basename;
 # Data Section
 # ************************************************************
 
+my($onVMS) = ($^O eq 'VMS');
 my($case_insensitive) = File::Spec->case_tolerant();
 my($cwd) = Cwd::getcwd();
 if ($^O eq 'cygwin' && $cwd !~ /[A-Za-z]:/) {
@@ -28,7 +29,7 @@ if ($^O eq 'cygwin' && $cwd !~ /[A-Za-z]:/) {
   }
   $case_insensitive = 1;
 }
-elsif ($^O eq 'VMS') {
+elsif ($onVMS) {
   $cwd = VMS::Filespec::unixify($cwd);
   $cwd =~ s!/$!!g;
 }
@@ -51,7 +52,7 @@ sub cd {
 
     ## If the new directory contains a relative directory
     ## then we just get the real working directory
-    if ($dir =~ /\.\./) {
+    if (index($dir, '..') >= 0) {
       $cwd = Cwd::getcwd();
       if ($^O eq 'cygwin' && $cwd !~ /[A-Za-z]:/) {
         my($cyg) = `cygpath -w $cwd`;
@@ -60,7 +61,7 @@ sub cd {
           chop($cwd = $cyg);
         }
       }
-      elsif ($^O eq 'VMS') {
+      elsif ($onVMS) {
         $cwd = VMS::Filespec::unixify($cwd);
         $cwd =~ s!/$!!g;
       }
@@ -93,8 +94,8 @@ sub mpc_dirname {
   my($self) = shift;
   my($dir)  = shift;
 
-  if ($^O eq 'VMS') {
-    if ($dir =~ /\//) {
+  if ($onVMS) {
+    if (index($dir, '/') >= 0) {
       $dir = VMS::Filespec::unixify(dirname($dir));
       $dir =~ s!/$!!g;
       return $dir;
@@ -117,7 +118,7 @@ sub mpc_glob {
   ## glob() provided by OpenVMS does not understand [] within
   ## the pattern.  So, we implement our own through recursive calls
   ## to mpc_glob().
-  if ($^O eq 'VMS' && $pattern =~ /(.*)\[([^\]]+)\](.*)/) {
+  if ($onVMS && $pattern =~ /(.*)\[([^\]]+)\](.*)/) {
     my($pre)  = $1;
     my($mid)  = $2;
     my($post) = $3;
@@ -153,10 +154,11 @@ sub translate_directory {
   my($dir)  = shift;
   my($dd)   = 'dotdot';
 
-  if ($dir =~ /\.\./) {
+  if (index($dir, '..') >= 0) {
     $dir =~ s/^\.\.([\/\\])/$dd$1/;
     $dir =~ s/([\/\\])\.\.$/$1$dd/;
     $dir =~ s/([\/\\])\.\.([\/\\])/$1$dd$2/g;
+    $dir =~ s/^\.\.$/$dd/;
   }
   return $dir;
 }

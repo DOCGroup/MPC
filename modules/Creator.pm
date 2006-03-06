@@ -23,6 +23,9 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
+my($assign_key)  = 'assign';
+my($gassign_key) = 'global_assign';
+
 my(@statekeys) = ('global', 'include', 'template', 'ti',
                   'dynamic', 'static', 'relative', 'addtemp',
                   'addproj', 'progress', 'toplevel', 'baseprojs',
@@ -32,6 +35,7 @@ my(@statekeys) = ('global', 'include', 'template', 'ti',
                  );
 
 my(%all_written) = ();
+my($onVMS) = ($^O eq 'VMS');
 
 # ************************************************************
 # Subroutine Section
@@ -78,8 +82,8 @@ sub new {
   $self->{'files_written'}   = {};
   $self->{'real_fwritten'}   = [];
   $self->{'reading_global'}  = 0;
-  $self->{'global_assign'}   = {};
-  $self->{'assign'}          = {};
+  $self->{$gassign_key}      = {};
+  $self->{$assign_key}       = {};
   $self->{'baseprojs'}       = $baseprojs;
   $self->{'dynamic'}         = $dynamic;
   $self->{'static'}          = $static;
@@ -200,22 +204,8 @@ sub parse_assignment {
   my($line)   = shift;
   my($values) = shift;
 
-  if ($line =~ /^(\w+(::\w+)*)\s*\+=\s*(.*)?/) {
-    my($name)  = lc($1);
-    my($value) = $3;
-    push(@$values, 'assign_add', $name, $value);
-    return 1;
-  }
-  elsif ($line =~ /^(\w+(::\w+)*)\s*=\s*(.*)?/) {
-    my($name)  = lc($1);
-    my($value) = $3;
-    push(@$values, 'assignment', $name, $value);
-    return 1;
-  }
-  elsif ($line =~ /^(\w+(::\w+)*)\s*\-=\s*(.*)?/) {
-    my($name)  = lc($1);
-    my($value) = $3;
-    push(@$values, 'assign_sub', $name, $value);
+  if ($line =~ /^(\w+(::\w+)*)\s*([\-+]?=)\s*(.*)?/) {
+    push(@$values, $3, lc($1), $4);
     return 1;
   }
 
@@ -249,15 +239,9 @@ sub parse_known {
     }
     else {
       if (defined $parents) {
-        my(@parents) = ();
-        $parents =~ s/^://;
-        foreach my $parent (split(',', $parents)) {
-          $parent =~ s/^\s+//;
-          $parent =~ s/\s+$//;
-          if ($parent ne '') {
-            push(@parents, $parent);
-          }
-        }
+        $parents =~ s/^:\s*//;
+        $parents =~ s/\s+$//;
+        my(@parents) = split(/\s*,\s*/, $parents);
         if (!defined $parents[0]) {
           ## The : was used, but no parents followed.  This
           ## is an error.
@@ -285,15 +269,9 @@ sub parse_known {
     my(@names)   = split(/\s*,\s*/, $name);
 
     if (defined $parents) {
-      my(@parents) = ();
-      $parents =~ s/^://;
-      foreach my $parent (split(',', $parents)) {
-        $parent =~ s/^\s+//;
-        $parent =~ s/\s+$//;
-        if ($parent ne '') {
-          push(@parents, $parent);
-        }
-      }
+      $parents =~ s/^:\s*//;
+      $parents =~ s/\s+$//;
+      my(@parents) = split(/\s*,\s*/, $parents);
       if (!defined $parents[0]) {
         ## The : was used, but no parents followed.  This
         ## is an error.
@@ -384,13 +362,13 @@ sub parse_scope {
       my(@values) = ();
       if (defined $validNames && $self->parse_assignment($line, \@values)) {
         if (defined $$validNames{$values[1]}) {
-          if ($values[0] eq 'assignment') {
+          if ($values[0] eq '=') {
             $self->process_assignment($values[1], $values[2], $flags);
           }
-          elsif ($values[0] eq 'assign_add') {
+          elsif ($values[0] eq '+=') {
             $self->process_assignment_add($values[1], $values[2], $flags);
           }
-          elsif ($values[0] eq 'assign_sub') {
+          elsif ($values[0] eq '-=') {
             $self->process_assignment_sub($values[1], $values[2], $flags);
           }
         }
@@ -437,7 +415,7 @@ sub generate_default_file_list {
     my($need_dir) = ($dir ne '.');
     my($skip)     = 0;
     foreach my $file (grep(!/^\.\.?$/, readdir($dh))) {
-      $file =~ s/\.dir$// if ($^O eq 'VMS');
+      $file =~ s/\.dir$// if ($onVMS);
 
       ## Prefix each file name with the directory only if it's not '.'
       my($full) = ($need_dir ? "$dir/" : '') . $file;
@@ -523,7 +501,7 @@ sub extension_recursive_input_list {
 
   if (opendir($fh, $dir)) {
     foreach my $file (grep(!/^\.\.?$/, readdir($fh))) {
-      $file =~ s/\.dir$// if ($^O eq 'VMS');
+      $file =~ s/\.dir$// if ($onVMS);
 
       my($skip) = 0;
       my($full) = ($dir ne '.' ? "$dir/" : '') . $file;
@@ -562,8 +540,8 @@ sub modify_assignment_value {
   my($name)  = shift;
   my($value) = shift;
 
-  if ($self->{'convert_slashes'} && $name !~ /flags/) {
-    $value = $self->slash_to_backslash($value);
+  if ($self->{'convert_slashes'} && index($name, 'flags') == -1) {
+    $value =~ s/\//\\/g;
   }
   return $value;
 }
@@ -572,17 +550,8 @@ sub modify_assignment_value {
 sub get_assignment_hash {
   ## NOTE: If anything in this block changes, then you must make the
   ## same change in process_assignment.
-  my($self)   = shift;
-  my($tag)    = ($self->{'reading_global'} ? 'global_assign' : 'assign');
-  my($assign) = $self->{$tag};
-
-  ## If we haven't yet defined the hash table in this project
-  if (!defined $assign) {
-    $assign = {};
-    $self->{$tag} = $assign;
-  }
-
-  return $assign;
+  my($self) = shift;
+  return $self->{$self->{'reading_global'} ? $gassign_key : $assign_key};
 }
 
 
@@ -596,14 +565,8 @@ sub process_assignment {
   if (!defined $assign) {
     ## NOTE: If anything in this block changes, then you must make the
     ## same change in get_assignment_hash.
-    my($tag) = ($self->{'reading_global'} ? 'global_assign' : 'assign');
-    $assign  = $self->{$tag};
-
-    ## If we haven't yet defined the hash table in this project
-    if (!defined $assign) {
-      $assign = {};
-      $self->{$tag} = $assign;
-    }
+    $assign  = $self->{$self->{'reading_global'} ?
+                               $gassign_key : $assign_key};
   }
 
   if (defined $value) {
@@ -876,8 +839,8 @@ sub get_assignment {
 
   ## If no hash table was passed in
   if (!defined $assign) {
-    my($tag) = ($self->{'reading_global'} ? 'global_assign' : 'assign');
-    $assign = $self->{$tag};
+    $assign = $self->{$self->{'reading_global'} ?
+                              $gassign_key : $assign_key};
   }
 
   return $$assign{$name};
@@ -939,6 +902,7 @@ sub get_language {
   my($self) = shift;
   return $self->{'language'};
 }
+
 
 sub get_outdir {
   my($self) = shift;
@@ -1026,10 +990,10 @@ sub sort_files {
 
 
 sub file_sorter {
-  my($self)  = shift;
-  my($left)  = shift;
-  my($right) = shift;
-  return $left cmp $right;
+  #my($self)  = shift;
+  #my($left)  = shift;
+  #my($right) = shift;
+  return $_[1] cmp $_[2];
 }
 
 

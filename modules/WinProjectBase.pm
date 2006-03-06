@@ -42,8 +42,9 @@ sub translate_directory {
   $dir = $self->DirectoryManager::translate_directory($dir);
 
   ## Remove the current working directory from $dir (if it is contained)
-  my($cwd)  = $self->slash_to_backslash($self->getcwd());
+  my($cwd)  = $self->getcwd();
   my($cwdl) = length($cwd);
+  $cwd =~ s/\//\\/g;
   if (index($dir, $cwd) == 0) {
     $dir = substr($dir, $cwdl + 1);
   }
@@ -99,10 +100,10 @@ sub crlf {
 
 
 sub file_sorter {
-  my($self)  = shift;
-  my($left)  = shift;
-  my($right) = shift;
-  return lc($left) cmp lc($right);
+  #my($self)  = shift;
+  #my($left)  = shift;
+  #my($right) = shift;
+  return lc($_[1]) cmp lc($_[2]);
 }
 
 

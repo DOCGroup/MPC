@@ -30,10 +30,10 @@ my($style_indent) = .5;
 # ************************************************************
 
 sub file_sorter {
-  my($self)  = shift;
-  my($left)  = shift;
-  my($right) = shift;
-  return lc($left) cmp lc($right);
+  #my($self)  = shift;
+  #my($left)  = shift;
+  #my($right) = shift;
+  return lc($_[1]) cmp lc($_[2]);
 }
 
 

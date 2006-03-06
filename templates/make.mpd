@@ -20,7 +20,7 @@ CPUTYPE       = <%cputype%>
 <%if(cpu)%>
 CPU           = <%cpu%>
 <%endif%>
-<%if(pic)%>
+<%if(dll_ext && pic)%>
 PICFLAGS      = <%pic%>
 <%endif%>
 CPPFLAGS      = <%if(visibility && visopt)%><%visopt%> <%endif%>$(PICFLAGS) $(GENFLAGS)<%if(compile_flags)%> <%compile_flags%><%endif%><%if(cpu)%> -DCPU=$(CPU)<%endif%><%if(tempincopt)%> <%tempincopt%>$(TEMPINCDIR)<%endif%><%if(compilerflags)%> <%compilerflags%><%endif%><%if(build64bit && compilerflags64)%> <%compilerflags64%><%endif%><%if(pch_source && pchsupport)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%><%if(extracppflags)%> <%extracppflags%><%endif%><%if(includes)%><%foreach(includes)%> -I"<%include%>"<%endfor%><%endif%><%if(macros)%><%foreach(macros)%> -D<%macro%><%endfor%><%endif%>
@@ -109,12 +109,12 @@ all: $(BIN)<%if(postbuild)%> __postbuild__<%endif%>
 <%if(specialscript)%>
 specialscript:
 	@echo '<%specialscript%>' > specialscript
-	@chmod 755 specialscript
+	@<%chmod("chmod")%> 755 specialscript
 
 <%endif%>
 <%if(prelink)%>
 <%prelink%>: specialscript $(OBJS)
-	@.<%slash%>specialscript $(NM) "$(OBJS)" "$(LDLIBS)" "<%if(libpaths)%><%libpaths%><%else%>.<%endif%>" <%prelink%>
+	@specialscript $(NM) "$(OBJS)" "$(LDLIBS)" "<%if(libpaths)%><%libpaths%><%else%>.<%endif%>" <%prelink%>
 	@$(RM) specialscript
 
 <%targetoutdir%><%noextension(prelink)%>$(OBJEXT): <%prelink%>
@@ -171,13 +171,12 @@ $(LIB): $(LTARGETDIR) <%if(tempinc)%>$(TEMPINCDIR) <%endif%>$(OBJS)
 <%if(custom_types)%>
 GENERATED_DIRTY    =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><%if(custom_type->input_file->output_files)%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%><%endfor%><%endfor%>
 <%foreach(custom_types)%>
-<%if(custom_type->libpath)%>
-# These may be needed, but some versions of make do not accept this syntax
-#DYLD_LIBRARY_PATH := $(DYLD_LIBRARY_PATH):<%custom_type->libpath%>
-#LD_LIBRARY_PATH   := $(LD_LIBRARY_PATH):<%custom_type->libpath%>
-#SHLIB_PATH        := $(SHLIB_PATH):<%custom_type->libpath%>
-#LIBPATH           := $(LIBPATH):<%custom_type->libpath%>
-#PATH              := $(PATH):<%custom_type->libpath%>
+<%if(expanded_variable_assignment && custom_type->libpath)%>
+DYLD_LIBRARY_PATH := $(DYLD_LIBRARY_PATH):<%custom_type->libpath%>
+LD_LIBRARY_PATH   := $(LD_LIBRARY_PATH):<%custom_type->libpath%>
+SHLIB_PATH        := $(SHLIB_PATH):<%custom_type->libpath%>
+LIBPATH           := $(LIBPATH):<%custom_type->libpath%>
+PATH              := $(PATH):<%custom_type->libpath%>
 
 <%endif%>
 <%foreach(custom_type->input_files)%>

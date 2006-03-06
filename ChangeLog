@@ -1,3 +1,54 @@
+Mon Mar  6 18:09:36 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/qt.mpb:
+
+          The qt library can have a variety of suffixes (depending on
+          platform and version).  This base project was changed such that
+          there is no 'specific' section for for the qt library name.  It is
+          added to 'lit_libs' as qt-mt$(QT_VERSION).
+
+        * generate_export_header.pl:
+
+          This is a new script that will generate an export header file that
+          can be used (not in conjunction with ACE) to support symbol
+          visibility using a variety of compilers.
+
+        * modules/BMakeProjectCreator.pm:
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/Creator.pm:
+        * modules/DirectoryManager.pm:
+        * modules/Driver.pm:
+        * modules/HTMLProjectCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/WinProjectBase.pm:
+        * modules/WorkspaceCreator.pm:
+
+          The majority of the changes to these files are performance
+          related.  However, two bug fixes are included (one pertaining to
+          file grouping and the other pertaining to directory translation of
+          a directory only containing "..").
+
+        * templates/make.mpd:
+
+          Three modifications:
+
+          1) Only set PICFLAGS if the dll_ext template variable is defined.
+          2) Allow the user to override the 'chmod' template variable.
+          3) Removed the .<%slash%> in front of the call to "specialscript"
+
+        * templates/makedll.mpt:
+
+          Added -mthreads -mminimal-toc compiler flags for LynxOS.
+
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Fixed whitespace for default grouped files.
+
 Mon Feb 27 17:35:55 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/zlib.mpb:

@@ -627,7 +627,7 @@ sub get_flag_overrides {
     }
 
     ## Replace the custom_type key with the actual custom type
-    if ($name =~ /^custom_type\->/) {
+    if (index($name, 'custom_type->') == 0) {
       my($ct) = $self->get_value('custom_type');
       if (defined $ct) {
         $name = $ct;
@@ -940,7 +940,7 @@ sub process_compound_if {
   my($str)    = shift;
   my($status) = 0;
 
-  if ($str =~ /\|\|/) {
+  if (index($str, '||') >= 0) {
     my($ret) = 0;
     foreach my $v (split(/\s*\|\|\s*/, $str)) {
       $ret |= $self->process_compound_if($v);
@@ -949,7 +949,7 @@ sub process_compound_if {
       }
     }
   }
-  elsif ($str =~ /\&\&/) {
+  elsif (index($str, '&&') >= 0) {
     my($ret) = 1;
     foreach my $v (split(/\s*\&\&\s*/, $str)) {
       $ret &&= $self->process_compound_if($v);
@@ -1303,7 +1303,7 @@ sub handle_eval {
   my($val)  = $self->get_value_with_default($name);
 
   if (defined $val) {
-    if ($val =~ /<%eval\($name\)%>/) {
+    if (index($val, "<%eval($name)%>") >= 0) {
       $self->warning("Infinite recursion detected in '$name'.");
     }
     else {
@@ -1420,9 +1420,7 @@ sub prepare_parameters {
   my($output) = undef;
 
   if (defined $input) {
-    if ($self->{'cslashes'}) {
-      $input = $self->{'prjc'}->slash_to_backslash($input);
-    }
+    $input =~ s/\//\\/g if ($self->{'cslashes'});
     $output = $self->get_value($prefix . '->input_file->output_files');
 
     if (defined $output) {
@@ -1432,9 +1430,7 @@ sub prepare_parameters {
         if (defined $fo) {
           $$output[$i] = $fo . '/' . $self->tp_basename($$output[$i]);
         }
-        if ($self->{'cslashes'}) {
-          $$output[$i] = $self->{'prjc'}->slash_to_backslash($$output[$i]);
-        }
+        $$output[$i] =~ s/\//\\/g if ($self->{'cslashes'});
       }
     }
   }
@@ -1545,9 +1541,7 @@ sub collect_data {
   my($cwd)   = $self->getcwd();
 
   ## Set the current working directory
-  if ($self->{'cslashes'}) {
-    $cwd = $prjc->slash_to_backslash($cwd);
-  }
+  $cwd =~ s/\//\\/g if ($self->{'cslashes'});
   $self->{'values'}->{'cwd'} = $cwd;
 
   ## Collect the components into {'values'} somehow
@@ -1618,7 +1612,7 @@ sub parse_line {
   my($line)        = shift;
   my($status)      = 1;
   my($errorString) = undef;
-  my($startempty)  = (length($line) == 0 ? 1 : 0);
+  my($startempty)  = ($line eq '');
 
   ## If processing a foreach or the line only
   ## contains a keyword, then we do
@@ -1666,8 +1660,8 @@ sub parse_line {
         }
         elsif ($name) {
           my($substr)  = substr($item, $i);
-          my($efcheck) = ($substr =~ /^endfor\%\>/);
-          my($focheck) = ($efcheck ? 0 : ($substr =~ /^foreach\(/));
+          my($efcheck) = (index($substr, 'endfor%>') == 0);
+          my($focheck) = ($efcheck ? 0 : (index($substr, 'foreach(') == 0));
 
           if ($focheck && $self->{'foreach'}->{'count'} >= 0) {
             ++$self->{'foreach'}->{'nested'};
@@ -1682,11 +1676,12 @@ sub parse_line {
              $errorString,
              $nlen) = $self->process_name($substr);
 
-            if ($status && $nlen == 0) {
+            if (!$status) {
+              last;
+            }
+            elsif ($nlen == 0) {
               $errorString = "Could not parse this line at column $i";
               $status = 0;
-            }
-            if (!$status) {
               last;
             }
 

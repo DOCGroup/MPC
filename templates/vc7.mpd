@@ -348,9 +348,9 @@
 <%foreach(sort(grouped_inline_files))%>
 <%if(compares(grouped_inline_file, default_group))%>
 <%foreach(grouped_inline_file->files)%>
-				<File
-					RelativePath="<%grouped_inline_file->file%>">
-				</File>
+			<File
+				RelativePath="<%grouped_inline_file->file%>">
+			</File>
 <%endfor%>
 <%else%>
 			<Filter
