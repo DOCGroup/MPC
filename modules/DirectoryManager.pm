@@ -152,14 +152,25 @@ sub mpc_glob {
 sub translate_directory {
   my($self) = shift;
   my($dir)  = shift;
-  my($dd)   = 'dotdot';
 
+  ## Remove the current working directory from $dir (if it is contained)
+  my($cwd) = $self->getcwd();
+  $cwd =~ s/\//\\/g if ($self->convert_slashes());
+  if (index($dir, $cwd) == 0) {
+    my($cwdl) = length($cwd);
+    return '.' if (length($dir) == $cwdl);
+    $dir = substr($dir, $cwdl + 1);
+  }
+
+  ## Translate .. to $dd
   if (index($dir, '..') >= 0) {
+    my($dd) = 'dotdot';
     $dir =~ s/^\.\.([\/\\])/$dd$1/;
     $dir =~ s/([\/\\])\.\.$/$1$dd/;
     $dir =~ s/([\/\\])\.\.([\/\\])/$1$dd$2/g;
     $dir =~ s/^\.\.$/$dd/;
   }
+
   return $dir;
 }
 

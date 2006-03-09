@@ -21,9 +21,9 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-apply_project] [-version] [-into <directory>]
               [-gfeature_file <file name>]
               [-language <cplusplus | csharp | java | vb>]
-              [-type <automake | bds | bmake | cbx | em3 | ghs |
-                      html | make | nmake | sle | vc6 | vc7 |
-                      vc71 | vc8>]
+              [-type <automake | bds | bmake | em3 | ghs | html |
+                      make | nmake | sle | vc6 | vc7 | vc71 |
+                      vc8>]
               [files]
 
        -base           Add <project> as a base project to each generated

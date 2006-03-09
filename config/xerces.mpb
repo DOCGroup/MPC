@@ -14,7 +14,7 @@ project {
     // will link in the debug version for the "Debug" configuration.
     Debug::xerceslib = xerces-c_2D
   }
-  specific(borland, bmake, cbx) {
+  specific(borland, bmake, bds) {
     xerceslib = XercesLib
   }
   specific (gnuace, make, sle, automake, ghs) {

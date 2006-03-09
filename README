@@ -176,6 +176,8 @@ postbuild       If this is defined in the project, the value will be
                   <%and%>   - Project non-specific and sign.
                   <%or%>    - Project non-specific or sign.
                   <%quote%> - Project non-specific double quote.
+prebuild        This is similar to postbuild except that it will be
+                performed before the build instead of after.
 
 recurse         If set to 1, MPC will recurse into directories listed under
                 component listings and add any component corresponding files

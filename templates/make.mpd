@@ -104,7 +104,7 @@ EXPORTFLAGS   = <%if(exename)%><%if(need_staticflags)%>$(STATICFLAGS)<%endif%><%
 #----------------------------------------------------------------------------
 
 <%if(exename)%>
-all: $(BIN)<%if(postbuild)%> __postbuild__<%endif%>
+all:<%if(prebuild)%> __prebuild__<%endif%> $(BIN)<%if(postbuild)%> __postbuild__<%endif%>
 
 <%if(specialscript)%>
 specialscript:
@@ -130,7 +130,7 @@ $(BIN): $(BTARGETDIR)<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelink)%> <%tar
 
 <%endif%>
 <%if(dll_ext && sharedname)%>
-all:<%if(version && versupport)%> $(SHLIB).<%version%><%endif%> $(SHLIB)<%if(postbuild)%> __postbuild__<%endif%>
+all:<%if(prebuild)%> __prebuild__<%endif%><%if(version && versupport)%> $(SHLIB).<%version%><%endif%> $(SHLIB)<%if(postbuild)%> __postbuild__<%endif%>
 
 <%if(dllout)%>
 $(SHTARGETDIR):
@@ -151,7 +151,7 @@ $(SHLIB)<%if(version && versupport)%>.<%version%><%endif%>: $(SHTARGETDIR) <%if(
 
 <%else%>
 <%if(staticname)%>
-all: $(LIB)<%if(postbuild)%> __postbuild__<%endif%>
+all:<%if(prebuild)%> __prebuild__<%endif%> $(LIB)<%if(postbuild)%> __postbuild__<%endif%>
 
 <%endif%>
 <%endif%>
@@ -162,7 +162,7 @@ $(LTARGETDIR):
 <%endif%>
 <%if(staticname)%>
 $(LIB): $(LTARGETDIR) <%if(tempinc)%>$(TEMPINCDIR) <%endif%>$(OBJS)
-	$(AR) $(ARFLAGS) $(LIB) $(OBJS)<%if(tempinc)%> `find $(TEMPINCDIR) -name \*.o\*`<%endif%>
+	$(AR) $(ARFLAGS) <%libgenopt%>$(LIB) $(OBJS)<%if(tempinc)%> `find $(TEMPINCDIR) -name \*.o\*`<%endif%>
 <%if(ranlib)%>
 	ranlib $(LIB)
 <%endif%>
@@ -212,7 +212,7 @@ PATH              := $(PATH):<%custom_type->libpath%>
 <%if(source_files)%>
 $(OBJS): $(GENERATED_DIRTY)
 <%else%>
-all: $(GENERATED_DIRTY)<%if(postbuild)%> __postbuild__<%endif%>
+all:<%if(prebuild)%> __prebuild__<%endif%> $(GENERATED_DIRTY)<%if(postbuild)%> __postbuild__<%endif%>
 <%endif%>
 
 <%endif%>
@@ -264,6 +264,11 @@ realclean: clean
 	-$(RM) $(GENERATED_DIRTY)
 <%endif%>
 
+<%if(prebuild)%>
+__prebuild__:
+	@<%eval(prebuild)%>
+
+<%endif%>
 <%if(postbuild)%>
 __postbuild__:
 	@<%eval(postbuild)%>

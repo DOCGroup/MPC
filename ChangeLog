@@ -1,3 +1,51 @@
+Thu Mar  9 16:20:24 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/CBXProjectCreator.pm:
+        * modules/CBXWorkspaceCreator.pm:
+        * templates/cbx.mpd:
+        * templates/cbxdll.mpt:
+        * templates/cbxexe.mpt:
+
+          Removed these files.
+
+        * USAGE:
+        * config/boost_date_time.mpb:
+        * config/boost_filesystem.mpb:
+        * config/boost_iostreams.mpb:
+        * config/boost_prg_exec_monitor.mpb:
+        * config/boost_program_options.mpb:
+        * config/boost_regex.mpb:
+        * config/boost_serialization.mpb:
+        * config/boost_signals.mpb:
+        * config/boost_test_exec_monitor.mpb:
+        * config/boost_thread.mpb:
+        * config/boost_wave.mpb:
+        * config/xerces.mpb:
+        * modules/MPC.pm:
+        * modules/MWC.pm:
+
+          Removed the cbx project type.  The format is dead and has been
+          replaced by the bds format.
+
+        * README:
+        * templates/bmake.mpd:
+        * templates/html.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+        * modules/ProjectCreator.pm:
+
+          Added partial support for prebuild.  Some project types can't or
+          can't easily support this concept.
+
+        * modules/DirectoryManager.pm:
+        * modules/WinProjectBase.pm:
+
+          Moved a portion of the code to remove the current working
+          directory from WinProjectBase's version of translate_directory()
+          into DirectoryManager's version.
+
 Mon Mar  6 18:09:36 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/qt.mpb:

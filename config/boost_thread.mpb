@@ -2,7 +2,7 @@
 // $Id$
 
 project: boost_base {
-  specific(!vc6, !vc7, !vc71, !vc8, !nmake, !em3, !bmake, !cbx) {
+  specific(!vc6, !vc7, !vc71, !vc8, !nmake, !em3, !bmake, !bds) {
     lit_libs += $(BOOST_STATIC_LIB_PREFIX)boost_thread$(BOOST_CFG)
   }
 }

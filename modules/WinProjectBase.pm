@@ -41,14 +41,6 @@ sub translate_directory {
   ## Call the base class version
   $dir = $self->DirectoryManager::translate_directory($dir);
 
-  ## Remove the current working directory from $dir (if it is contained)
-  my($cwd)  = $self->getcwd();
-  my($cwdl) = length($cwd);
-  $cwd =~ s/\//\\/g;
-  if (index($dir, $cwd) == 0) {
-    $dir = substr($dir, $cwdl + 1);
-  }
-
   ## Change drive letters and $() macros
   $dir =~ s/^([A-Z]):/$1/i;
   $dir =~ s/\$\(([^\)]+)\)/$1/g;
@@ -60,7 +52,7 @@ sub translate_directory {
   my($maxenv) = $ENV{$max_win_env};
   my($maxlen) = (defined $maxenv && $maxenv =~ /^\d+$/ ? $maxenv : 128) + 3;
   my($dirlen) = length($dir);
-  my($diff)   = ($cwdl + $dirlen + 1) - $maxlen;
+  my($diff)   = (length($self->getcwd()) + $dirlen + 1) - $maxlen;
 
   if ($diff > 0) {
     if ($diff > $dirlen) {
