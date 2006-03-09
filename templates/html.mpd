@@ -81,6 +81,7 @@
 <tr><td>macros</td><td><%macros%></td></tr>
 <tr><td>pch_header</td><td><%pch_header%></td></tr>
 <tr><td>pch_source</td><td><%pch_source%></td></tr>
+<tr><td>prebuild</td><td><%prebuild%></td></tr>
 <tr><td>postbuild</td><td><%postbuild%></td></tr>
 <tr><td>pure_libs</td><td><%pure_libs%></td></tr>
 <tr><td>recurse</td><td><%recurse%></td></tr>
