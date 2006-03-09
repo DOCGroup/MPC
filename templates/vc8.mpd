@@ -40,6 +40,9 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+<%if(prebuild)%>
+				CommandLine="<%eval(prebuild)%>"
+<%endif%>
 			/>
 			<Tool
 				Name="VCCustomBuildTool"

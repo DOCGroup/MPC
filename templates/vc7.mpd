@@ -166,7 +166,11 @@
 <%endif%>
 			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCPreBuildEventTool"
+<%if(prebuild)%>
+				CommandLine="<%eval(prebuild)%>"
+<%endif%>
+			/>
 <%if(!custom_only)%>
 			<Tool
 				Name="VCPreLinkEventTool"/>
