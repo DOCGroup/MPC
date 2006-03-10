@@ -1,3 +1,29 @@
+Fri Mar 10 18:59:34 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/Creator.pm:
+        * modules/DirectoryManager.pm:
+        * modules/Driver.pm:
+        * modules/FeatureParser.pm:
+        * modules/HTMLProjectCreator.pm:
+        * modules/MakeWorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Implemented a new function, mpc_basename, that is more efficient
+          than the one provided by File::Basename.
+
+        * modules/ProjectCreator.pm:
+
+          Moved code outside of add_corresponding_component_files that was
+          executed twice.  The result could not possibly change, so it is
+          executed once and the result is passed into
+          add_corresponding_component_files.
+
+        * modules/TemplateParser.pm:
+
+          Optimized code to avoid using substr() in parse_line().
+
 Thu Mar  9 16:20:24 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/CBXProjectCreator.pm:

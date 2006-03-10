@@ -11,7 +11,6 @@ package MakeWorkspaceCreator;
 # ************************************************************
 
 use strict;
-use File::Basename;
 
 use MakeProjectCreator;
 use WorkspaceCreator;
@@ -85,7 +84,7 @@ sub write_comps {
     print $fh "\t\@",
               ($dname ne '.' ? "cd $dname; " : ''),
               "\$(MAKE) -f ",
-              ($dname eq '.' ? $project : basename($project)),
+              ($dname eq '.' ? $project : $self->mpc_basename($project)),
               " \$(\@)$crlf";
   }
 
@@ -104,7 +103,7 @@ sub write_comps {
               "\t\@",
               ($dname ne '.' ? "cd $dname; " : ''),
               "\$(MAKE) -f ",
-              ($dname eq '.' ? $project : basename($project)),
+              ($dname eq '.' ? $project : $self->mpc_basename($project)),
               ' generated all', $crlf;
   }
 
