@@ -11,7 +11,6 @@ package BMakeWorkspaceCreator;
 # ************************************************************
 
 use strict;
-use File::Basename;
 
 use BMakeProjectCreator;
 use WorkspaceCreator;
@@ -123,8 +122,8 @@ sub write_project_targets {
     }
 
     print $fh ($chdir ? "\t\@cd $dir$crlf" : ''),
-              "\t\$(MAKE) -\$(MAKEFLAGS) -f ", basename($project),
-              " $target$crlf",
+              "\t\$(MAKE) -\$(MAKEFLAGS) -f ",
+              $self->mpc_basename($project), " $target$crlf",
               ($chdir ? "\t\@cd $back$crlf" : '');
   }
 }

@@ -90,6 +90,15 @@ sub getstartdir {
   return $start;
 }
 
+
+sub mpc_basename {
+  #my($self) = $_[0];
+  my($file) = $_[1];
+  $file =~ s!.*/!!;
+  return $file;
+}
+
+
 sub mpc_dirname {
   my($self) = shift;
   my($dir)  = shift;

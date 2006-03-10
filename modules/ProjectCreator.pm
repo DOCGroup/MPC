@@ -14,7 +14,6 @@ use strict;
 use FileHandle;
 use File::Path;
 use File::Compare;
-use File::Basename;
 
 use Creator;
 use TemplateInputReader;
@@ -488,7 +487,8 @@ sub begin_project {
             ## project), then the current base project is redundant.
             if (!defined $self->{'reading_parent'}->[0]) {
               $file =~ s/\.[^\.]+$//;
-              $self->information('Inheriting from \'' . basename($file) .
+              $self->information('Inheriting from \'' .
+                                 $self->mpc_basename($file) .
                                  '\' in ' . $self->{'current_input'} .
                                  ' is redundant at line ' .
                                  $self->get_line_number() . '.');
@@ -2241,7 +2241,7 @@ sub search_for_entry {
           (/\s+$main\s*\(/ || /^\s*$main\s*\(/)) {
         ## If we've found a main, set the exename to the basename
         ## of the cpp file with the extension removed
-        $name = basename($file);
+        $name = $self->mpc_basename($file);
         $name =~ s/\.[^\.]+$//;
         last;
       }
@@ -2823,7 +2823,7 @@ sub prepend_gendir {
         if (defined $dir) {
           ## Convert the file to unix style for basename
           $created =~ s/\\/\//g;
-          return "$dir/" . basename($created);
+          return "$dir/" . $self->mpc_basename($created);
         }
       }
     }
@@ -2874,7 +2874,7 @@ sub list_generated_file {
     ## See if we need to add the file.  We only need to bother
     ## if the length of $gen is less than or equal to the length of
     ## $file because they couldn't possibly match if they weren't.
-    if (length(basename($gen)) <= $blen) {
+    if (length($self->mpc_basename($gen)) <= $blen) {
       foreach my $re ($self->generated_filenames($gen, $gentype,
                                                  $tag, $input)) {
         if ($re =~ /$file(.*)?$/) {
@@ -2896,33 +2896,16 @@ sub list_generated_file {
 
 
 sub add_corresponding_component_files {
-  my($self)   = shift;
-  my($ftags)  = shift;
-  my($tag)    = shift;
-  my($names)  = undef;
-  my($grname) = $grouped_key . $tag;
-
-  ## Collect up all of the files that have already been listed
-  ## with the extension removed.
-  my(%filecomp) = ();
-  foreach my $filetag (@$ftags) {
-    $names = $self->{$filetag};
-    foreach my $name (keys %$names) {
-      foreach my $comp (keys %{$$names{$name}}) {
-        foreach my $sfile (@{$$names{$name}->{$comp}}) {
-          my($mod) = $sfile;
-          $mod =~ s/\.[^\.]+$//;
-          $filecomp{$mod} = $comp;
-        }
-      }
-    }
-  }
+  my($self)     = shift;
+  my($filecomp) = shift;
+  my($tag)      = shift;
+  my($grname)   = $grouped_key . $tag;
 
   ## Create a hash array keyed off of the existing files of the type
   ## that we plan on adding.
   my($fexist)  = 0;
   my(%scfiles) = ();
-  $names = $self->{$tag};
+  my($names)   = $self->{$tag};
   foreach my $name (keys %$names) {
     ## Check to see if files exist in the default group
     if (defined $$names{$name}->{$defgroup} &&
@@ -2944,7 +2927,7 @@ sub add_corresponding_component_files {
   ## Check each file against a possible new file addition
   my($adddefaultgroup) = 0;
   my($oktoadddefault)  = 0;
-  foreach my $sfile (keys %filecomp) {
+  foreach my $sfile (keys %$filecomp) {
     my($found) = 0;
     foreach my $ext (@exts) {
       if (exists $scfiles{"$sfile$ext"}) {
@@ -2956,7 +2939,7 @@ sub add_corresponding_component_files {
     if (!$found) {
       ## Get the array of files for the selected component name
       my($array) = [];
-      my($comp)  = $filecomp{$sfile};
+      my($comp)  = $$filecomp{$sfile};
       foreach my $name (keys %$names) {
         if (defined $$names{$name}->{$comp}) {
           $array = $$names{$name}->{$comp};
@@ -3119,11 +3102,26 @@ sub generate_defaults {
   ## we need to remove those that have need to be removed
   $self->remove_excluded('source_files');
 
+  ## Collect up all of the source file that have already been listed
+  ## with the extension removed.
+  my(%sourcecomp) = ();
+  foreach my $sourcetag (keys %sourceComponents) {
+    my($names) = $self->{$sourcetag};
+    foreach my $name (keys %$names) {
+      foreach my $comp (keys %{$$names{$name}}) {
+        foreach my $sfile (@{$$names{$name}->{$comp}}) {
+          my($mod) = $sfile;
+          $mod =~ s/\.[^\.]+$//;
+          $sourcecomp{$mod} = $comp;
+        }
+      }
+    }
+  }
+
   ## Add %specialComponents files based on the
   ## source_components (i.e. .h and .i or .inl based on .cpp)
-  my(@scomp) = keys %sourceComponents;
   foreach my $tag (keys %specialComponents) {
-    $self->add_corresponding_component_files(\@scomp, $tag);
+    $self->add_corresponding_component_files(\%sourcecomp, $tag);
   }
 
   ## Now, if the %specialComponents are still empty
@@ -3261,7 +3259,7 @@ sub check_custom_output {
       else {
         my($base) = $built;
         $base =~ s/\\/\//g if ($self->{'convert_slashes'});
-        my($re) = $self->escape_regex_special(basename($base));
+        my($re) = $self->escape_regex_special($self->mpc_basename($base));
         foreach my $c (@$comps) {
           ## We only match if the built file name matches from
           ## beginning to end or from a slash to the end.
@@ -3480,7 +3478,7 @@ sub convert_command_parameters {
 
   if (defined $input) {
     $valid{'input'}          = $input;
-    $valid{'input_basename'} = basename($input);
+    $valid{'input_basename'} = $self->mpc_basename($input);
     $valid{'input_noext'}    = $input;
     $valid{'input_noext'}    =~ s/(\.[^\.]+)$//;
     $valid{'input_ext'}      = $1;
@@ -3495,7 +3493,8 @@ sub convert_command_parameters {
 
       $valid{'output_ext'}       = $1;
       $valid{'output_noext'}    .= (!$first ? ' ' : '') . $noext;
-      $valid{'output_basename'} .= (!$first ? ' ' : '') . basename($out);
+      $valid{'output_basename'} .= (!$first ? ' ' : '') .
+                                   $self->mpc_basename($out);
       $first = 0;
     }
   }

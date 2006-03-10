@@ -11,7 +11,6 @@ package HTMLProjectCreator;
 # ************************************************************
 
 use strict;
-use File::Basename;
 
 use ProjectCreator;
 use XMLProjectBase;
@@ -80,7 +79,7 @@ sub fill_value {
     for(my $i = 0; $i <= $#nodes; ++$i) {
       my($file) = $nodes[$i]->[1];
       my($dir)  = $self->mpc_dirname($file);
-      my($base) = basename($file);
+      my($base) = $self->mpc_basename($file);
 
       ## Relative paths do not work at all in a web browser
       if ($dir eq '.') {
