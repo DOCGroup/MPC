@@ -12,7 +12,6 @@ package Creator;
 
 use strict;
 use FileHandle;
-use File::Basename;
 
 use Parser;
 
@@ -398,7 +397,7 @@ sub parse_scope {
 
 sub base_directory {
   my($self) = shift;
-  return basename($self->getcwd());
+  return $self->mpc_basename($self->getcwd());
 }
 
 
