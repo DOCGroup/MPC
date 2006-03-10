@@ -11,7 +11,6 @@ package NMakeWorkspaceCreator;
 # ************************************************************
 
 use strict;
-use File::Basename;
 
 use NMakeProjectCreator;
 use WorkspaceCreator;
@@ -120,7 +119,8 @@ sub write_project_targets {
     }
 
     print $fh ($chdir ? "\tcd $dir$crlf" : ''),
-              "\t\$(MAKE) /f ", basename($project), " $target$crlf",
+              "\t\$(MAKE) /f ", $self->mpc_basename($project),
+              " $target$crlf",
               ($chdir ? "\tcd $back$crlf" : '');
   }
 }

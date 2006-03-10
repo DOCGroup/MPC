@@ -1447,17 +1447,15 @@ sub process_name {
   my($status)      = 1;
   my($errorString) = undef;
 
-  if ($line eq '') {
-  }
-  elsif ($line =~ /^\w+(\(([^\)]+|\".*\"|[!]?(\w+\s*,\s*)?\w+\(.+\))\)|\->\w+([\w\-\>]+)?)?%>/) {
+  if ($line =~ /^\w+(\(([^\)]+|\".*\"|[!]?(\w+\s*,\s*)?\w+\(.+\))\)|\->\w+([\w\-\>]+)?)?%>/) {
     ## Split the line into a name and value
     my($name, $val) = ();
     if ($line =~ /([^%\(]+)(\(([^%]+)\))?%>/) {
       $name = lc($1);
       $val  = $3;
+      $length += length($name);
     }
 
-    $length += length($name);
     if (defined $val) {
       ## Check for the parenthesis
       if (($val =~ tr/(//) != ($val =~ tr/)//)) {
@@ -1607,9 +1605,9 @@ sub collect_data {
 
 
 sub parse_line {
-  my($self)        = shift;
-  my($ih)          = shift;
-  my($line)        = shift;
+  my($self)        = $_[0];
+  #my($ih)          = $_[1];
+  my($line)        = $_[2];
   my($status)      = 1;
   my($errorString) = undef;
   my($startempty)  = ($line eq '');
@@ -1617,11 +1615,10 @@ sub parse_line {
   ## If processing a foreach or the line only
   ## contains a keyword, then we do
   ## not need to add a newline to the end.
-  if (!$self->{'eval'} && $self->{'foreach'}->{'processing'} == 0) {
-    if ($line !~ /^[ ]*<%(\w+)(\(((\w+\s*,\s*)?\w+\(.+\)|[^\)]+)\))?%>$/ ||
-        !defined $keywords{$1}) {
-      $line .= $self->{'crlf'};
-    }
+  if (!$self->{'eval'} && $self->{'foreach'}->{'processing'} == 0 &&
+      ($line !~ /^[ ]*<%(\w+)(\(((\w+\s*,\s*)?\w+\(.+\)|[^\)]+)\))?%>$/ ||
+       !defined $keywords{$1})) {
+    $line .= $self->{'crlf'};
   }
 
   if (!$self->{'eval'} && $self->{'foreach'}->{'count'} < 0) {
@@ -1630,7 +1627,7 @@ sub parse_line {
 
   my($start) = index($line, '<%');
   if ($start >= 0) {
-    my($append_name) = 0;
+    my($append_name) = undef;
     if ($start > 0) {
       if (!$self->{'if_skip'}) {
         $self->append_current(substr($line, 0, $start));
@@ -1640,15 +1637,16 @@ sub parse_line {
     foreach my $item (split('<%', $line)) {
       my($name)   = 1;
       my($length) = length($item);
+      my($endi)   = index($item, '%>');
       for(my $i = 0; $i < $length; ++$i) {
-        my($part) = substr($item, $i, 2);
-        if ($part eq '%>') {
+        if ($i == $endi) {
           ++$i;
-          $name = 0;
+          $endi = index($item, '%>', $i);
+          $name = undef;
           if ($append_name) {
-            $append_name = 0;
+            $append_name = undef;
             if (!$self->{'if_skip'}) {
-              $self->append_current($part);
+              $self->append_current('%>');
             }
           }
           if ($length != $i + 1) {
@@ -1688,7 +1686,7 @@ sub parse_line {
             $i += ($nlen - 1);
           }
           else  {
-            $name = 0;
+            $name = undef;
             if (!$self->{'if_skip'}) {
               $self->append_current('<%' . substr($item, $i, 1));
               $append_name = 1;

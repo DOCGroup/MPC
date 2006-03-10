@@ -14,7 +14,6 @@ use strict;
 use FileHandle;
 use File::Path;
 use File::Compare;
-use File::Basename;
 
 use Creator;
 use Options;
@@ -309,7 +308,7 @@ sub aggregated_workspace {
         if (defined $values[0]) {
           if ($values[0] eq $self->{'grammar_type'}) {
             if (defined $values[2]) {
-              my($name) = basename($file);
+              my($name) = $self->mpc_basename($file);
               $name =~ s/\.[^\.]+$//;
               $status = 0;
               $error  = 'Aggregated workspace (' . $name .
@@ -661,7 +660,8 @@ sub remove_duplicate_projects {
   for(my $i = 0; $i < $count; ++$i) {
     my($file) = $$list[$i];
     foreach my $inner (@$list) {
-      if ($file ne $inner && $file eq $self->mpc_dirname($inner) && ! -d $inner) {
+      if ($file ne $inner &&
+          $file eq $self->mpc_dirname($inner) && ! -d $inner) {
         splice(@$list, $i, 1);
         --$count;
         --$i;
@@ -827,8 +827,8 @@ sub write_workspace {
         if (defined $names{$name}) {
           ++$duplicates;
           $self->error("Duplicate case-insensitive project '$name'. " .
-                       "Look in " . $self->mpc_dirname($project) . " and " .
-                       $self->mpc_dirname($names{$name}) .
+                       "Look in " . $self->mpc_dirname($project) .
+                       " and " . $self->mpc_dirname($names{$name}) .
                        " for project name conflicts.");
         }
         else {
@@ -1144,7 +1144,7 @@ sub generate_project_files {
           $status = 1;
         }
         else {
-          $status = $creator->generate(basename($file));
+          $status = $creator->generate($self->mpc_basename($file));
 
           ## If any one project file fails, then stop
           ## processing altogether.
@@ -1459,13 +1459,13 @@ sub sort_within_group {
 
     $deps = $self->get_validated_ordering($$list[$i]);
     if (defined $$deps[0]) {
-      my($baseproj) = basename($$list[$i]);
+      my($baseproj) = $self->mpc_basename($$list[$i]);
       my($moved) = 0;
       foreach my $dep (@$deps) {
         if ($baseproj ne $dep) {
           ## See if the dependency is listed after this project
           for(my $j = $i + 1; $j <= $end; ++$j) {
-            if (basename($$list[$j]) eq $dep) {
+            if ($self->mpc_basename($$list[$j]) eq $dep) {
               $movepjs = [$i, $j];
               ## If so, move it in front of the current project.
               ## The original code, which had splices, didn't always
@@ -1517,7 +1517,7 @@ sub build_dependency_chain {
               if ($j != $ni) {
                 ## Add every project in the group to the dependency chain
                 for(my $k = $$groups[$j]->[0]; $k <= $$groups[$j]->[1]; $k++) {
-                  my($ldep) = basename($$list[$k]);
+                  my($ldep) = $self->mpc_basename($$list[$k]);
                   if (!exists $$gdeps{$ldep}) {
                     $$gdeps{$ldep} = 1;
                     $self->build_dependency_chain($$list[$k],
@@ -1553,7 +1553,7 @@ sub sort_by_groups {
   ## workspace.
   my(%dupcheck) = ();
   foreach my $proj (@$list) {
-    my($base) = basename($proj);
+    my($base) = $self->mpc_basename($proj);
     if (defined $dupcheck{$base}) {
       return;
     }
@@ -1570,12 +1570,12 @@ sub sort_by_groups {
         $self->build_dependency_chain($$list[$i], $llen, $list, $gi,
                                       $#groups + 1, \@groups,
                                       \%dupcheck, \%gdeps);
-        if (exists $gdeps{basename($$list[$i])}) {
+        if (exists $gdeps{$self->mpc_basename($$list[$i])}) {
           ## There was a cirular dependency, get all of the directories
           ## involved.
           my(%dirs) = ();
           foreach my $gdep (keys %gdeps) {
-            $dirs{dirname($dupcheck{$gdep})} = 1;
+            $dirs{$self->mpc_dirname($dupcheck{$gdep})} = 1;
           }
 
           ## If the current directory was involved, translate that into
@@ -1617,7 +1617,7 @@ sub sort_by_groups {
     ## Search the rest of the groups for any of the group dependencies
     for(my $gj = $gi + 1; $gj <= $#groups; ++$gj) {
       for(my $i = $groups[$gj]->[0]; $i <= $groups[$gj]->[1]; ++$i) {
-        if (exists $gdeps{basename($$list[$i])}) {
+        if (exists $gdeps{$self->mpc_basename($$list[$i])}) {
           ## Move this group ($gj) in front of the current group ($gi)
           my(@save) = ();
           for(my $j = $groups[$gi]->[1] + 1; $j <= $groups[$gj]->[1]; ++$j) {
@@ -1735,7 +1735,7 @@ sub number_target_deps {
         ## that this one depends on.  When the project is
         ## found, we put the target number in the numbers array.
         for(my $j = 0; $j < $i; ++$j) {
-          if (exists $dhash{basename($list[$j])}) {
+          if (exists $dhash{$self->mpc_basename($list[$j])}) {
             push(@numbers, $j);
           }
         }
@@ -2018,10 +2018,10 @@ sub get_validated_ordering {
           my($dep)   = $$deps[$i];
           my($found) = 0;
           ## Avoid circular dependencies
-          if ($dep ne $name && $dep ne basename($project)) {
+          if ($dep ne $name && $dep ne $self->mpc_basename($project)) {
             foreach my $p (@{$self->{'projects'}}) {
               if ($dep eq $self->{'project_info'}->{$p}->[0] ||
-                  $dep eq basename($p)) {
+                  $dep eq $self->mpc_basename($p)) {
                 $found = 1;
                 last;
               }
