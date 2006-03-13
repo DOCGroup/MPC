@@ -40,6 +40,7 @@ sub new {
   my($self)     = $class->SUPER::new();
 
   $self->{'path'}     = $path;
+  $self->{'basepath'} = ::getBasePath();
   $self->{'name'}     = $name;
   $self->{'types'}    = {};
   $self->{'creators'} = \@creators;
@@ -190,26 +191,34 @@ sub run {
   }
 
   ## Set the global feature file
+  my($cgf) = '/config/global.features';
   my($global_feature_file) = (defined $options->{'gfeature_file'} &&
                               -r $options->{'gfeature_file'} ?
                                  $options->{'gfeature_file'} :
-                                 $self->{'path'} . '/config/global.features');
+                                 -r $self->{'path'} . $cgf ?
+                                    $self->{'path'} . $cgf :
+                                    $self->{'basepath'} . $cgf
+                                 );
 
   ## Set up default values
   if (!defined $options->{'input'}->[0]) {
     push(@{$options->{'input'}}, '');
   }
   if (!defined $options->{'feature_file'}) {
-    my($feature_file) = $self->{'path'} . '/config/default.features';
-    if (-r $feature_file) {
-      $options->{'feature_file'} = $feature_file;
-    }
+    my($cdf) = '/config/default.features';
+    $options->{'feature_file'} = (-r $self->{'path'} . $cdf ?
+                                     $self->{'path'} . $cdf :
+                                     -r $self->{'basepath'} . $cdf ?
+                                        $self->{'basepath'} . $cdf :
+                                        undef);
   }
   if (!defined $options->{'global'}) {
-    my($global) = $self->{'path'} . '/config/global.mpb';
-    if (-r $global) {
-      $options->{'global'} = $global;
-    }
+    my($cgm) = '/config/global.mpb';
+    $options->{'global'} = (-r $self->{'path'} . $cgm ?
+                                     $self->{'path'} . $cgm :
+                                     -r $self->{'basepath'} . $cgm ?
+                                        $self->{'basepath'} . $cgm :
+                                        undef);
   }
   ## Save the original directory outside of the loop
   ## to avoid calling it multiple times.
@@ -222,8 +231,13 @@ sub run {
 
   if ($options->{'reldefs'}) {
     ## Only try to read the file if it exists
-    my($rel) = $self->{'path'} . '/config/default.rel';
-    if (-r $rel) {
+    my($cdr) = '/config/default.rel';
+    my($rel) = (-r $self->{'path'} . $cdr ?
+                   $self->{'path'} . $cdr :
+                   -r $self->{'basepath'} . $cdr ?
+                      $self->{'basepath'} . $cdr :
+                      undef);
+    if (defined $rel) {
       my($srel, $errorString) = $self->read_file($rel);
       if (!$srel) {
         $self->error("$errorString\nin $rel");

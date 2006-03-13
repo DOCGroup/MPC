@@ -1,3 +1,12 @@
+Mon Mar 13 17:53:45 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Driver.pm:
+
+          If global.features, default.features, global.mpb or default.rel
+          are not found in the path relative to the location of mwc.pl (or
+          mpc.pl), look for them in the config directory found underneath
+          MPC.  This only matters when working in conjunction with ACE.
+
 Fri Mar 10 18:59:34 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/BMakeWorkspaceCreator.pm:
