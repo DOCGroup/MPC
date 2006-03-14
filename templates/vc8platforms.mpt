@@ -28,6 +28,7 @@ Pocket PC 2003 (ARMV4) {
   link_options     = /subsystem:windowsce,4.20 /machine:ARM /ARMPADCODE
   lit_libs        += ccrtrtti
   subsystem        = "0"
+  EnableFunctionLevelLinking = "true"
   TargetMachine    = "3"
 }
 
@@ -37,6 +38,7 @@ Smartphone 2003 (ARMV4) {
   platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE $(PLATFORMDEFINES) _WINDOWS _UNICODE UNICODE SMARTPHONE2003_UI_MODEL
   link_options     = /subsystem:windowsce,4.20 /machine:ARM /ARMPADCODE
   subsystem        = "0"
+  EnableFunctionLevelLinking = "true"
   TargetMachine    = "3"
 }
 

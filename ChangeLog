@@ -1,3 +1,11 @@
+Tue Mar 14 14:19:03 2006  Steve Huston  <shuston@riverace.com>
+
+        * templates/vc8platforms.mpt: For WinCE 4-based platforms, add
+          EnableFunctionLevelLinking="true". This works around a link-time
+          warning LNK1166 for ARM processors. This prevented ACEd.dll (and
+          some other examples/test programs) from creating the resultant
+          binary dll/exe file.
+
 Mon Mar 13 17:53:45 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Driver.pm:
