@@ -216,7 +216,7 @@ sub write_comps {
             $in_condition--;
           }
 
-          if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS))\s*\+=\s*/
+          if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS|LIBADD|LDADD))\s*\+=\s*/
               || /(^CLEANFILES)\s*\+=\s*/
               || /(^EXTRA_DIST)\s*\+=\s*/
              ) {
@@ -325,6 +325,7 @@ sub write_comps {
         print $fh "## $local", $crlf;
 
         my($look_for_libs) = 0;
+        my($prev_line) = undef;
 
         while (<$pfh>) {
           # Don't emit comments
@@ -345,7 +346,7 @@ sub write_comps {
             }
           }
 
-          if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS))\s*\+=\s*/
+          if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS|LIBADD|LDADD))\s*\+=\s*/
               || /(^CLEANFILES)\s*\+=\s*/
               || /(^EXTRA_DIST)\s*\+=\s*/
              ) {
@@ -391,7 +392,22 @@ sub write_comps {
             $look_for_libs = 1;
           }
 
-          print $fh $_;
+          ## I have introduced a one line delay so that I can simplify
+          ## the automake template.  If our current line is empty, then
+          ## we will remove the trailing backslash before printing the
+          ## previous line.  Automake is horribly unforgiving so we must
+          ## avoid this situation at all cost.
+          if (defined $prev_line) {
+            $prev_line =~ s/\s*\\$// if ($_ =~ /^\s*$/);
+            print $fh $prev_line;
+          }
+          $prev_line = $_;
+        }
+        ## The one line delay requires that we print out the previous
+        ## line (if there was one) when we reach the end of the file.
+        if (defined $prev_line) {
+          $prev_line =~ s/\s*\\$//;
+          print $fh $prev_line;
         }
 
         close($pfh);

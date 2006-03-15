@@ -113,9 +113,13 @@ SOURCE="<%grouped_source_file->file%>"
 <%if(duplicate_index(grouped_source_file->file))%>
 <%foreach(configurations)%>
 !<%fornotfirst("ELSE")%>IF  "$(CFG)" == "<%project_name%> - <%platform%> <%configuration%>"
-# ADD CPP /Fo"<%intermediate_dir%>\<%noextension(project_file)%>\<%basenoextension(grouped_source_file->file)%><%duplicate_index(grouped_source_file->file)%>.obj"
+# ADD CPP <%if(flag_overrides(grouped_source_file->file, buildflags))%><%flag_overrides(grouped_source_file->file, buildflags)%> <%endif%>/Fo"<%intermediate_dir%>\<%noextension(project_file)%>\<%basenoextension(grouped_source_file->file)%><%duplicate_index(grouped_source_file->file)%>.obj"
 <%endfor%>
 !ENDIF
+<%else%>
+<%if(flag_overrides(grouped_source_file->file, buildflags))%>
+# ADD CPP <%flag_overrides(grouped_source_file->file, buildflags)%>
+<%endif%>
 <%endif%>
 # End Source File
 <%endfor%>
@@ -129,9 +133,13 @@ SOURCE="<%source_file%>"
 <%if(duplicate_index(source_file))%>
 <%foreach(configurations)%>
 !<%fornotfirst("ELSE")%>IF  "$(CFG)" == "<%project_name%> - <%platform%> <%configuration%>"
-# ADD CPP /Fo"<%intermediate_dir%>\<%noextension(project_file)%>\<%basenoextension(source_file)%><%duplicate_index(source_file)%>.obj"
+# ADD CPP <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>/Fo"<%intermediate_dir%>\<%noextension(project_file)%>\<%basenoextension(source_file)%><%duplicate_index(source_file)%>.obj"
 <%endfor%>
 !ENDIF
+<%else%>
+<%if(flag_overrides(source_file, buildflags))%>
+# ADD CPP <%flag_overrides(source_file, buildflags)%>
+<%endif%>
 <%endif%>
 # End Source File
 <%endfor%>

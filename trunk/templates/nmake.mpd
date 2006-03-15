@@ -256,7 +256,7 @@ SOURCE="<%source_file%>"
 <%if(transdir(source_file))%>
 	@if not exist "$(INTDIR)\<%transdir(source_file)%>$(NULL)" mkdir "$(INTDIR)\<%transdir(source_file)%>"
 <%endif%>
-	$(CPP) $(CPP_COMMON) /Fo"$(INTDIR)\<%transdir(source_file)%><%basenoextension(source_file)%>.obj" $(SOURCE)
+	$(CPP) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(CPP_COMMON) /Fo"$(INTDIR)\<%transdir(source_file)%><%basenoextension(source_file)%>.obj" $(SOURCE)
 
 <%endfor%>
 <%endif%>

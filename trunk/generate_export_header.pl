@@ -32,6 +32,7 @@ sub generate_export_header {
   my($name)   = shift;
   my($output) = shift;
   my($fh)     = new FileHandle();
+  my($status) = 0;
 
   if (open($fh, ">$output")) {
     $name = uc($name);
@@ -79,6 +80,12 @@ EOM
     close($fh);
     print "Output written to $output\n";
   }
+  else {
+    print STDERR "ERROR: Unable to write to $output\n";
+    ++$status;
+  }
+
+  return $status;
 }
 
 sub usageAndExit {
