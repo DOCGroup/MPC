@@ -123,6 +123,11 @@ my(%custom) = ('command'       => 1,
 my(@default_matching_assignments) = ('recurse',
                                     );
 
+## These matching assingment arrays will get added, but only to the
+## specific project component types.
+my(%default_matching_assignments) = ('source_files' => ['buildflags'],
+                                    );
+
 ## Deal with these components in a special way
 my(%specialComponents) = ('header_files'   => 1,
                           'inline_files'   => 1,
@@ -207,7 +212,7 @@ my(%vbma) = ('source_files' => [ 'subtype' ],
 # 4     The language uses a C preprocessor
 my(%language) = ('cplusplus' => [ \%cppvc, \%cppec, {}    , 'main', 1 ],
                  'csharp'    => [ \%csvc,  {},      \%csma, 'Main', 0 ],
-                 'java'      => [ \%jvc,   {},      {}    , 'Main', 0 ],
+                 'java'      => [ \%jvc,   {},      {}    , 'main', 0 ],
                  'vb'        => [ \%vbvc,  {},      \%vbma, 'Main', 0 ],
                 );
 
@@ -4086,7 +4091,11 @@ sub add_default_matching_assignments {
   if (defined $lang) {
     foreach my $key (keys %{$language{$lang}->[0]}) {
       if (!defined $language{$lang}->[2]->{$key}) {
-         $language{$lang}->[2]->{$key} = [];
+        $language{$lang}->[2]->{$key} = [];
+        if (defined $default_matching_assignments{$key}) {
+          push(@{$language{$lang}->[2]->{$key}},
+               @{$default_matching_assignments{$key}});
+        }
         foreach my $keyword (@default_matching_assignments) {
           push(@{$language{$lang}->[2]->{$key}}, $keyword);
         }

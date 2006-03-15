@@ -40,4 +40,19 @@ sub get_dll_template_input_file {
 }
 
 
+sub fill_value {
+  my($self)  = shift;
+  my($name)  = shift;
+
+  if ($name eq 'compilers') {
+    if ($self->get_language() eq 'java') {
+      return 'java';
+    }
+    else {
+      return 'gcc';
+    }
+  }
+
+  return undef;
+}
 1;

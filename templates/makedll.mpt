@@ -2,8 +2,9 @@
 // $Id$
 
 // ***********************************************************************
-// The default compiler for the 'make' project type is gcc.  This
-// is controlled by the compilers template variable.  It may be
+// The default compiler for the 'make' project type is gcc (provided by
+// the fill_value() method in MakeProjectCreator.pm).  This can be
+// controlled by setting the compilers template variable.  It may be
 // changed on the MPC command line via the -value_template option.
 // Additionally, each compiler has a default platform.  The default
 // platform for gcc is linux.  This too can be changed via the
@@ -21,7 +22,6 @@ conditional_include "common"
 conditional_include "unixcommon"
 
 configurations   = Release
-compilers        = gcc
 obj_ext          = .o
 res_ext          = .res
 compile_flags    =
@@ -54,7 +54,7 @@ Release {
 
 java {
   cxx            = javac
-  ld             = echo
+  ld             = :
   obj_ext        = .class
   output_option  =
   compile_option =
