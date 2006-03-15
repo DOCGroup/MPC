@@ -633,6 +633,9 @@ sub get_flag_overrides {
         $name = $ct;
       }
     }
+    elsif ($name =~ /^grouped_(.*_file)\->/) {
+      $name = $1;
+    }
 
     my($key) = (defined $$fo{$name} ? $name :
                    (defined $$fo{$name . 's'} ? $name . 's' : undef));
@@ -1120,9 +1123,8 @@ sub handle_foreach {
       ## with variables that can be used with the -> operator
       if (defined $vname) {
         foreach my $ref (keys %arrow_op_ref) {
-          my($arrow_re) = $ref;
           my($name_re)  = $ref . 's';
-          if ($val =~ /^$arrow_re\->/ || $val =~ /^$name_re$/) {
+          if ($val =~ /^$ref\->/ || $val =~ /^$name_re$/) {
             $status = 0;
             $errorString = 'The foreach variable can not be ' .
                            'named when dealing with ' .
@@ -1616,7 +1618,7 @@ sub parse_line {
   ## contains a keyword, then we do
   ## not need to add a newline to the end.
   if (!$self->{'eval'} && $self->{'foreach'}->{'processing'} == 0 &&
-      ($line !~ /^[ ]*<%(\w+)(\(((\w+\s*,\s*)?\w+\(.+\)|[^\)]+)\))?%>$/ ||
+      ($line !~ /^[ ]*<%(\w+)(\(((\w+\s*,\s*)?[!]?\w+\(.+\)|[^\)]+)\))?%>$/ ||
        !defined $keywords{$1})) {
     $line .= $self->{'crlf'};
   }
