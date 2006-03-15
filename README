@@ -150,6 +150,10 @@ Project Keywords
 exename         Specifies the name of the executable that will be created
 sharedname      Specifies the name of the shared library that will be created
 staticname      Specifies the name of the static library that will be created
+buildflags      This keyword can only be used as a source component scoped
+                setting (ie. inside the scope of Source_Files).  It
+                specifies additional build flags that will be passed to the
+                compiler as the source files are being compiled.
 dllout          If defined, specifies where the dynamic libraries will be
                 placed.  This overrides libout in the dynamic case.
 libout          Specifies where the dynamic and static libraries will be placed
@@ -178,7 +182,6 @@ postbuild       If this is defined in the project, the value will be
                   <%quote%> - Project non-specific double quote.
 prebuild        This is similar to postbuild except that it will be
                 performed before the build instead of after.
-
 recurse         If set to 1, MPC will recurse into directories listed under
                 component listings and add any component corresponding files
                 to the list.  This keyword can be used as a global project

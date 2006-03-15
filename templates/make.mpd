@@ -237,7 +237,7 @@ $(TEMPINCDIR):
 <%if(targetoutdir)%>
 	@$(MKDIR) <%targetoutdir%><%dirname(source_file)%>
 <%endif%>
-	$(COMPILE.cc) <%if(pchuse && pch_source && pchsupport)%><%pchuse%><%pch_header%><%pchext%> <%if(pchstop)%><%pchstop%><%pch_header%><%endif%><%endif%>$(EXPORTFLAGS) $(OUTPUT_OPTION) <%source_file%>
+	$(COMPILE.cc) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%><%if(pchuse && pch_source && pchsupport)%><%pchuse%><%pch_header%><%pchext%> <%if(pchstop)%><%pchstop%><%pch_header%><%endif%><%endif%>$(EXPORTFLAGS) $(OUTPUT_OPTION) <%source_file%>
 
 <%endfor%>
 <%if(resource_files)%>

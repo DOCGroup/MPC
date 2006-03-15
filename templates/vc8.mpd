@@ -33,6 +33,9 @@
 			ConfigurationType="<%ConfigurationType%>"
 <%endif%>
 <%endif%>
+<%if(UseOfATL)%>
+			UseOfATL="<%UseOfATL%>"
+<%endif%>
 <%if(UseOfMFC)%>
 			UseOfMFC="<%UseOfMFC%>"
 <%endif%>
@@ -526,10 +529,26 @@
 					Name="<%configuration%>|<%platform%>">
 					<Tool
 						Name="VCCLCompilerTool"
+<%if(flag_overrides(grouped_source_file->file, buildflags))%>
+						AdditionalOptions="<%flag_overrides(grouped_source_file->file, buildflags)%>"
+<%endif%>
 						ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(grouped_source_file->file)%>.obj"/>
 				</FileConfiguration>
 <%endfor%>
 <%endfor%>
+<%else%>
+<%if(flag_overrides(grouped_source_file->file, buildflags))%>
+<%foreach(platforms)%>
+<%foreach(configurations)%>
+				<FileConfiguration
+					Name="<%configuration%>|<%platform%>">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalOptions="<%flag_overrides(grouped_source_file->file, buildflags)%>"/>
+				</FileConfiguration>
+<%endfor%>
+<%endfor%>
+<%endif%>
 <%endif%>
 			</File>
 <%endfor%>
@@ -547,10 +566,26 @@
 						Name="<%configuration%>|<%platform%>">
 						<Tool
 							Name="VCCLCompilerTool"
+<%if(flag_overrides(grouped_source_file->file, buildflags))%>
+							AdditionalOptions="<%flag_overrides(grouped_source_file->file, buildflags)%>"
+<%endif%>
 							ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(grouped_source_file->file)%>.obj"/>
 					</FileConfiguration>
 <%endfor%>
 <%endfor%>
+<%else%>
+<%if(flag_overrides(grouped_source_file->file, buildflags))%>
+<%foreach(platforms)%>
+<%foreach(configurations)%>
+					<FileConfiguration
+						Name="<%configuration%>|<%platform%>">
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalOptions="<%flag_overrides(grouped_source_file->file, buildflags)%>"/>
+					</FileConfiguration>
+<%endfor%>
+<%endfor%>
+<%endif%>
 <%endif%>
 				</File>
 <%endfor%>
@@ -568,10 +603,26 @@
 						Name="<%configuration%>|<%platform%>">
 						<Tool
 							Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(source_file)%>.obj"/>
+<%if(flag_overrides(source_file, buildflags))%>
+							AdditionalOptions="<%flag_overrides(source_file, buildflags)%>"
+<%endif%>
+							ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(source_file)%>.obj"/>
 					</FileConfiguration>
 <%endfor%>
 <%endfor%>
+<%else%>
+<%if(flag_overrides(source_file, buildflags))%>
+<%foreach(platforms)%>
+<%foreach(configurations)%>
+					<FileConfiguration
+						Name="<%configuration%>|<%platform%>">
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalOptions="<%flag_overrides(source_file, buildflags)%>"/>
+					</FileConfiguration>
+<%endfor%>
+<%endfor%>
+<%endif%>
 <%endif%>
 			</File>
 <%endfor%>

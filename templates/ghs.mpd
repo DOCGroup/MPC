@@ -108,7 +108,11 @@ default:
 <%source_file%>
 	C++
 <%if(compile_flags)%>
-	:cxx_compiler.args=<%compile_flags%>
+	:cxx_compiler.args=<%compile_flags%><%if(flag_overrides(source_file, buildflags))%> <%flag_overrides(source_file, buildflags)%><%endif%>
+<%else%>
+<%if(flag_overrides(source_file, buildflags))%>
+	:cxx_compiler.args=<%flag_overrides(source_file, buildflags)%>
+<%endif%>
 <%endif%>
 <%endfor%>
 <%foreach(header_files)%>

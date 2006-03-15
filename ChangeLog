@@ -1,3 +1,39 @@
+Wed Mar 15 18:44:03 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * generate_export_header.pl:
+
+          Print an error if the script is unable to write to the output
+          file.
+
+        * modules/MakeProjectCreator.pm:
+        * templates/makedll.mpt:
+
+          Moved the default 'compilers' setting from the mpt to the perl
+          module to allow the default compiler to change based on the
+          language setting.  Currently, the default is 'java' if the
+          language is set to java otherwise it is set to 'gcc' as it was
+          previously.
+
+        * README:
+        * modules/AutomakeWorkspaceCreator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+        * templates/automake.mpd:
+        * templates/bmake.mpd:
+        * templates/em3.mpd:
+        * templates/ghs.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Implemented a new project keyword that can only be used within the
+          scope of Source_Files.  The 'buildflags' setting can be used to
+          specify additional build flags as source files are being compiled.
+          This can be used to build a particular subset of source files with
+          different compiler options.
+
 Tue Mar 14 14:19:03 2006  Steve Huston  <shuston@riverace.com>
 
         * templates/vc8platforms.mpt: For WinCE 4-based platforms, add

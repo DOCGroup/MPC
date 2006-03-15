@@ -115,7 +115,9 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_SOURCES = \
 <%endif%>
 <%foreach(source_file, sort(source_files))%>
-  <%source_file%><%if(exename)%><%if(header_files || inline_files)%> \<%else%><%fornotlast(" \\")%><%endif%><%else%><%fornotlast(" \\")%><%endif%>
+<%if(!flag_overrides(source_file, buildflags))%>
+  <%source_file%> \
+<%endif%>
 <%endfor%>
 <%if(exename)%>
 <%foreach(header_file, sort(header_files inline_files))%>
@@ -198,6 +200,15 @@ CLEANFILES += \
 	${top_builddir}/config.status --file "$@":${srcdir}/<%pkgconfig_file%>
 <%endfor%>
 <%endif%>
+<%foreach(sort(source_files))%>
+<%if(flag_overrides(source_file, buildflags))%>
+
+<%if(exename)%><%normalize(exename)%>_LDADD<%else%>lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LIBADD<%endif%> += lib<%normalize(source_file)%>_convenience<%forcount%>.la
+noinst_LTLIBRARIES += lib<%normalize(source_file)%>_convenience<%forcount%>.la
+lib<%normalize(source_file)%>_convenience<%forcount%>_la_SOURCES = <%source_file%>
+lib<%normalize(source_file)%>_convenience<%forcount%>_la_CPPFLAGS = $(<%if(exename)%><%normalize(exename)%><%else%>lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la<%endif%>_CPPFLAGS) <%flag_overrides(source_file, buildflags)%>
+<%endif%>
+<%endfor%>
 <%if(postbuild)%>
 
 all: __postbuild__
