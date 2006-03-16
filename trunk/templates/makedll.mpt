@@ -164,25 +164,20 @@ SGICC {
 
 wrsppc {
   cxx           = g++ppc
-  ld            = ldppc
   cputype       = ppc
   cpu           = PPC604
   ar            = arppc
   nm            = nmppc
-  compilerflags = -mlongcall -nostdlib
-  linkflags     = -X -r
+  compilerflags = -mlongcall
   platforms     = vxworks
 }
 
 wrspentium {
   cxx           = g++pentium
-  ld            = ldpentium
   cputype       = pentium
   cpu           = PENTIUM
   ar            = arpentium
   nm            = nmpentium
-  compilerflags = -nostdlib
-  linkflags     = -X -r
   platforms     = vxworks
 }
 
@@ -281,10 +276,22 @@ qnx {
 vxworks {
   versupport    =
   dll_ext       =
-  specialscript = "#!/bin/sh\nfor i in $$3; do\nfor j in $$4; do\ni=`echo $$i | sed sa\^-laa`\n[ -r \"$$j/lib$$i.a\" ] && libs=\"$$libs $$j/lib$$i.a\" && break\ndone\ndone\n$$1 $$2 $$libs | munch | grep -v \\.cpp > $$5"
+  exe_ext       = .out
+  specialscript = "for i in $$3; do for j in $$4; do i=`echo $$i | sed sa\^-laa`;[ -r \"$$j/lib$$i.a\" ] && libs=\"$$libs $$j/lib$$i.a\" && break;done;done;$$1 $$2 $$libs | munch | grep -v \\.cpp > $$5"
   prelink       = __ctordtor.c
+  clean         = __ctordtor$(OBJEXT)
   ldlibs        = -L$(WIND_BASE)/target/lib/$(CPUTYPE)/$(CPU)/common -larch
-  extracppflags = -I$(WIND_BASE)/target/h
+  extracppflags = -nostdlib -I$(WIND_BASE)/target/h
+  ld            = ld$(CPUTYPE)
+  linkflags     = -X -r
+}
+
+vxworks_rtp {
+  versupport    =
+  dll_ext       =
+  exe_ext       = .vxe
+  extracppflags = -I$(WIND_BASE)/target/usr/h -I$(WIND_BASE)/target/usr/h/wrn/coreip -mrtp
+  linkflags     = -L$(WIND_BASE)/target/usr/lib/$(CPUTYPE)/$(CPU)/common
 }
 
 cygwin {
