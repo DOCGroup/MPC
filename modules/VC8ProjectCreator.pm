@@ -78,7 +78,7 @@ sub translate_value {
     $val = 'Any CPU';
   }
 
-  return $val;
+  return $self->SUPER::translate_value($key, $val);
 }
 
 1;

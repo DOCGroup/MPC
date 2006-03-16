@@ -1,3 +1,16 @@
+Thu Mar 16 17:58:37 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/VC8ProjectCreator.pm:
+
+          Fixed a bug where the SUPER version of the translate_value()
+          wasn't called at the end of the local translate_value() method.
+          This was causing problems when the -name_modifier and
+          -apply_project options were used together.
+
+        * templates/makedll.mpt:
+
+          Fixed support for VxWorks.
+
 Wed Mar 15 18:44:03 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * generate_export_header.pl:
