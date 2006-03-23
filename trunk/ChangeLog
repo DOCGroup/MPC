@@ -1,3 +1,11 @@
+Thu Mar 23 14:51:12 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Added the missing UNICODE and _UNICODE macros to the resource file
+          compile line if the 'unicode' template variable is set.
+
 Thu Mar 23 14:30:00 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Driver.pm:
