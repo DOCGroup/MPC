@@ -176,7 +176,7 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="<%foreach(defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
+				PreprocessorDefinitions="<%if(unicode)%>UNICODE;_UNICODE;<%endif%><%foreach(defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
 				Culture="<%culture("1033")%>"
 				AdditionalIncludeDirectories="<%foreach(includes)%><%include%><%fornotlast(",")%><%endfor%>"/>
 			<Tool
