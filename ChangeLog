@@ -1,3 +1,9 @@
+Thu Mar 23 12:11:12 UTC 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+          If linkflags are available, generate them into the project
+          file
+
 Thu Mar 16 17:58:37 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/VC8ProjectCreator.pm:
