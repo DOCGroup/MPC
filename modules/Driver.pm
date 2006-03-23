@@ -287,6 +287,8 @@ sub run {
   foreach my $cfile (@{$options->{'input'}}) {
     ## To correctly reference any pathnames in the input file, chdir to
     ## its directory if there's any directory component to the specified path.
+    ## mpc_basename() always expects UNIX file format.
+    $cfile =~ s/\\/\//g;
     my($base) = ($cfile eq '' ? '' : $self->mpc_basename($cfile));
 
     if (-d $cfile) {
