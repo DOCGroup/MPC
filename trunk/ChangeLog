@@ -1,3 +1,19 @@
+Thu Mar 23 14:30:00 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Driver.pm:
+
+          Convert all back slashes to slashes before calling mpc_basename().
+
+        * templates/makedll.mpt:
+
+          Added -ldl to the vxworks_rtp platform section.
+
+        * templates/vc7.mpd:
+
+          Moved the ProgramDataBaseFileName down after the precompiled
+          header section to more closely match the way visual studio
+          produces project files.
+
 Thu Mar 23 12:11:12 UTC 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmake.mpd:
