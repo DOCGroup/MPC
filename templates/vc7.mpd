@@ -65,9 +65,6 @@
 				ForceConformanceInForLoopScope="<%forloopscope%>"
 <%endif%>
 				RuntimeTypeInfo="<%rtti("TRUE")%>"
-<%if(pdbc)%>
-				ProgramDataBaseFileName="<%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%>/<%endif%>"
-<%endif%>
 <%if(pch_header)%>
 <%if(pch_source)%>
 				UsePrecompiledHeader="3"
@@ -75,6 +72,9 @@
 				UsePrecompiledHeader="2"
 <%endif%>
 				PrecompiledHeaderThrough="<%pch_header%>"
+<%endif%>
+<%if(pdbc)%>
+				ProgramDataBaseFileName="<%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%>/<%endif%>"
 <%endif%>
 				WarningLevel="<%warning_level("3")%>"
 				SuppressStartupBanner="TRUE"

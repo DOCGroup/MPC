@@ -291,6 +291,7 @@ vxworks_rtp {
   dll_ext       =
   exe_ext       = .vxe
   extracppflags = -I$(WIND_BASE)/target/usr/h -I$(WIND_BASE)/target/usr/h/wrn/coreip -mrtp
+  ldlibs        = -ldl
   linkflags     = -L$(WIND_BASE)/target/usr/lib/$(CPUTYPE)/$(CPU)/common
 }
 
