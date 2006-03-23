@@ -149,7 +149,11 @@
           <property category="win32.*.win32b.ilink32" name="option.Tpd.enabled" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.Tpe.enabled" value="0"/>
           <property category="win32.*.win32b.ilink32" name="option.Tpp.enabled" value="0"/>
+<%if(contains(linkflags, -aa))%>
+          <property category="win32.*.win32b.ilink32" name="option.aa.enabled" value="1"/>
+<%else%>
           <property category="win32.*.win32b.ilink32" name="option.aa.enabled" value="0"/>
+<%endif%>
           <property category="win32.*.win32b.ilink32" name="option.ap.enabled" value="0"/>
           <property category="win32.*.win32b.ilink32" name="option.dynamicrtl.enabled" value="1"/>
           <property category="win32.*.win32b.ilink32" name="option.j.arg.1" value="C:\ACE\latest\ACE_wrappers\ace"/>
