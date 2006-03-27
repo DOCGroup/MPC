@@ -91,7 +91,7 @@
 <%foreach(resx_files)%>
                         <File
                                 RelPath = "<%resx_file%>"
-                                DependentUpon = "<%noextension(resx_file)%>.cs"
+                                DependentUpon = "<%noextension(resx_file)%>.vb"
                                 BuildAction = "EmbeddedResource"
                         />
 <%endfor%>
@@ -105,6 +105,12 @@
                         />
 <%endif%>
 <%endfor%>
+<%endfor%>
+<%foreach(aspx_files)%>
+                        <File
+                                RelPath = "<%aspx_file%>"
+                                BuildAction = "Content"
+                        />
 <%endfor%>
 <%foreach(ico_files)%>
                         <File

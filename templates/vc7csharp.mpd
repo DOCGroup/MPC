@@ -110,6 +110,12 @@
 <%endif%>
 <%endfor%>
 <%endfor%>
+<%foreach(aspx_files)%>
+                        <File
+                                RelPath = "<%aspx_file%>"
+                                BuildAction = "Content"
+                        />
+<%endfor%>
 <%foreach(ico_files)%>
                         <File
                                 RelPath = "<%ico_file%>"
