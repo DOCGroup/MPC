@@ -17,7 +17,8 @@ Mon Mar 27 17:00:31 UTC 2006  James H. Hill  <hillj@isis.vanderbilt.edu>
 
 Thu Mar 23 14:56:12 UTC 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
 
-          If linkflags contains -aa then generate option.aa.enabled as 1
+        * templates/bds.mpd:
+          If linkflags contains -aa then generate option.aa.enabled as 1.
 
 Thu Mar 23 14:51:12 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
