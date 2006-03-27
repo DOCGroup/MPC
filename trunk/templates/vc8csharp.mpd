@@ -92,6 +92,9 @@
       <SubType><%if(flag_overrides(source_file, subtype))%><%flag_overrides(source_file, subtype)%><%else%>Code<%endif%></SubType>
     </Compile>
 <%endfor%>
+<%foreach(aspx_files)%>
+    <Content Include="<%aspx_file%>" />
+<%endfor%>
 <%foreach(ico_files)%>
     <Content Include="<%ico_file%>" />
 <%endfor%>
