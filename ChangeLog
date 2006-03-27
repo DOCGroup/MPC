@@ -1,3 +1,20 @@
+Mon Mar 27 17:00:31 UTC 2006  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * modules/ProjectCreator.pm:
+
+          Added support of ASP.NET project files (.aspx files) to both
+          Visual Basic and C# project.
+
+        * templates/vc7vb.mpd:
+
+          - Changed default extension for resx files from .cs to .vb
+          - Added template code to correctly handle .aspx files
+
+        * templates/vc7csharp.mpd:
+        * templates/vc8csharp.mpd:
+
+          - Added template code to correctly handle .aspx files
+
 Thu Mar 23 14:56:12 UTC 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
 
           If linkflags contains -aa then generate option.aa.enabled as 1
