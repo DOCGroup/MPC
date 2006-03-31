@@ -1,3 +1,14 @@
+Fri Mar 31 13:25:32 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug in the group dependency sorter.  The circular
+          dependencies are checked but as a group moves in order, it was
+          assumed that the dependencies were already checked for the group
+          when in reality it hadn't.  This could cause an infinite loop.
+
+          Also, $() type variables can be used in workspaces.
+
 Mon Mar 27 17:00:31 UTC 2006  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * modules/ProjectCreator.pm:

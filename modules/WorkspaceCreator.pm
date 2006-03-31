@@ -103,6 +103,7 @@ sub new {
   $self->{'handled_scopes'}      = {};
   $self->{'generate_ins'}        = $genins;
   $self->{'scoped_basedir'}      = undef;
+  $self->{'relative'}            = $relative;
 
   if (defined $$exclude[0]) {
     my($type) = $self->{'wctype'};
@@ -265,6 +266,9 @@ sub parse_line {
     }
   }
   elsif ($status == -1) {
+    if (index($line, '$') >= 0) {
+      $line = $self->replace_environment_variables($line);
+    }
     foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
                                                  $line) {
       if ($expfile =~ /\.$wsext$/) {
@@ -426,6 +430,9 @@ sub parse_exclude {
         if ($line =~ /^"([^"]+)"$/) {
           $line = $1;
         }
+        if (index($line, '$') >= 0) {
+          $line = $self->replace_environment_variables($line);
+        }
         if (defined $self->{'scoped_basedir'}) {
           $line = $self->{'scoped_basedir'} . '/' . $line;
         }
@@ -542,6 +549,10 @@ sub handle_scoped_unknown {
       $error  = 'Unhandled line: ' . $line;
     }
     return $status, $error;
+  }
+
+  if (index($line, '$') >= 0) {
+    $line = $self->replace_environment_variables($line);
   }
 
   if ($type eq $aggregated) {
@@ -1642,8 +1653,10 @@ sub sort_by_groups {
           $grsave[1] += $offset;
           for(my $j = $gi; $j < $gj; ++$j) {
             $groups[$j] = $groups[$j + 1];
+            $circular_checked{$j} = $circular_checked{$j + 1};
           }
           $groups[$gj] = \@grsave;
+          $circular_checked{$gj} = 1;
 
           ## Start over from the first group
           $gi = -1;
@@ -2078,6 +2091,28 @@ sub sort_projects_by_directory {
     return -1;
   }
   return $left cmp $right;
+}
+
+
+sub replace_environment_variables {
+  my($self) = shift;
+  my($line) = shift;
+  my($rel)  = $self->{'relative'};
+
+  while($line =~ /\$\(([^\)]+)\)/) {
+    my($var) = $1;
+    if (defined $$rel{$var}) {
+      $line =~ s/\$\($var\)/$$rel{$var}/g;
+    }
+    elsif (defined $ENV{$var}) {
+      $line =~ s/\$\($var\)/$ENV{$var}/g;
+    }
+    else {
+      $line =~ s/\$\($var\)//g;
+    }
+  }
+
+  return $line;
 }
 
 # ************************************************************
