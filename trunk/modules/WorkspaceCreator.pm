@@ -31,6 +31,7 @@ my($wsbase) = 'mwb';
 ## Valid names for assignments within a workspace
 my(%validNames) = ('cmdline'  => 1,
                    'implicit' => 1,
+                   'named_targets' => 1,
                   );
 
 ## Singleton hash maps of project information
