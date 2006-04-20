@@ -53,7 +53,7 @@ WCE ARMV4 {
 }
 
 Release {
-  use_debug_libraries   = 0
+  use_debug_libraries   =
   optimize              = 1
   compile_flags         = /W3 /GR
   defines               = NDEBUG
@@ -76,7 +76,7 @@ Debug {
 }
 
 MFC Release {
-  use_debug_libraries   = 0
+  use_debug_libraries   =
   optimize              = 1
   compile_flags         = /W3 /GR
   defines               = NDEBUG _AFXDLL
