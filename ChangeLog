@@ -1,3 +1,15 @@
+Thu Apr 20 13:29:13 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/em3.mpd:
+        * templates/em3vcpdll.mpt:
+        * templates/em3vcpdllexe.mpt:
+        * templates/em3vcplib.mpt:
+        * templates/em3vcplibexe.mpt:
+
+          Fixed a bug where /debug was being added to the link flags even
+          though it was a Release configuration.  Thanks to Wallace Zhang
+          <zhangw@ociweb.com> for finding this.
+
 Fri Mar 31 13:25:32 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WorkspaceCreator.pm:
@@ -271,7 +283,7 @@ Fri Feb 24 00:23:57 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
 Thu Feb 23 10:33:25 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
-        * templates/automake.mpd
+        * templates/automake.mpd:
 
           Added "compile_flags" to conditional which caused a needed
           backslash not to be emitted in somewhat rare circumstances.
