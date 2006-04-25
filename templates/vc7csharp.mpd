@@ -34,7 +34,7 @@
 <%if(exename || sharedname || staticname)%>
                 OutputType = "<%if(exename)%><%if(winapp)%>Win<%endif%>Exe<%else%>Library<%endif%>"
 <%endif%>
-                PreBuildEvent = ""
+                PreBuildEvent = "<%if(prebuild)%><%eval(prebuild)%><%endif%>"
                 PostBuildEvent = "<%if(postbuild)%><%eval(postbuild)%><%endif%>"
                 RootNamespace = ""
                 RunPostBuildEvent = "OnBuildSuccess"

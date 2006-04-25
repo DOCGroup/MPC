@@ -1,3 +1,32 @@
+Tue Apr 25 13:18:06 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Print error messages in the event that an error actually occurs.
+
+        * prj_install.pl:
+
+          Added a missing option from the usage.
+
+        * templates/nmake.mpd:
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+
+          By default, pass the /Zc:wchar_t option to the compiler.  If you
+          plan on using nmake with Visual C++ 6.0, you must unset the
+          'TreatWChar_tAsBuiltInType' template variable to avoid compiler
+          warnings about unknown options.
+
+        * templates/vc7.mpd:
+
+          Allow the user to modify the inline expansion through the
+          'InlineFunctionExpansion' template variable.
+
+        * templates/vc7csharp.mpd:
+        * templates/vc8csharp.mpd:
+
+          Support the 'prebuild' setting.
+
 Thu Apr 20 13:29:13 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3.mpd:
