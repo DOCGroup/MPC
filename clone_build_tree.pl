@@ -233,6 +233,7 @@ sub symlinkFiles {
           print "Creating $fullpath\n";
         }
         if (!mkpath($fullpath, 0, $dmode)) {
+          print STDERR "ERROR: Unable to create $fullpath\n";
           return 1;
         }
       }
@@ -242,6 +243,7 @@ sub symlinkFiles {
             print "symlink $startdir/$file $fullpath\n";
           }
           if (!symlink("$startdir/$file", $fullpath)) {
+            print STDERR "ERROR: Unable to symlink $fullpath\n";
             return 1;
           }
         }
@@ -254,6 +256,7 @@ sub symlinkFiles {
             print "symlink $real $fullpath\n";
           }
           if (!symlink($real, $fullpath)) {
+            print STDERR "ERROR: Unable to symlink $fullpath\n";
             return 1;
           }
         }
@@ -291,6 +294,7 @@ sub hardlinkFiles {
           print "Creating $fullpath\n";
         }
         if (!mkpath($fullpath, 0, $dmode)) {
+          print STDERR "ERROR: Unable to create $fullpath\n";
           return 1;
         }
       }
@@ -312,6 +316,7 @@ sub hardlinkFiles {
           print "hardlink $file $fullpath\n";
         }
         if (!hardlink($file, $fullpath)) {
+          print STDERR "ERROR: Unable to link $fullpath\n";
           return 1;
         }
       }
@@ -365,6 +370,7 @@ sub linkFiles {
   ## Ensure that the build directory exists and is writable
   mkpath($builddir, 0, $dmode);
   if (! -d $builddir || ! -w $builddir) {
+    print STDERR "ERROR: Unable to create or write to $builddir\n";
     return 1;
   }
 

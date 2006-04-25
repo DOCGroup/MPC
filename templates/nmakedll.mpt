@@ -9,6 +9,7 @@ platforms             = Win32
 default_configuration = Debug
 common_defines        = WIN32 _WINDOWS
 use_lib_modifier      = 1
+TreatWChar_tAsBuiltInType = true
 
 Win32 {
   machine_description = x86

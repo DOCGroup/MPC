@@ -75,7 +75,7 @@
 <%endfor%>
 <%endfor%>
   <ItemGroup>
-<%foreach(sort(libs))%>
+<%foreach(libs)%>
     <Reference Include="<%libname_prefix%><%lib%>">
       <Name><%libname_prefix%><%lib%></Name>
     </Reference>
@@ -108,8 +108,14 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
+<%if(prebuild)%>
+      <%eval(prebuild)%>
+<%endif%>
     </PreBuildEvent>
     <PostBuildEvent>
+<%if(postbuild)%>
+      <%eval(postbuild)%>
+<%endif%>
     </PostBuildEvent>
   </PropertyGroup>
 </Project>
