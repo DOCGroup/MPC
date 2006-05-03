@@ -31,7 +31,6 @@ my($wsbase) = 'mwb';
 ## Valid names for assignments within a workspace
 my(%validNames) = ('cmdline'  => 1,
                    'implicit' => 1,
-                   'named_targets' => 1,
                   );
 
 ## Singleton hash maps of project information
@@ -76,6 +75,7 @@ sub new {
   my($language)   = shift;
   my($use_env)    = shift;
   my($expandvars) = shift;
+  my($gendot)     = shift;
   my($self)       = Creator::new($class, $global, $inc,
                                  $template, $ti, $dynamic, $static,
                                  $relative, $addtemp, $addproj,
@@ -105,6 +105,7 @@ sub new {
   $self->{'generate_ins'}        = $genins;
   $self->{'scoped_basedir'}      = undef;
   $self->{'relative'}            = $relative;
+  $self->{'generate_dot'}        = $gendot;
 
   if (defined $$exclude[0]) {
     my($type) = $self->{'wctype'};
@@ -945,6 +946,32 @@ sub write_workspace {
             $error = "Unable to open $name for output.";
             $status = 0;
           }
+        }
+      }
+
+      if ($addfile && $self->{'generate_dot'}) {
+        my($dh)     = new FileHandle();
+        my($wsname) = $self->get_workspace_name();
+        if (open($dh, ">$wsname.dot")) {
+          my(%targnum) = ();
+          my(@list)    = $self->number_target_deps($self->{'projects'},
+                                                   $self->{'project_info'},
+                                                   \%targnum, 0);
+          print $dh "digraph $wsname {\n";
+          foreach my $project (@{$self->{'projects'}}) {
+            if (defined $targnum{$project}) {
+              my($pname) = $self->{'project_info'}->{$project}->[0];
+              foreach my $number (@{$targnum{$project}}) {
+                print $dh "  $pname -> ",
+                          "$self->{'project_info'}->{$list[$number]}->[0];\n";
+              }
+            }
+          }
+          print $dh "}\n";
+          close($dh);
+        }
+        else {
+          $self->warning("Unable to write to $wsname.dot.");
         }
       }
     }
@@ -1858,6 +1885,9 @@ sub process_cmdline {
       if (defined $options->{'into'}) {
         $self->optionError('-into is ignored');
       }
+      if (defined $options->{'gendot'}) {
+        $self->optionError('-gendot is ignored');
+      }
       if (defined $options->{'input'}->[0]) {
         $self->optionError('Command line files ' .
                            'specified in a workspace are ignored');
@@ -1933,7 +1963,8 @@ sub project_creator {
                    $parameters{'into'},
                    $parameters{'language'},
                    $parameters{'use_env'},
-                   $parameters{'expand_vars'});
+                   $parameters{'expand_vars'},
+                   $self->{'gendot'});
 }
 
 

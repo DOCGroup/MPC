@@ -1,3 +1,29 @@
+Wed May  3 01:43:46 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+
+          Documented the -gendot option which generates input files for
+          Graphvis.
+
+        * modules/BMakeProjectCreator.pm:
+        * modules/Creator.pm:
+        * modules/DirectoryManager.pm:
+        * modules/Driver.pm:
+        * modules/FeatureParser.pm:
+        * modules/GUID.pm:
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/VC7ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Adding various performance improvements.
+
+        * templates/makedll.mpt:
+
+          Changing the order of the rt and pthread libraries to avoid
+          possible linking problems when statically linking.
+
 Tue Apr 25 13:18:06 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * clone_build_tree.pl:

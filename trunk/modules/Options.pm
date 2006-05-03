@@ -48,7 +48,7 @@ sub printUsage {
                $spaces . "[-noreldefs] [-notoplevel] [-static] [-genins] [-use_env]\n" .
                $spaces . "[-value_template <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
                $spaces . "[-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
-               $spaces . "[-make_coexistence] [-feature_file <file name>]\n" .
+               $spaces . "[-make_coexistence] [-feature_file <file name>] [-gendot]\n" .
                $spaces . "[-expand_vars] [-features <feature definitions>]\n" .
                $spaces . "[-exclude <directories>] [-name_modifier <pattern>]\n" .
                $spaces . "[-apply_project] [-version] [-into <directory>]\n" .
@@ -94,6 +94,7 @@ sub printUsage {
 "                       The default feature file is default.features under the\n" .
 "                       config directory.\n" .
 "       -features       Specifies the feature list to set before processing.\n" .
+"       -gendot         Generate .dot files for use with Graphvis.\n" .
 "       -genins         Generate .ins files for use with prj_install.pl.\n" .
 "       -gfeature_file  Specifies the global feature file.  The\n" .
 "                       default value is global.features under the\n" .
@@ -160,7 +161,7 @@ sub completion_command {
   my($name)  = shift;
   my($types) = shift;
   my($str)   = "complete $name " .
-               "'c/-/(genins global include type template relative " .
+               "'c/-/(gendot genins global include type template relative " .
                "ti static noreldefs notoplevel feature_file use_env " .
                "value_template value_project make_coexistence language " .
                "hierarchy exclude name_modifier apply_project version " .
@@ -224,6 +225,7 @@ sub options {
   my($makeco)     = ($defaults ? 0 : undef);
   my($applypj)    = ($defaults ? 0 : undef);
   my($genins)     = ($defaults ? 0 : undef);
+  my($gendot)     = ($defaults ? 0 : undef);
 
   ## Process the command line arguments
   for(my $i = 0; $i <= $#args; $i++) {
@@ -309,6 +311,9 @@ sub options {
         $self->optionError('-gfeature_file ' .
                            'requires a file name argument');
       }
+    }
+    elsif ($arg eq '-gendot') {
+      $gendot = 1;
     }
     elsif ($arg eq '-genins') {
       $genins = 1;
@@ -542,6 +547,7 @@ sub options {
           'exclude'       => \@exclude,
           'name_modifier' => $nmodifier,
           'apply_project' => $applypj,
+          'gendot'        => $gendot,
           'genins'        => $genins,
           'into'          => $into,
           'language'      => $language,

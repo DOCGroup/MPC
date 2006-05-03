@@ -16,7 +16,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-value_template <NAME+=VAL | NAME=VAL | NAME-=VAL>]
               [-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]
               [-make_coexistence] [-feature_file <file name>]
-              [-expand_vars] [-features <feature definitions>]
+              [-expand_vars] [-features <feature definitions>] [-gendot]
               [-exclude <directories>] [-name_modifier <pattern>]
               [-apply_project] [-version] [-into <directory>]
               [-gfeature_file <file name>]
@@ -38,6 +38,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        The default feature file is default.features under the
                        config directory.
        -features       Specifies the feature list to set before processing.
+       -gendot         Generate .dot files for use with Graphvis.
        -genins         Generate .ins files for use with prj_install.pl.
        -gfeature_file  Specifies the global feature file.  The
                        default value is global.features under the
@@ -103,6 +104,11 @@ a separate project file for dynamic libraries and static libraries.
 
 The -exclude option is used to exclude directories when searching for input
 files.  NOTE: This option has no effect when used with mpc.pl.
+
+The -gendot option (useful only to mwc.pl) will result in the generation of
+.dot files for each workspace processed.  Each .dot file will contain
+information that can be fed to Graphvis to display the dependency
+information for the various projects found within the workspace.
 
 The -genins option will cause MPC to generate an "install" file after
 processing each project that can be used in conjunction with the
