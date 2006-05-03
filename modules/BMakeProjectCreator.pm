@@ -20,16 +20,20 @@ use vars qw(@ISA);
 @ISA = qw(MakeProjectBase WinProjectBase ProjectCreator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my(%names) = ('cppdir' => 'source_files',
+              'rcdir'  => 'resource_files',
+             );
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub fill_value {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = undef;
-  my(%names) = ('cppdir' => 'source_files',
-                'rcdir'  => 'resource_files',
-               );
+  my($self) = shift;
+  my($name) = shift;
 
   if (defined $names{$name}) {
     my(%dirnames) = ('.' => 1);
@@ -45,10 +49,10 @@ sub fill_value {
     }
 
     ## Sort the directories to ensure that '.' comes first
-    $value = join(';', sort keys %dirnames);
+    return join(';', sort keys %dirnames);
   }
 
-  return $value;
+  return undef;
 }
 
 

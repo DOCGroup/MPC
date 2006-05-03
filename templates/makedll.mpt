@@ -224,7 +224,7 @@ openvms {
 }
 
 linux {
-  ldlibs        = -ldl -lpthread $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so)))))
+  ldlibs        = -ldl $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so))))) -lpthread
   extracppflags = -D_REENTRANT
 }
 
@@ -236,7 +236,7 @@ solaris {
 
 hpux {
   dll_ext       = .sl
-  ldlibs        = -lxti -lpthread -lrt -ldld
+  ldlibs        = -lxti -lrt -lpthread -ldld
   extracppflags = -D_REENTRANT
 }
 

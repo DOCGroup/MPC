@@ -93,9 +93,8 @@ sub getstartdir {
 
 sub mpc_basename {
   #my($self) = $_[0];
-  my($file) = $_[1];
-  $file =~ s!.*/!!;
-  return $file;
+  #my($file) = $_[1];
+  return substr($_[1], rindex($_[1], '/') + 1);
 }
 
 
