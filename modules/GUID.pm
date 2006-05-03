@@ -16,22 +16,13 @@ use strict;
 # Subroutine Section
 # ************************************************************
 
-sub new {
-  my($class) = shift;
-  my($self)  = bless {
-                     }, $class;
-  return $self;
-}
-
-
 sub generate {
-  my($self)  = shift;
   my($out)   = shift;
   my($in)    = shift;
   my($cwd)   = shift;
-  my($chash) = $self->hash($cwd);
-  my($nhash) = $self->hash($out);
-  my($ihash) = $self->hash($in);
+  my($chash) = GUID::hash($cwd);
+  my($nhash) = GUID::hash($out);
+  my($ihash) = GUID::hash($in);
   my($val)   = 0xfeca1bad;
 
   return sprintf("%08X-%04X-%04X-%04X-%04X%08X",
@@ -42,9 +33,8 @@ sub generate {
 
 
 sub hash {
-  my($self)   = shift;
-  my($str)    = shift;
-  my($value)  = 0;
+  my($str)   = shift;
+  my($value) = 0;
 
   if (defined $str) {
     my($length) = length($str);
