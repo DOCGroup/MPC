@@ -412,10 +412,7 @@ sub get_value_with_default {
 sub process_foreach {
   my($self)   = shift;
   my($index)  = $self->{'foreach'}->{'count'};
-  my($base)   = $self->{'foreach'}->{'base'}->[$index];
   my($text)   = $self->{'foreach'}->{'text'}->[$index];
-  my($status) = 1;
-  my($error)  = undef;
   my(@values) = ();
   my($name)   = $self->{'foreach'}->{'name'}->[$index];
   my(@cmds)   = ();
@@ -477,6 +474,7 @@ sub process_foreach {
 
   if (defined $values[0]) {
     my($scope) = $self->{'foreach'}->{'scope'}->[$index];
+    my($base)  = $self->{'foreach'}->{'base'}->[$index];
 
     $$scope{'forlast'}     = '';
     $$scope{'fornotlast'}  = 1;
@@ -488,9 +486,9 @@ sub process_foreach {
     if ($check_for_mixed) {
       my(%mixed) = ();
       my($mixed) = 0;
-      for(my $i = 0; $i <= $#values; ++$i) {
-        $mixed{$values[$i]} = $self->set_current_values($values[$i]);
-        $mixed |= $mixed{$values[$i]};
+      foreach my $mval (@values) {
+        $mixed{$mval} = $self->set_current_values($mval);
+        $mixed |= $mixed{$mval};
       }
       if ($mixed) {
         my(@nvalues) = ();
@@ -541,15 +539,15 @@ sub process_foreach {
       ## Now parse the line of text, each time
       ## with different values
       ++$self->{'foreach'}->{'processing'};
-      ($status, $error) = $self->parse_line(undef, $text);
+      my($status, $error) = $self->parse_line(undef, $text);
       --$self->{'foreach'}->{'processing'};
-      if (!$status) {
-        last;
+      if (defined $error) {
+        return $error;
       }
     }
   }
 
-  return $status, $error;
+  return undef;
 }
 
 
@@ -560,7 +558,7 @@ sub handle_endif {
   pop(@{$self->{'lstack'}});
 
   if (!defined $end) {
-    return 0, "Unmatched $name";
+    return "Unmatched $name";
   }
   else {
     my($in) = index($end, $name);
@@ -568,11 +566,11 @@ sub handle_endif {
       $self->{'if_skip'} = 0;
     }
     elsif ($in == -1) {
-      return 0, "Unmatched $name";
+      return "Unmatched $name";
     }
   }
 
-  return 1, undef;
+  return undef;
 }
 
 
@@ -583,95 +581,88 @@ sub handle_endfor {
   pop(@{$self->{'lstack'}});
 
   if (!defined $end) {
-    return 0, "Unmatched $name";
+    return "Unmatched $name";
   }
   else {
     my($in) = index($end, $name);
     if ($in == 0) {
       my($index) = $self->{'foreach'}->{'count'};
-      my($status, $error) = $self->process_foreach();
-      if ($status) {
+      my($error) = $self->process_foreach();
+      if (!defined $error) {
         --$self->{'foreach'}->{'count'};
         $self->append_current($self->{'foreach'}->{'text'}->[$index]);
       }
-      return $status, $error;
+      return $error;
     }
     elsif ($in == -1) {
-      return 0, "Unmatched $name";
+      return "Unmatched $name";
     }
   }
 
-  return 1, undef;
+  return undef;
 }
 
 
 sub get_flag_overrides {
   my($self)  = shift;
   my($name)  = shift;
-  my($type)  = '';
+  my($type)  = undef;
 
   ## Split the name and type parameters
   ($name, $type) = split(/,\s*/, $name);
 
   my($file) = $self->get_value($name);
   if (defined $file) {
-    my($value) = undef;
-    my($prjc)  = $self->{'prjc'};
-    my($fo)    = $prjc->{'flag_overrides'};
-
     ## Save the name prefix (if there is one) for
     ## command parameter conversion at the end
     my($pre) = undef;
-    if ($name =~ /(\w+)->/) {
+    if ($name =~ /^(\w+)->/) {
       $pre = $1;
-    }
 
-    ## Replace the custom_type key with the actual custom type
-    if (index($name, 'custom_type->') == 0) {
-      my($ct) = $self->get_value('custom_type');
-      if (defined $ct) {
-        $name = $ct;
+      ## Replace the custom_type key with the actual custom type
+      if ($pre eq 'custom_type') {
+        my($ct) = $self->get_value($pre);
+        $name = $ct if (defined $ct);
+      }
+      elsif ($pre =~ /^grouped_(.*_file)$/) {
+        $name = $1;
       }
     }
-    elsif ($name =~ /^grouped_(.*_file)\->/) {
-      $name = $1;
-    }
 
-    my($key) = (defined $$fo{$name} ? $name :
-                   (defined $$fo{$name . 's'} ? $name . 's' : undef));
+    my($fo)  = $self->{'prjc'}->{'flag_overrides'};
+    my($key) = (defined $$fo{$name . 's'} ? $name . 's' :
+                        (defined $$fo{$name} ? $name : undef));
+
     if (defined $key) {
-      if (defined $prjc->{'matching_assignments'}->{$key}) {
-        ## Convert the file name into a unix style file name
-        my($ustyle) = $file;
-        $ustyle =~ s/\\/\//g;
+      ## Convert the file name into a unix style file name
+      my($ustyle) = $file;
+      $ustyle =~ s/\\/\//g if ($self->{'cslashes'});
 
-        ## Save the directory portion for checking in the foreach
-        my($dir) = $self->mpc_dirname($ustyle);
+      ## Save the directory portion for checking in the foreach
+      my($dir) = $self->mpc_dirname($ustyle);
 
-        my($of) = (defined $$fo{$key}->{$ustyle} ? $ustyle :
-                      (defined $$fo{$key}->{$dir} ? $dir : undef));
-        if (defined $of) {
-          foreach my $aname (@{$prjc->{'matching_assignments'}->{$key}}) {
-            if ($aname eq $type && defined $$fo{$key}->{$of}->{$aname}) {
-              $value = $$fo{$key}->{$of}->{$aname};
-              last;
+      my($of) = (defined $$fo{$key}->{$ustyle} ? $ustyle :
+                    (defined $$fo{$key}->{$dir} ? $dir : undef));
+      if (defined $of) {
+        my($prjc) = $self->{'prjc'};
+        foreach my $aname (@{$prjc->{'matching_assignments'}->{$key}}) {
+          if ($aname eq $type && defined $$fo{$key}->{$of}->{$aname}) {
+            my($value) = $$fo{$key}->{$of}->{$aname};
+
+            ## If the name that we're overriding has a value and
+            ## requires parameters, then we will convert all of the
+            ## pseudo variables and provide parameters.
+            if (defined $pre && $prjc->requires_parameters($type)) {
+              $value = $prjc->convert_command_parameters(
+                                      $value,
+                                      $self->prepare_parameters($pre));
             }
+
+            return $prjc->relative($value);
           }
         }
       }
     }
-
-    ## If the name that we're overriding has a value and
-    ## requires parameters, then we will convert all of the
-    ## pseudo variables and provide parameters.
-    if (defined $pre &&
-        defined $value && $prjc->requires_parameters($type)) {
-      $value = $prjc->convert_command_parameters(
-                              $value,
-                              $self->prepare_parameters($pre));
-    }
-
-    return $prjc->relative($value);
   }
 
   return undef;
@@ -939,9 +930,8 @@ sub handle_uniq {
 
 
 sub process_compound_if {
-  my($self)   = shift;
-  my($str)    = shift;
-  my($status) = 0;
+  my($self) = shift;
+  my($str)  = shift;
 
   if (index($str, '||') >= 0) {
     my($ret) = 0;
@@ -951,6 +941,7 @@ sub process_compound_if {
         return 1;
       }
     }
+    return 0;
   }
   elsif (index($str, '&&') >= 0) {
     my($ret) = 1;
@@ -960,12 +951,12 @@ sub process_compound_if {
         return 0;
       }
     }
-    $status = 1;
+    return 1;
   }
   else {
     ## See if we need to reverse the return value
     my($not) = 0;
-    if ($str =~ /^!(.*)/) {
+    if ($str =~ /^!+(.*)/) {
       $not = 1;
       $str = $1;
     }
@@ -1028,17 +1019,16 @@ sub process_compound_if {
     }
     return ($not ? !$ret : $ret);
   }
-
-  return $status;
 }
 
 
 sub handle_if {
-  my($self)   = shift;
-  my($val)    = shift;
-  my($name)   = 'endif';
+  my($self) = shift;
+  my($val)  = shift;
+  my($name) = 'endif';
 
-  push(@{$self->{'lstack'}}, $self->get_line_number() . " $val");
+  push(@{$self->{'lstack'}},
+       "<%if($val)%> (" . $self->get_line_number() . '?)');
   if ($self->{'if_skip'}) {
     push(@{$self->{'sstack'}}, "*$name");
   }
@@ -1055,22 +1045,19 @@ sub handle_if {
 sub handle_else {
   my($self)  = shift;
   my(@scopy) = @{$self->{'sstack'}};
-
-  if (defined $scopy[$#scopy]) {
-    my($index) = index($scopy[$#scopy], 'endif');
-    if ($index >= 0) {
-      if ($index == 0) {
-        $self->{'if_skip'} ^= 1;
-      }
-      $self->{'sstack'}->[$#scopy] .= ':';
+  my($index) = index($scopy[$#scopy], 'endif');
+  if ($index >= 0) {
+    if ($index == 0) {
+      $self->{'if_skip'} ^= 1;
     }
-
-    if (($self->{'sstack'}->[$#scopy] =~ tr/:/:/) > 1) {
-      return 0, 'Unmatched else';
-    }
+    $self->{'sstack'}->[$#scopy] .= ':';
   }
 
-  return 1, undef;
+  if (($self->{'sstack'}->[$#scopy] =~ tr/:/:/) > 1) {
+    return 'Unmatched else';
+  }
+
+  return undef;
 }
 
 
@@ -1078,7 +1065,6 @@ sub handle_foreach {
   my($self)        = shift;
   my($val)         = shift;
   my($name)        = 'endfor';
-  my($status)      = 1;
   my($errorString) = undef;
 
   push(@{$self->{'lstack'}}, $self->get_line_number());
@@ -1096,7 +1082,6 @@ sub handle_foreach {
       $val   =~ s/\s+$//;
 
       if ($vname eq '') {
-        $status = 0;
         $errorString = 'The foreach variable name is not valid';
       }
 
@@ -1109,7 +1094,6 @@ sub handle_foreach {
         $val  =~ s/\s+$//;
 
         if ($base !~ /^\d+$/) {
-          $status = 0;
           $errorString = 'The forcount specified is not a valid number';
         }
       }
@@ -1125,7 +1109,6 @@ sub handle_foreach {
         foreach my $ref (keys %arrow_op_ref) {
           my($name_re)  = $ref . 's';
           if ($val =~ /^$ref\->/ || $val =~ /^$name_re$/) {
-            $status = 0;
             $errorString = 'The foreach variable can not be ' .
                            'named when dealing with ' .
                            $arrow_op_ref{$ref};
@@ -1148,7 +1131,7 @@ sub handle_foreach {
     push(@{$self->{'sstack'}}, "*$name");
   }
 
-  return $status, $errorString;
+  return $errorString;
 }
 
 
@@ -1446,74 +1429,67 @@ sub process_name {
   my($self)        = shift;
   my($line)        = shift;
   my($length)      = 0;
-  my($status)      = 1;
   my($errorString) = undef;
 
-  if ($line =~ /^\w+(\(([^\)]+|\".*\"|[!]?(\w+\s*,\s*)?\w+\(.+\))\)|\->\w+([\w\-\>]+)?)?%>/) {
-    ## Split the line into a name and value
-    my($name, $val) = ();
-    if ($line =~ /([^%\(]+)(\(([^%]+)\))?%>/) {
-      $name = lc($1);
-      $val  = $3;
-      $length += length($name);
-    }
+  ## Split the line into a name and value
+  if ($line =~ /([^%\(]+)(\(([^%]+)\))?%>/) {
+    my($name) = lc($1);
+    my($val)  = $3;
+    $length += length($name);
 
     if (defined $val) {
       ## Check for the parenthesis
       if (($val =~ tr/(//) != ($val =~ tr/)//)) {
-        $status = 0;
-        $errorString = 'Missing the closing parenthesis';
+        return 'Missing the closing parenthesis', $length;
       }
 
       ## Add the length of the value plus 2 for the surrounding ()
       $length += length($val) + 2;
     }
 
-    if ($status) {
-      if (defined $keywords{$name}) {
-        if ($name eq 'endif') {
-          ($status, $errorString) = $self->handle_endif($name);
-        }
-        elsif ($name eq 'if') {
-          $self->handle_if($val);
-        }
-        elsif ($name eq 'endfor') {
-          ($status, $errorString) = $self->handle_endfor($name);
-        }
-        elsif ($name eq 'foreach') {
-          ($status, $errorString) = $self->handle_foreach($val);
-        }
-        elsif ($name eq 'fornotlast'  || $name eq 'forlast' ||
-               $name eq 'fornotfirst' || $name eq 'forfirst') {
-          if (!$self->{'if_skip'}) {
-            $self->handle_special($name, $self->process_special($val));
-          }
-        }
-        elsif ($name eq 'else') {
-          ($status, $errorString) = $self->handle_else();
-        }
-        elsif ($name eq 'comment') {
-          ## Ignore the contents of the comment
-        }
-        else {
-          if (!$self->{'if_skip'}) {
-            my($func) = 'handle_' . $name;
-            $self->$func($val);
-          }
+    if (defined $keywords{$name}) {
+      if ($name eq 'if') {
+        $self->handle_if($val);
+      }
+      elsif ($name eq 'endif') {
+        $errorString = $self->handle_endif($name);
+      }
+      elsif ($name eq 'else') {
+        $errorString = $self->handle_else();
+      }
+      elsif ($name eq 'endfor') {
+        $errorString = $self->handle_endfor($name);
+      }
+      elsif ($name eq 'foreach') {
+        $errorString = $self->handle_foreach($val);
+      }
+      elsif ($name eq 'fornotlast'  || $name eq 'forlast' ||
+             $name eq 'fornotfirst' || $name eq 'forfirst') {
+        if (!$self->{'if_skip'}) {
+          $self->handle_special($name, $self->process_special($val));
         }
       }
-      elsif (defined $self->{'cmds'}->{$name}) {
-        if (!$self->{'if_skip'}) {
-          $self->handle_pseudo($name);
-        }
+      elsif ($name eq 'comment') {
+        ## Ignore the contents of the comment
       }
       else {
         if (!$self->{'if_skip'}) {
-          if (defined $val && !defined $self->{'defaults'}->{$name}) {
-            $self->{'defaults'}->{$name} = $self->process_special($val);
-          }
-          $self->append_current($self->get_value_with_default($name));
+          my($func) = 'handle_' . $name;
+          $self->$func($val);
         }
+      }
+    }
+    elsif (defined $self->{'cmds'}->{$name}) {
+      if (!$self->{'if_skip'}) {
+        $self->handle_pseudo($name);
+      }
+    }
+    else {
+      if (!$self->{'if_skip'}) {
+        if (defined $val && !defined $self->{'defaults'}->{$name}) {
+          $self->{'defaults'}->{$name} = $self->process_special($val);
+        }
+        $self->append_current($self->get_value_with_default($name));
       }
     }
   }
@@ -1527,11 +1503,10 @@ sub process_name {
         last;
       }
     }
-    $status = 0;
     $errorString = "Unable to parse line starting at '$error'";
   }
 
-  return $status, $errorString, $length;
+  return $errorString, $length;
 }
 
 
@@ -1610,20 +1585,19 @@ sub parse_line {
   my($self)        = $_[0];
   #my($ih)          = $_[1];
   my($line)        = $_[2];
-  my($status)      = 1;
   my($errorString) = undef;
   my($startempty)  = ($line eq '');
 
   ## If processing a foreach or the line only
   ## contains a keyword, then we do
   ## not need to add a newline to the end.
-  if (!$self->{'eval'} && $self->{'foreach'}->{'processing'} == 0 &&
+  if ($self->{'foreach'}->{'processing'} == 0 && !$self->{'eval'} &&
       ($line !~ /^[ ]*<%(\w+)(\(((\w+\s*,\s*)?[!]?\w+\(.+\)|[^\)]+)\))?%>$/ ||
        !defined $keywords{$1})) {
     $line .= $self->{'crlf'};
   }
 
-  if (!$self->{'eval'} && $self->{'foreach'}->{'count'} < 0) {
+  if ($self->{'foreach'}->{'count'} < 0 && !$self->{'eval'}) {
     $self->{'built'} = '';
   }
 
@@ -1636,6 +1610,8 @@ sub parse_line {
       }
       $line = substr($line, $start);
     }
+
+    my($nlen) = 0;
     foreach my $item (split('<%', $line)) {
       my($name)   = 1;
       my($length) = length($item);
@@ -1659,9 +1635,8 @@ sub parse_line {
           }
         }
         elsif ($name) {
-          my($substr)  = substr($item, $i);
-          my($efcheck) = (index($substr, 'endfor%>') == 0);
-          my($focheck) = ($efcheck ? 0 : (index($substr, 'foreach(') == 0));
+          my($efcheck) = (index($item, 'endfor%>') == 0);
+          my($focheck) = ($efcheck ? 0 : (index($item, 'foreach(') == 0));
 
           if ($focheck && $self->{'foreach'}->{'count'} >= 0) {
             ++$self->{'foreach'}->{'nested'};
@@ -1671,28 +1646,25 @@ sub parse_line {
               $self->{'foreach'}->{'processing'} > $self->{'foreach'}->{'nested'} ||
               (($efcheck || $focheck) &&
                $self->{'foreach'}->{'nested'} == $self->{'foreach'}->{'processing'})) {
-            my($nlen) = 0;
-            ($status,
-             $errorString,
-             $nlen) = $self->process_name($substr);
+            ($errorString, $nlen) = $self->process_name($item);
 
-            if (!$status) {
-              last;
+            if (defined $errorString) {
+              return 0, $errorString;
             }
             elsif ($nlen == 0) {
-              $errorString = "Could not parse this line at column $i";
-              $status = 0;
-              last;
+              return 0, "Could not parse this line at column $i";
             }
 
             $i += ($nlen - 1);
           }
           else  {
             $name = undef;
+            $nlen = ($i < $endi ? $endi : $length) - $i;
             if (!$self->{'if_skip'}) {
-              $self->append_current('<%' . substr($item, $i, 1));
+              $self->append_current('<%' . substr($item, $i, $nlen));
               $append_name = 1;
             }
+            $i += ($nlen - 1);
           }
 
           if ($efcheck && $self->{'foreach'}->{'nested'} > 0) {
@@ -1700,12 +1672,13 @@ sub parse_line {
           }
         }
         else {
+          $nlen = ($i < $endi ? $endi : $length) - $i;
           if (!$self->{'if_skip'}) {
-            $self->append_current(substr($item, $i, 1));
+            $self->append_current(substr($item, $i, $nlen));
           }
+          $i += ($nlen - 1);
         }
       }
-      last if (!$status);
     }
   }
   else {
@@ -1714,16 +1687,15 @@ sub parse_line {
     }
   }
 
-  if (!$self->{'eval'} && $self->{'foreach'}->{'count'} < 0) {
+  if ($self->{'foreach'}->{'count'} < 0 && !$self->{'eval'} &&
     ## If the line started out empty and we're not
     ## skipping from the start or the built up line is not empty
-    if ($startempty ||
-        ($self->{'built'} ne $self->{'crlf'} && $self->{'built'} ne '')) {
-      push(@{$self->{'lines'}}, $self->{'built'});
-    }
+      ($startempty ||
+        ($self->{'built'} ne $self->{'crlf'} && $self->{'built'} ne ''))) {
+    push(@{$self->{'lines'}}, $self->{'built'});
   }
 
-  return $status, $errorString;
+  return (!defined $errorString), $errorString;
 }
 
 
@@ -1735,8 +1707,8 @@ sub parse_file {
   my($status, $errorString) = $self->cached_file_read($input);
 
   if ($status) {
-    my($sstack) = $self->{'sstack'};
-    if (defined $$sstack[0]) {
+    if (defined $self->{'sstack'}->[0]) {
+      my($sstack) = $self->{'sstack'};
       my($lstack) = $self->{'lstack'};
       $status = 0;
       $errorString = "Missing an '$$sstack[0]' starting at $$lstack[0]";

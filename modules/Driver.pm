@@ -327,7 +327,8 @@ sub run {
                                 $options->{'into'},
                                 $options->{'language'},
                                 $options->{'use_env'},
-                                $options->{'expand_vars'});
+                                $options->{'expand_vars'},
+                                $options->{'gendot'});
       if ($base ne $file) {
         my($dir) = ($base eq '' ? $file : $self->mpc_dirname($file));
         if (!$creator->cd($dir)) {

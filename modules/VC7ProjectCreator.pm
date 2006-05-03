@@ -75,10 +75,9 @@ sub fill_value {
   my($value) = undef;
 
   if ($name eq 'guid') {
-    my($guid) = new GUID();
-    $value = $guid->generate($self->project_file_name(),
-                             $self->{'current_input'},
-                             $self->getcwd());
+    $value = GUID::generate($self->project_file_name(),
+                            $self->{'current_input'},
+                            $self->getcwd());
   }
   elsif ($name eq 'language') {
     $value = $self->get_language();

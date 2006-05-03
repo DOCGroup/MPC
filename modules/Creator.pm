@@ -148,7 +148,7 @@ sub parse_file {
     $self->error($errorString,
                  "$input: line " . $self->get_line_number() . ':');
   }
-  elsif ($status && $self->{$self->{'type_check'}}) {
+  elsif ($self->{$self->{'type_check'}}) {
     ## If we are at the end of the file and the type we are looking at
     ## is still defined, then we have an error
     $self->error("Did not " .
@@ -411,15 +411,16 @@ sub generate_default_file_list {
   my(@files)   = ();
 
   if (opendir($dh, $dir)) {
-    my($need_dir) = ($dir ne '.');
+    my($prefix)   = ($dir ne '.' ? "$dir/" : '');
+    my($have_exc) = (defined $$exclude[0]);
     my($skip)     = 0;
-    foreach my $file (grep(!/^\.\.?$/, readdir($dh))) {
-      $file =~ s/\.dir$// if ($onVMS);
-
+    foreach my $file (grep(!/^\.\.?$/,
+                           ($onVMS ? map {$_ =~ s/\.dir$//; $_} readdir($dh) :
+                                     readdir($dh)))) {
       ## Prefix each file name with the directory only if it's not '.'
-      my($full) = ($need_dir ? "$dir/" : '') . $file;
+      my($full) = $prefix . $file;
 
-      if (defined $$exclude[0]) {
+      if ($have_exc) {
         foreach my $exc (@$exclude) {
           if ($full eq $exc) {
             $skip = 1;
@@ -499,11 +500,12 @@ sub extension_recursive_input_list {
   my(@files)   = ();
 
   if (opendir($fh, $dir)) {
-    foreach my $file (grep(!/^\.\.?$/, readdir($fh))) {
-      $file =~ s/\.dir$// if ($onVMS);
-
-      my($skip) = 0;
-      my($full) = ($dir ne '.' ? "$dir/" : '') . $file;
+    my($prefix) = ($dir ne '.' ? "$dir/" : '');
+    my($skip)   = 0;
+    foreach my $file (grep(!/^\.\.?$/,
+                           ($onVMS ? map {$_ =~ s/\.dir$//; $_} readdir($fh) :
+                                     readdir($fh)))) {
+      my($full) = $prefix . $file;
 
       ## Check for command line exclusions
       if (defined $$exclude[0]) {
@@ -516,7 +518,10 @@ sub extension_recursive_input_list {
       }
 
       ## If we are not skipping this directory or file, then check it out
-      if (!$skip) {
+      if ($skip) {
+        $skip = 0;
+      }
+      else {
         if (-d $full) {
           push(@files, $self->extension_recursive_input_list($full,
                                                              $exclude,
