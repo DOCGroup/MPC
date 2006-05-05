@@ -62,7 +62,7 @@ sub write_comps {
   print $fh '      <Option Name="GUID">{93D77FAD-C603-4FB1-95AB-34E0B6FBF615}</Option>', $crlf;
   print $fh '    </Option>', $crlf;
   print $fh '  </PersonalityInfo>', $crlf;
-  print $fh '<Default.Personality>', $crlf;
+  print $fh '  <Default.Personality>', $crlf;
   print $fh '    ', $crlf;
   print $fh '    <Projects>', $crlf;
 
@@ -73,6 +73,7 @@ sub write_comps {
   print $fh '    </Projects>', $crlf;
   print $fh '    <Dependencies/>', $crlf;
   print $fh '  </Default.Personality>', $crlf;
+  print $fh '</BorlandProject>', $crlf;
 }
 
 
