@@ -1,3 +1,10 @@
+Thu May 11 11:46:45 2006  Steve Huston  <shuston@riverace.com>
+
+        * templates/automake.mpd: Allow an am_release variable to set
+          a installable library's -release option. This allows users to
+          choose whether to use libtool's -version-info option (with the
+          am_version variable) or the -release option (with am_release).
+
 Fri May  5 12:00:12 UTC 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/BDSWorkspaceCreator.pm:
