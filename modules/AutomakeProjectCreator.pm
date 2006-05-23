@@ -38,6 +38,14 @@ sub fill_value {
     if (defined $incs) {
       my(@vec) = split(' ', $incs);
 
+      # The following prefixes relative include paths with $(srcdir)/.
+      foreach(@vec) {
+        if (/^\.\./) {
+          $_ = '$(srcdir)/' . $_;
+        }
+      }
+
+
 #      # The following prefixes include paths with $(srcdir)/.
 #      foreach(@vec) {
 #        if (/^[^\$\/]/) {
