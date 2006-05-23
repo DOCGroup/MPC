@@ -1,3 +1,10 @@
+Tue May 23 16:49:22 2006  Steve Huston  <shuston@riverace.com>
+
+        * modules/AutomakeProjectCreator.pm (fill_value): If an include
+          path begins with ".." (a relative path), prefix it with $(srcdir)
+          to make it work properly when the build dir is not the same as the
+          source dir.
+
 Thu May 11 11:46:45 2006  Steve Huston  <shuston@riverace.com>
 
         * templates/automake.mpd: Allow an am_release variable to set
