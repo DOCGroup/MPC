@@ -26,7 +26,6 @@ use vars qw(@ISA);
 my($index)    = 0;
 my(@progress) = ('|', '/', '-', '\\');
 my($cmdenv)   = 'MPC_COMMANDLINE';
-my($minperl)  = 5.006;
 
 # ************************************************************
 # Subroutine Section
@@ -117,12 +116,6 @@ sub optionError {
 sub run {
   my($self) = shift;
   my(@args) = @_;
-
-  ## If the minimum version of perl is not met, then it is an error
-  if ($] < $minperl) {
-    $self->error("Perl version $minperl is required.");
-    return 1;
-  }
 
   ## Dynamically load in each perl module and set up
   ## the type tags and project creators
