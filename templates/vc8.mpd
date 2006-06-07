@@ -429,7 +429,7 @@
 				TurnOffAssemblyGeneration="<%TurnOffAssemblyGeneration%>"
 <%endif%>
 <%if(type_is_dynamic && sharedname)%>
-				ImportLibrary="$(OutDir)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
+				ImportLibrary="<%libout%><%if(output_subdir)%>\<%output_subdir%><%endif%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
 <%if(SupportUnloadOfDelayLoadedDLL)%>
 				SupportUnloadOfDelayLoadedDLL="<%SupportUnloadOfDelayLoadedDLL%>"

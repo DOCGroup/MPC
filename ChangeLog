@@ -1,3 +1,12 @@
+Wed Jun  7 12:56:17 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/vc8.mpd:
+
+          Modified this template to use 'libout' again such that .lib files
+          do not go into the location specified by 'dllout' (if it was
+          specified).  Thanks to Kitty B. for recognizing this situation and
+          bringing it to my attention.
+
 Tue May 30 12:21:54 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Driver.pm:
