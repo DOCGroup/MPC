@@ -1,3 +1,10 @@
+Fri Jun  9 07:00:13 2006  J.T. Conklin  <jtc@acorntoolworks.com>
+
+        * templates/automake.mpd:
+
+          Tweak so that _LDFLAGS isn't defined if am_version is defined,
+          but library is not intended to be installed.
+
 Wed Jun  7 12:56:17 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/vc8.mpd:
