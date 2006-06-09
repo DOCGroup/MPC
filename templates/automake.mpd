@@ -132,7 +132,7 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
  <%linkflags%>
 <%endif%>
 <%else%>
-<%if(linkflags || am_version || am_release && install_this_target)%>
+<%if(linkflags || am_version && install_this_target || am_release && install_this_target)%>
 
 lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LDFLAGS = \
 <%if(am_version && install_this_target)%> -version-number <%am_version%><%else%><%if(am_release && install_this_target)%> -release <%am_release%><%endif%><%endif%><%if(linkflags)%> <%linkflags%><%endif%>
