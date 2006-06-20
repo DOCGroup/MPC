@@ -1,3 +1,10 @@
+Tue Jun 20 13:53:05 2006  J.T. Conklin  <jtc@acorntoolworks.com>
+
+        * templates/automake.mpd:
+
+          Tweak "code" that emits -stamp dependency to work with stamp
+          files in subdirectories.
+
 Tue Jun 20 18:31:35 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/vc8csharp.mpd:
