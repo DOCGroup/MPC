@@ -1,3 +1,21 @@
+Tue Jun 20 17:06:50 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where mixing C++ and C# projects in a single workspace
+          would result in invalid projects due to the fact that a project
+          creator would have only one TemplateInputReader which would read
+          the template input file for the first projects language and all
+          other projects would receive the same template input.
+
+          Additionally, the configuration/platform combination would only be
+          updated if the platform is a non-empty string.
+
+          And finally, the ability to nest template functions (like reverse,
+          sort, etc.) not in the context of a foreach has been added to the
+          template parser.
+
 Tue Jun 20 12:45:30 UTC 2006  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * modules/VC8WebWorkspaceCreator.pm:
