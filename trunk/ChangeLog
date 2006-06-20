@@ -1,3 +1,11 @@
+Tue Jun 20 12:41:49 UTC 2006  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * templates/vc8csharp.mpd:
+
+          Removed the aspx_files variable since web projects assume all
+          files located in the directory of the solution is part of the
+          project.
+
 Fri Jun 16 00:37:06 UTC 2006  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * modules/VC7WorkspaceCreator.pm:
