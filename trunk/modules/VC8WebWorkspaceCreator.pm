@@ -49,8 +49,7 @@ sub write_workspace {
 
   # Add the website to the list of project names
   my($projects) = $self->get_projects();
-  my($pname) = $self->getcwd();
-  $pname =~ s/\//\\/g;
+  my($pname) = '.';
   push(@$projects, $pname);
 
   # Add the website project to the 'project_info'.
