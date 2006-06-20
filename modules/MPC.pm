@@ -25,6 +25,7 @@ sub new {
                                       'VC7ProjectCreator',
                                       'VC71ProjectCreator',
                                       'VC8ProjectCreator',
+                                      'VC8WebProjectCreator',
                                       'BDSProjectCreator',
                                       'GHSProjectCreator',
                                       'EM3ProjectCreator',
