@@ -265,10 +265,10 @@ sub new {
   $self->{'project_info'}          = [];
   $self->{'lib_locations'}         = {};
   $self->{'reading_parent'}        = [];
-  $self->{'dexe_template_input'}   = undef;
-  $self->{'lexe_template_input'}   = undef;
-  $self->{'lib_template_input'}    = undef;
-  $self->{'dll_template_input'}    = undef;
+  $self->{'dexe_template_input'}   = {};
+  $self->{'lexe_template_input'}   = {};
+  $self->{'lib_template_input'}    = {};
+  $self->{'dll_template_input'}    = {};
   $self->{'flag_overrides'}        = {};
   $self->{'custom_special_output'} = {};
   $self->{'custom_special_depend'} = {};
@@ -1683,12 +1683,13 @@ sub read_template_input {
   my($file)        = undef;
   my($tag)         = undef;
   my($ti)          = $self->get_ti_override();
+  my($lang)        = $self->get_language();
   my($override)    = undef;
 
   if ($self->exe_target()) {
     if ($self->get_static() == 1) {
       $tag = 'lexe_template_input';
-      if (!defined $self->{$tag}) {
+      if (!defined $self->{$tag}->{$lang}) {
         if (defined $$ti{'lib_exe'}) {
           $file = $$ti{'lib_exe'};
           $override = 1;
@@ -1700,7 +1701,7 @@ sub read_template_input {
     }
     else {
       $tag = 'dexe_template_input';
-      if (!defined $self->{$tag}) {
+      if (!defined $self->{$tag}->{$lang}) {
         if (defined $$ti{'dll_exe'}) {
           $file = $$ti{'dll_exe'};
           $override = 1;
@@ -1714,7 +1715,7 @@ sub read_template_input {
   else {
     if ($self->get_static() == 1) {
       $tag = 'lib_template_input';
-      if (!defined $self->{$tag}) {
+      if (!defined $self->{$tag}->{$lang}) {
         if (defined $$ti{'lib'}) {
           $file = $$ti{'lib'};
           $override = 1;
@@ -1726,7 +1727,7 @@ sub read_template_input {
     }
     else {
       $tag = 'dll_template_input';
-      if (!defined $self->{$tag}) {
+      if (!defined $self->{$tag}->{$lang}) {
         if (defined $$ti{'dll'}) {
           $file = $$ti{'dll'};
           $override = 1;
@@ -1741,8 +1742,8 @@ sub read_template_input {
   if (defined $file) {
     my($file) = $self->search_include_path("$file.$TemplateInputExtension");
     if (defined $file) {
-      $self->{$tag} = new TemplateInputReader($self->get_include_path());
-      ($status, $errorString) = $self->{$tag}->read_file($file);
+      $self->{$tag}->{$lang} = new TemplateInputReader($self->get_include_path());
+      ($status, $errorString) = $self->{$tag}->{$lang}->read_file($file);
     }
     else {
       if ($override) {
@@ -1752,10 +1753,10 @@ sub read_template_input {
     }
   }
 
-  if ($status && defined $self->{$tag}) {
+  if ($status && defined $self->{$tag}->{$lang}) {
     ## Put the features into the template input set
     my($features) = $self->{'feature_parser'}->get_names();
-    $self->{$tag}->parse_line(undef, "features = @$features");
+    $self->{$tag}->{$lang}->parse_line(undef, "features = @$features");
   }
 
   return $status, $errorString;
@@ -3957,7 +3958,7 @@ sub write_install_file {
 
 sub write_project {
   my($self)      = shift;
-  my($status)    = 1;
+  my($status)    = 2;
   my($error)     = undef;
   my($progress)  = $self->get_progress_callback();
 
@@ -4010,9 +4011,6 @@ sub write_project {
         $self->warning($msg);
       }
     }
-  }
-  else {
-    $status = 2;
   }
 
   return $status, $error;
@@ -4127,23 +4125,24 @@ sub reset_generating_types {
 
 sub get_template_input {
   my($self) = shift;
+  my($lang) = $self->get_language();
 
   ## This follows along the same logic as read_template_input() by
   ## checking for exe target and then defaulting to a lib target
   if ($self->exe_target()) {
     if ($self->get_static() == 1) {
-      return $self->{'lexe_template_input'};
+      return $self->{'lexe_template_input'}->{$lang};
     }
     else {
-      return $self->{'dexe_template_input'};
+      return $self->{'dexe_template_input'}->{$lang};
     }
   }
 
   if ($self->get_static() == 1) {
-    return $self->{'lib_template_input'};
+    return $self->{'lib_template_input'}->{$lang};
   }
   else {
-    return $self->{'dll_template_input'};
+    return $self->{'dll_template_input'}->{$lang};
   }
 }
 
