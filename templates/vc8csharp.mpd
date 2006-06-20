@@ -65,7 +65,7 @@
     <NoWarn>
     </NoWarn>
     <Optimize><%if(optimize)%>true<%else%>false<%endif%></Optimize>
-    <RegisterForComInterop>false</RegisterForComInterop>
+    <RegisterForComInterop><%RegisterForComInterop("false")%></RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
