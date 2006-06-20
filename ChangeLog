@@ -1,3 +1,33 @@
+Fri Jun 16 00:37:06 UTC 2006  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * modules/VC7WorkspaceCreator.pm:
+
+          Added the web project guid to the rest of the GUIDs. This
+          allows use to resue the the default VC workspace generator
+          to generate web projects.
+
+        * modules/MPC.pm:
+        * modules/MWC.pm:
+        * modules/VC8WebProjectCreator.pm:
+        * modules/VC8WebWorkspaceCreator.pm:
+
+          Created a new module for generating web projects for VC8.
+          In VC8, web projects are based on the directory that contains.
+          the solutions. This means a web project does not have a "project"
+          file like C++, C# and VB projects. Therefore, a new module
+          was needed to automatically create a web project in a solution
+          since we can't specify this using a MWC file.
+
+          To create a web project, just run MWC as follows:
+
+          mwc.pl -type vc8web
+
+          The following are the language -> scripting mappings:
+            cpluplus -> C#
+            csharp   -> C#
+            java     -> J#
+            vb       -> Visual Basic
+
 Fri Jun 09 14:49:25 2006  Steve Huston  <shuston@riverace.com>
 
         * modules/AutomakeProjectCreator.pm (fill_value): Reverted:
