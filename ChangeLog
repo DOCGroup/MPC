@@ -1,3 +1,10 @@
+Tue Jun 20 18:31:35 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/vc8csharp.mpd:
+
+          Added the ability to set the RegisterForComInterop setting as a
+          template variable.
+
 Tue Jun 20 17:06:50 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
