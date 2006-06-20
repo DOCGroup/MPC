@@ -25,8 +25,8 @@ use vars qw(@ISA);
 # Valid keywords for use in template files.  Each has a handle_
 # method available, but some have other methods too.
 # Bit  Meaning
-# 0 means there is a get_ method available (used by if)
-# 1 means there is a perform_ method available (used by foreach)
+# 0 means there is a get_ method available (used by if and nested functions)
+# 1 means there is a perform_ method available (used by foreach and nested)
 # 2 means there is a doif_ method available (used by if)
 my(%keywords) = ('if'              => 0,
                  'else'            => 0,
@@ -49,8 +49,8 @@ my(%keywords) = ('if'              => 0,
                  'ucw'             => 0,
                  'normalize'       => 2,
                  'flag_overrides'  => 1,
-                 'reverse'         => 2,
-                 'sort'            => 2,
+                 'reverse'         => 3,
+                 'sort'            => 3,
                  'uniq'            => 3,
                  'multiple'        => 5,
                  'starts_with'     => 5,
@@ -530,7 +530,8 @@ sub process_foreach {
       $$scope{$name} = $value;
 
       ## A tiny hack for VC7
-      if ($name eq 'configuration') {
+      if ($name eq 'configuration' &&
+          $self->get_value_with_default('platform') ne '') {
         $self->{'prjc'}->update_project_info($self, 1,
                                              ['configuration', 'platform'],
                                              '|');
@@ -856,6 +857,20 @@ sub handle_compares {
 }
 
 
+sub get_reverse {
+  my($self)  = shift;
+  my($name)  = shift;
+  my($value) = $self->get_value_with_default($name);
+
+  if (defined $value) {
+    my(@array) = $self->perform_reverse($self->create_array($value));
+    return \@array;
+  }
+
+  return undef;
+}
+
+
 sub perform_reverse {
   my($self)  = shift;
   my($value) = shift;
@@ -872,6 +887,20 @@ sub handle_reverse {
     my(@array) = $self->perform_reverse($self->create_array($val));
     $self->append_current("@array");
   }
+}
+
+
+sub get_sort {
+  my($self)  = shift;
+  my($name)  = shift;
+  my($value) = $self->get_value_with_default($name);
+
+  if (defined $value) {
+    my(@array) = $self->perform_sort($self->create_array($value));
+    return \@array;
+  }
+
+  return undef;
 }
 
 
@@ -1213,6 +1242,49 @@ sub handle_noextension {
 }
 
 
+sub evaluate_nested_functions {
+  my($self) = shift;
+  my($name) = shift;
+  my($val)  = shift;
+
+  ## Get the value based on the string
+  my(@cmds) = ($name);
+  while ($val =~ /(\w+)\((.+)\)/) {
+    push(@cmds, $1);
+    $val = $2;
+  }
+
+  ## Start out calling get_xxx on the string
+  my($type) = 0x01;
+  my($prefix) = 'get_';
+
+  foreach my $cmd (reverse @cmds) {
+    if (defined $keywords{$cmd} && ($keywords{$cmd} & $type) != 0) {
+      my($func) = "$prefix$cmd";
+      if ($type == 0x01) {
+        $val = $self->$func($val);
+        $val = [ $val ] if (!UNIVERSAL::isa($val, 'ARRAY'));
+      }
+      else {
+        my(@array) = $self->$func($val);
+        $val = \@array;
+      }
+
+      ## Now that we have a value, we need to switch over
+      ## to calling perform_xxx
+      $type = 0x02;
+      $prefix = 'perform_';
+    }
+    else {
+      $self->warning("Unable to use $cmd in nested " .
+                     "functions (no $prefix method).");
+    }
+  }
+  if (defined $val && UNIVERSAL::isa($val, 'ARRAY')) {
+    $self->append_current("@$val");
+  }
+}
+
 sub get_dirname {
   my($self)  = shift;
   my($name)  = shift;
@@ -1474,8 +1546,13 @@ sub process_name {
       }
       else {
         if (!$self->{'if_skip'}) {
-          my($func) = 'handle_' . $name;
-          $self->$func($val);
+          if (index($val, '(') >= 0) {
+            $self->evaluate_nested_functions($name, $val);
+          }
+          else {
+            my($func) = 'handle_' . $name;
+            $self->$func($val);
+          }
         }
       }
     }
