@@ -1,3 +1,10 @@
+Tue Jun 20 12:45:30 UTC 2006  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * modules/VC8WebWorkspaceCreator.pm:
+
+          Changed the location of the web project from the cwd to
+          '.'.
+
 Tue Jun 20 12:41:49 UTC 2006  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * templates/vc8csharp.mpd:
