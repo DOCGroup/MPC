@@ -167,8 +167,7 @@ sub write_comps {
   foreach my $project (@list) {
     my($name, $deps, $pguid, $lang, @cfgs) = @{$$pjs{$project}};
     foreach my $cfg (@cfgs) {
-      $cfg = $self->get_short_config_name($cfg);
-      $configs{$cfg} = 1;
+      $configs{$self->get_short_config_name($cfg)} = $cfg;
     }
   }
   $self->print_configs($fh, \%configs);
@@ -184,10 +183,32 @@ sub write_comps {
 
   foreach my $project (@list) {
     my($name, $deps, $pguid, $lang, @cfgs) = @{$$pjs{$project}};
+    my($last_cfg)    = '.NET';
+    my(%all_configs) = %configs;
     foreach my $cfg (sort @cfgs) {
       my($c) = $self->get_short_config_name($cfg);
+      $last_cfg = $cfg;
       print $fh "\t\t{$pguid}.$c.ActiveCfg = $cfg$crlf" .
                 "\t\t{$pguid}.$c.Build.0 = $cfg$crlf";
+      delete $all_configs{$c};
+    }
+
+    ## If this is a mixed language workspace, we need to explicitly
+    ## enable the building of the non-C++ projects when any platform
+    ## other than Any CPU/.NET is selected.
+    if (index($last_cfg, '.NET') >= 0 || index($last_cfg, 'Any CPU') >= 0) {
+      $last_cfg =~ s/^.*\|//;
+      foreach my $c (sort keys %all_configs) {
+        ## Get the long configuration name and replace the platform
+        ## with the last platform (non-C++ platform)
+        my($config) = $all_configs{$c};
+        $config =~ s/\|.*/\|$last_cfg/;
+
+        ## Enable the building of this project under all the other
+        ## configurations (e.g. Win32, x64, etc.)
+        print $fh "\t\t{$pguid}.$c.ActiveCfg = $config$crlf" .
+                  "\t\t{$pguid}.$c.Build.0 = $config$crlf";
+      }
     }
   }
   print $fh "\tEndGlobalSection$crlf";
