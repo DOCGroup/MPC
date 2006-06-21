@@ -1,3 +1,13 @@
+Wed Jun 21 14:16:22 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/VC7WorkspaceCreator.pm:
+
+          Yet another bug fix for mixed language workspaces.  When a C++
+          project is dependent upon another C++ project and a C# project,
+          the dependee C++ project would be skipped.  Now, non-C++ projects
+          will be built when the platform is changed to anything other than
+          'Any CPU' or .NET.
+
 Tue Jun 20 13:53:05 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:
