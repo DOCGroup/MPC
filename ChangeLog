@@ -1,3 +1,10 @@
+Thu Jun 22 12:24:51 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/VC7WorkspaceCreator.pm:
+
+          Modified the mixed language output so that VC8 does not want to
+          save after the first load of the generated solution.
+
 Wed Jun 21 14:16:22 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/VC7WorkspaceCreator.pm:
