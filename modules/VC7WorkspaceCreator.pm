@@ -181,15 +181,28 @@ sub write_comps {
             $self->get_project_config_section_name(),
             ") = postSolution$crlf";
 
+  ## See if there is an 'Any CPU' configuration
+  my($anycpu) = undef;
+  foreach my $key (keys %configs) {
+    if (index($key, 'Any CPU') >= 0) {
+      $anycpu = $key;
+      $anycpu =~ s/^.*\|//;
+      last;
+    }
+  }
+
   foreach my $project (@list) {
     my($name, $deps, $pguid, $lang, @cfgs) = @{$$pjs{$project}};
+    my($first_cfg)   = undef;
     my($last_cfg)    = '.NET';
     my(%all_configs) = %configs;
+    my($settings)    = '';
     foreach my $cfg (sort @cfgs) {
       my($c) = $self->get_short_config_name($cfg);
+      $first_cfg = $cfg if (!defined $first_cfg);
       $last_cfg = $cfg;
-      print $fh "\t\t{$pguid}.$c.ActiveCfg = $cfg$crlf" .
-                "\t\t{$pguid}.$c.Build.0 = $cfg$crlf";
+      $settings .= "\t\t{$pguid}.$c.ActiveCfg = $cfg$crlf" .
+                   "\t\t{$pguid}.$c.Build.0 = $cfg$crlf";
       delete $all_configs{$c};
     }
 
@@ -198,16 +211,41 @@ sub write_comps {
     ## other than Any CPU/.NET is selected.
     if (index($last_cfg, '.NET') >= 0 || index($last_cfg, 'Any CPU') >= 0) {
       $last_cfg =~ s/^.*\|//;
-      foreach my $c (sort keys %all_configs) {
-        ## Get the long configuration name and replace the platform
-        ## with the last platform (non-C++ platform)
-        my($config) = $all_configs{$c};
-        $config =~ s/\|.*/\|$last_cfg/;
+      foreach my $c (sort keys %configs) {
+        if (defined $all_configs{$c}) {
+          ## Get the long configuration name and replace the platform
+          ## with the last platform (non-C++ platform)
+          my($config) = $all_configs{$c};
+          $config =~ s/\|.*/\|$last_cfg/;
 
-        ## Enable the building of this project under all the other
-        ## configurations (e.g. Win32, x64, etc.)
-        print $fh "\t\t{$pguid}.$c.ActiveCfg = $config$crlf" .
-                  "\t\t{$pguid}.$c.Build.0 = $config$crlf";
+          ## Enable the building of this project under all the other
+          ## configurations (e.g. Win32, x64, etc.)
+          print $fh "\t\t{$pguid}.$c.ActiveCfg = $config$crlf",
+                    "\t\t{$pguid}.$c.Build.0 = $config$crlf";
+        }
+        else {
+          print $fh "\t\t{$pguid}.$c.ActiveCfg = $configs{$c}$crlf",
+                    "\t\t{$pguid}.$c.Build.0 = $configs{$c}$crlf";
+        }
+      }
+    }
+    else {
+      if (defined $anycpu) {
+        my(%printed) = ();
+        foreach my $cfg (sort @cfgs) {
+          my($c) = $self->get_short_config_name($cfg);
+          my($any) = $c;
+          $any =~ s/\|.*/\|$anycpu/;
+          if (!defined $printed{$any}) {
+            $printed{$any} = 1;
+            print $fh "\t\t{$pguid}.$any.ActiveCfg = $first_cfg$crlf";
+          }
+          print $fh "\t\t{$pguid}.$c.ActiveCfg = $cfg$crlf",
+                    "\t\t{$pguid}.$c.Build.0 = $cfg$crlf";
+        }
+      }
+      else {
+        print $fh $settings;
       }
     }
   }
