@@ -2077,23 +2077,11 @@ sub add_generated_files {
   ## This method is called by list_default_generated.  It performs the
   ## actual file insertion and grouping.
 
-  my($wanted) = $self->{'valid_components'}->{$gentype}->[0];
-  if (defined $wanted) {
-    ## Remove the escape sequences for the wanted extension.  It doesn't
-    ## matter if the first valid extension is not the same as the actual
-    ## input file (ex. input = car.y and first ext is .yy).  The extension
-    ## is immediately removed in generated_filenames.
-    $wanted =~ s/\\//g;
-  }
-  else {
-    $wanted = '';
-  }
-
   ## Get the generated filenames
   my(@added) = ();
-  foreach my $file (@$arr) {
-    foreach my $gen ($self->generated_filenames($file, $gentype, $tag,
-                                                "$file$wanted", 1)) {
+  foreach my $file (keys %$arr) {
+    foreach my $gen ($self->generated_filenames($$arr{$file}, $gentype,
+                                                $tag, $file, 1)) {
       $self->list_generated_file($gentype, $tag, \@added, $gen, $file);
     }
   }
@@ -2723,17 +2711,12 @@ sub generated_source_listed {
     my($comps) = $$names{$name};
     foreach my $key (keys %$comps) {
       foreach my $val (@{$$comps{$key}}) {
-        foreach my $i (@$arr) {
-          foreach my $wanted (@$sext) {
-            ## Remove any escape characters from the extension
-            my($oext) = $wanted;
-            $oext =~ s/\\//g;
-            foreach my $re ($self->generated_filenames($i, $gent,
-                                                       $tag, "$i$oext")) {
-              $re = $self->escape_regex_special($re);
-              if ($val =~ /$re$/) {
-                return 1;
-              }
+        foreach my $i (keys %$arr) {
+          foreach my $re ($self->generated_filenames($$arr{$i}, $gent,
+                                                     $tag, $i)) {
+            $re = $self->escape_regex_special($re);
+            if ($val =~ /$re$/) {
+              return 1;
             }
           }
         }
@@ -2760,7 +2743,7 @@ sub list_default_generated {
     ## need to add the generated files
     if (defined $self->{$gentype}) {
       ## Build up the list of files
-      my(@arr)   = ();
+      my(%arr)   = ();
       my($names) = $self->{$gentype};
       my($group) = undef;
       foreach my $name (keys %$names) {
@@ -2772,10 +2755,9 @@ sub list_default_generated {
           }
 
           foreach my $val (@$array) {
-            my($f) = $self->remove_wanted_extension(
+            $arr{$val} = $self->remove_wanted_extension(
                               $val,
                               $self->{'valid_components'}->{$gentype});
-            push(@arr, $f);
           }
         }
       }
@@ -2786,9 +2768,9 @@ sub list_default_generated {
         if (!$specialComponents{$type} ||
             !$self->{'special_supplied'}->{$type}) {
           if (!$self->generated_source_listed(
-                                $gentype, $type, \@arr,
+                                $gentype, $type, \%arr,
                                 $self->{'valid_components'}->{$gentype})) {
-            $self->add_generated_files($gentype, $type, $group, \@arr);
+            $self->add_generated_files($gentype, $type, $group, \%arr);
           }
         }
       }
@@ -4577,11 +4559,10 @@ sub remove_wanted_extension {
   my($self)  = shift;
   my($name)  = shift;
   my($array) = shift;
-  my($orig)  = $name;
 
   foreach my $wanted (@$array) {
     if ($name =~ s/$wanted$//) {
-      last;
+      return $name;
     }
   }
 
@@ -4589,10 +4570,7 @@ sub remove_wanted_extension {
   ## extensions specified by the custom definition, we need
   ## to remove the extension or else this file will not be
   ## added to the project.
-  if ($name eq $orig) {
-    $name =~ s/\.[^\.]+$//;
-  }
-
+  $name =~ s/\.[^\.]+$//;
   return $name;
 }
 

@@ -1304,12 +1304,13 @@ sub non_intersection {
 }
 
 
-sub indirect_depdency {
+sub indirect_dependency {
   my($self)   = shift;
   my($dir)    = shift;
   my($ccheck) = shift;
   my($cfile)  = shift;
 
+  $self->{'indirect_checked'}->{$ccheck} = 1;
   if (index($self->{'project_info'}->{$ccheck}->[1], $cfile) >= 0) {
     return 1;
   }
@@ -1318,7 +1319,8 @@ sub indirect_depdency {
                          $self->{'project_info'}->{$ccheck}->[1]);
     foreach my $dep (@$deps) {
       if (defined $self->{'project_info'}->{"$dir$dep"} &&
-          $self->indirect_depdency($dir, "$dir$dep", $cfile)) {
+          !defined $self->{'indirect_checked'}->{"$dir$dep"} &&
+          $self->indirect_dependency($dir, "$dir$dep", $cfile)) {
         return 1;
       }
     }
@@ -1392,8 +1394,9 @@ sub add_implicit_project_dependencies {
           ## that we were going to append the dependency value, then
           ## ignore the generated dependency.  It is redundant and
           ## quite possibly wrong.
+          $self->{'indirect_checked'} = {};
           if (!defined $self->{'project_info'}->{$ccheck} ||
-              !$self->indirect_depdency($dir, $ccheck, $cfile)) {
+              !$self->indirect_dependency($dir, $ccheck, $cfile)) {
             ## Append the dependency
             $self->{'project_info'}->{$file}->[1] .= " $append";
           }
