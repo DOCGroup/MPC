@@ -22,6 +22,12 @@ sub get_quote_symbol {
 }
 
 
+sub get_escaped_quote_symbol {
+  #my($self) = shift;
+  return '&quot;';
+}
+
+
 sub get_gt_symbol {
   #my($self) = shift;
   return '&gt;';
