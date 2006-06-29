@@ -167,19 +167,20 @@ postbuild       If this is defined in the project, the value will be
                 template parser. In addition, the following pseudo variables
                 can be used.
 
-                  <%cat%>   - Platform non-specific command to cat a file.
-                  <%cmp%>   - Platform non-specific compare command.
-                  <%cp%>    - Platform non-specific copy command.
-                  <%mkdir%> - Platform non-specific mkdir command.
-                  <%mv%>    - Platform non-specific move command.
-                  <%os%>    - Returns either win32 or unix.
-                  <%rm%>    - Platform non-specific delete command.
-                  <%nul%>   - Platform non-specific null device.
-                  <%gt%>    - Project non-specific greater than sign.
-                  <%lt%>    - Project non-specific less than sign.
-                  <%and%>   - Project non-specific and sign.
-                  <%or%>    - Project non-specific or sign.
-                  <%quote%> - Project non-specific double quote.
+                  <%cat%>    - Platform non-specific command to cat a file.
+                  <%cmp%>    - Platform non-specific compare command.
+                  <%cp%>     - Platform non-specific copy command.
+                  <%mkdir%>  - Platform non-specific mkdir command.
+                  <%mv%>     - Platform non-specific move command.
+                  <%os%>     - Returns either win32 or unix.
+                  <%rm%>     - Platform non-specific delete command.
+                  <%nul%>    - Platform non-specific null device.
+                  <%gt%>     - Project non-specific greater than sign.
+                  <%lt%>     - Project non-specific less than sign.
+                  <%and%>    - Project non-specific and sign.
+                  <%or%>     - Project non-specific or sign.
+                  <%quote%>  - Project non-specific double quote.
+                  <%equote%> - Project non-specific escaped quote.
 prebuild        This is similar to postbuild except that it will be
                 performed before the build instead of after.
 recurse         If set to 1, MPC will recurse into directories listed under
