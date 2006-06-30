@@ -58,8 +58,6 @@ sub write_workspace {
                                 '',
                                 $guid,
                                 'website',
-                                'Debug|',
-                                'Release|',
                                 'Debug|Any CPU',
                                 'Release|Any CPU');
 

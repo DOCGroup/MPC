@@ -2082,7 +2082,7 @@ sub add_generated_files {
   foreach my $file (keys %$arr) {
     foreach my $gen ($self->generated_filenames($$arr{$file}, $gentype,
                                                 $tag, $file, 1)) {
-      $self->list_generated_file($gentype, $tag, \@added, $gen, $file);
+      $self->list_generated_file($gentype, $tag, \@added, $gen, $$arr{$file});
     }
   }
 
