@@ -1,3 +1,16 @@
+Fri Jun 30 15:32:12 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug re-introduced by my change from Tue Jun 27 17:33:59
+          UTC 2006.  If gendir = . is used in a custom build rule, the
+          generated files would not have the needed ./ prepended to the file
+          name.
+
+        * modules/VC8WebWorkspaceCreator.pm:
+
+          Removed invalid configurations for the web workspace.
+
 Thu Jun 29 16:33:13 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * README:
