@@ -942,7 +942,7 @@ sub handle_scoped_unknown {
           }
           $line =~ s/\$\w+/$val/;
         }
-        $self->{'expanded'}->{$type} = $line if ($ok);
+        $self->{'expanded'}->{$type} = $self->process_special($line) if ($ok);
       }
       return 1, undef;
     }
@@ -1024,10 +1024,18 @@ sub process_component_line {
         if (!defined $self->{'custom_special_output'}->{$tag}) {
           $self->{'custom_special_output'}->{$tag} = {};
         }
+        ## We can not convert slashes here as we do for dependencies
+        ## (below).  The files specified here need to retain the forward
+        ## slashes as they are used elsewhere.
         $self->{'custom_special_output'}->{$tag}->{$key} = $self->create_array($out);
       }
       if (defined $dep) {
         $self->{'custom_special_depend'}->{$key} = $self->create_array($dep);
+        if ($self->{'convert_slashes'}) {
+          foreach my $depfile (@{$self->{'custom_special_depend'}->{$key}}) {
+            $depfile =~ s/\//\\/g;
+          }
+        }
       }
     }
 
@@ -1966,6 +1974,7 @@ sub add_explicit_output {
               }
 
               push(@files, "$dir$check");
+              $files[$#files] =~ s/\//\\/g if ($self->{'convert_slashes'});
               last;
             }
           }
@@ -2503,6 +2512,114 @@ sub sift_default_file_list {
 }
 
 
+sub correct_generated_files {
+  my($self)    = shift;
+  my($defcomp) = shift;
+  my($exts)    = shift;
+  my($tag)     = shift;
+  my($array)   = shift;
+
+  if (defined $sourceComponents{$tag}) {
+    my($grtag) = $grouped_key . $tag;
+    foreach my $gentype (keys %{$self->{'generated_exts'}}) {
+      ## If we are auto-generating the source_files, then
+      ## we need to make sure that any generated source
+      ## files that are added are put at the front of the list.
+      my($newgroup) = undef;
+      my(@input) = ();
+
+      ## If I call keys %{$self->{$gentype}} using perl 5.6.1
+      ## it returns nothing.  I have to put it in an
+      ## intermediate variable to ensure that I get the keys.
+      my($names) = $self->{$gentype};
+      foreach my $name (keys %$names) {
+        foreach my $key (keys %{$$names{$name}}) {
+          push(@input, @{$$names{$name}->{$key}});
+          if ($key ne $defgroup) {
+            $newgroup = $key;
+          }
+        }
+      }
+
+      if (defined $input[0]) {
+        my(@front) = ();
+        my(@copy)  = @$array;
+
+        @$array = ();
+        foreach my $input (@input) {
+          my($part) = $self->remove_wanted_extension(
+                         $input,
+                         $self->{'valid_components'}->{$gentype});
+
+          my(@files) = $self->generated_filenames($part, $gentype,
+                                                  $tag, $input);
+          if (defined $copy[0]) {
+            my($found) = 0;
+            foreach my $file (@files) {
+              for(my $i = 0; $i < scalar(@copy); $i++) {
+                my($re) = $self->escape_regex_special($copy[$i]);
+                if ($file eq $copy[$i] || $file =~ /[\/\\]$re$/) {
+                  ## No need to check for previously added files
+                  ## here since there are none.
+                  $found = 1;
+                  push(@front, $file);
+                  splice(@copy, $i, 1);
+                  last;
+                }
+              }
+              if ($found) {
+                last;
+              }
+            }
+            if (!$found) {
+              my($ext) = $$exts[0];
+              foreach my $file (@files) {
+                if ($file =~ /$ext$/) {
+                  push(@front, $file);
+                }
+              }
+            }
+          }
+          else {
+            my($ext) = $$exts[0];
+            foreach my $file (@files) {
+              if ($file =~ /$ext$/) {
+                push(@front, $file);
+              }
+            }
+          }
+        }
+        if (defined $copy[0]) {
+          ## No need to check for previously added files
+          ## here since there are none.
+          push(@$array, @copy);
+          if (defined $self->get_assignment($grtag)) {
+            $self->process_assignment_add($grtag, $defgroup);
+          }
+        }
+        if (defined $front[0]) {
+          if (defined $newgroup) {
+            if (defined $copy[0]) {
+              $self->process_assignment_add($grtag, $defgroup);
+            }
+            if (!defined $self->{$tag}->{$defcomp}->{$newgroup}) {
+              $self->{$tag}->{$defcomp}->{$newgroup} = \@front;
+            }
+            else {
+              push(@{$self->{$tag}->{$defcomp}->{$newgroup}}, @front);
+            }
+            $self->process_assignment_add($grtag, $newgroup);
+          }
+          else {
+            unshift(@$array, @front);
+          }
+        }
+      }
+    }
+  }
+}
+
+
 sub generate_default_components {
   my($self)    = shift;
   my($files)   = shift;
@@ -2512,6 +2629,7 @@ sub generate_default_components {
   my($pchh)    = $self->get_assignment('pch_header');
   my($pchc)    = $self->get_assignment('pch_source');
   my($recurse) = $self->get_assignment('recurse');
+  my($defcomp) = $self->get_default_component_name();
 
   ## The order of @tags does make a difference in the way that generated
   ## files get added.  And since the tags are user definable, there may be
@@ -2533,16 +2651,22 @@ sub generate_default_components {
               }
               else {
                 my(@built) = ();
+                my($alldirs) = 1;
                 foreach my $file (@$array) {
                   if (-d $file) {
                     $self->sift_default_file_list($tag, $file, \@built,
                                                   $exts, $recurse, $pchh, $pchc);
                   }
                   else {
+                    $alldirs = undef;
                     if (!$self->already_added(\@built, $file)) {
                       push(@built, $file);
                     }
                   }
+                }
+                if ($alldirs) {
+                   $self->correct_generated_files($defcomp, $exts,
+                                                  $tag, \@built);
                 }
                 $$comps{$comp} = \@built;
               }
@@ -2551,7 +2675,6 @@ sub generate_default_components {
         }
         else {
           ## Generate default values for undefined tags
-          my($defcomp) = $self->get_default_component_name();
           $self->{$tag} = {};
           my($comps) = {};
           $self->{$tag}->{$defcomp} = $comps;
@@ -2562,104 +2685,7 @@ sub generate_default_components {
 
           if (!defined $specialComponents{$tag}) {
             $self->sift_files($files, $exts, $pchh, $pchc, $tag, $array);
-            if (defined $sourceComponents{$tag}) {
-              my($grtag) = $grouped_key . $tag;
-              foreach my $gentype (keys %{$self->{'generated_exts'}}) {
-                ## If we are auto-generating the source_files, then
-                ## we need to make sure that any generated source
-                ## files that are added are put at the front of the list.
-                my($newgroup) = undef;
-                my(@input) = ();
-
-                ## If I call keys %{$self->{$gentype}} using perl 5.6.1
-                ## it returns nothing.  I have to put it in an
-                ## intermediate variable to ensure that I get the keys.
-                my($names) = $self->{$gentype};
-                foreach my $name (keys %$names) {
-                  foreach my $key (keys %{$$names{$name}}) {
-                    push(@input, @{$$names{$name}->{$key}});
-                    if ($key ne $defgroup) {
-                      $newgroup = $key;
-                    }
-                  }
-                }
-
-                if (defined $input[0]) {
-                  my(@front) = ();
-                  my(@copy)  = @$array;
-
-                  @$array = ();
-                  foreach my $input (@input) {
-                    my($part) = $self->remove_wanted_extension(
-                                   $input,
-                                   $self->{'valid_components'}->{$gentype});
-
-                    my(@files) = $self->generated_filenames($part, $gentype,
-                                                            $tag, $input);
-                    if (defined $copy[0]) {
-                      my($found) = 0;
-                      foreach my $file (@files) {
-                        for(my $i = 0; $i < scalar(@copy); $i++) {
-                          my($re) = $self->escape_regex_special($copy[$i]);
-                          if ($file eq $copy[$i] || $file =~ /[\/\\]$re$/) {
-                            ## No need to check for previously added files
-                            ## here since there are none.
-                            $found = 1;
-                            push(@front, $file);
-                            splice(@copy, $i, 1);
-                            last;
-                          }
-                        }
-                        if ($found) {
-                          last;
-                        }
-                      }
-                      if (!$found) {
-                        my($ext) = $$exts[0];
-                        foreach my $file (@files) {
-                          if ($file =~ /$ext$/) {
-                            push(@front, $file);
-                          }
-                        }
-                      }
-                    }
-                    else {
-                      my($ext) = $$exts[0];
-                      foreach my $file (@files) {
-                        if ($file =~ /$ext$/) {
-                          push(@front, $file);
-                        }
-                      }
-                    }
-                  }
-                  if (defined $copy[0]) {
-                    ## No need to check for previously added files
-                    ## here since there are none.
-                    push(@$array, @copy);
-                    if (defined $self->get_assignment($grtag)) {
-                      $self->process_assignment_add($grtag, $defgroup);
-                    }
-                  }
-                  if (defined $front[0]) {
-                    if (defined $newgroup) {
-                      if (defined $copy[0]) {
-                        $self->process_assignment_add($grtag, $defgroup);
-                      }
-                      if (!defined $self->{$tag}->{$defcomp}->{$newgroup}) {
-                        $self->{$tag}->{$defcomp}->{$newgroup} = \@front;
-                      }
-                      else {
-                        push(@{$self->{$tag}->{$defcomp}->{$newgroup}}, @front);
-                      }
-                      $self->process_assignment_add($grtag, $newgroup);
-                    }
-                    else {
-                      unshift(@$array, @front);
-                    }
-                  }
-                }
-              }
-            }
+            $self->correct_generated_files($defcomp, $exts, $tag, $array);
           }
         }
       }
@@ -3581,6 +3607,7 @@ sub get_custom_value {
           }
           if (!$found) {
             push(@outputs, $file);
+            $outputs[$#outputs] =~ s/\//\\/g if ($self->{'convert_slashes'});
           }
         }
       }
