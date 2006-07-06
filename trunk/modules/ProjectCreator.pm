@@ -2625,15 +2625,27 @@ sub generate_default_components {
   my($files)   = shift;
   my($passed)  = shift;
   my($vc)      = $self->{'valid_components'};
-  my(@tags)    = (defined $passed ? $passed : keys %$vc);
+  my($ovc)     = $language{$self->get_language()}->[0];
+  my(@tags)    = (defined $passed ? $passed :
+                                    sort { if (defined $$ovc{$a}) {
+                                             if (!defined $$ovc{$b}) {
+                                               return 1;
+                                             }
+                                           }
+                                           elsif (defined $$ovc{$b}) {
+                                             return -1;
+                                           }
+                                           return $a cmp $b;
+                                         } keys %$vc);
   my($pchh)    = $self->get_assignment('pch_header');
   my($pchc)    = $self->get_assignment('pch_source');
   my($recurse) = $self->get_assignment('recurse');
   my($defcomp) = $self->get_default_component_name();
 
   ## The order of @tags does make a difference in the way that generated
-  ## files get added.  And since the tags are user definable, there may be
-  ## a problem with that.
+  ## files get added.  Hence the sort call on the valid component keys to
+  ## ensure that user defined types come first.  There still may be an
+  ## issue if a user defined type generates another user defined type.
   foreach my $tag (@tags) {
     if (!defined $self->{'generated_exts'}->{$tag} ||
         $self->{'generated_exts'}->{$tag}->{'automatic'}) {

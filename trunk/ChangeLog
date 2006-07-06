@@ -1,3 +1,17 @@
+Thu Jul  6 14:54:01 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          A problem could arise when generating the default component lists.
+          It all depended upon the order of a 'keys' call for the valid
+          component types.  I first noticed this in 2004, but with Perl 5.8,
+          the keys always came out such that everything just worked.
+          However, with Perl 5.6.1 the keys do not come out as required.
+          This requirement is that user defined component types must be
+          processed before built-in types, most importantly Source_Files.  I
+          now sort the keys such that the user defined component types are
+          processed before built-in types.
+
 Wed Jul  5 17:11:28 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
