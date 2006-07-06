@@ -1,0 +1,23 @@
+// -*- MPC -*-
+// $Id$
+
+conditional_include "common"
+conditional_include "windowscommon"
+
+configurations     = Debug Release
+platforms          = AnyCPU
+common_defines     = TRACE
+
+Release {
+  optimize         = 1
+  defines          =
+  output_dir       = Release
+}
+
+Debug {
+  optimize         =
+  defines          = DESIGN DEBUG
+  output_dir       = Debug
+}
+
+conditional_include "user_vc8csharp"
