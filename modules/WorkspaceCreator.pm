@@ -106,6 +106,11 @@ sub new {
   $self->{'scoped_basedir'}      = undef;
   $self->{'relative'}            = $relative;
   $self->{'generate_dot'}        = $gendot;
+  $self->{'verbose_ordering'}    = (defined $ENV{MPC_VERBOSE_ORDERING});
+  if ($self->{'verbose_ordering'}) {
+    print "NOTE: MPC_VERBOSE_ORDERING is deprecated.  See the USAGE ",
+          "file for details.\n";
+  }
 
   if (defined $$exclude[0]) {
     my($type) = $self->{'wctype'};
@@ -130,6 +135,13 @@ sub new {
                    "no effect on the " . $self->{'wctype'} . " type.");
   }
   return $self;
+}
+
+
+sub set_verbose_ordering {
+  my($self)  = shift;
+  my($value) = shift;
+  $self->{'verbose_ordering'} = $value;
 }
 
 
@@ -2075,7 +2087,7 @@ sub get_validated_ordering {
               }
             }
             if (!$found) {
-              if (defined $ENV{MPC_VERBOSE_ORDERING}) {
+              if ($self->{'verbose_ordering'}) {
                 $self->warning("'$name' references '$dep' which has " .
                                "not been processed.");
               }

@@ -59,6 +59,7 @@ my(%keywords) = ('if'              => 0,
                  'compares'        => 5,
                  'duplicate_index' => 5,
                  'transdir'        => 5,
+                 'has_extension'   => 5,
                 );
 
 my(%target_type_vars) = ('type_is_static'   => 1,
@@ -770,6 +771,42 @@ sub handle_ends_with {
 
   if (defined $str) {
     my($val) = $self->doif_ends_with([$str]);
+
+    if (defined $val) {
+      $self->append_current($val);
+    }
+    else {
+      $self->append_current(0);
+    }
+  }
+}
+
+
+sub get_has_extension {
+  my($self) = shift;
+  my($str)  = shift;
+  return $self->doif_has_extension([$str]);
+}
+
+
+sub doif_has_extension {
+  my($self) = shift;
+  my($val)  = shift;
+
+  if (defined $val) {
+    return ($self->tp_basename(
+                $self->get_value_with_default("@$val")) =~ /\.[^\.]+$/);
+  }
+  return undef;
+}
+
+
+sub handle_has_extension {
+  my($self) = shift;
+  my($str)  = shift;
+
+  if (defined $str) {
+    my($val) = $self->doif_has_extension([$str]);
 
     if (defined $val) {
       $self->append_current($val);
