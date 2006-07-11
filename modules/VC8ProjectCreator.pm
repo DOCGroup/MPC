@@ -40,6 +40,13 @@ my(%config) = ('vcversion' => '8.00',
 # Subroutine Section
 # ************************************************************
 
+sub require_dependencies {
+  ## With vc8, they fixed it such that static libraries that depend on
+  ## other static libraries will not be included into the target library
+  ## by default.  Way to go Microsoft!
+  return 1;
+}
+
 sub post_file_creation {
   my($self) = shift;
   my($file) = shift;
