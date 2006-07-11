@@ -35,29 +35,18 @@ my($logging)   = 'MPC_LOGGING';
 sub new {
   my($class) = shift;
   my($inc)   = shift;
-  my($log)   = $ENV{$logging};
 
   ## The order of these array variables must correspond to the
   ## order of the parameters to OutputMessage::new().
-  my($params) = (defined $ENV{$silent} ||
-                 defined $log ? [0, 0, 0, 0] : [0, 1, 1, 1]);
-
-  if (defined $log) {
-    if ($log =~ /info(rmation)?\s*=\s*(\d+)/i) {
-      $$params[0] = $2;
-    }
-    if ($log =~ /warn(ing)?\s*=\s*(\d+)/i) {
-      $$params[1] = $2;
-    }
-    if ($log =~ /diag(nostic)?\s*=\s*(\d+)/i) {
-      $$params[2] = $2;
-    }
-    if ($log =~ /detail(s)?\s*=\s*(\d+)/i) {
-      $$params[3] = $2;
-    }
+  my($params) = (defined $ENV{$silent} ? [0, 0, 0, 0, 0] : undef);
+  if (defined $params) {
+    print "NOTE: $silent is deprecated.  See the USAGE file for details.\n";
   }
-
-  my($self) = $class->SUPER::new(@$params);
+  my($self)  = $class->SUPER::new($params);
+  if (defined $ENV{$logging}) {
+    print "NOTE: $logging is deprecated.  See the USAGE file for details.\n";
+    OutputMessage::set_levels($ENV{$logging});
+  }
 
   $self->{'line_number'} = 0;
   $self->{'include'}     = $inc;
@@ -97,6 +86,7 @@ sub read_file {
 
   $self->{'line_number'} = 0;
   if (open($ih, $input)) {
+    $self->debug("Open $input");
     if ($cache) {
       ## If we don't have an array for this file, then start one
       if (!defined $filecache{$input}) {
@@ -126,6 +116,7 @@ sub read_file {
         }
       }
     }
+    $self->debug("Close $input");
     close($ih);
   }
   else {
