@@ -117,6 +117,9 @@
 <%if(ignore_default_library_names)%>
 				IgnoreDefaultLibraryNames="<%foreach(ignore_default_library_names)%><%ignore_default_library_name%><%fornotlast(";")%><%endfor%>"
 <%endif%>
+<%if(ModuleDefinitionFile)%>
+                                ModuleDefinitionFile="<%ModuleDefinitionFile%>"
+<%endif%>
 				GenerateDebugInformation="TRUE"
 <%if(pdbl)%>
 <%if(sharedname)%>
