@@ -1,3 +1,13 @@
+Tue Jul 11 14:23:41 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+        * modules/VC8ProjectCreator.pm:
+
+          It has been determined that when building static projects with
+          vc8, the inter-project dependencies between static libraries are
+          handled correctly.  The dependee is not included in the dependent
+          as is done in em3, vc6, vc7 and vc71.
+
 Tue Jul 11 11:42:25 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * USAGE:
