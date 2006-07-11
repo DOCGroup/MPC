@@ -126,16 +126,40 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%endif%>
 <%endif%>
 <%if(exename)%>
-<%if(linkflags)%>
+<%if(linkflags || libpaths)%>
 
+<%if(contains(libpaths, \.\./))%>
+<%foreach(libpaths)%>
+<%if(contains(libpath, \.\./))%>
+<%libpath%>:
+	mkdir -p <%libpath%>
+
+<%endif%>
+<%endfor%>
+<%normalize(exename)%>_DEPENDENCIES += \
+ <%foreach(libpaths)%><%if(contains(libpath, \.\./))%> <%libpath%><%endif%><%endfor%>
+
+<%endif%>
 <%normalize(exename)%>_LDFLAGS = \
- <%linkflags%>
+ <%linkflags%><%foreach(libpaths)%> -L<%libpath%><%endfor%>
 <%endif%>
 <%else%>
-<%if(linkflags || am_version && install_this_target || am_release && install_this_target)%>
+<%if(linkflags || libpaths || am_version && install_this_target || am_release && install_this_target)%>
 
+<%if(contains(libpaths, \.\./))%>
+<%foreach(libpaths)%>
+<%if(contains(libpath, \.\./))%>
+<%libpath%>:
+	mkdir -p <%libpath%>
+
+<%endif%>
+<%endfor%>
+lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_DEPENDENCIES += \
+ <%foreach(libpaths)%><%if(contains(libpath, \.\./))%> <%libpath%><%endif%><%endfor%>
+
+<%endif%>
 lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LDFLAGS = \
-<%if(am_version && install_this_target)%> -version-number <%am_version%><%else%><%if(am_release && install_this_target)%> -release <%am_release%><%endif%><%endif%><%if(linkflags)%> <%linkflags%><%endif%>
+<%if(am_version && install_this_target)%> -version-number <%am_version%><%else%><%if(am_release && install_this_target)%> -release <%am_release%><%endif%><%endif%><%if(linkflags)%> <%linkflags%><%endif%><%foreach(libpaths)%> -L<%libpath%><%endfor%>
 <%endif%>
 <%endif%>
 <%if(exename)%>

@@ -216,7 +216,7 @@ sub write_comps {
             $in_condition--;
           }
 
-          if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS|LIBADD|LDADD))\s*\+=\s*/
+          if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS|LIBADD|LDADD|DEPENDENCIES))\s*\+=\s*/
               || /(^CLEANFILES)\s*\+=\s*/
               || /(^EXTRA_DIST)\s*\+=\s*/
              ) {
@@ -346,7 +346,7 @@ sub write_comps {
             }
           }
 
-          if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS|LIBADD|LDADD))\s*\+=\s*/
+          if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS|LIBADD|LDADD|DEPENDENCIES))\s*\+=\s*/
               || /(^CLEANFILES)\s*\+=\s*/
               || /(^EXTRA_DIST)\s*\+=\s*/
              ) {

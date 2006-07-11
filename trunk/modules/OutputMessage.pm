@@ -16,28 +16,45 @@ use strict;
 # Data Section
 # ************************************************************
 
-my($information) = 'INFORMATION: ';
-my($warning)     = 'WARNING: ';
-my($error)       = 'ERROR: ';
+my($debugtag) = 'DEBUG: ';
+my($infotag)  = 'INFORMATION: ';
+my($warntag)  = 'WARNING: ';
+my($errortag) = 'ERROR: ';
+
+my($debug)       = 0;
+my($information) = 0;
+my($warnings)    = 1;
+my($diagnostic)  = 1;
+my($details)     = 1;
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub new {
-  my($class)   = shift;
-  my($info)    = shift;
-  my($warn)    = shift;
-  my($diag)    = shift;
-  my($details) = shift;
-  my($self)    = bless {'information' => $info,
-                        'warnings'    => $warn,
-                        'diagnostic'  => $diag,
-                        'details'     => $details,
-                       }, $class;
+  my($class)  = shift;
+  my($params) = shift;
+  my($self)   = bless {
+                      }, $class;
+
+  if (defined $params) {
+    ($debug, $information, $warnings, $diagnostic, $details) = @$params;
+  }
   return $self;
 }
 
+
+sub set_levels {
+  my($str) = shift;
+
+  if (defined $str) {
+    $debug       = ($str =~ /debug\s*=\s*(\d+)/i ? $1 : 0);
+    $details     = ($str =~ /detail(s)?\s*=\s*(\d+)/i ? $2 : 0);
+    $diagnostic  = ($str =~ /diag(nostic)?\s*=\s*(\d+)/i ? $2 : 0);
+    $information = ($str =~ /info(rmation)?\s*=\s*(\d+)/i ? $2 : 0);
+    $warnings    = ($str =~ /warn(ing)?\s*=\s*(\d+)/i ? $2 : 0);
+  }
+}
 
 sub split_message {
   my($self) = shift;
@@ -50,43 +67,46 @@ sub split_message {
 
 
 sub details {
-  my($self) = shift;
-  my($msg)  = shift;
-
-  if ($self->{'details'}) {
+  if ($details) {
+    my($self) = shift;
+    my($msg)  = shift;
     print "$msg\n";
   }
 }
 
 
 sub diagnostic {
-  my($self) = shift;
-  my($msg)  = shift;
-
-  if ($self->{'diagnostic'}) {
+  if ($diagnostic) {
+    my($self) = shift;
+    my($msg)  = shift;
     print "$msg\n";
   }
 }
 
 
-sub information {
-  my($self) = shift;
-  my($msg)  = shift;
+sub debug {
+  if ($debug) {
+    my($self) = shift;
+    my($msg)  = shift;
+    print "$debugtag$msg\n";
+  }
+}
 
-  if ($self->{'information'}) {
-    print $information . $self->split_message($msg, ' ' x
-                                              length($information));
+
+sub information {
+  if ($information) {
+    my($self) = shift;
+    my($msg)  = shift;
+    print $infotag . $self->split_message($msg, ' ' x length($infotag));
   }
 }
 
 
 sub warning {
-  my($self) = shift;
-  my($msg)  = shift;
-
-  if ($self->{'warnings'}) {
-    print $warning . $self->split_message($msg, ' ' x
-                                          length($warning));
+  if ($warnings) {
+    my($self) = shift;
+    my($msg)  = shift;
+    print $warntag . $self->split_message($msg, ' ' x length($warntag));
   }
 }
 
@@ -99,8 +119,8 @@ sub error {
   if (defined $pre) {
     print STDERR "$pre\n";
   }
-  print STDERR $error . $self->split_message($msg, ' ' x
-                                             length($error));
+  print STDERR $errortag . $self->split_message($msg, ' ' x
+                                                length($errortag));
 }
 
 
