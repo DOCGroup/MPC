@@ -1,3 +1,56 @@
+Tue Jul 11 11:42:25 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * USAGE:
+        * config/.cvsignore:
+        * modules/ConfigParser.pm:
+        * modules/Creator.pm:
+        * modules/Driver.pm:
+        * modules/OutputMessage.pm:
+        * modules/Parser.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Added the ability for MPC to be configured via two configuration
+          files.  The first configuration file, codebase.cfg, controls where
+          MPC looks for the second configuration file, MPC.cfg.  By default
+          it will look in $MPC_ROOT/config/MPC.cfg.  This configuration file
+          will replace all (but one) environment variables and allow for more
+          things to be controlled.
+
+          Use of the deprecated environment variables will result in
+          messages be printed to that effect.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+        * templates/automake.mpd:
+
+          Added the 'libpaths' setting to the automake template.  This also
+          required a code change due to the strictness of automake.  If the
+          libpath does not exist, the make will fail so I added the libpaths
+          as dependencies and we attempt to make the directories if they
+          don't exist.
+
+        * modules/TemplateParser.pm:
+        * templates/em3.mpd:
+        * templates/ghs.mpd:
+        * templates/vc6.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Fixed additional dependencies specified by the custom definition
+          'dependent' setting.  Previously, if a dependent did not end in
+          .pl or .pm a .exe was appended.  Now, if the dependent does not
+          have an extension a .exe is appended.
+
+          Also, for vc*.mpd, if multiple commands make up a custom command
+          (through postcommand or pch_postrule) they are chained together
+          with && to ensure that all commands are run.
+
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+        * templates/vc8csharp.mpd:
+
+          Added or modified the custom section such that custom defintions
+          without commands are still added to the project.
+
 Tue Jul 11 00:48:01 UTC 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc7.mpd:

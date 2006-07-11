@@ -207,16 +207,82 @@ file) is not provided, the project creator will attempt to create a default
 project in the directory from which the script was started.
 
 
+MPC Codebase Configuration File
+-------------------------------
+This configuration file can be used to specify alternate locations for the
+MPC Configuration File.  If a base.cfg is found underneath the 'config'
+directory where MPC is executed, it will be read to determine the location
+of MPC.cfg based on the directory in which MPC was started.
+
+For example, if $MPC_ROOT/mwc.pl is run under /foo/bar_root/src and
+$MPC_ROOT/config/codebase.cfg contained:
+
+/foo/bar_root = /foo/bar_root/MPC/config
+
+MPC would attempt to open and read /foo/bar_root/MPC/config/MPC.cfg as the
+MPC Configuration File.  If the codebase configuration file is not present,
+MPC will try to use $MPC_ROOT/config/MPC.cfg as the MPC Configuration File.
+
+
+MPC Configuration File
+----------------------
+In an effort to move away from the use of environment variables, a
+configuration file has been introduced.  The configuration file (MPC.cfg)
+can contain settings to provide command line options, control logging and
+direct MPC to dynamic project types.
+
+The following keywords are allowed in the configuration file, which will be
+read from the 'config' directory of MPC.
+
+command_line     - Provide additional command line options to MPC.  The
+                   value of this setting will be prepended to the options
+                   passed to mwc.pl or mpc.pl.
+dynamic_types    - This comma separated list points to directories in which
+                   MPC will search for Perl modules to implement additional
+                   MPC project tyeps, base projects or template files.  This
+                   setting can be used to augment or replace functionality
+                   in MPC.  For each suitable directory found, it will add a
+                   'modules' include path for Perl to find modules, add a
+                   'config' include path to locate base projects and a
+                   'template' include path to find MPC templates.
+includes         - Similar to the -include command line option, it adds the
+                   list of comma separated paths to the MPC include search
+                   paths.
+logging          - If this setting contains info=1, informational messages
+                   will be printed.  If it contains warn=1, warning messages
+                   will be printed.  If it contains diag=1, diagnostic
+                   messages will be printed.  And lastly, if it contains
+                   detail=1, detail messages will be printed.  If it
+                   contains none of these, MPC will not print out any
+                   information or warnings when processing projects or
+                   workspaces.  Errors are always printed if any are
+                   encountered.
+verbose_ordering - If this is set, mwc.pl will warn the user about
+                   references to projects in the 'after' keyword that have
+                   not been processed.
+
+Below is an example configuration file:
+
+// MPC configuration file
+dynamic_types = /builds/ACE_wrappers/bin/MakeProjectCreator
+logging = info=1 warn=1
+verbose_ordering = 1
+
+
 Environment Variables
 ---------------------
+
+MPC_DEPENDENCY_COMBINED_STATIC_LIBRARY - See the -static section above.
+
+The following environment variables are deprecated
+and will be removed in a future version of MPC
+--------------------------------------------------
 
 MPC_COMMANDLINE - The value of this environment variable will be prepended
 to the options passed to mwc.pl or mpc.pl (if any are passed).
 
 MPC_VERBOSE_ORDERING - If this is set, mwc.pl will warn the user about
 references to projects in the 'after' keyword that have not been processed.
-
-MPC_DEPENDENCY_COMBINED_STATIC_LIBRARY - See the -static section above.
 
 MPC_SILENT - If this is set, MPC will not print out any information or
 warnings when processing projects or workspaces.  Errors are always printed

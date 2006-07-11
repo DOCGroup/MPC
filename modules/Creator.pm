@@ -1008,4 +1008,10 @@ sub read_global_configuration {
 }
 
 
+sub set_verbose_ordering {
+  #my($self)  = shift;
+  #my($value) = shift;
+}
+
+
 1;

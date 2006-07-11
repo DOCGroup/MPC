@@ -15,6 +15,7 @@ use strict;
 use Options;
 use Parser;
 use Version;
+use ConfigParser;
 
 use vars qw(@ISA);
 @ISA = qw(Parser Options);
@@ -26,6 +27,13 @@ use vars qw(@ISA);
 my($index)    = 0;
 my(@progress) = ('|', '/', '-', '\\');
 my($cmdenv)   = 'MPC_COMMANDLINE';
+
+my(%valid_cfg) = ('command_line'     => 1,
+                  'dynamic_types'    => 1,
+                  'includes'         => 1,
+                  'logging'          => 1,
+                  'verbose_ordering' => 1,
+                 );
 
 # ************************************************************
 # Subroutine Section
@@ -48,6 +56,44 @@ sub new {
   $self->{'relorder'} = [];
 
   return $self;
+}
+
+
+sub locate_dynamic_directories {
+  my($self)   = shift;
+  my($dtypes) = shift;
+
+  if (defined $dtypes) {
+    my(@directories) = ();
+    foreach my $dir (split(/\s*,\s*/, $dtypes)) {
+      if (-d "$dir/modules" || -d "$dir/config" || -d "$dir/templates") {
+        push(@directories, $dir);
+      }
+    }
+    return \@directories;
+  }
+
+  return undef;
+}
+
+
+sub add_dynamic_creators {
+  my($self) = shift;
+  my($dirs) = shift;
+  my($type) = (index($self->{'creators'}->[0], 'Workspace') > 0 ?
+                             'WorkspaceCreator' : 'ProjectCreator');
+  foreach my $dir (@$dirs) {
+    my($fh) = new FileHandle();
+    if (opendir($fh, "$dir/modules")) {
+      foreach my $file (readdir($fh)) {
+        if ($file =~ /(.+$type)\.pm$/i) {
+          $self->debug("Pulling in $1\n");
+          push(@{$self->{'creators'}}, $1);
+        }
+      }
+      closedir($fh);
+    }
+  }
 }
 
 
@@ -113,9 +159,96 @@ sub optionError {
 }
 
 
-sub run {
+sub find_file {
+  my($self)     = shift;
+  my($includes) = shift;
+  my($file)     = shift;
+
+  foreach my $inc (@$includes) {
+    if (-r $inc . '/' . $file) {
+      $self->debug("$file found in $inc");
+      return $inc . '/' . $file;
+    }
+  }
+  return undef;
+}
+
+
+sub determine_cfg_file {
   my($self) = shift;
-  my(@args) = @_;
+  my($cfg)  = shift;
+  my($odir) = shift;
+
+  foreach my $name (@{$cfg->get_names()}) {
+    my($value) = $cfg->get_value($name);
+    if (index($odir, $name) == 0) {
+      return $value . '/MPC.cfg';
+    }
+  }
+
+  return undef;
+}
+
+
+sub run {
+  my($self)    = shift;
+  my(@args)    = @_;
+  my($cfgfile) = undef;
+
+  ## Save the original directory outside of the loop
+  ## to avoid calling it multiple times.
+  my($orig_dir) = $self->getcwd();
+
+  ## Read the code base config file from the config directory
+  ## under $MPC_ROOT
+  my($cbcfg)  = new ConfigParser();
+  my($cbfile) = "$self->{'basepath'}/config/base.cfg";
+  if (-r $cbfile) {
+    my($status, $error) = $cbcfg->read_file($cbfile);
+    if (!$status) {
+      $self->error("$error at line " . $cbcfg->get_line_number() .
+                   " of $cbfile");
+      return 1;
+    }
+    $cfgfile = $self->determine_cfg_file($cbcfg, $orig_dir);
+  }
+
+  ## If no MPC config file was found and
+  ## there is one in $MPC_ROOT/config, we will use that.
+  if (!defined $cfgfile) {
+    $cfgfile = $self->{'basepath'} . '/config/MPC.cfg';
+    $cfgfile = undef if (!-e $cfgfile);
+  }
+
+  ## Read the MPC config file
+  my($cfg) = new ConfigParser(\%valid_cfg);
+  if (defined $cfgfile) {
+    my($status, $error) = $cfg->read_file($cfgfile);
+    if (!$status) {
+      $self->error("$error at line " . $cfg->get_line_number() .
+                   " of $cfgfile");
+      return 1;
+    }
+    OutputMessage::set_levels($cfg->get_value('logging'));
+  }
+
+  $self->debug("CMD: $0 @ARGV");
+
+  ## After we read the config file, see if the user has provided
+  ## dynamic types
+  my($dynamic) = $self->locate_dynamic_directories(
+                          $cfg->get_value('dynamic_types'));
+  if (defined $dynamic) {
+    ## If so, add in the creators found in the dynamic directories
+    $self->add_dynamic_creators($dynamic);
+
+    ## Add the each dynamic path to the include paths
+    foreach my $dynpath (@$dynamic) {
+      unshift(@INC, $dynpath . '/modules');
+      unshift(@args, '-include', "$dynpath/config",
+                     '-include', "$dynpath/templates");
+    }
+  }
 
   ## Dynamically load in each perl module and set up
   ## the type tags and project creators
@@ -127,9 +260,26 @@ sub run {
 
   ## Before we process the arguments, we will prepend the $cmdenv
   ## environment variable.
-  if (defined $ENV{$cmdenv}) {
-    my($envargs) = $self->create_array($ENV{$cmdenv});
+  my($cmd) = $cfg->get_value('command_line');
+  if (!defined $cmd) {
+    $cmd = $ENV{$cmdenv};
+    if (defined $cmd) {
+      print "NOTE: $cmdenv is deprecated.  See the USAGE file for details.\n";
+    }
+  }
+  if (defined $cmd) {
+    my($envargs) = $self->create_array($cmd);
     unshift(@args, @$envargs);
+  }
+
+  ## Now add in the includes to the command line arguments.
+  ## It is done this way to allow the Options module to process
+  ## the include path as it does all others.
+  my($incs) = $cfg->get_value('includes');
+  if (defined $incs) {
+    foreach my $inc (split(/\s*,\s*/, $incs)) {
+      push(@args, '-include', $inc);
+    }
   }
 
   my($options) = $self->options($self->{'name'},
@@ -183,90 +333,88 @@ sub run {
     }
   }
 
+  ## Add the default include paths.  If the user has used the dynamic
+  ## types method of adding types to MPC, we need to push the paths
+  ## on.  Otherwise, we unshift them onto the front.
+  if ($self->{'path'} eq $self->{'basepath'}) {
+    push(@{$options->{'include'}}, $self->{'path'} . '/config',
+                                   $self->{'path'} . '/templates');
+  }
+  else {
+    unshift(@{$options->{'include'}}, $self->{'path'} . '/config',
+                                      $self->{'path'} . '/templates');
+  }
+
+  ## All includes (except the current directory) have been added by this time
+  $self->debug("INCLUDES: @{$options->{'include'}}");
+
   ## Set the global feature file
-  my($cgf) = '/config/global.features';
   my($global_feature_file) = (defined $options->{'gfeature_file'} &&
                               -r $options->{'gfeature_file'} ?
-                                 $options->{'gfeature_file'} :
-                                 -r $self->{'path'} . $cgf ?
-                                    $self->{'path'} . $cgf :
-                                    $self->{'basepath'} . $cgf
-                                 );
+                                 $options->{'gfeature_file'} : undef);
+  if (!defined $global_feature_file) {
+    my($gf) = 'global.features';
+    $global_feature_file = $self->find_file($options->{'include'}, $gf);
+    if (!defined $global_feature_file) {
+      $global_feature_file = $self->{'basepath'} . '/config/' . $gf;
+    }
+  }
 
   ## Set up default values
   if (!defined $options->{'input'}->[0]) {
     push(@{$options->{'input'}}, '');
   }
   if (!defined $options->{'feature_file'}) {
-    my($cdf) = '/config/default.features';
-    $options->{'feature_file'} = (-r $self->{'path'} . $cdf ?
-                                     $self->{'path'} . $cdf :
-                                     -r $self->{'basepath'} . $cdf ?
-                                        $self->{'basepath'} . $cdf :
-                                        undef);
+    $options->{'feature_file'} = $self->find_file($options->{'include'},
+                                                  'default.features');
   }
   if (!defined $options->{'global'}) {
-    my($cgm) = '/config/global.mpb';
-    $options->{'global'} = (-r $self->{'path'} . $cgm ?
-                                     $self->{'path'} . $cgm :
-                                     -r $self->{'basepath'} . $cgm ?
-                                        $self->{'basepath'} . $cgm :
-                                        undef);
+    $options->{'global'} = $self->find_file($options->{'include'},
+                                            'global.mpb');
   }
-  ## Save the original directory outside of the loop
-  ## to avoid calling it multiple times.
-  my($orig_dir) = $self->getcwd();
-
-  ## Always add the default include paths
-  unshift(@{$options->{'include'}}, $orig_dir);
-  unshift(@{$options->{'include'}}, $self->{'path'} . '/templates');
-  unshift(@{$options->{'include'}}, $self->{'path'} . '/config');
-
   if ($options->{'reldefs'}) {
     ## Only try to read the file if it exists
-    my($cdr) = '/config/default.rel';
-    my($rel) = (-r $self->{'path'} . $cdr ?
-                   $self->{'path'} . $cdr :
-                   -r $self->{'basepath'} . $cdr ?
-                      $self->{'basepath'} . $cdr :
-                      undef);
+    my($rel) = $self->find_file($options->{'include'}, 'default.rel');
     if (defined $rel) {
       my($srel, $errorString) = $self->read_file($rel);
       if (!$srel) {
         $self->error("$errorString\nin $rel");
         return 1;
       }
-    }
 
-    foreach my $key (@{$self->{'relorder'}}) {
-      if (defined $ENV{$key} &&
-          !defined $options->{'relative'}->{$key}) {
-        $options->{'relative'}->{$key} = $ENV{$key};
-      }
-      if (defined $self->{'reldefs'}->{$key} &&
-          !defined $options->{'relative'}->{$key}) {
-        my($value) = $self->{'reldefs'}->{$key};
-        if ($value =~ /\$(\w+)(.*)?/) {
-          my($var)   = $1;
-          my($extra) = $2;
-          $options->{'relative'}->{$key} =
-                     (defined $options->{'relative'}->{$var} ?
-                              $options->{'relative'}->{$var} : '') .
-                     (defined $extra ? $extra : '');
+      foreach my $key (@{$self->{'relorder'}}) {
+        if (defined $ENV{$key} &&
+            !defined $options->{'relative'}->{$key}) {
+          $options->{'relative'}->{$key} = $ENV{$key};
         }
-        else {
-          $options->{'relative'}->{$key} = $value;
+        if (defined $self->{'reldefs'}->{$key} &&
+            !defined $options->{'relative'}->{$key}) {
+          my($value) = $self->{'reldefs'}->{$key};
+          if ($value =~ /\$(\w+)(.*)?/) {
+            my($var)   = $1;
+            my($extra) = $2;
+            $options->{'relative'}->{$key} =
+                       (defined $options->{'relative'}->{$var} ?
+                                $options->{'relative'}->{$var} : '') .
+                       (defined $extra ? $extra : '');
+          }
+          else {
+            $options->{'relative'}->{$key} = $value;
+          }
         }
-      }
 
-      ## If a relative path is defined, remove all trailing slashes
-      ## and replace any two or more slashes with a single slash.
-      if (defined $options->{'relative'}->{$key}) {
-        $options->{'relative'}->{$key} =~ s/([\/\\])[\/\\]+/$1/g;
-        $options->{'relative'}->{$key} =~ s/[\/\\]$//g;
+        ## If a relative path is defined, remove all trailing slashes
+        ## and replace any two or more slashes with a single slash.
+        if (defined $options->{'relative'}->{$key}) {
+          $options->{'relative'}->{$key} =~ s/([\/\\])[\/\\]+/$1/g;
+          $options->{'relative'}->{$key} =~ s/[\/\\]$//g;
+        }
       }
     }
   }
+
+  ## Always add the current path to the include paths
+  unshift(@{$options->{'include'}}, $orig_dir);
 
   ## Set up un-buffered output for the progress callback
   $| = 1;
@@ -322,6 +470,10 @@ sub run {
                                 $options->{'use_env'},
                                 $options->{'expand_vars'},
                                 $options->{'gendot'});
+
+      ## Update settings based on the configuration file
+      $creator->set_verbose_ordering($cfg->get_value('verbose_ordering'));
+
       if ($base ne $file) {
         my($dir) = ($base eq '' ? $file : $self->mpc_dirname($file));
         if (!$creator->cd($dir)) {
