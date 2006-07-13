@@ -68,7 +68,6 @@ Debug {
   compile_flags         = /W3 /Gm /Zi /GR /Gy
   defines               = _DEBUG
   compile_flags_removed = /YX
-  output_dir            = .
   intermediate_dir      = Debug
   lib_modifier          = d
   pdbl                  = 1

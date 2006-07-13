@@ -59,7 +59,7 @@
                    NoWarn = ""
                    Optimize = "<%if(optimize)%>true<%else%>false<%endif%>"
 <%if(exename || sharedname || staticname)%>
-                   OutputPath = "<%if(exename)%><%if(install)%><%install%><%else%>.\<%output_dir%><%endif%><%else%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%output_dir%><%endif%>\"
+                   OutputPath = "<%if(exename)%><%if(install)%><%install%><%if(windows_style)%>\<%output_dir%><%endif%><%else%>.\<%output_dir%><%endif%><%else%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%output_dir%><%endif%>\"
 <%endif%>
                    RegisterForComInterop = "false"
                    RemoveIntegerChecks = "false"

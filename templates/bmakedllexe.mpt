@@ -9,7 +9,7 @@ use_exe_modifier =
 Release {
   optimize         = 1
   defines          = NDEBUG
-  exeoutputdir     = Release
+  output_dir       = Release
   intermediate_dir = Release
   postlinkrmext    = .tds
 }
@@ -18,7 +18,6 @@ Debug {
   optimize         =
   debug_prj        = 1
   defines          = _DEBUG
-  exeoutputdir     = .
   intermediate_dir = Debug
   lib_modifier     = d
   postlinkrmext    = .tds

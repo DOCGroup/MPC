@@ -52,7 +52,6 @@ Debug {
   compile_flags         = /W3 /Gm /EHs /Zi /MDd /GR /Gy
   defines               = _DEBUG
   compile_flags_removed = /YX
-  output_dir            = .
   intermediate_dir      = Debug
   lib_modifier          = d
   need_staticflags      =
