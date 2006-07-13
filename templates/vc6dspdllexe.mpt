@@ -30,7 +30,6 @@ Debug {
   defines               = _DEBUG
   compile_flags_removed = /YX
   intermediate_dir      = Debug
-  output_dir            = .
   lib_modifier          = d
   pdbl                  = 1
   pdbc                  = 1

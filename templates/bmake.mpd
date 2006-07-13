@@ -17,7 +17,7 @@ EXEMODIFIER  = <%if(use_exe_modifier)%><%lib_modifier%><%endif%>
 POSTLINKRM   = <%postlinkrmext%>
 <%endif%>
 <%if(exename)%>
-EXEOUTPUTDIR = <%exeoutputdir(".")%>\\
+EXEOUTPUTDIR = <%if(install)%><%install%><%if(windows_style)%>\<%output_dir("Debug")%><%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%><%endif%>\\
 <%endif%>
 !else
 <%endfor%>
@@ -174,7 +174,7 @@ CFLAGS = \
 
 <%marker(macros)%>
 <%if(exename)%>
-OUTPUTDIR = <%if(install)%><%install%>\\<%else%>$(EXEOUTPUTDIR)<%endif%>
+OUTPUTDIR = $(EXEOUTPUTDIR)
 all:<%if(prebuild)%> __prebuild__<%endif%> $(OUTPUTDIR)$(NAME)$(EXE_EXT)<%if(postbuild)%> __postbuild__<%endif%>
 
 $(OUTPUTDIR)$(NAME)$(EXE_EXT): $(OBJFILES) $(RESOURCE)

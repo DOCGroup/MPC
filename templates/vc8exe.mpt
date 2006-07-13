@@ -24,7 +24,6 @@ Release {
 Debug {
   debug_prj        = 1
   defines          = _DEBUG
-  output_dir       = .
   intermediate_dir = Debug
   lib_modifier     = d
 }
@@ -43,7 +42,6 @@ Memcheck Release {
 Memcheck Debug {
   debug_prj          = 1
   defines            = _DEBUG
-  output_dir         = .
   intermediate_dir   = Debug
   lib_modifier       = d
   BasicRuntimeChecks = 0
