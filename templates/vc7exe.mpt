@@ -22,7 +22,6 @@ Debug {
   optimize         =
   debug_prj        = 1
   defines          = _DEBUG
-  output_dir       = .
   intermediate_dir = Debug
   lib_modifier     = d
   pdbl             = 1
@@ -44,7 +43,6 @@ Memcheck Debug {
   optimize           =
   debug_prj          = 1
   defines            = _DEBUG
-  output_dir         = .
   intermediate_dir   = Debug
   lib_modifier       = d
   pdbc               = 1

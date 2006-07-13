@@ -1,3 +1,38 @@
+Thu Jul 13 16:29:33 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/bmake.mpd:
+        * templates/bmakedllexe.mpt:
+        * templates/bmakelibexe.mpt:
+        * templates/em3.mpd:
+        * templates/em3vcpdllexe.mpt:
+        * templates/nmake.mpd:
+        * templates/nmakeexe.mpt:
+        * templates/vc6.mpd:
+        * templates/vc6dspdllexe.mpt:
+        * templates/vc7.mpd:
+        * templates/vc7csharp.mpd:
+        * templates/vc7exe.mpt:
+        * templates/vc7vb.mpd:
+        * templates/vc8.mpd:
+        * templates/vc8csharp.mpd:
+        * templates/vc8exe.mpt:
+
+          Added a template variable named 'windows_style' that controls the
+          location of Debug executables and all installed executables.  If
+          'windows_style' not set, which is the default, a Debug executable
+          is placed in the same directory as the project (default setting
+          for 'output_dir').  If it is set, the Debug executable is placed
+          in the Debug directory.
+
+          Similarly, if 'windows_style' is not set, installed executables
+          are placed in the directory determined by the 'install' project
+          variable.  If it is set, it is placed in the directory determined
+          by the 'install' project variable plus the 'output_dir' template
+          variable.
+
+          This only applies to the following project types: bmake, em3, vc6,
+          vc7, vc71 and vc8.
+
 Tue Jul 11 14:23:41 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * USAGE:

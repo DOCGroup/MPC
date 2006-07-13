@@ -53,8 +53,8 @@ GENERATED_DIRTY =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><
 !<%fornotfirst("ELSE")%>IF  "$(CFG)" == "<%platform%> <%configuration%>"
 
 <%if(exename)%>
-OUTDIR=<%output_dir(".")%>
-INSTALLDIR=<%if(install)%><%install%><%else%><%output_dir%><%endif%>
+OUTDIR=<%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%>
+INSTALLDIR=<%if(install)%><%install%><%if(windows_style)%>\<%output_dir%><%endif%><%else%><%output_dir%><%endif%>
 <%else%>
 <%if(type_is_static)%>
 OUTDIR=<%libout%>
