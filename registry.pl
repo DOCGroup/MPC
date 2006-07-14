@@ -25,15 +25,13 @@ my($Registry) = undef;
 my($MPC_ROOT) = $FindBin::Bin;
 $MPC_ROOT =~ s!/!\\!g;
 
-my($version) = '$Id$';
-$version =~ s/.*\s+(\d+[\.\d]+)\s+.*/$1/;
-
-my(%types) = ('nmake' => 'NMAKE',
-              'bmake' => 'Borland Make',
-              'vc6'   => 'DSW',
-              'vc71'  => 'SLN 7.1',
-              'vc8'   => 'SLN 8.0',
-             );
+my($version) = '1.2';
+my(%types)   = ('nmake' => 'NMAKE',
+                'bmake' => 'Borland Make',
+                'vc6'   => 'DSW',
+                'vc71'  => 'SLN 7.1',
+                'vc8'   => 'SLN 8.0',
+               );
 
 # ******************************************************************
 # Subroutine Section

@@ -36,8 +36,7 @@ my($exclude)    = undef;
 my($verbose)    = 0;
 my($lbuildf)    = 0;
 my(@foundFiles) = ();
-my($version)    = '$Id$';
-$version =~ s/.*\s+(\d+[\.\d]+)\s+.*/$1/;
+my($version)    = '1.14';
 
 eval 'symlink("", "");';
 my($hasSymlink) = ($@ eq '');
