@@ -11,10 +11,20 @@ project {
   Define_Custom(UIC) {
     automatic        = 1
     command          = $(QTDIR)/bin/uic
-    postcommand      = $(QTDIR)/bin/uic -impl <%output_noext%>.h -o <%output_noext%>.cpp <%input%>
     output_option    = -o
     inputext         = .ui
     header_outputext = .h
+  }
+
+  Define_Custom(UIC_Impl) {
+    automatic        = 1
+    command          = $(QTDIR)/bin/uic
+    commandflags     = -impl <%quote%><%output_noext%>.h<%quote%>
+    dependent        = <%output_noext%>.h
+    output_option    = -o
+    pch_postrule     = 1
+    inputext         = .ui
+    source_outputext = .cpp
   }
 
   Define_Custom(MOC) {

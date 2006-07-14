@@ -1,5 +1,0 @@
-// -*- MPC -*-
-// $Id$
-// This file stays here for compatibility reasons
-project : qt {
-}
