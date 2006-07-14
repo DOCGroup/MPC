@@ -21,10 +21,8 @@ use File::Basename;
 # Data Section
 # ******************************************************************
 
-my($insext)  = 'ins';
-my($version) = '$Id$';
-$version =~ s/.*\s+(\d+[\.\d]+)\s+.*/$1/;
-
+my($insext)   = 'ins';
+my($version)  = '1.6';
 my(%defaults) = ('header_files'   => 1,
                  'idl_files'      => 1,
                  'inline_files'   => 1,
