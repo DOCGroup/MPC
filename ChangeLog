@@ -1,3 +1,11 @@
+Fri Jul 14 17:25:16 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          When expanding variables, through the 'expand' mechanism, escape
+          back slashes when generating a project for a project type that
+          requires slash conversion.
+
 Fri Jul 14 01:10:35 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/qt.mpb:
