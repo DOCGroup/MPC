@@ -942,7 +942,13 @@ sub handle_scoped_unknown {
           }
           $line =~ s/\$\w+/$val/;
         }
-        $self->{'expanded'}->{$type} = $self->process_special($line) if ($ok);
+        if ($ok) {
+          ## Environment variables may contain back slashes as part of
+          ## paths.  If we are converting slashes, escape the back slashes
+          ## so that they are preserved when we call process_special().
+          $line =~ s/\\/\\\\/g if ($self->{'convert_slashes'});
+          $self->{'expanded'}->{$type} = $self->process_special($line);
+        }
       }
       return 1, undef;
     }
