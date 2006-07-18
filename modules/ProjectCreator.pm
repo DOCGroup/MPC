@@ -283,7 +283,8 @@ sub new {
   $self->{'remove_files'}          = {};
   $self->{'expanded'}              = {};
 
-  my($typefeaturef) = $self->mpc_dirname($gfeature) . '/' .
+  my($typefeaturef) = (defined $gfeature ?
+                               $self->mpc_dirname($gfeature) . '/' : '') .
                       $self->{'pctype'} . '.features';
   $typefeaturef = undef if (! -r $typefeaturef);
   $self->{'feature_parser'}        = new FeatureParser($features,
@@ -1845,6 +1846,10 @@ sub process_optional_option {
                                                         $value);
           }
           else {
+            ## We are coming into an '||', if status is already true
+            ## then we can leave immediately
+            last if ($status);
+
             $status ||= $self->evaluate_optional_option($parts[$i + 1],
                                                         $value);
           }
