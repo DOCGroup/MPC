@@ -24,7 +24,9 @@ use vars qw(@ISA);
 
 my($assign_key)  = 'assign';
 my($gassign_key) = 'global_assign';
-
+my(%non_convert) = ('prebuild' => 1,
+                    'postbuild' => 1,
+                   );
 my(@statekeys) = ('global', 'include', 'template', 'ti',
                   'dynamic', 'static', 'relative', 'addtemp',
                   'addproj', 'progress', 'toplevel', 'baseprojs',
@@ -544,7 +546,8 @@ sub modify_assignment_value {
   my($name)  = shift;
   my($value) = shift;
 
-  if ($self->{'convert_slashes'} && index($name, 'flags') == -1) {
+  if ($self->{'convert_slashes'} &&
+      index($name, 'flags') == -1 && !defined $non_convert{$name}) {
     $value =~ s/\//\\/g;
   }
   return $value;
