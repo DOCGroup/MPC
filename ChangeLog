@@ -1,3 +1,10 @@
+Tue Jul 18 13:49:01 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Corrected a logic error in the processing of the 'optional'
+          section.  The '||' was not being handled properly.
+
 Fri Jul 14 17:25:16 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
