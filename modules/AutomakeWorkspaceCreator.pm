@@ -369,14 +369,15 @@ sub write_comps {
               my $libfile = $libs[$i * 2];
               my $libname = $libs[$i * 2 + 1];
               my $reldir  = $$liblocs{$libname};
-              if ($reldir) {
-                if ("$start/$reldir" ne $here) {
+              if (defined $reldir) {
+                my($append) = ($reldir eq '' ? '' : "/$reldir");
+                if ("$start$append" ne $here) {
                   my($mod) = $wsHelper->modify_libpath($_, $reldir, $libfile);
                   if (defined $mod) {
                     $_ = $mod;
                   }
                   else {
-                    s/$libfile/\$(top_builddir)\/$reldir\/$libfile/;
+                    s/$libfile/\$(top_builddir)$append\/$libfile/;
                   }
                 }
               }
