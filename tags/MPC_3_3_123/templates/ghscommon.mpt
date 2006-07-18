@@ -1,0 +1,10 @@
+// -*- MPC -*-
+// $Id$
+
+conditional_include "common"
+conditional_include "unixcommon"
+
+optimize       = 1
+syslibdirs     =
+deflibdirs     =
+lib_modifier   =
