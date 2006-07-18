@@ -5,6 +5,11 @@ Tue Jul 18 19:07:02 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
           Do not perform slash conversion on the 'prebuild' and 'postbuild'
           settings.
 
+        * templates/vc8csharp.mpd:
+
+          Keep the 'prebuild' and 'postbuild' settings on the same line as
+          vc8 does.
+
 Tue Jul 18 14:38:01 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeWorkspaceCreator.pm:

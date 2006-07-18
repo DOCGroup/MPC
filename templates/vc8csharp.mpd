@@ -115,15 +115,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-<%if(prebuild)%>
-      <%eval(prebuild)%>
-<%endif%>
-    </PreBuildEvent>
-    <PostBuildEvent>
-<%if(postbuild)%>
-      <%eval(postbuild)%>
-<%endif%>
-    </PostBuildEvent>
+    <PreBuildEvent><%if(prebuild)%><%eval(prebuild)%><%endif%></PreBuildEvent>
+    <PostBuildEvent><%if(postbuild)%><%eval(postbuild)%><%endif%></PostBuildEvent>
   </PropertyGroup>
 </Project>
