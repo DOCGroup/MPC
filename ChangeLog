@@ -1,3 +1,10 @@
+Thu Jul 20 14:49:21 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where an invalid project name would be used during the
+          generation of implicit project dependencies.
+
 Tue Jul 18 19:07:02 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
