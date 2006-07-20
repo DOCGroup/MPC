@@ -1407,8 +1407,9 @@ sub add_implicit_project_dependencies {
           ## ignore the generated dependency.  It is redundant and
           ## quite possibly wrong.
           $self->{'indirect_checked'} = {};
-          if (!defined $self->{'project_info'}->{$ccheck} ||
-              !$self->indirect_dependency($dir, $ccheck, $cfile)) {
+          if (defined $self->{'project_info'}->{$file} &&
+              (!defined $self->{'project_info'}->{$ccheck} ||
+               !$self->indirect_dependency($dir, $ccheck, $cfile))) {
             ## Append the dependency
             $self->{'project_info'}->{$file}->[1] .= " $append";
           }
