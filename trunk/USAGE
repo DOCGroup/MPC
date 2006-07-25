@@ -239,7 +239,7 @@ command_line     - Provide additional command line options to MPC.  The
                    passed to mwc.pl or mpc.pl.
 dynamic_types    - This comma separated list points to directories in which
                    MPC will search for Perl modules to implement additional
-                   MPC project tyeps, base projects or template files.  This
+                   MPC project types, base projects or template files.  This
                    setting can be used to augment or replace functionality
                    in MPC.  For each suitable directory found, it will add a
                    'modules' include path for Perl to find modules, add a
