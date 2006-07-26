@@ -32,16 +32,16 @@ BUILT_SOURCES += \
 
 CLEANFILES += \
 <%if(multiple(custom_type->input_file->output_files))%>
-  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basenoextension(custom_type->input_file)%><%else%><%noextension(custom_type->input_file)%><%endif%>-stamp \
+  <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basenoextension(custom_type->input_file)%><%else%><%noextension(custom_type->input_file)%><%endif%>-stamp<%keyname_used(custom_type->input_file, first)%> \
 <%endif%>
 <%foreach(output_file, sort(custom_type->input_file->output_files))%>
   <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(output_file)%><%else%><%output_file%><%endif%><%fornotlast(" \\")%>
 <%endfor%>
 
 <%if(multiple(custom_type->input_file->output_files))%>
-<%foreach(output_file, sort(custom_type->input_file->output_files))%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(output_file)%><%else%><%output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basenoextension(custom_type->input_file)%><%else%><%noextension(custom_type->input_file)%><%endif%>-stamp
+<%foreach(output_file, sort(custom_type->input_file->output_files))%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(output_file)%><%else%><%output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basenoextension(custom_type->input_file)%><%else%><%noextension(custom_type->input_file)%><%endif%>-stamp<%keyname_used(custom_type->input_file, second)%>
 
-<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basenoextension(custom_type->input_file)%><%else%><%noextension(custom_type->input_file)%><%endif%>-stamp: $(srcdir)/<%custom_type->input_file%><%if(custom_type->input_file->dependencies)%> <%custom_type->input_file->dependencies%><%endif%><%if(flag_overrides(custom_type->input_file, dependent))%> <%flag_overrides(custom_type->input_file, dependent)%><%else%><%if(custom_type->dependent)%> <%custom_type->dependent%><%endif%><%endif%>
+<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basenoextension(custom_type->input_file)%><%else%><%noextension(custom_type->input_file)%><%endif%>-stamp<%keyname_used(custom_type->input_file, third)%>: $(srcdir)/<%custom_type->input_file%><%if(custom_type->input_file->dependencies)%> <%custom_type->input_file->dependencies%><%endif%><%if(flag_overrides(custom_type->input_file, dependent))%> <%flag_overrides(custom_type->input_file, dependent)%><%else%><%if(custom_type->dependent)%> <%custom_type->dependent%><%endif%><%endif%>
 <%else%>
 <%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: $(srcdir)/<%custom_type->input_file%><%if(custom_type->input_file->dependencies)%> <%custom_type->input_file->dependencies%><%endif%><%if(flag_overrides(custom_type->input_file, dependent))%> <%flag_overrides(custom_type->input_file, dependent)%><%else%><%if(custom_type->dependent)%> <%custom_type->dependent%><%endif%><%endif%>
 <%endif%>

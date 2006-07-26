@@ -1,3 +1,22 @@
+Wed Jul 26 22:35:28 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/LICENSE:
+        * docs/README:
+        * docs/USAGE:
+
+          Moved these files from the root directory into the newly created
+          docs directory.
+
+        * modules/TemplateParser.pm:
+        * templates/automake.mpd:
+
+          Added a new template function, keyname_used, that is used in the
+          automake template to handle the situation where a custom input
+          file is used with more than one custom defined type.  If the
+          custom input file caused more than one file to be generated in
+          each custom defintion, the stamp file would be duplicated causing
+          build errors.
+
 Tue Jul 25 15:36:29 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * MPC version 3.4.0 released.
