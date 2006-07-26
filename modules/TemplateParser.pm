@@ -60,6 +60,7 @@ my(%keywords) = ('if'              => 0,
                  'duplicate_index' => 5,
                  'transdir'        => 5,
                  'has_extension'   => 5,
+                 'keyname_used'    => 0,
                 );
 
 my(%target_type_vars) = ('type_is_static'   => 1,
@@ -99,6 +100,7 @@ sub new {
   $self->{'eval_str'}             = '';
   $self->{'dupfiles'}             = {};
   $self->{'override_target_type'} = undef;
+  $self->{'keyname_used'}         = {};
 
   $self->{'foreach'}  = {};
   $self->{'foreach'}->{'count'}      = -1;
@@ -777,6 +779,23 @@ sub handle_ends_with {
     }
     else {
       $self->append_current(0);
+    }
+  }
+}
+
+
+sub handle_keyname_used {
+  my($self) = shift;
+  my($str)  = shift;
+
+  if (defined $str) {
+    my($name, $key) = $self->split_parameters($str);
+    my($file) = $self->get_value_with_default($name);
+    if (defined $self->{'keyname_used'}->{$file}->{$key}) {
+      $self->append_current($self->{'keyname_used'}->{$file}->{$key}++);
+    }
+    else {
+      $self->{'keyname_used'}->{$file}->{$key} = 1;
     }
   }
 }
