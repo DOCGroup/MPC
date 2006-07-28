@@ -1,3 +1,13 @@
+Fri Jul 28 15:13:01 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Corrected a bug introduced by my change from Fri Jul 14 17:25:16
+          UTC 2006.  The original change was intended to deal with Windows'
+          inability to have empty environment variables.  I have changed it
+          to have a special case where then environment variable value of ""
+          is interpreted as the users intent to have an empty string.
+
 Wed Jul 26 22:35:28 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/LICENSE:
