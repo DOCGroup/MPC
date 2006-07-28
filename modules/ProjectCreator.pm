@@ -941,13 +941,17 @@ sub handle_scoped_unknown {
             $ok = undef;
             last;
           }
-          ## Environment variables may contain back slashes as part of
-          ## paths.  If we are converting slashes, escape the back slashes
-          ## so that they are preserved when we call process_special().
-          $val =~ s/\\/\\\\/g if ($self->{'convert_slashes'});
           $line =~ s/\$\w+/$val/;
         }
-        $self->{'expanded'}->{$type} = $self->process_special($line) if ($ok);
+        if ($ok) {
+          ## This is a special concession for Windows.  It will not allow
+          ## you to set an empty environment variable.  If an empty
+          ## double quoted string is found, we will assume that the user
+          ## wanted an empty string.
+          $line = '' if ($line eq '""');
+
+          $self->{'expanded'}->{$type} = $line;
+        }
       }
       return 1, undef;
     }
