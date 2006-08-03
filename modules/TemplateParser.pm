@@ -1863,4 +1863,18 @@ sub get_lines {
 }
 
 
+# ************************************************************
+# Accessors used by support scripts
+# ************************************************************
+
+sub getKeywords {
+  return \%keywords;
+}
+
+
+sub getArrowOp {
+  return \%arrow_op_ref;
+}
+
+
 1;
