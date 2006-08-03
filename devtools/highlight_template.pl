@@ -14,61 +14,27 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 
 use strict;
 use FileHandle;
+use FindBin;
+use File::Spec;
 use File::Basename;
+
+my($basePath) = $FindBin::Bin;
+if ($^O eq 'VMS') {
+  $basePath = File::Spec->rel2abs(dirname($0)) if ($basePath eq '');
+  $basePath = VMS::Filespec::unixify($basePath);
+}
+$basePath = dirname($basePath);
+unshift(@INC, $basePath . '/modules');
+
+require ProjectCreator;
+require TemplateParser;
 
 # ******************************************************************
 # Data Section
 # ******************************************************************
 
-my(%keywords) = (## These correspond to those in TemplateParser.pm
-                 'if'              => 1,
-                 'else'            => 1,
-                 'endif'           => 1,
-                 'noextension'     => 0,
-                 'dirname'         => 0,
-                 'basename'        => 0,
-                 'basenoextension' => 0,
-                 'foreach'         => 2,
-                 'forfirst'        => 2,
-                 'fornotfirst'     => 2,
-                 'fornotlast'      => 2,
-                 'forlast'         => 2,
-                 'endfor'          => 2,
-                 'eval'            => 0,
-                 'comment'         => 0,
-                 'marker'          => 0,
-                 'uc'              => 0,
-                 'lc'              => 0,
-                 'ucw'             => 0,
-                 'normalize'       => 0,
-                 'flag_overrides'  => 0,
-                 'reverse'         => 0,
-                 'sort'            => 0,
-                 'uniq'            => 0,
-                 'multiple'        => 0,
-                 'starts_with'     => 0,
-                 'ends_with'       => 0,
-                 'contains'        => 0,
-                 'compares'        => 0,
-                 'duplicate_index' => 0,
-                 'transdir'        => 0,
-
-                 ## These correspond to those in ProjectCreator.pm
-                 'cat'   => 0,
-                 'cmp'   => 0,
-                 'cp'    => 0,
-                 'mkdir' => 0,
-                 'mv'    => 0,
-                 'os'    => 0,
-                 'rm'    => 0,
-                 'nul'   => 0,
-                 'gt'    => 0,
-                 'lt'    => 0,
-                 'and'   => 0,
-                 'or'    => 0,
-                 'quote' => 0,
-                );
-
+my(%keywords)  = ();
+my(%arrow_op)  = ();
 my($ifmod)     = 0;
 my($formod)    = 0;
 my($cmod)      = 50;
@@ -76,11 +42,50 @@ my(%keycolors) = (0 => [160, 32, 240],
                   1 => [255, 50, 50],
                   2 => [50, 50, 255],
                  );
-my($version)   = '1.2';
+my($version)   = '1.3';
 
 # ******************************************************************
 # Subroutine Section
 # ******************************************************************
+
+sub setup_keywords {
+  ## Get the main MPC keywords
+  my($keywords) = ProjectCreator::getKeywords();
+  foreach my $key (keys %$keywords) {
+    $keywords{$key} = 0;
+  }
+
+  ## Get the pseudo template variables
+  my($pjc) = new ProjectCreator();
+  $keywords = $pjc->get_command_subs();
+  foreach my $key (keys %$keywords) {
+    $keywords{$key} = 0;
+  }
+
+  ## Get the template function names
+  $keywords = TemplateParser::getKeywords();
+  foreach my $key (keys %$keywords) {
+    $keywords{$key} = 0;
+  }
+
+  ## Get the template parser arrow operator keys
+  $keywords = TemplateParser::getArrowOp();
+  foreach my $key (keys %$keywords) {
+    $arrow_op{$key} = 0;
+  }
+
+  ## These TemplateParser keywords need special values so
+  ## that the color coding will recognize these as different
+  ## from the rest of the keywords
+  foreach my $key ('if', 'else', 'endif') {
+    $keywords{$key} = 1;
+  }
+  foreach my $key ('foreach', 'forfirst',
+                   'fornotfirst', 'fornotlast', 'forlast', 'endfor') {
+    $keywords{$key} = 2;
+  }
+}
+
 
 sub convert_to_html {
   my($line) = shift;
@@ -124,6 +129,8 @@ if (!defined $output) {
 }
 
 if (open($fh, $input)) {
+  setup_keywords();
+
   my($deftxt) = 'black';
   my(@codes)  = ();
   while(<$fh>) {
@@ -156,6 +163,14 @@ if (open($fh, $input)) {
         }
         elsif (defined $keywords{$key}) {
           @entry = @{$keycolors{$keywords{$key}}};
+        }
+        else {
+          foreach my $ao (keys %arrow_op) { 
+            if ($key =~ /^$ao/) {
+              @entry = @{$keycolors{$arrow_op{$ao}}};
+              last;     
+            }
+          }
         }
 
         if (defined $entry[0]) {

@@ -1,3 +1,24 @@
+Thu Aug  3 02:45:12 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates:
+        * docs/templates/common.txt:
+        * devtools/document_template.pl:
+
+          The script can be used to document all template variables found
+          within a project template (.mpd file).  Currently, only the
+          template variables that are common to most templates are
+          documented.
+
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+
+          Added methods to get keywords for use within the devtools scripts.
+
+        * highlight_template.pl:
+        * devtools/highlight_template.pl:
+
+          Moved this file into the devtools directory.
+
 Fri Jul 28 15:13:01 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

@@ -3912,6 +3912,7 @@ sub write_output_file {
                 print $fh $line;
               }
               close($fh);
+              $self->post_file_creation($name);
               $self->add_file_written($oname);
             }
             else {
@@ -4625,6 +4626,19 @@ sub remove_wanted_extension {
   ## added to the project.
   $name =~ s/\.[^\.]+$//;
   return $name;
+}
+
+# ************************************************************
+# Accessors used by support scripts
+# ************************************************************
+
+sub getKeywords {
+  return \%validNames;
+}
+
+sub getValidComponents {
+  my($language) = shift;
+  return (defined $language{$language} ? $language{$language}->[0] : undef);
 }
 
 # ************************************************************
