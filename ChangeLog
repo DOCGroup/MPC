@@ -1,3 +1,10 @@
+Wed Aug  9 15:11:23 2006  Chris Cleeland  <cleeland_c@ociweb.com>
+
+        * modules/ProjectCreator.pm (expand_variables):
+        
+          Corrected a problem where "pre/" and "post/" include slashes
+          were being changed to have the wrong type of slash.
+
 Wed Aug  9 01:14:54 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * devtools/document_template.pl:
