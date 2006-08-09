@@ -1,3 +1,48 @@
+Wed Aug  9 01:14:54 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * devtools/document_template.pl:
+
+          Corrected a bug where multiple variables used within a <%foreach%>
+          would not be recognized correctly.
+
+        * docs/USAGE:
+
+          Clarified the documentation dealing with the MPC configuration
+          files.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Print out AM_CONDITIONAL's for all of the features known to the
+          FeatureParser.
+
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+
+          Fixed a bug where an assumption is made that projects in different
+          directories were assumed to be relative.  When absolute
+          directories are used, the Makefile would get confused about how to
+          get back to the original directory.
+
+        * modules/Driver.pm:
+
+          Compare directories case-insensitively when running on a system
+          that does not support case-sensitive file systems while searching
+          for the correct MPC.cfg.
+
+        * modules/Creator.pm:
+        * modules/DirectoryManager.pm:
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/StringProcessor.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Factored out and simplified code dealing with parsing assignments.
+
+        * templates/nmake.mpd:
+
+          Corrected information about getting a dependency generator for
+          nmake.
+
 Thu Aug  3 02:45:12 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates:

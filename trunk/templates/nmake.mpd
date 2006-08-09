@@ -71,9 +71,9 @@ ALL :<%if(prebuild)%> __prebuild__<%endif%> DEPENDCHECK $(GENERATED_DIRTY)<%if(e
 DEPEND :
 !IF "$(DEPGEN)" == ""
 	@echo No suitable dependency generator could be found.
-	@echo You can check one out from OCI using the following cvs command:
-	@echo cvs -d :pserver:anonymous@anoncvs.ociweb.com:/cvs co Depgen
-	@echo Then set the DEPGEN_ROOT environment variable to the full path of Depgen.
+	@echo You can check one out from the DOC Group using the following svn command:
+	@echo svn co svn://svn.dre.vanderbilt.edu/DOC/ACE/trunk/ACE/bin Utils
+	@echo Then set the DEPGEN_ROOT environment variable to the full path of Utils.
 !ELSE
 <%if(source_files || pch_source)%>
 	$(DEPGEN)<%foreach(includes)%> -I"<%include%>"<%endfor%><%foreach(defines cpu_defines common_defines platform_defines macros)%> -D<%define%><%endfor%><%if(unicode)%> -DUNICODE -D_UNICODE<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%> -D<%staticflag%><%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%> -f "<%noextension(project_file)%>.dep"<%foreach(source_files)%> "<%source_file%>"<%endfor%><%if(pch_source)%> "<%pch_source%>"<%endif%>
