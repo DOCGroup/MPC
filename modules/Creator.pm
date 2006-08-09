@@ -36,7 +36,7 @@ my(@statekeys) = ('global', 'include', 'template', 'ti',
                  );
 
 my(%all_written) = ();
-my($onVMS) = ($^O eq 'VMS');
+my($onVMS) = DirectoryManager::onVMS();
 
 # ************************************************************
 # Subroutine Section
@@ -200,20 +200,6 @@ sub generate {
 }
 
 
-sub parse_assignment {
-  my($self)   = shift;
-  my($line)   = shift;
-  my($values) = shift;
-
-  if ($line =~ /^(\w+(::\w+)*)\s*([\-+]?=)\s*(.*)?/) {
-    push(@$values, $3, lc($1), $4);
-    return 1;
-  }
-
-  return 0;
-}
-
-
 sub parse_known {
   my($self)        = shift;
   my($line)        = shift;
@@ -363,13 +349,13 @@ sub parse_scope {
       my(@values) = ();
       if (defined $validNames && $self->parse_assignment($line, \@values)) {
         if (defined $$validNames{$values[1]}) {
-          if ($values[0] eq '=') {
+          if ($values[0] == 0) {
             $self->process_assignment($values[1], $values[2], $flags);
           }
-          elsif ($values[0] eq '+=') {
+          elsif ($values[0] == 1) {
             $self->process_assignment_add($values[1], $values[2], $flags);
           }
-          elsif ($values[0] eq '-=') {
+          elsif ($values[0] == -1) {
             $self->process_assignment_sub($values[1], $values[2], $flags);
           }
         }
@@ -572,7 +558,7 @@ sub process_assignment {
   if (!defined $assign) {
     ## NOTE: If anything in this block changes, then you must make the
     ## same change in get_assignment_hash.
-    $assign  = $self->{$self->{'reading_global'} ?
+    $assign = $self->{$self->{'reading_global'} ?
                                $gassign_key : $assign_key};
   }
 

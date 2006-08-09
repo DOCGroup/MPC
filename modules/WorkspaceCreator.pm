@@ -241,7 +241,7 @@ sub parse_line {
         $self->{$self->{'type_check'}} = 1;
       }
     }
-    elsif ($values[0] eq '=') {
+    elsif ($values[0] eq '0') {
       if (defined $validNames{$values[1]}) {
         $self->process_assignment($values[1], $values[2]);
       }
@@ -250,7 +250,7 @@ sub parse_line {
         $status = 0;
       }
     }
-    elsif ($values[0] eq '+=') {
+    elsif ($values[0] eq '1') {
       if (defined $validNames{$values[1]}) {
         $self->process_assignment_add($values[1], $values[2]);
       }
@@ -259,7 +259,7 @@ sub parse_line {
         $status = 0;
       }
     }
-    elsif ($values[0] eq '-=') {
+    elsif ($values[0] eq '-1') {
       if (defined $validNames{$values[1]}) {
         $self->process_assignment_sub($values[1], $values[2]);
       }

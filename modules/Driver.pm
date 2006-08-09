@@ -178,10 +178,12 @@ sub determine_cfg_file {
   my($self) = shift;
   my($cfg)  = shift;
   my($odir) = shift;
+  my($ci)   = $self->case_insensitive();
 
+  $odir = lc($odir) if ($ci);
   foreach my $name (@{$cfg->get_names()}) {
     my($value) = $cfg->get_value($name);
-    if (index($odir, $name) == 0) {
+    if (index($odir, ($ci ? lc($name) : $name)) == 0) {
       return $value . '/MPC.cfg';
     }
   }
