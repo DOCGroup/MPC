@@ -369,7 +369,7 @@ sub process_assignment {
   if (!defined $assign || $assign == $self->get_assignment_hash()) {
     my($mapped) = $self->{'valid_names'}->{$name};
     if (defined $mapped && UNIVERSAL::isa($mapped, 'ARRAY')) {
-      $self->parse_scoped_assignment($$mapped[0], '=',
+      $self->parse_scoped_assignment($$mapped[0], 0,
                                      $$mapped[1], $value,
                                      $self->{'generated_exts'}->{$$mapped[0]});
     }
@@ -582,15 +582,16 @@ sub parse_line {
           my($addproj) = $self->get_addproj();
           foreach my $ap (keys %$addproj) {
             if (defined $self->{'valid_names'}->{$ap}) {
-              my($val) = $$addproj{$ap};
-              if ($$val[0] > 0) {
-                $self->process_assignment_add($ap, $$val[1]);
-              }
-              elsif ($$val[0] < 0) {
-                $self->process_assignment_sub($ap, $$val[1]);
-              }
-              else {
-                $self->process_assignment($ap, $$val[1]);
+              foreach my $val (@{$$addproj{$ap}}) {
+                if ($$val[0] > 0) {
+                  $self->process_assignment_add($ap, $$val[1]);
+                }
+                elsif ($$val[0] < 0) {
+                  $self->process_assignment_sub($ap, $$val[1]);
+                }
+                else {
+                  $self->process_assignment($ap, $$val[1]);
+                }
               }
             }
             else {
@@ -712,7 +713,7 @@ sub parse_line {
         }
       }
     }
-    elsif ($values[0] eq '=') {
+    elsif ($values[0] eq '0') {
       ## $values[1] = name; $values[2] = value
       if (defined $self->{'valid_names'}->{$values[1]}) {
         $self->process_assignment($values[1], $values[2]);
@@ -722,7 +723,7 @@ sub parse_line {
         $status = 0;
       }
     }
-    elsif ($values[0] eq '+=') {
+    elsif ($values[0] eq '1') {
       ## $values[1] = name; $values[2] = value
       if (defined $self->{'valid_names'}->{$values[1]}) {
         $self->process_assignment_add($values[1], $values[2]);
@@ -732,7 +733,7 @@ sub parse_line {
         $status = 0;
       }
     }
-    elsif ($values[0] eq '-=') {
+    elsif ($values[0] eq '-1') {
       ## $values[1] = name; $values[2] = value
       if (defined $self->{'valid_names'}->{$values[1]}) {
         $self->process_assignment_sub($values[1], $values[2]);
@@ -849,10 +850,10 @@ sub parse_scoped_assignment {
       $self->{'flag_overrides'}->{$tag} = $over;
     }
 
-    if ($type eq '=') {
+    if ($type == 0) {
       $self->process_assignment($name, $value, $flags);
     }
-    elsif ($type eq '+=') {
+    elsif ($type == 1) {
       ## If there is no value in $$flags, then we need to get
       ## the outer scope value and put it in there.
       if (!defined $self->get_assignment($name, $flags)) {
@@ -861,7 +862,7 @@ sub parse_scoped_assignment {
       }
       $self->process_assignment_add($name, $value, $flags);
     }
-    elsif ($type eq '-=') {
+    elsif ($type == -1) {
       ## If there is no value in $$flags, then we need to get
       ## the outer scope value and put it in there.
       if (!defined $self->get_assignment($name, $flags)) {
@@ -894,15 +895,6 @@ sub handle_unknown_assignment {
 
     ## Now modify the addtemp values
     $self->information("'$values[1]' was used as a template modifier.");
-    if ($values[0] eq '+=') {
-      $values[0] = 1;
-    }
-    elsif ($values[0] eq '-=') {
-      $values[0] = -1;
-    }
-    else {
-      $values[0] = 0;
-    }
 
     if (!defined $self->get_addtemp()->{$values[1]}) {
       $self->get_addtemp()->{$values[1]} = [];
@@ -1402,16 +1394,16 @@ sub process_array_assignment {
   my($type)  = shift;
   my($array) = shift;
 
-  if (!defined $$aref || $type eq '=') {
+  if (!defined $$aref || $type == 0) {
     if ($type ne '-=') {
       $$aref = $array;
     }
   }
   else {
-    if ($type eq '+=') {
+    if ($type == 1) {
       push(@{$$aref}, @$array);
     }
-    elsif ($type eq '-=') {
+    elsif ($type == -1) {
       my($count) = scalar(@{$$aref});
       for(my $i = 0; $i < $count; ++$i) {
         foreach my $val (@$array) {
@@ -1562,17 +1554,17 @@ sub parse_define_custom {
               $value = $self->relative($value);
 
               if (($customDefined{$name} & 0x04) != 0) {
-                if ($type eq '=') {
+                if ($type == 0) {
                   $self->process_assignment(
                                      $name, $value,
                                      $self->{'generated_exts'}->{$tag});
                 }
-                elsif ($type eq '+=') {
+                elsif ($type == 1) {
                   $self->process_assignment_add(
                                      $name, $value,
                                      $self->{'generated_exts'}->{$tag});
                 }
-                elsif ($type eq '-=') {
+                elsif ($type == -1) {
                   $self->process_assignment_sub(
                                      $name, $value,
                                      $self->{'generated_exts'}->{$tag});
@@ -4501,6 +4493,12 @@ sub get_modified_project_file_name {
 sub get_valid_names {
   my($self) = shift;
   return $self->{'valid_names'};
+}
+
+
+sub get_feature_parser {
+  my($self) = shift;
+  return $self->{'feature_parser'};
 }
 
 

@@ -89,7 +89,17 @@ sub write_comps {
                     "AC_PROG_CXX$crlf",
                     "AC_PROG_CXXCPP$crlf",
                     "AC_PROG_LIBTOOL$crlf",
-                    $crlf,
+                    $crlf;
+
+        my($fp) = $creator->get_feature_parser();
+        my($features) = $fp->get_names();
+        foreach my $feature (@$features) {
+          print $acfh 'AM_CONDITIONAL(BUILD_', uc($feature),
+                      ', ', ($fp->get_value($feature) ? 'true' : 'false'),
+                      ')', $crlf;
+        }
+
+        print $acfh $crlf,
                     "m4_include([$acmfile])$crlf",
                     $crlf,
                     "AC_OUTPUT$crlf";

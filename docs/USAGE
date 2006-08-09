@@ -215,13 +215,16 @@ directory where MPC is executed, it will be read to determine the location
 of MPC.cfg based on the directory in which MPC was started.
 
 For example, if $MPC_ROOT/mwc.pl is run under /foo/bar_root/src and
-$MPC_ROOT/config/codebase.cfg contained:
+$MPC_ROOT/config/base.cfg contained:
 
 /foo/bar_root = /foo/bar_root/MPC/config
 
 MPC would attempt to open and read /foo/bar_root/MPC/config/MPC.cfg as the
-MPC Configuration File.  If the codebase configuration file is not present,
+MPC Configuration File.  If the base configuration file is not present,
 MPC will try to use $MPC_ROOT/config/MPC.cfg as the MPC Configuration File.
+
+You may reference environment variables, accessed by $NAME, on either side of
+the equals sign.
 
 
 MPC Configuration File
@@ -264,7 +267,7 @@ verbose_ordering - If this is set, mwc.pl will warn the user about
 Below is an example configuration file:
 
 // MPC configuration file
-dynamic_types = /builds/ACE_wrappers/bin/MakeProjectCreator
+dynamic_types = $ACE_ROOT/bin/MakeProjectCreator
 logging = info=1 warn=1
 verbose_ordering = 1
 

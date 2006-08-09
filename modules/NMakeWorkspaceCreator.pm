@@ -86,42 +86,13 @@ sub write_project_targets {
   my($cwd)      = $self->getcwd();
 
   foreach my $project (@$list) {
-    my($dir)    = $self->mpc_dirname($project);
-    my($chdir)  = 0;
-    my($back)   = '';
-
-    ## If the directory isn't '.' then we need
-    ## to figure out how to get back to our starting point
-    if ($dir ne '.') {
-      $chdir = 1;
-      my($count) = ($dir =~ tr/\///) + 1;
-      if (index($dir, '../') == 0) {
-        ## Find out how many directories we went down
-        my($rel) = $dir;
-        while($rel =~ s/^\.\.\///) {
-        }
-        my($down) = ($rel =~ tr/\///) + 1;
-
-        ## Get $count - $down parts of the base of the current directory
-        $rel = $cwd;
-        my($index) = length($rel);
-        for(my $i = $down; $i < $count; $i++) {
-          $index = rindex($rel, '/', $index - 1);
-        }
-        if ($index > -1) {
-          $rel = substr($rel, $index + 1);
-        }
-        $back = ('../' x $down) . $rel;
-      }
-      else {
-        $back = ('../' x $count);
-      }
-    }
+    my($dir)   = $self->mpc_dirname($project);
+    my($chdir) = ($dir ne '.');
 
     print $fh ($chdir ? "\tcd $dir$crlf" : ''),
               "\t\$(MAKE) /f ", $self->mpc_basename($project),
               " $target$crlf",
-              ($chdir ? "\tcd $back$crlf" : '');
+              ($chdir ? "\tcd \$(MAKEDIR)$crlf" : '');
   }
 }
 
