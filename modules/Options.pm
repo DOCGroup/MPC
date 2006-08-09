@@ -13,6 +13,7 @@ package Options;
 use strict;
 
 use DirectoryManager;
+use StringProcessor;
 
 # ************************************************************
 # Data Section
@@ -454,25 +455,12 @@ sub options {
         $self->optionError('-value_template requires a variable assignment argument');
       }
       else {
-        if ($value =~ /(\w+)\s*([\-+]?=)\s*(.*)/) {
-          my($name) = lc($1);
-          my($op)   = $2;
-          my($val)  = $3;
-          $val =~ s/^\s+//;
-          $val =~ s/\s+$//;
-          if ($op eq '+=') {
-            $op = 1;
-          }
-          elsif ($op eq '-=') {
-            $op = -1;
-          }
-          else {
-            $op = 0;
-          }
-          if (!defined $addtemp{$name}) {
-            $addtemp{$name} = [];
-          }
-          push(@{$addtemp{$name}}, [$op, $val]);
+        my(@values) = ();
+        if (StringProcessor::parse_assignment(undef,
+                                              $value,
+                                              \@values)) {
+          $addtemp{$values[1]} = [] if (!defined $addtemp{$values[1]});
+          push(@{$addtemp{$values[1]}}, [$values[0], $values[2]]);
         }
         else {
           $self->optionError('Invalid argument to -value_template');
@@ -486,22 +474,12 @@ sub options {
         $self->optionError('-value_project requires a variable assignment argument');
       }
       else {
-        if ($value =~ /(\w+)\s*([\-+]?=)\s*(.*)/) {
-          my($name) = lc($1);
-          my($op)   = $2;
-          my($val)  = $3;
-          $val =~ s/^\s+//;
-          $val =~ s/\s+$//;
-          if ($op eq '+=') {
-            $op = 1;
-          }
-          elsif ($op eq '-=') {
-            $op = -1;
-          }
-          else {
-            $op = 0;
-          }
-          $addproj{$name} = [$op, $val];
+        my(@values) = ();
+        if (StringProcessor::parse_assignment(undef,
+                                              $value,
+                                              \@values)) {
+          $addproj{$values[1]} = [] if (!defined $addproj{$values[1]});
+          push(@{$addproj{$values[1]}}, [$values[0], $values[2]]);
         }
         else {
           $self->optionError('Invalid argument to -value_project');

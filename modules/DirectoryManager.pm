@@ -153,6 +153,11 @@ sub mpc_glob {
   return @files;
 }
 
+
+sub onVMS {
+  return $onVMS;
+}
+
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************

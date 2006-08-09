@@ -125,7 +125,7 @@ sub display_template {
 
 sub usageAndExit {
   print "document_template.pl v$version\n",
-        "Usage: ", basename($0), " <template> [html output [language]]\n\n",
+        "Usage: ", basename($0), " <template> [<html output> [language]]\n\n",
         "language can be any of the valid language settings for MPC.\n";
   exit(0);
 }
@@ -211,6 +211,7 @@ if (open($fh, $input)) {
                 }
                 $vname = $n;
               }
+              $vname =~ s/\s.*//;
 
               $key = $vname;
               $name = $vname;

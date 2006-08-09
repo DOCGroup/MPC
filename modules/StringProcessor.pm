@@ -16,6 +16,21 @@ use strict;
 # Subroutine Section
 # ************************************************************
 
+sub parse_assignment {
+  my($self)   = shift;
+  my($line)   = shift;
+  my($values) = shift;
+
+  if ($line =~ /^(\w+(::\w+)*)\s*([\-+]?=)\s*(.*)?/) {
+    my($op) = ($3 eq '+=' ? 1 : $3 eq '-=' ? -1 : 0);
+    push(@$values, $op, lc($1), $4);
+    return 1;
+  }
+
+  return 0;
+}
+
+
 sub extractType {
   my($self) = shift;
   my($name) = shift;
