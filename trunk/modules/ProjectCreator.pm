@@ -4365,7 +4365,7 @@ sub expand_variables {
                                      (defined $val ? $val : []));
       if (defined $$arr[0]) {
         $val = "@$arr";
-        $val =~ s/\//\\/g if ($self->{'convert_slashes'});
+        $val = $self->modify_assignment_value(lc($name), $val);
         substr($value, $start) =~ s/\$\([^)]+\)/$val/;
 
         ## We have replaced the template value, but that template
