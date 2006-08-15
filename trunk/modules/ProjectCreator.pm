@@ -41,7 +41,7 @@ my(%validNames) = ('exename'         => 1,
                    'sharedname'      => 1,
                    'staticname'      => 1,
                    'libpaths'        => 3,
-                   'install'         => 1,
+                   'exeout'          => 1,
                    'includes'        => 3,
                    'after'           => 1,
                    'custom_only'     => 1,
@@ -3117,7 +3117,8 @@ sub generate_defaults {
   ## the generated file list.  I want to ensure that source_files comes
   ## first in the list to pick up group information (since source_files
   ## are most likely going to be grouped than anything else).
-  my(@vc) = reverse sort { return 1 if $a eq 'source_files';
+  my(@vc) = reverse sort { return  1 if $a eq 'source_files';
+                           return -1 if $b eq 'source_files';
                            return $a cmp $b; } keys %{$self->{'valid_components'}};
   foreach my $gentype (keys %{$self->{'generated_exts'}}) {
     $self->list_default_generated($gentype, \@vc);
@@ -3953,9 +3954,9 @@ sub write_install_file {
       }
     }
     if ($self->exe_target()) {
-      my($install) = $self->get_assignment('install');
+      my($exeout) = $self->get_assignment('exeout');
       print $fh "exe_output:\n",
-                (defined $install ? $self->relative($install) : ''),
+                (defined $exeout ? $self->relative($exeout) : ''),
                 ' ', $self->get_assignment('exename'), "\n";
     }
     elsif ($self->lib_target()) {
@@ -4637,6 +4638,12 @@ sub getKeywords {
 sub getValidComponents {
   my($language) = shift;
   return (defined $language{$language} ? $language{$language}->[0] : undef);
+}
+
+
+sub resolve_alias {
+  return 'exeout' if ($_[1] eq 'install');
+  return $_[1];
 }
 
 # ************************************************************

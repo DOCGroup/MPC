@@ -54,7 +54,7 @@ GENERATED_DIRTY =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><
 
 <%if(exename)%>
 OUTDIR=<%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%>
-INSTALLDIR=<%if(install)%><%install%><%if(windows_style)%>\<%output_dir%><%endif%><%else%><%output_dir%><%endif%>
+INSTALLDIR=<%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir%><%endif%><%else%><%output_dir%><%endif%>
 <%else%>
 <%if(type_is_static)%>
 OUTDIR=<%libout%>
@@ -66,7 +66,7 @@ OUTDIR=<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
 <%endif%>
 INTDIR=<%intermediate_dir%>\<%project_name%>\<%machine%>
 
-ALL :<%if(prebuild)%> __prebuild__<%endif%> DEPENDCHECK $(GENERATED_DIRTY)<%if(exename)%><%if(install)%> "$(INSTALLDIR)"<%endif%><%endif%><%if(type_is_dynamic)%><%if(sharedname || staticname)%> "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>"<%endif%><%endif%><%if(staticname && type_is_static)%> "$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"<%endif%><%if(exename)%> "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>"<%endif%><%if(postbuild)%> __postbuild__<%endif%>
+ALL :<%if(prebuild)%> __prebuild__<%endif%> DEPENDCHECK $(GENERATED_DIRTY)<%if(exename)%><%if(exeout)%> "$(INSTALLDIR)"<%endif%><%endif%><%if(type_is_dynamic)%><%if(sharedname || staticname)%> "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>"<%endif%><%endif%><%if(staticname && type_is_static)%> "$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"<%endif%><%if(exename)%> "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>"<%endif%><%if(postbuild)%> __postbuild__<%endif%>
 
 DEPEND :
 !IF "$(DEPGEN)" == ""
@@ -181,7 +181,7 @@ __postbuild__:
 CLEAN :
 	-@del /f/s/q "$(INTDIR)"
 
-<%if(install)%>
+<%if(exeout)%>
 "$(INSTALLDIR)" :
     if not exist "$(INSTALLDIR)\$(NULL)" mkdir "$(INSTALLDIR)"
 

@@ -17,7 +17,7 @@ EXEMODIFIER  = <%if(use_exe_modifier)%><%lib_modifier%><%endif%>
 POSTLINKRM   = <%postlinkrmext%>
 <%endif%>
 <%if(exename)%>
-EXEOUTPUTDIR = <%if(install)%><%install%><%if(windows_style)%>\<%output_dir("Debug")%><%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%><%endif%>\\
+EXEOUTPUTDIR = <%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug")%><%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%><%endif%>\\
 <%endif%>
 !else
 <%endfor%>

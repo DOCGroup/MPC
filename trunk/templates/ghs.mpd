@@ -2,7 +2,7 @@
 default:
 <%if(exename)%>
 	program
-	:outputname=<%if(install)%><%reltop_install%><%else%><%reltop%><%endif%>/<%exename%>
+	:outputname=<%if(exeout)%><%reltop_exeout%><%else%><%reltop%><%endif%>/<%exename%>
 <%if(need_staticflags)%>
 	:staticlink=true
 <%endif%>

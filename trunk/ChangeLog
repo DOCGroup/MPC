@@ -1,7 +1,41 @@
+Tue Aug 15 23:50:48 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/USAGE:
+
+          Fixed a minor typo.
+
+        * modules/NMakeWorkspaceCreator.pm:
+
+          Prefix the calls to cd with @ so that they are not printed during
+          a make.
+
+        * docs/README:
+        * modules/Creator.pm:
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/StringProcessor.pm:
+        * templates/bmake.mpd:
+        * templates/em3.mpd:
+        * templates/ghs.mpd:
+        * templates/html.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/sle.mpd:
+        * templates/vc6.mpd:
+        * templates/vc7.mpd:
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+        * templates/vc8.mpd:
+        * templates/vc8csharp.mpd:
+
+          Deprecated the 'install' keyword.  It has been replaced with
+          'exeout' to be consistent with 'dllout' and 'libout'.  The use of
+          'install' will still be accepted.
+
 Wed Aug  9 15:11:23 2006  Chris Cleeland  <cleeland_c@ociweb.com>
 
         * modules/ProjectCreator.pm (expand_variables):
-        
+
           Corrected a problem where "pre/" and "post/" include slashes
           were being changed to have the wrong type of slash.
 
