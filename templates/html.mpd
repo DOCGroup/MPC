@@ -73,7 +73,7 @@
 <tr><td>dynamicflags</td><td><%dynamicflags%></td></tr>
 <tr><td>exename</td><td><%exename%></td></tr>
 <tr><td>includes</td><td><%includes%></td></tr>
-<tr><td>install</td><td><%install%></td></tr>
+<tr><td>exeout</td><td><%exeout%></td></tr>
 <tr><td>libout</td><td><%libout%></td></tr>
 <tr><td>libpaths</td><td><%libpaths%></td></tr>
 <tr><td>libs</td><td><%foreach(libs)%><%libname_prefix%><%lib%><%fornotlast(" ")%><%endfor%></td></tr>

@@ -157,7 +157,8 @@ buildflags      This keyword can only be used as a source component scoped
 dllout          If defined, specifies where the dynamic libraries will be
                 placed.  This overrides libout in the dynamic case.
 libout          Specifies where the dynamic and static libraries will be placed
-install         Specifies where executables will be installed
+exeout          Specifies where executables will be placed (Previously known
+                as install)
 pch_header      Specifies the precompiled header file name
 pch_source      Specifies the precompiled source file name
 postbuild       If this is defined in the project, the value will be
