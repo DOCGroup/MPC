@@ -23,7 +23,7 @@ sub parse_assignment {
 
   if ($line =~ /^(\w+(::\w+)*)\s*([\-+]?=)\s*(.*)?/) {
     my($op) = ($3 eq '+=' ? 1 : $3 eq '-=' ? -1 : 0);
-    push(@$values, $op, lc($1), $4);
+    push(@$values, $op, $self->resolve_alias(lc($1)), $4);
     return 1;
   }
 
@@ -118,6 +118,13 @@ sub windows_crlf {
   else {
     return "\r\n";
   }
+}
+
+
+sub resolve_alias {
+  #my($self) = shift;
+  #my($name) = shift;
+  return $_[1];
 }
 
 1;

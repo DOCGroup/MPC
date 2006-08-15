@@ -14,6 +14,7 @@ use strict;
 
 use DirectoryManager;
 use StringProcessor;
+use ProjectCreator;
 
 # ************************************************************
 # Data Section
@@ -456,9 +457,8 @@ sub options {
       }
       else {
         my(@values) = ();
-        if (StringProcessor::parse_assignment(undef,
-                                              $value,
-                                              \@values)) {
+        my($pc) = new ProjectCreator();
+        if ($pc->parse_assignment($value, \@values)) {
           $addtemp{$values[1]} = [] if (!defined $addtemp{$values[1]});
           push(@{$addtemp{$values[1]}}, [$values[0], $values[2]]);
         }
@@ -475,9 +475,8 @@ sub options {
       }
       else {
         my(@values) = ();
-        if (StringProcessor::parse_assignment(undef,
-                                              $value,
-                                              \@values)) {
+        my($pc) = new ProjectCreator();
+        if ($pc->parse_assignment($value, \@values)) {
           $addproj{$values[1]} = [] if (!defined $addproj{$values[1]});
           push(@{$addproj{$values[1]}}, [$values[0], $values[2]]);
         }

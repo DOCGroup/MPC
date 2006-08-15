@@ -45,7 +45,7 @@ CCC           = $(CXX)
 MAKEFILE      = <%project_file%>
 DEPENDENCIES  = .depend.$(MAKEFILE)
 <%if(exename)%>
-BTARGETDIR    = <%if(install)%><%install%><%else%>.<%endif%><%slash%><%targetoutdir%>
+BTARGETDIR    = <%if(exeout)%><%exeout%><%else%>.<%endif%><%slash%><%targetoutdir%>
 BIN           = $(BTARGETDIR)<%exename%>$(EXESUFFIX)$(EXEEXT)
 <%else%>
 LTARGETDIR    = <%libout%><%slash%><%targetoutdir%>
