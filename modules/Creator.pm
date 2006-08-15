@@ -827,7 +827,7 @@ sub get_files_written {
 
 sub get_assignment {
   my($self)   = shift;
-  my($name)   = shift;
+  my($name)   = $self->resolve_alias(shift);
   my($assign) = shift;
 
   ## If no hash table was passed in

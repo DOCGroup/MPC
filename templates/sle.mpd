@@ -9,7 +9,7 @@
 		Type="gnuc"
 		DebugCallbackName="gdb"
 		Version="1"
-                OutputFile="<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(exename)%><%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>">
+                OutputFile="<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(exename)%><%if(exeout)%><%exeout%><%else%><%output_dir%><%endif%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>">
 		<Menu>
 			<Target
 				Name="Compile"
@@ -104,7 +104,7 @@
 		Type="gnuc"
 		DebugCallbackName="gdb"
 		Version="1"
-                OutputFile="<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(exename)%><%if(install)%><%install%><%else%><%output_dir%><%endif%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>">
+                OutputFile="<%if(sharedname)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(exename)%><%if(exeout)%><%exeout%><%else%><%output_dir%><%endif%>\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>">
 		<Menu>
 			<Target
 				Name="Compile"
