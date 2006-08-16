@@ -17,6 +17,7 @@ use File::Compare;
 
 use Creator;
 use Options;
+use WorkspaceHelper;
 
 use vars qw(@ISA);
 @ISA = qw(Creator Options);
@@ -907,6 +908,10 @@ sub write_workspace {
           if (open($fh, ">$tmp")) {
             $self->pre_workspace($fh);
             $self->write_comps($fh, $creator, $addfile);
+
+            my($wsHelper) = WorkspaceHelper::get($self);
+            $wsHelper->perform_custom_processing($fh, $creator, $addfile);
+
             $self->post_workspace($fh);
             close($fh);
 
@@ -947,6 +952,10 @@ sub write_workspace {
           if (open($fh, ">$name")) {
             $self->pre_workspace($fh);
             $self->write_comps($fh, $creator, $addfile);
+
+            my($wsHelper) = WorkspaceHelper::get($self);
+            $wsHelper->perform_custom_processing($fh, $creator, $addfile);
+
             $self->post_workspace($fh);
             close($fh);
 

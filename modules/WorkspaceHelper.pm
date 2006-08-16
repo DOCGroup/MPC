@@ -53,9 +53,8 @@ sub get {
 
 sub new {
   my($class) = shift;
-  my($self)  = bless {
-                     }, $class;
-  return $self;
+  return bless {
+               }, $class;
 }
 
 
@@ -83,5 +82,12 @@ sub write_settings {
   return 1, undef;
 }
 
+
+sub perform_custom_processing {
+  #my($self)     = shift;
+  #my($fh)       = shift;
+  #my($creator)  = shift;
+  #my($toplevel) = shift;
+}
 
 1;
