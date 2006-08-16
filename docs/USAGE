@@ -254,7 +254,8 @@ includes         - Similar to the -include command line option, it adds the
 logging          - If this setting contains info=1, informational messages
                    will be printed.  If it contains warn=1, warning messages
                    will be printed.  If it contains diag=1, diagnostic
-                   messages will be printed.  And lastly, if it contains
+                   messages will be printed.  If it contains debug=1, debug
+                   message will be printed.  And lastly, if it contains
                    detail=1, detail messages will be printed.  If it
                    contains none of these, MPC will not print out any
                    information or warnings when processing projects or
