@@ -1,3 +1,15 @@
+Wed Aug 16 22:22:31 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/USAGE:
+
+          Added information to the logging section about the debug setting.
+
+        * modules/WorkspaceCreator.pm:
+        * modules/WorkspaceHelper.pm:
+
+          Added a method, perform_custom_processing, to WorkspaceHelper to
+          allow users to be able to inject data into the workspace.
+
 Tue Aug 15 23:50:48 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/USAGE:
