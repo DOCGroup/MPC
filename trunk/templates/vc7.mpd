@@ -179,7 +179,11 @@
 			/>
 <%if(!custom_only)%>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+                                Name="VCPreLinkEventTool"
+<%if(prelink)%>
+                                CommandLine="<%eval(prelink)%>"
+<%endif%>
+                        />
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="<%if(unicode)%>UNICODE;_UNICODE;<%endif%><%foreach(defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
