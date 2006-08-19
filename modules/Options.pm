@@ -57,27 +57,40 @@ sub printUsage {
                $spaces . "[-gfeature_file <file name>]\n" .
                $spaces . "[-language <";
 
+  my($olen) = length($spaces) + 12;
+  my($len)  = $olen;
+  my($mlen) = 77;
   my(@keys) = sort keys %languages;
   for(my $i = 0; $i <= $#keys; $i++) {
+    my($klen) = length($keys[$i]);
+    $len += $klen;
+    if ($len > $mlen) {
+      print STDERR "\n$spaces        ";
+      $len = $olen + $klen;
+    }
     print STDERR $keys[$i];
     if ($i != $#keys) {
       print STDERR ' | ';
-    }
-    if ($i != $#keys && (($i + 1) % 4) == 0) {
-      print STDERR "\n$spaces        ";
+      $len += 3;
     }
   }
   print STDERR ">]\n",
                $spaces, "[-type <";
 
+  $olen = length($spaces) + 8;
+  $len  = $olen;
   @keys = sort @types;
   for(my $i = 0; $i <= $#keys; $i++) {
+    my($klen) = length($keys[$i]);
+    $len += $klen;
+    if ($len > $mlen) {
+      print STDERR "\n$spaces        ";
+      $len = $olen + $klen;
+    }
     print STDERR $keys[$i];
     if ($i != $#keys) {
       print STDERR ' | ';
-    }
-    if ($i != $#keys && (($i + 1) % 6) == 0) {
-      print STDERR "\n$spaces        ";
+      $len += 3;
     }
   }
   print STDERR ">]\n" .
@@ -129,9 +142,9 @@ sub printUsage {
 "                       relative path based on the current working directory.\n" .
 "       -static         Specifies that only static projects will be generated.\n" .
 "                       By default, only dynamic projects are generated.\n" .
+"       -template       Specifies the template name (with no extension).\n" .
 "       -ti             Specifies the template input file (with no extension)\n" .
 "                       for the specific type (ex. -ti dll_exe:vc8exe).\n" .
-"       -template       Specifies the template name (with no extension).\n" .
 "       -type           Specifies the type of project file to generate.  This\n" .
 "                       option can be used multiple times to generate multiple\n" .
 "                       types.  If -type is not used, it defaults to '$default'.\n" .
