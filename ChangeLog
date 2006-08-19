@@ -1,3 +1,10 @@
+Sat Aug 19 17:50:12 UTC 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+          Added prelink as template variable, thanks to Kees van Marle
+          <kvmarle at remedy dot nl> for adding this.
+
 Sat Aug 19 01:22:51 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/MPC.sgml:
