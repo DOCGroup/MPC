@@ -21,9 +21,8 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-apply_project] [-version] [-into <directory>]
               [-gfeature_file <file name>]
               [-language <cplusplus | csharp | java | vb>]
-              [-type <automake | bds | bmake | em3 | ghs | html |
-                      make | nmake | sle | vc6 | vc7 | vc71 |
-                      vc8>]
+              [-type <automake | bds | bmake | em3 | ghs | html | make |
+                      nmake | sle | vc6 | vc7 | vc71 | vc8 | vc8web>]
               [files]
 
        -base           Add <project> as a base project to each generated
@@ -71,9 +70,9 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        relative path based on the current working directory.
        -static         Specifies that only static projects will be generated.
                        By default, only dynamic projects are generated.
+       -template       Specifies the template name (with no extension).
        -ti             Specifies the template input file (with no extension)
                        for the specific type (ex. -ti dll_exe:vc8exe).
-       -template       Specifies the template name (with no extension).
        -type           Specifies the type of project file to generate.  This
                        option can be used multiple times to generate multiple
                        types.  If -type is not used, it defaults to 'make'.
