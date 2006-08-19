@@ -1,3 +1,20 @@
+Sat Aug 19 01:22:51 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/MPC.sgml:
+
+          Added this SGML document provided by Thomas Girard.  It contains
+          information similar to that which is found in the USAGE file.
+
+        * docs/USAGE:
+        * modules/Options.pm:
+
+          Cosmetic changes to the usage output.
+
+        * modules/Driver.pm:
+
+          Fixed a bug where an MPC configuration file that didn't exist
+          would be chosen from the code base configuration file.
+
 Wed Aug 16 22:22:31 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/USAGE:
