@@ -184,7 +184,8 @@ sub determine_cfg_file {
   foreach my $name (@{$cfg->get_names()}) {
     my($value) = $cfg->get_value($name);
     if (index($odir, ($ci ? lc($name) : $name)) == 0) {
-      return $value . '/MPC.cfg';
+      my($cfgfile) = $value . '/MPC.cfg';
+      return $cfgfile if (-e $cfgfile);
     }
   }
 
