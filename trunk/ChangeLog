@@ -1,3 +1,10 @@
+Mon Aug 21 09:12:12 UTC 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/ProjectCreator.pm (get_command_subs):
+          Added crlf to the list, this can then be used in for example the
+          prelink to have a multiline command. Thanks to Kees van Marle
+          <kvmarle at remedy dot nl> for adding this.
+
 Sat Aug 19 17:50:12 UTC 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc7.mpd:
