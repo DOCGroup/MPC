@@ -3428,6 +3428,7 @@ sub get_command_subs {
   $valid{'or'}     = $self->get_or_symbol();
   $valid{'quote'}  = $self->get_quote_symbol();
   $valid{'equote'} = $self->get_escaped_quote_symbol();
+  $valid{'crlf'}   = $self->crlf();
 
   return \%valid;
 }
