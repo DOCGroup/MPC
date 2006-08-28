@@ -101,8 +101,8 @@ sub printUsage {
 "                       project file.  Do not provide a file extension, the\n" .
 "                       .mpb extension will be tried first; if that fails the\n" .
 "                       .mpc extension will be tried.\n" .
-"       -exclude        Use this option to exclude directories when searching\n" .
-"                       for input files.\n" .
+"       -exclude        Use this option to exclude directories or files when\n" .
+"                       searching for input files.\n" .
 "       -expand_vars    Perform direct expansion, instead of performing relative\n" .
 "                       replacement with either -use_env or -relative options.\n" .
 "       -feature_file   Specifies the feature file to read before processing.\n" .
@@ -140,6 +140,8 @@ sub printUsage {
 "       -relative       Any \$() variable in an mpc file that is matched to NAME\n" .
 "                       is replaced by VAR only if VAR can be made into a\n" .
 "                       relative path based on the current working directory.\n" .
+"                       This option can be used multiple times to add multiple\n" .
+"                       variables.\n" .
 "       -static         Specifies that only static projects will be generated.\n" .
 "                       By default, only dynamic projects are generated.\n" .
 "       -template       Specifies the template name (with no extension).\n" .

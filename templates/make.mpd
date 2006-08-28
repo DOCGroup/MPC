@@ -70,7 +70,7 @@ GENFLAGS      = <%genflags("-g")%>
 <%endif%>
 <%endfor%>
 LDLIBS        =<%foreach(libs)%> <%libopt%>"<%libname_prefix%><%lib%>$(LIBSUFFIX)"<%endfor%><%foreach(lit_libs)%> <%libopt%>"<%lit_lib%>"<%endfor%><%foreach(pure_libs)%> "<%pure_lib%>"<%endfor%> <%ldlibs%>
-OBJS          =<%if(pch_source && pchsupport)%> <%targetoutdir%><%noextension(pch_source)%>$(OBJEXT)<%endif%><%foreach(source_files)%> <%targetoutdir%><%noextension(source_file)%>$(OBJEXT)<%endfor%><%if(rc)%><%foreach(resource_files)%> <%targetoutdir%><%resource_file%>$(RESEXT)<%endfor%><%endif%>
+OBJS          =<%if(pch_source && pchsupport)%> <%targetoutdir%><%obj_dir%><%noextension(pch_source)%>$(OBJEXT)<%endif%><%foreach(source_files)%> <%targetoutdir%><%obj_dir%><%noextension(source_file)%>$(OBJEXT)<%endfor%><%if(rc)%><%foreach(resource_files)%> <%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT)<%endfor%><%endif%>
 <%if(lib_ext)%>
 <%if(staticname)%>
 AREXT         = <%lib_ext%>
@@ -97,6 +97,10 @@ DYNAMICFLAGS  =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
 STATICFLAGS   =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
 <%endif%>
 EXPORTFLAGS   = <%if(exename)%><%if(need_staticflags)%>$(STATICFLAGS)<%endif%><%else%><%if(dll_ext && sharedname)%>$(DYNAMICFLAGS)<%else%>$(STATICFLAGS)<%endif%><%endif%>
+<%if(make_include)%>
+
+include <%make_include%>
+<%endif%>
 <%marker(macros)%>
 
 #----------------------------------------------------------------------------
@@ -117,7 +121,7 @@ specialscript:
 	@specialscript $(NM) "$(OBJS)" "$(LDLIBS)" "<%if(libpaths)%><%libpaths%><%else%>.<%endif%>" <%prelink%>
 	@$(RM) specialscript
 
-<%targetoutdir%><%noextension(prelink)%>$(OBJEXT): <%prelink%>
+<%targetoutdir%><%obj_dir%><%noextension(prelink)%>$(OBJEXT): <%prelink%>
 	$(COMPILE.cc) $(OUTPUT_OPTION) <%prelink%>
 	@$(RM) <%prelink%>
 
@@ -125,7 +129,7 @@ specialscript:
 $(BTARGETDIR):
 	@$(MKDIR) "$@"
 
-$(BIN): $(BTARGETDIR)<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelink)%> <%targetoutdir%><%noextension(prelink)%>$(OBJEXT)<%endif%> $(OBJS)
+$(BIN): $(BTARGETDIR)<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelink)%> <%targetoutdir%><%obj_dir%><%noextension(prelink)%>$(OBJEXT)<%endif%> $(OBJS)
 	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 
 <%endif%>
@@ -144,7 +148,7 @@ $(SHLIB):
 <%endif%>
 $(SHLIB)<%if(version && versupport)%>.<%version%><%endif%>: $(SHTARGETDIR) <%if(tempinc)%>$(TEMPINCDIR) <%endif%>$(OBJS)
 <%if(dmclink)%>
-	link /impl <%if(pch_source && pchsupport)%><%targetoutdir%><%noextension(pch_source)%>$(OBJEXT)+<%endif%><%foreach(source_files)%><%targetoutdir%><%noextension(source_file)%>$(OBJEXT)<%fornotlast("+")%><%endfor%>,$@,<%foreach(platforms)%><%ldlibs%><%endfor%><%if(rc)%><%foreach(resource_files)%><%forfirst(",,")%><%targetoutdir%><%resource_file%>$(RESEXT)<%fornotlast("+")%><%endfor%><%endif%>
+	link /impl <%if(pch_source && pchsupport)%><%targetoutdir%><%obj_dir%><%noextension(pch_source)%>$(OBJEXT)+<%endif%><%foreach(source_files)%><%targetoutdir%><%obj_dir%><%noextension(source_file)%>$(OBJEXT)<%fornotlast("+")%><%endfor%>,$@,<%foreach(platforms)%><%ldlibs%><%endfor%><%if(rc)%><%foreach(resource_files)%><%forfirst(",,")%><%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT)<%fornotlast("+")%><%endfor%><%endif%>
 <%else%>
 	<%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%> $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 <%endif%>
@@ -225,17 +229,20 @@ $(TEMPINCDIR):
 
 <%endif%>
 <%if(pch_source && pchsupport)%>
-<%targetoutdir%><%noextension(pch_source)%>$(OBJEXT): <%pch_source%>
-	$(COMPILE.cc) <%if(pchcreate)%><%pchcreate%><%targetoutdir%><%pch_header%><%pchext%> <%endif%>$(EXPORTFLAGS)<%if(!pchnobj)%> $(OUTPUT_OPTION)<%endif%> <%pch_source%>
+<%targetoutdir%><%obj_dir%><%noextension(pch_source)%>$(OBJEXT): <%pch_source%>
+<%if(targetoutdir || obj_dir)%>
+	@$(MKDIR) <%targetoutdir%><%obj_dir%><%dirname(pch_source)%>
+<%endif%>
+	$(COMPILE.cc) <%if(pchcreate)%><%pchcreate%><%targetoutdir%><%obj_dir%><%pch_header%><%pchext%> <%endif%>$(EXPORTFLAGS)<%if(!pchnobj)%> $(OUTPUT_OPTION)<%endif%> <%pch_source%>
 <%if(pchnobj)%>
-	@$(CP) <%pch_header%><%pchext%> <%targetoutdir%><%noextension(pch_source)%>$(OBJEXT)
+	@$(CP) <%targetoutdir%><%obj_dir%><%pch_header%><%pchext%> <%targetoutdir%><%obj_dir%><%noextension(pch_source)%>$(OBJEXT)
 <%endif%>
 
 <%endif%>
 <%foreach(source_files)%>
-<%targetoutdir%><%noextension(source_file)%>$(OBJEXT): <%source_file%>
-<%if(targetoutdir)%>
-	@$(MKDIR) <%targetoutdir%><%dirname(source_file)%>
+<%targetoutdir%><%obj_dir%><%noextension(source_file)%>$(OBJEXT): <%source_file%>
+<%if(targetoutdir || obj_dir)%>
+	@$(MKDIR) <%targetoutdir%><%obj_dir%><%dirname(source_file)%>
 <%endif%>
 	$(COMPILE.cc) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%><%if(pchuse && pch_source && pchsupport)%><%pchuse%><%pch_header%><%pchext%> <%if(pchstop)%><%pchstop%><%pch_header%><%endif%><%endif%>$(EXPORTFLAGS) $(OUTPUT_OPTION) <%source_file%>
 
@@ -243,8 +250,11 @@ $(TEMPINCDIR):
 <%if(resource_files)%>
 <%if(rc)%>
 <%foreach(resource_files)%>
-<%targetoutdir%><%resource_file%>$(RESEXT):
-	<%rc%><%foreach(includes)%> -I<%include%><%endfor%> <%resource_file%> <%targetoutdir%><%resource_file%>$(RESEXT)
+<%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT):
+<%if(targetoutdir || obj_dir)%>
+	@$(MKDIR) <%targetoutdir%><%obj_dir%><%dirname(resource_file)%>
+<%endif%>
+	<%rc%><%foreach(includes)%> -I<%include%><%endfor%> <%resource_file%> <%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT)
 
 <%endfor%>
 <%endif%>
@@ -252,7 +262,7 @@ $(TEMPINCDIR):
 clean:
 	-$(RM) $(OBJS)
 <%if(pch_source && pchsupport)%>
-	-$(RM) <%pch_header%><%pchext%>
+	-$(RM) <%targetoutdir%><%obj_dir%><%pch_header%><%pchext%>
 <%endif%>
 <%if(clean)%>
 	-$(RM) <%clean%><%if(sharedname)%><%foreach(dir, clean)%> $(SHTARGETDIR)<%dir%><%endfor%><%endif%><%if(staticname || sharedname)%><%foreach(dir, clean)%> $(LTARGETDIR)<%dir%><%endfor%><%endif%><%if(exename)%><%foreach(dir, clean)%> $(BTARGETDIR)<%dir%><%endfor%><%endif%>
@@ -262,6 +272,9 @@ realclean: clean
 	-$(RM) <%if(exename)%>$(BIN)<%else%><%if(dll_ext && sharedname && version && versupport)%>$(SHLIB).<%version%> <%endif%>$(SHLIB) $(LIB)<%endif%>
 <%if(custom_types)%>
 	-$(RM) $(GENERATED_DIRTY)
+<%endif%>
+<%if(obj_dir)%>
+	-$(RM) <%targetoutdir%><%obj_dir%>
 <%endif%>
 
 <%if(prebuild)%>
