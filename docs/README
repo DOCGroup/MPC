@@ -182,6 +182,7 @@ postbuild       If this is defined in the project, the value will be
                   <%or%>     - Project non-specific or sign.
                   <%quote%>  - Project non-specific double quote.
                   <%equote%> - Project non-specific escaped quote.
+                  <%crlf%>   - Platform non-specific line ending.
 prebuild        This is similar to postbuild except that it will be
                 performed before the build instead of after.
 recurse         If set to 1, MPC will recurse into directories listed under

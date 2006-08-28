@@ -262,9 +262,9 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 <%if(prelink)%>
-                                CommandLine="<%eval(prelink)%>"
+				CommandLine="<%eval(prelink)%>"
 <%endif%>
-                        />
+			/>
 			<Tool
 <%if(type_is_static)%>
 				Name="VCLibrarianTool"
