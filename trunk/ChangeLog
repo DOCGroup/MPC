@@ -1,3 +1,28 @@
+Mon Aug 28 12:09:16 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/MPC.sgml:
+        * docs/README:
+        * docs/USAGE:
+        * modules/Options.pm:
+
+          Updated incorrect documentation and added missing information.
+
+        * modules/Driver.pm:
+
+          Added a warning about the impending default type removal when no
+          type is specified.
+
+        * templates/make.mpd:
+
+          Added the ability to force object files into a specific directory
+          and added the ability to provide a "make include" file to override
+          or augment makefile rules.
+
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Converted whitespace to tabs as Visual Studio would used.
+
 Mon Aug 21 09:12:12 UTC 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/ProjectCreator.pm (get_command_subs):
