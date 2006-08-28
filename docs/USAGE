@@ -29,8 +29,8 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        project file.  Do not provide a file extension, the
                        .mpb extension will be tried first; if that fails the
                        .mpc extension will be tried.
-       -exclude        Use this option to exclude directories when searching
-                       for input files.
+       -exclude        Use this option to exclude directories or files when
+                       searching for input files.
        -expand_vars    Perform direct expansion, instead of performing relative
                        replacement with either -use_env or -relative options.
        -feature_file   Specifies the feature file to read before processing.
@@ -68,6 +68,8 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
        -relative       Any $() variable in an mpc file that is matched to NAME
                        is replaced by VAR only if VAR can be made into a
                        relative path based on the current working directory.
+                       This option can be used multiple times to add multiple
+                       variables.
        -static         Specifies that only static projects will be generated.
                        By default, only dynamic projects are generated.
        -template       Specifies the template name (with no extension).
@@ -98,8 +100,8 @@ Each project creator has a default template input file for each type of
 project (dll_exe, lib_exe, dll, lib).  You can override the default template
 input file name with the -ti option.  The file must have a 'mpt' extension
 and must reside within the include search directories.  NOTE: the 'lib' and
-the 'lib_exe' template input files are only used if the project creator makes
-a separate project file for dynamic libraries and static libraries.
+the 'lib_exe' template input files are only used when MPC is generating
+static projects.
 
 The -exclude option is used to exclude directories when searching for input
 files.  NOTE: This option has no effect when used with mpc.pl.

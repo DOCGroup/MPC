@@ -303,6 +303,9 @@ sub run {
   ## Set up the default creator, if no type is selected
   if (!defined $options->{'creators'}->[0]) {
     push(@{$options->{'creators'}}, $self->{'default'});
+    $self->warning("In the future, there will no longer be a default " .
+                   "project type.  You should specify one with the " .
+                   "-type option.");
   }
 
   if ($options->{'recurse'}) {
@@ -486,7 +489,8 @@ sub run {
         }
         $file = $base;
       }
-      my($diag) = 'Generating ' . $self->extractType($name) . ' output using ';
+      my($diag) = 'Generating \'' . $self->extractType($name) .
+                  '\' output using ';
       if ($file eq '') {
         $diag .= 'default input';
       }
