@@ -3,8 +3,7 @@
 
 conditional_include "bmakecommon"
 
-startup_letter   = x
-use_exe_modifier =
+startup_letter = x
 
 Release {
   optimize         = 1

@@ -43,7 +43,7 @@ TEMPINCDIR    = <%tempinc%><%if(tempincopt)%><%slash%><%project_name%><%endif%>
 LDFLAGS       =<%if(libpaths)%><%foreach(libpaths)%> <%libpathopt(-L)%>"<%libpath%>"<%endfor%><%endif%><%if(linkflags)%> <%linkflags%><%endif%><%if(build64bit && linkflags64)%> <%linkflags64%><%endif%>
 CCC           = $(CXX)
 MAKEFILE      = <%project_file%>
-DEPENDENCIES  = .depend.$(MAKEFILE)
+DEPENDENCIES  = <%if(supports_include)%>.depend.<%endif%>$(MAKEFILE)
 <%if(exename)%>
 BTARGETDIR    = <%if(exeout)%><%exeout%><%else%>.<%endif%><%slash%><%targetoutdir%>
 BIN           = $(BTARGETDIR)<%exename%>$(EXESUFFIX)$(EXEEXT)
@@ -59,8 +59,10 @@ MKDIR         = <%makedir("mkdir -p")%>
 EXEEXT        = <%exe_ext%>
 LIBPREFIX     = <%lib_prefix%><%libname_prefix%>
 <%foreach(configurations)%>
+<%if(use_lib_modifier)%>
 LIBSUFFIX     = <%lib_modifier%>
-<%if(use_modifier)%>
+<%endif%>
+<%if(use_exe_modifier)%>
 EXESUFFIX     = <%lib_modifier%>
 <%endif%>
 <%if(optimize)%>
@@ -97,7 +99,7 @@ DYNAMICFLAGS  =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
 STATICFLAGS   =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
 <%endif%>
 EXPORTFLAGS   = <%if(exename)%><%if(need_staticflags)%>$(STATICFLAGS)<%endif%><%else%><%if(dll_ext && sharedname)%>$(DYNAMICFLAGS)<%else%>$(STATICFLAGS)<%endif%><%endif%>
-<%if(make_include)%>
+<%if(supports_include && make_include)%>
 
 include <%make_include%>
 <%endif%>
@@ -148,9 +150,9 @@ $(SHLIB):
 <%endif%>
 $(SHLIB)<%if(version && versupport)%>.<%version%><%endif%>: $(SHTARGETDIR) <%if(tempinc)%>$(TEMPINCDIR) <%endif%>$(OBJS)
 <%if(dmclink)%>
-	link /impl <%if(pch_source && pchsupport)%><%targetoutdir%><%obj_dir%><%noextension(pch_source)%>$(OBJEXT)+<%endif%><%foreach(source_files)%><%targetoutdir%><%obj_dir%><%noextension(source_file)%>$(OBJEXT)<%fornotlast("+")%><%endfor%>,$@,<%foreach(platforms)%><%ldlibs%><%endfor%><%if(rc)%><%foreach(resource_files)%><%forfirst(",,")%><%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT)<%fornotlast("+")%><%endfor%><%endif%>
+	link /impl <%if(pch_source && pchsupport)%><%targetoutdir%><%obj_dir%><%noextension(pch_source)%>$(OBJEXT)+<%endif%><%foreach(source_files)%><%targetoutdir%><%obj_dir%><%noextension(source_file)%>$(OBJEXT)<%fornotlast("+")%><%endfor%>,$@,<%ldlibs%><%if(rc)%><%foreach(resource_files)%><%forfirst(",,")%><%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT)<%fornotlast("+")%><%endfor%><%endif%>
 <%else%>
-	<%foreach(platforms)%><%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%><%endfor%> $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+	<%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%> $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 <%endif%>
 
 <%else%>
@@ -302,8 +304,10 @@ depend:
 	@-:
 <%endif%>
 
-<%if(dependencies)%>
+<%if(supports_include)%>
 include $(DEPENDENCIES)
+<%else%>
+# DO NOT DELETE THIS LINE
 <%endif%>
 <%endfor%>
 <%endfor%>

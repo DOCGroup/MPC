@@ -3128,7 +3128,7 @@ sub generate_defaults {
   ## we need to remove those that have need to be removed
   $self->remove_excluded('source_files');
 
-  ## Collect up all of the source file that have already been listed
+  ## Collect up all of the source files that have already been listed
   ## with the extension removed.
   my(%sourcecomp) = ();
   foreach my $sourcetag (keys %sourceComponents) {
@@ -4005,7 +4005,8 @@ sub write_project {
       }
 
       if ($self->{'escape_spaces'}) {
-        foreach my $name ('exename', 'sharedname', 'staticname') {
+        foreach my $name ('exename', 'sharedname', 'staticname',
+                          'exeout', 'dllout', 'libout') {
           my($value) = $self->get_assignment($name);
           if (defined $value && $value =~ s/(\s)/\\$1/g) {
             $self->process_assignment($name, $value);

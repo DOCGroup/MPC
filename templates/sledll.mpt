@@ -4,6 +4,4 @@
 conditional_include "common"
 conditional_include "windowscommon"
 
-use_lib_modifier = 1
-
 conditional_include "user_sledll"

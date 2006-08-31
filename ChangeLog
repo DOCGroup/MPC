@@ -1,3 +1,71 @@
+Thu Aug 31 23:18:57 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * devtools/document_template.pl:
+
+          Fixed a bug where variables found within a <%if()%> were not taken
+          into account.
+
+        * docs/templates/common.txt:
+
+          Added some missing common template variable definitions.
+
+        * docs/templates/make.txt:
+
+          Defined all of the template variables specific to the make
+          template.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where target output directories (exeout, dllout,
+          libout) were not escaped if they included spaces.
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Renamed dependencies to suppports_include which indicates whether
+          a native version of make supports including files the may not
+          exist at the time of make invocation.
+
+        * templates/bmake.mpd:
+        * templates/em3.mpd:
+        * templates/ghs.mpd:
+        * templates/nmake.mpd:
+        * templates/sle.mpd:
+        * templates/vc6.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Fixed a bug where the lib modifier was still applied to libraries
+          specified by the 'libs' project variable even if the
+          'use_lib_modifier' template variable was unset.
+
+        * templates/bmakedll.mpt:
+        * templates/bmakedllexe.mpt:
+        * templates/bmakelib.mpt:
+        * templates/bmakelibexe.mpt:
+        * templates/common.mpt:
+        * templates/em3vcpdll.mpt:
+        * templates/em3vcpdllexe.mpt:
+        * templates/em3vcplib.mpt:
+        * templates/em3vcplibexe.mpt:
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+        * templates/sledll.mpt:
+        * templates/sleexe.mpt:
+        * templates/vc6dspdll.mpt:
+        * templates/vc6dspdllexe.mpt:
+        * templates/vc6dsplib.mpt:
+        * templates/vc6dsplibexe.mpt:
+        * templates/vc7dll.mpt:
+        * templates/vc7exe.mpt:
+        * templates/vc7lib.mpt:
+        * templates/vc7libexe.mpt:
+        * templates/vc8dll.mpt:
+        * templates/vc8lib.mpt:
+
+          Factored out the 'use_lib_modifier' and 'use_exe_modifier'
+          template variables into common.mpt.
+
 Mon Aug 28 12:09:16 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/MPC.sgml:

@@ -5,7 +5,7 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 # ******************************************************************
 #      Author: Chad Elliott
 #        Date: 7/12/2006
-#         $Id: document_template.pl,v 1.1 2006/02/16 21:38:47 elliottc Exp $
+#         $Id$
 # ******************************************************************
 
 # ******************************************************************
@@ -188,11 +188,12 @@ if (open($fh, $input)) {
         my($def)   = undef;
         if ($key =~ /^([^\(]+)\((.*)\)/) {
           $name = $1;
+          my($vname) = $2;
+
           if (defined $keywords{$name}) {
             $tvar = 1;
             if ($name eq 'foreach') {
               ++$findex;
-              my($vname) = $2;
 
               my($remove_s) = 1;
               if ($vname =~ /([^,]*),(.*)/) {
@@ -211,14 +212,23 @@ if (open($fh, $input)) {
                 }
                 $vname = $n;
               }
-              $vname =~ s/\s.*//;
+
+              $name = $vname;
 
               $key = $vname;
-              $name = $vname;
+              $vname =~ s/\s.*//;
               $vname =~ s/s$// if ($remove_s);
 
               $foreach[$findex] = $vname;
               $tvar = undef;
+            }
+            elsif ($name eq 'if') {
+              $vname =~ s/(flag_overrides\(.*\)|!|&&|\|\|)//g;
+              if ($vname !~ /^\s*$/) {
+                $name = $vname;
+                $key  = $vname;
+                $tvar = undef;
+              }
             }
           }
           else {
@@ -226,41 +236,60 @@ if (open($fh, $input)) {
           }
         }
 
-        if (defined $keywords{$key}) {
-          $tvar = 1;
-          if ($key eq 'endfor') {
-            $foreach[$findex] = undef;
-            --$findex;
-          }
-        }
-        else {
-          foreach my $ao (keys %arrow_op) {
-            if ($key =~ /^$ao/) {
-              $tvar = 1;
-              last;
-            }
-          }
-        }
-
-        if (!$tvar) {
-          for(my $index = 0; $index <= $findex; $index++) {
-            if ($foreach[$index] eq $key) {
-              $tvar = 1;
-              last;
-            }
-          }
-        }
-
-        if (!$tvar) {
-          if (defined $template_keys{$name}) {
-            if (defined $def) {
-              $template_keys{$name}->{$def} = 1;
+        my($otvar) = $tvar;
+        foreach my $k (split(/\s+/, $key)) {
+          $tvar = $otvar;
+          if (defined $keywords{$k}) {
+            $tvar = 1;
+            if ($k eq 'endfor') {
+              $foreach[$findex] = undef;
+              --$findex;
             }
           }
           else {
-            $template_keys{$name} = {};
-            if (defined $def) {
-              $template_keys{$name}->{$def} = 1;
+            foreach my $ao (keys %arrow_op) {
+              if ($k =~ /^$ao/) {
+                $tvar = 1;
+                last;
+              }
+            }
+          }
+
+          if (!$tvar) {
+            for(my $index = 0; $index <= $findex; $index++) {
+              if ($foreach[$index] eq $k) {
+                $tvar = 1;
+                last;
+              }
+            }
+          }
+
+          if (!$tvar) {
+            foreach my $n (split(/\s+/, $name)) {
+              $tvar = undef;
+              if (defined $keywords{$n}) {
+              }
+              else {
+                foreach my $ao (keys %arrow_op) {
+                  if ($n =~ /^$ao/) {
+                    $tvar = 1;
+                    last;
+                  }
+                }
+                if (!$tvar) {
+                  if (defined $template_keys{$n}) {
+                    if (defined $def) {
+                      $template_keys{$n}->{$def} = 1;
+                    }
+                  }
+                  else {
+                    $template_keys{$n} = {};
+                    if (defined $def) {
+                      $template_keys{$n}->{$def} = 1;
+                    }
+                  }
+                }
+              }
             }
           }
         }

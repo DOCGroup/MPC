@@ -11,7 +11,6 @@ platforms             = Win32
 default_configuration = Debug
 common_defines        = WIN32 _CONSOLE
 subsystem             = console
-use_exe_modifier      =
 TreatWChar_tAsBuiltInType = true
 
 Win32 {
