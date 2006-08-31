@@ -33,7 +33,7 @@ libopt           = -l
 build64bit       = 1
 pchext           = .gch
 versupport       = 1
-dependencies     = 1
+supports_include = 1
 visibility       =
 
 // ***********************************************************************
@@ -90,7 +90,6 @@ dmc {
   ar           = lib
   arflags      = -c
   obj_ext      = .obj
-  dependencies =
   platforms    = dmc_win
 }
 
@@ -147,7 +146,6 @@ xlC_r {
   platforms       = aix
   pchcreate       = -qgenpcomp=
   pchuse          = -qusepcomp=
-  dependencies    =
 }
 
 SGICC {
@@ -241,9 +239,10 @@ hpux {
 }
 
 aix {
-  dll_ext       =
-  ldlibs        = -ldl -lpthread
-  extracppflags = -D_REENTRANT
+  dll_ext          =
+  ldlibs           = -ldl -lpthread
+  extracppflags    = -D_REENTRANT
+  supports_include =
 }
 
 irix {
@@ -320,19 +319,20 @@ mingw {
 }
 
 dmc_win {
-  versupport =
-  lib_prefix =
-  dll_ext    = .dll
-  lib_ext    = .lib
-  exe_ext    = .exe
-  ldlibs     = wsock32+kernel32
-  rc         = rc
-  devnull    = nul
-  delete     = del /f/s/q
-  type       = type
-  copy       = copy /y
-  makedir    = mkdir
-  move       = move /y
+  versupport       =
+  lib_prefix       =
+  dll_ext          = .dll
+  lib_ext          = .lib
+  exe_ext          = .exe
+  ldlibs           = wsock32+kernel32
+  rc               = rc
+  devnull          = nul
+  delete           = del /f/s/q
+  type             = type
+  copy             = copy /y
+  makedir          = mkdir
+  move             = move /y
+  supports_include =
 }
 
 tandem {

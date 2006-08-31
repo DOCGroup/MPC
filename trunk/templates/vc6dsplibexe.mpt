@@ -11,7 +11,6 @@ configurations        = Debug Release
 default_configuration = Debug
 common_defines        = WIN32 _CONSOLE
 subsystem             = console
-use_exe_modifier      =
 
 Release {
   use_debug_libraries   = 0

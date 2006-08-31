@@ -4,7 +4,6 @@
 conditional_include "bmakecommon"
 
 startup_letter   = x
-use_exe_modifier =
 
 Release {
   optimize         = 1

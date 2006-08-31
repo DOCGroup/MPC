@@ -10,8 +10,7 @@
 !ifdef <%uc(configuration)%>
 OCFLAGS      = <%if(optimize)%>-O2<%else%><%if(debug_prj)%>-v -y -Od -vi- -k<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
 CFG_DIR      = <%intermediate_dir%>\\
-ILIBMODIFIER = <%lib_modifier%>
-OLIBMODIFIER = <%if(use_lib_modifier)%><%lib_modifier%><%endif%>
+LIBMODIFIER  = <%if(use_lib_modifier)%><%lib_modifier%><%endif%>
 EXEMODIFIER  = <%if(use_exe_modifier)%><%lib_modifier%><%endif%>
 <%if(postlinkrmext)%>
 POSTLINKRM   = <%postlinkrmext%>
@@ -69,10 +68,10 @@ INTERMEDIATE = $(CFG_DIR)$(UNICODE_DIR)<%noextension(project_name)%>
 NAME         = <%exename%>$(EXEMODIFIER)
 <%else%>
 <%if(sharedname)%>
-NAME         = <%libname_prefix%><%sharedname%>$(OLIBMODIFIER)
+NAME         = <%libname_prefix%><%sharedname%>$(LIBMODIFIER)
 <%else%>
 <%if(staticname)%>
-NAME         = <%libname_prefix%><%staticname%>$(OLIBMODIFIER)
+NAME         = <%libname_prefix%><%staticname%>$(LIBMODIFIER)
 <%endif%>
 <%endif%>
 <%endif%>
@@ -107,7 +106,7 @@ LFLAGS   = \
 
 LIBFILES = \
 <%foreach(reverse(libs))%>
-           <%libname_prefix%><%lib%>$(ILIBMODIFIER)$(LIB_EXT) \
+           <%libname_prefix%><%lib%>$(LIBMODIFIER)$(LIB_EXT) \
 <%endfor%>
 <%foreach(reverse(lit_libs))%>
            <%lit_lib%>$(LIB_EXT) \
