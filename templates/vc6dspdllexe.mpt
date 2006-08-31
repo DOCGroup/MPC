@@ -10,7 +10,6 @@ type_code        = 0x0103
 configurations   = Debug Release
 common_defines   = WIN32 _CONSOLE
 subsystem        = console
-use_exe_modifier =
 
 Release {
   use_debug_libraries   = 0

@@ -7,7 +7,6 @@ conditional_include "windowscommon"
 configurations     = Debug Release
 common_defines     = WIN32 _WINDOWS
 configuration_type = 4
-use_lib_modifier   = 1
 
 Release {
   optimize         = 3

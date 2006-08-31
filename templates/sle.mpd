@@ -35,7 +35,7 @@
 				RunFromDir="%rw">
 				<Exec
 					CmdLine='g++ %xup -g -o "%o" %f %libs %~other'
-                                        OtherOptions="-Wl,--enable-auto-import -Wl,-E -lws2_32 -lmswsock -lwsock32 -lnetapi32 <%foreach(libs)%>-l<%libname_prefix%><%lib%><%lib_modifier%><%lib_ext%> <%endfor%><%foreach(lit_libs)%>-l<%lit_lib%>.lib <%endfor%><%foreach(pure_libs)%>-l<%pure_lib%> <%endfor%><%foreach(libpaths)%>-L'<%libpath%>' <%endfor%>"/>
+                                        OtherOptions="-Wl,--enable-auto-import -Wl,-E -lws2_32 -lmswsock -lwsock32 -lnetapi32 <%foreach(libs)%>-l<%libname_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%> <%endfor%><%foreach(lit_libs)%>-l<%lit_lib%>.lib <%endfor%><%foreach(pure_libs)%>-l<%pure_lib%> <%endfor%><%foreach(libpaths)%>-L'<%libpath%>' <%endfor%>"/>
 			</Target>
 			<Target
 				Name="Build"
@@ -130,7 +130,7 @@
 				RunFromDir="%rw">
 				<Exec
 					CmdLine='g++ %xup -o "%o" %f %libs %~other'
-                                        OtherOptions="-Wl,--enable-auto-import -Wl,-E -lws2_32 -lmswsock -lwsock32 -lnetapi32 <%foreach(libs)%>-l<%libname_prefix%><%lib%><%lib_modifier%><%lib_ext%> <%endfor%><%foreach(lit_libs)%>-l<%lit_lib%>.lib <%endfor%><%foreach(pure_libs)%>-l<%pure_lib%> <%endfor%><%foreach(libpaths)%>-L'<%libpath%>' <%endfor%>"/>
+                                        OtherOptions="-Wl,--enable-auto-import -Wl,-E -lws2_32 -lmswsock -lwsock32 -lnetapi32 <%foreach(libs)%>-l<%libname_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%> <%endfor%><%foreach(lit_libs)%>-l<%lit_lib%>.lib <%endfor%><%foreach(pure_libs)%>-l<%pure_lib%> <%endfor%><%foreach(libpaths)%>-L'<%libpath%>' <%endfor%>"/>
 			</Target>
 			<Target
 				Name="Build"

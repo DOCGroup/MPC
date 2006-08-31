@@ -296,7 +296,7 @@
 <%endif%>
 <%endif%>
 <%if(type_is_binary)%>
-				AdditionalDependencies="<%foreach(reverse(libs))%><%fornotfirst(" ")%><%libname_prefix%><%lib%><%lib_modifier%><%lib_ext%><%endfor%><%foreach(reverse(lit_libs))%> <%lit_lib%>.lib<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%><%endfor%>"
+				AdditionalDependencies="<%foreach(reverse(libs))%><%fornotfirst(" ")%><%libname_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endfor%><%foreach(reverse(lit_libs))%> <%lit_lib%>.lib<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%><%endfor%>"
 <%endif%>
 <%if(exename || sharedname || staticname)%>
 				OutputFile="$(OutDir)\<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
