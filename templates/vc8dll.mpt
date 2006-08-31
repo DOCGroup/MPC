@@ -7,7 +7,6 @@ conditional_include "windowscommon"
 configurations     = Debug Release
 common_defines     = WIN32 _WINDOWS _CRT_SECURE_NO_DEPRECATE
 ConfigurationType  = 2
-use_lib_modifier   = 1
 Detect64BitPortabilityProblems = false
 MinimalRebuild     = false
 

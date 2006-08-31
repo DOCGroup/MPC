@@ -3,8 +3,6 @@
 
 conditional_include "bmakecommon"
 
-use_lib_modifier = 1
-
 Release {
   optimize         = 1
   defines          = NDEBUG

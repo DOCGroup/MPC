@@ -10,7 +10,6 @@ default_configuration = Debug
 default_platform      = "WCE ARM"
 configurations        = Debug Release
 common_defines        = UNICODE _UNICODE
-use_exe_modifier      =
 unicode               = 1
 
 WCE x86 {

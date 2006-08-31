@@ -11,7 +11,6 @@ default_platform      = "WCE ARM"
 configurations        = Debug Release
 common_defines        = UNICODE _UNICODE
 unicode               = 1
-use_lib_modifier      = 1
 
 WCE x86 {
   type_code   = 0x8304

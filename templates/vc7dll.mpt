@@ -4,9 +4,8 @@
 conditional_include "common"
 conditional_include "windowscommon"
 
-configurations     = Debug Release
-common_defines     = WIN32 _WINDOWS
-use_lib_modifier   = 1
+configurations = Debug Release
+common_defines = WIN32 _WINDOWS
 
 Release {
   LinkIncremental  = 1
