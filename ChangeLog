@@ -1,3 +1,11 @@
+Wed Sep  6 16:20:27 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Backward compatibility was not complete for the 'install' keyword
+          when scoped in a specific section.  The resolve_alias() method did
+          not take scoping into account.
+
 Thu Aug 31 23:18:57 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * devtools/document_template.pl:

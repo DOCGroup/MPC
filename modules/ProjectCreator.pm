@@ -4644,7 +4644,11 @@ sub getValidComponents {
 
 
 sub resolve_alias {
-  return 'exeout' if ($_[1] eq 'install');
+  if (index($_[1], 'install') >= 0) {
+    my($resolved) = $_[1];
+    $resolved =~ s/install/exeout/;
+    return $resolved;
+  }
   return $_[1];
 }
 
