@@ -61,6 +61,7 @@ my(%keywords) = ('if'              => 0,
                  'transdir'        => 5,
                  'has_extension'   => 5,
                  'keyname_used'    => 0,
+                 'scope'           => 0,
                 );
 
 my(%target_type_vars) = ('type_is_static'   => 1,
@@ -101,6 +102,7 @@ sub new {
   $self->{'dupfiles'}             = {};
   $self->{'override_target_type'} = undef;
   $self->{'keyname_used'}         = {};
+  $self->{'scopes'}               = {};
 
   $self->{'foreach'}  = {};
   $self->{'foreach'}->{'count'}      = -1;
@@ -187,7 +189,22 @@ sub append_current {
     $_[0]->{'eval_str'} .= $_[1];
   }
   else {
-    $_[0]->{'built'} .= $_[1];
+    my($value) = $_[1];
+    my($scope) = $_[0]->{'scopes'};
+    while(defined $$scope{'scope'}) {
+      $scope = $$scope{'scope'};
+      if (defined $$scope{'escape'}) {
+        my($key) = $$scope{'escape'};
+        if ($key eq '\\') {
+          $value =~ s/\\/\\\\/g;
+        }
+        else {
+          $value =~ s/$key/\\$key/g;
+        }
+      }
+    }
+
+    $_[0]->{'built'} .= $value;
   }
 }
 
@@ -800,6 +817,33 @@ sub handle_keyname_used {
   }
 }
 
+
+sub handle_scope {
+  my($self) = shift;
+  my($str)  = shift;
+
+  if (defined $str) {
+    my($state, $func, $param) = $self->split_parameters($str);
+    if (defined $state) {
+      my($pscope) = undef;
+      my($scope) = $self->{'scopes'};
+
+      while(defined $$scope{'scope'}) {
+        $pscope = $scope;
+        $scope = $$scope{'scope'};
+      }
+      if ($state eq 'enter') {
+        $$scope{'scope'} = {$func => $self->process_special($param)};
+      }
+      elsif ($state eq 'leave') {
+        delete $$pscope{'scope'} if (defined $pscope);
+      }
+    }
+    else {
+      $self->warning("The scope function requires 1 to 3 parameters.");
+    }
+  }
+}
 
 sub get_has_extension {
   my($self) = shift;

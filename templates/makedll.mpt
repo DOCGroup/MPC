@@ -186,10 +186,10 @@ NCC {
 }
 
 ghsppc {
-  cxx           = cxppc
-  ar            = cxppc
-  arflags       = -archive -o
-  compilerflags = --one_instantiation_per_object --exceptions
+  cxx           = cxintppc
+  ar            = cxintppc
+  arflags       = --one_instantiation_per_object -archive -o
+  compilerflags = --new_style_casts --one_instantiation_per_object --exceptions --std --long_long
   platforms     = integrity
 }
 
@@ -344,18 +344,15 @@ tandem {
 // For Integrity, the following should be set as environment variables, on
 // the make command line or within a verbatim section in your mpc file.
 //
-// GHSROOT     The full path to your Green Hills installation.
-// RTOSROOT    The full path to your BSP installation (probably $GHSROOT).
-// BSP         The BSP name (ex. sim800).
-// TARGET_BSP  The full path to your target BSP.
-// TARGET_LD   The full path to your target ld file.
+// OS_DIR The full path to your BSP installation.
+// BSP    The BSP name (ex. sim800).
 //
 integrity {
   versupport    =
   dll_ext       =
-  ldlibs        = -lshm_client -lnet -livfssca -lposixsca
-  extraarflags  = -bspname=$(RTOSROOT)/target/$(BSP).bld
-  extracppflags = -integrate -dynamic -bspname=$(RTOSROOT)/target/$(BSP).bld -os_dir $(GHSROOT) -non_shared -Uvector -bspfile=$(TARGET_BSP) $(TARGET_LD)
+  ldlibs        = -lshm_client -lnet -lsocket -lposix
+  extraarflags  = -bsp $(BSP) -os_dir $(OS_DIR) --one_instantiation_per_object
+  extracppflags = -integrate -dynamic -bsp $(BSP) -os_dir $(OS_DIR) --one_instantiation_per_object -non_shared -Uvector
 }
 
 conditional_include "user_makedll"
