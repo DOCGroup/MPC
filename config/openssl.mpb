@@ -26,7 +26,7 @@ feature(openssl) {
   specific(bmake) {
     libpaths += $(SSL_ROOT)/lib/Builder5
   }
-  specific(vc6, vc7, vc71, vc8) {
+  specific(nmake, vc6, vc7, vc71, vc8) {
     libpaths += $(SSL_ROOT)/lib/VC
   }
 }

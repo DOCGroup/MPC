@@ -223,7 +223,10 @@ if (open($fh, $input)) {
               $tvar = undef;
             }
             elsif ($name eq 'if') {
-              $vname =~ s/(flag_overrides\(.*\)|!|&&|\|\|)//g;
+              $vname =~ s/(!|&&|\|\|)//g;
+              foreach my $keyword (keys %keywords) {
+                $vname =~ s/$keyword\(.*\)//g;
+              }
               if ($vname !~ /^\s*$/) {
                 $name = $vname;
                 $key  = $vname;

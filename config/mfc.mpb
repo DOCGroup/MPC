@@ -6,8 +6,7 @@ project {
   macros   += _AFXDLL
   specific(em3, nmake, vc6) {
     subsystem = windows
-  }
-  specific(vc7, vc71, vc8) {
+  } else {
     subsystem = 2
   }
   specific {

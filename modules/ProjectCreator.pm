@@ -1979,7 +1979,6 @@ sub add_explicit_output {
               }
 
               push(@files, "$dir$check");
-              $files[$#files] =~ s/\//\\/g if ($self->{'convert_slashes'});
               last;
             }
           }
@@ -3400,7 +3399,8 @@ sub get_command_subs {
   my(%valid) = ();
 
   ## Add the built-in OS compatibility commands
-  if (UNIVERSAL::isa($self, 'WinProjectBase')) {
+  if (UNIVERSAL::isa($self, 'WinProjectBase') ||
+      $self->use_win_compatibility_commands()) {
     $valid{'cat'}   = 'type';
     $valid{'cmp'}   = 'fc';
     $valid{'cp'}    = 'copy /y';
@@ -4659,6 +4659,12 @@ sub resolve_alias {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub use_win_compatibility_commands {
+  #my($self) = shift;
+  return 0;
+}
+
 
 sub post_file_creation {
   #my($self) = shift;
