@@ -197,8 +197,8 @@ libs            Specifies 1 or more libraries to link into the exe or library
 lit_libs        Specifies 1 or more libraries to link into the exe or library.
                 If libraries receive a library decorator, then these will not.
 pure_libs       Specifies 1 or more libraries to link into the exe or library.
-                If libraries receive a library decorator, then these will not.
-                If libraries receive a file extension, then these will not.
+                The values specified for this variable are passed to the
+                linker unmodified.
 after           Specifies that this project must be built after 1 or more
                 project names listed.
 custom_only     Create a project that contains only custom generation

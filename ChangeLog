@@ -1,3 +1,43 @@
+Tue Sep 19 13:04:15 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/MPC.sgml:
+        * docs/USAGE:
+        * docs/templates/ghs.txt:
+        * modules/GHSProjectCreator.pm:
+        * modules/GHSWorkspaceCreator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+        * templates/ghs.mpd:
+        * templates/ghscommon.mpt:
+
+          Modified the ghs project type to support the 4.x version of the
+          Multi IDE.  With this, the old .bld format has been removed.  This
+          version assumes that Multi is being run on Windows.  If this is
+          not the case, set the MPC_GHS_UNIX environment variable.
+
+        * config/mfc.mpb:
+
+          Used an else on the subsystem specific section instead of
+          explicitly listing out the later versions of Visual C++.  When vc9
+          is released, this file may not need to be modified.
+
+        * config/openssl.mpb:
+
+          Added nmake to the section related to Visual C++.
+
+        * devtools/document_template.pl:
+
+          Fixed a bug where template parser functions were seen as template
+          variables to be documented.
+
+        * docs/README:
+
+          Clarified how the value for 'pure_libs' is interpreted.
+
+        * templates/makedll.mpt:
+
+          Updated support for the GHS compiler.
+
 Wed Sep 13 15:24:45 UTC 2006  Phil Mesnier  <mesnier_p@ociweb.com>
 
         * templates/em3.mpd:
