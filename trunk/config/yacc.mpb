@@ -1,5 +1,6 @@
 // $Id$
 project {
+  requires += yacc
   Define_Custom(YACC) {
     automatic        = 1
     command          = yacc
