@@ -1,3 +1,22 @@
+Wed Sep 20 16:26:48 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/bison.mpb:
+        * config/flex.mpb:
+        * config/lex.mpb:
+        * config/yacc.mpb:
+
+          Added a 'requires' setting for each base project matching the file
+          name (e.g requires += bison in bison.mpb).
+
+        * config/ziparchive.mpb:
+
+          Removed an extraneous comment.
+
+        * templates/ghs.mpd:
+
+          Changed the default primaryTarget to ppc_integrity.tgt and added
+          <%exe_ext%> to <%exename%>.
+
 Tue Sep 19 13:04:15 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/MPC.sgml:

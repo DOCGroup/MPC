@@ -1,8 +1,8 @@
 #!gbuild
-#primaryTarget=<%primaryTarget("ppc_standalone.tgt")%>
+#primaryTarget=<%primaryTarget("ppc_integrity.tgt")%>
 <%if(exename)%>
 	[Program]
-	-o <%if(exeout)%><%reltop_exeout%><%else%><%reltop%><%endif%>/<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>
+	-o <%if(exeout)%><%reltop_exeout%><%else%><%reltop%><%endif%>/<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>
 <%if(need_staticflags)%>
 	{optional} -non_shared
 <%endif%>

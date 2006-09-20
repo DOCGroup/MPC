@@ -1,5 +1,6 @@
 // $Id$
 project {
+  requires += lex
   Define_Custom(LEX) {
     automatic        = 1
     command          = lex
