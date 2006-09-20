@@ -1,5 +1,6 @@
 // $Id$
 project {
+  requires += flex
   Define_Custom(FLEX) {
     automatic        = 1
     command          = flex
