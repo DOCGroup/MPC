@@ -1,4 +1,5 @@
 bsp = If a bsp is necessary, this variable should be set to the bsp name.
+exceptions = This controls whether exceptions are used or not.  It is on by default.
 libext = Similar to the common lib_ext except that this one is normally left to the default.
 no_use_pch = Set this to disable precompiled header support.
 os_dir = Set this to the full path of the OS directory (ex. C:\GHS\int507).

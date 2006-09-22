@@ -1,3 +1,24 @@
+Fri Sep 22 14:00:10 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/GHSWorkspaceCreator.pm:
+        * docs/templates/ghs.txt:
+        * templates/ghs.mpd:
+        * templates/ghscommon.mpt:
+
+          Fixed a couple of issues:
+
+          1) Exceptions were hard-coded to be on for all projects.  It is
+             now controlled by the 'exceptions' template variable and is on
+             by default.
+          2) If the primary target is Integrity, Program projects need an
+             intermediate INTEGRITY Application project to perform the
+             integration properly.
+
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where getting the default value of a template variable
+          was not case-insensitive as it should have been.
+
 Wed Sep 20 16:26:48 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/bison.mpb:
