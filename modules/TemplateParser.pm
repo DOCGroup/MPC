@@ -387,7 +387,7 @@ sub get_value {
 
 sub get_value_with_default {
   my($self)  = shift;
-  my($name)  = shift;
+  my($name)  = lc(shift);
   my($value) = $self->get_value($name);
 
   if (!defined $value) {

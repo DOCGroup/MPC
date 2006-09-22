@@ -5,4 +5,5 @@ conditional_include "common"
 conditional_include "unixcommon"
 
 optimize       = 1
+exceptions     = 1
 lib_modifier   =

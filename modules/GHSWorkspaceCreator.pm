@@ -18,13 +18,21 @@ use WorkspaceCreator;
 use vars qw(@ISA);
 @ISA = qw(WorkspaceCreator);
 
+# ************************************************************
+# Data Section
+# ************************************************************
+
 my(%directives) = ('I'          => 1,
                    'L'          => 1,
                    'D'          => 1,
                    'l'          => 1,
                    'G'          => 1,
                    'non_shared' => 1,
+                   'bsp'        => 1,
+                   'os_dir'     => 1,
                   );
+my($tgt)        = undef;
+my($integrity)  = '[INTEGRITY Application]';
 
 # ************************************************************
 # Subroutine Section
@@ -47,7 +55,6 @@ sub pre_workspace {
   my($fh)   = shift;
   my($crlf) = $self->crlf();
   my($prjs) = $self->get_projects();
-  my($tgt)  = undef;
 
   ## Take the primaryTarget from the first project in the list
   if (defined $$prjs[0]) {
@@ -71,10 +78,27 @@ sub pre_workspace {
             "\t-I.$crlf",
             "\t:sourceDir=.$crlf",
             "\t--std$crlf",
-            "\t--exceptions$crlf",
             "\t-language=cxx$crlf",
             "\t--long_long$crlf",
             "\t--new_style_casts$crlf";
+}
+
+
+sub create_integrity_project {
+  my($self)     = shift;
+  my($int_proj) = shift;
+  my($project)  = shift;
+  my($type)     = shift;
+  my($crlf)     = $self->crlf();
+  my($fh)       = new FileHandle();
+
+  if (open($fh, ">$int_proj")) {
+    print $fh "#!gbuild$crlf",
+              "\t$integrity$crlf",
+              "\t-dynamic$crlf",
+              "$project\t\t$type$crlf";
+    close($fh);
+  }
 }
 
 
@@ -83,7 +107,7 @@ sub mix_settings {
   my($project) = shift;
   my($crlf)    = $self->crlf();
   my($rh)      = new FileHandle();
-  my($mix)     = '';
+  my($mix)     = $project;
   my($outdir)  = $self->get_outdir();
 
   ## Things that seem like they should be set in the project
@@ -91,7 +115,15 @@ sub mix_settings {
   if (open($rh, "$outdir/$project")) {
     while(<$rh>) {
       if (/^\s*(\[(Program|Library|Subproject)\])\s*$/) {
-        $mix .= "\t\t$1$crlf" .
+        my($type) = $1;
+        if ($type eq '[Program]' && index($tgt, 'integrity') >= 0) {
+          my($int_proj) = $project;
+          $int_proj =~ s/(\.gpj)$/_int$1/;
+          $self->create_integrity_project($int_proj, $project, $type);
+          $mix =~ s/(\.gpj)$/_int$1/;
+          $type = $integrity;
+        }
+        $mix .= "\t\t$type$crlf" .
                 "\t-object_dir=" . $self->mpc_dirname($project) .
                 '/.obj' . $crlf;
       }
@@ -111,7 +143,6 @@ sub mix_settings {
     }
     close($rh);
   }
-  $mix .= $crlf if ($mix eq '');
 
   return $mix;
 }
@@ -123,7 +154,7 @@ sub write_comps {
 
   ## Print out each projet
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
-    print $fh "$project", $self->mix_settings($project);
+    print $fh $self->mix_settings($project);
   }
 }
 
