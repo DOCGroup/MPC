@@ -31,6 +31,9 @@
 <%else%>
 	-G
 <%endif%>
+<%if(exceptions)%>
+	--exceptions
+<%endif%>
 <%if(pch_header && !no_use_pch)%>
 	--pch
 <%foreach(pch_defines)%>
