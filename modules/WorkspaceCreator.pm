@@ -2172,6 +2172,56 @@ sub replace_environment_variables {
   return $line;
 }
 
+
+sub get_relative_dep_file {
+  my($self)    = shift;
+  my($creator) = shift;
+  my($project) = shift;
+  my($dep)     = shift;
+
+  ## If the dependency is a filename, we have to find the key that
+  ## matches the project file.
+  if ($creator->dependency_is_filename()) {
+    foreach my $key (keys %{$self->{'project_file_list'}}) {
+      if ($self->{'project_file_list'}->{$key}->[0] eq $dep) {
+        $dep = $key;
+        last;
+      }
+    }
+  }
+
+  if (defined $self->{'project_file_list'}->{$dep}) {
+    my($base) = $self->{'project_file_list'}->{$dep}->[1];
+    my(@dirs) = grep(!/^$/, split('/', $base));
+    my($last) = -1;
+    $project =~ s/^\///;
+    for(my $i = 0; $i <= $#dirs; $i++) {
+      my($dir) = $dirs[$i];
+      if ($project =~ s/^$dir\///) {
+        $last = $i;
+      }
+      else {
+        last;
+      }
+    }
+
+    my($dependee) = $self->{'project_file_list'}->{$dep}->[0];
+    if ($last == -1) {
+      return $base . '/' . $dependee;
+    }
+    else {
+      my($built) = '';
+      for(my $i = $last + 1; $i <= $#dirs; $i++) {
+        $built .= $dirs[$i] . '/';
+      }
+      $built .= $dependee;
+      my($dircount) = ($project =~ tr/\///);
+      return ('../' x $dircount) . $built;
+    }
+  }
+  return undef;
+}
+
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************

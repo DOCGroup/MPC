@@ -1,3 +1,32 @@
+Tue Sep 26 11:49:52 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * devtools/document_template.pl:
+
+          Fixed bugs where complex foreach's (with functions) would not be
+          recognized and default template variable values would be
+          lowercased.
+
+        * docs/README:
+
+          Clarified the 'exclude' usage.
+
+        * docs/USAGE:
+        * docs/templates/cc.txt:
+        * docs/templates/common.txt:
+        * modules/CCProjectCreator.pm:
+        * modules/CCWorkspaceCreator.pm:
+        * modules/MPC.pm:
+        * modules/MWC.pm:
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+        * templates/cc.mpd:
+        * templates/cccommon.mpt:
+        * templates/ccexe.mpt:
+        * templates/cclib.mpt:
+
+          Added complete support for Code Composer 2.0.  This is an embedded
+          application IDE for Windows only.
+
 Fri Sep 22 14:00:10 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/GHSWorkspaceCreator.pm:
