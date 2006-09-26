@@ -1,3 +1,25 @@
+Tue Sep 26 21:02:46 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/bmake.txt:
+
+          Documented the template variables used by the bmake template.
+
+        * templates/automake.mpd:
+        * templates/bmake.mpd:
+        * templates/em3.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6.mpd:
+        * templates/vc7.mpd:
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+        * templates/vc8.mpd:
+        * templates/vc8csharp.mpd:
+
+          If a custom definition has an 'output_option' set, the order of
+          listing the input file changes such that it is listed before the
+          output_option setting in the build rule.
+
 Tue Sep 26 11:49:52 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * devtools/document_template.pl:

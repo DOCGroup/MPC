@@ -175,7 +175,8 @@ $(LIB): $(LTARGETDIR) <%if(tempinc)%>$(TEMPINCDIR) <%endif%>$(OBJS)
 
 <%endif%>
 <%if(custom_types)%>
-GENERATED_DIRTY    =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><%if(custom_type->input_file->output_files)%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%><%endfor%><%endfor%>
+GENERATED_DIRTY =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><%if(custom_type->input_file->output_files)%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%><%endfor%><%endfor%>
+
 <%foreach(custom_types)%>
 <%if(expanded_variable_assignment && custom_type->libpath)%>
 DYLD_LIBRARY_PATH := $(DYLD_LIBRARY_PATH):<%custom_type->libpath%>
@@ -191,7 +192,7 @@ PATH              := $(PATH):<%custom_type->libpath%>
 <%if(flag_overrides(custom_type->input_file, gendir))%>
 	@$(MKDIR) <%flag_overrides(custom_type->input_file, gendir)%>
 <%endif%>
-	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%><%if(custom_type->output_option)%> <%custom_type->output_option%> "$@"<%endif%> <%custom_type->input_file%>
+	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%if(custom_type->output_option)%><%custom_type->input_file%> <%custom_type->output_option%> "$@"<%else%><%custom_type->input_file%><%endif%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
 <%foreach(custom_type->input_file)%>
 	<%flag_overrides(custom_type->input_file, postcommand)%>
