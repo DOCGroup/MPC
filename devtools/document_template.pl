@@ -182,18 +182,23 @@ if (open($fh, $input)) {
         }
 
         my($part)  = substr($_, $sindex, $eindex - $sindex);
-        my($key)   = lc(substr($part, 2, length($part) - 4));
-        my($name)  = $key;
+        my($key)   = substr($part, 2, length($part) - 4);
+        my($name)  = lc($key);
         my($tvar)  = undef;
         my($def)   = undef;
         if ($key =~ /^([^\(]+)\((.*)\)/) {
-          $name = $1;
+          $name = lc($1);
           my($vname) = $2;
 
           if (defined $keywords{$name}) {
             $tvar = 1;
             if ($name eq 'foreach') {
               ++$findex;
+
+              ## Remove the functions inside the foreach
+              foreach my $keyword (keys %keywords) {
+                $vname =~ s/$keyword\(([^\)]+)\)/$1/gi;
+              }
 
               my($remove_s) = 1;
               if ($vname =~ /([^,]*),(.*)/) {
@@ -213,9 +218,9 @@ if (open($fh, $input)) {
                 $vname = $n;
               }
 
-              $name = $vname;
+              $name = lc($vname);
 
-              $key = $vname;
+              $key = lc($vname);
               $vname =~ s/\s.*//;
               $vname =~ s/s$// if ($remove_s);
 
@@ -228,8 +233,8 @@ if (open($fh, $input)) {
                 $vname =~ s/$keyword\(.*\)//g;
               }
               if ($vname !~ /^\s*$/) {
-                $name = $vname;
-                $key  = $vname;
+                $name = lc($vname);
+                $key  = lc($vname);
                 $tvar = undef;
               }
             }
@@ -237,6 +242,9 @@ if (open($fh, $input)) {
           else {
             $def = $2;
           }
+        }
+        else {
+          $key = lc($key);
         }
 
         my($otvar) = $tvar;
