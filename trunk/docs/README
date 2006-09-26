@@ -57,8 +57,8 @@ to the directory in which the main workspace is found.  These "aggregated"
 workspaces should not inherit from any other base workspace.  The workspace
 files should have an 'mwc' extension.
 
-You can exclude directories from a workspace using the 'exclude' scope
-operator:
+You can exclude directories and .mpc files from a workspace using the 'exclude'
+scope operator:
 
 workspace {
   dir1

@@ -4072,14 +4072,16 @@ sub set_component_extensions {
   my($ec)   = $self->{'exclude_components'};
 
   foreach my $key (keys %$vc) {
-    my($ov) = $self->override_valid_component_extensions($key);
+    my($ov) = $self->override_valid_component_extensions($key,
+                                                         @{$$vc{$key}});
     if (defined $ov) {
       $$vc{$key} = $ov;
     }
   }
 
   foreach my $key (keys %$ec) {
-    my($ov) = $self->override_exclude_component_extensions($key);
+    my($ov) = $self->override_exclude_component_extensions($key,
+                                                           @{$$ec{$key}});
     if (defined $ov) {
       $$ec{$key} = $ov;
     }
