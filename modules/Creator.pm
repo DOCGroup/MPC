@@ -911,9 +911,195 @@ sub get_outdir {
   }
 }
 
+
+sub expand_variables {
+  my($self)            = shift;
+  my($value)           = shift;
+  my($rel)             = shift;
+  my($expand_template) = shift;
+  my($scope)           = shift;
+  my($expand)          = shift;
+  my($warn)            = shift;
+  my($cwd)             = $self->getcwd();
+  my($start)           = 0;
+
+  ## Fix up the value for Windows switch the \\'s to /
+  $cwd =~ s/\\/\//g if ($self->{'convert_slashes'});
+
+  while(substr($value, $start) =~ /(\$\(([^)]+)\))/) {
+    my($whole) = $1;
+    my($name)  = $2;
+    if (defined $$rel{$name}) {
+      my($val) = $$rel{$name};
+      if ($expand) {
+        $val =~ s/\//\\/g if ($self->{'convert_slashes'});
+        substr($value, $start) =~ s/\$\([^)]+\)/$val/;
+        $whole = $val;
+      }
+      else {
+        ## Fix up the value for Windows switch the \\'s to /
+        $val =~ s/\\/\//g if ($self->{'convert_slashes'});
+
+        my($icwd) = ($self->{'case_tolerant'} ? lc($cwd) : $cwd);
+        my($ival) = ($self->{'case_tolerant'} ? lc($val) : $val);
+        my($iclen) = length($icwd);
+        my($ivlen) = length($ival);
+
+        ## If the relative value contains the current working
+        ## directory plus additional subdirectories, we must pull
+        ## off the additional directories into a temporary where
+        ## it can be put back after the relative replacement is done.
+        my($append) = undef;
+        if (index($ival, $icwd) == 0 && $iclen != $ivlen &&
+            substr($ival, $iclen, 1) eq '/') {
+          my($diff) = $ivlen - $iclen;
+          $append = substr($ival, $iclen);
+          substr($ival, $iclen, $diff) = '';
+          $ivlen -= $diff;
+        }
+
+        if (index($icwd, $ival) == 0 &&
+            ($iclen == $ivlen || substr($icwd, $ivlen, 1) eq '/')) {
+          my($current) = $icwd;
+          substr($current, 0, $ivlen) = '';
+
+          my($dircount) = ($current =~ tr/\///);
+          if ($dircount == 0) {
+            $ival = '.';
+          }
+          else {
+            $ival = '../' x $dircount;
+            $ival =~ s/\/$//;
+          }
+          if (defined $append) {
+            $ival .= $append;
+          }
+          $ival =~ s/\//\\/g if ($self->{'convert_slashes'});
+          substr($value, $start) =~ s/\$\([^)]+\)/$ival/;
+          $whole = $ival;
+        }
+        elsif ($self->convert_all_variables()) {
+          ## The user did not choose to expand $() variables directly,
+          ## but we could not convert it into a relative path.  So,
+          ## instead of leaving it we will expand it.
+          $val =~ s/\//\\/g if ($self->{'convert_slashes'});
+          substr($value, $start) =~ s/\$\([^)]+\)/$val/;
+          $whole = $val;
+        }
+      }
+    }
+    elsif ($expand_template ||
+           $self->expand_variables_from_template_values()) {
+      my($ti) = $self->get_template_input();
+      my($val) = (defined $ti ? $ti->get_value($name) : undef);
+      my($sname) = (defined $scope ? $scope . "::$name" : undef);
+      my($arr) = $self->adjust_value([$sname, $name],
+                                     (defined $val ? $val : []));
+      if (defined $$arr[0]) {
+        $val = "@$arr";
+        $val = $self->modify_assignment_value(lc($name), $val);
+        substr($value, $start) =~ s/\$\([^)]+\)/$val/;
+
+        ## We have replaced the template value, but that template
+        ## value may contain a $() construct that may need to get
+        ## replaced too.
+        $whole = '';
+      }
+      else {
+        if ($expand && $warn) {
+          $self->warning("Unable to expand $name.");
+        }
+      }
+    }
+    elsif ($self->convert_all_variables()) {
+      substr($value, $start) =~ s/\$\([^)]+\)//;
+      $whole = '';
+    }
+    $start += length($whole);
+  }
+
+  return $value;
+}
+
+
+sub relative {
+  my($self)            = shift;
+  my($value)           = shift;
+  my($expand_template) = shift;
+  my($scope)           = shift;
+
+  if (defined $value) {
+    if (UNIVERSAL::isa($value, 'ARRAY')) {
+      my(@built) = ();
+      foreach my $val (@$value) {
+        my($rel) = $self->relative($val, $expand_template, $scope);
+        if (UNIVERSAL::isa($rel, 'ARRAY')) {
+          push(@built, @$rel);
+        }
+        else {
+          push(@built, $rel);
+        }
+      }
+      return \@built;
+    }
+    elsif (index($value, '$') >= 0) {
+      my($ovalue)   = $value;
+      my($rel, $how) = $self->get_initial_relative_values();
+      my(@keys) = keys %{$rel};
+      if (defined $keys[0]) {
+        $value = $self->expand_variables($value, $rel,
+                                         $expand_template, $scope, $how);
+      }
+
+      if ($ovalue eq $value) {
+        ($rel, $how) = $self->get_secondary_relative_values();
+        @keys = keys %$rel;
+        if (defined $keys[0]) {
+          $value = $self->expand_variables($value, $rel,
+                                           $expand_template, $scope,
+                                           $how, 1);
+        }
+      }
+    }
+  }
+
+  ## Values that have strings enclosed in double quotes are to
+  ## be interpreted as elements of an array
+  if (defined $value && $value =~ /^"[^"]+"(\s+"[^"]+")+$/) {
+    $value = $self->create_array($value);
+  }
+
+  return $value;
+}
+
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub get_initial_relative_values {
+  #my($self) = shift;
+  return {}, 0;
+}
+
+
+sub get_secondary_relative_values {
+  my($self) = shift;
+  return ($self->{'use_env'} ? \%ENV :
+                               $self->{'relative'}), $self->{'expand_vars'};
+}
+
+
+sub convert_all_variables {
+  #my($self) = shift;
+  return 0;
+}
+
+
+sub expand_variables_from_template_values {
+  #my($self) = shift;
+  return 0;
+}
+
 
 sub preserve_assignment_order {
   #my($self) = shift;
