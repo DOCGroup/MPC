@@ -1,3 +1,21 @@
+Tue Oct  3 11:38:34 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Factored out the relative replacement code from the ProjectCreator
+          into the Creator.  This required the addition of two template
+          methods to get different sets of data for relative replacement to
+          maintain the same functionality in the ProjectCreator and similar
+          functionality in WorkspaceCreator.
+
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where a previous scope of a foreach would hang around
+          even when the scope went away.  This could cause strange results
+          when nesting foreach's.
+
 Tue Sep 26 21:02:46 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/bmake.txt:

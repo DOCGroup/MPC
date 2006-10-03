@@ -105,7 +105,6 @@ sub new {
   $self->{'handled_scopes'}      = {};
   $self->{'generate_ins'}        = $genins;
   $self->{'scoped_basedir'}      = undef;
-  $self->{'relative'}            = $relative;
   $self->{'generate_dot'}        = $gendot;
   $self->{'verbose_ordering'}    = (defined $ENV{MPC_VERBOSE_ORDERING});
   if ($self->{'verbose_ordering'}) {
@@ -282,7 +281,7 @@ sub parse_line {
   }
   elsif ($status == -1) {
     if (index($line, '$') >= 0) {
-      $line = $self->replace_environment_variables($line);
+      $line = $self->relative($line);
     }
     foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
                                                  $line) {
@@ -446,7 +445,7 @@ sub parse_exclude {
           $line = $1;
         }
         if (index($line, '$') >= 0) {
-          $line = $self->replace_environment_variables($line);
+          $line = $self->relative($line);
         }
         if (defined $self->{'scoped_basedir'}) {
           $line = $self->{'scoped_basedir'} . '/' . $line;
@@ -567,7 +566,7 @@ sub handle_scoped_unknown {
   }
 
   if (index($line, '$') >= 0) {
-    $line = $self->replace_environment_variables($line);
+    $line = $self->relative($line);
   }
 
   if ($type eq $aggregated) {
@@ -2151,28 +2150,6 @@ sub sort_projects_by_directory {
 }
 
 
-sub replace_environment_variables {
-  my($self) = shift;
-  my($line) = shift;
-  my($rel)  = $self->{'relative'};
-
-  while($line =~ /\$\(([^\)]+)\)/) {
-    my($var) = $1;
-    if (defined $$rel{$var}) {
-      $line =~ s/\$\($var\)/$$rel{$var}/g;
-    }
-    elsif (defined $ENV{$var}) {
-      $line =~ s/\$\($var\)/$ENV{$var}/g;
-    }
-    else {
-      $line =~ s/\$\($var\)//g;
-    }
-  }
-
-  return $line;
-}
-
-
 sub get_relative_dep_file {
   my($self)    = shift;
   my($creator) = shift;
@@ -2222,6 +2199,43 @@ sub get_relative_dep_file {
   return undef;
 }
 
+
+sub create_command_line_string {
+  my($self) = shift;
+  my(@args) = @_;
+  my($str)  = undef;
+
+  foreach my $arg (@args) {
+    $arg =~ s/^\-\-/-/;
+    $arg = "\"$arg\"" if ($arg =~ /\s/);
+    if (defined $str) {
+      $str .= " $arg";
+    }
+    else {
+      $str = $arg;
+    }
+  }
+  return $str;
+}
+
+
+sub get_initial_relative_values {
+  my($self) = shift;
+  return $self->get_relative(), $self->get_expand_vars();
+}
+
+
+sub get_secondary_relative_values {
+  my($self) = shift;
+  return \%ENV, $self->get_expand_vars();
+} 
+
+
+sub convert_all_variables {
+  #my($self) = shift;
+  return 1;
+}
+ 
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
