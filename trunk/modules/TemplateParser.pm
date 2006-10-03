@@ -256,6 +256,12 @@ sub set_current_values {
         $self->{'foreach'}->{'temp_scope'}->[$counter] = \%copy;
         $set = 1;
       }
+      else {
+        ## Since we're not creating a temporary scope for this level, we
+        ## need to empty out the scope that may have been held here from
+        ## a previous foreach.
+        $self->{'foreach'}->{'temp_scope'}->[$counter] = {};
+      }
     }
   }
   return $set;
