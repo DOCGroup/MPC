@@ -33,6 +33,7 @@ my(%directives) = ('I'          => 1,
                   );
 my($tgt)        = undef;
 my($integrity)  = '[INTEGRITY Application]';
+my(@integ_bsps) = ();
 
 # ************************************************************
 # Subroutine Section
@@ -97,6 +98,9 @@ sub create_integrity_project {
               "\t$integrity$crlf",
               "\t-dynamic$crlf",
               "$project\t\t$type$crlf";
+    foreach my $bsp (@integ_bsps) {
+      print $fh "$bsp$crlf";
+    }
     close($fh);
   }
 }
@@ -113,13 +117,16 @@ sub mix_settings {
   ## Things that seem like they should be set in the project
   ## actually have to be set in the controlling project file.
   if (open($rh, "$outdir/$project")) {
+    my($integrity_project) = (index($tgt, 'integrity') >= 0);
+    my($int_proj) = undef;
+    my($int_type) = undef;
     while(<$rh>) {
       if (/^\s*(\[(Program|Library|Subproject)\])\s*$/) {
         my($type) = $1;
-        if ($type eq '[Program]' && index($tgt, 'integrity') >= 0) {
-          my($int_proj) = $project;
+        if ($integrity_project && $type eq '[Program]') {
+          $int_proj = $project;
           $int_proj =~ s/(\.gpj)$/_int$1/;
-          $self->create_integrity_project($int_proj, $project, $type);
+          $int_type = $type;
           $mix =~ s/(\.gpj)$/_int$1/;
           $type = $integrity;
         }
@@ -133,6 +140,9 @@ sub mix_settings {
                 "\t-object_dir=" . $self->mpc_dirname($project) .
                 '/.shobj' . $crlf;
       }
+      elsif ($integrity_project && /^(.*\.bsp)\s/) {
+        push(@integ_bsps, $1);
+      }
       else {
         if (/^\s*\-((\w)\w*)/) {
           if (defined $directives{$2} || defined $directives{$1}) {
@@ -140,6 +150,9 @@ sub mix_settings {
           }
         }
       }
+    }
+    if (defined $int_proj) {
+      $self->create_integrity_project($int_proj, $project, $int_type);
     }
     close($rh);
   }
