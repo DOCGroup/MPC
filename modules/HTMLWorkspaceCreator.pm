@@ -38,7 +38,7 @@ sub pre_workspace {
             '<html>', $crlf,
             '<!-- $Id$ -->', $crlf,
             '<!-- MPC Command: -->', $crlf,
-            "<!-- $0@ARGV -->", $crlf,
+            '<!-- ', $self->create_command_line_string($0, @ARGV),' -->', $crlf,
             '<head>', $crlf,
             '<title>', $self->get_workspace_name(), '</title>', $crlf,
             '  <style type="text/css">', $crlf,
