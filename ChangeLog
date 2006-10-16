@@ -1,3 +1,36 @@
+Mon Oct 16 13:33:46 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+        * modules/BDSWorkspaceCreator.pm:
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/EM3WorkspaceCreator.pm:
+        * modules/HTMLWorkspaceCreator.pm:
+        * modules/MakeWorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/VC6WorkspaceCreator.pm:
+        * modules/VC71WorkspaceCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/VC8WorkspaceCreator.pm:
+
+          Use the create_command_line_string() method instead of printing
+          the command line directly.  This opens the door for disabling this
+          functionality.
+
+        * mpc.pl:
+        * mwc.pl:
+
+          Removed the unused Config module.
+
+        * templates/makedll.mpt:
+
+          For wrsppc, wrspentium, and ghsppc compilers, use $(CPUTYPE)
+          instead of hard-coding the processor type.
+
+        * templates/vc8.mpd:
+
+          Remove the 'output_subdir' template value from all library and
+          executable output paths.
+
 Wed Oct  4 17:08:21 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/GHSWorkspaceCreator.pm:

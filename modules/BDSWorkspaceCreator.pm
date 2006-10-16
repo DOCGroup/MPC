@@ -44,7 +44,8 @@ sub pre_workspace {
   print $fh '﻿<?xml version="1.0" encoding="utf-8"?>', $crlf,
             '<!-- $Id$ -->', $crlf,
             '<!-- MPC Command -->', $crlf,
-            "<!-- $0 @ARGV -->", $crlf;
+            '<!-- ', $self->create_command_line_string($0, @ARGV), ' -->',
+            $crlf;
 }
 
 
