@@ -22,7 +22,7 @@
 <%foreach(configurations)%>
 		<Configuration
 			Name="<%configuration%>|<%platform%>"
-			OutputDirectory="<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%else%><%if(type_is_static)%><%libout%><%else%><%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug")%><%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%><%endif%><%endif%><%endif%><%if(output_subdir)%>\<%output_subdir%><%endif%>"
+			OutputDirectory="<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%else%><%if(type_is_static)%><%libout%><%else%><%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug")%><%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%><%endif%><%endif%><%endif%>"
 			IntermediateDirectory="<%intermediate_dir%>\<%noextension(project_file)%><%if(output_subdir)%>\<%output_subdir%><%endif%>"
 <%if(type_is_static && staticname)%>
 			ConfigurationType="4"
@@ -184,7 +184,7 @@
 				ObjectFile="<%ObjectFile%>"
 <%endif%>
 <%if(pdbc)%>
-				ProgramDataBaseFileName="<%if(type_is_static)%><%if(output_subdir)%><%output_subdir%>\<%endif%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%><%if(output_subdir)%>\<%output_subdir%><%endif%>/<%endif%>"
+				ProgramDataBaseFileName="<%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%><%if(output_subdir)%>\<%output_subdir%><%endif%>/<%endif%>"
 <%else%>
 <%if(ProgramDataBaseFileName)%>
 				ProgramDataBaseFileName="<%ProgramDataBaseFileName%>"
@@ -306,7 +306,7 @@
 <%endif%>
 				LinkIncremental="<%LinkIncremental("2")%>"
 				SuppressStartupBanner="<%SuppressStartupBanner("true")%>"
-				AdditionalLibraryDirectories="<%foreach(libpaths)%><%if(output_subdir)%><%libpath%>\<%output_subdir%>;<%endif%><%libpath%><%fornotlast(";")%><%endfor%>"
+				AdditionalLibraryDirectories="<%foreach(libpaths)%><%libpath%><%fornotlast(";")%><%endfor%>"
 <%if(ShowProgress)%>
 				ShowProgress="<%ShowProgress%>"
 <%endif%>
@@ -432,7 +432,7 @@
 				TurnOffAssemblyGeneration="<%TurnOffAssemblyGeneration%>"
 <%endif%>
 <%if(type_is_dynamic && sharedname)%>
-				ImportLibrary="<%libout%><%if(output_subdir)%>\<%output_subdir%><%endif%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
+				ImportLibrary="<%libout%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
 <%if(SupportUnloadOfDelayLoadedDLL)%>
 				SupportUnloadOfDelayLoadedDLL="<%SupportUnloadOfDelayLoadedDLL%>"

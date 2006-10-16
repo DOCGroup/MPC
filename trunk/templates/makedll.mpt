@@ -161,21 +161,21 @@ SGICC {
 }
 
 wrsppc {
-  cxx           = g++ppc
+  cxx           = g++$(CPUTYPE)
   cputype       = ppc
   cpu           = PPC604
-  ar            = arppc
-  nm            = nmppc
+  ar            = ar$(CPUTYPE)
+  nm            = nm$(CPUTYPE)
   compilerflags = -mlongcall
   platforms     = vxworks
 }
 
 wrspentium {
-  cxx           = g++pentium
+  cxx           = g++$(CPUTYPE)
   cputype       = pentium
   cpu           = PENTIUM
-  ar            = arpentium
-  nm            = nmpentium
+  ar            = ar$(CPUTYPE)
+  nm            = nm$(CPUTYPE)
   platforms     = vxworks
 }
 
@@ -186,8 +186,9 @@ NCC {
 }
 
 ghsppc {
-  cxx           = cxintppc
-  ar            = cxintppc
+  cxx           = cxint$(CPUTYPE)
+  ar            = cxint$(CPUTYPE)
+  cputype       = ppc
   arflags       = --one_instantiation_per_object -archive -o
   compilerflags = --new_style_casts --one_instantiation_per_object --exceptions --std --long_long
   platforms     = integrity

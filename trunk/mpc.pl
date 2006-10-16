@@ -15,7 +15,6 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 require 5.006;
 
 use strict;
-use Config;
 use FindBin;
 use File::Spec;
 use File::Basename;
