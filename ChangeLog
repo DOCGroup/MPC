@@ -1,3 +1,10 @@
+Thu Oct 19 17:29:08 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/GHSWorkspaceCreator.pm:
+
+          Modified to create an integrate file (for Integrity projects) and
+          use it during the integration step.
+
 Mon Oct 16 13:33:46 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeWorkspaceCreator.pm:
