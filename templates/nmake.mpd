@@ -158,6 +158,9 @@ LINK32_OBJS= \
 <%endfor%>
 
 "<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(type_is_static)%>$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endif%><%if(exename)%>$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+<%if(prelink)%>
+    <%eval(prelink)%>
+<%endif%>
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
@@ -327,8 +330,10 @@ DEPENDCHECK :
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
 !IF EXISTS("<%noextension(project_file)%>.dep")
 	@echo Using "<%noextension(project_file)%>.dep"
+<%if(source_files || pch_source)%>
 !ELSE
 	@echo Warning: cannot find "<%noextension(project_file)%>.dep"
+<%endif%>
 !ENDIF
 !ENDIF
 

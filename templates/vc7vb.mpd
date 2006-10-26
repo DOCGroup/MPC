@@ -50,7 +50,7 @@
                    ConfigurationOverrideFile = ""
                    DefineConstants = "<%foreach(defines common_defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
                    DefineDebug = "<%if(optimize)%>false<%else%>true<%endif%>"
-                   DefineTrace = "<%trace("true")%>"
+                   DefineTrace = "<%if(trace)%>true<%else%>false<%endif%>"
                    DefineSymbols = "<%if(optimize)%>false<%else%>true<%endif%>"
                    IncrementalBuild = "<%incremental("false")%>"
                    Optimize = "<%if(optimize)%>true<%else%>false<%endif%>"

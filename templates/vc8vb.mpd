@@ -20,7 +20,7 @@
     <ApplicationIcon><%ico_file%></ApplicationIcon>
 <%endif%>
 <%endfor%>
-<%endif%>
+<%endif%> 
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
 <%if(exename || sharedname || staticname)%>
@@ -32,12 +32,14 @@
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
+    <OutputCompare>Binary</OutputCompare>
 <%if(exename || sharedname || staticname)%>
     <OutputType><%if(exename)%><%if(winapp)%>Win<%endif%>Exe<%else%>Library<%endif%></OutputType>
 <%endif%>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionStrict>Off</OptionStrict>
     <RootNamespace>
     </RootNamespace>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject><%startupobject%></StartupObject>
     <ReferencePath><%foreach(libpaths)%><%libpath%><%fornotlast(";")%><%endfor%></ReferencePath>
     <FileUpgradeFlags>
@@ -51,26 +53,22 @@
 <%if(exename || sharedname || staticname)%>
     <OutputPath><%if(exename)%><%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir%><%endif%><%else%>.\<%output_dir%><%endif%><%else%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%output_dir%><%endif%>\</OutputPath>
 <%endif%>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <ConfigurationOverrideFile>
-    </ConfigurationOverrideFile>
-    <DefineConstants><%foreach(defines common_defines macros)%><%define%>;<%endfor%><%if(!optimize)%>DESIGN;DEBUG;<%endif%><%if(trace)%>TRACE<%endif%></DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
-    <DebugSymbols><%if(optimize)%>false<%else%>true<%endif%></DebugSymbols>
-    <FileAlignment>4096</FileAlignment>
-    <NoStdLib>false</NoStdLib>
-    <NoWarn>
-    </NoWarn>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants><%foreach(defines common_defines macros)%><%define%><%fornotlast(";")%><%endfor%>
+    </DefineConstants>
+    <DefineDebug><%if(optimize)%>false<%else%>true<%endif%></DefineDebug>
+    <DefineTrace><%if(trace)%>true<%else%>false<%endif%></DefineTrace>
+    <DefineSymbols>true</DefineSymbols>
     <Optimize><%if(optimize)%>true<%else%>false<%endif%></Optimize>
     <RegisterForComInterop><%RegisterForComInterop("false")%></RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel><%warning_level("4")%></WarningLevel>
-    <DebugType><%if(optimize)%>none<%else%>full<%endif%></DebugType>
-    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel><%warning_level("1")%></WarningLevel>
+    <NoWarn>42016,42017,42018,42019,42032</NoWarn>
   </PropertyGroup>
 <%endfor%>
 <%endfor%>
@@ -113,7 +111,7 @@
     <None Include="<%documentation_file%>" />
 <%endfor%>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
     <PreBuildEvent><%if(prebuild)%><%eval(prebuild)%><%endif%></PreBuildEvent>
     <PostBuildEvent><%if(postbuild)%><%eval(postbuild)%><%endif%></PostBuildEvent>
