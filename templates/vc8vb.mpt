@@ -5,6 +5,7 @@ conditional_include "common"
 conditional_include "windowscommon"
 
 configurations     = Debug Release
+platforms          = AnyCPU
 trace              = 1
 
 Release {
@@ -17,4 +18,4 @@ Debug {
   output_dir       = Debug
 }
 
-conditional_include "user_vc7csharp"
+conditional_include "user_vc8vb"

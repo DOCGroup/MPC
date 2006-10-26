@@ -5,7 +5,7 @@ conditional_include "common"
 conditional_include "windowscommon"
 
 configurations     = Debug Release
-common_defines     =
+trace              = 1
 
 Release {
   optimize         = 1

@@ -1,3 +1,49 @@
+Thu Oct 26 15:45:18 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/common.txt:
+        * docs/templates/make.txt:
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Renamed the prelink template variable to prelinktarget to avoid
+          conflicting with prelink used in other templates.
+
+        * docs/templates/vc7.txt:
+        * docs/templates/vc7csharp.txt:
+        * docs/templates/vc7vb.txt:
+        * docs/templates/vc8csharp.txt:
+
+          Documented the template variables for these existing project types
+          and language combinations.
+
+        * docs/templates/vc8vb.txt:
+        * modules/VC8ProjectCreator.pm:
+        * templates/vc8vb.mpd:
+        * templates/vc8vb.mpt:
+
+          Added initial support for Visual Basic with vc8.
+
+        * templates/bmake.mpd:
+        * templates/nmake.mpd:
+
+          Support the prelink template variable as is done in vc7 and vc8.
+
+        * templates/vc7.mpd:
+
+          Modified the template to use PreprocessorDefinitions for
+          midl_defines under the VCMIDLTool section instead of
+          AdditionalOptions.
+
+        * templates/vc7csharp.mpd:
+        * templates/vc7csharp.mpt:
+        * templates/vc7vb.mpd:
+        * templates/vc7vb.mpt:
+        * templates/vc8csharp.mpd:
+        * templates/vc8csharp.mpt:
+
+          Changed the way the 'trace' template variable worked to be
+          consistent between both vb and csharp with vc7 and vc8.
+
 Thu Oct 19 17:29:08 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/GHSWorkspaceCreator.pm:

@@ -158,8 +158,15 @@
 <%endif%>
 			<Tool
 				Name="VCMIDLTool"
-				AdditionalOptions="<%foreach(midl_defines)%>/D <%midl_define%> <%endfor%><%midl_flags%>"
+<%if(midl_flags)%>
+				AdditionalOptions="<%midl_flags%>"
+<%endif%>
+<%if(midl_includes)%>
 				AdditionalIncludeDirectories="<%foreach(midl_includes)%><%midl_include%><%fornotlast(",")%><%endfor%>"
+<%endif%>
+<%if(midl_defines)%>
+				PreprocessorDefinitions="<%foreach(midl_defines)%><%midl_define%><%fornotlast(";")%><%endfor%>"
+<%endif%>
 				TypeLibraryName="$(InputName).tlb"
 				HeaderFileName="$(InputName).h"
 				InterfaceIdentifierFileName="$(InputName)_i.c"
