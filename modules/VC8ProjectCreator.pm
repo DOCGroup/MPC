@@ -31,6 +31,13 @@ my(%info) = ('cplusplus' => {'ext'      => '.vcproj',
                           'lib'      => 'vc8csharp',
                           'template' => 'vc8csharp',
                          },
+             'vb'     => {'ext'      => '.vbproj',
+                          'dllexe'   => 'vc8vb',
+                          'libexe'   => 'vc8vb',
+                          'dll'      => 'vc8vb',
+                          'lib'      => 'vc8vb',
+                          'template' => 'vc8vb',
+                         },
             );
 
 my(%config) = ('vcversion' => '8.00',

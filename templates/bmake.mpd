@@ -178,6 +178,9 @@ all:<%if(prebuild)%> __prebuild__<%endif%> $(OUTPUTDIR)$(NAME)$(EXE_EXT)<%if(pos
 
 $(OUTPUTDIR)$(NAME)$(EXE_EXT): $(OBJFILES) $(RESOURCE)
 	@if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
+<%if(prelink)%>
+	<%eval(prelink)%>
+<%endif%>
 	$(LINK) @&&!
 	$(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
 !
@@ -189,6 +192,9 @@ all:<%if(prebuild)%> __prebuild__<%endif%> $(OUTPUTDIR)$(NAME)$(DLL_EXT)<%if(pos
 
 $(OUTPUTDIR)$(NAME)$(DLL_EXT): $(OBJFILES) $(RESOURCE)
 	@if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
+<%if(prelink)%>
+	<%eval(prelink)%>
+<%endif%>
 	$(LINK) @&&!
 	$(DLLFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
 !

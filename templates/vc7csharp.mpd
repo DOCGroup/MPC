@@ -50,7 +50,7 @@
                    BaseAddress = "285212672"
                    CheckForOverflowUnderflow = "false"
                    ConfigurationOverrideFile = ""
-                   DefineConstants = "<%foreach(defines common_defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
+                   DefineConstants = "<%foreach(defines common_defines macros)%><%define%>;<%endfor%><%if(!optimize)%>DESIGN;DEBUG;<%endif%><%if(trace)%>TRACE<%endif%>"
                    DocumentationFile = ""
                    DebugSymbols = "<%if(optimize)%>false<%else%>true<%endif%>"
                    FileAlignment = "4096"

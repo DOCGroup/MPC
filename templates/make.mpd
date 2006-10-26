@@ -118,20 +118,23 @@ specialscript:
 	@<%chmod("chmod")%> 755 specialscript
 
 <%endif%>
-<%if(prelink)%>
-<%prelink%>: specialscript $(OBJS)
-	@specialscript $(NM) "$(OBJS)" "$(LDLIBS)" "<%if(libpaths)%><%libpaths%><%else%>.<%endif%>" <%prelink%>
+<%if(prelinktarget)%>
+<%prelinktarget%>: specialscript $(OBJS)
+	@specialscript $(NM) "$(OBJS)" "$(LDLIBS)" "<%if(libpaths)%><%libpaths%><%else%>.<%endif%>" <%prelinktarget%>
 	@$(RM) specialscript
 
-<%targetoutdir%><%obj_dir%><%noextension(prelink)%>$(OBJEXT): <%prelink%>
-	$(COMPILE.cc) $(OUTPUT_OPTION) <%prelink%>
-	@$(RM) <%prelink%>
+<%targetoutdir%><%obj_dir%><%noextension(prelinktarget)%>$(OBJEXT): <%prelinktarget%>
+	$(COMPILE.cc) $(OUTPUT_OPTION) <%prelinktarget%>
+	@$(RM) <%prelinktarget%>
 
 <%endif%>
 $(BTARGETDIR):
 	@$(MKDIR) "$@"
 
-$(BIN): $(BTARGETDIR)<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelink)%> <%targetoutdir%><%obj_dir%><%noextension(prelink)%>$(OBJEXT)<%endif%> $(OBJS)
+$(BIN): $(BTARGETDIR)<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelinktarget)%> <%targetoutdir%><%obj_dir%><%noextension(prelinktarget)%>$(OBJEXT)<%endif%> $(OBJS)
+<%if(prelink)%>
+	<%eval(prelink)%>
+<%endif%>
 	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 
 <%endif%>
@@ -149,6 +152,9 @@ $(SHLIB):
 
 <%endif%>
 $(SHLIB)<%if(version && versupport)%>.<%version%><%endif%>: $(SHTARGETDIR) <%if(tempinc)%>$(TEMPINCDIR) <%endif%>$(OBJS)
+<%if(prelink)%>
+	<%eval(prelink)%>
+<%endif%>
 <%if(dmclink)%>
 	link /impl <%if(pch_source && pchsupport)%><%targetoutdir%><%obj_dir%><%noextension(pch_source)%>$(OBJEXT)+<%endif%><%foreach(source_files)%><%targetoutdir%><%obj_dir%><%noextension(source_file)%>$(OBJEXT)<%fornotlast("+")%><%endfor%>,$@,<%ldlibs%><%if(rc)%><%foreach(resource_files)%><%forfirst(",,")%><%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT)<%fornotlast("+")%><%endfor%><%endif%>
 <%else%>

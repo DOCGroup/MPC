@@ -18,6 +18,7 @@ optimize = Indicate if the project will be optimized or not.
 output_dir = A configuration specific output directory for output targets.
 pch_defines = C preprocessor macros that indicate that precompiled headers will be used.
 platforms = This determines for which platform the project will be built.
+prelink = If supported by the build tool, this specifies a command to run prior to linking the target.
 project_file = The name of the current project file being created.
 project_name = The name of the current project being processed.
 stackcommitsize = The Stack Commit Size for Windows executables.
