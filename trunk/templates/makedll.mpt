@@ -278,7 +278,7 @@ vxworks {
   dll_ext       =
   exe_ext       = .out
   specialscript = "for i in $$3; do for j in $$4; do i=`echo $$i | sed sa\^-laa`;[ -r \"$$j/lib$$i.a\" ] && libs=\"$$libs $$j/lib$$i.a\" && break;done;done;$$1 $$2 $$libs | munch | grep -v \\.cpp > $$5"
-  prelink       = __ctordtor.c
+  prelinktarget = __ctordtor.c
   clean         = __ctordtor$(OBJEXT)
   ldlibs        = -L$(WIND_BASE)/target/lib/$(CPUTYPE)/$(CPU)/common -larch
   extracppflags = -nostdlib -I$(WIND_BASE)/target/h
