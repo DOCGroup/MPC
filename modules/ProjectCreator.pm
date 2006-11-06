@@ -1186,10 +1186,6 @@ sub parse_components {
   }
 
   my($count) = 0;
-  if (defined $specialComponents{$tag}) {
-    $self->{'special_supplied'}->{$tag} = 1;
-  }
-
   while(<$fh>) {
     my($line) = $self->preprocess_line($fh, $_);
 
@@ -1258,6 +1254,34 @@ sub parse_components {
       if (!$status) {
         last;
       }
+    }
+  }
+
+  ## If this is a "special" component, we need to see if the
+  ## user provided all directories.  If they have, then we need to
+  ## store an array of directories that the user supplied.  Otherwise,
+  ## we just store a 1.
+  if (defined $specialComponents{$tag}) {
+    my(@dirs) = ();
+    foreach my $name (keys %$names) {
+      my($comps) = $$names{$name};
+      foreach my $comp (keys %$comps) {
+        foreach my $item (@{$$comps{$comp}}) {
+          if (-d $item) {
+            push(@dirs, $item);
+          }
+          else {
+            @dirs = ();
+            last;
+          }
+        }
+      }
+    }
+    if (defined $dirs[0]) {
+      $self->{'special_supplied'}->{$tag} = \@dirs;
+    }
+    else {
+      $self->{'special_supplied'}->{$tag} = 1;
     }
   }
 
@@ -2809,7 +2833,8 @@ sub list_default_generated {
         ## Do not add generated files if they are "special"
         ## unless they haven't been explicitly supplied.
         if (!$specialComponents{$type} ||
-            !$self->{'special_supplied'}->{$type}) {
+            (!$self->{'special_supplied'}->{$type} ||
+             UNIVERSAL::isa($self->{'special_supplied'}->{$type}, 'ARRAY'))) {
           if (!$self->generated_source_listed(
                                 $gentype, $type, \%arr,
                                 $self->{'valid_components'}->{$gentype})) {
@@ -3153,7 +3178,8 @@ sub generate_defaults {
   ## Now, if the %specialComponents are still empty
   ## then take any file that matches the components extension
   foreach my $tag (keys %specialComponents) {
-    if (!$self->{'special_supplied'}->{$tag}) {
+    if (!$self->{'special_supplied'}->{$tag} ||
+        UNIVERSAL::isa($self->{'special_supplied'}->{$tag}, 'ARRAY')) {
       my($names) = $self->{$tag};
       if (defined $names) {
         ## We only want to generate default components if we have
@@ -3170,7 +3196,21 @@ sub generate_defaults {
           $ok = (!defined $all[0]);
         }
         if ($ok) {
-          $self->generate_default_components(\@files, $tag);
+          ## If the "special" type was supplied and it was all
+          ## directories, we need to use those directories to generate
+          ## the default components instead of the current directory.
+          my($fileref) = \@files;
+          if (defined $self->{'special_supplied'}->{$tag} &&
+              UNIVERSAL::isa($self->{'special_supplied'}->{$tag}, 'ARRAY')) {
+            my(@special) = ();
+            foreach my $dir (@{$self->{'special_supplied'}->{$tag}}) {
+              push(@special, $self->generate_default_file_list(
+                                         $dir, [], undef,
+                                         $self->get_assignment('recurse')));
+            }
+            $fileref = \@special;
+          }
+          $self->generate_default_components($fileref, $tag);
         }
       }
     }
@@ -3278,7 +3318,8 @@ sub check_custom_output {
         last;
       }
       elsif (defined $specialComponents{$type} &&
-             !$self->{'special_supplied'}->{$type}) {
+             (!$self->{'special_supplied'}->{$type} ||
+              UNIVERSAL::isa($self->{'special_supplied'}->{$type}, 'ARRAY'))) {
         push(@outputs, $built);
         last;
       }

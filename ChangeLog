@@ -1,3 +1,32 @@
+Mon Nov  6 19:27:44 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/CCProjectCreator.pm:
+
+          Code Composer checks the timestamp on the project file.  So, we
+          need to compare the output to ensure that we don't update a
+          project file that doesn't need to be.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where generated headers, inline files or template
+          files would not be automatically added in the event that the user
+          provided input for those types (i.e., Header_Files, Inline_Files,
+          or Template_Files) that corresponds to a directory.  Now,
+          specifying the following:
+
+          Header_Files {
+            some_dir_name
+          }
+
+          works as if the Header_Files section was not supplied, which is
+          equivalent to the following:
+
+          Header_Files {
+            .
+          }
+
+          This pertains to automatic addition of generated files.
+
 Mon Nov  6 15:11:47 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
@@ -20,7 +49,7 @@ Mon Nov  6 15:11:47 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
           The implementation for the 'targetoutdir' template variable was
           incorrect.  'targetoutdir' was not taken into account for the
-          'libpaths' setting.                 
+          'libpaths' setting.
 
 Thu Oct 26 15:45:18 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
