@@ -40,7 +40,7 @@ ARFLAGS       = <%if(extraarflags)%><%extraarflags%> <%endif%><%arflags%>
 <%if(tempinc)%>
 TEMPINCDIR    = <%tempinc%><%if(tempincopt)%><%slash%><%project_name%><%endif%>
 <%endif%>
-LDFLAGS       =<%if(libpaths)%><%foreach(libpaths)%> <%libpathopt(-L)%>"<%libpath%>"<%endfor%><%endif%><%if(linkflags)%> <%linkflags%><%endif%><%if(build64bit && linkflags64)%> <%linkflags64%><%endif%>
+LDFLAGS       =<%if(libpaths)%><%foreach(libpaths)%><%if(targetoutdir)%> <%libpathopt(-L)%>"<%libpath%><%slash%><%targetoutdir%>"<%endif%> <%libpathopt(-L)%>"<%libpath%>"<%endfor%><%endif%><%if(linkflags)%> <%linkflags%><%endif%><%if(build64bit && linkflags64)%> <%linkflags64%><%endif%>
 CCC           = $(CXX)
 MAKEFILE      = <%project_file%>
 DEPENDENCIES  = <%if(supports_include)%>.depend.<%endif%>$(MAKEFILE)
@@ -120,7 +120,7 @@ specialscript:
 <%endif%>
 <%if(prelinktarget)%>
 <%prelinktarget%>: specialscript $(OBJS)
-	@specialscript $(NM) "$(OBJS)" "$(LDLIBS)" "<%if(libpaths)%><%libpaths%><%else%>.<%endif%>" <%prelinktarget%>
+	@specialscript $(NM) "$(OBJS)" "$(LDLIBS)" "<%if(libpaths)%><%foreach(libpaths)%><%if(targetoutdir)%><%libpath%><%slash%><%targetoutdir%> <%endif%><%libpath%><%fornotlast(" ")%><%endfor%><%else%>.<%endif%>" <%prelinktarget%>
 	@$(RM) specialscript
 
 <%targetoutdir%><%obj_dir%><%noextension(prelinktarget)%>$(OBJEXT): <%prelinktarget%>
