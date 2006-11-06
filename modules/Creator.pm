@@ -1126,7 +1126,7 @@ sub handle_unknown_assignment {
   my($self)   = shift;
   my($type)   = shift;
   my(@values) = @_;
-  return 0, "Invalid assignment name: $values[1]";
+  return 0, "Invalid assignment name: '$values[1]'";
 }
 
 
