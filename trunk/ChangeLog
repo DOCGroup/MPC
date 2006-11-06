@@ -1,3 +1,27 @@
+Mon Nov  6 15:11:47 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where unrecognized lines in 'specific' sections would
+          not be flagged as an error.
+
+        * modules/StringProcessor.pm (parse_assignment):
+
+          Since template variable scopes can have spaces in the names, we
+          must allow scopes to have spaces in the names here as well.
+
+        * modules/Creator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Put quotes around the variable name when displaying an invalid
+          assignment name.  This allows spacing to be taken into account.
+
+        * templates/make.mpd:
+
+          The implementation for the 'targetoutdir' template variable was
+          incorrect.  'targetoutdir' was not taken into account for the
+          'libpaths' setting.                 
+
 Thu Oct 26 15:45:18 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/common.txt:

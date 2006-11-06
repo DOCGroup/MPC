@@ -718,7 +718,7 @@ sub parse_line {
         $self->process_assignment($values[1], $values[2]);
       }
       else {
-        $errorString = "Invalid assignment name: $values[1]";
+        $errorString = "Invalid assignment name: '$values[1]'";
         $status = 0;
       }
     }
@@ -787,7 +787,9 @@ sub parse_line {
           ($status, $errorString) = $self->parse_define_custom($ih, $name);
         }
         elsif ($comp eq 'expand') {
+          $self->{'parsing_expand'} = 1;
           ($status, $errorString) = $self->parse_scope($ih, $comp, $name);
+          $self->{'parsing_expand'} = undef;
         }
         else {
           $errorString = "Invalid component name: $comp";
@@ -912,7 +914,7 @@ sub handle_scoped_unknown {
   my($flags) = shift;
   my($line)  = shift;
 
-  if (defined $type) {
+  if (defined $type && $self->{'parsing_expand'}) {
     if ($type eq $self->get_default_component_name()) {
       return 0, 'Can not set expansion in this context';
     }
@@ -1590,7 +1592,7 @@ sub parse_define_custom {
           }
           else {
             $status = 0;
-            $errorString = "Invalid assignment name: $name";
+            $errorString = "Invalid assignment name: '$name'";
             last;
           }
         }

@@ -246,7 +246,7 @@ sub parse_line {
         $self->process_assignment($values[1], $values[2]);
       }
       else {
-        $error = "Invalid assignment name: $values[1]";
+        $error = "Invalid assignment name: '$values[1]'";
         $status = 0;
       }
     }
