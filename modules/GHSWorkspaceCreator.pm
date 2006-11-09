@@ -76,7 +76,7 @@ sub pre_workspace {
   print $fh "#!gbuild$crlf",
             "primaryTarget=$tgt$crlf",
             "[Project]$crlf",
-            "\t-I.$crlf",
+            "\t--one_instantiation_per_object$crlf",
             "\t:sourceDir=.$crlf",
             "\t--std$crlf",
             "\t-language=cxx$crlf",
