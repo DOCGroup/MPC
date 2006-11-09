@@ -1,3 +1,10 @@
+Thu Nov  9 13:25:05 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/GHSWorkspaceCreator.pm:
+
+          Removed the -I. from the default project and added
+          --one_instantiation_per_object.
+
 Mon Nov  6 19:27:44 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/CCProjectCreator.pm:
