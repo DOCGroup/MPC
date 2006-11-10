@@ -8,6 +8,7 @@ common_defines = Specifies macros that are common to all target types.
 defines = Macros that are specific to a particular configuration.
 guid = The value for this variable is generated during project generation.
 incremental = This setting corresponds to the Configuration Properties Advanced property "Incremental Build". The boolean values true and false correspond to enabling or disabling the feature in the IDE.
+keyfile = Indicate the keyfile to use when signing the assembly.
 prversion = This setting specifies the ProductVersion in the generated .csproj file.
 scc = This template variable enables or disables the use of Scc.
 schemaversion = This setting specifies the SchemaVersion in the generated .csproj file.

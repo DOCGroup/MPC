@@ -26,8 +26,10 @@
 <%if(exename || sharedname || staticname)%>
     <AssemblyName><%if(exename)%><%exename%><%else%><%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%><%endif%></AssemblyName>
 <%endif%>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile><%keyfile%></AssemblyOriginatorKeyFile>
+<%if(keyfile)%>
+    <SignAssembly>true</SignAssembly>
+<%endif%>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
