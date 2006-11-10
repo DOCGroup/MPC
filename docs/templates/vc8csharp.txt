@@ -7,6 +7,7 @@
 common_defines = Specifies macros that are common to all target types.
 defines = Macros that are specific to a particular configuration.
 guid = The value for this variable is generated during project generation.
+keyfile = Indicate the keyfile to use when signing the assembly.
 prversion = This setting specifies the ProductVersion in the generated .csproj file.
 registerforcominterop = This setting corresponds to the Build Output property "Register for COM interop". The boolean values true and false correspond to enabling or disabling the feature in the IDE.
 schemaversion = This setting specifies the SchemaVersion in the generated .csproj file.
