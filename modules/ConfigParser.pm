@@ -49,14 +49,8 @@ sub parse_line {
     $name =~ s/\s+$//;
 
     ## Pre-process the name and value
-    while($name =~ /\$(\w+)/) {
-      my($val) = $ENV{$1} || '';
-      $name =~ s/\$(\w+)/$val/;
-    }
-    while($value =~ /\$(\w+)/) {
-      my($val) = $ENV{$1} || '';
-      $value =~ s/\$(\w+)/$val/;
-    }
+    $name = $self->preprocess($name);
+    $value = $self->preprocess($value);
     $name =~ s/\\/\//g;
 
     ## Store the name value pair
@@ -93,5 +87,17 @@ sub get_value {
   return $self->{'values'}->{$tag} || $self->{'values'}->{lc($tag)};
 }
 
+
+sub preprocess {
+  my($self) = shift;
+  my($str)  = shift;
+  while($str =~ /\$([\(\w\)]+)/) {
+    my($name) = $1;
+    $name =~ s/[\(\)]//g;
+    my($val) = $ENV{$name} || '';
+    $str =~ s/\$([\(\w\)]+)/$val/;
+  }
+  return $str;
+}
 
 1;
