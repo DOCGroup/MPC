@@ -1,3 +1,15 @@
+Thu Nov 16 12:25:18 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/global.features:
+        * config/xalanc.mpb:
+
+          Added support for Xalan-C++.  The xalanc feature is off by
+          default.
+
+        * modules/ConfigParser.pm:
+
+          Support shell and make style environment variables.
+
 Fri Nov 10 16:48:14 UTC 2006  Kevin Heifner  <heifner_k@ociweb.com>
 
         * docs/templates/vc7csharp.txt:
