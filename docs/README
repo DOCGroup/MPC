@@ -331,7 +331,7 @@ created.  Once the custom file type is defined, MOC_Files can be defined in
 order to specify the input files for this new file type.
 
 Here is a list of keywords that can be used within the scope of
-Define_Custom:
+Define_Custom or Modify_Custom:
 
 automatic           If set to 1, then attempt to automatically determine
                     which files belong to the set of input files for the
@@ -500,6 +500,10 @@ generic_outputext   If the command does not generate any of the other output
 If the custom output can not be represented with the above output extension
 keywords (*_outputext) and you have knowledge of the output files a priori,
 you can represent them with the '>>' construct.
+
+A Modify_Custom section can be used to modify an existing custom definition.
+The Define_Custom must be processed prior to processing a Modify_Custom
+section; otherwise, an error will occur.
 
 Below is an example that demonstrates the use of '>>'.  The command takes an
 input file name of foo.prp and produces two files that have completely

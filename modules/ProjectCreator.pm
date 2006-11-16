@@ -786,6 +786,9 @@ sub parse_line {
         elsif ($comp eq 'define_custom') {
           ($status, $errorString) = $self->parse_define_custom($ih, $name);
         }
+        elsif ($comp eq 'modify_custom') {
+          ($status, $errorString) = $self->parse_define_custom($ih, $name, 1);
+        }
         elsif ($comp eq 'expand') {
           $self->{'parsing_expand'} = 1;
           ($status, $errorString) = $self->parse_scope($ih, $comp, $name);
@@ -1420,7 +1423,7 @@ sub process_array_assignment {
   my($array) = shift;
 
   if (!defined $$aref || $type == 0) {
-    if ($type ne '-=') {
+    if ($type != -1) {
       $$aref = $array;
     }
   }
@@ -1446,215 +1449,222 @@ sub process_array_assignment {
 
 
 sub parse_define_custom {
-  my($self)        = shift;
-  my($fh)          = shift;
-  my($tag)         = shift;
-  my($status)      = 0;
-  my($errorString) = "Unable to process $tag";
+  my($self)   = shift;
+  my($fh)     = shift;
+  my($tag)    = shift;
+  my($modify) = shift;
 
   ## Make the tag something _files
   $tag = lc($tag) . '_files';
 
   if ($tag eq $generic_key) {
-    $errorString = "$tag is reserved";
+    return 0, "$tag is reserved";
   }
-  elsif (defined $self->{'valid_components'}->{$tag}) {
-    $errorString = "$tag has already been defined";
-  }
-  else {
-    ## Update the custom_types assignment
-    $self->process_assignment_add('custom_types', $tag);
 
-    if (!defined $self->{'matching_assignments'}->{$tag}) {
-      my(@keys) = keys %custom;
-      push(@keys, @default_matching_assignments);
-      $self->{'matching_assignments'}->{$tag} = \@keys;
+  if (defined $self->{'valid_components'}->{$tag}) {
+    if (!$modify) {
+      return 0, "$tag has already been defined";
     }
+  }
+  elsif ($modify) {
+    return 0, "$tag has not yet been defined and can not be modified";
+  }
 
-    my($optname) = undef;
-    my($inscope) = 0;
-    while(<$fh>) {
-      my($line) = $self->preprocess_line($fh, $_);
+  my($status)      = 0;
+  my($errorString) = "Unable to process $tag";
 
-      if ($line eq '') {
+  ## Update the custom_types assignment
+  $self->process_assignment_add('custom_types', $tag) if (!$modify);
+
+  if (!defined $self->{'matching_assignments'}->{$tag}) {
+    my(@keys) = keys %custom;
+    push(@keys, @default_matching_assignments);
+    $self->{'matching_assignments'}->{$tag} = \@keys;
+  }
+
+  my($optname) = undef;
+  my($inscope) = 0;
+  while(<$fh>) {
+    my($line) = $self->preprocess_line($fh, $_);
+
+    if ($line eq '') {
+    }
+    elsif ($line =~ /optional\s*\(([^\)]+)\)\s*{/) {
+      $optname = $1;
+      $optname =~ s/^\s+//;
+      $optname =~ s/\s+$//;
+      if (defined $customDefined{$optname} &&
+          ($customDefined{$optname} & 0x08) != 0) {
+        ++$inscope;
+        if ($inscope != 1) {
+          $status = 0;
+          $errorString = 'Can not nest \'optional\' sections';
+          last;
+        }
       }
-      elsif ($line =~ /optional\s*\(([^\)]+)\)\s*{/) {
-        $optname = $1;
-        $optname =~ s/^\s+//;
-        $optname =~ s/\s+$//;
-        if (defined $customDefined{$optname} &&
-            ($customDefined{$optname} & 0x08) != 0) {
-          ++$inscope;
-          if ($inscope != 1) {
-            $status = 0;
-            $errorString = 'Can not nest \'optional\' sections';
-            last;
+      else {
+        $status = 0;
+        $errorString = "Invalid optional name: $optname";
+        last;
+      }
+    }
+    elsif ($inscope) {
+      if ($line =~ /^}$/) {
+        $optname = undef;
+        --$inscope;
+      }
+      else {
+        if ($line =~ /(\w+)\s*\(([^\)]+)\)\s*\+=\s*(.*)/) {
+          my($name) = lc($1);
+          my($opt)  = $2;
+          my(@val)  = split(/\s*,\s*/, $3);
+
+          ## Fix $opt spacing
+          $opt =~ s/(\&\&|\|\|)/ $1 /g;
+          $opt =~ s/!\s+/!/g;
+
+          ## Set up the 'optional' hash table
+          if (!defined $self->{'generated_exts'}->{$tag}->
+                              {'optional'}->{$optname}->{$name}->{$opt}) {
+            $self->{'generated_exts'}->{$tag}->
+                   {'optional'}->{$optname}->{$name}->{$opt} = \@val;
+          }
+          else {
+            push(@{$self->{'generated_exts'}->{$tag}->{'optional'}->
+                    {$optname}->{$name}->{$opt}}, @val);
           }
         }
         else {
           $status = 0;
-          $errorString = "Invalid optional name: $optname";
+          $errorString = "Unrecognized optional line: $line";
           last;
         }
       }
-      elsif ($inscope) {
-        if ($line =~ /^}$/) {
-          $optname = undef;
-          --$inscope;
+    }
+    elsif ($line =~ /^}$/) {
+      $status = 1;
+      $errorString = undef;
+
+      ## Propagate the custom defined values into the mapped values
+      foreach my $key (keys %{$self->{'valid_names'}}) {
+        if (UNIVERSAL::isa($self->{'valid_names'}->{$key}, 'ARRAY')) {
+          my($value) = $self->{'generated_exts'}->{$tag}->{
+                                 $self->{'valid_names'}->{$key}->[1]};
+          if (defined $value) {
+            ## Bypass the process_assignment() defined in this class
+            ## to avoid unwanted keyword mapping.
+            $self->SUPER::process_assignment($key, $value);
+          }
         }
-        else {
-          if ($line =~ /(\w+)\s*\(([^\)]+)\)\s*\+=\s*(.*)/) {
-            my($name) = lc($1);
-            my($opt)  = $2;
-            my(@val)  = split(/\s*,\s*/, $3);
+      }
 
-            ## Fix $opt spacing
-            $opt =~ s/(\&\&|\|\|)/ $1 /g;
-            $opt =~ s/!\s+/!/g;
+      ## Set some defaults (if they haven't already been set)
+      if (!defined $self->{'generated_exts'}->{$tag}->{'pre_filename'}) {
+        $self->{'generated_exts'}->{$tag}->{'pre_filename'} = [ '' ];
+      }
+      if (!defined $self->{'generated_exts'}->{$tag}->{'pre_extension'}) {
+        $self->{'generated_exts'}->{$tag}->{'pre_extension'} = [ '' ];
+      }
+      if (!defined $self->{'generated_exts'}->{$tag}->{'automatic'}) {
+        $self->{'generated_exts'}->{$tag}->{'automatic'} = 1;
+      }
+      if (!defined $self->{'valid_components'}->{$tag}) {
+        $self->{'valid_components'}->{$tag} = [];
+      }
+      last;
+    }
+    else {
+      my(@values) = ();
+      ## If this returns true, then we've found an assignment
+      if ($self->parse_assignment($line, \@values)) {
+        my($type)  = $values[0];
+        my($name)  = $values[1];
+        my($value) = $values[2];
+        if (defined $customDefined{$name}) {
+          if (($customDefined{$name} & 0x01) != 0) {
+            $value = $self->escape_regex_special($value);
+            my(@array) = split(/\s*,\s*/, $value);
+            $self->process_array_assignment(
+                      \$self->{'valid_components'}->{$tag}, $type, \@array);
+          }
+          else {
+            if (!defined $self->{'generated_exts'}->{$tag}) {
+              $self->{'generated_exts'}->{$tag} = {};
+            }
+            ## Try to convert the value into a relative path
+            $value = $self->relative($value);
 
-            ## Set up the 'optional' hash table
-            if (!defined $self->{'generated_exts'}->{$tag}->
-                                {'optional'}->{$optname}->{$name}->{$opt}) {
-              $self->{'generated_exts'}->{$tag}->
-                     {'optional'}->{$optname}->{$name}->{$opt} = \@val;
+            if (($customDefined{$name} & 0x04) != 0) {
+              if ($type == 0) {
+                $self->process_assignment(
+                                   $name, $value,
+                                   $self->{'generated_exts'}->{$tag});
+              }
+              elsif ($type == 1) {
+                $self->process_assignment_add(
+                                   $name, $value,
+                                   $self->{'generated_exts'}->{$tag});
+              }
+              elsif ($type == -1) {
+                $self->process_assignment_sub(
+                                   $name, $value,
+                                   $self->{'generated_exts'}->{$tag});
+              }
             }
             else {
-              push(@{$self->{'generated_exts'}->{$tag}->{'optional'}->
-                      {$optname}->{$name}->{$opt}}, @val);
-            }
-          }
-        }
-      }
-      elsif ($line =~ /^}$/) {
-        $status = 1;
-        $errorString = undef;
+              if (($customDefined{$name} & 0x02) != 0) {
+                ## Transform the name from something outputext to
+                ## something files.  We expect this to match the
+                ## names of valid_assignments.
+                $name =~ s/outputext/files/g;
+              }
 
-        ## Propagate the custom defined values into the mapped values
-        foreach my $key (keys %{$self->{'valid_names'}}) {
-          if (UNIVERSAL::isa($self->{'valid_names'}->{$key}, 'ARRAY')) {
-            my($value) = $self->{'generated_exts'}->{$tag}->{
-                                   $self->{'valid_names'}->{$key}->[1]};
-            if (defined $value) {
-              ## Bypass the process_assignment() defined in this class
-              ## to avoid unwanted keyword mapping.
-              $self->SUPER::process_assignment($key, $value);
-            }
-          }
-        }
-
-        ## Set some defaults (if they haven't already been set)
-        if (!defined $self->{'generated_exts'}->{$tag}->{'pre_filename'}) {
-          $self->{'generated_exts'}->{$tag}->{'pre_filename'} = [ '' ];
-        }
-        if (!defined $self->{'generated_exts'}->{$tag}->{'pre_extension'}) {
-          $self->{'generated_exts'}->{$tag}->{'pre_extension'} = [ '' ];
-        }
-        if (!defined $self->{'generated_exts'}->{$tag}->{'automatic'}) {
-          $self->{'generated_exts'}->{$tag}->{'automatic'} = 1;
-        }
-        if (!defined $self->{'valid_components'}->{$tag}) {
-          $self->{'valid_components'}->{$tag} = [];
-        }
-        last;
-      }
-      else {
-        my(@values) = ();
-        ## If this returns true, then we've found an assignment
-        if ($self->parse_assignment($line, \@values)) {
-          my($type)  = $values[0];
-          my($name)  = $values[1];
-          my($value) = $values[2];
-          if (defined $customDefined{$name}) {
-            if (($customDefined{$name} & 0x01) != 0) {
+              ## Get it ready for regular expressions
               $value = $self->escape_regex_special($value);
+
+              ## Process the array assignment
               my(@array) = split(/\s*,\s*/, $value);
               $self->process_array_assignment(
-                        \$self->{'valid_components'}->{$tag}, $type, \@array);
+                          \$self->{'generated_exts'}->{$tag}->{$name},
+                          $type, \@array);
             }
-            else {
-              if (!defined $self->{'generated_exts'}->{$tag}) {
-                $self->{'generated_exts'}->{$tag} = {};
-              }
-              ## Try to convert the value into a relative path
-              $value = $self->relative($value);
-
-              if (($customDefined{$name} & 0x04) != 0) {
-                if ($type == 0) {
-                  $self->process_assignment(
-                                     $name, $value,
-                                     $self->{'generated_exts'}->{$tag});
-                }
-                elsif ($type == 1) {
-                  $self->process_assignment_add(
-                                     $name, $value,
-                                     $self->{'generated_exts'}->{$tag});
-                }
-                elsif ($type == -1) {
-                  $self->process_assignment_sub(
-                                     $name, $value,
-                                     $self->{'generated_exts'}->{$tag});
-                }
-              }
-              else {
-                if (($customDefined{$name} & 0x02) != 0) {
-                  ## Transform the name from something outputext to
-                  ## something files.  We expect this to match the
-                  ## names of valid_assignments.
-                  $name =~ s/outputext/files/g;
-                }
-
-                ## Get it ready for regular expressions
-                $value = $self->escape_regex_special($value);
-
-                ## Process the array assignment
-                my(@array) = split(/\s*,\s*/, $value);
-                $self->process_array_assignment(
-                            \$self->{'generated_exts'}->{$tag}->{$name},
-                            $type, \@array);
-              }
-            }
-          }
-          else {
-            $status = 0;
-            $errorString = "Invalid assignment name: '$name'";
-            last;
           }
         }
-        elsif ($line =~ /^(\w+)\s+(\w+)(\s*=\s*(\w+)?)?/) {
-          ## Check for keyword mapping here
-          my($keyword) = $1;
-          my($newkey)  = $2;
-          my($mapkey)  = $4;
-          if ($keyword eq 'keyword') {
-            if (defined $self->{'valid_names'}->{$newkey}) {
-              $status = 0;
-              $errorString = "Cannot map $newkey onto an " .
-                             "existing keyword";
-              last;
-            }
-            elsif (!defined $mapkey) {
-              $self->{'valid_names'}->{$newkey} = 1;
-            }
-            elsif ($newkey ne $mapkey) {
-              if (defined $customDefined{$mapkey}) {
-                $self->{'valid_names'}->{$newkey} = [ $tag, $mapkey ];
-              }
-              else {
-                $status = 0;
-                $errorString = "Cannot map $newkey to an " .
-                               "undefined custom keyword: $mapkey";
-                last;
-              }
+        else {
+          $status = 0;
+          $errorString = "Invalid assignment name: '$name'";
+          last;
+        }
+      }
+      elsif ($line =~ /^(\w+)\s+(\w+)(\s*=\s*(\w+)?)?/) {
+        ## Check for keyword mapping here
+        my($keyword) = $1;
+        my($newkey)  = $2;
+        my($mapkey)  = $4;
+        if ($keyword eq 'keyword') {
+          if (defined $self->{'valid_names'}->{$newkey}) {
+            $status = 0;
+            $errorString = "Cannot map $newkey onto an " .
+                           "existing keyword";
+            last;
+          }
+          elsif (!defined $mapkey) {
+            $self->{'valid_names'}->{$newkey} = 1;
+          }
+          elsif ($newkey ne $mapkey) {
+            if (defined $customDefined{$mapkey}) {
+              $self->{'valid_names'}->{$newkey} = [ $tag, $mapkey ];
             }
             else {
               $status = 0;
-              $errorString = "Cannot map $newkey to $mapkey";
+              $errorString = "Cannot map $newkey to an " .
+                             "undefined custom keyword: $mapkey";
               last;
             }
           }
           else {
             $status = 0;
-            $errorString = "Unrecognized line: $line";
+            $errorString = "Cannot map $newkey to $mapkey";
             last;
           }
         }
@@ -1663,6 +1673,11 @@ sub parse_define_custom {
           $errorString = "Unrecognized line: $line";
           last;
         }
+      }
+      else {
+        $status = 0;
+        $errorString = "Unrecognized line: $line";
+        last;
       }
     }
   }
