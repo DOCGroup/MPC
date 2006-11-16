@@ -1,3 +1,11 @@
+Thu Nov 16 13:34:26 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+
+          Added a new feature, Modify_Custom, that can be used to customize
+          an existing Define_Custom.
+
 Thu Nov 16 12:25:18 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/global.features:
