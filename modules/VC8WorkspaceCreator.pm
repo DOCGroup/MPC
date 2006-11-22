@@ -19,9 +19,53 @@ use vars qw(@ISA);
 @ISA = qw(VC71WorkspaceCreator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my(%lang_map) = ('cplusplus' => 'Visual C#',
+                 'csharp'    => 'Visual C#',
+                 'vb'        => 'Visual Basic',
+                 'java'      => 'Visual J#');
+my(@configs)  = ('Debug', 'Release');
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
+sub add_webapps {
+  my($self)         = shift;
+  my($webappdirs)   = shift;
+  my($projects)     = $self->get_projects();
+  my($project_info) = $self->get_project_info();
+
+  $self->{'vc8webapps'} = {} if (!defined $self->{'vc8webapps'});
+  foreach my $webappdir (@$webappdirs) {
+    # Add the website to the list of project names
+    my($pname) = $webappdir;
+    $pname =~ s/\//\\/g;
+    $pname .= '\\' if ($pname !~ /\\$/);
+    push(@$projects, $pname);
+
+    # Generate the GUID for the website.  We have to explicitly
+    # create a new project using $webappdir as the 'project_name'.
+    my($guid) = GUID::generate($self->workspace_file_name(),
+                               $pname,
+                               $self->getcwd());
+
+    # Add the website project to the 'project_info'.
+    @{$project_info->{$pname}} = ($pname,
+                                  '',
+                                  $guid,
+                                  'website');
+    foreach my $cpu ('.NET', 'Any CPU') {
+      foreach my $configuration (@configs) {
+        push(@{$project_info->{$pname}}, "$configuration|$cpu");
+      }
+    }
+
+    $self->{'vc8webapps'}->{$guid} = $pname;
+  }
+}
 
 sub pre_workspace {
   my($self) = shift;
@@ -71,6 +115,50 @@ sub allow_empty_dependencies {
   return 0;
 }
 
+sub print_inner_project {
+  my($self)       = shift;
+  my($fh)               = shift;
+  my($gen)              = shift;
+  my($currguid)         = shift;
+  my($deps)             = shift;
+  my($name)             = shift;
+  my($name_to_guid_map) = shift;
 
+  if (defined $self->{'vc8webapps'}->{$currguid}) {
+    my($crlf)      = $self->crlf();
+    my($language)  = $self->get_language();
+    my($directory) = ($self->{'vc8webapps'}->{$currguid} eq '.\\' ?
+                      $self->get_workspace_name() . '\\' :
+                      $self->{'vc8webapps'}->{$currguid});
+    my($notrail)   = $directory;
+    $notrail =~ s/\\$//;
+
+    # Print the website project.
+    print $fh "\tProjectSection(WebsiteProperties) = preProject", $crlf;
+    foreach my $config (@configs) {
+      print $fh "\t\t$config.AspNetCompiler.VirtualPath = \"/$notrail\"", $crlf,
+                "\t\t$config.AspNetCompiler.PhysicalPath = \"$directory\"", $crlf,
+                "\t\t$config.AspNetCompiler.TargetPath = \"PrecompiledWeb\\$directory\"", $crlf,
+                "\t\t$config.AspNetCompiler.Updateable = \"true\"", $crlf,
+                "\t\t$config.AspNetCompiler.ForceOverwrite = \"true\"", $crlf,
+                "\t\t$config.AspNetCompiler.FixedNames = \"true\"", $crlf,
+                "\t\t$config.AspNetCompiler.Debug = \"",
+                ($config =~ /debug/i ? 'True' : 'False'), "\"", $crlf;
+    }
+    print $fh "\t\tVWDPort = \"1573\"", $crlf,
+              "\t\tDefaultWebSiteLanguage = \"", $lang_map{$language}, "\"", $crlf,
+              "\tEndProjectSection", $crlf;
+  }
+  else {
+    # We can ignore this project and pass it to the
+    # SUPER since it's not a website.
+    $self->SUPER::print_inner_project($fh,
+                                      $gen,   
+                                      $currguid,
+                                      $deps,    
+                                      $name,
+                                      $name_to_guid_map);
+  }
+}
 
 1;

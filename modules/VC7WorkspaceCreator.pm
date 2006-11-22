@@ -181,71 +181,59 @@ sub write_comps {
             $self->get_project_config_section_name(),
             ") = postSolution$crlf";
 
-  ## See if there is an 'Any CPU' configuration
+  ## See if there is an 'Any CPU' or '.NET' configuration
   my($anycpu) = undef;
   foreach my $key (keys %configs) {
-    if (index($key, 'Any CPU') >= 0) {
-      $anycpu = $key;
-      $anycpu =~ s/^.*\|//;
+    if (index($key, 'Any CPU') >= 0 || index($key, '.NET') >= 0) {
+      $anycpu = 1;
       last;
     }
   }
 
   foreach my $project (@list) {
     my($name, $deps, $pguid, $lang, @cfgs) = @{$$pjs{$project}};
-    my($first_cfg)   = undef;
-    my($last_cfg)    = '.NET';
     my(%all_configs) = %configs;
-    my($settings)    = '';
     foreach my $cfg (sort @cfgs) {
       my($c) = $self->get_short_config_name($cfg);
-      $first_cfg = $cfg if (!defined $first_cfg);
-      $last_cfg = $cfg;
-      $settings .= "\t\t{$pguid}.$c.ActiveCfg = $cfg$crlf" .
-                   "\t\t{$pguid}.$c.Build.0 = $cfg$crlf";
-      delete $all_configs{$c};
+      if (defined $anycpu) {
+        delete $all_configs{$c};
+      }
+      else {
+        print $fh "\t\t{$pguid}.$c.ActiveCfg = $cfg$crlf",
+                  "\t\t{$pguid}.$c.Build.0 = $cfg$crlf";
+      }
     }
 
     ## If this is a mixed language workspace, we need to explicitly
     ## enable the building of the non-C++ projects when any platform
     ## other than Any CPU/.NET is selected.
-    if (index($last_cfg, '.NET') >= 0 || index($last_cfg, 'Any CPU') >= 0) {
-      $last_cfg =~ s/^.*\|//;
-      foreach my $c (sort keys %configs) {
-        if (defined $all_configs{$c}) {
-          ## Get the long configuration name and replace the platform
-          ## with the last platform (non-C++ platform)
-          my($config) = $all_configs{$c};
-          $config =~ s/\|.*/\|$last_cfg/;
-
-          ## Enable the building of this project under all the other
-          ## configurations (e.g. Win32, x64, etc.)
-          print $fh "\t\t{$pguid}.$c.ActiveCfg = $config$crlf",
-                    "\t\t{$pguid}.$c.Build.0 = $config$crlf";
+    if (defined $anycpu) {
+      my(%printed) = ();
+      foreach my $c (sort @cfgs) {
+        if ($c =~ /(.+\|)/) {
+          my($cfg) = $1;
+          foreach my $remainder (sort keys %all_configs) {
+            if (index($remainder, $cfg) == 0) {
+              if (!$printed{$pguid.$remainder}) {
+                print $fh "\t\t{$pguid}.$remainder.ActiveCfg = $c$crlf",
+                          "\t\t{$pguid}.$remainder.Build.0 = $c$crlf";
+                $printed{$pguid.$remainder} = 1;
+              }
+            }
+          }
         }
-        else {
-          print $fh "\t\t{$pguid}.$c.ActiveCfg = $configs{$c}$crlf",
-                    "\t\t{$pguid}.$c.Build.0 = $configs{$c}$crlf";
-        }
+        print $fh "\t\t{$pguid}.$c.ActiveCfg = $c$crlf",
+                  "\t\t{$pguid}.$c.Build.0 = $c$crlf";   
       }
     }
     else {
-      if (defined $anycpu) {
-        my(%printed) = ();
-        foreach my $cfg (sort @cfgs) {
-          my($c) = $self->get_short_config_name($cfg);
-          my($any) = $c;
-          $any =~ s/\|.*/\|$anycpu/;
-          if (!defined $printed{$any}) {
-            $printed{$any} = 1;
-            print $fh "\t\t{$pguid}.$any.ActiveCfg = $first_cfg$crlf";
-          }
+      ## Non-C++ projects have no configurations
+      if (!defined $cfgs[0]) {
+        foreach my $c (sort keys %configs) {
+          my($cfg) = $c . '|.NET';
           print $fh "\t\t{$pguid}.$c.ActiveCfg = $cfg$crlf",
                     "\t\t{$pguid}.$c.Build.0 = $cfg$crlf";
         }
-      }
-      else {
-        print $fh $settings;
       }
     }
   }
