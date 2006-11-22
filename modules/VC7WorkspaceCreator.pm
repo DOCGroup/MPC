@@ -69,12 +69,16 @@ sub pre_workspace {
 
 
 sub print_inner_project {
-  #my($self)  = shift;
-  #my($fh)    = shift;
-  #my($gen)   = shift;
-  #my($pguid) = shift;
-  #my($deps)  = shift;
-  #my($name)  = shift;
+  #my($self)             = shift;
+  #my($fh)               = shift;
+  #my($gen)              = shift;
+  #my($pguid)            = shift;
+  #my($deps)             = shift;
+  #my($name)             = shift;
+  #my($name_to_guid_map) = shift;
+  #my($proj_language)    = shift;
+  #my($cfgs)             = shift;
+
 }
 
 
@@ -147,14 +151,14 @@ sub write_comps {
 
   ## Project Information
   foreach my $project (@list) {
-    my($name, $rawdeps, $guid, $language) = @{$$pjs{$project}};
+    my($pname, $rawdeps, $guid, $language, @cfgs) = @{$$pjs{$project}};
     my($pguid) = $guids{$language};
     my($deps) = $self->get_validated_ordering($project);
-    ## Convert all /'s to \
-    my($cpy) = $project;
-    $cpy =~ s/\//\\/g;
-    print $fh "Project(\"{$pguid}\") = \"$name\", \"$cpy\", \"{$guid}\"$crlf";
-    $self->print_inner_project($fh, $gen, $guid, $deps, $name, \%name_to_guid_map);
+    my($name, $proj) = $self->adjust_names($pname, $project, $language);
+    print $fh "Project(\"{$pguid}\") = \"$name\", \"$proj\", \"{$guid}\"$crlf";
+    $self->print_inner_project($fh, $gen, $guid, $deps,
+                               $name, \%name_to_guid_map,
+                               $language, \@cfgs);
     print $fh "EndProject$crlf";
   }
 
@@ -242,6 +246,16 @@ sub write_comps {
   $self->print_additional_sections($fh);
 
   print $fh "EndGlobal$crlf";
+}
+
+
+sub adjust_names {
+  my($self) = shift;
+  my($name) = shift;
+  my($proj) = shift;
+  my($lang) = shift;
+  $proj =~ s/\//\\/g;
+  return $name, $proj;
 }
 
 

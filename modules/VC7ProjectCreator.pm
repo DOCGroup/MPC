@@ -80,7 +80,12 @@ sub fill_value {
                             $self->getcwd());
   }
   elsif ($name eq 'language') {
-    $value = $self->get_language();
+    if ($self->get_assignment('webapp')) {
+      $value = 'website';
+    }
+    else {
+      $value = $self->get_language();
+    }
   }
   else {
     $value = $self->get_configurable($name);

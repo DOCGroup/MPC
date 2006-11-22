@@ -1,3 +1,21 @@
+Wed Nov 22 19:34:29 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/VC8ProjectCreator.pm:
+        * modules/VC8WebWorkspaceCreator.pm:
+        * modules/VC8WorkspaceCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Removed the scope keyword, webapp, from the workspace and added a
+          new project keyword named webapp.  If webapp is set to 1 in the
+          project, it will be considered a Web Application, will not have a
+          project file written for it and will be included in the workspace
+          all if the project type supports Web Applications.  Currently,
+          only the vc8 project type supports them.
+
 Wed Nov 22 13:44:33 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/MPC.sgml:
