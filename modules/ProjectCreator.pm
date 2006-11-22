@@ -168,7 +168,7 @@ my(%cppec) = ('source_files' => $cppvc{'template_files'},
 ## Valid component names within a project along with the valid file extensions
 my(%csvc) = ('source_files'        => [ "\\.cs" ],
              'config_files'        => [ "\\.config" ],
-             'resx_files'          => [ "\\.resx" ],
+             'resx_files'          => [ "\\.resx", "\\.resources" ],
              'aspx_files'          => [ "\\.aspx" ],
              'ico_files'           => [ "\\.ico" ],
              'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
