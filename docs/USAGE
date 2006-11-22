@@ -241,6 +241,8 @@ read from the 'config' directory of MPC.
 command_line     - Provide additional command line options to MPC.  The
                    value of this setting will be prepended to the options
                    passed to mwc.pl or mpc.pl.
+default_type     - Provide a single project type (as specified by the -type
+                   option) as the default project type.
 dynamic_types    - This comma separated list points to directories in which
                    MPC will search for Perl modules to implement additional
                    MPC project types, base projects or template files.  This
