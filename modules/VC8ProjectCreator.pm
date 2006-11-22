@@ -47,6 +47,12 @@ my(%config) = ('vcversion' => '8.00',
 # Subroutine Section
 # ************************************************************
 
+sub webapp_supported {
+  #my($self) = shift;
+  return 1;
+}
+
+
 sub require_dependencies {
   ## With vc8, they fixed it such that static libraries that depend on
   ## other static libraries will not be included into the target library

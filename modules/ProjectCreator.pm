@@ -63,6 +63,7 @@ my(%validNames) = ('exename'         => 1,
                    'tagname'         => 1,
                    'tagchecks'       => 1,
                    'macros'          => 3,
+                   'webapp'          => 1,
                   );
 
 ## Custom definitions only
@@ -3850,6 +3851,7 @@ sub need_to_write_project {
 sub write_output_file {
   my($self)     = shift;
   my($name)     = shift;
+  my($webapp)   = shift;
   my($status)   = 0;
   my($error)    = undef;
   my($tover)    = $self->get_template_override();
@@ -3915,7 +3917,11 @@ sub write_output_file {
             mkpath($dir, 0, 0777);
           }
 
-          if ($self->compare_output()) {
+          if ($webapp) {
+            ## At this point in time, webapps do not get a project file,
+            ## but they do appear in the workspace
+          }
+          elsif ($self->compare_output()) {
             ## First write the output to a temporary file
             my($tmp) = "$outdir/MPC$>.$$";
             my($different) = 1;
@@ -3942,7 +3948,6 @@ sub write_output_file {
                 unlink($name);
                 if (rename($tmp, $name)) {
                   $self->post_file_creation($name);
-                  $self->add_file_written($oname);
                 }
                 else {
                   $error = "Unable to open $name for output.";
@@ -3952,7 +3957,6 @@ sub write_output_file {
               else {
                 ## We will pretend that we wrote the file
                 unlink($tmp);
-                $self->add_file_written($oname);
               }
             }
           }
@@ -3964,12 +3968,15 @@ sub write_output_file {
               }
               close($fh);
               $self->post_file_creation($name);
-              $self->add_file_written($oname);
             }
             else {
               $error = "Unable to open $name for output.";
               $status = 0;
             }
+          }
+
+          if ($status) {
+            $self->add_file_written($oname);
           }
         }
       }
@@ -4056,36 +4063,43 @@ sub write_project {
   if ($self->check_features($self->get_assignment('requires'),
                             $self->get_assignment('avoids'),
                             1)) {
-    if ($self->need_to_write_project()) {
-      if ($self->get_assignment('custom_only')) {
-        $self->remove_non_custom_settings();
+    my($webapp) = $self->get_assignment('webapp');
+    if ($webapp || $self->need_to_write_project()) {
+      if ($webapp && !$self->webapp_supported()) {
+        $self->warning("Web Applications are not supported by this type.");
       }
-
-      if ($self->{'escape_spaces'}) {
-        foreach my $name ('exename', 'sharedname', 'staticname',
-                          'exeout', 'dllout', 'libout') {
-          my($value) = $self->get_assignment($name);
-          if (defined $value && $value =~ s/(\s)/\\$1/g) {
-            $self->process_assignment($name, $value);
-          }
+      else {
+        if ($self->get_assignment('custom_only')) {
+          $self->remove_non_custom_settings();
         }
-        foreach my $key (keys %{$self->{'valid_components'}}) {
-          my($names) = $self->{$key};
-          foreach my $name (keys %$names) {
-            foreach my $key (keys %{$$names{$name}}) {
-              foreach my $file (@{$$names{$name}->{$key}}) {
-                $file =~ s/(\s)/\\$1/g;
+
+        if ($self->{'escape_spaces'}) {
+          foreach my $name ('exename', 'sharedname', 'staticname',
+                            'exeout', 'dllout', 'libout') {
+            my($value) = $self->get_assignment($name);
+            if (defined $value && $value =~ s/(\s)/\\$1/g) {
+              $self->process_assignment($name, $value);
+            }
+          }
+          foreach my $key (keys %{$self->{'valid_components'}}) {
+            my($names) = $self->{$key};
+            foreach my $name (keys %$names) {
+              foreach my $key (keys %{$$names{$name}}) {
+                foreach my $file (@{$$names{$name}->{$key}}) {
+                  $file =~ s/(\s)/\\$1/g;
+                }
               }
             }
           }
         }
-      }
 
-      ($status, $error) = $self->write_output_file(
-                                   $self->transform_file_name(
-                                            $self->project_file_name()));
-      if ($self->{'generate_ins'} && $status) {
-        ($status, $error) = $self->write_install_file();
+        ($status, $error) = $self->write_output_file(
+                                     $self->transform_file_name(
+                                              $self->project_file_name()),
+                                     $webapp);
+        if ($self->{'generate_ins'} && $status) {
+          ($status, $error) = $self->write_install_file();
+        }
       }
     }
     else {
@@ -4574,6 +4588,12 @@ sub get_initial_relative_values {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub webapp_supported {
+  #my($self) = shift;
+  return 0;
+}
+
 
 sub use_win_compatibility_commands {
   #my($self) = shift;
