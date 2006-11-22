@@ -44,8 +44,6 @@ STARTUP_LETTER = <%startup_letter%>
 <%endif%>
 STARTUP_OBJ    = c0$(STARTUP_LETTER)32$(UC_MAIN)$(OBJ_EXT)
 
-<%foreach(compilers)%>
-<%fornotlast("!ifdef")%><%forlast("!else #")%> <%uc(compiler)%>
 OBJ_EXT      = <%obj_ext%>
 DLL_EXT      = <%dll_ext%>
 LIB_EXT      = <%lib_ext%>
@@ -60,8 +58,6 @@ LIBFLAGS     = <%libflags%>
 EXEFLAGS     = <%exeflags%>
 WARNFLAGS    = <%warnflags%>
 CCFLAGS      = <%ccflags%><%if(type_is_binary)%> <%binary_compile_flags("-tWR -tWD")%><%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
-<%endfor%>
-!endif
 
 INTERMEDIATE = $(CFG_DIR)$(UNICODE_DIR)<%noextension(project_name)%>
 <%if(exename)%>
