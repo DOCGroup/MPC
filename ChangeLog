@@ -1,3 +1,11 @@
+Wed Nov 22 19:54:01 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/VC8WorkspaceCreator.pm:
+
+          The adjustment of the website project name wasn't correct.  It
+          needed to be the dirname of the project name instead of the
+          basename.
+
 Wed Nov 22 19:34:29 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
