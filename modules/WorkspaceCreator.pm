@@ -86,27 +86,36 @@ sub new {
                                  $into, $language, $use_env, $expandvars,
                                  'workspace');
 
+  ## These need to be reset at the end of each
+  ## workspace processed within a .mwc file
   $self->{'workspace_name'}      = undef;
-  $self->{$self->{'type_check'}} = 0;
   $self->{'projects'}            = [];
   $self->{'project_info'}        = {};
+  $self->{'project_files'}       = [];
+  $self->{'modified_count'}      = 0;
+  $self->{'exclude'}             = {};
+  $self->{'scoped_assign'}       = {};
+  $self->{'webappdirs'}          = [];
+
+  ## These are maintained/modified throughout processing
+  $self->{$self->{'type_check'}} = 0;
+  $self->{'cacheok'}             = 1;
   $self->{'lib_locations'}       = {};
   $self->{'reading_parent'}      = [];
-  $self->{'project_files'}       = [];
-  $self->{'scoped_assign'}       = {};
-  $self->{'cacheok'}             = 1;
-  $self->{'exclude'}             = {};
-  $self->{'wctype'}              = $self->extractType("$self");
-  $self->{'modified_count'}      = 0;
   $self->{'global_feature_file'} = $gfeature;
-  $self->{'coexistence'}         = $makeco;
   $self->{'project_file_list'}   = {};
   $self->{'ordering_cache'}      = {};
   $self->{'handled_scopes'}      = {};
-  $self->{'generate_ins'}        = $genins;
   $self->{'scoped_basedir'}      = undef;
+
+
+  ## These are static throughout processing
+  $self->{'coexistence'}         = $makeco;
   $self->{'generate_dot'}        = $gendot;
+  $self->{'generate_ins'}        = $genins;
   $self->{'verbose_ordering'}    = (defined $ENV{MPC_VERBOSE_ORDERING});
+  $self->{'wctype'}              = $self->extractType("$self");
+
   if ($self->{'verbose_ordering'}) {
     print "NOTE: MPC_VERBOSE_ORDERING is deprecated.  See the USAGE ",
           "file for details.\n";
@@ -118,6 +127,10 @@ sub new {
       $self->{'exclude'}->{$type} = [];
     }
     push(@{$self->{'exclude'}->{$type}}, @$exclude);
+    $self->{'orig_exclude'} = $self->{'exclude'};
+  }
+  else {
+    $self->{'orig_exclude'} = {};
   }
 
   ## Add a hash reference for our workspace type
@@ -174,6 +187,11 @@ sub parse_line {
           ## Generate the project files
           my($gstat, $creator, $err) = $self->generate_project_files();
           if ($gstat) {
+            ## Add in webapp "projects".  If webapps are not supported
+            ## by the workspace type and there is at least one webapp
+            ## directory, a warning will be printed.
+            $self->add_webapps($self->{'webappdirs'});
+
             ($status, $error) = $self->write_workspace($creator, 1);
             $self->{'assign'} = {};
           }
@@ -187,6 +205,9 @@ sub parse_line {
           $self->{'projects'}       = [];
           $self->{'project_info'}   = {};
           $self->{'project_files'}  = [];
+          $self->{'exclude'}        = $self->{'orig_exclude'};
+          $self->{'scoped_assign'}  = {};
+          $self->{'webappdirs'}     = [];
         }
         $self->{$self->{'type_check'}} = 0;
       }
@@ -373,10 +394,17 @@ sub parse_scope {
   my($flags)       = shift;
   my($elseflags)   = shift;
 
+  if ($type eq $self->get_default_component_name()) {
+    $type = $self->{'wctype'};
+  }
+
   if ($name eq 'exclude') {
     return $self->parse_exclude($fh, $type);
   }
   else {
+    if ($name eq 'webapp') {
+      $self->{'inwebapp'} = 1;
+    }
     ## We need to make a copy of the current assignment hash
     ## to ensure that multiply scoped assignments/additions/subtractions
     ## work and contain the non-scoped assignments/additions/subtractions
@@ -389,26 +417,15 @@ sub parse_scope {
   }
 }
 
-sub parse_exclude {
-  my($self)        = shift;
-  my($fh)          = shift;
-  my($typestr)     = shift;
-  my($status)      = 0;
-  my($errorString) = 'Unable to process exclude';
-  my($negated)     = undef;
-
-  if ($typestr eq $self->get_default_component_name()) {
-    $typestr = $self->{'wctype'};
-  }
-
-  my(@exclude) = ();
+sub process_types {
+  my($self)    = shift;
+  my($typestr) = shift;
   my(%types)   = ();
   @types{split(/\s*,\s*/, $typestr)} = ();
 
   ## If there is a negation at all, add our
   ## current type, it may be removed below
   if (index($typestr, '!') >= 0) {
-    $negated = 1;
     $types{$self->{wctype}} = 1;
 
     ## Process negated exclusions
@@ -422,8 +439,20 @@ sub parse_exclude {
       }
     }
   }
+  return \%types;
+}
 
-  if (exists $types{$self->{wctype}}) {
+sub parse_exclude {
+  my($self)        = shift;
+  my($fh)          = shift;
+  my($typestr)     = shift;
+  my($status)      = 0;
+  my($errorString) = 'Unable to process exclude';
+  my($negated)     = (index($typestr, '!') >= 0);
+  my(@exclude)     = ();
+  my($types)       = $self->process_types($typestr);
+
+  if (exists $$types{$self->{wctype}}) {
     while(<$fh>) {
       my($line) = $self->preprocess_line($fh, $_);
 
@@ -459,7 +488,7 @@ sub parse_exclude {
       }
     }
 
-    foreach my $type (keys %types) {
+    foreach my $type (keys %$types) {
       if (!defined $self->{'exclude'}->{$type}) {
         $self->{'exclude'}->{$type} = [];
       }
@@ -535,6 +564,7 @@ sub handle_scoped_end {
     ($status, $error) = $self->handle_scoped_unknown(undef, $type, $flags, '.');
   }
 
+  $self->{'inwebapp'} = undef;
   $self->{'handled_scopes'}->{$type} = undef;
   return $status, $error;
 }
@@ -569,72 +599,86 @@ sub handle_scoped_unknown {
     $line = $self->relative($line);
   }
 
-  if ($type eq $aggregated) {
-    $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
-    my(%dup) = ();
-    @dup{@{$self->{'project_files'}}} = ();
-    $dupchk = \%dup;
-  }
-
-  if (-d $line) {
-    my(@files) = ();
-    $self->search_for_files([ $line ], \@files, $$flags{'implicit'});
-
-    ## If we are generating implicit projects within a scope, then
-    ## we need to remove directories and the parent directories for which
-    ## there is an mpc file.  Otherwise, the projects will be added
-    ## twice.
-    if ($$flags{'implicit'}) {
-      my(%remove) = ();
-      foreach my $file (@files) {
-        if ($file =~ /\.mpc$/) {
-          my($exc) = $file;
-          do {
-            $exc = $self->mpc_dirname($exc);
-            $remove{$exc} = 1;
-          } while($exc ne '.' && $exc !~ /[a-z]:[\/\\]/i);
-        }
+  if ($self->{'inwebapp'}) {
+    my($types) = $self->process_types($type);
+    if (exists $$types{$self->{'wctype'}}) {
+      if (-d $line) {
+        push(@{$self->{'webappdirs'}}, $line);
       }
-
-      my(@acceptable) = ();
-      foreach my $file (@files) {
-        if (!defined $remove{$file}) {
-          push(@acceptable, $file);
-        }
-      }
-      @files = @acceptable;
-    }
-
-    foreach my $file (@files) {
-      if (!$self->excluded($file)) {
-        if (defined $dupchk && exists $$dupchk{$file}) {
-          $self->warning("Duplicate mpc file ($file) added by an " .
-                         'aggregate workspace.  It will be ignored.');
-        }
-        else {
-          $self->{'scoped_assign'}->{$file} = $flags;
-          push(@{$self->{'project_files'}}, $file);
-        }
+      else {
+        $self->warning("Ignoring $line. Only directories may be " .
+                       "listed in a 'webapp' section.");
       }
     }
   }
   else {
-    foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
-                                                 $line) {
-      if ($expfile =~ /\.$wsext$/) {
-        ## An aggregated workspace within an aggregated workspace.
-        ($status, $error) = $self->aggregated_workspace($expfile);
-        last if (!$status);
+    if ($type eq $aggregated) {
+      $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
+      my(%dup) = ();
+      @dup{@{$self->{'project_files'}}} = ();
+      $dupchk = \%dup;
+    }
+
+    if (-d $line) {
+      my(@files) = ();
+      $self->search_for_files([ $line ], \@files, $$flags{'implicit'});
+
+      ## If we are generating implicit projects within a scope, then
+      ## we need to remove directories and the parent directories for which
+      ## there is an mpc file.  Otherwise, the projects will be added
+      ## twice.
+      if ($$flags{'implicit'}) {
+        my(%remove) = ();
+        foreach my $file (@files) {
+          if ($file =~ /\.mpc$/) {
+            my($exc) = $file;
+            do {
+              $exc = $self->mpc_dirname($exc);
+              $remove{$exc} = 1;
+            } while($exc ne '.' && $exc !~ /[a-z]:[\/\\]/i);
+          }
+        }
+
+        my(@acceptable) = ();
+        foreach my $file (@files) {
+          if (!defined $remove{$file}) {
+            push(@acceptable, $file);
+          }
+        }
+        @files = @acceptable;
       }
-      else {
-        if (!$self->excluded($expfile)) {
-          if (defined $dupchk && exists $$dupchk{$expfile}) {
-            $self->warning("Duplicate mpc file ($expfile) added by an " .
+
+      foreach my $file (@files) {
+        if (!$self->excluded($file)) {
+          if (defined $dupchk && exists $$dupchk{$file}) {
+            $self->warning("Duplicate mpc file ($file) added by an " .
                            'aggregate workspace.  It will be ignored.');
           }
           else {
-            $self->{'scoped_assign'}->{$expfile} = $flags;
-            push(@{$self->{'project_files'}}, $expfile);
+            $self->{'scoped_assign'}->{$file} = $flags;
+            push(@{$self->{'project_files'}}, $file);
+          }
+        }
+      }
+    }
+    else {
+      foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
+                                                   $line) {
+        if ($expfile =~ /\.$wsext$/) {
+          ## An aggregated workspace within an aggregated workspace.
+          ($status, $error) = $self->aggregated_workspace($expfile);
+          last if (!$status);
+        }
+        else {
+          if (!$self->excluded($expfile)) {
+            if (defined $dupchk && exists $$dupchk{$expfile}) {
+              $self->warning("Duplicate mpc file ($expfile) added by an " .
+                             'aggregate workspace.  It will be ignored.');
+            }
+            else {
+              $self->{'scoped_assign'}->{$expfile} = $flags;
+              push(@{$self->{'project_files'}}, $expfile);
+            }
           }
         }
       }
@@ -2239,6 +2283,14 @@ sub convert_all_variables {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub add_webapps {
+  my($self)       = shift;
+  my($webappdirs) = shift;
+  if (defined $$webappdirs[0]) {
+    $self->warning("Web Applications are not supported by this type.");
+  }
+}
 
 sub supports_make_coexistence {
   #my($self) = shift;

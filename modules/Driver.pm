@@ -29,6 +29,7 @@ my(@progress) = ('|', '/', '-', '\\');
 my($cmdenv)   = 'MPC_COMMANDLINE';
 
 my(%valid_cfg) = ('command_line'     => 1,
+                  'default_type'     => 1,
                   'dynamic_types'    => 1,
                   'includes'         => 1,
                   'logging'          => 1,
@@ -59,6 +60,30 @@ sub new {
 }
 
 
+sub locate_default_type {
+  my($self) = shift;
+  my($name) = lc(shift) .
+              (index($self->{'creators'}->[0], 'Workspace') > 0 ?
+                             'workspacecreator' : 'projectcreator') .
+              '.pm';
+  my($fh)   = new FileHandle();
+
+  foreach my $dir (@INC) {
+    if (opendir($fh, $dir)) {
+      foreach my $file (readdir($fh)) {
+        if (lc($file) eq $name) {
+          $file =~ s/\.pm$//;
+          return $file;
+        }
+      }
+      closedir($fh);
+    }
+  }
+
+  return undef;
+}
+
+
 sub locate_dynamic_directories {
   my($self)   = shift;
   my($dtypes) = shift;
@@ -66,8 +91,13 @@ sub locate_dynamic_directories {
   if (defined $dtypes) {
     my(@directories) = ();
     foreach my $dir (split(/\s*,\s*/, $dtypes)) {
-      if (-d "$dir/modules" || -d "$dir/config" || -d "$dir/templates") {
-        push(@directories, $dir);
+      if (-d $dir) {
+        if (-d "$dir/modules" || -d "$dir/config" || -d "$dir/templates") {
+          push(@directories, $dir);
+        }
+      }
+      else {
+        $self->warning("$dir does not exist.");
       }
     }
     return \@directories;
@@ -184,6 +214,7 @@ sub determine_cfg_file {
   foreach my $name (@{$cfg->get_names()}) {
     my($value) = $cfg->get_value($name);
     if (index($odir, ($ci ? lc($name) : $name)) == 0) {
+      $self->warning("$value does not exist.") if (!-d $value);
       my($cfgfile) = $value . '/MPC.cfg';
       return $cfgfile if (-e $cfgfile);
     }
@@ -302,10 +333,26 @@ sub run {
 
   ## Set up the default creator, if no type is selected
   if (!defined $options->{'creators'}->[0]) {
+    my($utype) = $cfg->get_value('default_type');
+    if (defined $utype) {
+      my($default) = $self->locate_default_type($utype);
+      if (defined $default) {
+        push(@{$options->{'creators'}}, $default);
+      }
+      else {
+        $self->error("Unable to locate the module that corresponds to " .
+                     "the '$utype' type.");
+        return 1;
+      }
+    }
+  }
+
+  ## If there's still no default, issue a warning
+  if (!defined $options->{'creators'}->[0]) {
     push(@{$options->{'creators'}}, $self->{'default'});
-    $self->warning("In the future, there will no longer be a default " .
-                   "project type.  You should specify one with the " .
-                   "-type option.");
+    $self->warning('In the future, there will no longer be a default ' .
+                   'project type.  You should ' .
+                   'specify one in MPC.cfg or use the -type option.');
   }
 
   if ($options->{'recurse'}) {
