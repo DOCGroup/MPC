@@ -90,6 +90,14 @@
       <SubType><%if(flag_overrides(source_file, subtype))%><%flag_overrides(source_file, subtype)%><%else%>Code<%endif%></SubType>
     </Compile>
 <%endfor%>
+<%foreach(resx_files)%>
+    <EmbeddedResource Include="<%resx_file%>">
+      <DependentUpon><%noextension(resx_file)%>.cs</DependentUpon>
+    </EmbeddedResource>
+<%endfor%>
+<%foreach(aspx_files)%>
+    <Content Include="<%aspx_file%>" />
+<%endfor%>
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
