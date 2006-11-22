@@ -1,3 +1,12 @@
+Wed Nov 22 20:40:58 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+        * templates/vc8csharp.mpd:
+        * templates/vc8vb.mpd:
+
+          Added support for resource files (.resx or .resources) and .aspx
+          files for both csharp and vb for the vc8 project type.
+
 Wed Nov 22 19:54:01 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/VC8WorkspaceCreator.pm:
