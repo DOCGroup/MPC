@@ -1,3 +1,14 @@
+Wed Nov 22 10:34:12 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/BMakeWorkspaceCreator.mpc:
+          Give the workspace a .bmak extension when using make_coexistence and
+          simplified workspace_file_name()
+
+        * templates/bmake.mpd:
+        * templates/bmakecommon.mpt:
+          Removed support for the cbx compiler type which was the preview
+          compiler shipped with CBuilderX.
+
 Thu Nov 16 13:34:26 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
