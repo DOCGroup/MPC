@@ -1,3 +1,29 @@
+Wed Nov 22 13:44:33 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/MPC.sgml:
+        * docs/USAGE:
+        * modules/Driver.pm:
+
+          Added the ability to set the default type in the  MPC
+          configuration file.
+
+        * docs/README:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/VC8WebWorkspaceCreator.pm:
+        * modules/VC8WorkspaceCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Added a new scope keyword, webapp, to allow users to specify web
+          application directories.  Any directory specified within a webapp
+          scope will be considered as a web application directory.
+          Currently only the vc8 project type supports web application
+          directories.
+
+        * modules/ConfigParser.pm:
+
+          Disallow empty names within the base configuration file (i.e.,
+          $VAR that evaluates to empty).
+
 Wed Nov 22 10:34:12 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/BMakeWorkspaceCreator.mpc:

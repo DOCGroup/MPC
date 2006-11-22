@@ -390,7 +390,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><parameter>-type automake | bds | bmake | em3 | ghs | html | make | nmake | sle | vc6 | vc7 | vc71 | vc8 | vc8web</parameter></term>
+        <term><parameter>-type automake | bds | bmake | cc | em3 | ghs | html | make | nmake | sle | vc6 | vc7 | vc71 | vc8 | vc8web</parameter></term>
         <listitem>
           <para>
 	  specifies the type of project file to generate.  This option can
@@ -449,6 +449,15 @@
               provide additional command line options to MPC.  The value of
               this setting will be prepended to the options passed to
               <command>&mwc;</command> or <command>&mpc;</command>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><parameter>default_type</parameter></term>
+            <listitem>
+              <para>
+              provide a single project type (as specified by the -type
+              option) as the default project type
               </para>
             </listitem>
           </varlistentry>

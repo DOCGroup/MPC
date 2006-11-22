@@ -55,7 +55,7 @@ sub parse_line {
 
     ## Store the name value pair
     if (!defined $self->{'valid'}) {
-      $self->{'values'}->{$name} = $value;
+      $self->{'values'}->{$name} = $value if ($name ne '');
     }
     elsif (defined $self->{'valid'}->{lc($name)}) {
       $self->{'values'}->{lc($name)} = $value;

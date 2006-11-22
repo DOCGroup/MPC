@@ -82,6 +82,23 @@ workspace {
   dir3
 }
 
+Workspaces can also contain Web Application directories that are handled
+differently than other directories.  If a directory is listed with a
+'webapp' scope, then they will be considered as Web Application directories
+and processed as such.  Whether anything is done with the Web Application
+directories depends on the project type.  If the project type does not
+support Web Applications, a warning will be printed.
+
+workspace {
+  source
+
+  // Use this directory as a Web Application only when
+  // using the vc8 project type.
+  webapp(vc8) {
+    WebUI
+  }
+}
+
 
 Project Declarations
 --------------------
