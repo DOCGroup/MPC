@@ -55,14 +55,13 @@ sub adjust_names {
   my($lang) = shift;
 
   if ($lang eq 'website') {
-    $proj = $self->mpc_basename($proj);
+    $proj = $self->mpc_dirname($proj);
     $proj =~ s/\.vcproj$//;
     $proj .= '\\';
     $name .= '\\';
   }
-  else {
-    $proj =~ s/\//\\/g; 
-  }
+
+  $proj =~ s/\//\\/g; 
   return $name, $proj;
 }
 
@@ -122,7 +121,8 @@ sub print_inner_project {
     my($references) = undef;
     foreach my $dep (@$deps) {
       if (defined $$name_to_guid_map{$dep}) {
-        $references = 'ProjectReferences = "' if (!defined $references);
+        $references = "\t\t" .
+                      'ProjectReferences = "' if (!defined $references);
         $references .= "{$$name_to_guid_map{$dep}}|$dep;";
       }
     }
