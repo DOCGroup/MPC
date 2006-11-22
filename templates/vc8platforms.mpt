@@ -26,7 +26,7 @@ Pocket PC 2003 (ARMV4) {
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
   platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE $(PLATFORMDEFINES) _WINDOWS _UNICODE UNICODE POCKETPC2003_UI_MODEL
   link_options     = /subsystem:windowsce,4.20 /machine:ARM /ARMPADCODE
-  lit_libs        += ccrtrtti
+  lit_libs        += ccrtrtti iphlpapi
   subsystem        = "0"
   EnableFunctionLevelLinking = "true"
   TargetMachine    = "3"
@@ -37,6 +37,7 @@ Smartphone 2003 (ARMV4) {
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
   platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE $(PLATFORMDEFINES) _WINDOWS _UNICODE UNICODE SMARTPHONE2003_UI_MODEL
   link_options     = /subsystem:windowsce,4.20 /machine:ARM /ARMPADCODE
+  lit_libs        += ccrtrtti iphlpapi
   subsystem        = "0"
   EnableFunctionLevelLinking = "true"
   TargetMachine    = "3"
@@ -47,6 +48,7 @@ Windows Mobile 5.0 Pocket PC SDK (ARMV4I) {
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
   platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE $(PLATFORMDEFINES) _WINDOWS _UNICODE UNICODE POCKETPC2003_UI_MODEL
   link_options     = /subsystem:windowsce,5.01 /machine:THUMB
+  lit_libs        += iphlpapi
   subsystem        = "0"
   TargetMachine    = "3"
 }
@@ -54,7 +56,7 @@ Windows Mobile 5.0 Pocket PC SDK (ARMV4I) {
 Windows Mobile 5.0 Smartphone SDK (ARMV4I) {
   output_subdir    = WinMobile50_Smartphone_ARMV4I
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
-  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE $(PLATFORMDEFINES) _WINDOWS _UNICODE UNICODE SMARTPHONE2003_UI_MODEL
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE $(PLATFORMDEFINES) _WINDOWS _UNICODE UNICODE SMARTPHONE2005_UI_MODEL
   link_options     = /subsystem:windowsce,5.01 /machine:THUMB
   subsystem        = "0"
   TargetMachine    = "3"

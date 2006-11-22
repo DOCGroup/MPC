@@ -1,3 +1,8 @@
+Wed Nov 22 18:07:56 2006  Steve Huston  <shuston@riverace.com>
+
+        * templates/vc8platforms.mpt: Corrected macros and libs for Smartphone
+          WinCE configurations.
+
 Wed Nov 22 20:40:58 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
