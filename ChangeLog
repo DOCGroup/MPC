@@ -1,3 +1,19 @@
+Mon Nov 27 16:58:31 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Convert all output files from custom commands if the project type
+          requires slash conversion.
+
+        * templates/vc7csharp.mpd:
+        * templates/vc7vb.mpd:
+        * templates/vc8csharp.mpd:
+        * templates/vc8vb.mpd:
+
+          Made resource files not dependent upon any particular source file.
+          Also, re-removed the .aspx support in the vc8 templates.  See the
+          modification from Tue Jun 20 12:41:49 UTC 2006.
+
 Wed Nov 22 18:07:56 2006  Steve Huston  <shuston@riverace.com>
 
         * templates/vc8platforms.mpt: Corrected macros and libs for Smartphone
