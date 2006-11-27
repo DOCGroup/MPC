@@ -3684,11 +3684,15 @@ sub get_custom_value {
           }
           if (!$found) {
             push(@outputs, $file);
-            $outputs[$#outputs] =~ s/\//\\/g if ($self->{'convert_slashes'});
           }
         }
       }
 
+      if ($self->{'convert_slashes'}) {
+        foreach my $output (@outputs) {
+          $output =~ s/\//\\/g;
+        }
+      }
       if ($self->{'sort_files'}) {
         @outputs = sort { $self->file_sorter($a, $b) } @outputs;
       }

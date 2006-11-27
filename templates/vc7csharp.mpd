@@ -95,7 +95,6 @@
 <%foreach(resx_files)%>
                         <File
                                 RelPath = "<%resx_file%>"
-                                DependentUpon = "<%noextension(resx_file)%>.cs"
                                 BuildAction = "EmbeddedResource"
                         />
 <%endfor%>
