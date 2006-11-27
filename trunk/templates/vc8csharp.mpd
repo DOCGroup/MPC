@@ -107,12 +107,7 @@
 <%endfor%>
 <%foreach(resx_files)%>
     <EmbeddedResource Include="<%resx_file%>">
-      <DependentUpon><%noextension(resx_file)%>.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
-<%endfor%>
-<%foreach(aspx_files)%>
-    <Content Include="<%aspx_file%>" />
 <%endfor%>
 <%foreach(ico_files)%>
     <Content Include="<%ico_file%>" />

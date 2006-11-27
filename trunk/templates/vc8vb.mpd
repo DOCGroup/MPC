@@ -91,12 +91,7 @@
     </Compile>
 <%endfor%>
 <%foreach(resx_files)%>
-    <EmbeddedResource Include="<%resx_file%>">
-      <DependentUpon><%noextension(resx_file)%>.cs</DependentUpon>
-    </EmbeddedResource>
-<%endfor%>
-<%foreach(aspx_files)%>
-    <Content Include="<%aspx_file%>" />
+    <EmbeddedResource Include="<%resx_file%>" />
 <%endfor%>
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
