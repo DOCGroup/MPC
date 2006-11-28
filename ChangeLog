@@ -1,3 +1,15 @@
+Tue Nov 28 17:37:31 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+        * templates/automake.mpd:
+
+          Added the ability to set 'configurations' (as is done for vc6,
+          vc7, etc.) so that different versions of executables and libraries
+          can be built from the same Makefile.am.  By default, the
+          'configurations' template variable is not set.  Thanks to
+          Friedhelm Wolf <Friedhelm.Wolf at homag dot de> for providing the
+          automake template modifications.
+
 Mon Nov 27 16:58:31 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

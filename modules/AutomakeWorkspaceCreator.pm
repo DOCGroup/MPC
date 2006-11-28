@@ -379,6 +379,23 @@ sub write_comps {
               my $libfile = $libs[$i * 2];
               my $libname = $libs[$i * 2 + 1];
               my $reldir  = $$liblocs{$libname};
+
+              ## If we could not find a relative directory for this
+              ## library, it may be that it is a decorated library name.
+              ## We will search for an approximate match.
+              if (!defined $reldir) {
+                my($tmpname) = $libname;
+                while($tmpname ne '') {
+                  $tmpname = substr($tmpname, 0, length($tmpname) - 1);
+                  if (defined $$liblocs{$tmpname}) {
+                    $reldir = $$liblocs{$tmpname};
+                    $self->warning("Relative directory for $libname " .
+                                   "was approximated with $tmpname.");
+                    last;
+                  }
+                }
+              }
+
               if (defined $reldir) {
                 my($append) = ($reldir eq '' ? '' : "/$reldir");
                 if ("$start$append" ne $here) {
