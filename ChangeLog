@@ -1,3 +1,25 @@
+Wed Nov 29 19:47:15 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/MakeWorkspaceBase.pm:
+        * modules/MakeWorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+
+          Factored much of the common code in these workspace types into a
+          single base module.
+
+        * modules/BDSWorkspaceCreator.pm:
+        * modules/CCWorkspaceCreator.pm:
+        * modules/EM3WorkspaceCreator.pm:
+        * modules/HTMLWorkspaceCreator.pm:
+        * modules/SLEWorkspaceCreator.pm:
+        * modules/VC6WorkspaceCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Factored out the workspace_file_name method into the
+          WorkspaceCreator.
+
 Wed Nov 29 19:07:38 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/MPC.sgml:
