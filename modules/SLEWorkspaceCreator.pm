@@ -29,10 +29,9 @@ sub compare_output {
 }
 
 
-sub workspace_file_name {
-  my($self) = shift;
-  return $self->get_modified_workspace_name($self->get_workspace_name(),
-                                            '.vpw');
+sub workspace_file_extension {
+  #my($self) = shift;
+  return '.vpw';
 }
 
 
