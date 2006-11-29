@@ -1,3 +1,11 @@
+Wed Nov 29 12:52:04 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/automake.mpd:
+
+          Moved the compile_flags portion out of the CPPFLAGS_COMMON section
+          into the specific _CPPFLAGS settings to allow users to put
+          compile_flags settings inside the configuration definitions.
+
 Tue Nov 28 17:37:31 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeWorkspaceCreator.pm:
