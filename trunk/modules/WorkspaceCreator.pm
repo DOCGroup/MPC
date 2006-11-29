@@ -588,11 +588,18 @@ sub handle_scoped_unknown {
     $line = $self->relative($line);
   }
 
-  if ($type eq $aggregated) {
+  if (defined $self->{'scoped_basedir'}) {
     $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
     my(%dup) = ();
     @dup{@{$self->{'project_files'}}} = ();
     $dupchk = \%dup;
+
+    ## If the aggregated workspace contains a scope (other than exclude)
+    ## it will be processed in the block above and we will eventually get
+    ## here, but by that time $type will no longer be $aggregated.  So,
+    ## we just need to set it here to ensure that we don't add everything
+    ## in the scoped_basedir directory in handle_scoped_end()
+    $self->{'handled_scopes'}->{$aggregated} = 1;
   }
 
   if (-d $line) {

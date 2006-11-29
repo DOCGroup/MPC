@@ -1,3 +1,11 @@
+Wed Nov 29 18:18:54 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where an aggregated workspace with scopes (other than
+          exclude) would not be parsed properly.  Thanks to James Hill
+          <hillj@isis.vanderbilt.edu> for bringing this to my attention.
+
 Wed Nov 29 12:52:04 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/automake.mpd:
