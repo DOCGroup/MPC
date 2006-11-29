@@ -390,7 +390,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><parameter>-type automake | bds | bmake | cc | em3 | ghs | html | make | nmake | sle | vc6 | vc7 | vc71 | vc8 | vc8web</parameter></term>
+        <term><parameter>-type automake | bds | bmake | cc | em3 | ghs | html | make | nmake | sle | vc6 | vc7 | vc71 | vc8</parameter></term>
         <listitem>
           <para>
 	  specifies the type of project file to generate.  This option can
