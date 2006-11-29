@@ -23,10 +23,9 @@ use vars qw(@ISA);
 # ************************************************************
 
 
-sub workspace_file_name {
-  my($self) = shift;
-  return $self->get_modified_workspace_name($self->get_workspace_name(),
-                                            '.vcw');
+sub workspace_file_extension {
+  #my($self) = shift;
+  return '.vcw';
 }
 
 
