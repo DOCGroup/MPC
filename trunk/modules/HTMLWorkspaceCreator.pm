@@ -22,10 +22,9 @@ use vars qw(@ISA);
 # Subroutine Section
 # ************************************************************
 
-sub workspace_file_name {
-  my($self) = shift;
-  return $self->get_modified_workspace_name($self->get_workspace_name(),
-                                            '_workspace.html');
+sub workspace_file_extension {
+  #my($self) = shift;
+  return '_workspace.html';
 }
 
 

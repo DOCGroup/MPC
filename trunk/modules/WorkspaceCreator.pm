@@ -2262,6 +2262,13 @@ sub convert_all_variables {
   return 1;
 }
  
+
+sub workspace_file_name {
+  my($self) = shift;
+  return $self->get_modified_workspace_name($self->get_workspace_name(),
+                                            $self->workspace_file_extension());
+}
+
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
@@ -2278,7 +2285,7 @@ sub generate_implicit_project_dependencies {
 }
 
 
-sub workspace_file_name {
+sub workspace_file_extension {
   #my($self) = shift;
   return '';
 }
