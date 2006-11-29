@@ -1,3 +1,15 @@
+Wed Nov 29 19:07:38 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/MPC.sgml:
+        * docs/USAGE:
+        * modules/MPC.pm:
+        * modules/MWC.pm:
+        * modules/VC8WebProjectCreator.pm:
+        * modules/VC8WebWorkspaceCreator.pm:
+
+          Removed the vc8web project type.  It has been replace with the
+          'webapp' project keyword in combination with the vc8 projec type.
+
 Wed Nov 29 18:18:54 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WorkspaceCreator.pm:
