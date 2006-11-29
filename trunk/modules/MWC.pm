@@ -25,7 +25,6 @@ sub new {
                                       'VC7WorkspaceCreator',
                                       'VC71WorkspaceCreator',
                                       'VC8WorkspaceCreator',
-                                      'VC8WebWorkspaceCreator',
                                       'BDSWorkspaceCreator',
                                       'GHSWorkspaceCreator',
                                       'EM3WorkspaceCreator',
