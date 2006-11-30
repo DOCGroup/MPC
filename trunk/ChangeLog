@@ -1,3 +1,12 @@
+Thu Nov 30 15:31:55 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed bugs where nested scopes and nested workspace aggregation
+          would either not use workspace assignments or not have the right
+          workspace assignments.  Thanks to James Hill
+          <hillj@isis.vanderbilt.edu> for pointing this out.
+
 Wed Nov 29 19:47:15 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/BMakeWorkspaceCreator.pm:
