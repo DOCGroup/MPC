@@ -171,6 +171,7 @@ sub parse_line {
   my($self)   = shift;
   my($ih)     = shift;
   my($line)   = shift;
+  my($flags)  = shift;
   my($status, $error, @values) = $self->parse_known($line);
 
   ## Was the line recognized?
@@ -257,7 +258,7 @@ sub parse_line {
     }
     elsif ($values[0] eq '0') {
       if (defined $validNames{$values[1]}) {
-        $self->process_assignment($values[1], $values[2]);
+        $self->process_assignment($values[1], $values[2], $flags);
       }
       else {
         $error = "Invalid assignment name: '$values[1]'";
@@ -266,7 +267,7 @@ sub parse_line {
     }
     elsif ($values[0] eq '1') {
       if (defined $validNames{$values[1]}) {
-        $self->process_assignment_add($values[1], $values[2]);
+        $self->process_assignment_add($values[1], $values[2], $flags);
       }
       else {
         $error = "Invalid addition name: $values[1]";
@@ -275,7 +276,7 @@ sub parse_line {
     }
     elsif ($values[0] eq '-1') {
       if (defined $validNames{$values[1]}) {
-        $self->process_assignment_sub($values[1], $values[2]);
+        $self->process_assignment_sub($values[1], $values[2], $flags);
       }
       else {
         $error = "Invalid subtraction name: $values[1]";
@@ -283,10 +284,12 @@ sub parse_line {
       }
     }
     elsif ($values[0] eq 'component') {
+      my(%copy) = %{defined $flags ? $flags : $self->get_assignment_hash()};
       ($status, $error) = $self->parse_scope($ih,
                                              $values[1],
                                              $values[2],
-                                             \%validNames);
+                                             \%validNames,
+                                             \%copy);
     }
     else {
       $error = "Unrecognized line: $line";
@@ -300,7 +303,8 @@ sub parse_line {
     foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
                                                  $line) {
       if ($expfile =~ /\.$wsext$/) {
-        ($status, $error) = $self->aggregated_workspace($expfile);
+        my(%copy) = %{defined $flags ? $flags : $self->get_assignment_hash()};
+        ($status, $error) = $self->aggregated_workspace($expfile, \%copy);
         last if (!$status);
       }
       else {
@@ -315,9 +319,10 @@ sub parse_line {
 
 
 sub aggregated_workspace {
-  my($self) = shift;
-  my($file) = shift;
-  my($fh)   = new FileHandle();
+  my($self)  = shift;
+  my($file)  = shift;
+  my($flags) = shift;
+  my($fh)    = new FileHandle();
 
   if (open($fh, $file)) {
     my($oline) = $self->get_line_number();
@@ -350,7 +355,8 @@ sub aggregated_workspace {
               ($status, $error) = $self->parse_scope($fh,
                                                      '',
                                                      $aggregated,
-                                                     \%validNames);
+                                                     \%validNames,
+                                                     $flags);
             }
           }
           else {
@@ -392,16 +398,9 @@ sub parse_scope {
   }
 
   if ($name eq 'exclude') {
-    return $self->parse_exclude($fh, $type);
+    return $self->parse_exclude($fh, $type, $flags);
   }
   else {
-    ## We need to make a copy of the current assignment hash
-    ## to ensure that multiply scoped assignments/additions/subtractions
-    ## work and contain the non-scoped assignments/additions/subtractions
-    if (!defined $flags) {
-      my(%copy) = %{$self->get_assignment_hash()};
-      $flags = \%copy;
-    }
     return $self->SUPER::parse_scope($fh, $name, $type,
                                      $validNames, $flags, $elseflags);
   }
@@ -436,11 +435,13 @@ sub parse_exclude {
   my($self)        = shift;
   my($fh)          = shift;
   my($typestr)     = shift;
+  my($flags)       = shift;
   my($status)      = 0;
   my($errorString) = 'Unable to process exclude';
   my($negated)     = (index($typestr, '!') >= 0);
   my(@exclude)     = ();
   my($types)       = $self->process_types($typestr);
+  my($count)       = 1;
 
   if (exists $$types{$self->{wctype}}) {
     while(<$fh>) {
@@ -449,6 +450,7 @@ sub parse_exclude {
       if ($line eq '') {
       }
       elsif ($line =~ /^}(.*)$/) {
+        --$count;
         if (defined $1 && $1 ne '') {
           $status = 0;
           $errorString = "Trailing characters found: '$1'";
@@ -457,23 +459,31 @@ sub parse_exclude {
           $status = 1;
           $errorString = undef;
         }
-        last;
+        last if ($count == 0);
       }
       else {
-        if ($line =~ /^"([^"]+)"$/) {
-          $line = $1;
+        if ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
+          ++$count;
         }
-        if (index($line, '$') >= 0) {
-          $line = $self->relative($line);
-        }
-        if (defined $self->{'scoped_basedir'}) {
-          $line = $self->{'scoped_basedir'} . '/' . $line;
-        }
-        if ($line =~ /[\?\*\[\]]/) {
-          push(@exclude, $self->mpc_glob($line));
+        elsif ($self->parse_assignment($line, [])) {
+          ## Ignore all assignments
         }
         else {
-          push(@exclude, $line);
+          if ($line =~ /^"([^"]+)"$/) {
+            $line = $1;
+          }
+          if (index($line, '$') >= 0) {
+            $line = $self->relative($line);
+          }
+          if (defined $self->{'scoped_basedir'}) {
+            $line = $self->{'scoped_basedir'} . '/' . $line;
+          }
+          if ($line =~ /[\?\*\[\]]/) {
+            push(@exclude, $self->mpc_glob($line));
+          }
+          else {
+            push(@exclude, $line);
+          }
         }
       }
     }
@@ -490,7 +500,8 @@ sub parse_exclude {
       ($status, $errorString) = $self->SUPER::parse_scope($fh,
                                                           'exclude',
                                                           $typestr,
-                                                          \%validNames);
+                                                          \%validNames,
+                                                          $flags);
     }
     else {
       ## If this exclude block didn't match the current type and the
@@ -499,7 +510,11 @@ sub parse_exclude {
       while(<$fh>) {
         my($line) = $self->preprocess_line($fh, $_);
 
-        if ($line =~ /^}(.*)$/) {
+        if ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
+          ++$count;
+        }
+        elsif ($line =~ /^}(.*)$/) {
+          --$count;
           if (defined $1 && $1 ne '') {
             $status = 0;
             $errorString = "Trailing characters found: '$1'";
@@ -508,7 +523,7 @@ sub parse_exclude {
             $status = 1;
             $errorString = undef;
           }
-          last;
+          last if ($count == 0);
         }
       }
     }
@@ -574,7 +589,7 @@ sub handle_scoped_unknown {
       my(@values) = ();
       my($tc) = $self->{$self->{'type_check'}};
       $self->{$self->{'type_check'}} = 1;
-      ($status, $error, @values) = $self->parse_line($fh, $line);
+      ($status, $error, @values) = $self->parse_line($fh, $line, $flags);
       $self->{$self->{'type_check'}} = $tc;
     }
     else {
@@ -648,8 +663,8 @@ sub handle_scoped_unknown {
     foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
                                                  $line) {
       if ($expfile =~ /\.$wsext$/) {
-        ## An aggregated workspace within an aggregated workspace.
-        ($status, $error) = $self->aggregated_workspace($expfile);
+        ## An aggregated workspace within an aggregated workspace or scope.
+        ($status, $error) = $self->aggregated_workspace($expfile, $flags);
         last if (!$status);
       }
       else {
