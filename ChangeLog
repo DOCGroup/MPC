@@ -1,3 +1,16 @@
+Mon Dec  4 16:02:43 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Driver.pm:
+
+          If no MPC.cfg exists in MPC/config, search the config path from
+          the starting point for mwc.pl (e.g., $ACE_ROOT/bin/mwc.pl).  This
+          precludes the removal of $ACE_ROOT/bin/mwc.pl.
+
+        * config/base.cfg:
+
+          Removed this file.  It is no longer necessary to provide the
+          search paths for ACE related projects.
+
 Mon Dec  4 15:08:19 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/base.cfg:
