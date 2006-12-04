@@ -248,9 +248,10 @@ sub run {
   }
 
   ## If no MPC config file was found and
-  ## there is one in $MPC_ROOT/config, we will use that.
+  ## there is one in the config directory, we will use that.
   if (!defined $cfgfile) {
     $cfgfile = $self->{'basepath'} . '/config/MPC.cfg';
+    $cfgfile = $self->{'path'} . '/config/MPC.cfg' if (!-e $cfgfile);
     $cfgfile = undef if (!-e $cfgfile);
   }
 
