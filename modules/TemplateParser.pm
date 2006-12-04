@@ -1591,7 +1591,8 @@ sub prepare_parameters {
       for(my $i = 0; $i < $size; ++$i) {
         my($fo) = $self->get_flag_overrides($prefix . '->input_file, gendir');
         if (defined $fo) {
-          $$output[$i] = $fo . '/' . $self->tp_basename($$output[$i]);
+          $$output[$i] = ($fo eq '.' ? '' : $fo . '/') .
+                         $self->tp_basename($$output[$i]);
         }
         $$output[$i] =~ s/\//\\/g if ($self->{'cslashes'});
       }
