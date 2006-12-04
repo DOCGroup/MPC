@@ -2186,7 +2186,7 @@ sub add_generated_files {
                   foreach my $ofile (@{$self->{$vc}->{$name}->{$ckey}}) {
                     my($file) = $ofile;
                     foreach my $regext (@{$self->{'valid_components'}->{$vc}}) {
-                      if ($file =~ s/$regext//) {
+                      if ($file =~ s/$regext$//) {
                         last;
                       }
                     }
@@ -2890,7 +2890,8 @@ sub prepend_gendir {
           if (defined $dir) {
             ## Convert the file to unix style for basename
             $created =~ s/\\/\//g;
-            return "$dir/" . $self->mpc_basename($created);
+            return ($dir eq '.' ? '' : "$dir/") .
+                   $self->mpc_basename($created);
           }
         }
       }
@@ -2941,9 +2942,12 @@ sub list_generated_file {
     ## length of the basename $file because they couldn't possibly match if
     ## they weren't.
     if (length($self->mpc_basename($gen)) <= $blen) {
+      my($needs_dot) = (index($file, '.') == -1);
       foreach my $created ($self->generated_filenames($gen, $gentype,
                                                       $tag, $input)) {
-        if (index($created, $file) != -1) {
+        if (index($created,
+                  $file . ($needs_dot &&
+                           index($created, '.') != -1 ? '.' : '')) != -1) {
           if (defined $ofile) {
             $created = $self->prepend_gendir($created, $ofile, $gentype);
           }
