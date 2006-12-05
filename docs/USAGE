@@ -77,7 +77,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        for the specific type (ex. -ti dll_exe:vc8exe).
        -type           Specifies the type of project file to generate.  This
                        option can be used multiple times to generate multiple
-                       types.  If -type is not used, it defaults to 'make'.
+                       types.  There is no longer a default.
        -use_env        Use environment variables for all uses of $() instead
                        of the relative replacement values.
        -value_project  This option allows modification of a project variable

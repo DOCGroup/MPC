@@ -1,3 +1,18 @@
+Tue Dec  5 03:29:14 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/MPC.sgml:
+        * docs/USAGE:
+        * modules/Driver.pm:
+        * modules/MPC.pm:
+        * modules/MWC.pm:
+        * modules/Options.pm:
+        * mpc.pl:
+        * mwc.pl:
+
+          Removed the default project type and simplified the addition of
+          new project/workspace creators.  Now, you must specify a type on
+          the command line or a default type in the MPC.cfg.
+
 Mon Dec  4 16:02:43 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Driver.pm:

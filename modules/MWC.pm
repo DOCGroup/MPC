@@ -1,7 +1,8 @@
 package MWC;
 
 # ******************************************************************
-# Description : Instantiate a Driver and run it
+# Description : Instantiate a Driver and run it.  This is here to
+#               maintain backward compatibility.
 # Author      : Chad Elliott
 # Create Date : 1/30/2004
 # ******************************************************************
@@ -19,21 +20,7 @@ use Driver;
 
 sub new {
   my($class) = shift;
-  my($self)  = bless {'creators' => [ 'MakeWorkspaceCreator',
-                                      'NMakeWorkspaceCreator',
-                                      'VC6WorkspaceCreator',
-                                      'VC7WorkspaceCreator',
-                                      'VC71WorkspaceCreator',
-                                      'VC8WorkspaceCreator',
-                                      'BDSWorkspaceCreator',
-                                      'GHSWorkspaceCreator',
-                                      'EM3WorkspaceCreator',
-                                      'AutomakeWorkspaceCreator',
-                                      'BMakeWorkspaceCreator',
-                                      'HTMLWorkspaceCreator',
-                                      'SLEWorkspaceCreator',
-                                      'CCWorkspaceCreator',
-                                    ],
+  my($self)  = bless {'creators' => [],
                      }, $class;
   return $self;
 }

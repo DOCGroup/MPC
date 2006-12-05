@@ -52,7 +52,6 @@ sub new {
   $self->{'name'}     = $name;
   $self->{'types'}    = {};
   $self->{'creators'} = \@creators;
-  $self->{'default'}  = $creators[0];
   $self->{'reldefs'}  = {};
   $self->{'relorder'} = [];
 
@@ -63,7 +62,7 @@ sub new {
 sub locate_default_type {
   my($self) = shift;
   my($name) = lc(shift) .
-              (index($self->{'creators'}->[0], 'Workspace') > 0 ?
+              (lc($self->{'name'}) eq 'mwc.pl' ?
                              'workspacecreator' : 'projectcreator') .
               '.pm';
   my($fh)   = new FileHandle();
@@ -110,14 +109,14 @@ sub locate_dynamic_directories {
 sub add_dynamic_creators {
   my($self) = shift;
   my($dirs) = shift;
-  my($type) = (index($self->{'creators'}->[0], 'Workspace') > 0 ?
+  my($type) = (lc($self->{'name'}) eq 'mwc.pl' ?
                              'WorkspaceCreator' : 'ProjectCreator');
   foreach my $dir (@$dirs) {
     my($fh) = new FileHandle();
     if (opendir($fh, "$dir/modules")) {
       foreach my $file (readdir($fh)) {
         if ($file =~ /(.+$type)\.pm$/i) {
-          $self->debug("Pulling in $1\n");
+          $self->debug("Pulling in $1");
           push(@{$self->{'creators'}}, $1);
         }
       }
@@ -183,7 +182,6 @@ sub optionError {
   my($line) = shift;
 
   $self->printUsage($line, $self->{'name'}, Version::get(),
-                    $self->extractType($self->{'default'}),
                     keys %{$self->{'types'}});
   exit(0);
 }
@@ -250,14 +248,17 @@ sub run {
   ## If no MPC config file was found and
   ## there is one in the config directory, we will use that.
   if (!defined $cfgfile) {
-    $cfgfile = $self->{'basepath'} . '/config/MPC.cfg';
-    $cfgfile = $self->{'path'} . '/config/MPC.cfg' if (!-e $cfgfile);
+    $cfgfile = $self->{'path'} . '/config/MPC.cfg';
+    $cfgfile = $self->{'basepath'} . '/config/MPC.cfg' if (!-e $cfgfile);
     $cfgfile = undef if (!-e $cfgfile);
   }
 
   ## Read the MPC config file
   my($cfg) = new ConfigParser(\%valid_cfg);
   if (defined $cfgfile) {
+    my($ellipses) = $cfgfile;
+    $ellipses =~ s!.*(/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+)!...$1!;
+    $self->diagnostic("Using $ellipses");
     my($status, $error) = $cfg->read_file($cfgfile);
     if (!$status) {
       $self->error("$error at line " . $cfg->get_line_number() .
@@ -284,6 +285,9 @@ sub run {
                      '-include', "$dynpath/templates");
     }
   }
+
+  ## Add in the creators found in the main MPC/modules directory
+  $self->add_dynamic_creators([$self->{'basepath'}]);
 
   ## Dynamically load in each perl module and set up
   ## the type tags and project creators
@@ -348,12 +352,26 @@ sub run {
     }
   }
 
-  ## If there's still no default, issue a warning
+  ## Set up the default creator, if no type is selected
   if (!defined $options->{'creators'}->[0]) {
-    push(@{$options->{'creators'}}, $self->{'default'});
-    $self->warning('In the future, there will no longer be a default ' .
-                   'project type.  You should ' .
-                   'specify one in MPC.cfg or use the -type option.');
+    my($utype) = $cfg->get_value('default_type');
+    if (defined $utype) {
+      my($default) = $self->locate_default_type($utype);
+      if (defined $default) {
+        push(@{$options->{'creators'}}, $default);
+      }
+      else {
+        $self->error("Unable to locate the module that corresponds to " .
+                     "the '$utype' type.");                              
+        return 1;
+      }
+    }
+  }
+
+  ## If there's still no default, issue an error
+  if (!defined $options->{'creators'}->[0]) {
+    $self->error('There is no longer a default project type.  Please ' .
+                 'specify one in MPC.cfg or use the -type option.');
   }
 
   if ($options->{'recurse'}) {
@@ -390,14 +408,12 @@ sub run {
   ## Add the default include paths.  If the user has used the dynamic
   ## types method of adding types to MPC, we need to push the paths
   ## on.  Otherwise, we unshift them onto the front.
-  if ($self->{'path'} eq $self->{'basepath'}) {
-    push(@{$options->{'include'}}, $self->{'path'} . '/config',
-                                   $self->{'path'} . '/templates');
-  }
-  else {
+  if ($self->{'path'} ne $self->{'basepath'}) {
     unshift(@{$options->{'include'}}, $self->{'path'} . '/config',
                                       $self->{'path'} . '/templates');
   }
+  push(@{$options->{'include'}}, $self->{'basepath'} . '/config',
+                                 $self->{'basepath'} . '/templates');
 
   ## All includes (except the current directory) have been added by this time
   $self->debug("INCLUDES: @{$options->{'include'}}");

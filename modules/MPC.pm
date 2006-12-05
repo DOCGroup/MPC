@@ -1,7 +1,8 @@
 package MPC;
 
 # ******************************************************************
-# Description : Instantiate a Driver and run it
+# Description : Instantiate a Driver and run it.  This is here to
+#               maintain backward compatibility.
 # Author      : Chad Elliott
 # Create Date : 1/30/2004
 # ******************************************************************
@@ -19,21 +20,7 @@ use Driver;
 
 sub new {
   my($class) = shift;
-  my($self)  = bless {'creators' => [ 'MakeProjectCreator',
-                                      'NMakeProjectCreator',
-                                      'VC6ProjectCreator',
-                                      'VC7ProjectCreator',
-                                      'VC71ProjectCreator',
-                                      'VC8ProjectCreator',
-                                      'BDSProjectCreator',
-                                      'GHSProjectCreator',
-                                      'EM3ProjectCreator',
-                                      'AutomakeProjectCreator',
-                                      'BMakeProjectCreator',
-                                      'HTMLProjectCreator',
-                                      'SLEProjectCreator',
-                                      'CCProjectCreator',
-                                    ],
+  my($self)  = bless {'creators' => [],
                      }, $class;
   return $self;
 }
