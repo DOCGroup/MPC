@@ -26,7 +26,7 @@ if ($^O eq 'VMS') {
 }
 unshift(@INC, $basePath . '/modules');
 
-require MPC;
+require Driver;
 
 # ************************************************************
 # Subroutine Section
@@ -40,5 +40,5 @@ sub getBasePath {
 # Main Section
 # ************************************************************
 
-my($driver) = new MPC();
-exit($driver->execute($basePath, basename($0), \@ARGV));
+my($driver) = new Driver($basePath, basename($0));
+exit($driver->run(@ARGV));

@@ -36,7 +36,6 @@ sub printUsage {
   my($msg)     = shift;
   my($base)    = shift;
   my($version) = shift;
-  my($default) = shift;
   my(@types)   = @_;
 
   if (defined $msg) {
@@ -149,7 +148,7 @@ sub printUsage {
 "                       for the specific type (ex. -ti dll_exe:vc8exe).\n" .
 "       -type           Specifies the type of project file to generate.  This\n" .
 "                       option can be used multiple times to generate multiple\n" .
-"                       types.  If -type is not used, it defaults to '$default'.\n" .
+"                       types.  There is no longer a default.\n" .
 "       -use_env        Use environment variables for all uses of \$() instead\n" .
 "                       of the relative replacement values.\n" .
 "       -value_project  This option allows modification of a project variable\n" .
