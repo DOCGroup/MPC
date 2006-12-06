@@ -126,7 +126,8 @@ my(@default_matching_assignments) = ('recurse',
 
 ## These matching assingment arrays will get added, but only to the
 ## specific project component types.
-my(%default_matching_assignments) = ('source_files' => ['buildflags'],
+my(%default_matching_assignments) = ('source_files' => ['buildflags',
+                                                        'no_pch'],
                                     );
 
 ## Deal with these components in a special way
