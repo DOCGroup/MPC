@@ -535,19 +535,28 @@
 <%if(flag_overrides(grouped_source_file->file, buildflags))%>
 						AdditionalOptions="<%flag_overrides(grouped_source_file->file, buildflags)%>"
 <%endif%>
+<%if(flag_overrides(grouped_source_file->file, no_pch))%>
+						UsePrecompiledHeader="0"
+<%endif%>
 						ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(grouped_source_file->file)%>.obj"/>
 				</FileConfiguration>
 <%endfor%>
 <%endfor%>
 <%else%>
-<%if(flag_overrides(grouped_source_file->file, buildflags))%>
+<%if(flag_overrides(grouped_source_file->file, buildflags) || flag_overrides(grouped_source_file->file, no_pch))%>
 <%foreach(platforms)%>
 <%foreach(configurations)%>
 				<FileConfiguration
 					Name="<%configuration%>|<%platform%>">
 					<Tool
 						Name="VCCLCompilerTool"
-						AdditionalOptions="<%flag_overrides(grouped_source_file->file, buildflags)%>"/>
+<%if(flag_overrides(grouped_source_file->file, buildflags))%>
+						AdditionalOptions="<%flag_overrides(grouped_source_file->file, buildflags)%>"
+<%endif%>
+<%if(flag_overrides(grouped_source_file->file, no_pch))%>
+						UsePrecompiledHeader="0"
+<%endif%>
+					/>
 				</FileConfiguration>
 <%endfor%>
 <%endfor%>
@@ -572,19 +581,28 @@
 <%if(flag_overrides(grouped_source_file->file, buildflags))%>
 							AdditionalOptions="<%flag_overrides(grouped_source_file->file, buildflags)%>"
 <%endif%>
+<%if(flag_overrides(grouped_source_file->file, no_pch))%>
+							UsePrecompiledHeader="0"
+<%endif%>
 							ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(grouped_source_file->file)%>.obj"/>
 					</FileConfiguration>
 <%endfor%>
 <%endfor%>
 <%else%>
-<%if(flag_overrides(grouped_source_file->file, buildflags))%>
+<%if(flag_overrides(grouped_source_file->file, buildflags) || flag_overrides(grouped_source_file->file, no_pch))%>
 <%foreach(platforms)%>
 <%foreach(configurations)%>
 					<FileConfiguration
 						Name="<%configuration%>|<%platform%>">
 						<Tool
 							Name="VCCLCompilerTool"
-							AdditionalOptions="<%flag_overrides(grouped_source_file->file, buildflags)%>"/>
+<%if(flag_overrides(grouped_source_file->file, buildflags))%>
+							AdditionalOptions="<%flag_overrides(grouped_source_file->file, buildflags)%>"
+<%endif%>
+<%if(flag_overrides(grouped_source_file->file, no_pch))%>
+							UsePrecompiledHeader="0"
+<%endif%>
+						/>
 					</FileConfiguration>
 <%endfor%>
 <%endfor%>
@@ -609,19 +627,28 @@
 <%if(flag_overrides(source_file, buildflags))%>
 							AdditionalOptions="<%flag_overrides(source_file, buildflags)%>"
 <%endif%>
+<%if(flag_overrides(source_file, no_pch))%>
+							UsePrecompiledHeader="0"
+<%endif%>
 							ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(source_file)%>.obj"/>
 					</FileConfiguration>
 <%endfor%>
 <%endfor%>
 <%else%>
-<%if(flag_overrides(source_file, buildflags))%>
+<%if(flag_overrides(source_file, buildflags) || flag_overrides(source_file, no_pch))%>
 <%foreach(platforms)%>
 <%foreach(configurations)%>
 					<FileConfiguration
 						Name="<%configuration%>|<%platform%>">
 						<Tool
 							Name="VCCLCompilerTool"
-							AdditionalOptions="<%flag_overrides(source_file, buildflags)%>"/>
+<%if(flag_overrides(source_file, buildflags))%>
+							AdditionalOptions="<%flag_overrides(source_file, buildflags)%>"
+<%endif%>
+<%if(flag_overrides(source_file, no_pch))%>
+							UsePrecompiledHeader="0"
+<%endif%>
+						/>
 					</FileConfiguration>
 <%endfor%>
 <%endfor%>

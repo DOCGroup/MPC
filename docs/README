@@ -158,6 +158,10 @@ dllout          If defined, specifies where the dynamic libraries will be
 libout          Specifies where the dynamic and static libraries will be placed
 exeout          Specifies where executables will be placed (Previously known
                 as install)
+no_pch          This keyword can only be used as a source component scoped
+                setting (ie. inside the scope of Source_Files).  It
+                specifies that precompiled headers should not be used for
+                the source files listed within the scope of it's setting.
 pch_header      Specifies the precompiled header file name
 pch_source      Specifies the precompiled source file name
 postbuild       If this is defined in the project, the value will be
