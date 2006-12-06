@@ -1,3 +1,17 @@
+Wed Dec  6 18:08:49 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+        * templates/em3.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Added a new source component level setting, no_pch.  When set, it
+          specifies that precompiled headers should not be used for the
+          source files listed within the scope of it's setting.
+
 Tue Dec  5 03:29:14 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/MPC.sgml:
