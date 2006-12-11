@@ -2618,10 +2618,34 @@ sub correct_generated_files {
               }
             }
             if (!$found) {
-              my($ext) = $$exts[0];
-              foreach my $file (@files) {
-                if ($file =~ /$ext$/) {
-                  push(@front, $file);
+              ## The first file listed in @files is the preferred
+              ## extension for the custom command.  Take the first
+              ## file extension and see if it matches one in the accepted
+              ## extensions.
+              if (defined $files[0]) {
+                my($ext) = undef;
+                if ($files[0] =~ /.*(\.[^\.]+)$/) {
+                  $ext = $self->escape_regex_special($1);
+                }
+                if (defined $ext) {
+                  my($efound) = undef;
+                  foreach my $possible (@$exts) {
+                    if ($ext eq $possible) {
+                      $efound = 1;
+                      last;
+                    }
+                  }
+                  ## If it doesn't match one of the accepted extensions,
+                  ## then just use the first extension from the type for
+                  ## which we are generating.
+                  $ext = $$exts[0] if (!$efound);
+                }
+
+                ## Add all the files that match the chosen extension
+                foreach my $file (@files) {
+                  if ($file =~ /$ext$/) {
+                    push(@front, $file);
+                  }
                 }
               }
             }

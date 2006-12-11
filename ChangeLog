@@ -1,3 +1,16 @@
+Mon Dec 11 19:36:13 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/yacc.mpb:
+
+          Fixed the postcommand for the custom rule so that both source and
+          header file are created correctly.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where defaults source files for custom definitions may
+          result in incorrect file addition if the generated source file is
+          not the default extension (.cpp).
+
 Wed Dec  6 18:08:49 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
