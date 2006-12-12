@@ -32,15 +32,9 @@ my($details)     = 1;
 # ************************************************************
 
 sub new {
-  my($class)  = shift;
-  my($params) = shift;
-  my($self)   = bless {
-                      }, $class;
-
-  if (defined $params) {
-    ($debug, $information, $warnings, $diagnostic, $details) = @$params;
-  }
-  return $self;
+  my($class) = shift;
+  return bless {
+               }, $class;
 }
 
 

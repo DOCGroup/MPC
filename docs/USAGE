@@ -285,25 +285,3 @@ MPC_GHS_UNIX - This environment variable is only meaningful when generating
 the ghs project files.  By default, the ghs type assumes that it is for
 Windows.  If this is not the case, set this environment variable prior to
 running MPC.
-
-The following environment variables are deprecated
-and will be removed in a future version of MPC
---------------------------------------------------
-
-MPC_COMMANDLINE - The value of this environment variable will be prepended
-to the options passed to mwc.pl or mpc.pl (if any are passed).
-
-MPC_VERBOSE_ORDERING - If this is set, mwc.pl will warn the user about
-references to projects in the 'after' keyword that have not been processed.
-
-MPC_SILENT - If this is set, MPC will not print out any information or
-warnings when processing projects or workspaces.  Errors are always printed
-if any are encountered.
-
-MPC_LOGGING - If this is set, MPC will parse the value and provide
-informational, warning, diagnostic and detail messages depending on it's
-setting.  If the MPC_LOGGING value contains info=1, informational messages
-will be printed.  If it contains warn=1, warning messages will be printed.
-If it contains diag=1, diagnostic messages will be printed.
-And lastly, if it contains detail=1, detail messages will be printed.  If it
-contains none of these, MPC will act as if MPC_SILENT was set.
