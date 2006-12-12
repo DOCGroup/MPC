@@ -1,3 +1,12 @@
+Tue Dec 12 14:32:51 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+        * templates/vc8csharp.mpd:
+
+          Added three new C# specific scoped keywords (dependent_upon,
+          generates_source and subtype).  See docs/README for more details.
+
 Mon Dec 11 19:36:13 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/yacc.mpb:
