@@ -26,7 +26,6 @@ use vars qw(@ISA);
 
 my($index)    = 0;
 my(@progress) = ('|', '/', '-', '\\');
-my($cmdenv)   = 'MPC_COMMANDLINE';
 
 my(%valid_cfg) = ('command_line'     => 1,
                   'default_type'     => 1,
@@ -297,15 +296,9 @@ sub run {
     $self->{'types'}->{$tag} = $creator;
   }
 
-  ## Before we process the arguments, we will prepend the $cmdenv
-  ## environment variable.
+  ## Before we process the arguments, we will prepend the command_line
+  ## config variable.
   my($cmd) = $cfg->get_value('command_line');
-  if (!defined $cmd) {
-    $cmd = $ENV{$cmdenv};
-    if (defined $cmd) {
-      print "NOTE: $cmdenv is deprecated.  See the USAGE file for details.\n";
-    }
-  }
   if (defined $cmd) {
     my($envargs) = $self->create_array($cmd);
     unshift(@args, @$envargs);
