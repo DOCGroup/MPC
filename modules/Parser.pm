@@ -25,8 +25,6 @@ use vars qw(@ISA);
 # ************************************************************
 
 my(%filecache) = ();
-my($silent)    = 'MPC_SILENT';
-my($logging)   = 'MPC_LOGGING';
 
 # ************************************************************
 # Subroutine Section
@@ -35,18 +33,7 @@ my($logging)   = 'MPC_LOGGING';
 sub new {
   my($class) = shift;
   my($inc)   = shift;
-
-  ## The order of these array variables must correspond to the
-  ## order of the parameters to OutputMessage::new().
-  my($params) = (defined $ENV{$silent} ? [0, 0, 0, 0, 0] : undef);
-  if (defined $params) {
-    print "NOTE: $silent is deprecated.  See the USAGE file for details.\n";
-  }
-  my($self)  = $class->SUPER::new($params);
-  if (defined $ENV{$logging}) {
-    print "NOTE: $logging is deprecated.  See the USAGE file for details.\n";
-    OutputMessage::set_levels($ENV{$logging});
-  }
+  my($self)  = $class->SUPER::new();
 
   $self->{'line_number'} = 0;
   $self->{'include'}     = $inc;

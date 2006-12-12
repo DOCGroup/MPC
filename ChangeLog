@@ -1,3 +1,16 @@
+Tue Dec 12 19:46:17 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/MPC.sgml:
+        * docs/USAGE:
+        * modules/Driver.pm:
+        * modules/OutputMessage.pm:
+        * modules/Parser.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Removed deprecated environment variables.  All functionality
+          provided by the environment variables was moved into the MPC
+          configuration file long ago.
+
 Tue Dec 12 14:32:51 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:

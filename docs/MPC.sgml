@@ -547,67 +547,6 @@
           </varlistentry>
         </variablelist>
       </para>
-      <para>
-        The following environment variables could affect
-        <command>&mwc;</command> and <command>&mpc;</command>.  It should
-        be noted that they are deprecated and will be removed in a future
-        version of MPC:
-
-        <variablelist>
-          <varlistentry>
-            <term><envar>MPC_COMMANDLINE</envar></term>
-            <listitem>
-              <para>
-              the value of this environment variable will be
-              prepended to the options passed to
-              <command>&mwc;</command> or <command>&mpc;</command> (if any
-              are passed)
-              </para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><envar>MPC_VERBOSE_ORDERING</envar></term>
-            <listitem>
-              <para>
-              if this is set, <command>&mwc;</command> will warn the user about
-              references to projects in the <property>after</property> keyword 
-              that have not been processed
-              </para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><envar>MPC_SILENT</envar></term>
-            <listitem>
-              <para>
-              if this is set, <command>&mpc;</command> will not print out any
-              information or warnings when processing projects or
-              workspaces.  Errors are always printed if any are encountered
-              </para>
-            </listitem>
-          </varlistentry>
-          <varlistentry>
-            <term><envar>MPC_LOGGING</envar></term>
-            <listitem>
-              <para>
-              if this is set, <command>&mpc;</command> will parse the value
-              and provide informational, warning, diagnostic and detail
-              messages depending on it's setting.  If the
-              <envar>MPC_LOGGING</envar> value contains 
-              <property>info=1</property>, informational
-              messages will be printed.  If it contains 
-              <property>warn=1</property>, warning
-              messages will be printed.  If it contains 
-              <property>diag=1</property>, diagnostic
-              messages will be printed.  And lastly, if it contains 
-              <property>detail=1</property>,
-              detail messages will be printed.  If it contains none of these,
-              <command>&mpc;</command> will act as if <envar>MPC_SILENT</envar> 
-              was set
-              </para>
-            </listitem>
-          </varlistentry>
-        </variablelist>
-      </para>
     </refsect2>
   </refsect1>
 </refentry>
