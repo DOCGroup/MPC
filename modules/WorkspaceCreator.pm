@@ -112,13 +112,8 @@ sub new {
   $self->{'coexistence'}         = $makeco;
   $self->{'generate_dot'}        = $gendot;
   $self->{'generate_ins'}        = $genins;
-  $self->{'verbose_ordering'}    = (defined $ENV{MPC_VERBOSE_ORDERING});
+  $self->{'verbose_ordering'}    = undef;
   $self->{'wctype'}              = $self->extractType("$self");
-
-  if ($self->{'verbose_ordering'}) {
-    print "NOTE: MPC_VERBOSE_ORDERING is deprecated.  See the USAGE ",
-          "file for details.\n";
-  }
 
   if (defined $$exclude[0]) {
     my($type) = $self->{'wctype'};
