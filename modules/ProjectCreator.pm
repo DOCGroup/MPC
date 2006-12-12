@@ -175,7 +175,13 @@ my(%csvc) = ('source_files'        => [ "\\.cs" ],
              'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
             );
 
-my(%csma) = ('source_files' => [ 'subtype' ],
+my(%csma) = ('source_files' => [ 'dependent_upon',
+                                 'subtype',
+                               ],
+             'resx_files'   => [ 'dependent_upon',
+                                 'generates_source',
+                                 'subtype',
+                               ],
             );
 
 # ************************************************************
