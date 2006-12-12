@@ -92,6 +92,9 @@
 <%foreach(source_files)%>
     <Compile Include="<%source_file%>">
       <SubType><%if(flag_overrides(source_file, subtype))%><%flag_overrides(source_file, subtype)%><%else%>Code<%endif%></SubType>
+<%if(flag_overrides(source_file, dependent_upon))%>
+      <DependentUpon><%flag_overrides(source_file, dependent_upon)%></DependentUpon>
+<%endif%>
     </Compile>
 <%endfor%>
 <%foreach(custom_types)%>
@@ -107,7 +110,24 @@
 <%endfor%>
 <%foreach(resx_files)%>
     <EmbeddedResource Include="<%resx_file%>">
+<%if(flag_overrides(resx_file, subtype))%>
+      <SubType><%flag_overrides(resx_file, subtype)%></SubType>
+<%endif%>
+<%if(flag_overrides(resx_file, generates_source))%>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput><%noextension(resx_file)%>.Designer.cs</LastGenOutput>
+<%endif%>
+<%if(flag_overrides(resx_file, dependent_upon))%>
+      <DependentUpon><%flag_overrides(resx_file, dependent_upon)%></DependentUpon>
+<%endif%>
     </EmbeddedResource>
+<%if(flag_overrides(resx_file, generates_source))%>
+    <Compile Include="<%noextension(resx_file)%>.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon><%resx_file%></DependentUpon>
+    </Compile>
+<%endif%>
 <%endfor%>
 <%foreach(ico_files)%>
     <Content Include="<%ico_file%>" />

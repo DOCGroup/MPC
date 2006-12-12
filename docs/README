@@ -304,6 +304,18 @@ webapp          Determines whether the project is a Web Application or not.
                 but the information will be included in the workspace (if
                 web applications are supported by the project type).
 
+C# Specific Project Keywords
+----------------------------
+dependent_upon  This can only be applied to source and resx components.  It
+                determines which file the source or resx file is dependent
+                upon for vc8 only.
+generates_source This can only be applied to resx components.  It indicates
+                that the resx file or files auto generates a source file for
+                vc8 only.  The auto generated name is created by taking the
+                resx file without the extension and appending .Designer.cs.
+subtype         This can only be applied to source and resx components.  It
+                determines the SubType setting for vc8 only.
+
 Custom File Definitions
 -----------------------
 In order to support a variety of custom build rules, MPC allows you to
