@@ -14,6 +14,7 @@ feature(zlib) {
     // For Windows, we need to ensure that the library has a decorator.
     // Due to compilation flags used to build this library, we may have
     // linkage conflicts if the release version is used with a debug build.
-    libs += zlib
+    zlibname = zlib
+    libs += $(ZLIBNAME)
   }
 }
