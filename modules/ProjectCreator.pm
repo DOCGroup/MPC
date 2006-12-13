@@ -4341,7 +4341,17 @@ sub adjust_value {
       $base =~ s/.*:://;
       my($replace) = (defined $self->{'valid_names'}->{$base} &&
                       ($self->{'valid_names'}->{$base} & 0x04) == 0);
-      foreach my $val (@{$atemp->{lc($name)}}) {
+      ## Sort these values so that command line specified values are
+      ## evaluated last
+      foreach my $val (sort { if ((defined $$a[2] && defined $$b[2]) ||
+                                  (!defined $$a[2] && !defined $$b[2])) {
+                                return 0;
+                              }
+                              if (defined $$a[2]) {
+                                return 1;
+                              }
+                              return -1;
+                            } @{$atemp->{lc($name)}}) {
         if ($replace && index($$val[1], '<%') >= 0) {
           $$val[1] = $self->replace_parameters($$val[1],
                                                $self->{'command_subs'});

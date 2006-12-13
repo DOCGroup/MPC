@@ -1,3 +1,27 @@
+Wed Dec 13 17:05:29 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/zlib.mpb:
+
+          Modified this base project to use an intermediate template
+          variable, zlibname, for Windows based project types.  The default
+          remains zlib, but can be overridden on the command line or after
+          this base project has been included.  For instance, the dynamic
+          version of this library is named zdll and would require that the
+          user of such library change the zlibname template variable.
+
+        * modules/Options.pm:
+
+          Provide indication when template variables are set on the command
+          line.
+
+          Also, warn users when -value_template is used for a project
+          keyword.
+
+        * modules/ProjectCreator.pm:
+
+          Modified the evaluation of template variables such that values set
+          on the command line take precedence over those set in projects.
+
 Tue Dec 12 19:46:17 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/MPC.sgml:
