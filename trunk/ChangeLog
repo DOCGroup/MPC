@@ -1,3 +1,25 @@
+Thu Dec 14 14:30:58 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * PROBLEM-REPORT-FORM:
+
+          Changed to ask for the Operating System and Shell.
+
+        * modules/Creator.pm:
+
+          When expanding variables, warn the user if the value returned from
+          adjust_value() is a hash table.  When this happens, it means that
+          a template scope name collides with a variable name contained
+          within $().
+
+        * templates/make.mpd:
+
+          Added support to perform a post link processing command.
+
+        * templates/makedll.mpt:
+
+          Added a post link processing command to perform the integrate step
+          for Green Hills on Integrity.
+
 Wed Dec 13 17:05:29 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/zlib.mpb:

@@ -995,7 +995,10 @@ sub expand_variables {
       my($sname) = (defined $scope ? $scope . "::$name" : undef);
       my($arr) = $self->adjust_value([$sname, $name],
                                      (defined $val ? $val : []));
-      if (defined $$arr[0]) {
+      if (UNIVERSAL::isa($arr, 'HASH')) {
+        $self->warning("$name conflicts with a template variable scope");
+      }
+      elsif (UNIVERSAL::isa($arr, 'ARRAY') && defined $$arr[0]) {
         $val = "@$arr";
         $val = $self->modify_assignment_value(lc($name), $val);
         substr($value, $start) =~ s/\$\([^)]+\)/$val/;
