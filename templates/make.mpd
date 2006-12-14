@@ -14,6 +14,9 @@ AR            = <%ar("ar")%>
 <%if(nm)%>
 NM            = <%nm%>
 <%endif%>
+<%if(cxxint)%>
+CXXINT        = <%cxxint%>
+<%endif%>
 <%if(cputype)%>
 CPUTYPE       = <%cputype%>
 <%endif%>
@@ -71,7 +74,7 @@ GENFLAGS      = <%genflags("-O")%>
 GENFLAGS      = <%genflags("-g")%>
 <%endif%>
 <%endfor%>
-LDLIBS        =<%foreach(libs)%> <%libopt%>"<%libname_prefix%><%lib%>$(LIBSUFFIX)"<%endfor%><%foreach(lit_libs)%> <%libopt%>"<%lit_lib%>"<%endfor%><%foreach(pure_libs)%> "<%pure_lib%>"<%endfor%> <%ldlibs%>
+LDLIBS        =<%foreach(libs)%> <%libopt%><%libname_prefix%><%lib%>$(LIBSUFFIX)<%endfor%><%foreach(lit_libs)%> <%libopt%>"<%lit_lib%>"<%endfor%><%foreach(pure_libs)%> "<%pure_lib%>"<%endfor%> <%ldlibs%>
 OBJS          =<%if(pch_source && pchsupport)%> <%targetoutdir%><%obj_dir%><%noextension(pch_source)%>$(OBJEXT)<%endif%><%foreach(source_files)%> <%targetoutdir%><%obj_dir%><%noextension(source_file)%>$(OBJEXT)<%endfor%><%if(rc)%><%foreach(resource_files)%> <%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT)<%endfor%><%endif%>
 <%if(lib_ext)%>
 <%if(staticname)%>
@@ -114,28 +117,33 @@ all:<%if(prebuild)%> __prebuild__<%endif%> $(BIN)<%if(postbuild)%> __postbuild__
 
 <%if(specialscript)%>
 specialscript:
-	@echo '<%specialscript%>' > specialscript
-	@<%chmod("chmod")%> 755 specialscript
+	@echo '<%specialscript%>' > $@
+	@<%chmod("chmod")%> 755 $@
 
 <%endif%>
 <%if(prelinktarget)%>
 <%prelinktarget%>: specialscript $(OBJS)
-	@specialscript $(NM) "$(OBJS)" "$(LDLIBS)" "<%if(libpaths)%><%foreach(libpaths)%><%if(targetoutdir)%><%libpath%><%slash%><%targetoutdir%> <%endif%><%libpath%><%fornotlast(" ")%><%endfor%><%else%>.<%endif%>" <%prelinktarget%>
+	@specialscript "$(NM)" "$(OBJS)" "$(LDLIBS)" "<%if(libpaths)%><%foreach(libpaths)%><%if(targetoutdir)%><%libpath%><%slash%><%targetoutdir%> <%endif%><%libpath%><%fornotlast(" ")%><%endfor%><%else%>.<%endif%>" "$(BIN)" "$@"
 	@$(RM) specialscript
 
-<%targetoutdir%><%obj_dir%><%noextension(prelinktarget)%>$(OBJEXT): <%prelinktarget%>
+<%if(prelinktargetobj)%>
+<%targetoutdir%><%obj_dir%><%prelinktargetobj%>: <%prelinktarget%>
 	$(COMPILE.cc) $(OUTPUT_OPTION) <%prelinktarget%>
 	@$(RM) <%prelinktarget%>
 
 <%endif%>
+<%endif%>
 $(BTARGETDIR):
 	@$(MKDIR) "$@"
 
-$(BIN): $(BTARGETDIR)<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelinktarget)%> <%targetoutdir%><%obj_dir%><%noextension(prelinktarget)%>$(OBJEXT)<%endif%> $(OBJS)
+$(BIN): $(BTARGETDIR)<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelinktargetobj)%> <%targetoutdir%><%obj_dir%><%prelinktargetobj%><%else%><%if(prelinktarget)%> <%prelinktarget%><%endif%><%endif%> $(OBJS)
 <%if(prelink)%>
 	<%eval(prelink)%>
 <%endif%>
 	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+<%if(postlinkbinary)%>
+	<%postlinkbinary%>
+<%endif%>
 
 <%endif%>
 <%if(dll_ext && sharedname)%>
