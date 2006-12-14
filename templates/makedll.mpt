@@ -186,8 +186,8 @@ NCC {
 }
 
 ghsppc {
-  cxx           = cxint$(CPUTYPE)
-  ar            = cxint$(CPUTYPE)
+  cxx           = cx$(CXXINT)$(CPUTYPE)
+  ar            = cx$(CXXINT)$(CPUTYPE)
   cputype       = ppc
   arflags       = --one_instantiation_per_object -archive -o
   compilerflags = --new_style_casts --one_instantiation_per_object --exceptions --std --long_long
@@ -274,16 +274,17 @@ qnx {
 }
 
 vxworks {
-  versupport    =
-  dll_ext       =
-  exe_ext       = .out
-  specialscript = "for i in $$3; do for j in $$4; do i=`echo $$i | sed sa\^-laa`;[ -r \"$$j/lib$$i.a\" ] && libs=\"$$libs $$j/lib$$i.a\" && break;done;done;$$1 $$2 $$libs | munch | grep -v \\.cpp > $$5"
-  prelinktarget = __ctordtor.c
-  clean         = __ctordtor$(OBJEXT)
-  ldlibs        = -L$(WIND_BASE)/target/lib/$(CPUTYPE)/$(CPU)/common -larch
-  extracppflags = -nostdlib -I$(WIND_BASE)/target/h
-  ld            = ld$(CPUTYPE)
-  linkflags     = -X -r
+  versupport       =
+  dll_ext          =
+  exe_ext          = .out
+  specialscript    = "for i in $$3; do for j in $$4; do i=`echo $$i | sed sa\^-laa`;[ -r \"$$j/lib$$i.a\" ] && libs=\"$$libs $$j/lib$$i.a\" && break;done;done;$$1 $$2 $$libs | munch | grep -v \\.cpp > $$6"
+  prelinktarget    = __ctordtor.c
+  prelinktargetobj = __ctordtor$(OBJEXT)
+  clean            = __ctordtor$(OBJEXT)
+  ldlibs           = -L$(WIND_BASE)/target/lib/$(CPUTYPE)/$(CPU)/common -larch
+  extracppflags    = -nostdlib -I$(WIND_BASE)/target/h
+  ld               = ld$(CPUTYPE)
+  linkflags        = -X -r
 }
 
 vxworks_rtp {
@@ -349,11 +350,15 @@ tandem {
 // BSP    The BSP name (ex. sim800).
 //
 integrity {
-  versupport    =
-  dll_ext       =
-  ldlibs        = -lshm_client -lnet -lsocket -lposix
-  extraarflags  = -bsp $(BSP) -os_dir $(OS_DIR) --one_instantiation_per_object
-  extracppflags = -integrate -dynamic -bsp $(BSP) -os_dir $(OS_DIR) --one_instantiation_per_object -non_shared -Uvector
+  cxxint         = int
+  versupport     =
+  dll_ext        =
+  ldlibs         = -lshm_client -lnet -lsocket -lposix
+  extraarflags   = -bsp $(BSP) -os_dir $(OS_DIR) --one_instantiation_per_object
+  extracppflags  = -integrate -dynamic -bsp $(BSP) -os_dir $(OS_DIR) --one_instantiation_per_object -non_shared -Uvector
+  specialscript  = "echo Kernel > $$6; echo Filename DynamicDownload >> $$6;echo EndKernel >> $$6; echo AddressSpace >> $$6;echo Filename $$5 >> $$6;echo Language C++ >> $$6;echo Library libINTEGRITY.so >> $$6;echo Library libc.so >> $$6;echo Library libscxx_e.so >> $$6;echo Task Initial >> $$6;echo StackLength 0x8000 >> $$6;echo EndTask >> $$6;echo EndAddressSpace >> $$6"
+  prelinktarget  = $(notdir $(BIN).int)
+  postlinkbinary = $(MV) $(BIN) $(BIN).tmp && intex -bsp $(BSP) -os_dir $(OS_DIR) -intfile $(notdir $(BIN).int) -o $(BIN) $(BIN).tmp
 }
 
 conditional_include "user_makedll"
