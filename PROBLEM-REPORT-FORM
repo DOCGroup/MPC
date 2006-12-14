@@ -15,7 +15,7 @@ When requesting MPC support please provide the following items:
 
   Perl version (using perl --version):
 
-  Operating System/Shell:
+  Operating System and Shell:
 
   ACE or TAO version (if using either):
 
