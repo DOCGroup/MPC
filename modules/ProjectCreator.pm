@@ -290,15 +290,9 @@ sub new {
   $self->{'inheritance_tree'}      = {};
   $self->{'remove_files'}          = {};
   $self->{'expanded'}              = {};
-
-  my($typefeaturef) = (defined $gfeature ?
-                               $self->mpc_dirname($gfeature) . '/' : '') .
-                      $self->{'pctype'} . '.features';
-  $typefeaturef = undef if (! -r $typefeaturef);
-  $self->{'feature_parser'}        = new FeatureParser($features,
-                                                       $gfeature,
-                                                       $typefeaturef,
-                                                       $feature);
+  $self->{'gfeature_file'}         = $gfeature;
+  $self->{'feature_parser'}        = $self->create_feature_parser($features,
+                                                                  $feature);
   $self->{'sort_files'}            = $self->sort_files();
   $self->{'source_callback'}       = undef;
   $self->{'dollar_special'}        = $self->dollar_special();
@@ -3902,10 +3896,10 @@ sub write_output_file {
     $template = $template . ".$TemplateExtension";
   }
 
-  ## If the template file does not contain a full path, then we
+  ## If the template file does not contain a path, then we
   ## will search through the include paths for it.
   my($tfile) = undef;
-  if ($template =~ /^([a-z]:)?[\/\\]/i) {
+  if ($template =~ /[\/\\]/i) {
     $tfile = $template;
   }
   else {
@@ -4626,6 +4620,44 @@ sub resolve_alias {
     return $resolved;
   }
   return $_[1];
+}
+
+
+sub create_feature_parser {
+  my($self)         = shift;
+  my($features)     = shift;
+  my($feature)      = shift;
+  my($gfeature)     = $self->{'gfeature_file'};
+  my($typefeaturef) = (defined $gfeature ?
+                               $self->mpc_dirname($gfeature) . '/' : '') .
+                      $self->{'pctype'} . '.features';
+  $typefeaturef = undef if (! -r $typefeaturef);
+  if (defined $feature && $feature !~ /[\/\\]/i) {
+    my($searched) = $self->search_include_path($feature);
+    $feature = $searched if (defined $searched);
+  }
+  return new FeatureParser($features,
+                           $gfeature,
+                           $typefeaturef,
+                           $feature);
+}
+
+
+sub restore_state_helper {
+  my($self) = shift;
+  my($skey) = shift;
+  my($old)  = shift;
+  my($new)  = shift;
+
+  if ($skey eq 'feature_file') {
+    if (!(!defined $old && !defined $new ||
+          (defined $old && defined $new && $old eq $new))) {
+      ## Create a new feature parser.  This relies on the fact that
+      ## 'features' is restored first in restore_state().
+      $self->{'feature_parser'} = $self->create_feature_parser(
+                                           $self->get_features(), $new);
+    }
+  }
 }
 
 
