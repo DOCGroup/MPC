@@ -1,3 +1,24 @@
+Fri Dec 15 19:38:00 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/cppunit.mpb:
+
+          Added a base project for cppunit.  Set the CPPUNIT_ROOT
+          environment variable before processing.
+
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+
+          Fixed a few bugs.
+
+          1) If -feature_file was used in a 'cmdline' setting within a .mwc
+             file, it was silently ignored.
+          2) When setting certain 'cmdline' options within a .mwc file, they
+             would persist outside of the scope in which they were set.
+          3) If the file specified by -feature_file did not contain a full
+             path, it would not be used unless it was in the current
+             directory.  The MPC include paths are now searched if it does
+             not contain a path.
+
 Thu Dec 14 14:30:58 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * PROBLEM-REPORT-FORM:

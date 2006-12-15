@@ -30,7 +30,7 @@ my(%non_convert) = ('prebuild' => 1,
 my(@statekeys) = ('global', 'include', 'template', 'ti',
                   'dynamic', 'static', 'relative', 'addtemp',
                   'addproj', 'progress', 'toplevel', 'baseprojs',
-                  'feature_file', 'features', 'hierarchy',
+                  'features', 'feature_file', 'hierarchy',
                   'name_modifier', 'apply_project', 'into', 'use_env',
                   'expand_vars', 'language',
                  );
@@ -736,19 +736,21 @@ sub restore_state {
   ## Make a deep copy of each state value.  That way our array
   ## references and hash references do not get accidentally modified.
   foreach my $skey (defined $selected ? $selected : @statekeys) {
-    if (defined $state->{$skey}) {
-      if (UNIVERSAL::isa($state->{$skey}, 'ARRAY')) {
-        my(@arr) = @{$state->{$skey}};
-        $self->{$skey} = \@arr;
-      }
-      elsif (UNIVERSAL::isa($state->{$skey}, 'HASH')) {
-        my(%hash) = %{$state->{$skey}};
-        $self->{$skey} = \%hash;
-      }
-      else {
-        $self->{$skey} = $state->{$skey};
-      }
+    my($old) = $self->{$skey};
+    if (defined $state->{$skey} &&
+        UNIVERSAL::isa($state->{$skey}, 'ARRAY')) {
+      my(@arr) = @{$state->{$skey}};
+      $self->{$skey} = \@arr;
     }
+    elsif (defined $state->{$skey} &&
+           UNIVERSAL::isa($state->{$skey}, 'HASH')) {
+      my(%hash) = %{$state->{$skey}};
+      $self->{$skey} = \%hash;
+    }
+    else {
+      $self->{$skey} = $state->{$skey};
+    }
+    $self->restore_state_helper($skey, $old, $self->{$skey});
   }
 }
 
@@ -870,6 +872,12 @@ sub get_static {
 sub get_default_component_name {
   #my($self) = shift;
   return 'default';
+}
+
+
+sub get_features {
+  my($self) = shift;
+  return $self->{'features'};
 }
 
 
@@ -1078,6 +1086,14 @@ sub relative {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub restore_state_helper {
+  #my($self) = shift;
+  #my($skey) = shift;
+  #my($old)  = shift;
+  #my($new)  = shift;
+}
+
 
 sub get_initial_relative_values {
   #my($self) = shift;
