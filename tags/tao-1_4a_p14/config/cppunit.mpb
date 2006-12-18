@@ -1,0 +1,5 @@
+project {
+  includes += $(CPPUNIT_ROOT)/include
+  libpaths += $(CPPUNIT_ROOT)/lib
+  lit_libs += cppunit
+}
