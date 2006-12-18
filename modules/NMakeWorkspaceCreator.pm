@@ -37,7 +37,7 @@ sub crlf {
 
 sub workspace_file_extension {
   #my($self) = shift;
-  return '.nmak';
+  return '.mak';
 }
 
 

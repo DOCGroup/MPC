@@ -3395,7 +3395,6 @@ sub get_special_value {
   my($based)  = shift;
   my(@params) = @_;
 
-
   if ($type eq 'feature') {
     return $self->get_feature_value($cmd, $based);
   }
@@ -3833,6 +3832,12 @@ sub check_features {
         $why = "requires $require";
         $status = 0;
         last;
+      }
+
+      ## For automakes sake, if we're to this point the feature is
+      ## enabled and we will set it in the feature parser explicitly
+      if (!defined $fval) {
+        $self->{'feature_parser'}->parse_line(undef, "$require = 1");
       }
     }
   }

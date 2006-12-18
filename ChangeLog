@@ -1,3 +1,25 @@
+Mon Dec 18 13:48:15 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/cppunit.mpb:
+
+          Added a comment with a dollar Id.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Sort the features when creating the configure.ac file for
+          repeatability.
+
+        * modules/NMakeWorkspaceCreator.pm:
+
+          Change the workspace extension from .nmak to .mak.  This is only
+          used when -make_coexistence is used on the command line.
+
+        * modules/ProjectCreator.pm:
+
+          When checking to see if a feature is enabled, we will now
+          explicitly set the feature in the feature parser for later use
+          within the AutomakeWorkspaceCreator.
+
 Fri Dec 15 19:38:00 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/cppunit.mpb:
