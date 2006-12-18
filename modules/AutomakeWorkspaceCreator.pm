@@ -93,7 +93,7 @@ sub write_comps {
 
         my($fp) = $creator->get_feature_parser();
         my($features) = $fp->get_names();
-        foreach my $feature (@$features) {
+        foreach my $feature (sort @$features) {
           print $acfh 'AM_CONDITIONAL(BUILD_', uc($feature),
                       ', ', ($fp->get_value($feature) ? 'true' : 'false'),
                       ')', $crlf;
