@@ -1,3 +1,16 @@
+Tue Dec 19 07:41:59 2006  J.T. Conklin  <jtc@acorntoolworks.com>
+
+        * templates/automake.mpd:
+
+          If not building separate configurations, define *_CPPFLAGS,
+          *_SOURCES, *_LDFLAGS, etc. directly instead of defining
+          *_CPPFLAGS_COMMON, *_SOURCES_COMMON, *_LDFLAGS_COMMON, etc. and
+          then defining the former in terms of the latter.  This results
+          in generated Makefile.am's closer to what MPC generated before
+          configurations support was added (there are some whitespace
+          differences that still need to be tracked down), and closer
+          to what a hand-written Makefile.am would look like.
+
 Tue Dec 19 03:38:49 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:
