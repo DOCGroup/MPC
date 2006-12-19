@@ -21,10 +21,10 @@ man_MANS += <%man_files%>
 <%if(install_this_target)%>bin<%else%>noinst<%endif%>_SCRIPTS += <%script_files%>
 <%endif%>
 <%if(custom_types)%>
-
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
+
 BUILT_SOURCES += \
 <%foreach(output_file, sort(custom_type->input_file->output_files))%>
   <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(output_file)%><%else%><%output_file%><%endif%><%fornotlast(" \\")%>
@@ -63,7 +63,6 @@ CLEANFILES += \
 <%if(multiple(custom_type->input_file->output_files))%>
 	@touch "$@"
 <%endif%>
-
 <%endif%>
 <%endfor%>
 <%endfor%>
@@ -175,8 +174,8 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%><%if(!configurations)%>_la<%endif%>_DEPENDENCIES<%if(configurations)%>_COMMON<%endif%> = \
 <%endif%>
 <%foreach(libpaths)%><%if(contains(libpath, \.\./))%> <%libpath%><%endif%><%endfor%>
-
 <%if(configurations)%>
+
 <%foreach(configurations)%>
 <%if(exename)%>
 <%normalize(exename)%><%lib_modifier%>_DEPENDENCIES += $(<%normalize(exename)%>_DEPENDENCIES_COMMON)
@@ -192,12 +191,11 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 
 <%normalize(exename)%>_LDFLAGS<%if(configurations)%>_COMMON<%endif%> = \
  <%linkflags%><%foreach(libpaths)%> -L<%libpath%><%endfor%>
-
 <%if(configurations)%>
+
 <%foreach(configurations)%>
 <%normalize(exename)%><%lib_modifier%>_LDFLAGS = $(<%normalize(exename)%>_LDFLAGS_COMMON)
 <%endfor%>
-
 <%endif%> 
 <%endif%>
 <%else%>
@@ -205,8 +203,8 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 
 lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%><%if(!configurations)%>_la<%endif%>_LDFLAGS<%if(configurations)%>_COMMON<%endif%> = \
 <%if(am_version && install_this_target)%> -version-number <%am_version%><%else%><%if(am_release && install_this_target)%> -release <%am_release%><%endif%><%endif%><%if(linkflags)%> <%linkflags%><%endif%><%foreach(libpaths)%> -L<%libpath%><%endfor%>
-
 <%if(configurations)%>
+
 <%foreach(configurations)%>
 lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%><%lib_modifier%>_la_LDFLAGS = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_LDFLAGS_COMMON)
 <%endfor%>
