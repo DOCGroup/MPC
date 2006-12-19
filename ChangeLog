@@ -1,3 +1,11 @@
+Tue Dec 19 01:29:01 2006  J.T. Conklin  <jtc@acorntoolworks.com>
+
+        * modules/automake.mpd:
+
+          Fix template conditionals around *_LDFLAGS_COMMON definition.
+          When "configurations" support was added, this was mangled and
+          no definition was emitted for library projects.
+
 Mon Dec 18 13:48:15 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/cppunit.mpb:
