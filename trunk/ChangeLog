@@ -1,3 +1,10 @@
+Tue Dec 19 03:38:49 2006  J.T. Conklin  <jtc@acorntoolworks.com>
+
+        * templates/automake.mpd:
+
+          Fix conditional nesting in *_LDFLAGS* definition so that an
+          empty one isn't emitted.
+
 Tue Dec 19 03:01:22 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:
