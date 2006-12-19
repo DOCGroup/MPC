@@ -146,17 +146,18 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%foreach(libpaths)%><%if(contains(libpath, \.\./))%> <%libpath%><%endif%><%endfor%>
 
 <%endif%>
-<%if(linkflags || libpaths)%>
 <%if(exename)%>
+<%if(linkflags || libpaths)%>
+
 <%normalize(exename)%>_LDFLAGS_COMMON = \
  <%linkflags%><%foreach(libpaths)%> -L<%libpath%><%endfor%>
+<%endif%>
 <%else%>
-lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_LDFLAGS_COMMON = \
 <%if(linkflags || libpaths || am_version && install_this_target || am_release && install_this_target)%>
+
+lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_LDFLAGS_COMMON = \
 <%if(am_version && install_this_target)%> -version-number <%am_version%><%else%><%if(am_release && install_this_target)%> -release <%am_release%><%endif%><%endif%><%if(linkflags)%> <%linkflags%><%endif%><%foreach(libpaths)%> -L<%libpath%><%endfor%>
 <%endif%>
-<%endif%>
-
 <%endif%>
 <%if(configurations)%>
 <%foreach(configurations)%>
