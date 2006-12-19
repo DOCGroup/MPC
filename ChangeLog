@@ -1,3 +1,10 @@
+Tue Dec 19 11:37:13 2006  J.T. Conklin  <jtc@acorntoolworks.com>
+
+        * templates/automake.mpd:
+
+          Further whitespace fix so that _SOURCES will be correctly
+          terminated.
+
 Tue Dec 19 10:37:10 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:
