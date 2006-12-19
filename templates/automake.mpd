@@ -71,6 +71,7 @@ CLEANFILES += \
 <%marker(local)%>
 <%if(exename || sharedname || staticname)%>
 <%if(source_files)%>
+
 <%if(configurations)%>
 <%foreach(configurations)%>
 <%if(exename)%>
@@ -80,19 +81,18 @@ CLEANFILES += \
 <%if(install_this_target)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += lib<%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%><%lib_modifier%>.la
 <%configuration%> : lib<%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%><%lib_modifier%>.la
 <%endif%>
-
 <%endfor%>
 <%else%>
 <%if(exename)%>
-<%if(install_this_target)%>bin<%else%>noinst<%endif%>_PROGRAMS += <%exename%><%lib_modifier%>
+<%if(install_this_target)%>bin<%else%>noinst<%endif%>_PROGRAMS += <%exename%>
 <%else%>
-<%if(install_this_target)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += lib<%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%><%lib_modifier%>.la
+<%if(install_this_target)%>lib<%else%>noinst<%endif%>_LTLIBRARIES += lib<%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>.la
 <%endif%>
-
 <%endif%>
 <%endif%>
 <%endif%>
 <%if(am_includes || defines || common_defines || macros || need_staticflags || dynamicflags)%>
+
 <%if(exename)%>
 <%normalize(exename)%>_CPPFLAGS_COMMON = \
 <%else%>
@@ -118,8 +118,24 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%endfor%>
 <%endif%>
 
+<%if(configurations)%>
+<%foreach(configurations)%>
+<%if(exename)%>
+<%normalize(exename)%><%lib_modifier%>_CPPFLAGS = $(<%normalize(exename)%>_CPPFLAGS_COMMON)<%if(compile_flags)%> <%compile_flags%><%endif%>
+<%else%>
+lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%><%lib_modifier%>_la_CPPFLAGS = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_CPPFLAGS_COMMON)<%if(compile_flags)%> <%compile_flags%><%endif%>
+<%endif%> 
+<%endfor%>
+<%else%>
+<%if(exename)%>
+<%normalize(exename)%>_CPPFLAGS = $(<%normalize(exename)%>_CPPFLAGS_COMMON)<%if(compile_flags)%> <%compile_flags%><%endif%>
+<%else%>
+lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_CPPFLAGS = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_CPPFLAGS_COMMON)<%if(compile_flags)%> <%compile_flags%><%endif%>
+<%endif%>
+<%endif%>
 <%endif%>
 <%if(source_files)%>
+
 <%if(exename)%>
 <%normalize(exename)%>_SOURCES_COMMON = \
 <%else%>
@@ -136,6 +152,20 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%endfor%>
 <%endif%>
 
+<%if(configurations)%>
+<%foreach(configurations)%>
+<%if(exename)%>
+<%normalize(exename)%><%lib_modifier%>_SOURCES = $(<%normalize(exename)%>_SOURCES_COMMON)
+<%else%>
+lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%><%lib_modifier%>_la_SOURCES = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_SOURCES_COMMON)
+<%endif%>
+<%endfor%>
+<%else%>
+<%if(exename)%>
+<%normalize(exename)%>_SOURCES = $(<%normalize(exename)%>_SOURCES_COMMON)
+<%else%>
+lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_SOURCES = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_SOURCES_COMMON)
+<%endif%>
 <%endif%>
 <%if(libpaths && contains(libpaths, \.\./))%>
 <%if(exename)%>
@@ -152,45 +182,30 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%normalize(exename)%>_LDFLAGS_COMMON = \
  <%linkflags%><%foreach(libpaths)%> -L<%libpath%><%endfor%>
 <%endif%>
+
+<%if(configurations)%>
+<%foreach(configurations)%>
+<%normalize(exename)%><%lib_modifier%>_LDFLAGS = $(<%normalize(exename)%>_LDFLAGS_COMMON)
+<%endfor%>
+<%else%>
+<%normalize(exename)%>_LDFLAGS = $(<%normalize(exename)%>_LDFLAGS_COMMON)
+<%endif%> 
 <%else%>
 <%if(linkflags || libpaths || am_version && install_this_target || am_release && install_this_target)%>
 
 lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_LDFLAGS_COMMON = \
 <%if(am_version && install_this_target)%> -version-number <%am_version%><%else%><%if(am_release && install_this_target)%> -release <%am_release%><%endif%><%endif%><%if(linkflags)%> <%linkflags%><%endif%><%foreach(libpaths)%> -L<%libpath%><%endfor%>
-<%endif%>
-<%endif%>
+
 <%if(configurations)%>
 <%foreach(configurations)%>
-<%if(exename)%>
-<%normalize(exename)%><%lib_modifier%>_CPPFLAGS = $(<%normalize(exename)%>_CPPFLAGS_COMMON)<%if(compile_flags)%> <%compile_flags%><%endif%>
-<%else%>
-lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%><%lib_modifier%>_la_CPPFLAGS = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_CPPFLAGS_COMMON)<%if(compile_flags)%> <%compile_flags%><%endif%>
-<%endif%> 
+lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%><%lib_modifier%>_la_LDFLAGS = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_LDFLAGS_COMMON)
 <%endfor%>
 <%else%>
-<%if(exename)%>
-<%normalize(exename)%>_CPPFLAGS = $(<%normalize(exename)%>_CPPFLAGS_COMMON)<%if(compile_flags)%> <%compile_flags%><%endif%>
-<%else%>
-lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_CPPFLAGS = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_CPPFLAGS_COMMON)<%if(compile_flags)%> <%compile_flags%><%endif%>
+lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LDFLAGS = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_LDFLAGS_COMMON)
+<%endif%>
 <%endif%>
 <%endif%>
 
-<%if(source_files)%>
-<%if(configurations)%>
-<%foreach(configurations)%>
-<%if(exename)%>
-<%normalize(exename)%><%lib_modifier%>_SOURCES = $(<%normalize(exename)%>_SOURCES_COMMON)
-<%else%>
-lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%><%lib_modifier%>_la_SOURCES = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_SOURCES_COMMON)
-<%endif%>
-<%endfor%>
-<%else%>
-<%if(exename)%>
-<%normalize(exename)%>_SOURCES = $(<%normalize(exename)%>_SOURCES_COMMON)
-<%else%>
-lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_SOURCES = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_SOURCES_COMMON)
-<%endif%>
-<%endif%>
 <%if(exename)%>
 <%if(linkflags || libpaths)%>
 
@@ -211,13 +226,6 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%endif%>
 
 <%endif%>
-<%if(configurations)%>
-<%foreach(configurations)%>
-<%normalize(exename)%><%lib_modifier%>_LDFLAGS = $(<%normalize(exename)%>_LDFLAGS_COMMON)
-<%endfor%>
-<%else%>
-<%normalize(exename)%>_LDFLAGS = $(<%normalize(exename)%>_LDFLAGS_COMMON)
-<%endif%> 
 <%endif%>
 <%else%>
 <%if(linkflags || libpaths || am_version && install_this_target || am_release && install_this_target)%>
@@ -240,13 +248,6 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
  $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_DEPENDENCIES_COMMON)
 <%endif%>
 
-<%endif%>
-<%if(configurations)%>
-<%foreach(configurations)%>
-lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%><%lib_modifier%>_la_LDFLAGS = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_LDFLAGS_COMMON)
-<%endfor%>
-<%else%>
-lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LDFLAGS = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_LDFLAGS_COMMON)
 <%endif%>
 <%endif%>
 <%endif%>
