@@ -15,7 +15,7 @@
 		<Configuration
 			Name="<%configuration%>|<%platform%>"
 			OutputDirectory="<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%else%><%if(type_is_static)%><%libout%><%else%><%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug")%><%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%><%endif%><%endif%><%endif%>"
-			IntermediateDirectory="<%intermediate_dir%>\<%noextension(project_file)%>"
+			IntermediateDirectory="<%intermediate_dir%>\<%noextension(project_file)%><%if(output_subdir)%>\<%output_subdir%><%endif%>"
 <%if(type_is_static && staticname)%>
 			ConfigurationType="4"
 <%else%>
@@ -77,7 +77,7 @@
 				PrecompiledHeaderThrough="<%pch_header%>"
 <%endif%>
 <%if(pdbc)%>
-				ProgramDataBaseFileName="<%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%>/<%endif%>"
+				ProgramDataBaseFileName="<%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%><%if(output_subdir)%>\<%output_subdir%><%endif%>/<%endif%>"
 <%endif%>
 				WarningLevel="<%warning_level("3")%>"
 				SuppressStartupBanner="TRUE"

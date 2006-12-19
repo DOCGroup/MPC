@@ -6,6 +6,7 @@ conditional_include "windowscommon"
 
 configurations = Debug Release
 common_defines = WIN32 _WINDOWS
+output_subdir  = I386
 
 Release {
   LinkIncremental  = 1

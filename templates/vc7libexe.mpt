@@ -8,6 +8,7 @@ configurations     = Debug Release
 common_defines     = WIN32 _CONSOLE
 configuration_type = 1
 subsystem          = 1
+output_subdir      = I386
 
 Release {
   LinkIncremental  = 1
