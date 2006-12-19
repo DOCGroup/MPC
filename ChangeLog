@@ -1,3 +1,13 @@
+Tue Dec 19 02:28:46 2006  J.T. Conklin  <jtc@acorntoolworks.com>
+
+        * templates/automake.mpd:
+
+          Extend conditional around the *_PROGRAMS and *_LTLIBRARIES
+          definitions to to include the *_CPPFLAGS*, *_SOURCES*, and
+          *_LDFLAGS*.  This fixes Makefile.am generation for projects that
+          don't build executables or libraries, such as those that compile
+          *.idl files.
+
 Tue Dec 19 02:21:30 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:

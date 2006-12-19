@@ -90,7 +90,6 @@ CLEANFILES += \
 <%endif%>
 <%endif%>
 <%endif%>
-<%endif%>
 <%if(am_includes || defines || common_defines || macros || need_staticflags || dynamicflags)%>
 
 <%if(exename)%>
@@ -202,6 +201,7 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%endfor%>
 <%else%>
 lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_la_LDFLAGS = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_LDFLAGS_COMMON)
+<%endif%>
 <%endif%>
 <%endif%>
 <%endif%>
