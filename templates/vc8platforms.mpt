@@ -10,11 +10,12 @@ platforms = Win32 x64
 default_platform = Win32
 
 Win32 {
+  output_subdir    = I386
   cpu_defines      = _M_IX86
 }
 
 x64 {
-  output_subdir    = Win64
+  output_subdir    = AMD64
   cpu_defines      = _AMD64_
   platform_defines = _WIN64
   TargetMachine    = "17"
