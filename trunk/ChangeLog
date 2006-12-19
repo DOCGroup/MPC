@@ -1,3 +1,22 @@
+Tue Dec 19 18:02:21 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/automake.mpd:
+
+          Fixed a bug where exe LDFLAGS would be overwritten with the
+          LDFLAGS_COMMON even when configurations weren't used.
+
+          Also minimized some of the blank line emissions.
+
+        * templates/vc7.mpd:
+        * templates/vc7dll.mpt:
+        * templates/vc7exe.mpt:
+        * templates/vc7lib.mpt:
+        * templates/vc7libexe.mpt:
+        * templates/vc8platforms.mpt:
+
+          Unified the intermediate directories for nmake, vc7 and vc8 for
+          the various machine types (x86, x64, etc.).
+
 Tue Dec 19 07:41:59 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:

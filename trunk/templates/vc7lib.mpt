@@ -7,6 +7,7 @@ conditional_include "windowscommon"
 configurations     = Debug Release
 common_defines     = WIN32 _WINDOWS
 configuration_type = 4
+output_subdir      = I386
 
 Release {
   optimize         = 3
