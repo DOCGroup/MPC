@@ -190,7 +190,7 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%else%>
 lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%><%lib_modifier%>_la_DEPENDENCIES += \
  $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_DEPENDENCIES_COMMON)
-<%endif
+<%endif%>
 <%endfor%>
 <%else%>
 <%if(exename)%>
@@ -206,7 +206,6 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 
 <%normalize(exename)%>_LDFLAGS_COMMON = \
  <%linkflags%><%foreach(libpaths)%> -L<%libpath%><%endfor%>
-<%endif%>
 
 <%if(configurations)%>
 <%foreach(configurations)%>
@@ -215,6 +214,7 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%else%>
 <%normalize(exename)%>_LDFLAGS = $(<%normalize(exename)%>_LDFLAGS_COMMON)
 <%endif%> 
+<%endif%>
 <%else%>
 <%if(linkflags || libpaths || am_version && install_this_target || am_release && install_this_target)%>
 
