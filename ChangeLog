@@ -1,3 +1,28 @@
+Wed Dec 20 09:25:13 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/BDSProjectCreator.pm:
+        * modules/BDSWorkspaceCreator.pm:
+        * templates/bds.mpd:
+        * templates/bdsdll.mpt:
+        * templates/bdsexe.mpt:
+          Renamed to bds4, this is for Borland Developer Studio 4
+
+        * config/boost_date_time.mpb:
+        * config/boost_filesystem.mpb:
+        * config/boost_iostreams.mpb:
+        * config/boost_prg_exec_monitor.mpb:
+        * config/boost_program_options.mpb:
+        * config/boost_regex.mpb:
+        * config/boost_serialization.mpb:
+        * config/boost_signals.mpb:
+        * config/boost_test_exec_monitor.mpb:
+        * config/boost_thread.mpb:
+        * config/boost_wave.mpb:
+        * config/xerces.mpb:
+        * docs/MPC.sgml:
+        * docs/USAGE:
+          Updated bds to bds4
+
 Tue Dec 19 11:37:13 2006  J.T. Conklin  <jtc@acorntoolworks.com>
 
         * templates/automake.mpd:

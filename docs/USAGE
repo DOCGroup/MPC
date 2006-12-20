@@ -21,7 +21,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-apply_project] [-version] [-into <directory>]
               [-gfeature_file <file name>]
               [-language <cplusplus | csharp | java | vb>]
-              [-type <automake | bds | bmake | cc | em3 | ghs | html | make |
+              [-type <automake | bds4 | bmake | cc | em3 | ghs | html | make |
                       nmake | sle | vc6 | vc7 | vc71 | vc8>]
               [files]
 
