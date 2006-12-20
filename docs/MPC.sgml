@@ -32,7 +32,7 @@
     <command>&mpc;</command> and <command>&mwc;</command>, the Makefile,
     Project and Workspace Creator generate platform and compiler specific
     files to automate the compilation process
-    (e.g. <filename>GNUmakefile</filename> 
+    (e.g. <filename>GNUmakefile</filename>
     and <filename>Makefile.am</filename>).
     </para>
     <para>
@@ -47,10 +47,10 @@
     for each one found.
     </para>
     <para>
-    Most of what is stated about <command>&mwc;</command> applies to 
-    <command>&mpc;</command> except that it only generates projects.  If an 
-    input <replaceable>FILE</replaceable> (<filename>.mpc</filename> file) is 
-    not provided, the project creator will attempt to create a default 
+    Most of what is stated about <command>&mwc;</command> applies to
+    <command>&mpc;</command> except that it only generates projects.  If an
+    input <replaceable>FILE</replaceable> (<filename>.mpc</filename> file) is
+    not provided, the project creator will attempt to create a default
     project in the directory from which the script was started.
     </para>
     <variablelist>
@@ -59,7 +59,7 @@
         <listitem>
           <para>
 	  specifies the global input file.  Values stored within this file are
-	  applied to all projects.  If not specified, defaults to 
+	  applied to all projects.  If not specified, defaults to
 	  <filename>config/global.mpb</filename>
           </para>
         </listitem>
@@ -71,7 +71,7 @@
 	  specifies a directory to search when looking for base projects,
 	  template input files and templates.  This option can be used
 	  multiple times to add directories.  Two include directories
-	  are used by default (<filename class="directory">config</filename> 
+	  are used by default (<filename class="directory">config</filename>
 	  and <filename class="directory">templates</filename>)
           </para>
         </listitem>
@@ -92,12 +92,12 @@
 	  specifies the template input file (with no extension) for the
 	  specific type, e.g. <parameter>-ti dll_exe:vc8exe</parameter>.  Each
 	  project creator has a default template input file for each type of
-	  project (<parameter>dll_exe</parameter>, <parameter>lib_exe</parameter>, 
+	  project (<parameter>dll_exe</parameter>, <parameter>lib_exe</parameter>,
 	  <parameter>dll</parameter>, <parameter>lib</parameter>).  You can
-	  override the default template input file name with the 
-	  <parameter>-ti</parameter> option.  The file must have a 
+	  override the default template input file name with the
+	  <parameter>-ti</parameter> option.  The file must have a
 	  <filename>mpt</filename> extension and must reside within the
-	  include search directories.  NOTE: the <parameter>lib</parameter> 
+	  include search directories.  NOTE: the <parameter>lib</parameter>
 	  and the <parameter>lib_exe</parameter> template input files are only
 	  used when MPC is generating static projects
           </para>
@@ -107,12 +107,12 @@
         <term><parameter>-hierarchy</parameter></term>
         <listitem>
           <para>
-	  generate a workspace in a hierarchical fashion.  Forces the 
-	  generation of a hierarchical workspace at each directory level in 
-	  between the toplevel directory and the location of the 
+	  generate a workspace in a hierarchical fashion.  Forces the
+	  generation of a hierarchical workspace at each directory level in
+	  between the toplevel directory and the location of the
 	  <filename>.mpc</filename> file that is being processed.  This is the
-	  default for <parameter>make</parameter> based workspace creators.  
-	  NOTE: This option has no effect when when used with 
+	  default for <parameter>make</parameter> based workspace creators.
+	  NOTE: This option has no effect when when used with
 	  <command>&mpc;</command>
           </para>
         </listitem>
@@ -121,10 +121,10 @@
         <term><parameter>-template</parameter> <replaceable>file</replaceable></term>
         <listitem>
           <para>
-	  specifies the template name (with no extension).  
+	  specifies the template name (with no extension).
 	  <replaceable>file</replaceable> should have a
 	  <filename>.mpd</filename> extension and sit in one of the include
-	  search directories.  NOTE: The <parameter>-template</parameter> 
+	  search directories.  NOTE: The <parameter>-template</parameter>
 	  option overrides the template file for all types specified
           </para>
         </listitem>
@@ -156,7 +156,7 @@
         <term><parameter>-noreldefs</parameter></term>
         <listitem>
           <para>
-	  do not try to generate default relative definitions for 
+	  do not try to generate default relative definitions for
 	  <varname>*_ROOT</varname>, which come from environment variables
           </para>
         </listitem>
@@ -183,27 +183,27 @@
 	  previously <parameter>-static_only</parameter>.  Currently,
 	  <command>&mpc;</command> only supports generating dynamic projects
 	  or static projects, but not both during the same run.  To generate
-	  them both you must run <command>&mpc;</command> twice, once with the 
-	  <parameter>-static</parameter> option and once without.  
-	  Additionally, the <parameter>vc6</parameter>, 
-	  <parameter>em3</parameter>, <parameter>vc7</parameter>, 
+	  them both you must run <command>&mpc;</command> twice, once with the
+	  <parameter>-static</parameter> option and once without.
+	  Additionally, the <parameter>vc6</parameter>,
+	  <parameter>em3</parameter>, <parameter>vc7</parameter>,
 	  <parameter>vc71</parameter> and <parameter>vc8</parameter> project
-	  names will no longer automatically have 
+	  names will no longer automatically have
 	  <filename>_Static</filename> appended to the project name when
-	  generating static projects.  This can still be achieved by using the 
+	  generating static projects.  This can still be achieved by using the
 	  <parameter>-name_modifier</parameter> option.
 	  </para>
 	  <para>
 	  When generating static projects, inter-project dependencies will
-	  not be generated for libraries within <parameter>vc6</parameter>, 
-	  <parameter>em3</parameter>, <parameter>vc7</parameter>, 
+	  not be generated for libraries within <parameter>vc6</parameter>,
+	  <parameter>em3</parameter>, <parameter>vc7</parameter>,
 	  and <parameter>vc71</parameter>  workspaces.  The reason is due to
 	  the fact that each static library that depended upon another would
 	  be combined at the library creation stage, resulting in extremely
 	  large libraries.  Dependencies are handled correctly by vc8.  This
-	  behavior can be modified by setting the 
-	  <envar>MPC_DEPENDENCY_COMBINED_STATIC_LIBRARY</envar> environment 
-	  variable.  It will force <command>&mpc;</command> to generate 
+	  behavior can be modified by setting the
+	  <envar>MPC_DEPENDENCY_COMBINED_STATIC_LIBRARY</envar> environment
+	  variable.  It will force <command>&mpc;</command> to generate
 	  inter-project dependencies for libraries within a single workspace
           </para>
         </listitem>
@@ -272,13 +272,13 @@
         <term><parameter>-feature_file</parameter> <replaceable>file</replaceable></term>
         <listitem>
           <para>
-	  specifies the features file to read before processing.  These 
+	  specifies the features file to read before processing.  These
 	  feature names can be anything, but they should correspond
-	  to values used for the <property>requires</property> and 
-	  <property>avoids</property> keywords.  If a feature is required and 
-	  is not enabled then the project will not be created.  If a feature 
+	  to values used for the <property>requires</property> and
+	  <property>avoids</property> keywords.  If a feature is required and
+	  is not enabled then the project will not be created.  If a feature
 	  is to be avoided and it is enabled then the project will not be
-	  created.  The default feature file is 
+	  created.  The default feature file is
 	  <filename>default.features</filename> under the
 	  <filename class="directory">config</filename> directory
           </para>
@@ -299,7 +299,7 @@
         <listitem>
           <para>
 	  specifies the feature list to set before processing.  Values
-	  specified by this option overwrite values from features files, 
+	  specified by this option overwrite values from features files,
 	  e.g. <parameter>-features "qos=1,ssl=0"</parameter>
           </para>
         </listitem>
@@ -322,7 +322,7 @@
         <listitem>
           <para>
 	  use this option to exclude directories or files when searching for
-          input files.  NOTE: This option has no effect when used with 
+          input files.  NOTE: This option has no effect when used with
 	  <command>&mpc;</command>
           </para>
         </listitem>
@@ -331,13 +331,13 @@
         <term><parameter>-name_modifier</parameter> <replaceable>pattern</replaceable></term>
         <listitem>
           <para>
-	  modify generated workspace or project names.  The 
+	  modify generated workspace or project names.  The
 	  <replaceable>pattern</replaceable> passed
 	  to this parameter will have the <filename>*</filename> portion
 	  replaced with the actual output name.  For example
 	  <parameter>-name_modifier '*_Static'</parameter> will result in all
-	  workspace and project names ending in <filename>_Static</filename>, 
-	  e.g. <filename>FOO_Static.dsw</filename> and 
+	  workspace and project names ending in <filename>_Static</filename>,
+	  e.g. <filename>FOO_Static.dsw</filename> and
 	  <filename>FOO_Static.dsp</filename>
           </para>
         </listitem>
@@ -347,8 +347,8 @@
         <listitem>
           <para>
 	  when used in conjunction with <parameter>-name_modifier</parameter>,
-	  it applies the name modifier to the project name also.  NOTE: this 
-	  option has no effect without the 
+	  it applies the name modifier to the project name also.  NOTE: this
+	  option has no effect without the
 	  <parameter>-name_modifier</parameter> option
           </para>
         </listitem>
@@ -384,18 +384,18 @@
         <term><parameter>-language cplusplus | csharp | java | vb</parameter></term>
         <listitem>
           <para>
-	  specify the language preference.  The default is 
+	  specify the language preference.  The default is
 	  <parameter>cplusplus</parameter>
           </para>
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><parameter>-type automake | bds | bmake | cc | em3 | ghs | html | make | nmake | sle | vc6 | vc7 | vc71 | vc8</parameter></term>
+        <term><parameter>-type automake | bds4 | bmake | cc | em3 | ghs | html | make | nmake | sle | vc6 | vc7 | vc71 | vc8</parameter></term>
         <listitem>
           <para>
 	  specifies the type of project file to generate.  This option can
 	  be used multiple times to generate multiple types.  There is no
-          longer a default.  NOTE: The <parameter>-ti</parameter> 
+          longer a default.  NOTE: The <parameter>-ti</parameter>
 	  option overrides the template input file for all types specified
           </para>
         </listitem>
@@ -489,15 +489,15 @@
             <term><envar>logging</envar></term>
             <listitem>
               <para>
-              if this setting contains 
+              if this setting contains
               <property>info=1</property>, informational
-              messages will be printed.  If it contains 
+              messages will be printed.  If it contains
               <property>warn=1</property>, warning
-              messages will be printed.  If it contains 
+              messages will be printed.  If it contains
               <property>diag=1</property>, diagnostic
-              messages will be printed.  If it contains 
+              messages will be printed.  If it contains
               <property>debug=1</property>, debug
-              messages will be printed.  And lastly, if it contains 
+              messages will be printed.  And lastly, if it contains
               <property>detail=1</property>,
               detail messages will be printed.  If it contains none of these,
               <command>&mpc;</command> will not print out any information or
@@ -511,7 +511,7 @@
             <listitem>
               <para>
               if this is set, <command>&mwc;</command> will warn the user about
-              references to projects in the <property>after</property> keyword 
+              references to projects in the <property>after</property> keyword
               that have not been processed
               </para>
             </listitem>
@@ -538,7 +538,7 @@
             <term><envar>MPC_GHS_UNIX</envar></term>
             <listitem>
               <para>
-              this environment variable is only meaningful when generating 
+              this environment variable is only meaningful when generating
               the ghs project files.  By default, the ghs type assumes that it is for
               Windows.  If this is not the case, set this environment variable
               prior to running MPC
