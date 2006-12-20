@@ -1,3 +1,9 @@
+Wed Dec 20 13:02:13 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/BDS4ProjectCreator.pm:
+        * modules/BDS4WorkspaceCreator.pm:
+          Some more rename of bds to bds4
+
 Wed Dec 20 09:25:13 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/BDSProjectCreator.pm:
