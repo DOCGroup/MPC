@@ -1,7 +1,7 @@
-package BDSWorkspaceCreator;
+package BDS4WorkspaceCreator;
 
 # ************************************************************
-# Description   : A BDS Workspace Creator
+# Description   : A BDS 4 Workspace Creator
 # Author        : Johnny Willemsen
 # Create Date   : 14/12/2005
 # ************************************************************
@@ -12,7 +12,7 @@ package BDSWorkspaceCreator;
 
 use strict;
 
-use BDSProjectCreator;
+use BDS4ProjectCreator;
 use WorkspaceCreator;
 
 use vars qw(@ISA);

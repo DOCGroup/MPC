@@ -1,7 +1,7 @@
-package BDSProjectCreator;
+package BDS4ProjectCreator;
 
 # ************************************************************
-# Description   : The Borland Developer Studio Project Creator
+# Description   : The Borland Developer Studio 4 Project Creator
 # Author        : Johnny Willemsen
 # Create Date   : 14/12/2005
 # ************************************************************
@@ -37,13 +37,13 @@ sub project_file_extension {
 
 sub get_dll_exe_template_input_file {
   #my($self) = shift;
-  return 'bdsexe';
+  return 'bds4exe';
 }
 
 
 sub get_dll_template_input_file {
   #my($self) = shift;
-  return 'bdsdll';
+  return 'bds4dll';
 }
 
 
