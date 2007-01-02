@@ -1074,7 +1074,7 @@ sub process_component_line {
     if ($exc) {
       $$grname = $current;
       @exclude{@files} = (@files);
-      @$excarr = @files;
+      push(@$excarr, @files);
     }
     else {
       ## Set the flag overrides for each file
