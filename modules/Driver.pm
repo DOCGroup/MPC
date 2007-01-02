@@ -49,6 +49,8 @@ sub new {
   $self->{'path'}     = $path;
   $self->{'basepath'} = ::getBasePath();
   $self->{'name'}     = $name;
+  $self->{'type'}     = (lc($self->{'name'}) eq 'mwc.pl' ?
+                                'WorkspaceCreator' : 'ProjectCreator');
   $self->{'types'}    = {};
   $self->{'creators'} = \@creators;
   $self->{'reldefs'}  = {};
@@ -60,10 +62,7 @@ sub new {
 
 sub locate_default_type {
   my($self) = shift;
-  my($name) = lc(shift) .
-              (lc($self->{'name'}) eq 'mwc.pl' ?
-                             'workspacecreator' : 'projectcreator') .
-              '.pm';
+  my($name) = lc(shift) . lc($self->{'type'}) . '.pm';
   my($fh)   = new FileHandle();
 
   foreach my $dir (@INC) {
@@ -108,8 +107,8 @@ sub locate_dynamic_directories {
 sub add_dynamic_creators {
   my($self) = shift;
   my($dirs) = shift;
-  my($type) = (lc($self->{'name'}) eq 'mwc.pl' ?
-                             'WorkspaceCreator' : 'ProjectCreator');
+  my($type) = $self->{'type'};
+
   foreach my $dir (@$dirs) {
     my($fh) = new FileHandle();
     if (opendir($fh, "$dir/modules")) {
