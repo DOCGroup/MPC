@@ -24,6 +24,7 @@ use vars qw(@ISA);
 
 my(%guids) = ('cplusplus' => '8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942',
               'csharp'    => 'FAE04EC0-301F-11D3-BF4B-00C04F79EFBC',
+              'java'      => 'E6FDF86B-F3D1-11D4-8576-0002A516ECE8',
               'vb'        => 'F184B08F-C81C-45F6-A57F-5ABD9991F28F',
               'website'   => 'E24C65DC-7377-472B-9ABA-BC803B73C61A',
              );

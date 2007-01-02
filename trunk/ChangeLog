@@ -1,3 +1,24 @@
+Tue Jan  2 18:05:52 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/zzip.mpb:
+
+          Since zzip requires zlib, inherit from the zlib base project and
+          and have requires += zlib.
+
+        * modules/Driver.pm:
+
+          Simplified determination of workspace or project creators.
+
+        * modules/VC7ProjectCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/VC8ProjectCreator.pm:
+        * templates/vc7java.mpd:
+        * templates/vc7java.mpt:
+        * templates/vc8java.mpd:
+        * templates/vc8java.mpt:
+
+          Added java support for vc7, vc71 and vc8.
+
 Wed Dec 20 13:02:13 2006  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/BDS4ProjectCreator.pm:
@@ -41,7 +62,7 @@ Tue Dec 19 10:37:10 2006  J.T. Conklin  <jtc@acorntoolworks.com>
         * templates/automake.mpd:
 
           Fix extra whitespace in generated Makefile.am's to match
-	  what was generated before multiple configuration support
+          what was generated before multiple configuration support
           was added.
 
 Tue Dec 19 18:02:21 UTC 2006  Chad Elliott  <elliott_c@ociweb.com>
