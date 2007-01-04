@@ -56,7 +56,8 @@ sub workspace_preamble {
   my($name) = shift;
   my($id)   = shift;
 
-  print $fh '#----------------------------------------------------------------------------', $crlf,
+  $self->print_workspace_comment($fh,
+            '#----------------------------------------------------------------------------', $crlf,
             '#       ', $name, $crlf,
             '#', $crlf,
             '# ', $id, $crlf,
@@ -68,7 +69,7 @@ sub workspace_preamble {
             '# ', $self->create_command_line_string($0, @ARGV), $crlf,
             '#', $crlf,
             '#----------------------------------------------------------------------------', $crlf,
-            $crlf;
+            $crlf);
 }
 
 

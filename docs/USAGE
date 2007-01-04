@@ -19,7 +19,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-expand_vars] [-features <feature definitions>] [-gendot]
               [-exclude <directories>] [-name_modifier <pattern>]
               [-apply_project] [-version] [-into <directory>]
-              [-gfeature_file <file name>]
+              [-gfeature_file <file name>] [-nocomments]
               [-language <cplusplus | csharp | java | vb>]
               [-type <automake | bds4 | bmake | cc | em3 | ghs | html | make |
                       nmake | sle | vc6 | vc7 | vc71 | vc8>]
@@ -60,6 +60,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        actual output name.  Ex. *_Static
        -apply_project  When used in conjunction with -name_modifier, it applies
                        the name modifier to the project name also.
+       -nocomments     Do not place comments in the generated files.
        -noreldefs      Do not try to generate default relative definitions.
        -notoplevel     Do not generate the top level target file.  Files
                        are still process, but no top level file is created.

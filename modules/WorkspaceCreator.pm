@@ -77,6 +77,7 @@ sub new {
   my($use_env)    = shift;
   my($expandvars) = shift;
   my($gendot)     = shift;
+  my($comments)   = shift;
   my($self)       = Creator::new($class, $global, $inc,
                                  $template, $ti, $dynamic, $static,
                                  $relative, $addtemp, $addproj,
@@ -114,6 +115,7 @@ sub new {
   $self->{'generate_ins'}        = $genins;
   $self->{'verbose_ordering'}    = undef;
   $self->{'wctype'}              = $self->extractType("$self");
+  $self->{'workspace_comments'}  = $comments;
 
   if (defined $$exclude[0]) {
     my($type) = $self->{'wctype'};
@@ -2024,7 +2026,8 @@ sub project_creator {
                    $parameters{'language'},
                    $parameters{'use_env'},
                    $parameters{'expand_vars'},
-                   $self->{'gendot'});
+                   $self->{'gendot'},
+                   $parameters{'comments'});
 }
 
 
@@ -2252,6 +2255,18 @@ sub create_command_line_string {
     }
   }
   return $str;
+}
+
+
+sub print_workspace_comment {
+  my($self) = shift;
+  my($fh)   = shift;
+
+  if ($self->{'workspace_comments'}) {
+    foreach my $line (@_) {
+      print $fh $line;
+    }
+  }
 }
 
 

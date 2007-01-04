@@ -37,7 +37,8 @@ sub pre_workspace {
   my($crlf) = $self->crlf();
 
   print $fh '﻿', $crlf,
-            'Microsoft Visual Studio Solution File, Format Version 9.00', $crlf,
+            'Microsoft Visual Studio Solution File, Format Version 9.00', $crlf;
+  $self->print_workspace_comment($fh,
             '# Visual Studio 2005', $crlf,
             '# $Id$', $crlf,
             '#', $crlf,
@@ -45,7 +46,7 @@ sub pre_workspace {
             '# this file will be lost the next time it is generated.', $crlf,
             '#', $crlf,
             '# MPC Command:', $crlf,
-            '# ', $self->create_command_line_string($0, @ARGV), $crlf;
+            '# ', $self->create_command_line_string($0, @ARGV), $crlf);
 }
 
 sub adjust_names {
