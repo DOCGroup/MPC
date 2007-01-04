@@ -153,6 +153,14 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><parameter>-nocomments</parameter></term>
+        <listitem>
+          <para>
+	  do not place comments in the generated files
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term><parameter>-noreldefs</parameter></term>
         <listitem>
           <para>

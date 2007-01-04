@@ -34,7 +34,8 @@ sub pre_workspace {
   my($fh)   = shift;
   my($crlf) = $self->crlf();
 
-  print $fh 'Microsoft eMbedded Visual Tools Workspace File, Format Version 3.00', $crlf,
+  print $fh 'Microsoft eMbedded Visual Tools Workspace File, Format Version 3.00', $crlf;
+  $self->print_workspace_comment($fh,
             '#', $crlf,
             '# $Id$', $crlf,
             '#', $crlf,
@@ -43,7 +44,7 @@ sub pre_workspace {
             '#', $crlf,
             '# MPC Command:', $crlf,
             '# ', $self->create_command_line_string($0, @ARGV), $crlf,
-            $crlf;
+            $crlf);
 }
 
 
