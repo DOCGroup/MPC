@@ -47,7 +47,8 @@ sub pre_workspace {
   my($fh)   = shift;
   my($crlf) = $self->crlf();
 
-  print $fh '##  Process this file with automake to create Makefile.in', $crlf,
+  $self->print_workspace_comment($fh,
+            '##  Process this file with automake to create Makefile.in', $crlf,
             '##', $crlf,
             '## ', '$', 'Id', '$', $crlf,
             '##', $crlf,
@@ -55,7 +56,7 @@ sub pre_workspace {
             '## this file will be lost the next time it is generated.', $crlf,
             '##', $crlf,
             '## MPC Command:', $crlf,
-            '## ', $self->create_command_line_string($0, @ARGV), $crlf, $crlf;
+            '## ', $self->create_command_line_string($0, @ARGV), $crlf, $crlf);
 }
 
 

@@ -1,3 +1,36 @@
+Thu Jan  4 16:08:51 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * devtools/document_template.pl:
+
+          Changed the table style for the html output.
+
+        * docs/templates/vc7.txt:
+
+          Added the output_subdir definition.
+
+        * docs/templates/vc8.txt:
+
+          Began documenting the vc8 template.
+
+        * docs/MPC.sgml:
+        * docs/USAGE:
+        * modules/AutomakeWorkspaceCreator.pm:
+        * modules/BDS4WorkspaceCreator.pm:
+        * modules/Driver.pm:
+        * modules/EM3WorkspaceCreator.pm:
+        * modules/HTMLWorkspaceCreator.pm:
+        * modules/MakeWorkspaceBase.pm:
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/VC6WorkspaceCreator.pm:
+        * modules/VC71WorkspaceCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/VC8WorkspaceCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Added an option, -nocomments, which causes MPC to generate
+          workspaces without comments at the top.
+
 Tue Jan  2 20:07:32 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

@@ -53,7 +53,7 @@ sub printUsage {
                $spaces . "[-expand_vars] [-features <feature definitions>]\n" .
                $spaces . "[-exclude <directories>] [-name_modifier <pattern>]\n" .
                $spaces . "[-apply_project] [-version] [-into <directory>]\n" .
-               $spaces . "[-gfeature_file <file name>]\n" .
+               $spaces . "[-gfeature_file <file name>] [-nocomments]\n" .
                $spaces . "[-language <";
 
   my($olen) = length($spaces) + 12;
@@ -131,6 +131,7 @@ sub printUsage {
 "                       actual output name.  Ex. *_Static\n" .
 "       -apply_project  When used in conjunction with -name_modifier, it applies\n" .
 "                       the name modifier to the project name also.\n" .
+"       -nocomments     Do not place comments in the generated files.\n" .
 "       -noreldefs      Do not try to generate default relative definitions.\n" .
 "       -notoplevel     Do not generate the top level target file.  Files\n" .
 "                       are still process, but no top level file is created.\n" .
@@ -181,7 +182,7 @@ sub completion_command {
                "ti static noreldefs notoplevel feature_file use_env " .
                "value_template value_project make_coexistence language " .
                "hierarchy exclude name_modifier apply_project version " .
-               "expand_vars gfeature_file)/' " .
+               "expand_vars gfeature_file nocomments)/' " .
                "'c/dll:/f/' 'c/dll_exe:/f/' 'c/lib_exe:/f/' 'c/lib:/f/' " .
                "'n/-ti/(dll lib dll_exe lib_exe)/:' ";
 
@@ -232,6 +233,7 @@ sub options {
   my($hierarchy)  = 0;
   my($language)   = ($defaults ? $deflang : undef);
   my($dynamic)    = ($defaults ? 1 : undef);
+  my($comments)   = ($defaults ? 1 : undef);
   my($reldefs)    = ($defaults ? 1 : undef);
   my($toplevel)   = ($defaults ? 1 : undef);
   my($use_env)    = ($defaults ? 0 : undef);
@@ -391,6 +393,9 @@ sub options {
         $nmodifier = $nmod;
       }
     }
+    elsif ($arg eq '-nocomments') {
+      $comments = 0;
+    }
     elsif ($arg eq '-noreldefs') {
       $reldefs = 0;
     }
@@ -529,6 +534,7 @@ sub options {
           'features'      => \@features,
           'include'       => \@include,
           'input'         => \@input,
+          'comments'      => $comments,
           'creators'      => \@creators,
           'baseprojs'     => \@baseprojs,
           'template'      => $template,

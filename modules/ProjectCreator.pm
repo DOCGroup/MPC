@@ -258,6 +258,7 @@ sub new {
   my($use_env)    = shift;
   my($expandvars) = shift;
   my($gendot)     = shift;
+  my($comments)   = shift;
   my($self)       = $class->SUPER::new($global, $inc,
                                        $template, $ti, $dynamic, $static,
                                        $relative, $addtemp, $addproj,
