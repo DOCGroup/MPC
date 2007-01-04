@@ -34,11 +34,12 @@ sub pre_workspace {
   my($crlf) = $self->crlf();
 
   print $fh '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">', $crlf,
-            '<html>', $crlf,
+            '<html>', $crlf;
+  $self->print_workspace_comment($fh,
             '<!-- $Id$ -->', $crlf,
             '<!-- MPC Command: -->', $crlf,
-            '<!-- ', $self->create_command_line_string($0, @ARGV),' -->', $crlf,
-            '<head>', $crlf,
+            '<!-- ', $self->create_command_line_string($0, @ARGV),' -->', $crlf);
+  print $fh '<head>', $crlf,
             '<title>', $self->get_workspace_name(), '</title>', $crlf,
             '  <style type="text/css">', $crlf,
             '    a {font: 12pt bold verdana, lucida; color: white; padding: 3px;}', $crlf,

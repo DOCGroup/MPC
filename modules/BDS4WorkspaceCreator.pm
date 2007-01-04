@@ -40,11 +40,12 @@ sub pre_workspace {
   my($fh)   = shift;
   my($crlf) = $self->crlf();
 
-  print $fh '﻿<?xml version="1.0" encoding="utf-8"?>', $crlf,
+  print $fh '﻿<?xml version="1.0" encoding="utf-8"?>', $crlf;
+  $self->print_workspace_comment($fh,
             '<!-- $Id$ -->', $crlf,
             '<!-- MPC Command -->', $crlf,
             '<!-- ', $self->create_command_line_string($0, @ARGV), ' -->',
-            $crlf;
+            $crlf);
 }
 
 

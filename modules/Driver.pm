@@ -24,9 +24,8 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my($index)    = 0;
-my(@progress) = ('|', '/', '-', '\\');
-
+my($index)     = 0;
+my(@progress)  = ('|', '/', '-', '\\');
 my(%valid_cfg) = ('command_line'     => 1,
                   'default_type'     => 1,
                   'dynamic_types'    => 1,
@@ -531,7 +530,8 @@ sub run {
                                 $options->{'language'},
                                 $options->{'use_env'},
                                 $options->{'expand_vars'},
-                                $options->{'gendot'});
+                                $options->{'gendot'},
+                                $options->{'comments'});
 
       ## Update settings based on the configuration file
       $creator->set_verbose_ordering($cfg->get_value('verbose_ordering'));
