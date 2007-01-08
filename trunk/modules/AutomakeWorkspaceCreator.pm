@@ -330,17 +330,40 @@ sub write_comps {
     my($liblocs) = $self->get_lib_locations();
     my($here) = $self->getcwd();
     my($start) = $self->getstartdir();
+    my(%explicit) = ();
     foreach my $local (reverse @locals) {
-
       if (open($pfh, "$outdir/$local")) {
         print $fh "## $local", $crlf;
 
         my($look_for_libs) = 0;
         my($prev_line) = undef;
+        my($in_explicit) = undef;
 
         while (<$pfh>) {
           # Don't emit comments
           next if (/^#/);
+
+          # Check for explicit targets
+          if ($in_explicit) {
+            if (/^\t/) {
+              next;
+            }
+            else {
+              $in_explicit = undef;
+            }
+          }
+          elsif (/^([\w\/\.\-\s]+):/) {
+            my($target) = $1;
+            $target =~ s/^\s+//;
+            $target =~ s/\s+$//;
+            if (defined $explicit{$target}) {
+              $in_explicit = 1;
+              next;
+            }
+            else {
+              $explicit{$target} = 1;
+            }
+          }
 
           if ($convert_header_name) {
             if ($local =~ /Makefile\.(.*)\.am/) {
