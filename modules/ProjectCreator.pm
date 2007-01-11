@@ -274,8 +274,8 @@ sub new {
   $self->{'project_info'}          = [];
   $self->{'lib_locations'}         = {};
   $self->{'reading_parent'}        = [];
-  $self->{'dexe_template_input'}   = {};
-  $self->{'lexe_template_input'}   = {};
+  $self->{'dll_exe_template_input'}= {};
+  $self->{'lib_exe_template_input'}= {};
   $self->{'lib_template_input'}    = {};
   $self->{'dll_template_input'}    = {};
   $self->{'flag_overrides'}        = {};
@@ -1740,7 +1740,7 @@ sub read_template_input {
 
   if ($self->exe_target()) {
     if ($self->get_static() == 1) {
-      $tag = 'lexe_template_input';
+      $tag = 'lib_exe_template_input';
       if (!defined $self->{$tag}->{$lang}) {
         if (defined $$ti{'lib_exe'}) {
           $file = $$ti{'lib_exe'};
@@ -1752,7 +1752,7 @@ sub read_template_input {
       }
     }
     else {
-      $tag = 'dexe_template_input';
+      $tag = 'dll_exe_template_input';
       if (!defined $self->{$tag}->{$lang}) {
         if (defined $$ti{'dll_exe'}) {
           $file = $$ti{'dll_exe'};
@@ -1792,15 +1792,15 @@ sub read_template_input {
   }
 
   if (defined $file) {
-    my($file) = $self->search_include_path("$file.$TemplateInputExtension");
-    if (defined $file) {
+    my($tfile) = $self->search_include_path("$file.$TemplateInputExtension");
+    if (defined $tfile) {
       $self->{$tag}->{$lang} = new TemplateInputReader($self->get_include_path());
-      ($status, $errorString) = $self->{$tag}->{$lang}->read_file($file);
+      ($status, $errorString) = $self->{$tag}->{$lang}->read_file($tfile);
     }
     else {
       if ($override) {
         $status = 0;
-        $errorString = 'Unable to locate template input file.';
+        $errorString = "Unable to locate template input file: $file";
       }
     }
   }
@@ -4274,10 +4274,10 @@ sub get_template_input {
   ## checking for exe target and then defaulting to a lib target
   if ($self->exe_target()) {
     if ($self->get_static() == 1) {
-      return $self->{'lexe_template_input'}->{$lang};
+      return $self->{'lib_exe_template_input'}->{$lang};
     }
     else {
-      return $self->{'dexe_template_input'}->{$lang};
+      return $self->{'dll_exe_template_input'}->{$lang};
     }
   }
 
@@ -4662,6 +4662,17 @@ sub restore_state_helper {
       ## 'features' is restored first in restore_state().
       $self->{'feature_parser'} = $self->create_feature_parser(
                                            $self->get_features(), $new);
+    }
+  }
+  elsif ($skey eq 'ti') {
+    my($lang) = $self->get_language();
+    my(@keys) = keys %$old;
+    @keys = keys %$new if (!defined $keys[0]);
+    foreach my $key (@keys) {
+      if (!defined $$old{$key} || !defined $$new{$key} ||
+          $$old{$key} ne $$new{$key}) {
+        $self->{$key . '_template_input'}->{$lang} = undef;
+      }
     }
   }
 }
