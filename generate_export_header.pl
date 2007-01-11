@@ -112,7 +112,7 @@ elsif (index($name, '-') == 0) {
 }
 
 if (!defined $output) {
-  $output = $name . '_' . (substr($name, 0, 1) =~ /[A-Z]/ ? 'E' : 'e') .
+  $output = $name . '_' . ($name =~ /^[A-Z]/ ? 'E' : 'e') .
             'xport.h';
 }
 
