@@ -1,3 +1,13 @@
+Fri Jan 12 18:24:26 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/vc8csharp.mpd:
+
+          Modified the template to use the basename of LastGenOutput and
+          DependentUpon settings.  Also, when a .settings file is listed as
+          a resx file it will have the SettingsSingleFileGenerator instead
+          of the ResXFileCodeGenerator when the generates_source template
+          variable is set.
+
 Fri Jan 12 15:24:27 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:

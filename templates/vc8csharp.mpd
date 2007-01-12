@@ -114,8 +114,12 @@
       <SubType><%flag_overrides(resx_file, subtype)%></SubType>
 <%endif%>
 <%if(flag_overrides(resx_file, generates_source))%>
+<%if(ends_with(resx_file, \.settings))%>
+      <Generator>SettingsSingleFileGenerator</Generator>
+<%else%>
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput><%noextension(resx_file)%>.Designer.cs</LastGenOutput>
+<%endif%>
+      <LastGenOutput><%basenoextension(resx_file)%>.Designer.cs</LastGenOutput>
 <%endif%>
 <%if(flag_overrides(resx_file, dependent_upon))%>
       <DependentUpon><%flag_overrides(resx_file, dependent_upon)%></DependentUpon>
@@ -125,7 +129,7 @@
     <Compile Include="<%noextension(resx_file)%>.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon><%resx_file%></DependentUpon>
+      <DependentUpon><%basename(resx_file)%></DependentUpon>
     </Compile>
 <%endif%>
 <%endfor%>
