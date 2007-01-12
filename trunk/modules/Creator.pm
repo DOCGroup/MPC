@@ -349,14 +349,19 @@ sub parse_scope {
       my(@values) = ();
       if (defined $validNames && $self->parse_assignment($line, \@values)) {
         if (defined $$validNames{$values[1]}) {
-          if ($values[0] == 0) {
-            $self->process_assignment($values[1], $values[2], $flags);
-          }
-          elsif ($values[0] == 1) {
-            $self->process_assignment_add($values[1], $values[2], $flags);
-          }
-          elsif ($values[0] == -1) {
-            $self->process_assignment_sub($values[1], $values[2], $flags);
+          ## If $type is not defined, we don't even need to bother with
+          ## processing the assignment as we will be throwing the value
+          ## away anyway.
+          if (defined $type) {
+            if ($values[0] == 0) {
+              $self->process_assignment($values[1], $values[2], $flags);
+            }
+            elsif ($values[0] == 1) {
+              $self->process_assignment_add($values[1], $values[2], $flags);
+            }
+            elsif ($values[0] == -1) {
+              $self->process_assignment_sub($values[1], $values[2], $flags);
+            }
           }
         }
         else {
@@ -575,6 +580,28 @@ sub process_assignment {
 }
 
 
+sub addition_core {
+  my($self)   = shift;
+  my($name)   = shift;
+  my($value)  = shift;
+  my($nval)   = shift;
+  my($assign) = shift;
+
+  if (defined $nval) {
+    if ($self->preserve_assignment_order($name)) {
+      $nval .= " $value";
+    }
+    else {
+      $nval = "$value $nval";
+    }
+  }
+  else {
+    $nval = $value;
+  }
+  $self->process_assignment($name, $nval, $assign, 1);
+}
+
+
 sub process_assignment_add {
   my($self)   = shift;
   my($name)   = shift;
@@ -589,36 +616,19 @@ sub process_assignment_add {
 
   ## If there is anything to add, then do so
   if ($value ne '') {
-    if (defined $nval) {
-      if ($self->preserve_assignment_order($name)) {
-        $nval .= " $value";
-      }
-      else {
-        $nval = "$value $nval";
-      }
-    }
-    else {
-      $nval = $value;
-    }
-    $self->process_assignment($name, $nval, $assign);
+    $self->addition_core($name, $value, $nval, $assign);
   }
 }
 
 
-sub process_assignment_sub {
+sub subtraction_core {
   my($self)   = shift;
   my($name)   = shift;
   my($value)  = shift;
+  my($nval)   = shift;
   my($assign) = shift;
-  my($nval)   = $self->get_assignment_for_modification($name, $assign);
 
   if (defined $nval) {
-    ## Remove double quotes if there are any
-    $value =~ s/^\"(.*)\"$/$1/;
-
-    ## Escape any regular expression special characters
-    $value = $self->escape_regex_special($value);
-
     my($last)  = 1;
     my($found) = undef;
     for(my $i = 0; $i <= $last; $i++) {
@@ -637,7 +647,7 @@ sub process_assignment_sub {
         ## or at the end of the line (single values are always at the end
         ## of the line).
         if ($nval =~ s/$re\s+// || $nval =~ s/$re$//) {
-          $self->process_assignment($name, $nval, $assign);
+          $self->process_assignment($name, $nval, $assign, -1);
           $found = 1;
           last;
         }
@@ -645,6 +655,23 @@ sub process_assignment_sub {
       last if ($found);
     }
   }
+}
+
+
+sub process_assignment_sub {
+  my($self)   = shift;
+  my($name)   = shift;
+  my($value)  = shift;
+  my($assign) = shift;
+  my($nval)   = $self->get_assignment_for_modification($name, $assign);
+
+  ## Remove double quotes if there are any
+  $value =~ s/^\"(.*)\"$/$1/;
+
+  ## Escape any regular expression special characters
+  $value = $self->escape_regex_special($value);
+
+  $self->subtraction_core($name, $value, $nval, $assign);
 }
 
 
