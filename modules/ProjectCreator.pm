@@ -340,11 +340,31 @@ sub read_global_configuration {
 }
 
 
+sub convert_to_template_assignment {
+  my($self)       = shift;
+  my($name)       = shift;
+  my($value)      = shift;
+  my($calledfrom) = shift;
+  
+  ## If the value we are going to set for $name has been used as a
+  ## scoped template variable, we need to hijack the whole assignment
+  ## and turn it into a template variable assignment.
+  my($modified)  = undef;
+  my($atemp) = $self->get_addtemp(); 
+  foreach my $key (grep(/::$name$/, keys %$atemp)) {
+    $modified = 1;
+    $self->update_template_variable(0, $calledfrom, $key, $value);
+  }
+  return $modified;
+}
+
+
 sub process_assignment {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($value)  = shift;
-  my($assign) = shift;
+  my($self)       = shift;
+  my($name)       = shift;
+  my($value)      = shift;
+  my($assign)     = shift;
+  my($calledfrom) = shift || 0;
 
   ## Support the '*' mechanism as in the project name, to allow
   ## the user to correctly depend on another project within the same
@@ -363,6 +383,12 @@ sub process_assignment {
       $value = $self->replace_parameters($value, $self->{'command_subs'});
     }
   }
+
+  if ($calledfrom == 0 &&
+      $self->convert_to_template_assignment($name, $value, $calledfrom)) {
+    return;
+  }
+
   $self->SUPER::process_assignment($name, $value, $assign);
 
   ## Support keyword mapping here only at the project level scope. The
@@ -375,6 +401,32 @@ sub process_assignment {
                                      $$mapped[1], $value,
                                      $self->{'generated_exts'}->{$$mapped[0]});
     }
+  }
+}
+
+
+sub addition_core {
+  my($self)   = shift;   
+  my($name)   = shift;
+  my($value)  = shift;
+  my($nval)   = shift;
+  my($assign) = shift;
+
+  if (!$self->convert_to_template_assignment($name, $value, 1)) {
+    $self->SUPER::addition_core($name, $value, $nval, $assign);
+  }
+}
+
+
+sub subtraction_core {                                           
+  my($self)   = shift;
+  my($name)   = shift;
+  my($value)  = shift;
+  my($nval)   = shift;
+  my($assign) = shift;
+
+  if (!$self->convert_to_template_assignment($name, $value, -1)) {
+    $self->SUPER::subtraction_core($name, $value, $nval, $assign);
   }
 }
 
@@ -883,6 +935,52 @@ sub parse_scoped_assignment {
 }
 
 
+sub update_template_variable {
+  my($self)   = shift;
+  my($check)  = shift;
+  my(@values) = @_;
+
+  ## Save the addtemp state if we haven't done so before
+  if (!defined $self->{'addtemp_state'}) {
+    my(%state) = $self->save_state('addtemp');
+    $self->{'addtemp_state'} = \%state;
+  }
+
+  ## Now modify the addtemp values
+  my($atemp) = $self->get_addtemp();
+  $self->information("'$values[1]' was used as a template modifier.");
+
+  if ($check && !defined $atemp->{$values[1]}) {
+    my($name) = $values[1];
+    if ($name =~ s/.*:://) {
+      my($value) = $self->get_assignment($name);
+      if (defined $value) {
+        $atemp->{$values[1]} = [[0, $value]];
+      }
+    }
+  }
+
+  if (defined $atemp->{$values[1]}) {
+    ## If there are template variable settings, then we need to add
+    ## this new one to the end of the settings that did not come from
+    ## the command line.  That way, adjust_value() does not need to
+    ## sort the values (and have knowledge about which came from the
+    ## command line and which didn't).
+    my($max) = scalar(@{$atemp->{$values[1]}});
+    for(my $i = 0; $i < $max; $i++) {
+      if ($atemp->{$values[1]}->[$i]->[2]) {
+        splice(@{$atemp->{$values[1]}}, $i, 0, [$values[0], $values[2]]);
+        return 1, undef;
+      }
+    }
+  }
+  else {
+    $atemp->{$values[1]} = [];
+  }
+  push(@{$atemp->{$values[1]}}, [$values[0], $values[2]]);
+}
+
+
 sub handle_unknown_assignment {
   my($self)   = shift;
   my($type)   = shift;
@@ -894,19 +992,7 @@ sub handle_unknown_assignment {
 
   ## If $type is not defined, then we are skipping this section
   if (defined $type) {
-    ## Save the addtemp state if we haven't done so before
-    if (!defined $self->{'addtemp_state'}) {
-      my(%state) = $self->save_state('addtemp');
-      $self->{'addtemp_state'} = \%state;
-    }
-
-    ## Now modify the addtemp values
-    $self->information("'$values[1]' was used as a template modifier.");
-
-    if (!defined $self->get_addtemp()->{$values[1]}) {
-      $self->get_addtemp()->{$values[1]} = [];
-    }
-    push(@{$self->get_addtemp()->{$values[1]}}, [$values[0], $values[2]]);
+    $self->update_template_variable(1, @values);
   }
 
   return 1, undef;
@@ -4343,15 +4429,7 @@ sub adjust_value {
                       ($self->{'valid_names'}->{$base} & 0x04) == 0);
       ## Sort these values so that command line specified values are
       ## evaluated last
-      foreach my $val (sort { if ((defined $$a[2] && defined $$b[2]) ||
-                                  (!defined $$a[2] && !defined $$b[2])) {
-                                return 0;
-                              }
-                              if (defined $$a[2]) {
-                                return 1;
-                              }
-                              return -1;
-                            } @{$atemp->{lc($name)}}) {
+      foreach my $val (@{$atemp->{lc($name)}}) {
         if ($replace && index($$val[1], '<%') >= 0) {
           $$val[1] = $self->replace_parameters($$val[1],
                                                $self->{'command_subs'});

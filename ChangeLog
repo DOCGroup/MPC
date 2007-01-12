@@ -1,3 +1,12 @@
+Fri Jan 12 15:24:27 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where mixing project variables and scoped project
+          variables would result in only the values set as scoped project
+          variables being used.
+
 Thu Jan 11 19:19:55 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/swig_php.mpb:
