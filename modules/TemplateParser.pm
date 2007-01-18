@@ -56,6 +56,7 @@ my(%keywords) = ('if'              => 0,
                  'starts_with'     => 5,
                  'ends_with'       => 5,
                  'contains'        => 5,
+                 'remove_from'     => 5,
                  'compares'        => 5,
                  'duplicate_index' => 5,
                  'transdir'        => 5,
@@ -914,6 +915,64 @@ sub handle_contains {
 
   if (defined $str) {
     my($val) = $self->doif_contains([$str]);
+
+    if (defined $val) {
+      $self->append_current($val);
+    }
+    else {
+      $self->append_current(0);
+    }
+  }
+}
+
+
+sub get_remove_from {
+  my($self) = shift;
+  my($str)  = shift;
+  return $self->doif_remove_from([$str]);
+}
+
+
+sub doif_remove_from {
+  my($self) = shift;
+  my($val)  = shift;
+
+  if (defined $val) {
+    ## $source should be a component name (e.g., source_files,
+    ## header_files, etc.)  $target is a variable name
+    ## $pattern and $replace are optional; $pattern is a regular
+    ## expression and $replace is what to replace the regular expression
+    ## with if a match is made.
+    my($source, $target,
+       $pattern, $replace) = $self->split_parameters("@$val");
+    if (defined $source && defined $target &&
+        defined $self->{'values'}->{$source}) {
+      my($tval) = $self->get_value_with_default($target);
+      if (defined $tval) {
+        if (defined $pattern) {
+          $replace = '' if (!defined $replace);
+          $tval =~ s/$pattern/$replace/;
+        }
+        my($max) = scalar(@{$self->{'values'}->{$source}});
+        for(my $i = 0; $i < $max; $i++) {
+          if ($self->{'values'}->{$source}->[$i] eq $tval) {
+            splice(@{$self->{'values'}->{$source}}, $i, 1);
+            return 1;
+          }
+        }
+      }
+    }
+  }
+  return undef;
+}
+
+
+sub handle_remove_from {
+  my($self) = shift;
+  my($str)  = shift;
+
+  if (defined $str) {
+    my($val) = $self->doif_remove_from([$str]);
 
     if (defined $val) {
       $self->append_current($val);
