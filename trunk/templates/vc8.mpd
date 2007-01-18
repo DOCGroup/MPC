@@ -217,7 +217,7 @@
 				CompileAs="<%CompileAs%>"
 <%endif%>
 <%if(DisableSpecificWarnings)%>
-				DisableSpecificWarnings="<%DisableSpecificWarnings%>"
+				DisableSpecificWarnings="<%foreach(DisableSpecificWarnings)%><%DisableSpecificWarning%><%fornotlast(";")%><%endfor%>"
 <%endif%>
 <%if(ForcedIncludeFiles)%>
 				ForcedIncludeFiles="<%ForcedIncludeFiles%>"
