@@ -3054,12 +3054,14 @@ sub list_generated_file {
     ## length of the basename $file because they couldn't possibly match if
     ## they weren't.
     if (length($self->mpc_basename($gen)) <= $blen) {
-      my($needs_dot) = (index($file, '.') == -1);
       foreach my $created ($self->generated_filenames($gen, $gentype,
                                                       $tag, $input)) {
-        if (index($created,
-                  $file . ($needs_dot &&
-                           index($created, '.') != -1 ? '.' : '')) != -1) {
+        ## $gen is a file that has a custom definition that generates
+        ## files of the type $tag.  The $file passed in is of type
+        ## $gentype and, as far as I can tell, $created will always be
+        ## longer or of the same length of $file.  It doesn't really
+        ## matter if $file contains a '.' or not.
+        if (index($created, $file) != -1) {
           if (defined $ofile) {
             $created = $self->prepend_gendir($created, $ofile, $gentype);
           }
