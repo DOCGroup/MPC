@@ -1,3 +1,22 @@
+Thu Jan 18 19:57:42 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/TemplateParser.pm:
+
+          Provide a new tmeplate function, remove_from, that will find a
+          particular name in any of the valid component sets (e.g.,
+          source_files, header_files, etc.) and remove it from the list.
+          This is used in the change below.
+
+        * templates/vc8csharp.mpd:
+
+          If a source file is of the 'subtype' Form or Component, there may
+          be corresponding .Designer.cs and .resx files that are dependent
+          upon the source file.  If this is the case, the .Designer.cs and
+          .resx files will automatically be marked as dependent upon the
+          originating source file.  In order for this to happen though, the
+          .Designer.cs and .resx files must be in the MPC project either
+          implicitly or explicitly.
+
 Thu Jan 18 16:44:51 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
