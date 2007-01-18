@@ -1,3 +1,21 @@
+Thu Jan 18 14:24:07 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/swig_perl.mpb:
+
+          Added a specific section for Windows based project types to add
+          $(PERL5_LIB) to lit_libs.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where output extensions of custom definitions that
+          contain text before the extension (e.g, _i.cpp) would cause files
+          to be skipped instead of automatically added.
+
+        * modules/TemplateParser.pm:
+
+          When splitting parameters, make sure that we match the regular
+          expression at the beginning of the line.
+
 Fri Jan 12 18:24:26 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/vc8csharp.mpd:
