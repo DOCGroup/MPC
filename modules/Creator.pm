@@ -631,6 +631,10 @@ sub subtraction_core {
   if (defined $nval) {
     my($last)  = 1;
     my($found) = undef;
+
+    ## Escape any regular expression special characters
+    $value = $self->escape_regex_special($value);
+
     for(my $i = 0; $i <= $last; $i++) {
       if ($i == $last) {
         ## If we did not find the string to subtract in the original
@@ -667,9 +671,6 @@ sub process_assignment_sub {
 
   ## Remove double quotes if there are any
   $value =~ s/^\"(.*)\"$/$1/;
-
-  ## Escape any regular expression special characters
-  $value = $self->escape_regex_special($value);
 
   $self->subtraction_core($name, $value, $nval, $assign);
 }
