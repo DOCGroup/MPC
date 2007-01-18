@@ -214,11 +214,11 @@ sub split_parameters {
   my($str)    = shift;
   my(@params) = ();
 
-  while($str =~ /(\w+\([^\)]+\))\s*,\s*(.*)/) {
+  while($str =~ /^(\w+\([^\)]+\))\s*,\s*(.*)/) {
     push(@params, $1);
     $str = $2;
   }
-  while($str =~ /([^,]+)\s*,\s*(.*)/) {
+  while($str =~ /^([^,]+)\s*,\s*(.*)/) {
     push(@params, $1);
     $str = $2;
   }
