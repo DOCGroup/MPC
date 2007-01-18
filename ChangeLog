@@ -1,3 +1,17 @@
+Thu Jan 18 16:44:51 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Fixed a bug when subtracting a value, the value was escaped for
+          use as a regular expression before calling subtraction_core().  It
+          should only happen inside of Creator::subtraction_core().
+
+        * templates/vc8.mpd:
+
+          The DisableSpecificWarnings template variable value should be
+          semi-colon separated.  I'm sure others that will need to change in
+          this same way.
+
 Thu Jan 18 14:24:07 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/swig_perl.mpb:
