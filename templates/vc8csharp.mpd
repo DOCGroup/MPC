@@ -90,12 +90,34 @@
   </ItemGroup>
   <ItemGroup>
 <%foreach(source_files)%>
+<%if(contains(flag_overrides(source_file, subtype), ^(Form|Component)$))%>
     <Compile Include="<%source_file%>">
-      <SubType><%if(flag_overrides(source_file, subtype))%><%flag_overrides(source_file, subtype)%><%else%>Code<%endif%></SubType>
+      <SubType><%flag_overrides(source_file, subtype)%></SubType>
 <%if(flag_overrides(source_file, dependent_upon))%>
       <DependentUpon><%flag_overrides(source_file, dependent_upon)%></DependentUpon>
 <%endif%>
     </Compile>
+<%if(remove_from(source_files, source_file, \.cs, .Designer.cs))%>
+    <Compile Include="<%noextension(source_file)%>.Designer.cs">
+      <DependentUpon><%basename(source_file)%></DependentUpon>
+    </Compile>
+<%endif%>
+<%if(remove_from(resx_files, source_file, \.cs, .resx))%>
+    <EmbeddedResource Include="<%noextension(source_file)%>.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon><%basename(source_file)%></DependentUpon>
+    </EmbeddedResource>
+<%endif%>
+<%endif%>
+<%endfor%>
+<%foreach(source_files)%>
+<%if(!contains(flag_overrides(source_file, subtype), ^(Form|Component)$))%>
+    <Compile Include="<%source_file%>">
+<%if(flag_overrides(source_file, dependent_upon))%>
+      <DependentUpon><%flag_overrides(source_file, dependent_upon)%></DependentUpon>
+<%endif%>
+    </Compile>
+<%endif%>
 <%endfor%>
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
