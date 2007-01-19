@@ -1257,7 +1257,7 @@ sub handle_else {
 
 sub handle_foreach {
   my($self)        = shift;
-  my($val)         = shift;
+  my($val)         = lc(shift);
   my($name)        = 'endfor';
   my($errorString) = undef;
 
