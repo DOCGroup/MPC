@@ -1,3 +1,10 @@
+Fri Jan 19 15:34:17 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where the foreach variable names were not processed
+          correctly if they were mixed case.
+
 Thu Jan 18 19:57:42 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/TemplateParser.pm:
