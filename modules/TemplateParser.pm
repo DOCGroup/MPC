@@ -322,6 +322,7 @@ sub get_value {
         if (defined $$uvalue[0]) {
           $value = $uvalue;
           $adjust = 0;
+          $fromprj = 1;
         }
 
         if (!defined $value) {
