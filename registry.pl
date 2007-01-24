@@ -26,11 +26,11 @@ my($MPC_ROOT) = $FindBin::Bin;
 $MPC_ROOT =~ s!/!\\!g;
 
 my($version) = '1.2';
-my(%types)   = ('nmake' => 'NMAKE',
-                'bmake' => 'Borland Make',
-                'vc6'   => 'DSW',
-                'vc71'  => 'SLN 7.1',
-                'vc8'   => 'SLN 8.0',
+my(%types)   = ('nmake' => ['NMAKE', 'NMAKE'],
+                'bmake' => ['Borland Make', 'Borland Make'],
+                'vc6'   => ['DSW', 'DSP'],
+                'vc71'  => ['SLN 7.1', 'VCPROJ 7.1'],
+                'vc8'   => ['SLN 8.0', 'VCPROJ 8.0'],
                );
 
 # ******************************************************************
@@ -85,6 +85,25 @@ sub set_mwc_command {
   $hash->{$key} = {'/' => "cmd /c \"$MPC_ROOT\\mwc.pl -type $type %L || pause\""};
 
   set_dir_command($type, $desc);
+}
+
+
+sub set_mpc_command {
+  my($type)  = shift;
+  my($desc)  = shift;
+  my($shell) = 'HKEY_CLASSES_ROOT/mpcfile/shell';
+  my($hash)  = $Registry->{$shell};
+
+  if (!defined $hash) {
+    $Registry->{$shell} = {};
+    $hash = $Registry->{$shell};
+  }
+
+  my($key) = 'MPC' . uc($type) . '/';
+  $hash->{$key} = {'/' => "MPC -> $desc"};
+
+  $key .= 'command/';
+  $hash->{$key} = {'/' => "cmd /c \"$MPC_ROOT\\mpc.pl -type $type %L || pause\""};
 }
 
 
@@ -146,7 +165,8 @@ set_ext_icon('mpc', 1);
 set_ext_icon('mpb', 1);
 
 foreach my $type (keys %types) {
-  set_mwc_command($type, $types{$type});
+  set_mwc_command($type, $types{$type}->[0]);
+  set_mpc_command($type, $types{$type}->[1]);
 }
 
 print "You may need to log out and then ",

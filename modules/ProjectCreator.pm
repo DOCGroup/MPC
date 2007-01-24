@@ -349,13 +349,10 @@ sub convert_to_template_assignment {
   ## If the value we are going to set for $name has been used as a
   ## scoped template variable, we need to hijack the whole assignment
   ## and turn it into a template variable assignment.
-  my($modified)  = undef;
   my($atemp) = $self->get_addtemp(); 
   foreach my $key (grep(/::$name$/, keys %$atemp)) {
-    $modified = 1;
     $self->update_template_variable(0, $calledfrom, $key, $value);
   }
-  return $modified;
 }
 
 
@@ -384,9 +381,8 @@ sub process_assignment {
     }
   }
 
-  if ($calledfrom == 0 &&
-      $self->convert_to_template_assignment($name, $value, $calledfrom)) {
-    return;
+  if ($calledfrom == 0) {
+    $self->convert_to_template_assignment($name, $value, $calledfrom);
   }
 
   $self->SUPER::process_assignment($name, $value, $assign);
@@ -412,9 +408,8 @@ sub addition_core {
   my($nval)   = shift;
   my($assign) = shift;
 
-  if (!$self->convert_to_template_assignment($name, $value, 1)) {
-    $self->SUPER::addition_core($name, $value, $nval, $assign);
-  }
+  $self->convert_to_template_assignment($name, $value, 1);
+  $self->SUPER::addition_core($name, $value, $nval, $assign);
 }
 
 
@@ -425,9 +420,8 @@ sub subtraction_core {
   my($nval)   = shift;
   my($assign) = shift;
 
-  if (!$self->convert_to_template_assignment($name, $value, -1)) {
-    $self->SUPER::subtraction_core($name, $value, $nval, $assign);
-  }
+  $self->convert_to_template_assignment($name, $value, -1);
+  $self->SUPER::subtraction_core($name, $value, $nval, $assign);
 }
 
 

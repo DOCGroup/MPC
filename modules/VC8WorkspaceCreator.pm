@@ -49,6 +49,72 @@ sub pre_workspace {
             '# ', $self->create_command_line_string($0, @ARGV), $crlf);
 }
 
+sub post_workspace {
+  my($self)     = shift;
+  my($fh)       = shift;
+  my($creator)  = shift;
+  my($pjs)      = $self->get_project_info();
+  my(@projects) = ();
+  my(%gmap)     = ();
+
+  foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
+    my($name, $deps, $guid, $lang) = @{$$pjs{$project}};
+    if ($lang eq 'csharp' || $lang eq 'java' || $lang eq 'vb') {
+      $gmap{$name} = [$guid, $lang];
+      push(@projects, $project);
+    }
+  }
+
+  foreach my $project (@projects) {
+    my($ph)     = new FileHandle();
+    my($outdir) = $self->get_outdir();
+    $outdir     = $self->getcwd() if ($outdir eq '.');
+    if (open($ph, "$outdir/$project")) {
+      my($write) = 0;
+      my(@read)  = ();
+      my($crlf)  = $self->crlf();
+      my($cwd)   = $self->getcwd();
+
+      while(<$ph>) {
+        if (/^(\s*)<!\-\-\s+MPC\s+ADD\s+DEPENDENCIES/) {
+          my($spc)  = $1;
+          my($deps) = $self->get_validated_ordering($project);
+          foreach my $dep (@$deps) {
+            my($lang) = $gmap{$dep}->[1];
+            if (defined $lang &&
+                ($lang eq 'csharp' || $lang eq 'java' || $lang eq 'vb')) {
+              my($relative) = $self->get_relative_dep_file($creator,
+                                                           "$cwd/$project",
+                                                           $dep);          
+              if (defined $relative) {
+                push(@read, $spc . '<ProjectReference Include="' .
+                            $relative . '">' . $crlf,
+                            $spc . '  <Project>{' . $gmap{$dep}->[0] .
+                            '}</Project>' . $crlf,
+                            $spc . '  <Name>' . $dep . '</Name>' . $crlf,
+                            $spc . '</ProjectReference>' . $crlf);
+                $write = 1;
+              }
+            }
+          }
+          last if (!$write);
+        }
+        else {
+          push(@read, $_);
+        }
+      }
+      close($ph);
+
+      if ($write && open($ph, ">$outdir/$project")) {
+        foreach my $line (@read) {
+          print $ph $line;
+        }
+        close($ph);
+      }
+    }
+  }
+}
+
 sub adjust_names {
   my($self) = shift;
   my($name) = shift;
