@@ -16,7 +16,9 @@ Tool="DspBiosBuilder"
 Config="<%configuration%>"
 <%endfor%>
 
+<%if(after)%>
 ; MPC ADD DEPENDENCIES
+<%endif%>
 [Source Files]
 <%foreach(source_files)%>
 Source="<%source_file%>"

@@ -1,3 +1,58 @@
+Wed Jan 24 19:04:58 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/CCWorkspaceCreator.pm:
+
+          Fixed a bug in the dependency code that would make the wrong
+          directory when the -into option was used.
+
+        * modules/ConfigParser.pm:
+
+          Provide diagnostic information when an environment variable is
+          used in the configuration file, but is not defined by the user.
+
+        * modules/Driver.pm:
+
+          Keep one more directory level when printing out the configuration
+          file.
+
+        * modules/Options.pm:
+
+          Removed an extra parameter when setting the template variable
+          overrides.  It was no longer necessary due to my change from Fri
+          Jan 12 15:24:27 UTC 2007.
+
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where a scoped assignment would make the original
+          assignment disappear completely.  The original assignment needs to
+          be maintained so that when the assignment is used outside of a    
+          scope it has the value specified by the user.                  
+
+        * modules/VC8WorkspaceCreator.pm:
+        * modules/WorkspaceCreator.pm:
+        * templates/vc8csharp.mpd:
+        * templates/vc8java.mpd:
+        * templates/vc8vb.mpd:
+
+          Provide project references based on the 'after' keyword setting
+          for c#, vb and java projects only.
+
+        * registry.pl:
+
+          Added commands to process .mpc files.
+
+        * templates/cc.mpd:
+
+          Only output the dependency tag if the 'after' keyword has been
+          set.
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Changed the way that output directories are made.  The targets no
+          longer depend on the output directory, they are made on the fly. 
+
 Fri Jan 19 15:34:17 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/TemplateParser.pm:

@@ -305,19 +305,21 @@ cygwin {
 }
 
 mingw {
-  versupport =
-  lib_prefix =
-  dll_ext    = .dll
-  lib_ext    = .lib
-  exe_ext    = .exe
-  ldlibs     = -lwsock32 -lnetapi32
-  rc         = rc
-  devnull    = nul
-  delete     = del /f/s/q
-  type       = type
-  copy       = copy /y
-  makedir    = mkdir
-  move       = move /y
+  versupport   =
+  lib_prefix   =
+  dll_ext      = .dll
+  lib_ext      = .lib
+  exe_ext      = .exe
+  ldlibs       = -lwsock32 -lnetapi32
+  rc           = rc
+  devnull      = nul
+  delete       = del /f/s/q
+  type         = type
+  copy         = copy /y
+  makedir      = mkdir
+  move         = move /y
+  testdirstart = if not exist
+  testdirend   =
 }
 
 dmc_win {
@@ -335,6 +337,8 @@ dmc_win {
   makedir          = mkdir
   move             = move /y
   supports_include =
+  testdirstart     = if not exist
+  testdirend       =
 }
 
 tandem {
