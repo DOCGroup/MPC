@@ -943,13 +943,13 @@ sub write_workspace {
           my($tmp) = "$outdir/MWC$>.$$";
           my($different) = 1;
           if (open($fh, ">$tmp")) {
-            $self->pre_workspace($fh);
+            $self->pre_workspace($fh, $creator);
             $self->write_comps($fh, $creator, $addfile);
 
             my($wsHelper) = WorkspaceHelper::get($self);
             $wsHelper->perform_custom_processing($fh, $creator, $addfile);
 
-            $self->post_workspace($fh);
+            $self->post_workspace($fh, $creator);
             close($fh);
 
             if (-r $name &&
@@ -987,13 +987,13 @@ sub write_workspace {
         }
         else {
           if (open($fh, ">$name")) {
-            $self->pre_workspace($fh);
+            $self->pre_workspace($fh, $creator);
             $self->write_comps($fh, $creator, $addfile);
 
             my($wsHelper) = WorkspaceHelper::get($self);
             $wsHelper->perform_custom_processing($fh, $creator, $addfile);
 
-            $self->post_workspace($fh);
+            $self->post_workspace($fh, $creator);
             close($fh);
 
             if ($addfile) {
@@ -2323,8 +2323,9 @@ sub workspace_per_project {
 
 
 sub pre_workspace {
-  #my($self) = shift;
-  #my($fh)   = shift;
+  #my($self)    = shift;
+  #my($fh)      = shift;
+  #my($creator) = shift;
 }
 
 
@@ -2337,8 +2338,9 @@ sub write_comps {
 
 
 sub post_workspace {
-  #my($self) = shift;
-  #my($fh)   = shift;
+  #my($self)    = shift;
+  #my($fh)      = shift;
+  #my($creator) = shift;
 }
 
 

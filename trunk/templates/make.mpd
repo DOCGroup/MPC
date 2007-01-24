@@ -59,6 +59,8 @@ RM            = <%delete("rm -rf")%>
 CP            = <%copy("cp -p")%>
 NUL           = <%devnull("/dev/null")%>
 MKDIR         = <%makedir("mkdir -p")%>
+TESTDIRSTART  = <%testdirstart("test -d")%>
+TESTDIREND    = <%testdirend("||")%>
 EXEEXT        = <%exe_ext%>
 LIBPREFIX     = <%lib_prefix%><%libname_prefix%>
 <%foreach(configurations)%>
@@ -133,10 +135,8 @@ specialscript:
 
 <%endif%>
 <%endif%>
-$(BTARGETDIR):
-	@$(MKDIR) "$@"
-
-$(BIN): $(BTARGETDIR)<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelinktargetobj)%> <%targetoutdir%><%obj_dir%><%prelinktargetobj%><%else%><%if(prelinktarget)%> <%prelinktarget%><%endif%><%endif%> $(OBJS)
+$(BIN):<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelinktargetobj)%> <%targetoutdir%><%obj_dir%><%prelinktargetobj%><%else%><%if(prelinktarget)%> <%prelinktarget%><%endif%><%endif%> $(OBJS)
+	@$(TESTDIRSTART) "$(BTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(BTARGETDIR)"
 <%if(prelink)%>
 	<%eval(prelink)%>
 <%endif%>
@@ -149,17 +149,13 @@ $(BIN): $(BTARGETDIR)<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelinktargetobj
 <%if(dll_ext && sharedname)%>
 all:<%if(prebuild)%> __prebuild__<%endif%><%if(version && versupport)%> $(SHLIB).<%version%><%endif%> $(SHLIB)<%if(postbuild)%> __postbuild__<%endif%>
 
-<%if(dllout)%>
-$(SHTARGETDIR):
-	@$(MKDIR) "$@"
-
-<%endif%>
 <%if(version && versupport)%>
 $(SHLIB):
 	cd $(SHTARGETDIR) && ln -s $(SHLIB_BASE).<%version%> $(SHLIB_BASE)
 
 <%endif%>
-$(SHLIB)<%if(version && versupport)%>.<%version%><%endif%>: $(SHTARGETDIR) <%if(tempinc)%>$(TEMPINCDIR) <%endif%>$(OBJS)
+$(SHLIB)<%if(version && versupport)%>.<%version%><%endif%>: <%if(tempinc)%>$(TEMPINCDIR) <%endif%>$(OBJS)
+	@$(TESTDIRSTART) "$(SHTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(SHTARGETDIR)"
 <%if(prelink)%>
 	<%eval(prelink)%>
 <%endif%>
@@ -175,13 +171,9 @@ all:<%if(prebuild)%> __prebuild__<%endif%> $(LIB)<%if(postbuild)%> __postbuild__
 
 <%endif%>
 <%endif%>
-<%if(!exename)%>
-$(LTARGETDIR):
-	@$(MKDIR) "$@"
-
-<%endif%>
 <%if(staticname)%>
-$(LIB): $(LTARGETDIR) <%if(tempinc)%>$(TEMPINCDIR) <%endif%>$(OBJS)
+$(LIB): <%if(tempinc)%>$(TEMPINCDIR) <%endif%>$(OBJS)
+	@$(TESTDIRSTART) "$(LTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(LTARGETDIR)"
 	$(AR) $(ARFLAGS) <%libgenopt%>$(LIB) $(OBJS)<%if(tempinc)%> `find $(TEMPINCDIR) -name \*.o\*`<%endif%>
 <%if(ranlib)%>
 	ranlib $(LIB)
@@ -204,7 +196,7 @@ PATH              := $(PATH):<%custom_type->libpath%>
 <%if(custom_type->input_file->output_files)%>
 <%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%custom_type->input_file%><%if(custom_type->input_file->dependencies)%> <%custom_type->input_file->dependencies%><%endif%><%if(flag_overrides(custom_type->input_file, dependent))%> <%flag_overrides(custom_type->input_file, dependent)%><%else%><%if(custom_type->dependent)%> <%custom_type->dependent%><%endif%><%endif%>
 <%if(flag_overrides(custom_type->input_file, gendir))%>
-	@$(MKDIR) <%flag_overrides(custom_type->input_file, gendir)%>
+	@$(TESTDIRSTART) "<%flag_overrides(custom_type->input_file, gendir)%>" $(TESTDIREND) $(MKDIR) "<%flag_overrides(custom_type->input_file, gendir)%>"
 <%endif%>
 	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%if(custom_type->output_option)%><%custom_type->input_file%> <%custom_type->output_option%> "$@"<%else%><%custom_type->input_file%><%endif%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
@@ -242,13 +234,13 @@ generated: $(GENERATED_DIRTY)
 
 <%if(tempinc)%>
 $(TEMPINCDIR):
-	@-test -d $(TEMPINCDIR) || $(MKDIR) $(TEMPINCDIR) 2> $(NUL) || true
+	@-$(TESTDIRSTART) "$(TEMPINCDIR)" $(TESTDIREND) $(MKDIR) "$(TEMPINCDIR)" 2> $(NUL)
 
 <%endif%>
 <%if(pch_source && pchsupport)%>
 <%targetoutdir%><%obj_dir%><%noextension(pch_source)%>$(OBJEXT): <%pch_source%>
 <%if(targetoutdir || obj_dir)%>
-	@$(MKDIR) <%targetoutdir%><%obj_dir%><%dirname(pch_source)%>
+	@$(TESTDIRSTART) "<%targetoutdir%><%obj_dir%><%dirname(pch_source)%>" $(TESTDIREND) $(MKDIR) "<%targetoutdir%><%obj_dir%><%dirname(pch_source)%>"
 <%endif%>
 	$(COMPILE.cc) <%if(pchcreate)%><%pchcreate%><%targetoutdir%><%obj_dir%><%pch_header%><%pchext%> <%endif%>$(EXPORTFLAGS)<%if(!pchnobj)%> $(OUTPUT_OPTION)<%endif%> <%pch_source%>
 <%if(pchnobj)%>
@@ -259,7 +251,7 @@ $(TEMPINCDIR):
 <%foreach(source_files)%>
 <%targetoutdir%><%obj_dir%><%noextension(source_file)%>$(OBJEXT): <%source_file%>
 <%if(targetoutdir || obj_dir)%>
-	@$(MKDIR) <%targetoutdir%><%obj_dir%><%dirname(source_file)%>
+	@$(TESTDIRSTART) "<%targetoutdir%><%obj_dir%><%dirname(source_file)%>" $(TESTDIREND) $(MKDIR) "<%targetoutdir%><%obj_dir%><%dirname(source_file)%>"
 <%endif%>
 	$(COMPILE.cc) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%><%if(pchuse && pch_source && pchsupport)%><%pchuse%><%pch_header%><%pchext%> <%if(pchstop)%><%pchstop%><%pch_header%><%endif%><%endif%>$(EXPORTFLAGS) $(OUTPUT_OPTION) <%source_file%>
 
@@ -269,7 +261,7 @@ $(TEMPINCDIR):
 <%foreach(resource_files)%>
 <%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT):
 <%if(targetoutdir || obj_dir)%>
-	@$(MKDIR) <%targetoutdir%><%obj_dir%><%dirname(resource_file)%>
+	@$(TESTDIRSTART) "<%targetoutdir%><%obj_dir%><%dirname(resource_file)%>" $(TESTDIREND) $(MKDIR) "<%targetoutdir%><%obj_dir%><%dirname(resource_file)%>"
 <%endif%>
 	<%rc%><%foreach(includes)%> -I<%include%><%endfor%> <%resource_file%> <%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT)
 

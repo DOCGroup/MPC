@@ -94,7 +94,12 @@ sub preprocess {
   while($str =~ /\$([\(\w\)]+)/) {
     my($name) = $1;
     $name =~ s/[\(\)]//g;
-    my($val) = $ENV{$name} || '';
+    my($val) = $ENV{$name};
+    if (!defined $val) {
+      $val = '';
+      $self->diagnostic("$name was used in the configuration file, " .
+                        "but was not defined.");
+    }
     $str =~ s/\$([\(\w\)]+)/$val/;
   }
   return $str;

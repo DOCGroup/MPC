@@ -254,7 +254,7 @@ sub run {
   my($cfg) = new ConfigParser(\%valid_cfg);
   if (defined $cfgfile) {
     my($ellipses) = $cfgfile;
-    $ellipses =~ s!.*(/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+)!...$1!;
+    $ellipses =~ s!.*(/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+)!...$1!;
     $self->diagnostic("Using $ellipses");
     my($status, $error) = $cfg->read_file($cfgfile);
     if (!$status) {

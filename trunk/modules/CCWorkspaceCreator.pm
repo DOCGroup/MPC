@@ -64,6 +64,7 @@ sub add_dependencies {
   if (open($fh, "$outdir/$proj")) {
     my($write) = 0;
     my(@read)  = ();
+    my($cwd)   = $self->getcwd();
     while(<$fh>) {
       if (/MPC\s+ADD\s+DEPENDENCIES/) {
         my(@projs) = ();
@@ -71,7 +72,7 @@ sub add_dependencies {
         my($deps)  = $self->get_validated_ordering($proj);
         foreach my $dep (@$deps) {
           my($relative) = $self->get_relative_dep_file($creator,
-                                                       "$outdir/$proj",
+                                                       "$cwd/$proj",
                                                        $dep);
           if (defined $relative) {
             if (!$write) {
