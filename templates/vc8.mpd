@@ -61,6 +61,9 @@
 				Name="VCMIDLTool"
 				AdditionalOptions="<%foreach(midl_defines)%>/D <%midl_define%> <%endfor%><%midl_flags%>"
 				AdditionalIncludeDirectories="<%foreach(midl_includes)%><%midl_include%><%fornotlast(",")%><%endfor%>"
+<%if(midl_notlb)%>
+				GenerateTypeLibrary="false"
+<%endif%>
 				TypeLibraryName="$(InputName).tlb"
 				HeaderFileName="$(InputName).h"
 				InterfaceIdentifierFileName="$(InputName)_i.c"
