@@ -1,3 +1,13 @@
+Thu Feb  1 18:29:19 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * docs/templates/vc7.txt:
+        * docs/templates/vc8.txt:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Added new template variable midl_notlb to suppress the
+          creation of type libraries.
+
 Wed Jan 24 19:04:58 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/CCWorkspaceCreator.pm:
@@ -26,8 +36,8 @@ Wed Jan 24 19:04:58 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
           Fixed a bug where a scoped assignment would make the original
           assignment disappear completely.  The original assignment needs to
-          be maintained so that when the assignment is used outside of a    
-          scope it has the value specified by the user.                  
+          be maintained so that when the assignment is used outside of a
+          scope it has the value specified by the user.
 
         * modules/VC8WorkspaceCreator.pm:
         * modules/WorkspaceCreator.pm:
@@ -51,7 +61,7 @@ Wed Jan 24 19:04:58 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
         * templates/makedll.mpt:
 
           Changed the way that output directories are made.  The targets no
-          longer depend on the output directory, they are made on the fly. 
+          longer depend on the output directory, they are made on the fly.
 
 Fri Jan 19 15:34:17 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 

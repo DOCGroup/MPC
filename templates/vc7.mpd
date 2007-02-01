@@ -167,6 +167,9 @@
 <%if(midl_defines)%>
 				PreprocessorDefinitions="<%foreach(midl_defines)%><%midl_define%><%fornotlast(";")%><%endfor%>"
 <%endif%>
+<%if(midl_notlb)%>
+				GenerateTypeLibrary="FALSE"
+<%endif%>
 				TypeLibraryName="$(InputName).tlb"
 				HeaderFileName="$(InputName).h"
 				InterfaceIdentifierFileName="$(InputName)_i.c"
