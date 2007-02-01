@@ -25,6 +25,7 @@ linkincremental = This setting corresponds to the Linker General property "Enabl
 midl_defines = Macros specified here correspond to the MIDL General property "Preprocessor Definitions".
 midl_flags = The value for this variable is passed to the MIDL command as "Additional Options".
 midl_includes = This correspond to the MIDL General property "Additional Include Directories".
+midl_notlb = Suppresses the creation of a type library for the IDL file.
 minimalrebuild = This corresponds to the C/C++ Code Generation property "Enable Minimal Rebuild". The boolean value specifies the pull-down value in the IDE.
 moduledefinitionfile = This setting corresponds to the Linker Input property "Module Definition File".
 output_subdir = This is used in determining the sub-directory under which intermediate files will be placed.
