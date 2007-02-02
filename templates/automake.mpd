@@ -89,15 +89,15 @@ CLEANFILES += \
 <%endif%>
 <%endif%>
 <%endif%>
-<%if(am_includes || defines || common_defines || macros || need_staticflags || dynamicflags || compile_flags)%>
+<%if(includes || defines || common_defines || macros || need_staticflags || dynamicflags || compile_flags)%>
 
 <%if(exename)%>
 <%normalize(exename)%>_CPPFLAGS<%if(configurations)%>_COMMON<%endif%> = \
 <%else%>
 lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%><%if(!configurations)%>_la<%endif%>_CPPFLAGS<%if(configurations)%>_COMMON<%endif%> = \
 <%endif%>
-<%foreach(am_includes)%>
-  -I<%am_include%><%if(defines || common_defines || macros || need_staticflags || dynamicflags || compile_flags && !configurations)%> \<%else%><%fornotlast(" \\")%><%endif%>
+<%foreach(includes)%>
+  -I<%include%><%if(defines || common_defines || macros || need_staticflags || dynamicflags || compile_flags && !configurations)%> \<%else%><%fornotlast(" \\")%><%endif%>
 <%endfor%>
 <%foreach(defines common_defines macros)%>
   -D<%define%><%if(need_staticflags || dynamicflags || compile_flags && !configurations)%> \<%else%><%fornotlast(" \\")%><%endif%>
