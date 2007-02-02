@@ -33,22 +33,7 @@ sub fill_value {
   my($name)  = shift;
   my($value) = undef;
 
-  if ($name eq 'am_includes') {
-    my($incs) = $self->get_assignment('includes');
-    if (defined $incs) {
-      my(@vec) = split(' ', $incs);
-
-#      # The following prefixes include paths with $(srcdir)/.
-#      foreach(@vec) {
-#        if (/^[^\$\/]/) {
-#          $_ = '$(srcdir)/' . $_;
-#        }
-#      }
-
-      $value = \@vec;
-    }
-  }
-  elsif ($name eq 'am_version') {
+  if ($name eq 'am_version') {
     $value = $self->get_assignment('version');
     if (defined $value) {
       if (($value =~ tr/./:/) < 2) {
