@@ -1,3 +1,38 @@
+Fri Feb  2 17:47:09 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/swig_php.mpb:
+
+          Added /. after $(PHP_INCLUDE) in the includes setting.  In case
+          the PHP_INCLUDE environment variable is not set, something is
+          still passed to the -I option.
+
+        * config/ziparchive.mpb:
+
+          Added /. after $(ZIPARCHIVEROOT) in the includes setting.  In case
+          the ZIPARCHIVEROOT environment variable is not set, something is
+          still passed to the -I option.
+
+          And switched to lit_libs.
+
+        * config/zzip.mpb:
+
+          For non-Windows based project types, use lit_libs instead of libs.
+
+        * docs/templates/automake.txt:
+
+          Documented the automake template variables.
+
+        * docs/templates/common.txt:
+
+          Added the definition of the forcount template variable.
+
+        * modules/AutomakeProjectCreator.pm:
+        * templates/automake.mpd:
+
+          Replaced the am_includes template variable with the includes
+          project variable.  In the past, these were different but now they
+          are exactly the same.
+
 Thu Feb  1 18:29:19 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * docs/templates/vc7.txt:
