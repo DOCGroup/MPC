@@ -4,6 +4,7 @@
 //
 // Please try to keep this alphabetically sorted.
 //
+add_references = If this is set, the project will be generated with project references based on the 'after' keyword setting.
 basicruntimechecks = This corresponds to the C/C++ Code Generation property "Basic Runtime Checks". The numeric value specifies the pull-down value in the IDE.
 buffersecuritycheck = This corresponds to the C/C++ Code Generation property "Buffer Security Check". The boolean value specifies the pull-down value in the IDE.
 charset = This setting specifies the "Character Set" in the General properties. The values 0, 1, and 2 specify Not Set, Unicode, and Multi-Byte respectively.

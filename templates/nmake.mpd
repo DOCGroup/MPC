@@ -260,7 +260,7 @@ SOURCE="<%source_file%>"
 <%if(transdir(source_file))%>
 	@if not exist "$(INTDIR)\<%transdir(source_file)%>$(NULL)" mkdir "$(INTDIR)\<%transdir(source_file)%>"
 <%endif%>
-	$(CPP) <%if(pch_header && !flag_overrides(source_file, no_pch))%>$(CPP_PCH) <%endif%><%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(CPP_COMMON) /Fo"$(INTDIR)\<%transdir(source_file)%><%basenoextension(source_file)%>.obj" $(SOURCE)
+	$(CPP) <%if(pch_header && !flag_overrides(source_file, no_pch))%>$(CPP_PCH) <%endif%>$(CPP_COMMON) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%><%if(flag_overrides(source_file, managed))%>/EHs- /Gm- /clr <%endif%>/Fo"$(INTDIR)\<%transdir(source_file)%><%basenoextension(source_file)%>.obj" $(SOURCE)
 
 <%endfor%>
 <%endif%>
