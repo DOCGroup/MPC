@@ -58,11 +58,9 @@ sub post_workspace {
   my(%gmap)     = ();
 
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
-    my($name, $deps, $guid, $lang) = @{$$pjs{$project}};
-    if ($lang eq 'csharp' || $lang eq 'java' || $lang eq 'vb') {
-      $gmap{$name} = [$guid, $lang];
-      push(@projects, $project);
-    }
+    my($name, $deps, $guid) = @{$$pjs{$project}};
+    $gmap{$name} = $guid;
+    push(@projects, $project);
   }
 
   foreach my $project (@projects) {
@@ -76,25 +74,31 @@ sub post_workspace {
       my($cwd)   = $self->getcwd();
 
       while(<$ph>) {
-        if (/^(\s*)<!\-\-\s+MPC\s+ADD\s+DEPENDENCIES/) {
+        if (/^(\s*)<!\-\-\s+MPC\s+ADD\s+DEPENDENCIES\s+([^\s]+)?/) {
           my($spc)  = $1;
+          my($lang) = $2;
           my($deps) = $self->get_validated_ordering($project);
           foreach my $dep (@$deps) {
-            my($lang) = $gmap{$dep}->[1];
-            if (defined $lang &&
-                ($lang eq 'csharp' || $lang eq 'java' || $lang eq 'vb')) {
-              my($relative) = $self->get_relative_dep_file($creator,
-                                                           "$cwd/$project",
-                                                           $dep);          
-              if (defined $relative) {
+            my($relative) = $self->get_relative_dep_file($creator,
+                                                         "$cwd/$project",
+                                                         $dep);          
+            if (defined $relative) {
+              if (defined $lang && $lang eq 'cplusplus') {
+                push(@read, $spc . '<ProjectReference' . $crlf .
+                            $spc . "\tReferencedProjectIdentifier=" .
+                            "\"\{$gmap{$dep}\}\"$crlf" .
+                            $spc . "\tRelativePathToProject=\"$relative\"$crlf" .
+                            $spc . '/>' . $crlf);
+              }
+              else {
                 push(@read, $spc . '<ProjectReference Include="' .
                             $relative . '">' . $crlf,
-                            $spc . '  <Project>{' . $gmap{$dep}->[0] .
+                            $spc . '  <Project>{' . $gmap{$dep} .
                             '}</Project>' . $crlf,
                             $spc . '  <Name>' . $dep . '</Name>' . $crlf,
                             $spc . '</ProjectReference>' . $crlf);
-                $write = 1;
               }
+              $write = 1;
             }
           }
           last if (!$write);

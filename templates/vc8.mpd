@@ -500,6 +500,14 @@
 <%endfor%>
 	</Configurations>
 	<References>
+<%if(after && add_references)%>
+		<!-- MPC ADD DEPENDENCIES <%language%> -->
+<%endif%>
+<%foreach(AssemblyReferences)%>
+		<AssemblyReference
+			RelativePath="<%AssemblyReference%>"
+		/>
+<%endfor%>
 	</References>
 	<Files>
 <%if(exename || sharedname || staticname)%>
@@ -541,12 +549,19 @@
 <%if(flag_overrides(grouped_source_file->file, no_pch))%>
 						UsePrecompiledHeader="0"
 <%endif%>
+<%if(flag_overrides(grouped_source_file->file, managed))%>
+						BasicRuntimeChecks="0"
+						CompileAsManaged="1"
+<%if(!ExceptionHandling || compares(ExceptionHandling, 1))%>
+						ExceptionHandling="2"
+<%endif%>
+<%endif%>
 						ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(grouped_source_file->file)%>.obj"/>
 				</FileConfiguration>
 <%endfor%>
 <%endfor%>
 <%else%>
-<%if(flag_overrides(grouped_source_file->file, buildflags) || flag_overrides(grouped_source_file->file, no_pch))%>
+<%if(flag_overrides(grouped_source_file->file, buildflags) || flag_overrides(grouped_source_file->file, no_pch) || flag_overrides(grouped_source_file->file, managed))%>
 <%foreach(platforms)%>
 <%foreach(configurations)%>
 				<FileConfiguration
@@ -558,6 +573,13 @@
 <%endif%>
 <%if(flag_overrides(grouped_source_file->file, no_pch))%>
 						UsePrecompiledHeader="0"
+<%endif%>
+<%if(flag_overrides(grouped_source_file->file, managed))%>
+						BasicRuntimeChecks="0"
+						CompileAsManaged="1"
+<%if(!ExceptionHandling || compares(ExceptionHandling, 1))%>
+						ExceptionHandling="2"
+<%endif%>
 <%endif%>
 					/>
 				</FileConfiguration>
@@ -587,12 +609,19 @@
 <%if(flag_overrides(grouped_source_file->file, no_pch))%>
 							UsePrecompiledHeader="0"
 <%endif%>
+<%if(flag_overrides(grouped_source_file->file, managed))%>
+							BasicRuntimeChecks="0"
+							CompileAsManaged="1"
+<%if(!ExceptionHandling || compares(ExceptionHandling, 1))%>
+							ExceptionHandling="2"
+<%endif%>
+<%endif%>
 							ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(grouped_source_file->file)%>.obj"/>
 					</FileConfiguration>
 <%endfor%>
 <%endfor%>
 <%else%>
-<%if(flag_overrides(grouped_source_file->file, buildflags) || flag_overrides(grouped_source_file->file, no_pch))%>
+<%if(flag_overrides(grouped_source_file->file, buildflags) || flag_overrides(grouped_source_file->file, no_pch) || flag_overrides(grouped_source_file->file, managed))%>
 <%foreach(platforms)%>
 <%foreach(configurations)%>
 					<FileConfiguration
@@ -604,6 +633,13 @@
 <%endif%>
 <%if(flag_overrides(grouped_source_file->file, no_pch))%>
 							UsePrecompiledHeader="0"
+<%endif%>
+<%if(flag_overrides(grouped_source_file->file, managed))%>
+							BasicRuntimeChecks="0"
+							CompileAsManaged="1"
+<%if(!ExceptionHandling || compares(ExceptionHandling, 1))%>
+							ExceptionHandling="2"
+<%endif%>
 <%endif%>
 						/>
 					</FileConfiguration>
@@ -633,12 +669,19 @@
 <%if(flag_overrides(source_file, no_pch))%>
 							UsePrecompiledHeader="0"
 <%endif%>
+<%if(flag_overrides(source_file, managed))%>
+							BasicRuntimeChecks="0"
+							CompileAsManaged="1"
+<%if(!ExceptionHandling || compares(ExceptionHandling, 1))%>
+							ExceptionHandling="2"
+<%endif%>
+<%endif%>
 							ObjectFile="$(IntDir)\$(InputName)<%duplicate_index(source_file)%>.obj"/>
 					</FileConfiguration>
 <%endfor%>
 <%endfor%>
 <%else%>
-<%if(flag_overrides(source_file, buildflags) || flag_overrides(source_file, no_pch))%>
+<%if(flag_overrides(source_file, buildflags) || flag_overrides(source_file, no_pch) || flag_overrides(source_file, managed))%>
 <%foreach(platforms)%>
 <%foreach(configurations)%>
 					<FileConfiguration
@@ -650,6 +693,13 @@
 <%endif%>
 <%if(flag_overrides(source_file, no_pch))%>
 							UsePrecompiledHeader="0"
+<%endif%>
+<%if(flag_overrides(source_file, managed))%>
+							BasicRuntimeChecks="0"
+							CompileAsManaged="1"
+<%if(!ExceptionHandling || compares(ExceptionHandling, 1))%>
+							ExceptionHandling="2"
+<%endif%>
 <%endif%>
 						/>
 					</FileConfiguration>

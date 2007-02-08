@@ -1,3 +1,26 @@
+Thu Feb  8 19:45:54 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/global.features:
+
+          By default, disable the ziparchive feature.
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+        * templates/nmake.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Added a new source component specific keyword, managed, which
+          indicates that the source files within the scope of this setting
+          are to be treated as Managed C++ (a Microsoft extension).
+
+        * docs/templates/vc8.txt:
+        * modules/VC8WorkspaceCreator.pm:
+
+          If the 'add_references' template variable is set, the vc8 C++
+          projects will have project references inserted into them based on
+          the 'after' keyword setting.
+
 Fri Feb  2 17:47:09 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/swig_php.mpb:
