@@ -27,6 +27,9 @@
 <%endif%>
 			UseOfMFC="<%use_mfc("0")%>"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+<%if(managed)%>                                        
+			ManagedExtensions="1"
+<%endif%>
 			CharacterSet="<%charset("0")%>">
 <%if(!custom_only)%>
 			<Tool
@@ -46,12 +49,14 @@
 				PreprocessorDefinitions="<%if(unicode)%>UNICODE;_UNICODE;<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%><%dynamicflag%>;<%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%><%staticflag%>;<%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%><%pch_define%>;<%endfor%><%endif%><%foreach(defines common_defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
 				MinimalRebuild="<%MinimalRebuild("FALSE")%>"
 				ExceptionHandling="<%exceptions("TRUE")%>"
+<%if(!managed)%>
 <%if(optimize)%>
 <%if(BasicRuntimeChecks)%>
 				BasicRuntimeChecks="<%BasicRuntimeChecks%>"
 <%endif%>
 <%else%>
 				BasicRuntimeChecks="<%BasicRuntimeChecks("3")%>"
+<%endif%>
 <%endif%>
 <%if(StringPooling)%>
 				StringPooling="<%StringPooling%>"
@@ -147,8 +152,8 @@
 				ImportLibrary="<%libout%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
 <%endif%>
-<%if(FixedBaseAddress)%>
-				FixedBaseAddress="<%FixedBaseAddress%>"
+<%if(FixedBaseAddress || managed)%>
+				FixedBaseAddress="<%FixedBaseAddress("1")%>"
 <%endif%>
 				TargetMachine="<%machine("1")%>"/>
 <%endif%>

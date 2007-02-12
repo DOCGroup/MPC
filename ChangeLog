@@ -1,3 +1,16 @@
+Mon Feb 12 13:33:13 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+        * templates/nmake.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Changed the source component specific keyword, managed, to be
+          allowed as project level setting as well.  Also, the value of the
+          'managed' setting can determine different managed c++ levels for
+          vc8 only.
+
 Thu Feb  8 19:45:54 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/global.features:

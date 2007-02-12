@@ -40,6 +40,9 @@
 			UseOfMFC="<%UseOfMFC%>"
 <%endif%>
 			CharacterSet="<%charset("0")%>"
+<%if(managed)%>                                        
+			ManagedExtensions="<%managed%>"
+<%endif%>
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -118,12 +121,14 @@
 <%if(ExceptionHandling)%>
 				ExceptionHandling="<%ExceptionHandling%>"
 <%endif%>
+<%if(!managed)%>
 <%if(optimize)%>
 <%if(BasicRuntimeChecks)%>
 				BasicRuntimeChecks="<%BasicRuntimeChecks%>"
 <%endif%>
 <%else%>
 				BasicRuntimeChecks="<%BasicRuntimeChecks("3")%>"
+<%endif%>
 <%endif%>
 <%if(SmallerTypeCheck)%>
 				SmallerTypeCheck="<%SmallerTypeCheck%>"
@@ -447,8 +452,8 @@
 				MergeSections="<%MergeSections%>"
 <%endif%>
 				TargetMachine="<%TargetMachine("1")%>"
-<%if(FixedBaseAddress)%>
-				FixedBaseAddress="<%FixedBaseAddress%>"
+<%if(FixedBaseAddress || managed)%>
+				FixedBaseAddress="<%FixedBaseAddress("1")%>"
 <%endif%>
 <%if(KeyFile)%>
 				KeyFile="<%KeyFile%>"
@@ -551,7 +556,7 @@
 <%endif%>
 <%if(flag_overrides(grouped_source_file->file, managed))%>
 						BasicRuntimeChecks="0"
-						CompileAsManaged="1"
+						CompileAsManaged="<%flag_overrides(grouped_source_file->file, managed)%>"
 <%if(!ExceptionHandling || compares(ExceptionHandling, 1))%>
 						ExceptionHandling="2"
 <%endif%>
@@ -576,7 +581,7 @@
 <%endif%>
 <%if(flag_overrides(grouped_source_file->file, managed))%>
 						BasicRuntimeChecks="0"
-						CompileAsManaged="1"
+						CompileAsManaged="<%flag_overrides(grouped_source_file->file, managed)%>"
 <%if(!ExceptionHandling || compares(ExceptionHandling, 1))%>
 						ExceptionHandling="2"
 <%endif%>
@@ -611,7 +616,7 @@
 <%endif%>
 <%if(flag_overrides(grouped_source_file->file, managed))%>
 							BasicRuntimeChecks="0"
-							CompileAsManaged="1"
+							CompileAsManaged="<%flag_overrides(grouped_source_file->file, managed)%>"
 <%if(!ExceptionHandling || compares(ExceptionHandling, 1))%>
 							ExceptionHandling="2"
 <%endif%>
@@ -636,7 +641,7 @@
 <%endif%>
 <%if(flag_overrides(grouped_source_file->file, managed))%>
 							BasicRuntimeChecks="0"
-							CompileAsManaged="1"
+							CompileAsManaged="<%flag_overrides(grouped_source_file->file, managed)%>"
 <%if(!ExceptionHandling || compares(ExceptionHandling, 1))%>
 							ExceptionHandling="2"
 <%endif%>
@@ -671,7 +676,7 @@
 <%endif%>
 <%if(flag_overrides(source_file, managed))%>
 							BasicRuntimeChecks="0"
-							CompileAsManaged="1"
+							CompileAsManaged="<%flag_overrides(source_file, managed)%>"
 <%if(!ExceptionHandling || compares(ExceptionHandling, 1))%>
 							ExceptionHandling="2"
 <%endif%>
@@ -696,7 +701,7 @@
 <%endif%>
 <%if(flag_overrides(source_file, managed))%>
 							BasicRuntimeChecks="0"
-							CompileAsManaged="1"
+							CompileAsManaged="<%flag_overrides(source_file, managed)%>"
 <%if(!ExceptionHandling || compares(ExceptionHandling, 1))%>
 							ExceptionHandling="2"
 <%endif%>
