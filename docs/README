@@ -158,11 +158,12 @@ dllout          If defined, specifies where the dynamic libraries will be
 libout          Specifies where the dynamic and static libraries will be placed
 exeout          Specifies where executables will be placed (Previously known
                 as install)
-managed         This keyword can only be used as a source component scoped
-                setting (ie. inside the scope of Source_Files).  It
-                specifies that the source files should be compiled as
-                managed C++.  Since this is Microsoft specific, it is only
-                supported by the nmake, vc7, vc71 and vc8 project types.
+managed         This keyword can be used as a global setting or as a source
+                component scoped setting (ie. inside the scope of
+                Source_Files).  It specifies that the source files should be
+                compiled as managed C++.  Since this is Microsoft specific, it
+                is only supported by the nmake, vc7, vc71 and vc8 project
+                types.
 no_pch          This keyword can only be used as a source component scoped
                 setting (ie. inside the scope of Source_Files).  It
                 specifies that precompiled headers should not be used for
