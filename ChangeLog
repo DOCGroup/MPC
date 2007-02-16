@@ -1,3 +1,9 @@
+Fri Feb 16 19:56:13 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/openssl.mpb:
+          Added support for borland template so that we can use the
+          borland template with openssl
+
 Mon Feb 12 13:33:13 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
