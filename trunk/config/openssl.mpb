@@ -23,7 +23,7 @@ feature(openssl) {
 
   // Some prepackaged installations of OpenSSL have libraries in different
   // locations.
-  specific(bmake) {
+  specific(bmake, borland) {
     libpaths += $(SSL_ROOT)/lib/Builder5
   }
   specific(nmake, vc6, vc7, vc71, vc8) {
