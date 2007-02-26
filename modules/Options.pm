@@ -479,7 +479,10 @@ sub options {
         my($pc) = new ProjectCreator();
         if ($pc->parse_assignment($value, \@values)) {
           $addtemp{$values[1]} = [] if (!defined $addtemp{$values[1]});
-          push(@{$addtemp{$values[1]}}, [$values[0], $values[2]]);
+          ## The extra parameter (3rd) indicates that this value was
+          ## specified on the command line.  This "extra parameter" is
+          ## used in ProjectCreator::update_template_variable().
+          push(@{$addtemp{$values[1]}}, [$values[0], $values[2], 1]);
 
           my($keywords) = ProjectCreator::getKeywords();
           if (defined $$keywords{$values[1]}) {

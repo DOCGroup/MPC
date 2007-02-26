@@ -13,14 +13,20 @@ package BDS4WorkspaceCreator;
 use strict;
 
 use BDS4ProjectCreator;
+use WinWorkspaceBase;
 use WorkspaceCreator;
 
 use vars qw(@ISA);
-@ISA = qw(WorkspaceCreator);
+@ISA = qw(WinWorkspaceBase WorkspaceCreator);
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
+
+sub crlf {
+  #my($self) = shift;
+  return "\n";
+}
 
 
 sub compare_output {
