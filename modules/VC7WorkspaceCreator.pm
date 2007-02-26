@@ -13,10 +13,11 @@ package VC7WorkspaceCreator;
 use strict;
 
 use VC7ProjectCreator;
+use WinWorkspaceBase;
 use WorkspaceCreator;
 
 use vars qw(@ISA);
-@ISA = qw(WorkspaceCreator);
+@ISA = qw(WinWorkspaceBase WorkspaceCreator);
 
 # ************************************************************
 # Data Section
@@ -36,12 +37,6 @@ my(%guids) = ('cplusplus' => '8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942',
 sub compare_output {
   #my($self) = shift;
   return 1;
-}
-
-
-sub crlf {
-  my($self) = shift;
-  return $self->windows_crlf();
 }
 
 

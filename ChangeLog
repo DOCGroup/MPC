@@ -1,3 +1,25 @@
+Mon Feb 26 17:30:03 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/BDS4WorkspaceCreator.pm:
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/CCWorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/VC6WorkspaceCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/WinWorkspaceBase.pm:
+
+          Added a Windows Workspace base module to override methods that are
+          used in Creator::expand_variables().
+
+        * modules/Options.pm:
+
+          Reverted my change from Wed Jan 24 19:04:58 UTC 2007.  It turns
+          out that the "extra parameter" was still needed.
+
+        * modules/ProjectCreator.pm:
+
+          Corrected a comment about sorting template variable values.
+
 Mon Feb 26 13:09:44 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:

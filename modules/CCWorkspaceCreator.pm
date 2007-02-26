@@ -13,10 +13,11 @@ package CCWorkspaceCreator;
 use strict;
 
 use CCProjectCreator;
+use WinWorkspaceBase;
 use WorkspaceCreator;
 
 use vars qw(@ISA);
-@ISA = qw(WorkspaceCreator);
+@ISA = qw(WinWorkspaceBase WorkspaceCreator);
 
 # ************************************************************
 # Subroutine Section
@@ -25,12 +26,6 @@ use vars qw(@ISA);
 sub compare_output {
   #my($self) = shift;
   return 1;
-}
-
-
-sub crlf {
-  my($self) = shift;
-  return $self->windows_crlf();
 }
 
 
