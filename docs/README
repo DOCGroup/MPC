@@ -526,10 +526,6 @@ If the custom output can not be represented with the above output extension
 keywords (*_outputext) and you have knowledge of the output files a priori,
 you can represent them with the '>>' construct.
 
-A Modify_Custom section can be used to modify an existing custom definition.
-The Define_Custom must be processed prior to processing a Modify_Custom
-section; otherwise, an error will occur.
-
 Below is an example that demonstrates the use of '>>'.  The command takes an
 input file name of foo.prp and produces two files that have completely
 unrelated filenames (i.e. foo !~ hello).
@@ -658,6 +654,10 @@ project {
     another_file.cidl
   }
 }
+
+A Modify_Custom section can be used to modify an existing custom definition.
+The Define_Custom must be processed prior to processing a Modify_Custom
+section; otherwise, an error will occur.
 
 Special type of feature project
 -------------------------------
