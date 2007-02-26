@@ -14,10 +14,11 @@ use strict;
 
 use NMakeProjectCreator;
 use MakeWorkspaceBase;
+use WinWorkspaceBase;
 use WorkspaceCreator;
 
 use vars qw(@ISA);
-@ISA = qw(MakeWorkspaceBase WorkspaceCreator);
+@ISA = qw(MakeWorkspaceBase WinWorkspaceBase WorkspaceCreator);
 
 # ************************************************************
 # Data Section
@@ -28,12 +29,6 @@ my($targets) = 'clean depend generated realclean $(CUSTOM_TARGETS)';
 # ************************************************************
 # Subroutine Section
 # ************************************************************
-
-sub crlf {
-  my($self) = shift;
-  return $self->windows_crlf();
-}
-
 
 sub workspace_file_extension {
   #my($self) = shift;

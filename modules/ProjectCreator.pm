@@ -967,7 +967,7 @@ sub update_template_variable {
     for(my $i = 0; $i < $max; $i++) {
       if ($atemp->{$values[1]}->[$i]->[2]) {
         splice(@{$atemp->{$values[1]}}, $i, 0, [$values[0], $values[2]]);
-        return 1, undef;
+        return;
       }
     }
   }
@@ -4426,8 +4426,6 @@ sub adjust_value {
       $base =~ s/.*:://;
       my($replace) = (defined $self->{'valid_names'}->{$base} &&
                       ($self->{'valid_names'}->{$base} & 0x04) == 0);
-      ## Sort these values so that command line specified values are
-      ## evaluated last
       foreach my $val (@{$atemp->{lc($name)}}) {
         if ($replace && index($$val[1], '<%') >= 0) {
           $$val[1] = $self->replace_parameters($$val[1],
