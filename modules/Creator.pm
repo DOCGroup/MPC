@@ -643,14 +643,10 @@ sub subtraction_core {
         $nval = $self->get_assignment_for_modification($name, $assign, 1);
       }
       for(my $j = 0; $j <= $last; $j++) {
-        ## If we didn't find it the first time, try again with quotes
-        my($re) = ($j == $last ? '"' . $value . '"' : $value);
+        ## First try with quotes, then try again without them
+        my($re) = ($j == 0 ? '"' . $value . '"' : $value);
 
-        ## Due to the way process_assignment() works, we only need to
-        ## attempt to remove a value that is either followed by a space
-        ## or at the end of the line (single values are always at the end
-        ## of the line).
-        if ($nval =~ s/$re\s+// || $nval =~ s/$re$//) {
+        if ($nval =~ s/\s+$re\s+/ / || $nval =~ s/\s+$re$// || $nval =~ s/^$re$//) {
           $self->process_assignment($name, $nval, $assign, -1);
           $found = 1;
           last;
