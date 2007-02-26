@@ -1,3 +1,19 @@
+Mon Feb 26 13:09:44 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+
+          Moved the Modify_Custom section down to the end of the
+          Define_Custom section.
+
+        * modules/Creator.pm:
+
+          Fixed a bug in subtraction where a partial subtraction would occur
+          if an element contained the subtracted element plus other text.
+
+        * prj_install.pl:
+
+          Added the -l option to use symbolic links instead of copies.
+
 Fri Feb 16 19:56:13 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/openssl.mpb:
@@ -13,7 +29,7 @@ Mon Feb 12 13:33:13 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
         * templates/vc8.mpd:
 
           Changed the source component specific keyword, managed, to be
-          allowed as project level setting as well.  Also, the value of the
+          allowed as a project level setting as well.  Also, the value of the
           'managed' setting can determine different managed c++ levels for
           vc8 only.
 
