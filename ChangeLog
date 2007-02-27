@@ -1,3 +1,11 @@
+Tue Feb 27 15:17:35 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * devtools/document_template.pl:
+
+          Modified this script to look one directory up from the templates
+          directory for docs/templates to find documentation for templates
+          that do not reside in the MPC tree.
+
 Tue Feb 27 13:33:42 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
