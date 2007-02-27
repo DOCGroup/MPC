@@ -1,3 +1,10 @@
+Tue Feb 27 13:33:42 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Avoid an infinite loop when processing -value_template foo=$(FOO).
+          Thanks to Steve Huston for reporting this.
+
 Mon Feb 26 17:30:03 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/BDS4WorkspaceCreator.pm:

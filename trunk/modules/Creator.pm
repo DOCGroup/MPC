@@ -1037,8 +1037,10 @@ sub expand_variables {
 
         ## We have replaced the template value, but that template
         ## value may contain a $() construct that may need to get
-        ## replaced too.
-        $whole = '';
+        ## replaced too.  However, if the name of the template variable
+        ## is the same as the original $() variable name, we need to 
+        ## leave it alone to avoid looping infinitely.
+        $whole = '' if ($whole ne $val);
       }
       else {
         if ($expand && $warn) {
