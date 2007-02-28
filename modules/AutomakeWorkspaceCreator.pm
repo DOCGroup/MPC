@@ -117,6 +117,7 @@ sub write_comps {
     ## The top-level is never listed as a dependency, so it needs to be
     ## added explicitly.
     print $mfh "AC_CONFIG_FILES([ Makefile ])$crlf";
+    $proj_dir_seen{'.'} = 1;
   }
 
   ## If we're writing a configure.ac.Makefiles file, every seen project
