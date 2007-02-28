@@ -1,3 +1,21 @@
+Wed Feb 28 13:50:41 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Since the top-level Makefile is always added to
+          configure.ac.Makefiles, we need to mark '.' as beeing seen so that
+          ./Makefile is not added too.
+
+        * modules/Options.pm:
+
+          Recognize -help so that an error is not printed, but the usage
+          still is.
+
+        * modules/WorkspaceCreator.pm:
+
+          Ignore option errors with no message (in case -help is used on the
+          command line within a workspace).
+
 Tue Feb 27 15:17:35 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * devtools/document_template.pl:

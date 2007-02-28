@@ -1883,7 +1883,9 @@ sub project_target_translation {
 sub optionError {
   my($self) = shift;
   my($str)  = shift;
-  $self->warning("$self->{'current_input'}: $str.");
+  if (defined $str) {
+    $self->warning("$self->{'current_input'}: $str.");
+  }
 }
 
 
