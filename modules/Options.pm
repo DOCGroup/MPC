@@ -343,6 +343,9 @@ sub options {
         $self->optionError('-global requires a file name argument');
       }
     }
+    elsif ($arg eq '-help') {
+      $self->optionError();
+    }
     elsif ($arg eq '-hierarchy') {
       $hierarchy = 1;
     }
