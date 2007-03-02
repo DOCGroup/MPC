@@ -53,7 +53,7 @@ sub printUsage {
                $spaces . "[-expand_vars] [-features <feature definitions>]\n" .
                $spaces . "[-exclude <directories>] [-name_modifier <pattern>]\n" .
                $spaces . "[-apply_project] [-version] [-into <directory>]\n" .
-               $spaces . "[-gfeature_file <file name>] [-nocomments]\n" .
+               $spaces . "[-gfeature_file <file name>] [-nocomments] [-for_eclipse]\n" .
                $spaces . "[-language <";
 
   my($olen) = length($spaces) + 12;
@@ -108,6 +108,8 @@ sub printUsage {
 "                       The default feature file is default.features under the\n" .
 "                       config directory.\n" .
 "       -features       Specifies the feature list to set before processing.\n" .
+"       -for_eclipse    Generate files for use with eclipse.  This is only\n" .
+"                       useful for make based project types.\n" .
 "       -gendot         Generate .dot files for use with Graphvis.\n" .
 "       -genins         Generate .ins files for use with prj_install.pl.\n" .
 "       -gfeature_file  Specifies the global feature file.  The\n" .
@@ -182,7 +184,7 @@ sub completion_command {
                "ti static noreldefs notoplevel feature_file use_env " .
                "value_template value_project make_coexistence language " .
                "hierarchy exclude name_modifier apply_project version " .
-               "expand_vars gfeature_file nocomments)/' " .
+               "expand_vars gfeature_file nocomments for_eclipse)/' " .
                "'c/dll:/f/' 'c/dll_exe:/f/' 'c/lib_exe:/f/' 'c/lib:/f/' " .
                "'n/-ti/(dll lib dll_exe lib_exe)/:' ";
 
@@ -244,6 +246,7 @@ sub options {
   my($applypj)    = ($defaults ? 0 : undef);
   my($genins)     = ($defaults ? 0 : undef);
   my($gendot)     = ($defaults ? 0 : undef);
+  my($foreclipse) = ($defaults ? 0 : undef);
 
   ## Process the command line arguments
   for(my $i = 0; $i <= $#args; $i++) {
@@ -321,6 +324,9 @@ sub options {
       else {
         $self->optionError('-features requires a comma separated list argument');
       }
+    }
+    elsif ($arg eq '-for_eclipse') {
+      $foreclipse = 1;
     }
     elsif ($arg eq '-gfeature_file') {
       $i++;
@@ -536,6 +542,7 @@ sub options {
           'feature_file'  => $feature_f,
           'gfeature_file' => $gfeature_f,
           'features'      => \@features,
+          'for_eclipse'   => $foreclipse,
           'include'       => \@include,
           'input'         => \@input,
           'comments'      => $comments,
