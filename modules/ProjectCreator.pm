@@ -262,6 +262,7 @@ sub new {
   my($expandvars) = shift;
   my($gendot)     = shift;
   my($comments)   = shift;
+  my($foreclipse) = shift;
   my($self)       = $class->SUPER::new($global, $inc,
                                        $template, $ti, $dynamic, $static,
                                        $relative, $addtemp, $addproj,
