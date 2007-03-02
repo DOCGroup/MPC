@@ -646,7 +646,8 @@ sub subtraction_core {
         ## First try with quotes, then try again without them
         my($re) = ($j == 0 ? '"' . $value . '"' : $value);
 
-        if ($nval =~ s/\s+$re\s+/ / || $nval =~ s/\s+$re$// || $nval =~ s/^$re$//) {
+        if ($nval =~ s/\s+$re\s+/ / || $nval =~ s/\s+$re$// ||
+            $nval =~ s/^$re\s+//    || $nval =~ s/^$re$//) {
           $self->process_assignment($name, $nval, $assign, -1);
           $found = 1;
           last;
@@ -1031,8 +1032,7 @@ sub expand_variables {
         $self->warning("$name conflicts with a template variable scope");
       }
       elsif (UNIVERSAL::isa($arr, 'ARRAY') && defined $$arr[0]) {
-        $val = "@$arr";
-        $val = $self->modify_assignment_value(lc($name), $val);
+        $val = $self->modify_assignment_value(lc($name), "@$arr");
         substr($value, $start) =~ s/\$\([^)]+\)/$val/;
 
         ## We have replaced the template value, but that template
