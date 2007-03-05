@@ -298,6 +298,7 @@ sub parse_line {
   elsif ($status == -1) {
     if (index($line, '$') >= 0) {
       $line = $self->relative($line);
+      $line =~ s/\\/\//g;
     }
     foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
                                                  $line) {
