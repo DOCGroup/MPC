@@ -1,3 +1,15 @@
+Mon Mar  5 13:31:24 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/vc8java.txt:
+
+          Added documentation for the vc8java template.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where relative paths would come back in "windows"
+          style when generating projects for a windows based project type.
+          All file names need to be in the UNIX style for workspaces.
+
 Fri Mar  2 18:14:56 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/USAGE:
@@ -8,7 +20,7 @@ Fri Mar  2 18:14:56 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
         * modules/WorkspaceCreator.pm:
 
           Added a new option, -for_eclipse, which is useful only to make
-          base project types.  It creates files at the top level that
+          based project types.  It creates files at the top level that
           indicate a project to Eclipse.  It is used by importing an
           existing project into the workspace.
 
