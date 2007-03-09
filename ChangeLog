@@ -1,3 +1,14 @@
+Thu Mar 08 19:55:44 2007  Steve Huston  <shuston@riverace.com>
+
+        * templates/vc8dll.mpt:
+        * templates/vc8exe.mpt:
+        * templates/vc8lib.mpt:
+        * templates/vc8libexe.mpt: Replace _CRT_SECURE_NO_DEPRECATE with
+          _CRT_NONSTDC_NO_WARNINGS. We shouldn't defeat the security-related
+          warnings by default, but the _CRT_NONSTDC_NO_WARNINGS are for name
+          changes only (generally a prefixed _) and have no affect on
+          function.
+
 Mon Mar  5 13:31:24 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/vc8java.txt:
