@@ -1,3 +1,10 @@
+Fri Mar  9 13:43:25 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Set the 'static_libs_only' feature based on whether or not the
+          -static option is used.
+
 Thu Mar 08 19:55:44 2007  Steve Huston  <shuston@riverace.com>
 
         * templates/vc8dll.mpt:
