@@ -32,6 +32,10 @@ my($ProjectCreatorExtension) = 'mpc';
 my($TemplateExtension)       = 'mpd';
 my($TemplateInputExtension)  = 'mpt';
 
+## This feature is enabled or disabled depending on whether
+## or not the -static option is used.
+my($static_libs_feature) = 'static_libs_only';
+
 ## Valid names for assignments within a project
 ## Bit Meaning
 ## 0   Preserve the order for additions (1) or invert it (0)
@@ -4718,10 +4722,18 @@ sub create_feature_parser {
     my($searched) = $self->search_include_path($feature);
     $feature = $searched if (defined $searched);
   }
-  return new FeatureParser($features,
-                           $gfeature,
-                           $typefeaturef,
-                           $feature);
+  my($fp) = new FeatureParser($features,
+                              $gfeature,
+                              $typefeaturef,
+                              $feature);
+
+  my($slo) = $fp->get_value($static_libs_feature);
+  if (!defined $slo) {
+    $fp->parse_line(undef,
+                    $static_libs_feature . ' = ' . $self->get_static());
+  }
+
+  return $fp;
 }
 
 
