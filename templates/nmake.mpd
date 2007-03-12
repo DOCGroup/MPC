@@ -128,7 +128,7 @@ REALCLEAN : CLEAN
     if not exist "$(INTDIR)\$(NULL)" mkdir "$(INTDIR)"
 
 CPP=<%cc("cl.exe")%>
-CPP_COMMON=<%if(TreatWChar_tAsBuiltInType)%>/Zc:wchar_t <%endif%>/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%><%optimize_flags("/O2")%><%else%><%debug_flags("/Ob0")%><%endif%> <%compile_flags%><%if(managed)%> /EHs- /Gm- /clr<%endif%><%if(pdbc)%> /Fd"<%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%>$(INTDIR)/<%endif%>"<%endif%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines platform_defines macros)%>/D <%define%> <%endfor%><%if(unicode)%>/D UNICODE /D _UNICODE <%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%>/FD /c
+CPP_COMMON=<%if(TreatWChar_tAsBuiltInType)%>/Zc:wchar_t <%endif%>/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%><%optimize_flags("/O2")%><%else%><%debug_flags("/Ob0")%><%endif%> <%compile_flags%><%if(managed)%> /EHsc- /Gm- /clr<%endif%><%if(pdbc)%> /Fd"<%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%>$(INTDIR)/<%endif%>"<%endif%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines platform_defines macros)%>/D <%define%> <%endfor%><%if(unicode)%>/D UNICODE /D _UNICODE <%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%>/FD /c
 <%if(pch_header)%>CPP_PCH=<%foreach(pch_defines)%>/D <%pch_define%> <%endfor%><%if(pch_source)%>/Yu<%else%>/YX<%endif%>"<%pch_header%>" /Fp"$(INTDIR)\<%transdir(pch_header)%><%basenoextension(pch_header)%>.pch"<%endif%>
 CPP_PROJ=$(CPP_COMMON) <%if(pch_header)%>$(CPP_PCH) <%endif%>/Fo"<%fo_flag("$(INTDIR)\\\\")%>"
 
@@ -260,7 +260,7 @@ SOURCE="<%source_file%>"
 <%if(transdir(source_file))%>
 	@if not exist "$(INTDIR)\<%transdir(source_file)%>$(NULL)" mkdir "$(INTDIR)\<%transdir(source_file)%>"
 <%endif%>
-	$(CPP) <%if(pch_header && !flag_overrides(source_file, no_pch))%>$(CPP_PCH) <%endif%>$(CPP_COMMON) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%><%if(flag_overrides(source_file, managed))%>/EHs- /Gm- /clr <%endif%>/Fo"$(INTDIR)\<%transdir(source_file)%><%basenoextension(source_file)%>.obj" $(SOURCE)
+	$(CPP) <%if(pch_header && !flag_overrides(source_file, no_pch))%>$(CPP_PCH) <%endif%>$(CPP_COMMON) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%><%if(flag_overrides(source_file, managed))%>/EHsc- /Gm- /clr <%endif%>/Fo"$(INTDIR)\<%transdir(source_file)%><%basenoextension(source_file)%>.obj" $(SOURCE)
 
 <%endfor%>
 <%endif%>
