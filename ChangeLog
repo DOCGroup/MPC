@@ -1,3 +1,28 @@
+Mon Mar 13 00:22:33 UTC 2007  Ossama Othman  <ossama_othman at symantec dot com>
+
+        From Russell Mora
+        * templates/nmake.mpd:
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+
+          This option use to be /GX which is now equivalent to /EHsc:
+	
+	  /GR[-] enable C++ RTTI           /GX[-] enable C++ EH (same as /EHsc)
+	  /EHs enable C++ EH (no SEH exc)  /EHa enable C++ EH (w/ SEH exc)
+	  /EHc extern "C" defaults to nothrow
+	
+	  Mon Jul 11 13:26:52 2005  Chad Elliott  <elliott_c@ociweb.com>
+	
+	        * templates/nmakedll.mpt:
+	        * templates/nmakeexe.mpt:
+	
+	          Switch from /GX to /EHs (which is supported by vc6) to
+                  avoid build warnings using the Visual Studio 8 compiler
+                  with nmake.
+	
+	  I don't see why it was changed to /EHs as opposed to /EHsc so
+          changing it to what appears to be correct.
+
 Fri Mar  9 13:43:25 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
