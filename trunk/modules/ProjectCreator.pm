@@ -4729,8 +4729,9 @@ sub create_feature_parser {
 
   my($slo) = $fp->get_value($static_libs_feature);
   if (!defined $slo) {
+    my($sval) = $self->get_static() || 0;
     $fp->parse_line(undef,
-                    $static_libs_feature . ' = ' . $self->get_static());
+                    $static_libs_feature . ' = ' . $sval);
   }
 
   return $fp;
