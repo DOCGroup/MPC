@@ -158,6 +158,13 @@ sub onVMS {
   return $onVMS;
 }
 
+
+sub path_is_relative {
+  my($self) = shift;
+  my($path) = shift;
+  return (index($path, '/') != 0 && $path !~ /^[A-Z]:\//i);
+}
+
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
@@ -192,6 +199,7 @@ sub convert_slashes {
   #my($self) = shift;
   return 0;
 }
+
 
 sub case_insensitive {
   #my($self) = shift;
