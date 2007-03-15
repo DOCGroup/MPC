@@ -1,3 +1,18 @@
+Thu Mar 15 13:25:09 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/DirectoryManager.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where a full path to a mpc file specified in an
+          aggregated workspace would not be handled properly.  Thanks to
+          Sumant Tambe <sutambe at dre dot vanderbilt dot edu> for reporting
+          this.
+
+        * modules/VC71WorkspaceCreator.pm:
+
+          Reverted my change from Wed Mar 14 19:20:48 UTC 2007.  It turns
+          out that is wasn't necessary and didn't benefit anyone.
+
 Wed Mar 14 19:20:48 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

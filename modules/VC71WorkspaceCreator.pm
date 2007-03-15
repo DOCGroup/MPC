@@ -47,16 +47,11 @@ sub print_inner_project {
   my($gen)   = shift;
   my($pguid) = shift;
   my($deps)  = shift;
-  my($crlf) = $self->crlf();
   my($project_name) = shift;
   my($name_to_guid_map) = shift;
 
-  print $fh "\tProjectSection(WebsiteProperties) = preProject$crlf",
-            "\t\tDebug.AspNetCompiler.Debug = \"True\"$crlf",
-            "\t\tRelease.AspNetCompiler.Debug = \"False\"$crlf",
-            "\tEndProjectSection$crlf";
-
   if ($self->allow_empty_dependencies() || defined $$deps[0]) {
+    my($crlf) = $self->crlf();
     print $fh "\tProjectSection(ProjectDependencies) = postProject$crlf";
     foreach my $dep (@$deps) {
       my($guid) = $name_to_guid_map->{$dep};
