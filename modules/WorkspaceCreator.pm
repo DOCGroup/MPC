@@ -298,7 +298,6 @@ sub parse_line {
   elsif ($status == -1) {
     if (index($line, '$') >= 0) {
       $line = $self->relative($line);
-      $line =~ s/\\/\//g;
     }
     foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
                                                  $line) {
@@ -475,7 +474,8 @@ sub parse_exclude {
           if (index($line, '$') >= 0) {
             $line = $self->relative($line);
           }
-          if (defined $self->{'scoped_basedir'}) {
+          if (defined $self->{'scoped_basedir'} &&
+              $self->path_is_relative($line)) {
             $line = $self->{'scoped_basedir'} . '/' . $line;
           }
           if ($line =~ /[\?\*\[\]]/) {
@@ -604,7 +604,9 @@ sub handle_scoped_unknown {
   }
 
   if (defined $self->{'scoped_basedir'}) {
-    $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
+    if ($self->path_is_relative($line)) {
+      $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
+    }
     my(%dup) = ();
     @dup{@{$self->{'project_files'}}} = ();
     $dupchk = \%dup;
@@ -2301,6 +2303,14 @@ sub workspace_file_name {
   my($self) = shift;
   return $self->get_modified_workspace_name($self->get_workspace_name(),
                                             $self->workspace_file_extension());
+}
+
+
+sub relative {
+  my($self) = shift;
+  my($line) = $self->SUPER::relative(shift);
+  $line =~ s/\\/\//g;
+  return $line;
 }
 
 # ************************************************************
