@@ -13,7 +13,7 @@ project {
     generic_outputext   = .php
   }
   requires += swig_php
-  includes += $(PHP_INCLUDE) $(PHP_INCLUDE)/main $(PHP_INCLUDE)/Zend \
+  includes += $(PHP_INCLUDE)/. $(PHP_INCLUDE)/main $(PHP_INCLUDE)/Zend \
               $(PHP_INCLUDE)/TSRM
   libpaths += $(PHP_LIBPATH)/.
 }

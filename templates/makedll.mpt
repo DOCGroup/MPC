@@ -42,10 +42,12 @@ visibility       =
 
 Debug {
   lib_modifier = d
+  genflags     = -g
 }
 
 Release {
   optimize = 1
+  genflags = -O
 }
 
 // ***********************************************************************
@@ -281,7 +283,7 @@ vxworks {
   prelinktarget    = __ctordtor.c
   prelinktargetobj = __ctordtor$(OBJEXT)
   clean            = __ctordtor$(OBJEXT)
-  ldlibs           = -L$(WIND_BASE)/target/lib/$(CPUTYPE)/$(CPU)/common -larch
+  ldlibs           = -L$(WIND_BASE)/target/lib/$(CPUTYPE)/$(CPU)/common$(CPU_SPECIFIC) -larch
   extracppflags    = -nostdlib -I$(WIND_BASE)/target/h
   ld               = ld$(CPUTYPE)
   linkflags        = -X -r

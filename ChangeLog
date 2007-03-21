@@ -1,3 +1,276 @@
+Wed Mar 21 16:54:06 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+
+          Document the way multiple feature names work in feature projects.
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Support multiple configurations within a single makefile.
+
+Thu Mar 15 13:25:09 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/DirectoryManager.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where a full path to a mpc file specified in an
+          aggregated workspace would not be handled properly.  Thanks to
+          Sumant Tambe <sutambe at dre dot vanderbilt dot edu> for reporting
+          this.
+
+        * modules/VC71WorkspaceCreator.pm:
+
+          Reverted my change from Wed Mar 14 19:20:48 UTC 2007.  It turns
+          out that is wasn't necessary and didn't benefit anyone.
+
+Wed Mar 14 19:20:48 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          When setting the 'static_libs_only' feature, use zero if
+          get_static() returns undef.
+
+        * modules/VC71WorkspaceCreator.pm:
+
+          Added a ProjectSection for WebsiteProperties that is desired by
+          Visual Studio 2005 SP1.  It does not negatively affect Visual
+          Studio 2003 or Visual Studio 2005 (without SP1).
+
+Mon Mar 13 00:22:33 UTC 2007  Ossama Othman  <ossama_othman at symantec dot com>
+
+        From Russell Mora
+        * templates/nmake.mpd:
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+
+          This option use to be /GX which is now equivalent to /EHsc:
+
+          /GR[-] enable C++ RTTI           /GX[-] enable C++ EH (same as /EHsc)
+          /EHs enable C++ EH (no SEH exc)  /EHa enable C++ EH (w/ SEH exc)
+          /EHc extern "C" defaults to nothrow
+
+          Mon Jul 11 13:26:52 2005  Chad Elliott  <elliott_c@ociweb.com>
+
+                * templates/nmakedll.mpt:
+                * templates/nmakeexe.mpt:
+
+                  Switch from /GX to /EHs (which is supported by vc6) to
+                  avoid build warnings using the Visual Studio 8 compiler
+                  with nmake.
+
+          I don't see why it was changed to /EHs as opposed to /EHsc so
+          changing it to what appears to be correct.
+
+Fri Mar  9 13:43:25 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Set the 'static_libs_only' feature based on whether or not the
+          -static option is used.
+
+Thu Mar 08 19:55:44 2007  Steve Huston  <shuston@riverace.com>
+
+        * templates/vc8dll.mpt:
+        * templates/vc8exe.mpt:
+        * templates/vc8lib.mpt:
+        * templates/vc8libexe.mpt: Replace _CRT_SECURE_NO_DEPRECATE with
+          _CRT_NONSTDC_NO_WARNINGS. We shouldn't defeat the security-related
+          warnings by default, but the _CRT_NONSTDC_NO_WARNINGS are for name
+          changes only (generally a prefixed _) and have no affect on
+          function.
+
+Mon Mar  5 13:31:24 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/vc8java.txt:
+
+          Added documentation for the vc8java template.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where relative paths would come back in "windows"
+          style when generating projects for a windows based project type.
+          All file names need to be in the UNIX style for workspaces.
+
+Fri Mar  2 18:14:56 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/USAGE:
+        * modules/Driver.pm:
+        * modules/MakeWorkspaceBase.pm:
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Added a new option, -for_eclipse, which is useful only to make
+          based project types.  It creates files at the top level that
+          indicate a project to Eclipse.  It is used by importing an
+          existing project into the workspace.
+
+Fri Mar  2 15:57:34 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Fixed a bug in subtraction where if the element to be subtracted
+          is the first element it would not be removed.
+
+Wed Feb 28 13:50:41 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Since the top-level Makefile is always added to
+          configure.ac.Makefiles, we need to mark '.' as beeing seen so that
+          ./Makefile is not added too.
+
+        * modules/Options.pm:
+
+          Recognize -help so that an error is not printed, but the usage
+          still is.
+
+        * modules/WorkspaceCreator.pm:
+
+          Ignore option errors with no message (in case -help is used on the
+          command line within a workspace).
+
+Tue Feb 27 15:17:35 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * devtools/document_template.pl:
+
+          Modified this script to look one directory up from the templates
+          directory for docs/templates to find documentation for templates
+          that do not reside in the MPC tree.
+
+Tue Feb 27 13:33:42 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Avoid an infinite loop when processing -value_template foo=$(FOO).
+          Thanks to Steve Huston for reporting this.
+
+Mon Feb 26 17:30:03 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/BDS4WorkspaceCreator.pm:
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/CCWorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/VC6WorkspaceCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/WinWorkspaceBase.pm:
+
+          Added a Windows Workspace base module to override methods that are
+          used in Creator::expand_variables().
+
+        * modules/Options.pm:
+
+          Reverted my change from Wed Jan 24 19:04:58 UTC 2007.  It turns
+          out that the "extra parameter" was still needed.
+
+        * modules/ProjectCreator.pm:
+
+          Corrected a comment about sorting template variable values.
+
+Mon Feb 26 13:09:44 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+
+          Moved the Modify_Custom section down to the end of the
+          Define_Custom section.
+
+        * modules/Creator.pm:
+
+          Fixed a bug in subtraction where a partial subtraction would occur
+          if an element contained the subtracted element plus other text.
+
+        * prj_install.pl:
+
+          Added the -l option to use symbolic links instead of copies.
+
+Fri Feb 16 19:56:13 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/openssl.mpb:
+          Added support for borland template so that we can use the
+          borland template with openssl
+
+Mon Feb 12 13:33:13 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+        * templates/nmake.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Changed the source component specific keyword, managed, to be
+          allowed as a project level setting as well.  Also, the value of the
+          'managed' setting can determine different managed c++ levels for
+          vc8 only.
+
+Thu Feb  8 19:45:54 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/global.features:
+
+          By default, disable the ziparchive feature.
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+        * templates/nmake.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Added a new source component specific keyword, managed, which
+          indicates that the source files within the scope of this setting
+          are to be treated as Managed C++ (a Microsoft extension).
+
+        * docs/templates/vc8.txt:
+        * modules/VC8WorkspaceCreator.pm:
+
+          If the 'add_references' template variable is set, the vc8 C++
+          projects will have project references inserted into them based on
+          the 'after' keyword setting.
+
+Fri Feb  2 17:47:09 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/swig_php.mpb:
+
+          Added /. after $(PHP_INCLUDE) in the includes setting.  In case
+          the PHP_INCLUDE environment variable is not set, something is
+          still passed to the -I option.
+
+        * config/ziparchive.mpb:
+
+          Added /. after $(ZIPARCHIVEROOT) in the includes setting.  In case
+          the ZIPARCHIVEROOT environment variable is not set, something is
+          still passed to the -I option.
+
+          And switched to lit_libs.
+
+        * config/zzip.mpb:
+
+          For non-Windows based project types, use lit_libs instead of libs.
+
+        * docs/templates/automake.txt:
+
+          Documented the automake template variables.
+
+        * docs/templates/common.txt:
+
+          Added the definition of the forcount template variable.
+
+        * modules/AutomakeProjectCreator.pm:
+        * templates/automake.mpd:
+
+          Replaced the am_includes template variable with the includes
+          project variable.  In the past, these were different but now they
+          are exactly the same.
+
+Thu Feb  1 18:29:19 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * docs/templates/vc7.txt:
+        * docs/templates/vc8.txt:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Added new template variable midl_notlb to suppress the
+          creation of type libraries.
+
 Wed Jan 24 19:04:58 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/CCWorkspaceCreator.pm:
@@ -26,8 +299,8 @@ Wed Jan 24 19:04:58 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
           Fixed a bug where a scoped assignment would make the original
           assignment disappear completely.  The original assignment needs to
-          be maintained so that when the assignment is used outside of a    
-          scope it has the value specified by the user.                  
+          be maintained so that when the assignment is used outside of a
+          scope it has the value specified by the user.
 
         * modules/VC8WorkspaceCreator.pm:
         * modules/WorkspaceCreator.pm:
@@ -51,7 +324,7 @@ Wed Jan 24 19:04:58 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
         * templates/makedll.mpt:
 
           Changed the way that output directories are made.  The targets no
-          longer depend on the output directory, they are made on the fly. 
+          longer depend on the output directory, they are made on the fly.
 
 Fri Jan 19 15:34:17 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 

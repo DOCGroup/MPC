@@ -2,7 +2,7 @@
 // $Id$
 
 feature(ziparchive) {
-  includes += $(ZIPARCHIVEROOT)
+  includes += $(ZIPARCHIVEROOT)/.
   libpaths += $(ZIPARCHIVEROOT)/lib
-  libs += ziparch
+  lit_libs += ziparch
 }

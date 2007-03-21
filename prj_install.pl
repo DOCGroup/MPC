@@ -13,6 +13,7 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 # ******************************************************************
 
 use strict;
+use Cwd;
 use FileHandle;
 use File::Copy;
 use File::Basename;
@@ -22,7 +23,7 @@ use File::Basename;
 # ******************************************************************
 
 my($insext)   = 'ins';
-my($version)  = '1.6';
+my($version)  = '1.7';
 my(%defaults) = ('header_files'   => 1,
                  'idl_files'      => 1,
                  'inline_files'   => 1,
@@ -39,6 +40,9 @@ my(%base)      = ();
 my(%override)  = ();
 my($keepgoing) = 0;
 
+eval 'symlink("", "");';
+my($hasSymlink) = ($@ eq '');
+
 # ******************************************************************
 # Subroutine Section
 # ******************************************************************
@@ -46,7 +50,10 @@ my($keepgoing) = 0;
 sub copyFiles {
   my($files)   = shift;
   my($insdir)  = shift;
+  my($symlink) = shift;
   my($verbose) = shift;
+  my($type)    = ($symlink ? 'link' : 'copy');
+  my($cwd)     = getcwd();
 
   foreach my $file (@$files) {
     my($dest) = $insdir . '/' .
@@ -63,10 +70,18 @@ sub copyFiles {
 
     if (! -e $dest || (-M $file) < (-M $dest)) {
       if ($verbose) {
-        print "Copying to $dest\n";
+        print '', ($symlink ? 'Linking' : 'Copying'), " to $dest\n";
       }
-      if (!copy($file, $dest)) {
-        print STDERR "ERROR: Unable to copy $file to $dest\n";
+      my($status) = undef;
+      if ($symlink) {
+        unlink($dest);
+        $status = symlink("$cwd/$file", $dest);
+      }
+      else {
+        $status = copy($file, $dest);
+      }
+      if (!$status) {
+        print STDERR "ERROR: Unable to $type $file to $dest\n";
         if (!$keepgoing) {
           return 0;
         }
@@ -241,7 +256,8 @@ sub usageAndExit {
   my($base) = basename($0);
   my($spc)  = ' ' x (length($base) + 8);
   print STDERR "$base v$version\n",
-               "Usage: $base [-a tag1[,tagN]] [-b tag=dir] [-o tag=dir]\n",
+               "Usage: $base [-a tag1[,tagN]] [-b tag=dir] ",
+               ($hasSymlink ? '[-l] ' : ''), "[-o tag=dir]\n",
                $spc, "[-s tag1[,tagN]] [-v] [-k] [install directory]\n",
                $spc, "[$insext files or directories]\n\n",
                "Install files matching the tag specifications found ",
@@ -249,6 +265,7 @@ sub usageAndExit {
                "-a  Adds to the default set of tags that get copied.\n",
                "-b  Install tag into dir underneath the install directory.\n",
                "-k  Keep going if a file to be copied is missing.\n",
+               ($hasSymlink ? "-l  Use symbolic links instead of copying.\n" : ''),
                "-o  Install tag into dir.\n",
                "-s  Sets the tags that get copied.\n",
                "-v  Enables verbose mode.\n",
@@ -271,6 +288,7 @@ sub usageAndExit {
 my($verbose)  = undef;
 my($first)    = 1;
 my($insdir)   = undef;
+my($symlink)  = undef;
 my(@insfiles) = ();
 my(%tags)     = %defaults;
 
@@ -304,6 +322,9 @@ for(my $i = 0; $i <= $#ARGV; ++$i) {
     }
     elsif ($arg eq '-k') {
       $keepgoing = 1;
+    }
+    elsif ($arg eq '-l') {
+      $symlink = $hasSymlink;
     }
     elsif ($arg eq '-o') {
       ++$i;
@@ -365,7 +386,7 @@ elsif (!defined $insfiles[0]) {
 my($status) = 1;
 my(@files)  = loadInsFiles(\@insfiles, \%tags, $verbose);
 if (defined $files[0]) {
-  $status = (copyFiles(\@files, $insdir, $verbose) ? 0 : 1);
+  $status = (copyFiles(\@files, $insdir, $symlink, $verbose) ? 0 : 1);
 }
 
 exit($status);

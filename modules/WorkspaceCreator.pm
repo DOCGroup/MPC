@@ -78,6 +78,7 @@ sub new {
   my($expandvars) = shift;
   my($gendot)     = shift;
   my($comments)   = shift;
+  my($foreclipse) = shift;
   my($self)       = Creator::new($class, $global, $inc,
                                  $template, $ti, $dynamic, $static,
                                  $relative, $addtemp, $addproj,
@@ -111,6 +112,7 @@ sub new {
 
   ## These are static throughout processing
   $self->{'coexistence'}         = $makeco;
+  $self->{'for_eclipse'}         = $foreclipse;
   $self->{'generate_dot'}        = $gendot;
   $self->{'generate_ins'}        = $genins;
   $self->{'verbose_ordering'}    = undef;
@@ -472,7 +474,8 @@ sub parse_exclude {
           if (index($line, '$') >= 0) {
             $line = $self->relative($line);
           }
-          if (defined $self->{'scoped_basedir'}) {
+          if (defined $self->{'scoped_basedir'} &&
+              $self->path_is_relative($line)) {
             $line = $self->{'scoped_basedir'} . '/' . $line;
           }
           if ($line =~ /[\?\*\[\]]/) {
@@ -601,7 +604,9 @@ sub handle_scoped_unknown {
   }
 
   if (defined $self->{'scoped_basedir'}) {
-    $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
+    if ($self->path_is_relative($line)) {
+      $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
+    }
     my(%dup) = ();
     @dup{@{$self->{'project_files'}}} = ();
     $dupchk = \%dup;
@@ -943,13 +948,13 @@ sub write_workspace {
           my($tmp) = "$outdir/MWC$>.$$";
           my($different) = 1;
           if (open($fh, ">$tmp")) {
-            $self->pre_workspace($fh, $creator);
+            $self->pre_workspace($fh, $creator, $addfile);
             $self->write_comps($fh, $creator, $addfile);
 
             my($wsHelper) = WorkspaceHelper::get($self);
             $wsHelper->perform_custom_processing($fh, $creator, $addfile);
 
-            $self->post_workspace($fh, $creator);
+            $self->post_workspace($fh, $creator, $addfile);
             close($fh);
 
             if (-r $name &&
@@ -987,13 +992,13 @@ sub write_workspace {
         }
         else {
           if (open($fh, ">$name")) {
-            $self->pre_workspace($fh, $creator);
+            $self->pre_workspace($fh, $creator, $addfile);
             $self->write_comps($fh, $creator, $addfile);
 
             my($wsHelper) = WorkspaceHelper::get($self);
             $wsHelper->perform_custom_processing($fh, $creator, $addfile);
 
-            $self->post_workspace($fh, $creator);
+            $self->post_workspace($fh, $creator, $addfile);
             close($fh);
 
             if ($addfile) {
@@ -1883,7 +1888,9 @@ sub project_target_translation {
 sub optionError {
   my($self) = shift;
   my($str)  = shift;
-  $self->warning("$self->{'current_input'}: $str.");
+  if (defined $str) {
+    $self->warning("$self->{'current_input'}: $str.");
+  }
 }
 
 
@@ -1949,6 +1956,9 @@ sub process_cmdline {
       }
       if (defined $options->{'gendot'}) {
         $self->optionError('-gendot is ignored');
+      }
+      if (defined $options->{'for_eclipse'}) {
+        $self->optionError('-for_eclipse is ignored');
       }
       if (defined $options->{'input'}->[0]) {
         $self->optionError('Command line files ' .
@@ -2027,7 +2037,8 @@ sub project_creator {
                    $parameters{'use_env'},
                    $parameters{'expand_vars'},
                    $self->{'gendot'},
-                   $parameters{'comments'});
+                   $parameters{'comments'},
+                   $self->{'for_eclipse'});
 }
 
 
@@ -2294,6 +2305,14 @@ sub workspace_file_name {
                                             $self->workspace_file_extension());
 }
 
+
+sub relative {
+  my($self) = shift;
+  my($line) = $self->SUPER::relative(shift);
+  $line =~ s/\\/\//g;
+  return $line;
+}
+
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
@@ -2326,14 +2345,15 @@ sub pre_workspace {
   #my($self)    = shift;
   #my($fh)      = shift;
   #my($creator) = shift;
+  #my($top)     = shift;
 }
 
 
 sub write_comps {
-  #my($self) = shift;
-  #my($fh)   = shift;
-  #my($gens) = shift;
-  #my($top)  = shift;
+  #my($self)    = shift;
+  #my($fh)      = shift;
+  #my($creator) = shift;
+  #my($top)     = shift;
 }
 
 
@@ -2341,6 +2361,7 @@ sub post_workspace {
   #my($self)    = shift;
   #my($fh)      = shift;
   #my($creator) = shift;
+  #my($top)     = shift;
 }
 
 

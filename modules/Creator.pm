@@ -643,14 +643,11 @@ sub subtraction_core {
         $nval = $self->get_assignment_for_modification($name, $assign, 1);
       }
       for(my $j = 0; $j <= $last; $j++) {
-        ## If we didn't find it the first time, try again with quotes
-        my($re) = ($j == $last ? '"' . $value . '"' : $value);
+        ## First try with quotes, then try again without them
+        my($re) = ($j == 0 ? '"' . $value . '"' : $value);
 
-        ## Due to the way process_assignment() works, we only need to
-        ## attempt to remove a value that is either followed by a space
-        ## or at the end of the line (single values are always at the end
-        ## of the line).
-        if ($nval =~ s/$re\s+// || $nval =~ s/$re$//) {
+        if ($nval =~ s/\s+$re\s+/ / || $nval =~ s/\s+$re$// ||
+            $nval =~ s/^$re\s+//    || $nval =~ s/^$re$//) {
           $self->process_assignment($name, $nval, $assign, -1);
           $found = 1;
           last;
@@ -1035,14 +1032,15 @@ sub expand_variables {
         $self->warning("$name conflicts with a template variable scope");
       }
       elsif (UNIVERSAL::isa($arr, 'ARRAY') && defined $$arr[0]) {
-        $val = "@$arr";
-        $val = $self->modify_assignment_value(lc($name), $val);
+        $val = $self->modify_assignment_value(lc($name), "@$arr");
         substr($value, $start) =~ s/\$\([^)]+\)/$val/;
 
         ## We have replaced the template value, but that template
         ## value may contain a $() construct that may need to get
-        ## replaced too.
-        $whole = '';
+        ## replaced too.  However, if the name of the template variable
+        ## is the same as the original $() variable name, we need to 
+        ## leave it alone to avoid looping infinitely.
+        $whole = '' if ($whole ne $val);
       }
       else {
         if ($expand && $warn) {

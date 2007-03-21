@@ -158,6 +158,12 @@ dllout          If defined, specifies where the dynamic libraries will be
 libout          Specifies where the dynamic and static libraries will be placed
 exeout          Specifies where executables will be placed (Previously known
                 as install)
+managed         This keyword can be used as a global setting or as a source
+                component scoped setting (ie. inside the scope of
+                Source_Files).  It specifies that the source files should be
+                compiled as managed C++.  Since this is Microsoft specific, it
+                is only supported by the nmake, vc7, vc71 and vc8 project
+                types.
 no_pch          This keyword can only be used as a source component scoped
                 setting (ie. inside the scope of Source_Files).  It
                 specifies that precompiled headers should not be used for
@@ -520,10 +526,6 @@ If the custom output can not be represented with the above output extension
 keywords (*_outputext) and you have knowledge of the output files a priori,
 you can represent them with the '>>' construct.
 
-A Modify_Custom section can be used to modify an existing custom definition.
-The Define_Custom must be processed prior to processing a Modify_Custom
-section; otherwise, an error will occur.
-
 Below is an example that demonstrates the use of '>>'.  The command takes an
 input file name of foo.prp and produces two files that have completely
 unrelated filenames (i.e. foo !~ hello).
@@ -653,6 +655,10 @@ project {
   }
 }
 
+A Modify_Custom section can be used to modify an existing custom definition.
+The Define_Custom must be processed prior to processing a Modify_Custom
+section; otherwise, an error will occur.
+
 Special type of feature project
 -------------------------------
 A feature project contains information as a project would, but can only
@@ -662,7 +668,8 @@ that it requires (or avoids) are present.
 A feature definition requires at least one feature name.  A name by itself
 specifies that the feature is required.  A '!' in front of the feature name
 indicates that the feature must be disabled.  There may be more than one
-feature listed between the parenthesis and they must be comma separated.
+feature listed between the parenthesis and they must be comma separated. 
+Each feature will be logically anded together.
 
 The following feature definition requires that the qt feature be enabled.
 

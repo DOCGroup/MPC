@@ -238,7 +238,7 @@ if (open($fh, $input)) {
             elsif ($name eq 'if') {
               $vname =~ s/(!|&&|\|\|)//g;
               foreach my $keyword (keys %keywords) {
-                $vname =~ s/$keyword\(.*\)//g;
+                $vname =~ s/$keyword\(.*[\)]?//g;
               }
               if ($vname !~ /^\s*$/) {
                 $name = lc($vname);
@@ -322,10 +322,17 @@ if (open($fh, $input)) {
   close($fh);
 
   my($cp) = new ConfigParser();
-  my($doc) = basename($input);
-  $doc =~ s/\.[^\.]+$/$doc_ext/;
   $cp->read_file("$basePath/docs/templates/common$doc_ext");
-  $cp->read_file("$basePath/docs/templates/$doc");
+
+  my($doc) = $input;
+  $doc =~ s/\.[^\.]+$/$doc_ext/;
+  $doc =~ s/templates/docs\/templates/;
+  if (-r $doc) {
+    $cp->read_file($doc);
+  }
+  else {
+    $cp->read_file("$basePath/docs/templates/" . basename($doc));
+  }
 
   if (open($fh, ">$output")) {
     display_template($fh, $cp, $input, \%template_keys);

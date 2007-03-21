@@ -32,6 +32,10 @@ my($ProjectCreatorExtension) = 'mpc';
 my($TemplateExtension)       = 'mpd';
 my($TemplateInputExtension)  = 'mpt';
 
+## This feature is enabled or disabled depending on whether
+## or not the -static option is used.
+my($static_libs_feature) = 'static_libs_only';
+
 ## Valid names for assignments within a project
 ## Bit Meaning
 ## 0   Preserve the order for additions (1) or invert it (0)
@@ -47,6 +51,7 @@ my(%validNames) = ('exename'         => 1,
                    'custom_only'     => 1,
                    'libs'            => 2,
                    'lit_libs'        => 2,
+                   'managed'         => 1,
                    'pure_libs'       => 2,
                    'pch_header'      => 1,
                    'pch_source'      => 1,
@@ -127,7 +132,9 @@ my(@default_matching_assignments) = ('recurse',
 ## These matching assingment arrays will get added, but only to the
 ## specific project component types.
 my(%default_matching_assignments) = ('source_files' => ['buildflags',
-                                                        'no_pch'],
+                                                        'managed',
+                                                        'no_pch',
+                                                       ],
                                     );
 
 ## Deal with these components in a special way
@@ -259,6 +266,7 @@ sub new {
   my($expandvars) = shift;
   my($gendot)     = shift;
   my($comments)   = shift;
+  my($foreclipse) = shift;
   my($self)       = $class->SUPER::new($global, $inc,
                                        $template, $ti, $dynamic, $static,
                                        $relative, $addtemp, $addproj,
@@ -964,7 +972,7 @@ sub update_template_variable {
     for(my $i = 0; $i < $max; $i++) {
       if ($atemp->{$values[1]}->[$i]->[2]) {
         splice(@{$atemp->{$values[1]}}, $i, 0, [$values[0], $values[2]]);
-        return 1, undef;
+        return;
       }
     }
   }
@@ -4423,8 +4431,6 @@ sub adjust_value {
       $base =~ s/.*:://;
       my($replace) = (defined $self->{'valid_names'}->{$base} &&
                       ($self->{'valid_names'}->{$base} & 0x04) == 0);
-      ## Sort these values so that command line specified values are
-      ## evaluated last
       foreach my $val (@{$atemp->{lc($name)}}) {
         if ($replace && index($$val[1], '<%') >= 0) {
           $$val[1] = $self->replace_parameters($$val[1],
@@ -4716,10 +4722,19 @@ sub create_feature_parser {
     my($searched) = $self->search_include_path($feature);
     $feature = $searched if (defined $searched);
   }
-  return new FeatureParser($features,
-                           $gfeature,
-                           $typefeaturef,
-                           $feature);
+  my($fp) = new FeatureParser($features,
+                              $gfeature,
+                              $typefeaturef,
+                              $feature);
+
+  my($slo) = $fp->get_value($static_libs_feature);
+  if (!defined $slo) {
+    my($sval) = $self->get_static() || 0;
+    $fp->parse_line(undef,
+                    $static_libs_feature . ' = ' . $sval);
+  }
+
+  return $fp;
 }
 
 

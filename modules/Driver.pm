@@ -180,7 +180,7 @@ sub optionError {
 
   $self->printUsage($line, $self->{'name'}, Version::get(),
                     keys %{$self->{'types'}});
-  exit(0);
+  exit(defined $line ? 1 : 0);
 }
 
 
@@ -531,7 +531,8 @@ sub run {
                                 $options->{'use_env'},
                                 $options->{'expand_vars'},
                                 $options->{'gendot'},
-                                $options->{'comments'});
+                                $options->{'comments'},
+                                $options->{'for_eclipse'});
 
       ## Update settings based on the configuration file
       $creator->set_verbose_ordering($cfg->get_value('verbose_ordering'));
