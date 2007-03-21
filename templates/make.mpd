@@ -2,8 +2,20 @@
 #       Macros
 #----------------------------------------------------------------------------
 <%marker(top)%>
+<%if(multiple(configurations))%>
+<%foreach(configurations)%>
+<%if(forfirst)%>
+CFG = <%configuration%>
+
+<%endif%>
+<%endfor%>
+<%endif%>
 <%foreach(compilers)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
+<%if(multiple(configurations))%>
+ifeq ($(CFG), <%configuration%>)
+<%endif%>
 CXX           = <%cxx%>
 <%if(ld)%>
 LD            = <%ld%>
@@ -63,19 +75,13 @@ TESTDIRSTART  = <%testdirstart("test -d")%>
 TESTDIREND    = <%testdirend("||")%>
 EXEEXT        = <%exe_ext%>
 LIBPREFIX     = <%lib_prefix%><%libname_prefix%>
-<%foreach(configurations)%>
 <%if(use_lib_modifier)%>
 LIBSUFFIX     = <%lib_modifier%>
 <%endif%>
 <%if(use_exe_modifier)%>
 EXESUFFIX     = <%lib_modifier%>
 <%endif%>
-<%if(optimize)%>
-GENFLAGS      = <%genflags("-O")%>
-<%else%>
-GENFLAGS      = <%genflags("-g")%>
-<%endif%>
-<%endfor%>
+GENFLAGS      =<%if(!contains(configuration, Release) || optimize)%> <%genflags%><%endif%>
 LDLIBS        =<%foreach(libs)%> <%libopt%><%libname_prefix%><%lib%>$(LIBSUFFIX)<%endfor%><%foreach(lit_libs)%> <%libopt%>"<%lit_lib%>"<%endfor%><%foreach(pure_libs)%> "<%pure_lib%>"<%endfor%> <%ldlibs%>
 OBJS          =<%if(pch_source && pchsupport)%> <%targetoutdir%><%obj_dir%><%noextension(pch_source)%>$(OBJEXT)<%endif%><%foreach(source_files)%> <%targetoutdir%><%obj_dir%><%noextension(source_file)%>$(OBJEXT)<%endfor%><%if(rc)%><%foreach(resource_files)%> <%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT)<%endfor%><%endif%>
 <%if(lib_ext)%>
@@ -104,6 +110,10 @@ DYNAMICFLAGS  =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
 STATICFLAGS   =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
 <%endif%>
 EXPORTFLAGS   = <%if(exename)%><%if(need_staticflags)%>$(STATICFLAGS)<%endif%><%else%><%if(dll_ext && sharedname)%>$(DYNAMICFLAGS)<%else%>$(STATICFLAGS)<%endif%><%endif%>
+<%if(multiple(configurations))%>
+endif
+<%endif%>
+<%endfor%>
 <%if(supports_include && make_include)%>
 
 include <%make_include%>

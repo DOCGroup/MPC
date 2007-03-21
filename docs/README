@@ -668,7 +668,8 @@ that it requires (or avoids) are present.
 A feature definition requires at least one feature name.  A name by itself
 specifies that the feature is required.  A '!' in front of the feature name
 indicates that the feature must be disabled.  There may be more than one
-feature listed between the parenthesis and they must be comma separated.
+feature listed between the parenthesis and they must be comma separated. 
+Each feature will be logically anded together.
 
 The following feature definition requires that the qt feature be enabled.
 
