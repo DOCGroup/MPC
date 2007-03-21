@@ -1,3 +1,14 @@
+Wed Mar 21 16:54:06 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+
+          Document the way multiple feature names work in feature projects.
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Support multiple configurations within a single makefile.
+
 Thu Mar 15 13:25:09 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/DirectoryManager.pm:
