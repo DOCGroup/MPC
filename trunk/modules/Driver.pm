@@ -472,6 +472,9 @@ sub run {
         }
       }
     }
+
+    ## Remove MPC_ROOT since we never want to expand it
+    delete $options->{'relative'}->{'MPC_ROOT'};
   }
 
   ## Always add the current path to the include paths
