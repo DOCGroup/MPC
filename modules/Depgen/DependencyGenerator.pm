@@ -61,13 +61,10 @@ sub process {
                    $self->{'pre'}->process($file, $self->{'noinline'}));
 
   ## Perform the replacements on the dependency string
-  if ($depstr =~ s/$self->{'cwd'}//go) {
-  }
-  else {
-    my($replace) = $self->{'replace'};
-    foreach my $rep (@{$self->{'repkeys'}}) {
-      $depstr =~ s/$rep/$$replace{$rep}/g;
-    }
+  $depstr =~ s/$self->{'cwd'}//go;
+  my($replace) = $self->{'replace'};
+  foreach my $rep (@{$self->{'repkeys'}}) {
+    $depstr =~ s/$rep/$$replace{$rep}/g;
   }
 
   return $depstr;
