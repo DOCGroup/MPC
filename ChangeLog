@@ -1,3 +1,31 @@
+Thu Mar 22 14:36:53 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * depgen.pl:
+        * modules/Depgen/DependencyEditor.pm:
+        * modules/Depgen/DependencyGenerator.pm:
+        * modules/Depgen/DependencyWriter.pm:
+        * modules/Depgen/DependencyWriterFactory.pm:
+        * modules/Depgen/Driver.pm:
+        * modules/Depgen/MakeDependencyWriter.pm:
+        * modules/Depgen/MakeObjectGenerator.pm:
+        * modules/Depgen/NMakeDependencyWriter.pm:
+        * modules/Depgen/NMakeObjectGenerator.pm:
+        * modules/Depgen/ObjectGenerator.pm:
+        * modules/Depgen/ObjectGeneratorFactory.pm:
+        * modules/Depgen/Preprocessor.pm:
+
+          Brought over my dependency generator from ACE.  The core of this
+          dependency generator will be used by the ACE specific version
+          (just like the core of MPC).
+
+        * modules/Driver.pm:
+
+          Don't perform relative replacement for  MPC_ROOT ever.
+
+        * templates/make.mpd:
+
+          Use the new dependency generator instead of makedepend.
+
 Wed Mar 21 16:54:06 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
