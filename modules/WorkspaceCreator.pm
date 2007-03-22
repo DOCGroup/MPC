@@ -2060,6 +2060,7 @@ sub get_modified_workspace_name {
   my($ext)    = shift;
   my($nows)   = shift;
   my($nmod)   = $self->get_name_modifier();
+  my($oname)  = $name;
 
   if (defined $nmod) {
     $nmod =~ s/\*/$name/g;
@@ -2084,7 +2085,7 @@ sub get_modified_workspace_name {
     $self->{'current_workspace_name'} = undef;
   }
   else {
-    my($prefix) = ($name eq $wsname ? $name : "$name.$wsname");
+    my($prefix) = ($oname eq $wsname ? $name : "$name.$wsname");
     $previous_workspace_name{$type}->{$pwd} = $wsname;
     while($self->file_written("$prefix" .
                               ($self->{'modified_count'} > 0 ?

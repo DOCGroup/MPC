@@ -1,3 +1,10 @@
+Thu Mar 22 17:48:27 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where using the -name_modifier would end up causing
+          the workspace file names to contain previous workspace names.
+
 Thu Mar 22 14:36:53 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * depgen.pl:
