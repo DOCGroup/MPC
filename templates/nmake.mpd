@@ -39,7 +39,9 @@ NULL=nul
 !ENDIF
 
 !IF "$(DEPGEN)" == ""
-!IF EXISTS("$(DEPGEN_ROOT)/depgen.pl")
+!IF EXISTS("$(MPC_ROOT)/depgen.pl")
+DEPGEN=perl $(MPC_ROOT)/depgen.pl -i -t nmake
+!ELSEIF EXISTS("$(DEPGEN_ROOT)/depgen.pl")
 DEPGEN=perl $(DEPGEN_ROOT)/depgen.pl -i -t nmake
 !ELSEIF EXISTS("$(ACE_ROOT)/bin/depgen.pl")
 DEPGEN=perl $(ACE_ROOT)/bin/depgen.pl -i -t nmake
@@ -71,9 +73,9 @@ ALL :<%if(prebuild)%> __prebuild__<%endif%> DEPENDCHECK $(GENERATED_DIRTY)<%if(e
 DEPEND :
 !IF "$(DEPGEN)" == ""
 	@echo No suitable dependency generator could be found.
-	@echo You can check one out from the DOC Group using the following svn command:
-	@echo svn co svn://svn.dre.vanderbilt.edu/DOC/ACE/trunk/ACE/bin Utils
-	@echo Then set the DEPGEN_ROOT environment variable to the full path of Utils.
+	@echo One comes with MPC, just set the MPC_ROOT environment variable
+	@echo to the full path of MPC.  You can download MPC from
+	@echo http://www.ociweb.com/products/mpc/down.html
 !ELSE
 <%if(source_files || pch_source)%>
 	$(DEPGEN)<%foreach(includes)%> -I"<%include%>"<%endfor%><%foreach(defines cpu_defines common_defines platform_defines macros)%> -D<%define%><%endfor%><%if(unicode)%> -DUNICODE -D_UNICODE<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%> -D<%staticflag%><%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%> -f "<%noextension(project_file)%>.dep"<%foreach(source_files)%> "<%source_file%>"<%endfor%><%if(pch_source)%> "<%pch_source%>"<%endif%>
