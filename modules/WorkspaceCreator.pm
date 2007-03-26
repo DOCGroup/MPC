@@ -1517,6 +1517,7 @@ sub sort_within_group {
   my($start)   = shift;
   my($end)     = shift;
   my($deps)    = undef;
+  my(%seen)    = ();
   my($ccount)  = 0;
   my($cmax)    = ($end - $start) + 1;
   my($previ)   = -1;
@@ -1528,8 +1529,10 @@ sub sort_within_group {
   for(my $i = $start; $i <= $end; ++$i) {
     ## If our moved project equals our previously moved project then
     ## we count this as a possible circular dependency.
-    if (defined $$movepjs[0] && defined $$prevpjs[0] &&
-        $$movepjs[0] == $$prevpjs[0] && $$movepjs[1] == $$prevpjs[1]) {
+    my($key) = "@$list";
+    if ($seen{$key} ||
+        (defined $$movepjs[0] && defined $$prevpjs[0] &&
+         $$movepjs[0] == $$prevpjs[0] && $$movepjs[1] == $$prevpjs[1])) {
       ++$ccount;
     }
     else {
@@ -1557,6 +1560,7 @@ sub sort_within_group {
     }
 
     ## Keep track of the previous project movement
+    $seen{$key} = 1;
     $prevpjs = $movepjs;
     if ($previ < $i) {
       $movepjs = [];

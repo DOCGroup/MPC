@@ -1,3 +1,17 @@
+Mon Mar 26 16:22:00 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Added additional code to detect circular dependencies.  Without
+          this, there are situations where MPC will go into an infinite
+          loop.
+
+        * templates/nmake.mpd:
+
+          Change to look for the dependency generator in MPC_ROOT first and
+          then the other places.  Also modified the message to point the
+          user to MPC instead of svn for a dependency generator.
+
 Thu Mar 22 17:48:27 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WorkspaceCreator.pm:
