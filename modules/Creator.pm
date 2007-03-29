@@ -1082,20 +1082,14 @@ sub relative {
     elsif (index($value, '$') >= 0) {
       my($ovalue)   = $value;
       my($rel, $how) = $self->get_initial_relative_values();
-      my(@keys) = keys %{$rel};
-      if (defined $keys[0]) {
-        $value = $self->expand_variables($value, $rel,
-                                         $expand_template, $scope, $how);
-      }
+      $value = $self->expand_variables($value, $rel,
+                                       $expand_template, $scope, $how);
 
       if ($ovalue eq $value) {
         ($rel, $how) = $self->get_secondary_relative_values();
-        @keys = keys %$rel;
-        if (defined $keys[0]) {
-          $value = $self->expand_variables($value, $rel,
-                                           $expand_template, $scope,
-                                           $how, 1);
-        }
+        $value = $self->expand_variables($value, $rel,
+                                         $expand_template, $scope,
+                                         $how, 1);
       }
     }
   }
