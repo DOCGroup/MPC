@@ -1,3 +1,11 @@
+Thu Mar 29 13:40:30 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Fixed a bug where $() vars would not be expanded with template
+          values if no relative replacement values were supplied (either
+          implicitly through default.rel or explicitly through -relative).
+
 Mon Mar 26 16:22:00 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WorkspaceCreator.pm:
