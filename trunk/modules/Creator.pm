@@ -1019,6 +1019,10 @@ sub expand_variables {
           substr($value, $start) =~ s/\$\([^)]+\)/$val/;
           $whole = $val;
         }
+        else {
+          my($loc) = index(substr($value, $start), $whole);
+          $start += $loc if ($loc > 0);
+        }
       }
     }
     elsif ($expand_template ||
@@ -1046,11 +1050,17 @@ sub expand_variables {
         if ($expand && $warn) {
           $self->warning("Unable to expand $name.");
         }
+        my($loc) = index(substr($value, $start), $whole);
+        $start += $loc if ($loc > 0);
       }
     }
     elsif ($self->convert_all_variables()) {
       substr($value, $start) =~ s/\$\([^)]+\)//;
       $whole = '';
+    }
+    else {
+      my($loc) = index(substr($value, $start), $whole);
+      $start += $loc if ($loc > 0);
     }
     $start += length($whole);
   }
@@ -1085,7 +1095,7 @@ sub relative {
       $value = $self->expand_variables($value, $rel,
                                        $expand_template, $scope, $how);
 
-      if ($ovalue eq $value) {
+      if ($ovalue eq $value || index($value, '$') >= 0) {
         ($rel, $how) = $self->get_secondary_relative_values();
         $value = $self->expand_variables($value, $rel,
                                          $expand_template, $scope,
