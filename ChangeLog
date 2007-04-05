@@ -1,3 +1,12 @@
+Thu Apr  5 19:09:47 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Fixed a bug where $() vars that appeared after other $() vars
+          would not be expanded with template values.
+
+          Also, added a performance enhancement when replacing $() vars.
+
 Thu Mar 29 13:40:30 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
