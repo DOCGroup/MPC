@@ -65,6 +65,14 @@ java {
   platforms      = jvm
 }
 
+gcj {
+  cxx           = gcj
+  pic           = -fPIC
+  shflags       = -shared
+  platforms     = linux
+  exe_linkflags = --main=<%main%>
+}
+
 cxx_tru64 {
   cxx        = cxx
   clean      = cxx_repository so_locations
