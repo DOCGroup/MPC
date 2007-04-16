@@ -2383,6 +2383,21 @@ sub search_for_entry {
 }
 
 
+sub find_main_file {
+  my($self)    = shift;
+  my($sources) = shift;
+  my($main)    = $language{$self->get_language()}->[3];
+  my($preproc) = $language{$self->get_language()}->[4];
+
+  foreach my $file (@$sources) {
+    my($exename) = $self->search_for_entry($file, $main, $preproc);
+    return $exename if (defined $exename);
+  }
+
+  return undef;
+}
+
+
 sub generate_default_target_names {
   my($self) = shift;
 
@@ -2410,19 +2425,11 @@ sub generate_default_target_names {
     ## If it's neither an exe or library target, we will search
     ## through the source files for a main()
     if (!$self->lib_target()) {
-      my($exename) = undef;
+      ## Set the exename assignment
       my(@sources) = $self->get_component_list('source_files', 1);
-      my($main)    = $language{$self->get_language()}->[3];
-      my($preproc) = $language{$self->get_language()}->[4];
-
-      foreach my $file (@sources) {
-        $exename = $self->search_for_entry($file, $main, $preproc);
-
-        ## Set the exename assignment
-        if (defined $exename) {
-          $self->process_assignment('exename', $exename);
-          last;
-        }
+      my($exename) = $self->find_main_file(\@sources);
+      if (defined $exename) {
+        $self->process_assignment('exename', $exename);
       }
 
       ## If we still don't have a project type, then we will

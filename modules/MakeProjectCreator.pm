@@ -52,6 +52,14 @@ sub fill_value {
       return 'gcc';
     }
   }
+  elsif ($name eq 'language') {
+    return $self->get_language();
+  }
+  elsif ($name eq 'main') {
+    my(@sources) = $self->get_component_list('source_files', 1);
+    my($exename) = $self->find_main_file(\@sources);
+    return $exename if (defined $exename);
+  }
 
   return undef;
 }

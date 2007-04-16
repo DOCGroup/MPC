@@ -38,7 +38,7 @@ CPU           = <%cpu%>
 <%if(dll_ext && pic)%>
 PICFLAGS      = <%pic%>
 <%endif%>
-CPPFLAGS      = <%if(visibility && visopt)%><%visopt%> <%endif%>$(PICFLAGS) $(GENFLAGS)<%if(compile_flags)%> <%compile_flags%><%endif%><%if(cpu)%> -DCPU=$(CPU)<%endif%><%if(tempincopt)%> <%tempincopt%>$(TEMPINCDIR)<%endif%><%if(compilerflags)%> <%compilerflags%><%endif%><%if(build64bit && compilerflags64)%> <%compilerflags64%><%endif%><%if(pch_source && pchsupport)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%><%if(extracppflags)%> <%extracppflags%><%endif%><%if(includes)%><%foreach(includes)%> -I"<%include%>"<%endfor%><%endif%><%if(macros)%><%foreach(macros)%> -D<%macro%><%endfor%><%endif%>
+CPPFLAGS      = <%if(visibility && visopt)%><%visopt%> <%endif%>$(PICFLAGS) $(GENFLAGS)<%if(compile_flags)%> <%compile_flags%><%endif%><%if(cpu)%> -DCPU=$(CPU)<%endif%><%if(tempincopt)%> <%tempincopt%>$(TEMPINCDIR)<%endif%><%if(compilerflags)%> <%compilerflags%><%endif%><%if(build64bit && compilerflags64)%> <%compilerflags64%><%endif%><%if(pch_source && pchsupport)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%><%if(extracppflags)%><%foreach(extracppflags)%><%if(!starts_with(extracppflag, -D) || !contains(language, java))%> <%extracppflag%><%endif%><%endfor%><%endif%><%if(includes)%><%foreach(includes)%> -I"<%include%>"<%endfor%><%endif%><%if(!contains(language, java) && macros)%><%foreach(macros)%> -D<%macro%><%endfor%><%endif%>
 OBJEXT        = <%obj_ext%>
 OUTPUT_OPTION = <%output_option(-o \"$@\")%>
 COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) <%compile_option("-c")%>
@@ -103,6 +103,7 @@ SHFLAGS       = <%shflags%>
 <%endif%>
 SRC           =<%if(pch_source && pchsupport)%> <%pch_source%><%endif%> <%source_files%>
 LINK.cc       = $(LD) $(LDFLAGS)
+<%if(!contains(language, java))%>
 <%if(dynamicflags)%>
 DYNAMICFLAGS  =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
 <%endif%>
@@ -110,6 +111,7 @@ DYNAMICFLAGS  =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
 STATICFLAGS   =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
 <%endif%>
 EXPORTFLAGS   = <%if(exename)%><%if(need_staticflags)%>$(STATICFLAGS)<%endif%><%else%><%if(dll_ext && sharedname)%>$(DYNAMICFLAGS)<%else%>$(STATICFLAGS)<%endif%><%endif%>
+<%endif%>
 <%if(multiple(configurations))%>
 endif
 <%endif%>
@@ -150,7 +152,7 @@ $(BIN):<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelinktargetobj)%> <%targetou
 <%if(prelink)%>
 	<%eval(prelink)%>
 <%endif%>
-	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+	$(LINK.cc) $(OBJS) $(LDLIBS)<%if(exe_linkflags)%> <%eval(exe_linkflags)%><%endif%> $(OUTPUT_OPTION)
 <%if(postlinkbinary)%>
 	<%postlinkbinary%>
 <%endif%>
