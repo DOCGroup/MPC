@@ -1,3 +1,9 @@
+Wed Apr 18 09:27:12 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/qt.mpb:
+          Added custom QRC. Thanks to Roland Sun <rolandsun at gmail dot com>
+          for delivering the patch. This is part of bugzilla 2870
+
 Mon Apr 16 15:00:49 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/MakeProjectCreator.pm:
