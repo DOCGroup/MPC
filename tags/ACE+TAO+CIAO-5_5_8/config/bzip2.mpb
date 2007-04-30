@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// $Id$
+
+feature(bzip2) {
+  includes += $(BZIP2_ROOT)/include
+  libpaths += $(BZIP2_ROOT)/lib
+  macros   += USE_BZIP2
+  lit_libs += bz2
+}
