@@ -26,8 +26,10 @@
 <%endif%>
 <%endif%>
 			UseOfMFC="<%use_mfc("0")%>"
+<%if(UseOfATL)%>
+			UseOfATL="<%UseOfATL%>"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-<%if(managed)%>                                        
+<%if(managed)%>
 			ManagedExtensions="1"
 <%endif%>
 			CharacterSet="<%charset("0")%>">
