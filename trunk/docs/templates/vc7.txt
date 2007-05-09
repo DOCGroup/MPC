@@ -45,6 +45,7 @@ subsystem = This corresponds to the Linker System property "SubSystem".  This va
 unicode = If this boolean template variable is set, the UNICODE and _UNICODE macros are added to the C/C++ Preprocessor property "Preprocessor Definitions".
 unicode_mfc_entry = This corresponds to the Linker Advanced property "Entry Point".  This variable should not be set directly by the user; instead the project should inherit from 'mfc'.
 use_mfc = This corresponds to the General property "Use of MFC".  This variable should not be set directly by the user; instead the project should inherit from 'mfc'.
+UseOfATL = This corresponds to the General property "Use of ATL".
 vcprojecttype = Specifies the ProjectType setting within the generated .vcproj file.
 vcversion = Specifies the version of the generated .vcproj file.  This value is determined by the VC7ProjectCreator or the VC71ProjectCreator.
 warning_level = This setting corresponds to the C/C++ General property "Warning Level". Valid values are 0 through 4.
