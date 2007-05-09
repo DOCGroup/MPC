@@ -1,3 +1,12 @@
+Wed May  9 19:16:24 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * docs/templates/vc7.txt:
+        * templates/vc7.mpd:
+
+          Added support to configuring the usage of Active Template
+          Library (ATL) in vc7 projects. It uses the template variable
+          UseOfATL.
+
 Wed Apr 18 09:27:12 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/qt.mpb:
