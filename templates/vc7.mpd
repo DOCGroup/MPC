@@ -28,6 +28,7 @@
 			UseOfMFC="<%use_mfc("0")%>"
 <%if(UseOfATL)%>
 			UseOfATL="<%UseOfATL%>"
+<%endif%>
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 <%if(managed)%>
 			ManagedExtensions="1"
