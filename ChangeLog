@@ -1,3 +1,9 @@
+Thu May 10 05:13:56 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * templates/vc7.mpd:
+
+          Somehow the UseOfATL was missing a endif statement.
+
 Wed May  9 19:16:24 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * docs/templates/vc7.txt:
