@@ -1,3 +1,9 @@
+Tue May 15 19:05:59 2007  Steve Huston  <shuston@riverace.com>
+
+        * templates/vc8platforms.mpt: Added iphlpapi.lib to the lit_libs for
+          Windows Mobile 5.0 Smartphone SDK (ARMV4I) to pick up
+          GetAdaptersAddresses.
+
 Thu May 10 05:13:56 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * templates/vc7.mpd:
