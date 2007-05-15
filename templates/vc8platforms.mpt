@@ -59,6 +59,7 @@ Windows Mobile 5.0 Smartphone SDK (ARMV4I) {
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
   platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE $(PLATFORMDEFINES) _WINDOWS _UNICODE UNICODE SMARTPHONE2005_UI_MODEL
   link_options     = /subsystem:windowsce,5.01 /machine:THUMB
+  lit_libs        += iphlpapi
   subsystem        = "0"
   TargetMachine    = "3"
 }
