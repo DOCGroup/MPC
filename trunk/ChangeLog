@@ -1,3 +1,10 @@
+Thu May 17 16:56:54 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Provide more opportunities for the WorkspaceHelper to add more
+          information to the generated workspace Makefile.am.
+
 Thu May 17 13:36:33 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/global.mpb:
