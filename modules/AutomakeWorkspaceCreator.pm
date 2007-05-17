@@ -434,7 +434,13 @@ sub write_comps {
                 }
               }
               else {
-                $self->warning("No reldir found for $libname ($libfile).");
+                my($mod) = $wsHelper->modify_libpath($_, $reldir, $libfile);
+                if (defined $mod) {
+                  $_ = $mod;
+                }
+                else {
+                  $self->warning("No reldir found for $libname ($libfile).");
+                }
               }
             }
             if ($libcount == 0) {
@@ -478,11 +484,15 @@ sub write_comps {
   ## *** This may be too closely tied to how we have things set up in ACE,
   ## even though it's recommended practice. ***
   if ($toplevel) {
+    my($m4inc) = '-I m4';
     print $fh $crlf,
               'ACLOCAL = @ACLOCAL@', $crlf,
-              'ACLOCAL_AMFLAGS = -I m4', $crlf,
-              'AUTOMAKE_OPTIONS = foreign', $crlf,
-              $crlf;
+              'ACLOCAL_AMFLAGS = ',
+              (defined $wsHelper ?
+                 $wsHelper->modify_value('amflags', $m4inc) : $m4inc), $crlf,
+              'AUTOMAKE_OPTIONS = foreign', $crlf, $crlf,
+              (defined $wsHelper ?
+                 $wsHelper->modify_value('extra', '') : '');
   }
 
   ## Finish up with the cleanup specs.
