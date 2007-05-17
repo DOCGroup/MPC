@@ -470,19 +470,19 @@ pre_extension       If the command produces multiple files of the same
                     specify them.  For example, tao_idl creates two types of
                     files per extension (C.h, S.h, C.cpp, S.cpp, etc).
 source_pre_extension        This is the same as pre_extension except that it
-                            only applies to source_outputext.
+                            only applies to source files.
 inline_pre_extension        This is the same as pre_extension except that it
-                            only applies to inline_outputext.
+                            only applies to inline files.
 header_pre_extension        This is the same as pre_extension except that it
-                            only applies to header_outputext.
+                            only applies to header files.
 template_pre_extension      This is the same as pre_extension except that it
-                            only applies to template_outputext.
+                            only applies to template files.
 resource_pre_extension      This is the same as pre_extension except that it
-                            only applies to resource_outputext.
+                            only applies to resource files.
 documentation_pre_extension This is the same as pre_extension except that it
-                            only applies to documentation_outputext.
+                            only applies to documentation files.
 generic_pre_extension       This is the same as pre_extension except that it
-                            only applies to generic_outputext.
+                            only applies to generic files.
 pre_filename        This is similar to pre_extension except that the values
                     are prepended to the file name instead of the extension.
 source_pre_filename         This is the same as pre_filename except that it
