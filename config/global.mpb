@@ -2,6 +2,8 @@
 // $Id$
 
 project {
-  libout   = .
-  libpaths = .
+  libout = .
+  specific(!automake) {
+    libpaths = .
+  }
 }
