@@ -203,6 +203,11 @@ sub append_current {
           $value =~ s/$key/\\$key/g;
         }
       }
+      else {
+        foreach my $key (keys %$scope) {
+          $_[0]->warning("Unrecognized scope function: $key.");
+        }
+      }
     }
 
     $_[0]->{'built'} .= $value;
@@ -841,10 +846,24 @@ sub handle_scope {
         $scope = $$scope{'scope'};
       }
       if ($state eq 'enter') {
-        $$scope{'scope'} = {$func => $self->process_special($param)};
+        if (defined $func) {
+          $param = '' if (!defined $param);
+          $$scope{'scope'} = {$func => $self->process_special($param)};
+        }
+        else {
+          $self->warning("The enter scope function requires a parameter.");
+        }
       }
       elsif ($state eq 'leave') {
-        delete $$pscope{'scope'} if (defined $pscope);
+        if (defined $pscope) {
+          delete $$pscope{'scope'};
+        }
+        else {
+          $self->warning("leave scope function encountered without an enter.");
+        }
+      }
+      else {
+        $self->warning("Unrecognized scope function parameter: $state.");
       }
     }
     else {
