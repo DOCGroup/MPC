@@ -298,11 +298,38 @@ sub write_comps {
 
   ## If there are local projects, insert "." as the first SUBDIR entry.
   if ($have_subdirs == 1) {
+    my($assoc) = $self->get_associated_projects();
+    my(@aorder) = ();
+    my(%afiles) = ();
     print $fh 'SUBDIRS =';
     foreach my $dir (reverse @dirs) {
-      print $fh " \\$crlf        $dir";
+      my($found) = undef;
+      foreach my $akey (keys %$assoc) {
+        if (defined $$assoc{$akey}->{$dir}) {
+          push(@aorder, $akey);
+          push(@{$afiles{$akey}}, $dir);
+          $found = 1;
+          last;
+        }
+      }
+      print $fh " \\$crlf        $dir" if (!$found);
     }
-    print $fh $crlf, $crlf;
+    print $fh $crlf;
+    my($second) = 1;
+    foreach my $aorder (@aorder) {
+      if (defined $afiles{$aorder}) {
+        $second = undef;
+        print $fh $crlf,
+                  'if BUILD_', uc($aorder), "\n",
+                  'SUBDIRS +=';
+        foreach my $afile (@{$afiles{$aorder}}) {
+          print $fh " $afile";
+        }
+        delete $afiles{$aorder};
+        print $fh $crlf, 'endif', $crlf;
+      }
+    }
+    print $fh $crlf if ($second);
   }
 
   ## Now, for each target used in a conditional, emit a blank assignment
