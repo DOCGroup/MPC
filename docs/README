@@ -80,7 +80,21 @@ workspace {
   }
 
   dir3
+
+  // Associate the name "other" with dir3
+  associate(other) {
+    dir3
+  }
 }
+
+The associate scope associates a name with one or more directories.  This
+does not add directories to a workspace, it only makes an association.  This
+may or may not have an effect on the generated workspace; it depends solely
+upon whether the project type supports assications.
+
+Currently automake is the only project type that supports associations.
+Each directory listed under an association is grouped together and built
+conditionally based on the association name.
 
 Project Declarations
 --------------------

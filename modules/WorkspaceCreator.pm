@@ -96,6 +96,7 @@ sub new {
   $self->{'project_files'}       = [];
   $self->{'modified_count'}      = 0;
   $self->{'exclude'}             = {};
+  $self->{'associated'}          = {};
   $self->{'scoped_assign'}       = {};
 
   ## These are maintained/modified throughout processing
@@ -200,6 +201,7 @@ sub parse_line {
           $self->{'project_info'}   = {};
           $self->{'project_files'}  = [];
           $self->{'exclude'}        = $self->{'orig_exclude'};
+          $self->{'associated'}     = {};
           $self->{'scoped_assign'}  = {};
         }
         $self->{$self->{'type_check'}} = 0;
@@ -399,6 +401,9 @@ sub parse_scope {
   if ($name eq 'exclude') {
     return $self->parse_exclude($fh, $type, $flags);
   }
+  elsif ($name eq 'associate') {
+    return $self->parse_associate($fh, $type);
+  }
   else {
     return $self->SUPER::parse_scope($fh, $name, $type,
                                      $validNames, $flags, $elseflags);
@@ -524,6 +529,72 @@ sub parse_exclude {
             $errorString = undef;
           }
           last if ($count == 0);
+        }
+      }
+    }
+  }
+
+  return $status, $errorString;
+}
+
+
+sub parse_associate {
+  my($self)        = shift;
+  my($fh)          = shift;
+  my($assoc_key)   = shift;
+  my($status)      = 0;
+  my($errorString) = 'Unable to process associate';
+  my($count)       = 1;
+  my(@projects)    = ();
+
+  if (!defined $self->{'associated'}->{$assoc_key}) {
+    $self->{'associated'}->{$assoc_key} = {};
+  }
+
+  while(<$fh>) {
+    my($line) = $self->preprocess_line($fh, $_);
+
+    if ($line eq '') {
+    }
+    elsif ($line =~ /^}(.*)$/) {
+      --$count;
+      if (defined $1 && $1 ne '') {
+        $errorString = "Trailing characters found: '$1'";
+        last;
+      }
+      else {
+        $status = 1;
+        $errorString = undef;
+      }
+      last if ($count == 0);
+    }
+    else {
+      if ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
+        ++$count;
+      }
+      elsif ($self->parse_assignment($line, [])) {
+        $errorString = 'Assignments are not ' .
+                       'allowed within an associate scope';
+        last;
+      }
+      else {
+        if ($line =~ /^"([^"]+)"$/) {
+          $line = $1;
+        }
+        if (index($line, '$') >= 0) {
+          $line = $self->relative($line);
+        }
+        if (defined $self->{'scoped_basedir'} &&
+            $self->path_is_relative($line)) {
+          $line = $self->{'scoped_basedir'} . '/' . $line;
+        }
+        if ($line =~ /[\?\*\[\]]/) {
+          foreach my $file ($self->mpc_glob($line)) {
+            $self->{'associated'}->{$assoc_key}->{$file} = 1;
+          }
+        }
+        else {
+          $self->{'associated'}->{$assoc_key}->{$line} = 1;
         }
       }
     }
@@ -1508,6 +1579,12 @@ sub get_first_level_directory {
     $dir = '.';
   }
   return $dir;
+}
+
+
+sub get_associated_projects {
+  my($self) = shift;
+  return $self->{'associated'};
 }
 
 
