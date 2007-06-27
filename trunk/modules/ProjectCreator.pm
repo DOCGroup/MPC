@@ -2100,13 +2100,9 @@ sub add_explicit_output {
               my($dir) = '';
               if (defined $self->{'flag_overrides'}->{$type} &&
                   defined $self->{'flag_overrides'}->{$type}->{$file} &&
-                  defined $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'}) {
-                if ($self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} eq '.') {
-                  $dir = '';
-                }
-                else {
-                  $dir = $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} . '/';
-                }
+                  defined $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} &&
+                  $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} ne '.') {
+                $dir = $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} . '/';
               }
 
               push(@files, "$dir$check");

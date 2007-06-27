@@ -122,7 +122,8 @@ sub printUsage {
 "                       projects, template input files and templates.  This\n" .
 "                       option can be used multiple times to add directories.\n" .
 "       -into           Place all output files in a mirrored directory\n" .
-"                       structure starting at <directory>.\n" .
+"                       structure starting at <directory>.  This should be a\n" .
+"                       full path.\n" .
 "       -language       Specify the language preference; possible values are\n",
 "                       [", join(' ', sort keys %languages), "].  The default is\n".
 "                       $deflang.\n",

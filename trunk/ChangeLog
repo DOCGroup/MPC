@@ -1,3 +1,33 @@
+Wed Jun 27 11:28:50 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/boost_base.mpb:
+
+          Use a new environment variable, BOOST_ROOT_LIB, to determine the
+          location of boost libraries.  If this isn't set, it will be
+          expanded to $(BOOST_ROOT)/lib which is the default location.
+
+        * docs/README:
+        * modules/WorkspaceCreator.pm:
+
+          Added a new workspace feature, associate, that associates a name
+          with one or more directories.  It does not add directories to the
+          workspace, it only makes an association.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Utilize the associate feature to allow conditional building of
+          groups of directories.
+
+        * docs/USAGE:
+        * modules/Options.pm:
+
+          Document the fact that the directory parameter for the -into
+          option should be a full path.
+
+        * modules/ProjectCreator.pm:
+
+          Removed duplicate code from the add_explicit_output() method.
+
 Wed Jun 27 06:27:11 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * docs/USAGE:

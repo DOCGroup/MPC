@@ -21,8 +21,8 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-apply_project] [-version] [-into <directory>]
               [-gfeature_file <file name>] [-nocomments] [-for_eclipse]
               [-language <cplusplus | csharp | java | vb>]
-              [-type <automake | bcb2007 | bds4 | bmake | cc | em3 | ghs | html | make |
-                      nmake | sle | vc6 | vc7 | vc71 | vc8>]
+              [-type <automake | bcb2007 | bds4 | bmake | cc | em3 | ghs |
+                      html | make | nmake | sle | vc6 | vc7 | vc71 | vc8>]
               [files]
 
        -base           Add <project> as a base project to each generated
@@ -51,7 +51,8 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        projects, template input files and templates.  This
                        option can be used multiple times to add directories.
        -into           Place all output files in a mirrored directory
-                       structure starting at <directory>.
+                       structure starting at <directory>.  This should be a
+                       full path.
        -language       Specify the language preference; possible values are
                        [cplusplus csharp java vb].  The default is
                        cplusplus.
