@@ -1,3 +1,26 @@
+Fri Jun 29 18:24:22 UTC 2007  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/Depgen/Driver.pm:
+
+          Removed assigment of () to %types since it was sometimes
+          clobbering the value already there (from the BEGIN block).
+
+        * modules/Depgen/NMakeObjectGenerator.pm:
+        * depgen.pl:
+
+          Generate dependencies targeting object files instead of cpp files.
+          This matches how it's done for GNU make.
+
+        * modules/NMakeWorkspaceCreator.pm:
+
+          Provide output regarding which projects are being built.
+
+        * templates/nmake.mpd:
+
+          Changed how intermediate and ouptut directories are handled, to
+          match the change to make.md in:
+          Wed Jan 24 19:04:58 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
 Wed Jun 27 11:28:50 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/boost_base.mpb:
