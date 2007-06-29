@@ -1,3 +1,18 @@
+package WinProjectBaseEx;
+
+use WinProjectBase;
+use DirectoryManager;
+
+use vars qw(@ISA);
+@ISA = qw(WinProjectBase DirectoryManager);
+
+sub new {
+  return bless {};
+}
+
+1;
+
+
 package NMakeObjectGenerator;
 
 # ************************************************************
@@ -21,7 +36,13 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub process {
-  return [ $_[1] ];
+  my($file) = $_[1];
+
+  my($wpb) = new WinProjectBaseEx;
+  my($noext) = $wpb->translate_directory($file);
+  $noext =~ s/\.[^\.]+$//o;
+
+  return [ "\"\$(INTDIR)\\$noext.obj\"" ];
 }
 
 
