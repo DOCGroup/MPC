@@ -56,8 +56,9 @@ sub write_project_targets {
     my($dir)   = $self->mpc_dirname($project);
     my($chdir) = ($dir ne '.');
 
-    print $fh ($chdir ? "\t\@cd $dir$crlf" : ''),
-              "\t\$(MAKE) /f ", $self->mpc_basename($project),
+    print $fh ($chdir ? "\t\@cd $dir$crlf\t\@echo Directory: $dir$crlf" : ''),
+              "\t\@echo Project: ", $self->mpc_basename($project), $crlf,
+              "\t\$(MAKE) /\$(MAKEFLAGS) /f ", $self->mpc_basename($project),
               " $target$crlf",
               ($chdir ? "\t\@cd \$(MAKEDIR)$crlf" : '');
   }
