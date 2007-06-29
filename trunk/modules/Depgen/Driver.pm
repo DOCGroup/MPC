@@ -21,7 +21,7 @@ use DependencyEditor;
 
 my($version)  = '1.1';
 my($os)       = ($^O eq 'MSWin32' ? 'Windows' : 'UNIX');
-my(%types)    = ();
+my(%types);
 my(%defaults) = ('UNIX'    => 'make',
                  'Windows' => 'nmake',
                 );

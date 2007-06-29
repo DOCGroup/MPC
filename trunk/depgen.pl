@@ -23,7 +23,7 @@ if ($^O eq 'VMS') {
   $basePath = File::Spec->rel2abs(dirname($0)) if ($basePath eq '');
   $basePath = VMS::Filespec::unixify($basePath);
 }
-unshift(@INC, $basePath . '/modules/Depgen');
+unshift(@INC, $basePath . '/modules/Depgen', $basePath . '/modules');
 
 require Driver;
 
