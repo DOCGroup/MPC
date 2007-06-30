@@ -18,7 +18,7 @@ Fri Jun 29 18:24:22 UTC 2007  Adam Mitz  <mitza@ociweb.com>
         * templates/nmake.mpd:
 
           Changed how intermediate and ouptut directories are handled, to
-          match the change to make.md in:
+          match the change to make.mpd in:
           Wed Jan 24 19:04:58 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
 Wed Jun 27 11:28:50 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
