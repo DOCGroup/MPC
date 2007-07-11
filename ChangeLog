@@ -1,3 +1,13 @@
+Wed Jul 11 14:52:02 UTC 2007  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/nmake.mpd:
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+
+          Moved the default libraries advapi32.lib and user32.lib out of the
+          template and into the template-input files using the variable name
+          systemlibs.  This allows -value_template systemlibs+=FOO to work.
+
 Fri Jun 29 18:24:22 UTC 2007  Adam Mitz  <mitza@ociweb.com>
 
         * modules/Depgen/Driver.pm:

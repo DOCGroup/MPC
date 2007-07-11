@@ -9,6 +9,7 @@ platforms             = Win32
 default_configuration = Debug
 common_defines        = WIN32 _WINDOWS
 TreatWChar_tAsBuiltInType = true
+systemlibs            = advapi32.lib user32.lib
 
 Win32 {
   machine_description = x86
