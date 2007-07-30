@@ -2,8 +2,19 @@
 // $Id$
 
 project {
+  // By default send all libraries to the same directory as the project
   libout = .
+
+  // Automake doesn't need the project directory in the libpaths
   specific(!automake) {
     libpaths = .
+  }
+
+  // Allow users to specify .mpb files in their project.  This gives the
+  // opportunity to see them in IDE's and to install them using
+  // prj_install.pl.
+  Define_Custom(MPB) {
+    automatic = 0
+    inputext = .mpb
   }
 }
