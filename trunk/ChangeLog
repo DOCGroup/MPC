@@ -1,3 +1,14 @@
+Mon Jul 30 13:47:13 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/global.mpb:
+
+          Added a define custom to allow users to explicitly list .mpb files
+          in their projects.
+
+        * prj_install.pl:
+
+          By default, install all .mpb files.
+
 Mon Jul 30 11:33:43 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
