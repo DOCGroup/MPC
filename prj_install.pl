@@ -29,6 +29,7 @@ my(%defaults) = ('header_files'   => 1,
                  'inline_files'   => 1,
                  'pidl_files'     => 1,
                  'template_files' => 1,
+                 'mpb_files'      => 1,
                 );
 
 my(%special)  = ('exe_output' => 1,
