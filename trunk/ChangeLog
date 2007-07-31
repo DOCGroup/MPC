@@ -1,3 +1,9 @@
+Tue Jul 31 13:57:54 UTC 2007  Adam Mitz  <mitza@ociweb.com>
+
+        * docs/README:
+
+          Fixed a few instances where mpd was mistakenly used in place of mpt.
+
 Mon Jul 30 13:47:13 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/global.mpb:
