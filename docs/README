@@ -18,7 +18,7 @@ sub-projects.  Things such as include paths, library paths and inter-project
 dependencies could be described in this base project and any project that
 inherits from it would contain this information as well.
 
-Another set of files, known as template input files (mpd files), provides
+Another set of files, known as template input files (mpt files), provides
 the generator with the necessary information to fill platform and build tool
 specific information for dynamic and static library and binary executable
 projects.
@@ -27,7 +27,7 @@ Together, the generic input files and the template input files are applied
 toward a platform and build specific template (mpd file) to create the final
 product (a build tool specific input file).  These templates contain
 "variables" that are filled in by the project creator with information
-gathered through the mpc and mpd files and possibly by default values set
+gathered through the mpc and mpt files and possibly by default values set
 within the template itself.
 
 Workspaces are defined by providing a list of mpc files in a single (mwc)
