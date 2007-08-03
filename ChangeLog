@@ -1,3 +1,12 @@
+Fri Aug  3 11:53:48 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/global.mpb:
+        * config/mpb.mpb:
+
+          Removed the MPB Define_Custom out of global and into it's own base
+          project.  Users can have their base projects inherit from mpb if
+          they want to use it.
+
 Tue Jul 31 13:57:54 UTC 2007  Adam Mitz  <mitza@ociweb.com>
 
         * docs/README:
