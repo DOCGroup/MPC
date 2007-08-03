@@ -951,10 +951,12 @@ sub update_template_variable {
   ## If the name that is used within a specific is a mapped keyword
   ## then we need to translate it into the mapped keyword as it will
   ## be used by the TemplateParser.
+  my($name) = undef;
   if ($values[1] =~ /(.*::)(.*)/) {
     my($base)   = $1;
     my($mapped) = $self->{'valid_names'}->{$2};
     if (defined $mapped && UNIVERSAL::isa($mapped, 'ARRAY')) {
+      $name = $values[1];
       $values[1] = $base . 'custom_type->' . $$mapped[1];
     }
   }
@@ -964,7 +966,7 @@ sub update_template_variable {
   $self->information("'$values[1]' was used as a template modifier.");
 
   if ($check && !defined $atemp->{$values[1]}) {
-    my($name) = $values[1];
+    $name = $values[1] if (!defined $name);
     if ($name =~ s/.*:://) {
       my($value) = $self->get_assignment($name);
       if (defined $value) {
