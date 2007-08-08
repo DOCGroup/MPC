@@ -635,6 +635,8 @@ sub subtraction_core {
     ## Escape any regular expression special characters
     $value = $self->escape_regex_special($value);
 
+    ## If necessary, split the value into an array
+    my($elements) = ($value =~ /\s/ ? $self->create_array($value) : [$value]);
     for(my $i = 0; $i <= $last; $i++) {
       if ($i == $last) {
         ## If we did not find the string to subtract in the original
@@ -643,13 +645,19 @@ sub subtraction_core {
         $nval = $self->get_assignment_for_modification($name, $assign, 1);
       }
       for(my $j = 0; $j <= $last; $j++) {
-        ## First try with quotes, then try again without them
-        my($re) = ($j == 0 ? '"' . $value . '"' : $value);
+        ## Try to remove each individual element and then set the new
+        ## value if any of the elements were found in the original value
+        foreach my $elem (@$elements) {
+          ## First try with quotes, then try again without them
+          my($re) = ($j == 0 ? '"' . $elem . '"' : $elem);
 
-        if ($nval =~ s/\s+$re\s+/ / || $nval =~ s/\s+$re$// ||
-            $nval =~ s/^$re\s+//    || $nval =~ s/^$re$//) {
+          if ($nval =~ s/\s+$re\s+/ / || $nval =~ s/\s+$re$// ||
+              $nval =~ s/^$re\s+//    || $nval =~ s/^$re$//) {
+            $found = 1;
+          }
+        }
+        if ($found) {
           $self->process_assignment($name, $nval, $assign, -1);
-          $found = 1;
           last;
         }
       }

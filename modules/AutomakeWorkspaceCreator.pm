@@ -85,7 +85,7 @@ sub write_comps {
       my($acfh) = new FileHandle();
       if (open($acfh, ">$outdir/$acfile")) {
         print $acfh "AC_INIT(", $self->get_workspace_name(), ", 1.0)$crlf",
-                    "AM_INIT_AUTOMAKE([1.9.6])$crlf",
+                    "AM_INIT_AUTOMAKE([1.9])$crlf",
                     $crlf,
                     "AC_PROG_CXX$crlf",
                     "AC_PROG_CXXCPP$crlf",
