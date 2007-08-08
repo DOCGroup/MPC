@@ -85,7 +85,7 @@ sub write_comps {
       my($acfh) = new FileHandle();
       if (open($acfh, ">$outdir/$acfile")) {
         print $acfh "AC_INIT(", $self->get_workspace_name(), ", 1.0)$crlf",
-                    "AM_INIT_AUTOMAKE([1.9])$crlf",
+                    "AM_INIT_AUTOMAKE([1.9.6])$crlf",
                     $crlf,
                     "AC_PROG_CXX$crlf",
                     "AC_PROG_CXXCPP$crlf",
@@ -296,23 +296,38 @@ sub write_comps {
     }
   }
 
-  ## If there are local projects, insert "." as the first SUBDIR entry.
+  ## Create the SUBDIRS setting.  If there are associated projects, then
+  ## we will also set up conditionals for it as well.
   if ($have_subdirs == 1) {
     my($assoc) = $self->get_associated_projects();
     my(@aorder) = ();
     my(%afiles) = ();
+    my($cond)   = '--';
+    my($entry)  = " \\$crlf        ";
     print $fh 'SUBDIRS =';
     foreach my $dir (reverse @dirs) {
       my($found) = undef;
       foreach my $akey (keys %$assoc) {
         if (defined $$assoc{$akey}->{$dir}) {
-          push(@aorder, $akey);
-          push(@{$afiles{$akey}}, $dir);
+          if ($akey eq $cond) {
+            print $fh $entry, '@', $dir, '@';
+          }
+          else {
+            push(@aorder, $akey);
+            push(@{$afiles{$akey}}, $dir);
+          }
           $found = 1;
           last;
         }
+        elsif (defined $$assoc{$akey}->{uc($dir)}) {
+          if ($akey eq $cond) {
+            print $fh $entry, '@', uc($dir), '@';
+            $found = 1;
+            last;
+          }
+        }
       }
-      print $fh " \\$crlf        $dir" if (!$found);
+      print $fh $entry, $dir if (!$found);
     }
     print $fh $crlf;
     my($second) = 1;
