@@ -1,3 +1,14 @@
+Wed Aug  8 15:18:04 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Set the required automake version back to 1.9.
+
+        * modules/Creator.pm:
+
+          When subtracting, split the subtracted value into elements so that
+          they can be removed in any order.
+
 Wed Aug  8 12:29:46 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeWorkspaceCreator.pm:
