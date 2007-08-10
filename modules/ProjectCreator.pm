@@ -13,7 +13,6 @@ package ProjectCreator;
 use strict;
 use FileHandle;
 use File::Path;
-use File::Compare;
 
 use Creator;
 use TemplateInputReader;
@@ -4077,8 +4076,7 @@ sub write_output_file {
               }
               close($fh);
 
-              if (-r $name &&
-                  -s $tmp == -s $name && compare($tmp, $name) == 0) {
+              if (!$self->files_are_different($name, $tmp)) {
                 $different = 0;
               }
             }

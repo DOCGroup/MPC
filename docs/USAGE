@@ -39,7 +39,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
        -features       Specifies the feature list to set before processing.
        -for_eclipse    Generate files for use with eclipse.  This is only
                        useful for make based project types.
-       -gendot         Generate .dot files for use with Graphvis.
+       -gendot         Generate .dot files for use with Graphviz.
        -genins         Generate .ins files for use with prj_install.pl.
        -gfeature_file  Specifies the global feature file.  The
                        default value is global.features under the

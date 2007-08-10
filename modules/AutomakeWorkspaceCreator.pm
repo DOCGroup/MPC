@@ -11,6 +11,7 @@ package AutomakeWorkspaceCreator;
 # ************************************************************
 
 use strict;
+use File::Copy;
 
 use AutomakeProjectCreator;
 use WorkspaceCreator;
@@ -29,6 +30,55 @@ my($acmfile) = 'configure.ac.Makefiles';
 # ************************************************************
 # Subroutine Section
 # ************************************************************
+
+sub compare_output {
+  return 1;
+}
+
+
+sub files_are_different {
+  my($self) = shift;
+  my($old)  = shift;
+  my($new)  = shift;
+  my($diff) = 1;
+  if (-r $old) {
+    my($lh) = new FileHandle();
+    my($rh) = new FileHandle();
+    if (open($lh, $old)) {
+      if (open($rh, $new)) {
+        my($done)  = 0;
+        my($lline) = undef;
+        my($rline) = undef;
+
+        $diff = 0;
+        do {
+          $lline = <$lh>;
+          $rline = <$rh>;
+          if (defined $lline) {
+            if (defined $rline) {
+              $lline =~ s/#.*//;
+              $rline =~ s/#.*//;
+              if ($lline ne $rline) {
+                $diff = 1;
+              }
+            }
+            else {
+              $done = 1;
+            }
+          }
+          else {
+            $diff = 1 if (defined $rline);
+            $done = 1;
+          }
+        } while(!$done && !$diff);
+        close($rh);
+      }
+      close($lh);
+    }
+  }
+  return $diff;
+}
+
 
 sub workspace_file_name {
   my($self) = shift;
@@ -81,6 +131,7 @@ sub write_comps {
   ## of all the involved Makefiles.
   my($mfh);
   if ($toplevel) {
+    my($need_acmfile) = 1;
     if (! -e "$outdir/$acfile") {
       my($acfh) = new FileHandle();
       if (open($acfh, ">$outdir/$acfile")) {
@@ -109,15 +160,18 @@ sub write_comps {
     }
     else {
       $self->information("$acfile already exists.");
+      $need_acmfile = !$self->edit_config_ac("$outdir/$acfile", \@list);
     }
 
-    unlink("$outdir/$acmfile");
-    $mfh = new FileHandle();
-    open($mfh, ">$outdir/$acmfile");
-    ## The top-level is never listed as a dependency, so it needs to be
-    ## added explicitly.
-    print $mfh "AC_CONFIG_FILES([ Makefile ])$crlf";
-    $proj_dir_seen{'.'} = 1;
+    if ($need_acmfile) {
+      unlink("$outdir/$acmfile");
+      $mfh = new FileHandle();
+      open($mfh, ">$outdir/$acmfile");
+      ## The top-level is never listed as a dependency, so it needs to be
+      ## added explicitly.
+      print $mfh "AC_CONFIG_FILES([ Makefile ])$crlf";
+      $proj_dir_seen{'.'} = 1;
+    }
   }
 
   ## If we're writing a configure.ac.Makefiles file, every seen project
@@ -143,12 +197,12 @@ sub write_comps {
         my(@dirs) = split /\//, $dep_dir;
         my $inter_dir = "";
         foreach my $dep (@dirs) {
-          $inter_dir = "$inter_dir$dep";
+          $inter_dir .= $dep;
           if (!defined $proj_dir_seen{$inter_dir}) {
             $proj_dir_seen{$inter_dir} = 1;
             print $mfh "AC_CONFIG_FILES([ $inter_dir" . "/Makefile ])$crlf";
           }
-          $inter_dir = "$inter_dir/";
+          $inter_dir .= '/';
         }
         print $mfh "AC_CONFIG_FILES([ $dep_dir" . "/Makefile ])$crlf";
       }
@@ -310,21 +364,23 @@ sub write_comps {
       foreach my $akey (keys %$assoc) {
         if (defined $$assoc{$akey}->{$dir}) {
           if ($akey eq $cond) {
-            print $fh $entry, '@', $dir, '@';
+            if ($toplevel) {
+              print $fh $entry, '@', $dir, '@';
+              $found = 1;
+            }
           }
           else {
             push(@aorder, $akey);
             push(@{$afiles{$akey}}, $dir);
+            $found = 1;
           }
-          $found = 1;
           last;
         }
-        elsif (defined $$assoc{$akey}->{uc($dir)}) {
-          if ($akey eq $cond) {
-            print $fh $entry, '@', uc($dir), '@';
-            $found = 1;
-            last;
-          }
+        elsif ($toplevel && defined $$assoc{$akey}->{uc($dir)} &&
+               $akey eq $cond) {
+          print $fh $entry, '@', uc($dir), '@';
+          $found = 1;
+          last;
         }
       }
       print $fh $entry, $dir if (!$found);
@@ -564,6 +620,174 @@ sub get_includedir {
   ## Take off the starting directory
   $value =~ s/$start//;
   return $value;
+}
+
+
+sub edit_config_ac {
+  my($self)   = shift;
+  my($file)   = shift;
+  my($files)  = shift;
+  my($fh)     = new FileHandle();
+  my($status) = 0;
+
+  if (open($fh, $file)) {
+    my($crlf)   = $self->crlf();
+    my(@in)     = ();
+    my(@lines)  = ();
+    my($assoc)  = $self->get_associated_projects();
+    my($indent) = '';
+    my(%proj_dir_seen) = ();
+    my($in_config_files) = 0;
+
+    while(<$fh>) {
+      my($line) = $_;
+      push(@lines, $line);
+
+      ## Remove comments and trailing space
+      $line =~ s/\bdnl\s+.*//;
+      $line =~ s/\s+$//;
+
+      if ($line eq '') {
+      }
+      elsif ($line =~ /^\s*if\s+test\s+["]?([^"]+)["]?\s*=\s*\w+;\s*then/) {
+        ## Entering an if test, save the name
+        my($name) = $1;
+        $name =~ s/\s+$//;
+        $name =~ s/.*_build_//;
+        push(@in, $name);
+      }
+      elsif ($line =~ /^\s*if\s+test\s+-d\s+(.+);\s*then/) {
+        ## Entering an if test -d, save the name
+        my($name) = $1;
+        $name =~ s/\s+$//;
+        $name =~ s/\$srcdir\///;
+        push(@in, $name);
+      }
+      elsif ($line =~ /^\s*fi$/) {
+        pop(@in);
+      }
+      elsif ($line =~ /^(\s*AC_CONFIG_FILES\s*\(\s*\[)/) {
+        ## Entering an AC_CONFIG_FILES section, start ignoring the entries
+        pop(@lines);
+        push(@lines, "$1\n");
+        $indent = '  ';
+        if ($lines[$#lines] =~ /^(\s+)/) {
+          $indent .= $1;
+        }
+        $in_config_files = 1;
+      }
+      elsif ($in_config_files) {
+        if ($line =~ /(.*)\]\s*\).*/) {
+          ## We've reached the end of the AC_CONFIG_FILES section
+          my($olast) = pop(@lines);
+          if ($olast =~ /^[^\s]+(\s*\]\s*\).*)/) {
+            $olast = $1;
+          }
+          ## Add in the Makefiles for this configuration
+          if ($#in < 0 && !defined $proj_dir_seen{'.'}) {
+            push(@lines, $indent . 'Makefile' . $crlf);
+            $proj_dir_seen{'.'} = 1;
+          }
+
+          foreach my $dep (@$files) {
+            ## First things first, see if we've already seen this
+            ## project's directory.  If we have, then there's nothing
+            ## else we need to do with it.
+            my($dep_dir) = $self->mpc_dirname($dep);
+            if (!defined $proj_dir_seen{$dep_dir}) {
+              my($ok)   = 1;
+              my(@dirs) = split(/\//, $dep_dir);
+              my($base) = $dep;
+
+              if ($base =~ s/\/.*//) {
+                my($found) = 0;
+                foreach my $akey (keys %$assoc) {
+                  if (defined $$assoc{$akey}->{$base} ||
+                      defined $$assoc{$akey}->{uc($base)}) {
+                    if ($#in >= 0) {
+                      if (index($base, $in[0]) >= 0) {
+                        if ($#in >= 1) {
+                          $found = 1;
+                          for(my $i = 0; $i <= $#in; $i++) {
+                            if (!defined $dirs[$i] ||
+                                index($dirs[$i], $in[$i]) < 0) {
+                              $found = 0;
+                              last;
+                            }
+                          }
+                        }
+                        else {
+                          ## We need to see into the future here. :-)
+                          ## If the second element of @dirs matches an
+                          ## association key, we'll guess that there will
+                          ## be a "build" section devoted to it.
+                          if (!defined $dirs[1] ||
+                              !defined $$assoc{$dirs[1]}) {
+                            $found = 1;
+                          }
+                        }
+                      }
+                    }
+                    else {
+                      $found = 1;
+                    }
+                    last;
+                  }
+                }
+                if ($#in >= 0) {
+                  $ok = $found;
+                }
+                else {
+                  $ok = !$found;
+                }
+              }
+
+              if ($ok) {
+                $proj_dir_seen{$dep_dir} = 1;
+                my $inter_dir = '';
+                foreach my $dep (@dirs) {
+                  $inter_dir .= $dep;
+                  if (!defined $proj_dir_seen{$inter_dir}) {
+                    $proj_dir_seen{$inter_dir} = 1;
+                    push(@lines, $indent . $inter_dir . "/Makefile$crlf");
+                  }
+                  $inter_dir .= '/';
+                }
+                push(@lines, $indent . $dep_dir . "/Makefile$crlf");
+              }
+            }
+          }
+          push(@lines, $olast);
+          $in_config_files = 0;
+        }
+        else {
+          ## Ignore the entry
+          pop(@lines);
+        }
+      }  
+    }
+    close($fh);
+
+    ## Make a backup and create the new file
+    my($backup) = $file . '.bak';
+    if (copy($file, $backup)) {
+      my(@buf) = stat($file);
+      if (defined $buf[8] && defined $buf[9]) {
+        utime($buf[8], $buf[9], $backup);      
+      }
+      if (open($fh, ">$file")) {
+        foreach my $line (@lines) {
+          print $fh $line;
+        }
+        close($fh);
+        $status = 1;
+      }
+    }
+    else {
+      $self->warning("Unable to create backup file: $backup");
+    }
+  }
+  return $status;
 }
 
 1;
