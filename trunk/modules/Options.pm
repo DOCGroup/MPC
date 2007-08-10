@@ -110,7 +110,7 @@ sub printUsage {
 "       -features       Specifies the feature list to set before processing.\n" .
 "       -for_eclipse    Generate files for use with eclipse.  This is only\n" .
 "                       useful for make based project types.\n" .
-"       -gendot         Generate .dot files for use with Graphvis.\n" .
+"       -gendot         Generate .dot files for use with Graphviz.\n" .
 "       -genins         Generate .ins files for use with prj_install.pl.\n" .
 "       -gfeature_file  Specifies the global feature file.  The\n" .
 "                       default value is global.features under the\n" .

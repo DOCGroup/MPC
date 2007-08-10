@@ -13,7 +13,6 @@ package WorkspaceCreator;
 use strict;
 use FileHandle;
 use File::Path;
-use File::Compare;
 
 use Creator;
 use Options;
@@ -1028,8 +1027,7 @@ sub write_workspace {
             $self->post_workspace($fh, $creator, $addfile);
             close($fh);
 
-            if (-r $name &&
-                -s $tmp == -s $name && compare($tmp, $name) == 0) {
+            if (!$self->files_are_different($name, $tmp)) {
               $different = 0;
             }
           }

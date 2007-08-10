@@ -29,6 +29,7 @@ sub new {
   ## Set the values associative array
   $self->{'values'} = {};
   $self->{'valid'}  = $valid;
+  $self->{'warned'} = {};
 
   return $self;
 }
@@ -97,8 +98,11 @@ sub preprocess {
     my($val) = $ENV{$name};
     if (!defined $val) {
       $val = '';
-      $self->diagnostic("$name was used in the configuration file, " .
-                        "but was not defined.");
+      if (!defined $self->{'warned'}->{$name}) {
+        $self->diagnostic("$name was used in the configuration file, " .
+                          "but was not defined.");
+        $self->{'warned'}->{$name} = 1;
+      }
     }
     $str =~ s/\$([\(\w\)]+)/$val/;
   }
