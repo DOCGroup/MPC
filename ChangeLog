@@ -1,3 +1,33 @@
+Fri Aug 10 18:15:22 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/USAGE:
+        * modules/Options.pm:
+
+          Fixed the misspelling of Graphviz.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Fixed a couple of issues:
+
+          1) Makefile.am is no longer overwritten if the only difference is
+             in a comment.
+          2) The existing configure.ac is edited to contain all of the new
+             Makefiles.  If configure.ac doesn't exist, it is created and
+             the Makefile list is written out to configure.ac.Makefiles.
+          3) @NAME@ substitutions now only happen in the top-level
+             workspace.
+
+        * modules/ConfigParser.pm:
+
+          Only warn the user once about each undefined environment variable.
+
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Factored the file comparison out into a single method on the
+          Creator base class.
+
 Wed Aug  8 15:18:04 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeWorkspaceCreator.pm:
