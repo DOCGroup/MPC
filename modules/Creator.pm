@@ -12,6 +12,7 @@ package Creator;
 
 use strict;
 use FileHandle;
+use File::Compare;
 
 use Parser;
 
@@ -1168,6 +1169,14 @@ sub preserve_assignment_order {
 sub compare_output {
   #my($self) = shift;
   return 0;
+}
+
+
+sub files_are_different {
+  my($self) = shift;
+  my($old)  = shift;
+  my($new)  = shift;
+  return !(-r $old && -s $new == -s $old && compare($new, $old) == 0);
 }
 
 
