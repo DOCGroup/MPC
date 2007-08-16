@@ -23,7 +23,7 @@ use File::Basename;
 # ******************************************************************
 
 my($insext)   = 'ins';
-my($version)  = '1.7';
+my($version)  = '1.8';
 my(%defaults) = ('header_files'   => 1,
                  'idl_files'      => 1,
                  'inline_files'   => 1,
@@ -48,6 +48,21 @@ my($hasSymlink) = ($@ eq '');
 # Subroutine Section
 # ******************************************************************
 
+sub rm_updirs {
+  my($path)  = shift;
+  my(@parts) = split(/[\/\\]/, $path);
+
+  ## Split the path into parts and check for '..'.  If we find one
+  ## and the previous entry wasn't one, then we can remove them both.
+  for(my $i = 0; $i <= $#parts; $i++) {
+    if ($i > 0 && $parts[$i] eq '..' && $parts[$i - 1] ne '..') {
+      splice(@parts, $i - 1, 2);
+      $i -= 2;
+    }
+  }
+  return join('/', @parts);
+}
+
 sub copyFiles {
   my($files)   = shift;
   my($insdir)  = shift;
@@ -57,9 +72,10 @@ sub copyFiles {
   my($cwd)     = getcwd();
 
   foreach my $file (@$files) {
-    my($dest) = $insdir . '/' .
-                (defined $actual{$file} ?
-                         "$actual{$file}/" . basename($file) : $file);
+    my($dest) = rm_updirs($insdir . '/' .
+                          (defined $actual{$file} ?
+                                  "$actual{$file}/" .
+                                  basename($file) : $file));
     my($fulldir) = dirname($dest);
     if (! -d $fulldir) {
       my($tmp) = '';
@@ -80,6 +96,9 @@ sub copyFiles {
       }
       else {
         $status = copy($file, $dest);
+        if ($status && -x $file) {
+          chmod(0755, $dest);
+        }
       }
       if (!$status) {
         print STDERR "ERROR: Unable to $type $file to $dest\n";
