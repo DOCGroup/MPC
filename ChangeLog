@@ -1,11 +1,21 @@
+Fri Sep  7 13:41:43 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where using two different custom types in the same
+          project, both with 'commandflags' mapped to a new keyword, would
+          cause scoped settings from one project type to be applied to the
+          other project type.
+
 Tue Aug 21 15:27:52 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * templates/vc8.mpd:
         * templates/vc8platforms.mpt:
-        
+
           Added support for the Windows Mobile 6 platform. This platform
           is targeted specifying the "Windows Mobile 6 Standard SDK (ARMV4I)"
-          platform. 
+          platform.
 
 Thu Aug 16 12:01:28 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
