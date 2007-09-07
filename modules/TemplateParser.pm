@@ -257,7 +257,7 @@ sub set_current_values {
         my(%copy) = ();
         foreach my $key (keys %$value) {
           $copy{$key} = $self->{'prjc'}->adjust_value(
-                    [$name . '::' . $key, $name], $$value{$key});
+                    [$name . '::' . $key, $name], $$value{$key}, $self);
         }
         $self->{'foreach'}->{'temp_scope'}->[$counter] = \%copy;
         $set = 1;
@@ -323,7 +323,8 @@ sub get_value {
       if (!defined $value) {
         ## Calling adjust_value here allows us to pick up template
         ## overrides before getting values elsewhere.
-        my($uvalue) = $self->{'prjc'}->adjust_value([$sname, $name], []);
+        my($uvalue) = $self->{'prjc'}->adjust_value([$sname, $name],
+                                                    [], $self);
         if (defined $$uvalue[0]) {
           $value = $uvalue;
           $adjust = 0;
@@ -373,7 +374,7 @@ sub get_value {
   ## Adjust the value even if we haven't obtained one from an outside
   ## source.
   if ($adjust && defined $value) {
-    $value = $self->{'prjc'}->adjust_value([$sname, $name], $value);
+    $value = $self->{'prjc'}->adjust_value([$sname, $name], $value, $self);
   }
 
   ## If the value did not come from the project creator, we
@@ -420,7 +421,8 @@ sub get_value_with_default {
         }
       }
       $value = $self->{'prjc'}->relative(
-                    $self->{'prjc'}->adjust_value([$sname, $name], $value));
+                 $self->{'prjc'}->adjust_value(
+                   [$sname, $name], $value, $self));
 
       ## If the user set the variable to empty, we will go ahead and use
       ## the default value (since we know we have one at this point).

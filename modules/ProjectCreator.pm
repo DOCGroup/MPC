@@ -969,7 +969,7 @@ sub update_template_variable {
     if ($name =~ s/.*:://) {
       my($value) = $self->get_assignment($name);
       if (defined $value) {
-        $atemp->{$values[1]} = [[0, $value]];
+        $atemp->{$values[1]} = [[0, $value, undef, $name]];
       }
     }
   }
@@ -983,7 +983,8 @@ sub update_template_variable {
     my($max) = scalar(@{$atemp->{$values[1]}});
     for(my $i = 0; $i < $max; $i++) {
       if ($atemp->{$values[1]}->[$i]->[2]) {
-        splice(@{$atemp->{$values[1]}}, $i, 0, [$values[0], $values[2]]);
+        splice(@{$atemp->{$values[1]}}, $i, 0,
+               [$values[0], $values[2], undef, $name]);
         return;
       }
     }
@@ -991,7 +992,7 @@ sub update_template_variable {
   else {
     $atemp->{$values[1]} = [];
   }
-  push(@{$atemp->{$values[1]}}, [$values[0], $values[2]]);
+  push(@{$atemp->{$values[1]}}, [$values[0], $values[2], undef, $name]);
 }
 
 
@@ -4435,17 +4436,44 @@ sub adjust_value {
   my($self)  = shift;
   my($names) = shift;
   my($value) = shift;
+  my($tp)    = shift;
   my($atemp) = $self->get_addtemp();
 
   ## Perform any additions, subtractions
   ## or overrides for the template values.
   foreach my $name (@$names) {
     if (defined $name && defined $atemp->{lc($name)}) {
-      my($base) = lc($name);
+      my($lname) = lc($name);
+      my($base)  = $lname;
       $base =~ s/.*:://;
+
+      ## If the template variable is a complex name, then we need to make
+      ## sure that the mapped value belongs to the correct type based on
+      ## the base of the complex name.  The $tp variable will, in the
+      ## majority of all calls to this method, be defined so it is
+      ## checked second to avoid checking it if the name isn't complex.
+      if ($base =~ /(.+)\->/ && defined $tp) {
+        my $v = $tp->get_value($1);
+        if (defined $v) {
+          my $found = undef;
+          foreach my $val (@{$atemp->{$lname}}) {
+            if (defined $$val[3]) {
+              my $mapped = $self->{'valid_names'}->{$$val[3]};
+              if (defined $mapped && UNIVERSAL::isa($mapped, 'ARRAY')) {
+                if ($v ne $$mapped[0]) {
+                  $found = 1;
+                }
+              }
+              last;
+            }
+          }
+          next if ($found);
+        }
+      }
+
       my($replace) = (defined $self->{'valid_names'}->{$base} &&
                       ($self->{'valid_names'}->{$base} & 0x04) == 0);
-      foreach my $val (@{$atemp->{lc($name)}}) {
+      foreach my $val (@{$atemp->{$lname}}) {
         if ($replace && index($$val[1], '<%') >= 0) {
           $$val[1] = $self->replace_parameters($$val[1],
                                                $self->{'command_subs'});
