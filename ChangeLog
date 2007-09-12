@@ -1,3 +1,14 @@
+Wed Sep 12 18:55:35 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/qwt.mpb:
+
+          Added a base project for Qwt.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where a perl undefined value warning could occur when
+          duplicate project names are encountered.
+
 Wed Sep 12 13:13:52 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/mysql.mpb:
