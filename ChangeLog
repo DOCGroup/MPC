@@ -1,3 +1,10 @@
+Wed Sep 12 13:13:52 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/mysql.mpb:
+        * config/mysqlpp.mpb:
+
+          Added base projects for MySQL and MySQL++.
+
 Fri Sep  7 13:41:43 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
