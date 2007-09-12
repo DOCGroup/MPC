@@ -1692,30 +1692,32 @@ sub build_dependency_chain {
     foreach my $dep (@$deps) {
       ## Find the item in the list that matches our current dependency
       my($mapped) = $$map{$dep};
-      for(my $i = 0; $i < $len; $i++) {
-        if ($$list[$i] eq $mapped) {
+      if (defined $mapped) {
+        for(my $i = 0; $i < $len; $i++) {
+          if ($$list[$i] eq $mapped) {
 
-          ## Locate the group number to which the dependency belongs
-          for(my $j = 0; $j < $glen; $j++) {
-            if ($i >= $$groups[$j]->[0] && $i <= $$groups[$j]->[1]) {
+            ## Locate the group number to which the dependency belongs
+            for(my $j = 0; $j < $glen; $j++) {
+              if ($i >= $$groups[$j]->[0] && $i <= $$groups[$j]->[1]) {
 
-              if ($j != $ni) {
-                ## Add every project in the group to the dependency chain
-                for(my $k = $$groups[$j]->[0]; $k <= $$groups[$j]->[1]; $k++) {
-                  my($ldep) = $self->mpc_basename($$list[$k]);
-                  if (!exists $$gdeps{$ldep}) {
-                    $$gdeps{$ldep} = 1;
-                    $self->build_dependency_chain($$list[$k],
-                                                  $len, $list, $j,
-                                                  $glen, $groups,
-                                                  $map, $gdeps);
+                if ($j != $ni) {
+                  ## Add every project in the group to the dependency chain
+                  for(my $k = $$groups[$j]->[0]; $k <= $$groups[$j]->[1]; $k++) {
+                    my($ldep) = $self->mpc_basename($$list[$k]);
+                    if (!exists $$gdeps{$ldep}) {
+                      $$gdeps{$ldep} = 1;
+                      $self->build_dependency_chain($$list[$k],
+                                                    $len, $list, $j,
+                                                    $glen, $groups,
+                                                    $map, $gdeps);
+                    }
                   }
                 }
+                last;
               }
-              last;
             }
+            last;
           }
-          last;
         }
       }
 
