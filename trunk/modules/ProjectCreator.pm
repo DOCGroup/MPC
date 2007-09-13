@@ -756,7 +756,8 @@ sub parse_line {
                 $self->set_project_name($name);
               }
               else {
-                $self->warning("Ignoring project name in a base project.");
+                $self->warning("Ignoring project name " .
+                               "$name in a base project.");
               }
             }
           }
