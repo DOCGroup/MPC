@@ -1,3 +1,14 @@
+Thu Sep 13 18:02:23 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * create_base.pl:
+
+          Added a script to create base projects based on MPC library
+          projects.
+
+        * modules/ProjectCreator.pm:
+
+          Changed an informational message to provide more data.
+
 Wed Sep 12 18:55:35 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/qwt.mpb:
