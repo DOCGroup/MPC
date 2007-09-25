@@ -139,10 +139,14 @@
       <SubType><%flag_overrides(resx_file, subtype)%></SubType>
 <%endif%>
 <%if(flag_overrides(resx_file, generates_source))%>
+<%if(compares(flag_overrides(resx_file, generates_source), 1))%>
 <%if(ends_with(resx_file, \.settings))%>
       <Generator>SettingsSingleFileGenerator</Generator>
 <%else%>
       <Generator>ResXFileCodeGenerator</Generator>
+<%endif%>
+<%else%>
+      <Generator><%flag_overrides(resx_file, generates_source)%></Generator>
 <%endif%>
       <LastGenOutput><%basenoextension(resx_file)%>.Designer.cs</LastGenOutput>
 <%endif%>
