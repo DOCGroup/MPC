@@ -331,7 +331,11 @@ dependent_upon  This can only be applied to source and resx components.  It
                 upon for vc8 only.
 generates_source This can only be applied to resx components.  It indicates
                 that the resx file or files auto generates a source file for
-                vc8 only.  The auto generated name is created by taking the
+                vc8 only.  A value of '1' indicates that the resx file
+                generates a source file and the default generator is used.
+                Any other value indicates that the resx file generates a
+                source file and the generator name is taken from the value
+                supplied.  The auto generated name is created by taking the
                 resx file without the extension and appending .Designer.cs.
 subtype         This can only be applied to source and resx components.  It
                 determines the SubType setting for vc8 only.

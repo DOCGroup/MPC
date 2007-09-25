@@ -1,3 +1,11 @@
+Tue Sep 25 16:03:41 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * templates/vc8csharp.mpd:
+
+          Changed the way generates_source works.  See the README for more
+          details.
+
 Thu Sep 13 18:02:23 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * create_base.pl:
