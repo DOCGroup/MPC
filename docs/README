@@ -762,6 +762,9 @@ forcount        By default, a one based index number of the foreach
   ...
 <%endfor%>
 
+If the list variable ('includes' in the above example) is a function call,
+it is necessary to provide both a variable name and a base count number.
+
 Project Variable and Template Input Variable Interaction
 --------------------------------------------------------
 Project variables and template input variables are separate entities and in
