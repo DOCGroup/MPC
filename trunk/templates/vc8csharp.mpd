@@ -100,17 +100,17 @@
       <DependentUpon><%flag_overrides(source_file, dependent_upon)%></DependentUpon>
 <%endif%>
     </Compile>
-<%if(remove_from(source_files, source_file, \.cs, .Designer.cs))%>
+<%if(remove_from(source_files, \.Designer\.cs, source_file, \.cs))%>
     <Compile Include="<%noextension(source_file)%>.Designer.cs">
       <DependentUpon><%basename(source_file)%></DependentUpon>
     </Compile>
 <%endif%>
-<%if(remove_from(resx_files, source_file, \.cs, .resx))%>
-    <EmbeddedResource Include="<%noextension(source_file)%>.resx">
+<%foreach(removed, 1, remove_from(resx_files, .*\.resx, source_file, \.cs))%>
+    <EmbeddedResource Include="<%removed%>">
       <SubType>Designer</SubType>
       <DependentUpon><%basename(source_file)%></DependentUpon>
     </EmbeddedResource>
-<%endif%>
+<%endfor%>
 <%endif%>
 <%endfor%>
 <%foreach(source_files)%>
