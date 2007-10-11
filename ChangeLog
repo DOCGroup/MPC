@@ -1,3 +1,10 @@
+Thu Oct 11 17:42:54 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/vc8csharp.mpd:
+
+          Fixed a problem where too many .resx files were being grouped to a
+          "matching" 'Form' source file.
+
 Thu Oct 11 15:34:23 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
