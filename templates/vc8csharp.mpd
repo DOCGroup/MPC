@@ -105,7 +105,13 @@
       <DependentUpon><%basename(source_file)%></DependentUpon>
     </Compile>
 <%endif%>
-<%foreach(removed, 1, remove_from(resx_files, .*\.resx, source_file, \.cs))%>
+<%if(remove_from(resx_files, resx, source_file, cs))%>
+    <EmbeddedResource Include="<%noextension(source_file)%>.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon><%basename(source_file)%></DependentUpon>
+    </EmbeddedResource>
+<%endif%>
+<%foreach(removed, 1, remove_from(resx_files, .*\.resx, source_file, cs))%>
     <EmbeddedResource Include="<%removed%>">
       <SubType>Designer</SubType>
       <DependentUpon><%basename(source_file)%></DependentUpon>
