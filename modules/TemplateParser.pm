@@ -28,6 +28,7 @@ use vars qw(@ISA);
 # 0 means there is a get_ method available (used by if and nested functions)
 # 1 means there is a perform_ method available (used by foreach and nested)
 # 2 means there is a doif_ method available (used by if)
+# 3 means that parameters to perform_ should not be evaluated
 my(%keywords) = ('if'              => 0,
                  'else'            => 0,
                  'endif'           => 0,
@@ -56,7 +57,7 @@ my(%keywords) = ('if'              => 0,
                  'starts_with'     => 5,
                  'ends_with'       => 5,
                  'contains'        => 5,
-                 'remove_from'     => 5,
+                 'remove_from'     => 0xf,
                  'compares'        => 5,
                  'duplicate_index' => 5,
                  'transdir'        => 5,
@@ -472,6 +473,11 @@ sub process_foreach {
       $val     = $2;
       if (($keywords{$cmd} & 0x02) != 0) {
         push(@cmds, 'perform_' . $cmd);
+        if (($keywords{$cmd} & 0x08) != 0) {
+          my(@params) = $self->split_parameters($val);
+          $val = \@params;
+          last;
+        }
       }
       else {
         $self->warning("Unable to use $cmd in foreach (no perform_ method).");
@@ -480,21 +486,26 @@ sub process_foreach {
 
     ## Get the values for all of the variable names
     ## contained within the foreach
-    my($names) = $self->create_array($val);
-    foreach my $n (@$names) {
-      my($vals) = $self->get_value($n);
-      if (defined $vals && $vals ne '') {
-        if (!UNIVERSAL::isa($vals, 'ARRAY')) {
-          $vals = $self->create_array($vals);
+    if (UNIVERSAL::isa($val, 'ARRAY')) {
+      @values = @$val;
+    }
+    else {
+      my($names) = $self->create_array($val);
+      foreach my $n (@$names) {
+        my($vals) = $self->get_value($n);
+        if (defined $vals && $vals ne '') {
+          if (!UNIVERSAL::isa($vals, 'ARRAY')) {
+            $vals = $self->create_array($vals);
+          }
+          push(@values, @$vals);
         }
-        push(@values, @$vals);
-      }
-      if (!defined $name) {
-        $name = $n;
-        $name =~ s/s$//;
-      }
-      if (!$check_for_mixed && !$self->{'prjc'}->is_keyword($n)) {
-        $check_for_mixed = 1;
+        if (!defined $name) {
+          $name = $n;
+          $name =~ s/s$//;
+        }
+        if (!$check_for_mixed && !$self->{'prjc'}->is_keyword($n)) {
+          $check_for_mixed = 1;
+        }
       }
     }
   }
@@ -951,41 +962,52 @@ sub handle_contains {
 sub get_remove_from {
   my($self) = shift;
   my($str)  = shift;
-  return $self->doif_remove_from([$str]);
+  return $self->doif_remove_from($str);
 }
 
 
 sub doif_remove_from {
+  my($self)    = shift;
+  my($str)     = shift;
+  my(@params)  = $self->split_parameters($str);
+  my(@removed) = $self->perform_remove_from(\@params);
+  return (defined $removed[0] ? 1 : undef);
+}
+
+
+sub perform_remove_from {
   my($self) = shift;
   my($val)  = shift;
+  my($source, $pattern, $target, $tremove) = @$val;
 
-  if (defined $val) {
-    ## $source should be a component name (e.g., source_files,
-    ## header_files, etc.)  $target is a variable name
-    ## $pattern and $replace are optional; $pattern is a regular
-    ## expression and $replace is what to replace the regular expression
-    ## with if a match is made.
-    my($source, $target,
-       $pattern, $replace) = $self->split_parameters("@$val");
-    if (defined $source && defined $target &&
-        defined $self->{'values'}->{$source}) {
-      my($tval) = $self->get_value_with_default($target);
-      if (defined $tval) {
-        if (defined $pattern) {
-          $replace = '' if (!defined $replace);
-          $tval =~ s/$pattern/$replace/;
+  ## $source should be a component name (e.g., source_files,
+  ## header_files, etc.)  $target is a variable name
+  ## $pattern and $tremove are optional; $pattern is a partial regular
+  ## expression to match the end of the files found from $source.  The
+  ## beginning of the regular expression is made from $target by removing
+  ## $tremove from the end of it.
+  if (defined $source && defined $target &&
+      defined $self->{'values'}->{$source}) {
+    my($tval) = $self->get_value_with_default($target);
+    if (defined $tval) {
+      $tval =~ s/$tremove$// if (defined $tremove);
+      $tval = $self->escape_regex_special($tval);
+      my(@removed) = ();
+      my($max) = scalar(@{$self->{'values'}->{$source}});
+      for(my $i = 0; $i < $max;) {
+        if ($self->{'values'}->{$source}->[$i] =~ /^$tval$pattern$/) {
+          push(@removed, splice(@{$self->{'values'}->{$source}}, $i, 1));
+          $max--;
         }
-        my($max) = scalar(@{$self->{'values'}->{$source}});
-        for(my $i = 0; $i < $max; $i++) {
-          if ($self->{'values'}->{$source}->[$i] eq $tval) {
-            splice(@{$self->{'values'}->{$source}}, $i, 1);
-            return 1;
-          }
+        else {
+          $i++;
         }
       }
+      return @removed;
     }
   }
-  return undef;
+
+  return ();
 }
 
 
@@ -994,13 +1016,11 @@ sub handle_remove_from {
   my($str)  = shift;
 
   if (defined $str) {
-    my($val) = $self->doif_remove_from([$str]);
+    my(@params) = $self->split_parameters($str);
+    my($val) = $self->perform_remove_from(\@params);
 
     if (defined $val) {
-      $self->append_current($val);
-    }
-    else {
-      $self->append_current(0);
+      $self->append_current("@$val");
     }
   }
 }
@@ -1857,7 +1877,7 @@ sub parse_line {
   ## contains a keyword, then we do
   ## not need to add a newline to the end.
   if ($self->{'foreach'}->{'processing'} == 0 && !$self->{'eval'} &&
-      ($line !~ /^[ ]*<%(\w+)(\(((\w+\s*,\s*)?[!]?\w+\(.+\)|[^\)]+)\))?%>$/ ||
+      ($line !~ /^[ ]*<%(\w+)(?:\((?:(?:\w+\s*,\s*)*[!]?\w+\(.+\)|[^\)]+)\))?%>$/ ||
        !defined $keywords{$1})) {
     $line .= $self->{'crlf'};
   }

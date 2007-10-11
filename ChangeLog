@@ -1,3 +1,25 @@
+Thu Oct 11 15:34:23 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+
+          Document a requirement of a <%foreach%> that uses a function call
+          with commas.  In this case a variable name and base count is
+          necessary.
+
+        * docs/templates/make.txt:
+
+          Documented missing template variables.
+
+        * modules/TemplateParser.pm:
+
+          Modified the 'remove_from' template function to work in a foreach
+          and to allow better string manipulation.
+
+        * templates/vc8csharp.mpd:
+
+          Use the 'remove_from' function to group .resx files that fully or
+          partially match a 'Form' source file.
+
 Tue Sep 25 16:03:41 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
