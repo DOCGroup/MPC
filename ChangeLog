@@ -1,3 +1,19 @@
+Mon Oct 22 12:11:13 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+
+          Documented variable scopes.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where any type of error in a base feature project
+          would be reported as if the end of the feature project was not
+          found.
+
+          Also, fixed a bug where a scoped template variable addition would
+          be evaluated multiple times resulting in a repeition of the added
+          value.
+
 Thu Oct 11 17:42:54 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/vc8csharp.mpd:
