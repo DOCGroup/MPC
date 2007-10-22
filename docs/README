@@ -273,6 +273,18 @@ specific        This scope allows assignments that are specific to a
                 the -value_template command line option.  See the USAGE file
                 for more information.
 
+                Scopes are available in some of the MPC templates.  These
+                scopes are created by using a template variable within a
+                <%foreach%> context.  The scope will be, one at a time, each
+                space separated words within the template variable value.
+                Variables can be modified using a scope modifier.  For
+                example, the word 'FOO' will be added to the template
+                variable 'defines' when it is seen in the 'Debug' scope:
+
+                specific {
+                  Debug::defines += FOO
+                }
+
 expand          This scope allows the specification for a variable that is
                 found within $() to be expanded from the list of possible
                 values.  These possible values can contain environment
