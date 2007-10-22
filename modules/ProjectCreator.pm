@@ -859,8 +859,10 @@ sub parse_line {
     }
     elsif ($values[0] eq 'feature') {
       $self->{'feature_defined'} = 1;
-      $self->process_feature($ih, $values[1], $values[2]);
-      if ($self->{'feature_defined'}) {
+      ($status, $errorString) = $self->process_feature($ih,
+                                                       $values[1],
+                                                       $values[2]);
+      if ($status && $self->{'feature_defined'}) {
         $errorString = "Did not find the end of the feature";
         $status = 0;
       }
@@ -4485,6 +4487,18 @@ sub adjust_value {
             $value = '';
           }
           if (UNIVERSAL::isa($value, 'ARRAY')) {
+            ## Avoid adding duplicates.  If the existing array contains
+            ## the value already, remove it from the newly created array.
+            for(my $i = 0; $i < scalar(@$value); $i++) {
+              foreach my $ae (@$arr) {
+                if ($$value[$i] eq $ae) {
+                  splice(@$value, $i, 1);
+                  $i--;
+                  last;
+                }
+              }
+            }
+              
             ## We need to make $value a new array reference ($arr)
             ## to avoid modifying the array reference pointed to by $value
             unshift(@$arr, @$value);
