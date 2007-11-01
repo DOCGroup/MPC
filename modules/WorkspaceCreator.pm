@@ -186,10 +186,6 @@ sub parse_line {
           ## Generate the project files
           my($gstat, $creator, $err) = $self->generate_project_files();
           if ($gstat) {
-            ## Save this project creator setting for later use in the
-            ## number_target_deps() method.
-            $self->{'dependency_is_filename'} =
-                                   $creator->dependency_is_filename();
             ($status, $error) = $self->write_workspace($creator, 1);
             $self->{'assign'} = {};
           }
@@ -1928,13 +1924,7 @@ sub number_target_deps {
         ## that this one depends on.  When the project is
         ## found, we put the target number in the numbers array.
         for(my $j = 0; $j < $i; ++$j) {
-          ## If the dependency is a filename, then take the basename of
-          ## the project file.  Otherwise, get the project name based on
-          ## the project file from the "project_info".
-          my $key = ($self->{'dependency_is_filename'} ?
-                             $self->mpc_basename($list[$j]) :
-                             $self->{'project_info'}->{$list[$j]}->[0]);
-          if (exists $dhash{$key}) {
+          if (exists $dhash{$self->mpc_basename($list[$j])}) {
             push(@numbers, $j);
           }
         }
