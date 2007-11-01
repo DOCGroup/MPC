@@ -1,3 +1,11 @@
+Thu Nov  1 11:42:46 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug in number_target_deps() where project types with
+          dependency names are not the same as file names would not be
+          numbered.
+
 Mon Oct 22 12:11:13 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
