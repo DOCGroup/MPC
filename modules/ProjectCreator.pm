@@ -40,34 +40,36 @@ my($static_libs_feature) = 'static_libs_only';
 ## 0   Preserve the order for additions (1) or invert it (0)
 ## 1   Add this value to template input value (if there is one)
 ## 2   Preserve <% %> settings for evaluation within the template
-my(%validNames) = ('exename'         => 1,
-                   'sharedname'      => 1,
-                   'staticname'      => 1,
-                   'libpaths'        => 3,
-                   'exeout'          => 1,
-                   'includes'        => 3,
-                   'after'           => 1,
-                   'custom_only'     => 1,
-                   'libs'            => 2,
-                   'lit_libs'        => 2,
-                   'managed'         => 1,
-                   'pure_libs'       => 2,
-                   'pch_header'      => 1,
-                   'pch_source'      => 1,
-                   'prebuild'        => 5,
-                   'postbuild'       => 5,
-                   'dllout'          => 1,
-                   'libout'          => 1,
-                   'dynamicflags'    => 3,
-                   'staticflags'     => 3,
-                   'version'         => 1,
-                   'recurse'         => 1,
-                   'requires'        => 3,
-                   'avoids'          => 3,
-                   'tagname'         => 1,
-                   'tagchecks'       => 1,
-                   'macros'          => 3,
-                   'webapp'          => 1,
+my(%validNames) = ('exename'            => 1,
+                   'sharedname'         => 1,
+                   'staticname'         => 1,
+                   'libpaths'           => 3,
+                   'recursive_libpaths' => 3,
+                   'exeout'             => 1,
+                   'includes'           => 3,
+                   'recursive_includes' => 3,
+                   'after'              => 1,
+                   'custom_only'        => 1,
+                   'libs'               => 2,
+                   'lit_libs'           => 2,
+                   'managed'            => 1,
+                   'pure_libs'          => 2,
+                   'pch_header'         => 1,
+                   'pch_source'         => 1,
+                   'prebuild'           => 5,
+                   'postbuild'          => 5,
+                   'dllout'             => 1,
+                   'libout'             => 1,
+                   'dynamicflags'       => 3,
+                   'staticflags'        => 3,
+                   'version'            => 1,
+                   'recurse'            => 1,
+                   'requires'           => 3,
+                   'avoids'             => 3,
+                   'tagname'            => 1,
+                   'tagchecks'          => 1,
+                   'macros'             => 3,
+                   'webapp'             => 1,
                   );
 
 ## Custom definitions only
@@ -352,11 +354,11 @@ sub convert_to_template_assignment {
   my($name)       = shift;
   my($value)      = shift;
   my($calledfrom) = shift;
-  
+
   ## If the value we are going to set for $name has been used as a
   ## scoped template variable, we need to hijack the whole assignment
   ## and turn it into a template variable assignment.
-  my($atemp) = $self->get_addtemp(); 
+  my($atemp) = $self->get_addtemp();
   foreach my $key (grep(/::$name$/, keys %$atemp)) {
     $self->update_template_variable(0, $calledfrom, $key, $value);
   }
@@ -409,7 +411,7 @@ sub process_assignment {
 
 
 sub addition_core {
-  my($self)   = shift;   
+  my($self)   = shift;
   my($name)   = shift;
   my($value)  = shift;
   my($nval)   = shift;
@@ -420,7 +422,7 @@ sub addition_core {
 }
 
 
-sub subtraction_core {                                           
+sub subtraction_core {
   my($self)   = shift;
   my($name)   = shift;
   my($value)  = shift;
@@ -4498,7 +4500,7 @@ sub adjust_value {
                 }
               }
             }
-              
+
             ## We need to make $value a new array reference ($arr)
             ## to avoid modifying the array reference pointed to by $value
             unshift(@$arr, @$value);
