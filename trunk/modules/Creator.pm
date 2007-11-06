@@ -532,6 +532,62 @@ sub extension_recursive_input_list {
   return @files;
 }
 
+sub recursive_directory_list {
+  my($self)        = shift;
+  my($dir)         = shift;
+  my($exclude)     = shift;
+  my($directories) = '';
+  my($fh)          = new FileHandle();
+
+  if (opendir($fh, $dir)) {
+    my($prefix) = ($dir ne '.' ? "$dir/" : '');
+    my($skip)   = 0;
+    if (defined $$exclude[0]) {
+      foreach my $exc (@$exclude) {
+        if ($dir eq $exc) {
+          $skip = 1;
+          last;
+        }
+      }
+    }
+    if ($skip) {
+      $skip = 0;
+    }
+    else {
+      $directories .= ' ' . $dir;
+    }
+
+    foreach my $file (grep(!/^\.\.?$/,
+                           ($onVMS ? map {$_ =~ s/\.dir$//; $_} readdir($fh) :
+                                     readdir($fh)))) {
+      my($full) = $prefix . $file;
+
+      ## Check for command line exclusions
+      if (defined $$exclude[0]) {
+        foreach my $exc (@$exclude) {
+          if ($full eq $exc) {
+            $skip = 1;
+            last;
+          }
+        }
+      }
+
+      ## If we are not skipping this directory or file, then check it out
+      if ($skip) {
+        $skip = 0;
+      }
+      else {
+        if (-d $full) {
+          $directories .= $self->recursive_directory_list($full, $exclude);
+        }
+      }
+    }
+    closedir($fh);
+  }
+
+  return $directories;
+}
+
 
 sub modify_assignment_value {
   my($self)  = shift;
@@ -542,6 +598,7 @@ sub modify_assignment_value {
       index($name, 'flags') == -1 && !defined $non_convert{$name}) {
     $value =~ s/\//\\/g;
   }
+
   return $value;
 }
 
@@ -571,6 +628,14 @@ sub process_assignment {
   if (defined $value) {
     $value =~ s/^\s+//;
     $value =~ s/\s+$//;
+
+    ## Handle both recursive_includes and recursive_libpaths in one
+    ## search and replace.
+    if ($name eq 'recursive_includes' || $name eq 'recursive_libpaths') {
+      $name =~ s/^recursive_//;
+      $value = $self->get_assignment($name, $assign) .
+               ' ' . $self->recursive_directory_list($value, []);
+    }
 
     ## Modify the assignment value before saving it
     $$assign{$name} = $self->modify_assignment_value($name, $value);
@@ -1051,7 +1116,7 @@ sub expand_variables {
         ## We have replaced the template value, but that template
         ## value may contain a $() construct that may need to get
         ## replaced too.  However, if the name of the template variable
-        ## is the same as the original $() variable name, we need to 
+        ## is the same as the original $() variable name, we need to
         ## leave it alone to avoid looping infinitely.
         $whole = '' if ($whole ne $val);
       }
@@ -1186,7 +1251,6 @@ sub handle_scoped_end {
   #my($flags) = shift;
   return 1, undef;
 }
-
 
 sub handle_unknown_assignment {
   my($self)   = shift;
