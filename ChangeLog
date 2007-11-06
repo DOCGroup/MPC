@@ -1,3 +1,14 @@
+Tue Nov  6 13:01:54 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+        * docs/README:
+          Added support for recursive_libpaths and recursive_includes.
+          These can be used like libpaths and includes, but they recursively
+          add also all subdirectories to libpaths/includes. Thanks
+          to Chad Elliott for assisting with the implementation of these
+          features.
+
 Mon Oct 22 12:11:13 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:

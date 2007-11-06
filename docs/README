@@ -215,8 +215,12 @@ recurse         If set to 1, MPC will recurse into directories listed under
 version         Specifies the version number for the library or executable
 macros          These values will be passed as macros to the compiler.
 libpaths        Specifies 1 or more locations to find libraries
+recursive_libpaths Specifies 1 or more locations to find libraries which will
+                be added recursively
 includes        Specifies 1 or more locations to find include files
 libs            Specifies 1 or more libraries to link into the exe or library
+recursive_includes Specifies 1 or more locations to find include files which
+                will be added recursively
 lit_libs        Specifies 1 or more libraries to link into the exe or library.
                 If libraries receive a library decorator, then these will not.
 pure_libs       Specifies 1 or more libraries to link into the exe or library.
@@ -698,7 +702,7 @@ that it requires (or avoids) are present.
 A feature definition requires at least one feature name.  A name by itself
 specifies that the feature is required.  A '!' in front of the feature name
 indicates that the feature must be disabled.  There may be more than one
-feature listed between the parenthesis and they must be comma separated. 
+feature listed between the parenthesis and they must be comma separated.
 Each feature will be logically anded together.
 
 The following feature definition requires that the qt feature be enabled.
