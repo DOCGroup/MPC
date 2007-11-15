@@ -1,3 +1,21 @@
+Thu Nov 15 13:18:35 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/vc7csharp.txt:
+        * docs/templates/vc7java.txt:
+        * docs/templates/vc8csharp.txt:
+        * docs/templates/vc8java.txt:
+
+          Documented the AllowUnsafeBlocks template variable.
+
+        * templates/vc7csharp.mpd:
+        * templates/vc7java.mpd:
+        * templates/vc8csharp.mpd:
+        * templates/vc8java.mpd:
+
+          Added the ability to set the AllowUnsafeBlocks attribute for
+          csharp and java projects through the 'AllowUnsafeBlocks' template
+          variable.
+
 Tue Nov  6 13:01:54 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/Creator.pm:
