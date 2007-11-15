@@ -46,7 +46,7 @@
 <%foreach(configurations)%>
                 <Config
                    Name = "<%configuration%>"
-                   AllowUnsafeBlocks = "false"
+                   AllowUnsafeBlocks = "<%allowunsafeblocks(false)%>"
                    BaseAddress = "285212672"
                    CheckForOverflowUnderflow = "false"
                    ConfigurationOverrideFile = ""
