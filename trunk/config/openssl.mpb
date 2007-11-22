@@ -26,7 +26,7 @@ feature(openssl) {
   specific(bmake, borland) {
     libpaths += $(SSL_ROOT)/lib/Builder5
   }
-  specific(nmake, vc6, vc7, vc71, vc8) {
+  specific(nmake, vc6, vc7, vc71, vc8, vc9) {
     libpaths += $(SSL_ROOT)/lib/VC
   }
 }
