@@ -1,3 +1,8 @@
+Thu Nov 22 19:25:54 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * Modules/VC9WorkspaceCreator.pm:
+          Corrected generation
+
 Thu Nov 22 15:48:54 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * Modules/VC9WorkspaceCreator.pm:
