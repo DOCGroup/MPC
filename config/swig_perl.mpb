@@ -13,7 +13,7 @@ project {
   requires += swig_perl
   includes += $(PERL5_INCLUDE)/.
   libpaths += $(PERL5_INCLUDE)/.
-  specific(bds4, bmake, nmake, vc6, vc7, vc71, vc8) {
+  specific(bds4, bmake, nmake, vc6, vc7, vc71, vc8, vc9) {
     lit_libs += $(PERL5_LIB)
   }
 }
