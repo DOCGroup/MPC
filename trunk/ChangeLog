@@ -1,3 +1,29 @@
+Thu Nov 22 15:48:54 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * Modules/VC9WorkspaceCreator.pm:
+          Corrected generation
+
+Thu Nov 22 13:35:54 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/boost_date_time.mpb:
+        * config/boost_filesystem.mpb:
+        * config/boost_iostreams.mpb:
+        * config/boost_prg_exec_monitor.mpb:
+        * config/boost_program_options.mpb:
+        * config/boost_regex.mpb:
+        * config/boost_serialization.mpb:
+        * config/boost_signals.mpb:
+        * config/boost_test_exec_monitor.mpb:
+        * config/boost_thread.mpb:
+        * config/boost_wave.mpb:
+        * config/openssl.mpb:
+        * config/swig_perl.mpb:
+        * config/xerces.mpb:
+        * docs/README:
+        * modules/VC9ProjectCreator.pm:
+        * modules/VC9WorkspaceCreator.pm:
+          Added support for vc9
+
 Thu Nov 15 13:18:35 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/vc7csharp.txt:
