@@ -1,3 +1,11 @@
+Tue Nov 27 13:12:55 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/VC9ProjectCreator.pm:
+        * modules/VC9WorkspaceCreator.pm:
+
+          Removed duplicated code.  It will be inherited from
+          VC8ProjectCreator and VC8WorkspaceCreator respectively.
+
 Tue Nov 27 12:23:48 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WorkspaceCreator.pm:
