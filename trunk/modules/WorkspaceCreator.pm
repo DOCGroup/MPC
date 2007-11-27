@@ -1246,6 +1246,10 @@ sub generate_project_files {
   my(%gstate)    = $creator->save_state();
   my($genimpdep) = $self->generate_implicit_project_dependencies();
 
+  ## Save this project creator setting for later use in the
+  ## number_target_deps() method.
+  $self->{'dependency_is_filename'} = $creator->dependency_is_filename();
+
   ## Remove the address portion of the $self string
   $postkey =~ s/=.*//;
 
@@ -1924,7 +1928,13 @@ sub number_target_deps {
         ## that this one depends on.  When the project is
         ## found, we put the target number in the numbers array.
         for(my $j = 0; $j < $i; ++$j) {
-          if (exists $dhash{$self->mpc_basename($list[$j])}) {
+          ## If the dependency is a filename, then take the basename of
+          ## the project file.  Otherwise, get the project name based on
+          ## the project file from the "project_info".
+          my $key = ($self->{'dependency_is_filename'} ?
+                             $self->mpc_basename($list[$j]) :
+                             $self->{'project_info'}->{$list[$j]}->[0]);
+          if (exists $dhash{$key}) {
             push(@numbers, $j);
           }
         }
