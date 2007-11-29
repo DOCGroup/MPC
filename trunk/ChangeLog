@@ -1,3 +1,10 @@
+Thu Nov 29 00:13:52 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Modified the 'optional' syntax to allow assignments in addition to
+          additon assignments.  This is mainly useful in Modify_Custom's.
+
 Tue Nov 27 13:12:55 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/VC9ProjectCreator.pm:
