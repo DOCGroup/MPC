@@ -1623,17 +1623,18 @@ sub parse_define_custom {
         --$inscope;
       }
       else {
-        if ($line =~ /(\w+)\s*\(([^\)]+)\)\s*\+=\s*(.*)/) {
+        if ($line =~ /(\w+)\s*\(([^\)]+)\)\s*(\+)?=\s*(.*)/) {
           my($name) = lc($1);
           my($opt)  = $2;
-          my(@val)  = split(/\s*,\s*/, $3);
+          my($add)  = $3;
+          my(@val)  = split(/\s*,\s*/, $4);
 
           ## Fix $opt spacing
           $opt =~ s/(\&\&|\|\|)/ $1 /g;
           $opt =~ s/!\s+/!/g;
 
           ## Set up the 'optional' hash table
-          if (!defined $self->{'generated_exts'}->{$tag}->
+          if (!$add || !defined $self->{'generated_exts'}->{$tag}->
                               {'optional'}->{$optname}->{$name}->{$opt}) {
             $self->{'generated_exts'}->{$tag}->
                    {'optional'}->{$optname}->{$name}->{$opt} = \@val;
