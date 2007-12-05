@@ -1,0 +1,363 @@
+Thu Nov 29 00:13:52 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Modified the 'optional' syntax to allow assignments in addition to
+          additon assignments.  This is mainly useful in Modify_Custom's.
+
+Tue Nov 27 13:12:55 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/VC9ProjectCreator.pm:
+        * modules/VC9WorkspaceCreator.pm:
+
+          Removed duplicated code.  It will be inherited from
+          VC8ProjectCreator and VC8WorkspaceCreator respectively.
+
+Tue Nov 27 12:23:48 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug in number_target_deps() where project types with
+          dependency names are not the same as file names would not be
+          numbered.
+
+Thu Nov 22 19:25:54 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * Modules/VC9WorkspaceCreator.pm:
+          Corrected generation
+
+Thu Nov 22 15:48:54 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * Modules/VC9WorkspaceCreator.pm:
+          Corrected generation
+
+Thu Nov 22 13:35:54 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/boost_date_time.mpb:
+        * config/boost_filesystem.mpb:
+        * config/boost_iostreams.mpb:
+        * config/boost_prg_exec_monitor.mpb:
+        * config/boost_program_options.mpb:
+        * config/boost_regex.mpb:
+        * config/boost_serialization.mpb:
+        * config/boost_signals.mpb:
+        * config/boost_test_exec_monitor.mpb:
+        * config/boost_thread.mpb:
+        * config/boost_wave.mpb:
+        * config/openssl.mpb:
+        * config/swig_perl.mpb:
+        * config/xerces.mpb:
+        * docs/README:
+        * modules/VC9ProjectCreator.pm:
+        * modules/VC9WorkspaceCreator.pm:
+          Added support for vc9
+
+Thu Nov 15 13:18:35 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/vc7csharp.txt:
+        * docs/templates/vc7java.txt:
+        * docs/templates/vc8csharp.txt:
+        * docs/templates/vc8java.txt:
+
+          Documented the AllowUnsafeBlocks template variable.
+
+        * templates/vc7csharp.mpd:
+        * templates/vc7java.mpd:
+        * templates/vc8csharp.mpd:
+        * templates/vc8java.mpd:
+
+          Added the ability to set the AllowUnsafeBlocks attribute for
+          csharp and java projects through the 'AllowUnsafeBlocks' template
+          variable.
+
+Tue Nov  6 13:01:54 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+        * docs/README:
+          Added support for recursive_libpaths and recursive_includes.
+          These can be used like libpaths and includes, but they recursively
+          add also all subdirectories to libpaths/includes. Thanks
+          to Chad Elliott for assisting with the implementation of these
+          features.
+
+Mon Oct 22 12:11:13 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+
+          Documented variable scopes.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where any type of error in a base feature project
+          would be reported as if the end of the feature project was not
+          found.
+
+          Also, fixed a bug where a scoped template variable addition would
+          be evaluated multiple times resulting in a repeition of the added
+          value.
+
+Thu Oct 11 17:42:54 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/vc8csharp.mpd:
+
+          Fixed a problem where too many .resx files were being grouped to a
+          "matching" 'Form' source file.
+
+Thu Oct 11 15:34:23 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+
+          Document a requirement of a <%foreach%> that uses a function call
+          with commas.  In this case a variable name and base count is
+          necessary.
+
+        * docs/templates/make.txt:
+
+          Documented missing template variables.
+
+        * modules/TemplateParser.pm:
+
+          Modified the 'remove_from' template function to work in a foreach
+          and to allow better string manipulation.
+
+        * templates/vc8csharp.mpd:
+
+          Use the 'remove_from' function to group .resx files that fully or
+          partially match a 'Form' source file.
+
+Tue Sep 25 16:03:41 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * templates/vc8csharp.mpd:
+
+          Changed the way generates_source works.  See the README for more
+          details.
+
+Thu Sep 13 18:02:23 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * create_base.pl:
+
+          Added a script to create base projects based on MPC library
+          projects.
+
+        * modules/ProjectCreator.pm:
+
+          Changed an informational message to provide more data.
+
+Wed Sep 12 18:55:35 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/qwt.mpb:
+
+          Added a base project for Qwt.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where a perl undefined value warning could occur when
+          duplicate project names are encountered.
+
+Wed Sep 12 13:13:52 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/mysql.mpb:
+        * config/mysqlpp.mpb:
+
+          Added base projects for MySQL and MySQL++.
+
+Fri Sep  7 13:41:43 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where using two different custom types in the same
+          project, both with 'commandflags' mapped to a new keyword, would
+          cause scoped settings from one project type to be applied to the
+          other project type.
+
+Tue Aug 21 15:27:52 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * templates/vc8.mpd:
+        * templates/vc8platforms.mpt:
+
+          Added support for the Windows Mobile 6 platform. This platform
+          is targeted specifying the "Windows Mobile 6 Standard SDK (ARMV4I)"
+          platform.
+
+Thu Aug 16 12:01:28 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * prj_install.pl:
+
+          Fixed a bug where copying an executable didn't set the execute
+          permissions on the new file.  Also, unnecessary intermediate
+          directories are no longer made during installation.
+
+Fri Aug 10 18:15:22 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/USAGE:
+        * modules/Options.pm:
+
+          Fixed the misspelling of Graphviz.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Fixed a couple of issues:
+
+          1) Makefile.am is no longer overwritten if the only difference is
+             in a comment.
+          2) The existing configure.ac is edited to contain all of the new
+             Makefiles.  If configure.ac doesn't exist, it is created and
+             the Makefile list is written out to configure.ac.Makefiles.
+          3) @NAME@ substitutions now only happen in the top-level
+             workspace.
+
+        * modules/ConfigParser.pm:
+
+          Only warn the user once about each undefined environment variable.
+
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Factored the file comparison out into a single method on the
+          Creator base class.
+
+Wed Aug  8 15:18:04 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Set the required automake version back to 1.9.
+
+        * modules/Creator.pm:
+
+          When subtracting, split the subtracted value into elements so that
+          they can be removed in any order.
+
+Wed Aug  8 12:29:46 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Added a code to handle a special associate key to support
+          conditional substitutions in the SUBDIRS setting.
+
+Fri Aug  3 13:49:08 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where adding to a mapped keyword as a scoped template
+          variable would wipe out the original setting instead of adding to
+          it.
+
+Fri Aug  3 11:53:48 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/global.mpb:
+        * config/mpb.mpb:
+
+          Removed the MPB Define_Custom out of global and into it's own base
+          project.  Users can have their base projects inherit from mpb if
+          they want to use it.
+
+Tue Jul 31 13:57:54 UTC 2007  Adam Mitz  <mitza@ociweb.com>
+
+        * docs/README:
+
+          Fixed a few instances where mpd was mistakenly used in place of mpt.
+
+Mon Jul 30 13:47:13 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/global.mpb:
+
+          Added a define custom to allow users to explicitly list .mpb files
+          in their projects.
+
+        * prj_install.pl:
+
+          By default, install all .mpb files.
+
+Mon Jul 30 11:33:43 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Support setting a mapped custom defined keyword as a scoped
+          template variable.
+
+Wed Jul 11 14:52:02 UTC 2007  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/nmake.mpd:
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+
+          Moved the default libraries advapi32.lib and user32.lib out of the
+          template and into the template-input files using the variable name
+          systemlibs.  This allows -value_template systemlibs+=FOO to work.
+
+Fri Jun 29 18:24:22 UTC 2007  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/Depgen/Driver.pm:
+
+          Removed assigment of () to %types since it was sometimes
+          clobbering the value already there (from the BEGIN block).
+
+        * modules/Depgen/NMakeObjectGenerator.pm:
+        * depgen.pl:
+
+          Generate dependencies targeting object files instead of cpp files.
+          This matches how it's done for GNU make.
+
+        * modules/NMakeWorkspaceCreator.pm:
+
+          Provide output regarding which projects are being built.
+
+        * templates/nmake.mpd:
+
+          Changed how intermediate and ouptut directories are handled, to
+          match the change to make.mpd in:
+          Wed Jan 24 19:04:58 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+Wed Jun 27 11:28:50 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/boost_base.mpb:
+
+          Use a new environment variable, BOOST_ROOT_LIB, to determine the
+          location of boost libraries.  If this isn't set, it will be
+          expanded to $(BOOST_ROOT)/lib which is the default location.
+
+        * docs/README:
+        * modules/WorkspaceCreator.pm:
+
+          Added a new workspace feature, associate, that associates a name
+          with one or more directories.  It does not add directories to the
+          workspace, it only makes an association.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Utilize the associate feature to allow conditional building of
+          groups of directories.
+
+        * docs/USAGE:
+        * modules/Options.pm:
+
+          Document the fact that the directory parameter for the -into
+          option should be a full path.
+
+        * modules/ProjectCreator.pm:
+
+          Removed duplicate code from the add_explicit_output() method.
+
+Wed Jun 27 06:27:11 UTC 2007  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * docs/USAGE:
+        * modules/BCB2007ProjectCreator.pm:
+        * modules/BCB2007WorkspaceCreator.pm:
+        * templates/bcb2007.mpd:
+        * templates/bcb2007dll.mpt:
+        * templates/bcb2007exe.mpt:
+          New template for C++Builder 2007
+
+Fri May 18 11:17:11 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
+
+        * MPC version 3.5.0 released.
+
+Local Variables:
+mode: change-log
+add-log-time-format: (lambda () (progn (setq tz (getenv TZ)) (set-time-zone-rule UTC) (setq time (format-time-string %a %b %e %H:%M:%S %Z %Y (current-time))) (set-time-zone-rule tz) time))
+indent-tabs-mode: nil
+End:
