@@ -1,3 +1,14 @@
+Tue Dec 11 17:56:47 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * config/gacutil.mpb:
+
+          Base project that will register .NET binaries, i.e.,
+          executables and shared libraries, with the Global Assembly
+          Cache (GAC) after creation. This is very useful if you
+          need to creating stand-alone assemblies that reference
+          each other, but have no way of adding their dependency,
+          such as a web application.
+
 Thu Nov 29 00:13:52 UTC 2007  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
