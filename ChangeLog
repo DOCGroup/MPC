@@ -1,3 +1,11 @@
+Wed Dec 12 02:03:59 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * config/mpich.mpb:
+
+          Base project that will set the necessary project settings
+          for using MPICH, a freely available implementation of the
+          Message Passing Interface (MPI).
+
 Tue Dec 11 21:36:44 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * config/odbc.mpb:

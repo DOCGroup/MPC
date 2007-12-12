@@ -1,0 +1,8 @@
+// $Id$
+
+project {
+  includes += $(MPICH_ROOT)/include
+  libpaths += $(MPICH_ROOT)/lib
+
+  lit_libs += mpich pmpich
+}
