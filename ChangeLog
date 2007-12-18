@@ -1,3 +1,9 @@
+Tue Dec 18 20:21:28 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * config/mpich.mpb:
+
+          Added a requires statement to the base project.
+
 Thu Dec 13 16:48:51 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * config/mpich.mpb:
