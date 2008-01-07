@@ -1,3 +1,8 @@
+Mon Jan  7 14:57:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * registry.pl:
+          Added vc9
+
 Tue Dec 18 20:21:28 UTC 2007  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * config/mpich.mpb:
