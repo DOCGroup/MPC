@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+<%if(exename)%>
+	<name><%exename%></name>
+<%else%>
+<%if(sharedname || staticname)%>
+	<name><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%></name>
+<%endif%>
+<%endif%>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.windriver.ide.core.wrbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.windriver.ide.core.wrnature</nature>
+		<nature>com.windriver.ide.core.wrcorenature</nature>
+	</natures>
+	<linkedResources>
+<%if(source_files)%>
+<%foreach(source_files)%>
+		<link>
+			<name><%source_file%></name>
+			<type>1</type>
+			<location><%cwd%>/<%source_file%></location>
+		</link>
+<%endfor%>
+<%endif%>
+	</linkedResources>
+</projectDescription>

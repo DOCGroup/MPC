@@ -1,3 +1,22 @@
+Mon Jan  7 15:16:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/WB26ProjectCreator.pm:
+        * modules/WB26WorkspaceCreator.pm:
+        * templates/wb26.mpd:
+          First initial commit for a new generator for VxWorks 6.4/Workbench 2.6.
+          A lot of more work has to be done on this generator before it is
+          complete, but this is the first starting point. Because the Workbench
+          has the restriction that the project file always has to be named
+          .project for each project in a directory we create a subdirectory
+          and in this directory we place the .project file. Then for each
+          source file we use the linked file feature of the workbench. This
+          has the current restriction that it must be a full path, no relative
+          paths are supported.
+
+        * docs/MPC.sgml:
+        * docs/USAGE:
+          Added missing vc9 and new wb26
+
 Mon Jan  7 14:59:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/.cvsignore:
