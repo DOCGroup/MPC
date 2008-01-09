@@ -1,3 +1,8 @@
+Wed Jan  9 10:31:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrproject.mpd:
+          Added generation of libpaths and libs
+
 Wed Jan  9 09:10:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrproject.mpd:
