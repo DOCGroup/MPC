@@ -10,7 +10,7 @@ WIND_USR := $(subst \,/,$(WIND_USR))
 all : pre_build main_all post_build
 
 _clean ::
-        @echo "make: removing targets and objects of `pwd`"
+	@echo "make: removing targets and objects of `pwd`"
 
 %IDE_GENERATED%
 
@@ -19,31 +19,30 @@ _clean ::
 -include *.makefile
 
 main_all : external_build $(PROJECT_TARGETS)
-        @echo "make: built targets of `pwd`"
+	@echo "make: built targets of `pwd`"
 
 # entry point for extending the build
 external_build ::
-        @echo ""
+	@echo ""
 
 # main entry point for pre processing prior to the build
 pre_build :: $(PRE_BUILD_STEP) generate_sources
-        @echo ""
+	@echo ""
 
 # entry point for generating sources prior to the build
 generate_sources ::
-        @echo ""
+	@echo ""
 
 # main entry point for post processing after the build
 post_build :: $(POST_BUILD_STEP) deploy_output
-        @echo ""
+	@echo ""
 
 # entry point for deploying output after the build
 deploy_output ::
-        @echo ""
+	@echo ""
 
 clean :: external_clean $(CLEAN_STEP) _clean
 
 # entry point for extending the build clean
 external_clean ::
-        @echo ""
-
+	@echo ""
