@@ -8,12 +8,15 @@
                 <stringAttribute value="DEFINES"/>
                 <stringAttribute value="EXPAND_DBG"/>
             </listAttribute>
-            <stringAttribute key="BLD::Info|GlobalMacro|DEFINES" value="<%foreach(defines common_defines macros)%>-D<%define%> <%endfor%>"/>
+            <stringAttribute key="BLD::Info|GlobalMacro|DEFINES" value="<%foreach(defines common_defines macros staticflags)%>-D<%define%> <%endfor%>"/>
             <stringAttribute key="BLD::Info|GlobalMacro|EXPAND_DBG" value="0"/>
             <stringAttribute key="BLD::Info|GlobalMacro|PROJECT_TYPE" value="DKM"/>
             <listAttribute key="BLD::Info|Incl|PPC604gnu">
                 <stringAttribute value="-I$(WIND_BASE)/target/h"/>
                 <stringAttribute value="-I$(WIND_BASE)/target/h/wrn/coreip"/>
+<%foreach(includes)%>
+                <stringAttribute value="-I<%include%>"/>
+<%endfor%>
             </listAttribute>
             <listAttribute key="BLD::Info|Macros">
                 <stringAttribute value="VX_CPU_FAMILY"/>
