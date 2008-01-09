@@ -1,3 +1,8 @@
+Wed Jan  9 20:05:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrproject.mpd:
+          Use the Librarian tool when building a library
+
 Wed Jan  9 19:53:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/WB26ProjectCreator.pm:
