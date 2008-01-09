@@ -1,3 +1,8 @@
+Wed Jan  9 19:23:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrproject.mpd:
+          Generate information for the linker
+
 Wed Jan  9 19:12:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrmakefile.mpd:
