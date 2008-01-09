@@ -1,3 +1,8 @@
+Wed Jan  9 19:12:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          Template for the .wrmakefile needed for the VxWorks Workbench
+
 Wed Jan  9 10:31:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrproject.mpd:
