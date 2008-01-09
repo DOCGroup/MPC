@@ -33,4 +33,9 @@ sub project_file_extension {
   return '/.project';
 }
 
+sub get_template {
+  #my($self) = shift;
+  return 'wb26';
+}
+
 1;
