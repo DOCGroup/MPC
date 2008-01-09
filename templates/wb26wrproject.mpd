@@ -109,7 +109,17 @@
 <%endif%>
 <%endif%>
             <contents>
-                <folder name="/MyTest" recursive="true"/>
+<%if(source_files)%>
+<%foreach(source_files)%>
+<%if(exename)%>
+                <file name="/<%exename%>/<%source_file%>"/>
+<%else%>
+<%if(sharedname || staticname)%>
+                <file name="/<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>/<%source_file%>"/>
+<%endif%>
+<%endif%>
+<%endfor%>
+<%endif%>
             </contents>
         </buildtarget>
     </buildtargets>
