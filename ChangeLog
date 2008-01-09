@@ -1,3 +1,10 @@
+Wed Jan  9 19:34:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrproject.mpd:
+          Generate include paths, do note that for the moment you must
+          use -expand_vars when generating the project files, the full
+          path must be generated
+
 Wed Jan  9 19:23:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrproject.mpd:
