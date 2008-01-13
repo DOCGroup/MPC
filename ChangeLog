@@ -1,3 +1,9 @@
+Sun Jan 13 18:34:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrproject.mpd:
+          Use a different workbench project type when building a shared
+          or static library
+
 Wed Jan  9 20:05:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrproject.mpd:
