@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wrxml>
+<%if(exename)%>
     <properties platform="VxWorks" platform_name="vxworks-6.4" root="1" type="DownloadableKernelModuleProject"/>
+<%else%>
+    <properties platform="VxWorks" platform_name="vxworks-6.4" root="1" type="SharedLibraryProject"/>
+<%endif%>
     <attributes>
         <mapAttribute>
             <listAttribute key="BLD::Info|GlobalMacros">
                 <stringAttribute value="PROJECT_TYPE"/>
                 <stringAttribute value="DEFINES"/>
                 <stringAttribute value="EXPAND_DBG"/>
+<%if(sharedname || staticname)%>
+                <stringAttribute value="DO_STRIP"/>
+                <stringAttribute value="SHAREDLIB_VERSION"/>
+<%endif%>
             </listAttribute>
             <stringAttribute key="BLD::Info|GlobalMacro|DEFINES" value="<%foreach(defines common_defines macros staticflags)%>-D<%define%> <%endfor%>"/>
             <stringAttribute key="BLD::Info|GlobalMacro|EXPAND_DBG" value="0"/>
+<%if(sharedname || staticname)%>
+            <stringAttribute key="BLD::Info|GlobalMacro|DO_STRIP" value="0"/>
+            <stringAttribute key="BLD::Info|GlobalMacro|SHAREDLIB_VERSION" value=""/>
+            <stringAttribute key="BLD::Info|GlobalMacro|PROJECT_TYPE" value="SL"/>
+<%else%>
             <stringAttribute key="BLD::Info|GlobalMacro|PROJECT_TYPE" value="DKM"/>
+<%endif%>
             <listAttribute key="BLD::Info|Incl|PPC604gnu">
                 <stringAttribute value="-I$(WIND_BASE)/target/h"/>
                 <stringAttribute value="-I$(WIND_BASE)/target/h/wrn/coreip"/>
@@ -39,10 +53,15 @@
             <listAttribute key="BLD::Info|Tools">
                 <stringAttribute value="C-Compiler"/>
                 <stringAttribute value="C++-Compiler"/>
+                <stringAttribute value="Assembler"/>
+<%if(sharedname || staticname)%>
+                <stringAttribute value="Shared Library Linker"/>
+                <stringAttribute value="Static Librarian"/>
+<%else%>
                 <stringAttribute value="Linker"/>
                 <stringAttribute value="Partial Image Linker"/>
                 <stringAttribute value="Librarian"/>
-                <stringAttribute value="Assembler"/>
+<%endif%>
             </listAttribute>
             <stringAttribute key="BLD::Info|Tool|Assembler|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%assemblerprefix% $(TOOL_PATH)ccppc %DebugModeFlags% %ToolFlags% $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
             <stringAttribute key="BLD::Info|Tool|Assembler|dbgFlags|PPC604gnu" value="-g"/>
@@ -68,6 +87,7 @@
             <booleanAttribute key="BLD::Info|Tool|C-Compiler|object" value="true"/>
             <booleanAttribute key="BLD::Info|Tool|C-Compiler|passAble" value="false"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|sigs" value="*.c"/>
+<%if(exename)%>
             <stringAttribute key="BLD::Info|Tool|Librarian|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%archiverprefix% $(TOOL_PATH)arppc %ToolFlags% %OutFile% %Objects% $(ADDED_OBJECTS)"/>
             <stringAttribute key="BLD::Info|Tool|Librarian|dbgFlags|PPC604gnu" value=""/>
             <stringAttribute key="BLD::Info|Tool|Librarian|derivedSigs|PPC604gnu" value="*.a"/>
@@ -92,6 +112,24 @@
             <booleanAttribute key="BLD::Info|Tool|Partial Image Linker|object" value="false"/>
             <booleanAttribute key="BLD::Info|Tool|Partial Image Linker|passAble" value="true"/>
             <stringAttribute key="BLD::Info|Tool|Partial Image Linker|sigs" value=""/>
+<%else%>
+            <stringAttribute key="BLD::Info|Tool|Shared Library Linker|cmd|PPC32gnu_RTP" value="echo &quot;building $@&quot;;SONAME=`basename &quot;%OutFile%&quot;`;if [ &quot;$(SHAREDLIB_VERSION)&quot; != &quot;&quot; ]; then SONAME=$$SONAME.$(SHAREDLIB_VERSION);fi;%cpplinkerprefix% $(TOOL_PATH)c++ppc %DebugModeFlags% %ToolFlags% -Wl,-soname,&quot;$$SONAME&quot; -o %OutFile% %Objects% %Libraries% $(LIBPATH) $(LIBS) -L$(WIND_BASE)/target/usr/lib/ppc/PPC32/common/PIC $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(DO_STRIP)&quot; = &quot;1&quot; ]; then mv -f &quot;$@&quot; &quot;$@.unstripped&quot; &amp;&amp; stripppc -g -o &quot;$@&quot; &quot;$@.unstripped&quot;;fi &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi &amp;&amp; if [ &quot;$(SHAREDLIB_VERSION)&quot; != &quot;&quot; ]; then cp -f &quot;$@&quot; &quot;$@.$(SHAREDLIB_VERSION)&quot;;fi"/>
+            <stringAttribute key="BLD::Info|Tool|Shared Library Linker|dbgFlags|PPC32gnu_RTP" value=""/>
+            <stringAttribute key="BLD::Info|Tool|Shared Library Linker|derivedSigs|PPC32gnu_RTP" value="*.so"/>
+            <stringAttribute key="BLD::Info|Tool|Shared Library Linker|flags|PPC32gnu_RTP" value="$(CC_ARCH_SPEC) -ansi -mrtp -Wall  -MD -MP -fpic -shared"/>
+            <stringAttribute key="BLD::Info|Tool|Shared Library Linker|nonDbgFlags|PPC32gnu_RTP" value=""/>
+            <booleanAttribute key="BLD::Info|Tool|Shared Library Linker|object" value="false"/>
+            <booleanAttribute key="BLD::Info|Tool|Shared Library Linker|passAble" value="true"/>
+            <stringAttribute key="BLD::Info|Tool|Shared Library Linker|sigs" value=""/>
+            <stringAttribute key="BLD::Info|Tool|Static Librarian|cmd|PPC32gnu_RTP" value="echo &quot;building $@&quot;;%archiverprefix% $(TOOL_PATH)arppc %ToolFlags% %OutFile% %Objects%"/>
+            <stringAttribute key="BLD::Info|Tool|Static Librarian|dbgFlags|PPC32gnu_RTP" value=""/>
+            <stringAttribute key="BLD::Info|Tool|Static Librarian|derivedSigs|PPC32gnu_RTP" value="*.a"/>
+            <stringAttribute key="BLD::Info|Tool|Static Librarian|flags|PPC32gnu_RTP" value="crus"/>
+            <stringAttribute key="BLD::Info|Tool|Static Librarian|nonDbgFlags|PPC32gnu_RTP" value=""/>
+            <booleanAttribute key="BLD::Info|Tool|Static Librarian|object" value="false"/>
+            <booleanAttribute key="BLD::Info|Tool|Static Librarian|passAble" value="true"/>
+            <stringAttribute key="BLD::Info|Tool|Static Librarian|sigs" value=""/>
+<%endif%>
             <stringAttribute key="BLD::Info|cmd" value="%makeprefix% make --no-print-directory"/>
             <stringAttribute key="BLD::Info|defaultSpec" value="PPC604gnu"/>
             <stringAttribute key="BLD::Info|redirDir|PPC604gnu" value="PPC604gnu"/>
@@ -99,8 +137,18 @@
             <listAttribute key="BLD::Info|specs">
                 <stringAttribute value="PPC604gnu"/>
             </listAttribute>
-            <intAttribute key="BuildSupportEnabled" value="1"/>
+<%if(sharedname || staticname)%>
+            <listAttribute key="BLD::Tgt|Targets">
+                <stringAttribute value="<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>"/>
+            </listAttribute>
+            <stringAttribute key="BLD::Tgt|Target|<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>|ToolName" value="<%if(sharedname)%>Shared Library Linker<%else%>Static Librarian<%endif%>"/>
+            <booleanAttribute key="BLD::Tgt|Target|<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>|passed" value="false"/>
+            <listAttribute key="BLD::Tgt|Target|<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>|refs"/>
+            <booleanAttribute key="BuildTargetCentric" value="false"/>
+<%else%>
             <booleanAttribute key="BuildTargetCentric" value="true"/>
+<%endif%>
+            <intAttribute key="BuildSupportEnabled" value="1"/>
         </mapAttribute>
     </attributes>
     <buildtargets>
