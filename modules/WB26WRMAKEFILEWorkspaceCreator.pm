@@ -1,4 +1,4 @@
-package WB26WorkspaceCreator;
+package WB26WRMAKEFILEWorkspaceCreator;
 
 # ************************************************************
 # Description   : Workbench 2.6 / VxWorks 6.4 generator
@@ -12,7 +12,7 @@ package WB26WorkspaceCreator;
 
 use strict;
 
-use WB26ProjectCreator;
+use WB26WRMAKEFILEProjectCreator;
 use WinWorkspaceBase;
 use WorkspaceCreator;
 
