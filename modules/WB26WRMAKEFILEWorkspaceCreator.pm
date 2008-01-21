@@ -17,7 +17,7 @@ use WinWorkspaceBase;
 use WorkspaceCreator;
 
 use vars qw(@ISA);
-@ISA = qw(WinWorkspaceBase WorkspaceCreator);
+@ISA = qw(WorkspaceBase WorkspaceCreator);
 
 # ************************************************************
 # Subroutine Section
