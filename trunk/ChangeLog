@@ -1,12 +1,22 @@
+Mon Jan 21 14:30:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/WB26WorkspaceCreator.pm:
+        * modules/WB26WRMAKEFILEWorkspaceCreator.pm:
+        * modules/WB26WRPROJECTWorkspaceCreator.pm:
+          Use different base
+
+        * templates/wb26wrproject.mpd:
+          Improved support for building libraries and executables
+
 Mon Jan 21 06:25:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
-        * templates/WB26WorkspaceCreator.pm:
+        * modules/WB26WorkspaceCreator.pm:
           No workspace can be generated for the wb26 at this moment
 
-        * templates/WB26WRMAKEFILEProjectCreator.pm:
-        * templates/WB26WRMAKEFILEWorkspaceCreator.pm:
-        * templates/WB26WRPROJECTProjectCreator.pm:
-        * templates/WB26WRPROJECTWorkspaceCreator.pm:
+        * modules/WB26WRMAKEFILEProjectCreator.pm:
+        * modules/WB26WRMAKEFILEWorkspaceCreator.pm:
+        * modules/WB26WRPROJECTProjectCreator.pm:
+        * modules/WB26WRPROJECTWorkspaceCreator.pm:
           For the wb26 type we need to have multiple files generated but
           MPC can only generate one file for a type at this moment. Added
           two generators so that we just can generate the files for the
