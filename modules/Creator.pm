@@ -633,8 +633,11 @@ sub process_assignment {
     ## search and replace.
     if ($name eq 'recursive_includes' || $name eq 'recursive_libpaths') {
       $name =~ s/^recursive_//;
-      $value = $self->get_assignment($name, $assign) .
-               ' ' . $self->recursive_directory_list($value, []);
+      my @rel = $self->relative($value);
+      $value = $self->get_assignment($name, $assign);
+      foreach my $subdir (@rel) {
+        $value .= ' ' . $self->recursive_directory_list($subdir, []);
+      }
     }
 
     ## Modify the assignment value before saving it
