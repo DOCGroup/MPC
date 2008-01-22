@@ -35,6 +35,10 @@ generate_sources ::
 
 # main entry point for post processing after the build
 post_build :: $(POST_BUILD_STEP) deploy_output
+	@echo ""
+
+# entry point for deploying output after the build
+deploy_output ::
 <%if(install)%>
       cp $(PROJECT_TARGETS) <%install%>
 <%else%>
@@ -44,10 +48,6 @@ post_build :: $(POST_BUILD_STEP) deploy_output
 	@echo ""
 <%endif%>
 <%endif%>
-
-# entry point for deploying output after the build
-deploy_output ::
-	@echo ""
 
 clean :: external_clean $(CLEAN_STEP) _clean
 
