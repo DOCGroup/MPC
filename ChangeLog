@@ -1,3 +1,17 @@
+Tue Jan 22 08:48:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/WB26WRPROJECTProjectCreator.pm:
+        * modules/WB26WRPROJECTWorkspaceCreator.pm:
+        * modules/WinWorkspaceBase.pm:
+        * modules/WorkspaceCreator.pm:
+          The WindRiver workbench requires all paths to have forward slashes,
+          also on Windows. Added a requires_forward_slashes method so that
+          the project creator can indicate that forward slashes has to be
+          used. Thanks to Chad Elliot for helping with this, this fixes
+          bugzilla 3201
+
 Tue Jan 22 08:27:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/Creator.pm:

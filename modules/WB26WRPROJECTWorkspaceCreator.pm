@@ -13,7 +13,6 @@ package WB26WRPROJECTWorkspaceCreator;
 use strict;
 
 use WB26WRPROJECTProjectCreator;
-use WinWorkspaceBase;
 use WorkspaceCreator;
 
 use vars qw(@ISA);
