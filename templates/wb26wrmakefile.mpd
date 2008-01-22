@@ -35,7 +35,15 @@ generate_sources ::
 
 # main entry point for post processing after the build
 post_build :: $(POST_BUILD_STEP) deploy_output
+<%if(install)%>
+      cp $(PROJECT_TARGETS) <%install%>
+<%else%>
+<%if(sharedname || staticname)%>
+      cp $(PROJECT_TARGETS) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
+<%else%>
 	@echo ""
+<%endif%>
+<%endif%>
 
 # entry point for deploying output after the build
 deploy_output ::
