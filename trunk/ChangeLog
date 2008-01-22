@@ -1,3 +1,9 @@
+Tue Jan 22 19:47:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          Generate a post build command that copies the libraries and
+          executables to the location specified through the mpc file
+
 Tue Jan 22 19:34:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26.mpd:
