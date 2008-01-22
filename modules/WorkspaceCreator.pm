@@ -2382,14 +2382,14 @@ sub get_initial_relative_values {
 sub get_secondary_relative_values {
   my($self) = shift;
   return \%ENV, $self->get_expand_vars();
-} 
+}
 
 
 sub convert_all_variables {
   #my($self) = shift;
   return 1;
 }
- 
+
 
 sub workspace_file_name {
   my($self) = shift;
@@ -2456,5 +2456,9 @@ sub post_workspace {
   #my($top)     = shift;
 }
 
+sub requires_forward_slashes {
+  #my($self) = shift;
+  return 0;
+}
 
 1;

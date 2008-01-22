@@ -13,7 +13,6 @@ package WB26WRPROJECTProjectCreator;
 use strict;
 
 use ProjectCreator;
-use WinProjectBase;
 use XMLProjectBase;
 
 use vars qw(@ISA);
@@ -36,6 +35,10 @@ sub project_file_extension {
 sub get_template {
   #my($self) = shift;
   return 'wb26wrproject';
+}
+
+sub requires_forward_slashes {
+  return 1;
 }
 
 1;

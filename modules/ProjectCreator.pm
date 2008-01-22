@@ -4986,5 +4986,8 @@ sub get_template {
   return $self->{'pctype'};
 }
 
+sub requires_forward_slashes {
+  return 0;
+}
 
 1;
