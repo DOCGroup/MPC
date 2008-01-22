@@ -1,3 +1,8 @@
+Tue Jan 22 08:27:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/Creator.pm:
+          Fixed recursive_includes and recursive_libs
+
 Mon Jan 21 15:36:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrproject.mpd:
