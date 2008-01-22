@@ -31,5 +31,32 @@
 		</link>
 <%endfor%>
 <%endif%>
+<%if(header_files)%>
+<%foreach(header_files)%>
+                <link>
+                        <name><%header_file%></name>
+                        <type>1</type>
+                        <location><%cwd%>/<%header_file%></location>
+                </link>
+<%endfor%>
+<%endif%>
+<%if(inline_files)%>
+<%foreach(inline_files)%>
+                <link>
+                        <name><%inline_file%></name>
+                        <type>1</type>
+                        <location><%cwd%>/<%inline_file%></location>
+                </link>
+<%endfor%>
+<%if(template_files)%>
+<%foreach(template_files)%>
+                <link>
+                        <name><%template_file%></name>
+                        <type>1</type>
+                        <location><%cwd%>/<%template_file%></location>
+                </link>
+<%endfor%>
+<%endif%>
+<%endif%>
 	</linkedResources>
 </projectDescription>
