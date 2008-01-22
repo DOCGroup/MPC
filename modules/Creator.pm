@@ -99,6 +99,7 @@ sub new {
   $self->{'use_env'}         = $use_env;
   $self->{'expand_vars'}     = $expandvars;
   $self->{'convert_slashes'} = $self->convert_slashes();
+  $self->{'requires_forward_slashes'} = $self->requires_forward_slashes();
   $self->{'case_tolerant'}   = $self->case_insensitive();
 
   return $self;
@@ -1141,6 +1142,8 @@ sub expand_variables {
     }
     $start += length($whole);
   }
+
+  $value =~ s/\\/\//g if ($self->{'requires_forward_slashes'});
 
   return $value;
 }

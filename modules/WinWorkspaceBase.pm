@@ -27,7 +27,6 @@ sub convert_slashes {
   return 1;
 }
 
-
 sub case_insensitive {
   #my($self) = shift;
   return 1;
