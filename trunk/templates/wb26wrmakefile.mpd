@@ -31,7 +31,13 @@ pre_build :: $(PRE_BUILD_STEP) generate_sources
 
 # entry point for generating sources prior to the build
 generate_sources ::
-	@echo ""
+<%foreach(custom_types)%>
+<%foreach(custom_type->input_files)%>
+<%if(custom_type->input_file->output_files)%>
+	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%>
+<%endif%>
+<%endfor%>
+<%endfor%>
 
 # main entry point for post processing after the build
 post_build :: $(POST_BUILD_STEP) deploy_output

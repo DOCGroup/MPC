@@ -1,3 +1,9 @@
+Tue Jan 22 20:26:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          Generate custom build commands which are for example used for
+          triggering the IDL compiler
+
 Tue Jan 22 19:47:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrmakefile.mpd:
