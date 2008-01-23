@@ -1,12 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-<%if(exename)%>
-	<name><%exename%></name>
-<%else%>
-<%if(sharedname || staticname)%>
-	<name><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%></name>
-<%endif%>
-<%endif%>
+        <name><%project_name%></name>
 	<comment></comment>
 	<projects>
 	</projects>
