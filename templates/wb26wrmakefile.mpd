@@ -18,8 +18,13 @@ _clean ::
 
 -include *.makefile
 
+<%if(custom_only)%>
+main_all : external_build
+	@echo "make: built targets of `pwd`"
+<%else%>
 main_all : external_build $(PROJECT_TARGETS)
 	@echo "make: built targets of `pwd`"
+<%endif%>
 
 # entry point for extending the build
 external_build ::
