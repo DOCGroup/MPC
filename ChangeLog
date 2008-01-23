@@ -1,3 +1,8 @@
+Wed Jan 23 14:58:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          Added support for custom only projects
+
 Wed Jan 23 14:15:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26.mpd:
