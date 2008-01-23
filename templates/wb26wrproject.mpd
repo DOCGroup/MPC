@@ -126,6 +126,8 @@
 <%else%>
 <%if(sharedname || staticname)%>
         <buildtarget buildtool="Librarian" name="<%if(sharedname)%>lib<%sharedname%><%else%>lib<%staticname%><%endif%>" passed="true" targetname="<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>">
+<%else%>
+        <buildtarget buildtool="Linker" name="<%exename%>" passed="true" targetname="<%exename%>">
 <%endif%>
 <%endif%>
             <contents>
