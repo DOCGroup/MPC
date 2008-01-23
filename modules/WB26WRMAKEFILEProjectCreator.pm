@@ -38,4 +38,8 @@ sub get_template {
   return 'wb26wrmakefile';
 }
 
+sub requires_forward_slashes {
+  return 1;
+}
+
 1;

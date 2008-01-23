@@ -1,3 +1,12 @@
+Wed Jan 23 08:45:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/WB26WRMAKEFILEProjectCreator.pm:
+          Also the wrmakefile requires paths to use forward slashes
+
+        * templates/wb26wrmakefile.mpd:
+          Go to the real directory where the commands should be started.
+          The workbench sets a subdirectory as current directory
+
 Tue Jan 22 20:26:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrmakefile.mpd:
