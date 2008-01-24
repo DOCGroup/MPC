@@ -133,13 +133,7 @@
             <contents>
 <%if(source_files)%>
 <%foreach(source_files)%>
-<%if(exename)%>
-                <file name="/<%exename%>/<%source_file%>"/>
-<%else%>
-<%if(sharedname || staticname)%>
-                <file name="/<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>/<%source_file%>"/>
-<%endif%>
-<%endif%>
+                <file name="/<%project_name%>/<%source_file%>"/>
 <%endfor%>
 <%endif%>
             </contents>
