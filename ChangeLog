@@ -1,3 +1,11 @@
+Thu Jan 24 13:46:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/WB26WorkspaceCreator.pm:
+          The build order is stored in an eclipse file, generate this
+          file so that we can control the build order easily. By
+          placing this file in the following workspace directory
+          .metadata\.plugins\org.eclipse.core.runtime\.settings
+
 Thu Jan 24 12:49:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrproject.mpd:
