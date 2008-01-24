@@ -147,11 +147,13 @@
         </buildtarget>
 <%if(exename)%>
         <buildtarget buildtool="Partial Image Linker" name="PartialImage" passed="true" targetname="PartialImage">
+            <contents>
 <%if(source_files)%>
 <%foreach(source_files)%>
                 <file name="/<%project_name%>/<%source_file%>"/>
 <%endfor%>
 <%endif%>
+            </contents>
         </buildtarget>
 <%endif%>
     </buildtargets>
