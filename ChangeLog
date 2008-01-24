@@ -1,3 +1,8 @@
+Thu Jan 24 20:36:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrproject.mpd:
+          Further improvements for partial image support
+
 Thu Jan 24 19:51:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrproject.mpd:
