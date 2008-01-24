@@ -38,11 +38,13 @@
                 <stringAttribute value="CC_ARCH_SPEC"/>
                 <stringAttribute value="LIBPATH"/>
                 <stringAttribute value="LIBS"/>
+                <stringAttribute value="PARTIAL_LIBS"/>
             </listAttribute>
             <stringAttribute key="BLD::Info|Macro|CC_ARCH_SPEC|value|PPC604gnu" value="-mcpu=604 -mstrict-align -mno-implicit-fp -mlongcall"/>
             <stringAttribute key="BLD::Info|Macro|CPU|value|PPC604gnu" value="PPC604"/>
             <stringAttribute key="BLD::Info|Macro|LIBPATH|value|PPC604gnu" value="<%foreach(libpaths)%><%fornotfirst(" ")%>-L<%libpath%><%endfor%>"/>
-            <stringAttribute key="BLD::Info|Macro|LIBS|value|PPC604gnu" value="<%foreach(libs)%><%fornotfirst(" ")%>-l<%libname_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"/>
+            <stringAttribute key="BLD::Info|Macro|LIBS|value|PPC604gnu" value=""/>
+            <stringAttribute key="BLD::Info|Macro|PARTIAL_LIBS|value|PPC604gnu" value="<%foreach(libs)%><%fornotfirst(" ")%>-l<%libname_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"/>
             <stringAttribute key="BLD::Info|Macro|TOOL_FAMILY|value|PPC604gnu" value="gnu"/>
             <stringAttribute key="BLD::Info|Macro|TOOL_PATH|value|PPC604gnu" value=""/>
             <stringAttribute key="BLD::Info|Macro|TOOL|value|PPC604gnu" value="gnu"/>
@@ -93,7 +95,7 @@
             <booleanAttribute key="BLD::Info|Tool|Librarian|object" value="false"/>
             <booleanAttribute key="BLD::Info|Tool|Librarian|passAble" value="true"/>
             <stringAttribute key="BLD::Info|Tool|Librarian|sigs" value=""/>
-            <stringAttribute key="BLD::Info|Tool|Linker|cmd|PPC604gnu" value="echo &quot;building $@&quot;;rm -f %OutFile%;nmppc %Objects% $(ADDED_OBJECTS) $(OBJECTS_PartialImage) %Libraries% | tclsh $(WIND_BASE)/host/resource/hutils/tcl/munch.tcl -c ppc &gt; $(OBJ_DIR)/ctdt.c;%ccompilerprefix% $(TOOL_PATH)ccppc %DebugModeFlags% $(CC_ARCH_SPEC) -fdollars-in-identifiers -Wall $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES)  -o $(OBJ_DIR)/ctdt.o -c $(OBJ_DIR)/ctdt.c;%linkerprefix% $(TOOL_PATH)ccppc -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% $(OBJ_DIR)/ctdt.o %Objects% $(ADDED_OBJECTS) %Libraries% $(LIBPATH) $(LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
+            <stringAttribute key="BLD::Info|Tool|Linker|cmd|PPC604gnu" value="echo &quot;building $@&quot;;rm -f %OutFile%;nmppc %Objects% $(ADDED_OBJECTS) %Libraries% | tclsh $(WIND_BASE)/host/resource/hutils/tcl/munch.tcl -c ppc &gt; $(OBJ_DIR)/ctdt.c;%ccompilerprefix% $(TOOL_PATH)ccppc %DebugModeFlags% $(CC_ARCH_SPEC) -fdollars-in-identifiers -Wall $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES)  -o $(OBJ_DIR)/ctdt.o -c $(OBJ_DIR)/ctdt.c;%linkerprefix% $(TOOL_PATH)ccppc -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% $(OBJ_DIR)/ctdt.o %Objects% $(ADDED_OBJECTS) %Libraries% $(LIBPATH) $(LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
             <stringAttribute key="BLD::Info|Tool|Linker|dbgFlags|PPC604gnu" value="-g"/>
             <stringAttribute key="BLD::Info|Tool|Linker|derivedSigs|PPC604gnu" value="*.out"/>
             <stringAttribute key="BLD::Info|Tool|Linker|flags|PPC604gnu" value="-T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT"/>
@@ -132,9 +134,6 @@
 <%endif%>
             <contents>
 <%if(exename)%>
-<%foreach(libs)%>
-                <buildtargetreference name="/<%lib%>/<%lib%>"/>
-<%endfor%>
                 <buildtargetreference name="/<%project_name%>/PartialImage"/>
 <%else%>
 <%if(source_files)%>
@@ -147,6 +146,11 @@
         </buildtarget>
 <%if(exename)%>
         <buildtarget buildtool="Partial Image Linker" name="PartialImage" passed="true" targetname="PartialImage">
+            <attributes>
+                <mapAttribute>
+                    <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)ccppc -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) $(PARTIAL_LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
+                </mapAttribute>
+            </attributes>
             <contents>
 <%if(source_files)%>
 <%foreach(source_files)%>
