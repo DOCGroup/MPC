@@ -1,3 +1,8 @@
+Thu Jan 24 16:11:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrproject.mpd:
+          Fixed contents generation because the project name got changed
+
 Thu Jan 24 16:01:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/WB26ProjectCreator.pm:
