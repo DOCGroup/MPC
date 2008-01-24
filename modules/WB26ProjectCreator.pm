@@ -13,11 +13,9 @@ package WB26ProjectCreator;
 use strict;
 
 use ProjectCreator;
-use WinProjectBase;
-use XMLProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(XMLProjectBase ProjectCreator);
+@ISA = qw(ProjectCreator);
 
 # ************************************************************
 # Subroutine Section
@@ -28,14 +26,20 @@ sub crlf {
   return "\n";
 }
 
-sub project_file_extension {
-  #my($self) = shift;
-  return '/.project';
+sub project_file_name {
+  my($self) = shift;
+
+  return $self->get_modified_project_file_name($self->project_name(), '/.project');
 }
 
 sub get_template {
   #my($self) = shift;
   return 'wb26';
+}
+
+sub dependency_is_filename {
+  #my($self) = shift;
+  return 0;
 }
 
 1;

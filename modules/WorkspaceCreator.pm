@@ -1648,13 +1648,18 @@ sub sort_within_group {
 
     $deps = $self->get_validated_ordering($$list[$i]);
     if (defined $$deps[0]) {
-      my($baseproj) = $self->mpc_basename($$list[$i]);
+      my($baseproj) = ($self->{'dependency_is_filename'} ?
+                               $self->mpc_basename($$list[$i]) :
+                               $self->{'project_info'}->{$$list[$i]}->[0]);
       my($moved) = 0;
       foreach my $dep (@$deps) {
         if ($baseproj ne $dep) {
           ## See if the dependency is listed after this project
           for(my $j = $i + 1; $j <= $end; ++$j) {
-            if ($self->mpc_basename($$list[$j]) eq $dep) {
+            my $ldep = ($self->{'dependency_is_filename'} ?
+                                $self->mpc_basename($$list[$j]) :
+                                $self->{'project_info'}->{$$list[$j]}->[0]);
+            if ($ldep eq $dep) {
               $movepjs = [$i, $j];
               ## If so, move it in front of the current project.
               ## The original code, which had splices, didn't always
