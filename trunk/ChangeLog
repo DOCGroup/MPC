@@ -1,3 +1,13 @@
+Thu Jan 24 16:01:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/WB26ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+          Committed fix of Chad Elliot so that the generation of the build
+          order for the wb26 project type does work.
+
+        * modules/WB26WorkspaceCreator.pm:
+          Fixed comment about location of the file
+
 Thu Jan 24 13:46:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/WB26WorkspaceCreator.pm:
