@@ -1,3 +1,13 @@
+Thu Jan 24 19:07:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrproject.mpd:
+          When building an executable also add the libraries used to the
+          project contents. Only at that moment they are also added to
+          the list of files that need to be munched. The other option
+          would be to use the ADDED_OBJECTS in the .wrmakefile file but
+          to nmppc we have to pass the full path of all the libraries
+          and we don't have that information.
+
 Thu Jan 24 16:11:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrproject.mpd:

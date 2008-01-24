@@ -136,6 +136,11 @@
                 <file name="/<%project_name%>/<%source_file%>"/>
 <%endfor%>
 <%endif%>
+<%if(exename)%>
+<%foreach(libs)%>
+                <buildtargetreference name="/<%lib%>/<%lib%>"/>
+<%endfor%>
+<%endif%>
             </contents>
         </buildtarget>
     </buildtargets>
