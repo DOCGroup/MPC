@@ -13,11 +13,9 @@ package WB26WRMAKEFILEProjectCreator;
 use strict;
 
 use ProjectCreator;
-use WinProjectBase;
-use XMLProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(XMLProjectBase ProjectCreator);
+@ISA = qw(ProjectCreator);
 
 # ************************************************************
 # Subroutine Section
@@ -28,9 +26,9 @@ sub crlf {
   return "\n";
 }
 
-sub project_file_extension {
-  #my($self) = shift;
-  return '/.wrmakefile';
+sub project_file_name {
+  my($self) = shift;
+  return $self->get_modified_project_file_name($self->project_name(), '/.wrmakefile');
 }
 
 sub get_template {
