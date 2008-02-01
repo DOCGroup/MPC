@@ -1,7 +1,7 @@
 // $Id$
 project {
   Define_Custom(Build) {
-    inputext = .mpc, .mpb
+    inputext = .mpc, .mpb, .mwc
   }
 }
 
