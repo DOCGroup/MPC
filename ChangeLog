@@ -1,3 +1,8 @@
+Fri Feb  1 09:37:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          Corrected copying of the library/executable to their location
+
 Wed Jan 30 19:28:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * configs/build_files.mpb:

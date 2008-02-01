@@ -50,10 +50,14 @@ post_build :: $(POST_BUILD_STEP) deploy_output
 
 # entry point for deploying output after the build
 deploy_output ::
-<%if(install)%>
-	cp $(PROJECT_TARGETS) <%install%>
+<%if(exename)%>
+<%if(exeout)%>
+        cp $(PROJECT_TARGETS) <%exeout%>
 <%else%>
-<%if(sharedname || staticname)%>
+        @echo ""
+<%endif%>
+<%else%>
+<%if(sharedname)%>
 	cp $(PROJECT_TARGETS) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
 <%else%>
 	@echo ""
