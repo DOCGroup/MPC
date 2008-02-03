@@ -52,9 +52,9 @@ post_build :: $(POST_BUILD_STEP) deploy_output
 deploy_output ::
 <%if(exename)%>
 <%if(exeout)%>
-        cp $(PROJECT_TARGETS) <%exeout%>
+	cp $(PROJECT_TARGETS) <%exeout%>
 <%else%>
-        @echo ""
+	@echo ""
 <%endif%>
 <%else%>
 <%if(sharedname)%>
