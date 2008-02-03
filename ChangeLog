@@ -1,3 +1,8 @@
+Sun Feb  3 19:10:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          Replaced some spaces with a tab to fix GNU make errors
+
 Fri Feb  1 14:39:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * configs/build_files.mpb:
