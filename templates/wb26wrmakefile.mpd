@@ -68,4 +68,16 @@ clean :: external_clean $(CLEAN_STEP) _clean
 
 # entry point for extending the build clean
 external_clean ::
+<%if(exename)%>
+<%if(exeout)%>
+	rm -f <%exeout%>/$(PROJECT_TARGETS)
+<%else%>
 	@echo ""
+<%endif%>
+<%else%>
+<%if(sharedname)%>
+	rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(PROJECT_TARGETS)
+<%else%>
+	@echo ""
+<%endif%>
+<%endif%>
