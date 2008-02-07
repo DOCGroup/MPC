@@ -57,7 +57,7 @@ deploy_output ::
 	@echo ""
 <%endif%>
 <%else%>
-<%if(sharedname)%>
+<%if(sharedname || staticname)%>
 	cp $(PROJECT_TARGETS) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
 <%else%>
 	@echo ""
@@ -75,7 +75,7 @@ external_clean ::
 	@echo ""
 <%endif%>
 <%else%>
-<%if(sharedname)%>
+<%if(sharedname || staticname)%>
 	rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(PROJECT_TARGETS)
 <%else%>
 	@echo ""
