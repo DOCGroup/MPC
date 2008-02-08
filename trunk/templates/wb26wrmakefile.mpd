@@ -68,16 +68,20 @@ clean :: external_clean $(CLEAN_STEP) _clean
 
 # entry point for extending the build clean
 external_clean ::
+<%foreach(custom_types)%>
+<%foreach(custom_type->input_files)%>
+<%if(custom_type->input_file->output_files)%>
+	cd ../.. ; rm -f <%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%>
+<%endif%>
+<%endfor%>
+<%endfor%>
 <%if(exename)%>
 <%if(exeout)%>
 	rm -f <%exeout%>/$(PROJECT_TARGETS)
-<%else%>
-	@echo ""
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
 	rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(PROJECT_TARGETS)
-<%else%>
+<%endif%>
+<%endif%>
 	@echo ""
-<%endif%>
-<%endif%>
