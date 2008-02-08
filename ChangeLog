@@ -1,3 +1,8 @@
+Fri Feb  8 19:50:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          Corrected clean of installed executables and libraries
+
 Fri Feb  8 09:35:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrmakefile.mpd:

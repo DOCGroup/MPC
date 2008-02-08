@@ -7,6 +7,14 @@ WIND_HOME := $(subst \,/,$(WIND_HOME))
 WIND_BASE := $(subst \,/,$(WIND_BASE))
 WIND_USR := $(subst \,/,$(WIND_USR))
 
+<%if(exename)%>
+ACE_TARGET_NAME := <%exename%>.out
+<%else%>
+<%if(sharedname || staticname)%>
+ACE_TARGET_NAME := <%if(sharedname)%>lib<%sharedname%>.a<%else%>lib<%staticname%>.a<%endif%>
+<%endif%>
+<%endif%>
+
 all : pre_build main_all post_build
 
 _clean ::
@@ -77,11 +85,11 @@ external_clean ::
 <%endfor%>
 <%if(exename)%>
 <%if(exeout)%>
-	rm -f <%exeout%>/$(PROJECT_TARGETS)
+	rm -f <%exeout%>/$(ACE_TARGET_NAME)
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
-	rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(PROJECT_TARGETS)
+	rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_NAME)
 <%endif%>
 <%endif%>
 	@echo ""
