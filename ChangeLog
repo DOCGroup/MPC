@@ -1,3 +1,9 @@
+Fri Feb  8 09:35:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          Generate custom clean commands. Now IDL generated files will
+          be removed as part of the clean step
+
 Thu Feb  7 19:02:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrmakefile.mpd:
