@@ -8,11 +8,13 @@ WIND_BASE := $(subst \,/,$(WIND_BASE))
 WIND_USR := $(subst \,/,$(WIND_USR))
 
 <%if(exename)%>
+ACE_TARGET_PREFIX :=
 ACE_TARGET_NAME := <%exename%>
 ACE_TARGET_EXT := .out
 <%else%>
 <%if(sharedname || staticname)%>
-ACE_TARGET_NAME := <%if(sharedname)%>lib<%sharedname%><%else%>lib<%staticname%><%endif%>
+ACE_TARGET_PREFIX := lib
+ACE_TARGET_NAME := <%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>
 ACE_TARGET_EXT := .a
 <%endif%>
 <%endif%>
@@ -62,11 +64,11 @@ post_build :: $(POST_BUILD_STEP) deploy_output
 deploy_output ::
 <%if(exename)%>
 <%if(exeout)%>
-	cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%exeout%>
+	cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%exeout%>
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
-	cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
+	cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
 <%endif%>
 <%endif%>
 	@echo ""
@@ -88,7 +90,7 @@ external_clean ::
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
-	rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
+	rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
 <%endif%>
 <%endif%>
 	@echo ""
