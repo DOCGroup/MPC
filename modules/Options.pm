@@ -53,7 +53,8 @@ sub printUsage {
                $spaces . "[-expand_vars] [-features <feature definitions>]\n" .
                $spaces . "[-exclude <directories>] [-name_modifier <pattern>]\n" .
                $spaces . "[-apply_project] [-version] [-into <directory>]\n" .
-               $spaces . "[-gfeature_file <file name>] [-nocomments] [-for_eclipse]\n" .
+               $spaces . "[-gfeature_file <file name>] [-nocomments]\n" .
+               $spaces . "[-relative_file <file name>] [-for_eclipse]\n" .
                $spaces . "[-language <";
 
   my($olen) = length($spaces) + 12;
@@ -145,6 +146,9 @@ sub printUsage {
 "                       relative path based on the current working directory.\n" .
 "                       This option can be used multiple times to add multiple\n" .
 "                       variables.\n" .
+"       -relative_file  Specifies the relative file to read before processing.\n" .
+"                       The default feature file is default.rel under the\n" .
+"                       config directory.\n" .
 "       -static         Specifies that only static projects will be generated.\n" .
 "                       By default, only dynamic projects are generated.\n" .
 "       -template       Specifies the template name (with no extension).\n" .
@@ -185,7 +189,7 @@ sub completion_command {
                "ti static noreldefs notoplevel feature_file use_env " .
                "value_template value_project make_coexistence language " .
                "hierarchy exclude name_modifier apply_project version " .
-               "expand_vars gfeature_file nocomments for_eclipse)/' " .
+               "expand_vars gfeature_file nocomments for_eclipse relative_file)/' " .
                "'c/dll:/f/' 'c/dll_exe:/f/' 'c/lib_exe:/f/' 'c/lib:/f/' " .
                "'n/-ti/(dll lib dll_exe lib_exe)/:' ";
 
@@ -230,6 +234,7 @@ sub options {
   my($template)   = undef;
   my($feature_f)  = undef;
   my($gfeature_f) = undef;
+  my($relative_f) = undef;
   my(@features)   = ();
   my($nmodifier)  = undef;
   my($into)       = undef;
@@ -334,6 +339,14 @@ sub options {
       $gfeature_f = $args[$i];
       if (!defined $gfeature_f) {
         $self->optionError('-gfeature_file ' .
+                           'requires a file name argument');
+      }
+    }
+    elsif ($arg eq '-relative_file') {
+      $i++;
+      $relative_f = $args[$i];
+      if (!defined $relative_f) {
+        $self->optionError('-relative_file ' .
                            'requires a file name argument');
       }
     }
@@ -542,6 +555,7 @@ sub options {
   return {'global'        => $global,
           'feature_file'  => $feature_f,
           'gfeature_file' => $gfeature_f,
+          'relative_file' => $relative_f,
           'features'      => \@features,
           'for_eclipse'   => $foreclipse,
           'include'       => \@include,

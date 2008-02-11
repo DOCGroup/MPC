@@ -20,6 +20,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-exclude <directories>] [-name_modifier <pattern>]
               [-apply_project] [-version] [-into <directory>]
               [-gfeature_file <file name>] [-nocomments] [-for_eclipse]
+              [-relative_file <file name>]
               [-language <cplusplus | csharp | java | vb>]
               [-type <automake | bcb2007 | bds4 | bmake | cc | em3 | ghs |
                       html | make | nmake | sle | vc6 | vc7 | vc71 | vc8 |
@@ -75,6 +76,9 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        relative path based on the current working directory.
                        This option can be used multiple times to add multiple
                        variables.
+       -relative_file  Specifies the relative file to read before processing.
+                       The default feature file is default.rel under the
+                       config directory.
        -static         Specifies that only static projects will be generated.
                        By default, only dynamic projects are generated.
        -template       Specifies the template name (with no extension).

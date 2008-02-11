@@ -353,7 +353,7 @@ sub run {
       }
       else {
         $self->error("Unable to locate the module that corresponds to " .
-                     "the '$utype' type.");                              
+                     "the '$utype' type.");
         return 1;
       }
     }
@@ -433,13 +433,23 @@ sub run {
     $options->{'global'} = $self->find_file($options->{'include'},
                                             'global.mpb');
   }
+  ## Set the relative
+  my($relative_file) = (defined $options->{'relative_file'} &&
+                              -r $options->{'relative_file'} ?
+                                 $options->{'relative_file'} : undef);
+  if (!defined $relative_file) {
+    my($gf) = 'default.rel';
+    $relative_file = $self->find_file($options->{'include'}, $gf);
+    if (!defined $relative_file) {
+      $relative_file = $self->{'basepath'} . '/config/' . $gf;
+    }
+  }
   if ($options->{'reldefs'}) {
     ## Only try to read the file if it exists
-    my($rel) = $self->find_file($options->{'include'}, 'default.rel');
-    if (defined $rel) {
-      my($srel, $errorString) = $self->read_file($rel);
+    if (defined $relative_file) {
+      my($srel, $errorString) = $self->read_file($relative_file);
       if (!$srel) {
-        $self->error("$errorString\nin $rel");
+        $self->error("$errorString\nin $relative_file");
         return 1;
       }
 
@@ -521,6 +531,7 @@ sub run {
                                 $options->{'toplevel'},
                                 $options->{'baseprojs'},
                                 $global_feature_file,
+                                $options->{'relative_file'},
                                 $options->{'feature_file'},
                                 $options->{'features'},
                                 $options->{'hierarchy'},
