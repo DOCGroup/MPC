@@ -63,6 +63,7 @@ sub new {
   my($toplevel)   = shift;
   my($baseprojs)  = shift;
   my($gfeature)   = shift;
+  my($relative_f) = shift;
   my($feature)    = shift;
   my($features)   = shift;
   my($hierarchy)  = shift;
@@ -104,11 +105,11 @@ sub new {
   $self->{'lib_locations'}       = {};
   $self->{'reading_parent'}      = [];
   $self->{'global_feature_file'} = $gfeature;
+  $self->{'relative_file'}       = $relative_f;
   $self->{'project_file_list'}   = {};
   $self->{'ordering_cache'}      = {};
   $self->{'handled_scopes'}      = {};
   $self->{'scoped_basedir'}      = undef;
-
 
   ## These are static throughout processing
   $self->{'coexistence'}         = $makeco;
@@ -2120,6 +2121,7 @@ sub project_creator {
                    $parameters{'toplevel'},
                    $parameters{'baseprojs'},
                    $self->{'global_feature_file'},
+                   $parameters{'relative_file'},
                    $parameters{'feature_file'},
                    $parameters{'features'},
                    $parameters{'hierarchy'},

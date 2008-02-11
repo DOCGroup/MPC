@@ -1,3 +1,16 @@
+Mon Feb 11 15:21:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * docs/README:
+        * docs/USAGE:
+        * modules/Driver.pm:
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+          Extend MPC with a -relative_file commandline argument. By default
+          the default.rel file is loaded which specific which environment
+          variables are expanded. With -relative_file the user can specify
+          that a differnt file has to be loaded.
+
 Mon Feb 11 06:23:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrmakefile.mpd:

@@ -253,6 +253,7 @@ sub new {
   my($toplevel)   = shift;
   my($baseprojs)  = shift;
   my($gfeature)   = shift;
+  my($relative_f) = shift;
   my($feature)    = shift;
   my($features)   = shift;
   my($hierarchy)  = shift;
@@ -301,6 +302,7 @@ sub new {
   $self->{'remove_files'}          = {};
   $self->{'expanded'}              = {};
   $self->{'gfeature_file'}         = $gfeature;
+  $self->{'relative_file'}         = $relative_f;
   $self->{'feature_parser'}        = $self->create_feature_parser($features,
                                                                   $feature);
   $self->{'sort_files'}            = $self->sort_files();
