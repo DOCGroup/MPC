@@ -517,8 +517,8 @@ documentation_pre_extension This is the same as pre_extension except that it
                             only applies to documentation files.
 generic_pre_extension       This is the same as pre_extension except that it
                             only applies to generic files.
-pre_filename        This is similar to pre_extension except that the values
-                    are prepended to the file name instead of the extension.
+pre_filename                This is similar to pre_extension except that the values
+                            are prepended to the file name instead of the extension.
 source_pre_filename         This is the same as pre_filename except that it
                             only applies to source files.
 inline_pre_filename         This is the same as pre_filename except that it
