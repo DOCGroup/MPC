@@ -64,6 +64,7 @@ my(%keywords) = ('if'              => 0,
                  'has_extension'   => 5,
                  'keyname_used'    => 0,
                  'scope'           => 0,
+                 'full_path'       => 2,
                 );
 
 my(%target_type_vars) = ('type_is_static'   => 1,
@@ -1449,6 +1450,41 @@ sub handle_noextension {
 }
 
 
+sub perform_full_path {
+  my($self) = shift;
+  my($value) = shift;
+
+  #Expand all defined env vars
+  $value =~ s/\$\((\w+)\)/$ENV{$1} || '$(' . $1 . ')'/ge;
+
+  #If we expanded all env vars, get absolute path
+  if ($value =~ /\$\(\w+\)/) {
+    $self->{'error_in_handle'} = "<%full_path%> couldn't expand environment " 
+        . "variables in $value";
+    return $value;
+  }
+
+  my($dir) = $self->mpc_dirname($value);
+  if (!-e $dir) {
+    $self->{'error_in_handle'} = "The directory $dir does not exist -- can't ".
+        "convert to an absolute path in <%full_path%>\n";
+    return $value;
+  }
+  
+  return Cwd::abs_path($dir) . ($self->convert_slashes() ? '\\' : '/')
+    . $self->mpc_basename($value);
+}
+
+
+sub handle_full_path {
+  my($self) = shift;
+  my($name) = shift;
+  my($val)  = $self->get_value_with_default($name);
+
+  $self->append_current($self->perform_full_path($val));
+}
+
+
 sub evaluate_nested_functions {
   my($self) = shift;
   my($name) = shift;
@@ -1760,6 +1796,9 @@ sub process_name {
           else {
             my($func) = 'handle_' . $name;
             $self->$func($val);
+            if ($self->{'error_in_handle'}) {
+              $errorString = $self->{'error_in_handle'};
+            }
           }
         }
       }
