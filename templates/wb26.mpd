@@ -21,7 +21,7 @@
 		<link>
 			<name><%source_file%></name>
 			<type>1</type>
-			<location><%cwd%>/<%source_file%></location>
+			<location><%full_path(source_file)%></location>
 		</link>
 <%endfor%>
 <%endif%>
@@ -30,7 +30,7 @@
                 <link>
                         <name><%header_file%></name>
                         <type>1</type>
-                        <location><%cwd%>/<%header_file%></location>
+                        <location><%full_path(header_file)%></location>
                 </link>
 <%endfor%>
 <%endif%>
@@ -39,7 +39,7 @@
                 <link>
                         <name><%inline_file%></name>
                         <type>1</type>
-                        <location><%cwd%>/<%inline_file%></location>
+                        <location><%full_path(inline_file)%></location>
                 </link>
 <%endfor%>
 <%if(template_files)%>
@@ -47,7 +47,7 @@
                 <link>
                         <name><%template_file%></name>
                         <type>1</type>
-                        <location><%cwd%>/<%template_file%></location>
+                        <location><%full_path(template_file)%></location>
                 </link>
 <%endfor%>
 <%endif%>

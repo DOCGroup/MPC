@@ -1,3 +1,22 @@
+Fri Feb 22 14:49:25 UTC 2008  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/TemplateParser.pm:
+
+          Added a new template function, <%full_path()%>, which will expand
+          environment variables and resolve relative paths to absolute paths.
+          Template authors should only use this when the target build system
+          requires it, since it limits the MPC users's flexibility in deciding
+          when and how env vars are expanded, and removes "portability" of
+          generated project files (by which I mean the ability to move them
+          around in a filesystem, or even move them to different machines).
+
+        * templates/wb26.mpd:
+        * templates/wb26wrproject.mpd:
+
+          Made use of the new <%full_path()%> function.  Thanks to Johnny and
+          Chad for testing and reviewing this work.  This resovles the
+          enhancement request documented in bugzilla bug# 3218.
+
 Mon Feb 11 15:21:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * docs/README:
