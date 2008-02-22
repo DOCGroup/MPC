@@ -14,7 +14,7 @@ Fri Feb 22 14:49:25 UTC 2008  Adam Mitz  <mitza@ociweb.com>
         * templates/wb26wrproject.mpd:
 
           Made use of the new <%full_path()%> function.  Thanks to Johnny and
-          Chad for testing and reviewing this work.  This resovles the
+          Chad for testing and reviewing this work.  This resolves the
           enhancement request documented in bugzilla bug# 3218.
 
 Mon Feb 11 15:21:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
