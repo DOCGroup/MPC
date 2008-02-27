@@ -113,15 +113,25 @@ sub add_dynamic_creators {
     if (opendir($fh, "$dir/modules")) {
       foreach my $file (readdir($fh)) {
         if ($file =~ /(.+$type)\.pm$/i) {
-          $self->debug("Pulling in $1");
-          push(@{$self->{'creators'}}, $1);
+          my $name = $1;
+          if ($^O eq 'VMS') {
+            my($fh) = new FileHandle();
+            if (open($fh, $dir . "/modules/" . $file)) {
+              my $line = <$fh>;
+              if ($line =~ /^\s*package\s+(.+);/) {
+                $name = $1;
+              }
+              close($fh);
+            }
+          }
+          $self->debug("Pulling in $name");
+          push(@{$self->{'creators'}}, $name);
         }
       }
       closedir($fh);
     }
   }
 }
-
 
 sub parse_line {
   my($self)        = shift;

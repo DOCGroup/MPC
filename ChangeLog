@@ -1,3 +1,12 @@
+Wed Feb 27 14:09:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/Driver.pm:
+          On OpenVMS all filenames are returned lower case. The dynamic loading
+          of creators then fails. Addressed this by opening the creator file
+          and read the first line, it normally starts with package and after
+          that the package name. Thanks to Chad Elliot for this idea and
+          reviewing the proposed change.
+
 Fri Feb 22 14:49:25 UTC 2008  Adam Mitz  <mitza@ociweb.com>
 
         * modules/TemplateParser.pm:
