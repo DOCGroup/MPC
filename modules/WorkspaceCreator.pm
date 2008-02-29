@@ -27,6 +27,7 @@ use vars qw(@ISA);
 
 my($wsext)  = 'mwc';
 my($wsbase) = 'mwb';
+my($onVMS) = ($^O eq 'VMS');
 
 ## Valid names for assignments within a workspace
 my(%validNames) = ('cmdline'  => 1,
@@ -776,12 +777,20 @@ sub search_for_files {
       $self->search_for_files(\@f, $array, $impl);
       if ($impl) {
         $file =~ s/^\.\///;
+        if ($onVMS) {
+          # Strip out ^ symbols
+          $file =~ s/\^//g;
+        }
         unshift(@$array, $file);
       }
     }
     else {
       if ($file =~ /\.mpc$/) {
         $file =~ s/^\.\///;
+        if ($onVMS) {
+          # Strip out ^ symbols
+          $file =~ s/\^//g;
+        }
         unshift(@$array, $file);
       }
     }
