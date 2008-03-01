@@ -435,6 +435,10 @@ sub generate_default_file_list {
                                                  $fileexc, $recurse));
         }
         else {
+          if ($onVMS) {
+            # Strip out ^ symbols
+            $full =~ s/\^//g;
+          }
           push(@files, $full);
         }
       }
