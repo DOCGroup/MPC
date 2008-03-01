@@ -1,7 +1,12 @@
+Sat Feb 29 11:51:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/Creator.pm:
+          Strip out ^ from filenames on OpenVMS.
+
 Fri Feb 28 13:36:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/WorkspaceCreator.pm:
-          Strip out ^ from directory and filenames on OpenVMS. Fixes bugzilla
+          Strip out ^ from directory names on OpenVMS. Fixes bugzilla
           3237.
 
 Wed Feb 27 14:09:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
