@@ -1,3 +1,8 @@
+Mon Mar  3 14:19:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/log4cplus.mpb:
+          Added base project for log4cplus
+
 Sat Feb 29 11:51:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/Creator.pm:
