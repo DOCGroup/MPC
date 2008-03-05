@@ -1,0 +1,11 @@
+// $Id$
+
+project : xsc_base {
+  Modify_Custom(XSC) {
+    automatic         = 1
+    commandflags     += --backend cxx
+    source_outputext  = .cpp,
+    header_outputext  = .hpp,
+    inline_outputext  = .ipp,
+  }
+}

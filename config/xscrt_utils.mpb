@@ -1,0 +1,8 @@
+// $Id$
+
+project : xscrt {
+  dynamicflags += XSCRT_UTILS_HAS_DLL
+  staticflags  += XSCRT_UTILS_AS_STATIC_LIBS
+
+  libs += XSCRT_Utils
+}
