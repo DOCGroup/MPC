@@ -1,0 +1,19 @@
+// $Id$
+
+project  {
+  requires += xsc
+
+  specific {
+    xsc_bin   = $(XSC_ROOT)/bin/xsc-binary
+    xsc_dep   = $(XSC_ROOT)/bin/xsc-binary
+  }
+
+  Define_Custom(XSC) {
+    automatic         = 0
+    dependent         = $(XSC_DEP)
+    command           = $(XSC_BIN)
+    inputext          = .xsd
+    source_outputext  =
+    keyword xscflags  = commandflags
+  }
+}

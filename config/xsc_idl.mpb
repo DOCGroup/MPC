@@ -1,0 +1,8 @@
+// $Id$
+
+project : xsc_base {
+  Modify_Custom(XSC) {
+    commandflags     += --backend idl
+    generic_outputext = .idl
+  }
+}
