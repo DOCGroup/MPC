@@ -1,3 +1,8 @@
+Thu Mar  6 15:16:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/WorkspaceCreator.pm:
+          Use method from base class to check whether we run on VMS or not
+
 Wed Mar  5 14:40:20 UTC 2008  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * config/xsc_base.mpb:
@@ -5,7 +10,7 @@ Wed Mar  5 14:40:20 UTC 2008  James H. Hill  <hillj@isis.vanderbilt.edu>
         * config/xsc_idl.mpb:
         * config/xscrt.mpb:
         * config/xscrt_utils.mpb:
-        
+
           Base projects for using XSC.
 
 Mon Mar  3 14:19:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
