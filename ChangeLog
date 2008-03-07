@@ -1,3 +1,12 @@
+Fri Mar  7 20:27:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrproject.mpd:
+          Don't use fullpath for includes
+
+        * modules/WB26WRPROJECTWorkspaceCreator.pm:
+          Generate a wb26projects.lst that lists the projects that are
+          generated
+
 Fri Mar  7 18:17:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/WorkspaceCreator.pm:
