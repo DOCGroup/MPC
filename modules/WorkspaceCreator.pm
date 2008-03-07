@@ -2258,7 +2258,7 @@ sub get_validated_ordering {
             }
             if (!$found) {
               if ($self->{'verbose_ordering'}) {
-                $self->warning("'$name' references '$dep' which has " .
+                $self->warning("'$name' references '$$deps[$i]' which has " .
                                "not been processed.");
               }
               splice(@$deps, $i, 1);

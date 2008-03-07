@@ -1,3 +1,9 @@
+Fri Mar  7 18:17:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/WorkspaceCreator.pm:
+          When we give a warning, make sure we present the user the
+          mixed case name, thanks to Adam Mitz for noticing this
+
 Fri Mar  7 14:51:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/WorkspaceCreator.pm:
