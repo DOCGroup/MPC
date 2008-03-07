@@ -44,6 +44,8 @@ my(%previous_workspace_name) = ();
 ## Constant aggregated workspace type name
 my($aggregated) = 'aggregated_workspace';
 
+my($onVMS) = DirectoryManager::onVMS();
+
 # ************************************************************
 # Subroutine Section
 # ************************************************************
@@ -776,7 +778,7 @@ sub search_for_files {
       $self->search_for_files(\@f, $array, $impl);
       if ($impl) {
         $file =~ s/^\.\///;
-        if ($self->onVMS ()) {
+        if ($onVMS) {
           # Strip out ^ symbols
           $file =~ s/\^//g;
         }
@@ -786,7 +788,7 @@ sub search_for_files {
     else {
       if ($file =~ /\.mpc$/) {
         $file =~ s/^\.\///;
-        if ($self->onVMS ()) {
+        if ($onVMS) {
           # Strip out ^ symbols
           $file =~ s/\^//g;
         }
@@ -1657,17 +1659,18 @@ sub sort_within_group {
 
     $deps = $self->get_validated_ordering($$list[$i]);
     if (defined $$deps[0]) {
-      my($baseproj) = ($self->{'dependency_is_filename'} ?
-                               $self->mpc_basename($$list[$i]) :
-                               $self->{'project_info'}->{$$list[$i]}->[0]);
+      my($baseproj) = lc($self->{'dependency_is_filename'} ?
+                                 $self->mpc_basename($$list[$i]) :
+                                 $self->{'project_info'}->{$$list[$i]}->[0]);
       my($moved) = 0;
       foreach my $dep (@$deps) {
+        $dep = lc($dep);
         if ($baseproj ne $dep) {
           ## See if the dependency is listed after this project
           for(my $j = $i + 1; $j <= $end; ++$j) {
-            my $ldep = ($self->{'dependency_is_filename'} ?
-                                $self->mpc_basename($$list[$j]) :
-                                $self->{'project_info'}->{$$list[$j]}->[0]);
+            my $ldep = lc($self->{'dependency_is_filename'} ?
+                                  $self->mpc_basename($$list[$j]) :
+                                  $self->{'project_info'}->{$$list[$j]}->[0]);
             if ($ldep eq $dep) {
               $movepjs = [$i, $j];
               ## If so, move it in front of the current project.
@@ -2241,13 +2244,14 @@ sub get_validated_ordering {
         $deps = $self->create_array($dstr);
         my($dlen) = scalar(@$deps);
         for(my $i = 0; $i < $dlen; $i++) {
-          my($dep)   = $$deps[$i];
+          my($dep)   = lc($$deps[$i]);
+          my($lname) = lc($name);
           my($found) = 0;
           ## Avoid circular dependencies
-          if ($dep ne $name && $dep ne $self->mpc_basename($project)) {
+          if ($dep ne $lname && $dep ne lc($self->mpc_basename($project))) {
             foreach my $p (@{$self->{'projects'}}) {
-              if ($dep eq $self->{'project_info'}->{$p}->[0] ||
-                  $dep eq $self->mpc_basename($p)) {
+              if ($dep eq lc($self->{'project_info'}->{$p}->[0]) ||
+                  $dep eq lc($self->mpc_basename($p))) {
                 $found = 1;
                 last;
               }
