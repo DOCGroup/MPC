@@ -1,3 +1,16 @@
+Fri Mar  7 14:51:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/WorkspaceCreator.pm:
+          Only retrieve the onVMS value only once. Made the handling
+          of the after keyword case insensitive. If you have a project
+          idl and after += IDL this will work now. This is needed
+          because on OpenVMS all filenames are returned lower case by perl
+          and the after specified by the user is mixed case which
+          resulted in the fact that the after just didn't work
+          on OpenVMS. Thanks to Chad Elliot for reviewing the patches
+          and point out the possible performance problems of my
+          original changes
+
 Thu Mar  6 15:16:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/WorkspaceCreator.pm:
