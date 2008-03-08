@@ -1,3 +1,12 @@
+Sat Mar  8 06:59:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/WorkspaceCreator.pm:
+          Reverted the changes to make the workspace creator case
+          insensitive, it doesn't work for all case, probably because
+          part of the lookup is done on hashed values. I am going to
+          explicitly list a project name in the files that cause
+          the problems on VMS
+
 Fri Mar  7 20:27:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrproject.mpd:
