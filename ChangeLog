@@ -1,3 +1,8 @@
+Sun Mar  9 19:31:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/ProjectCreator.pm:
+          Also _t.* files are template files, needed for the VMS build
+
 Sun Mar  9 07:54:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/WB26WRPROJECTWorkspaceCreator.pm:
