@@ -68,11 +68,8 @@ sub write_project_targets {
 
   foreach my $project (@$list) {
     my($dir)    = $self->mpc_dirname($project);
-    my($chdir)  = 0;
-    my($back)   = '';
-    my($cwd)    = $self->getcwd();
 
-    print $fh "$dir" . "/.project" . "$crlf";
+    print $fh Cwd::abs_path($dir) . "/.project" . "$crlf";
   }
 }
 
