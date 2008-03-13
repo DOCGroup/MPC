@@ -26,6 +26,7 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
+## The basic extensions known to a project creator
 my($BaseClassExtension)      = 'mpb';
 my($ProjectCreatorExtension) = 'mpc';
 my($TemplateExtension)       = 'mpd';
@@ -321,8 +322,9 @@ sub new {
 
 
 sub is_keyword {
-  my($self) = shift;
-  my($name) = shift;
+  ## Is the name passed in a known keyword for a project.  This includes
+  ## keywords mapped by Define_Custom or Modify_Custom.
+  my($self, $name) = @_;
   return $self->{'valid_names'}->{$name};
 }
 
@@ -352,10 +354,7 @@ sub read_global_configuration {
 
 
 sub convert_to_template_assignment {
-  my($self)       = shift;
-  my($name)       = shift;
-  my($value)      = shift;
-  my($calledfrom) = shift;
+  my($self, $name, $value, $calledfrom) = @_;
 
   ## If the value we are going to set for $name has been used as a
   ## scoped template variable, we need to hijack the whole assignment
@@ -368,11 +367,8 @@ sub convert_to_template_assignment {
 
 
 sub process_assignment {
-  my($self)       = shift;
-  my($name)       = shift;
-  my($value)      = shift;
-  my($assign)     = shift;
-  my($calledfrom) = shift || 0;
+  my($self, $name, $value, $assign, $calledfrom) = @_;
+  $calledfrom = 0 if (!defined $calledfrom);
 
   ## Support the '*' mechanism as in the project name, to allow
   ## the user to correctly depend on another project within the same
@@ -382,9 +378,16 @@ sub process_assignment {
       $value = $self->fill_type_name($value,
                                      $self->get_default_project_name());
     }
+
+    ## If this particular project type does not consider the dollar sign
+    ## special and the user has provided two dollarsigns as an escape, we
+    ## will turn it into a single dollar sign.
     if (!$self->{'dollar_special'} && index($value, '$$') >= 0) {
       $value =~ s/\$\$/\$/g;
     }
+
+    ## If the assignment name is valid and requires parameter (<%...%>)
+    ## replacement, then do so.
     if (defined $self->{'valid_names'}->{$name} &&
         ($self->{'valid_names'}->{$name} & 0x04) == 0 &&
         index($value, '<%') >= 0) {
@@ -396,6 +399,8 @@ sub process_assignment {
     $self->convert_to_template_assignment($name, $value, $calledfrom);
   }
 
+  ## Call the base process_assigment() after we have modified the name and
+  ## value.
   $self->SUPER::process_assignment($name, $value, $assign);
 
   ## Support keyword mapping here only at the project level scope. The
@@ -413,34 +418,35 @@ sub process_assignment {
 
 
 sub addition_core {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($value)  = shift;
-  my($nval)   = shift;
-  my($assign) = shift;
+  my($self, $name, $value, $nval, $assign) = @_;
 
+  ## For an addition, we need to see if it is a project keyword being
+  ## used within a 'specific' section.  If it is, we may need to update
+  ## scoped settings for that variable (which are in essence template
+  ## variables).
   $self->convert_to_template_assignment($name, $value, 1);
+
+  ## Next, we just give everything to the base class method.
   $self->SUPER::addition_core($name, $value, $nval, $assign);
 }
 
 
 sub subtraction_core {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($value)  = shift;
-  my($nval)   = shift;
-  my($assign) = shift;
+  my($self, $name, $value, $nval, $assign) = @_;
 
+  ## For a subtraction, we need to see if it is a project keyword being
+  ## used within a 'specific' section.  If it is, we may need to update
+  ## scoped settings for that variable (which are in essence template
+  ## variables).
   $self->convert_to_template_assignment($name, $value, -1);
+
+  ## Next, we just give everything to the base class method.
   $self->SUPER::subtraction_core($name, $value, $nval, $assign);
 }
 
 
 sub get_assignment_for_modification {
-  my($self)        = shift;
-  my($name)        = shift;
-  my($assign)      = shift;
-  my($subtraction) = shift;
+  my($self, $name, $assign, $subtraction) = @_;
 
   ## If we weren't passed an assignment hash, then we need to
   ## look one up that may possibly correctly deal with keyword mappings
@@ -469,10 +475,9 @@ sub get_assignment_for_modification {
 
 
 sub begin_project {
-  my($self)    = shift;
-  my($parents) = shift;
-  my($status)  = 1;
-  my($error)   = undef;
+  my($self, $parents) = @_;
+  my($status) = 1;
+  my($error)  = undef;
 
   ## Deal with the inheritance hierarchy first
   ## Add in the base projects from the command line
@@ -585,8 +590,7 @@ sub begin_project {
 
 
 sub get_process_project_type {
-  my($self)    = shift;
-  my($types)   = shift;
+  my($self, $types) = @_;
   my($type)    = '';
   my($defcomp) = $self->get_default_component_name();
 
@@ -612,9 +616,7 @@ sub get_process_project_type {
 
 
 sub parse_line {
-  my($self)   = shift;
-  my($ih)     = shift;
-  my($line)   = shift;
+  my($self, $ih, $line) = @_;
   my($status,
      $errorString,
      @values) = $self->parse_known($line);
@@ -885,12 +887,7 @@ sub parse_line {
 
 
 sub parse_scoped_assignment {
-  my($self)   = shift;
-  my($tag)    = shift;
-  my($type)   = shift;
-  my($name)   = shift;
-  my($value)  = shift;
-  my($flags)  = shift;
+  my($self, $tag, $type, $name, $value, $flags) = @_;
   my($over)   = {};
   my($status) = 0;
 
@@ -1022,11 +1019,7 @@ sub handle_unknown_assignment {
 
 
 sub handle_scoped_unknown {
-  my($self)  = shift;
-  my($fh)    = shift;
-  my($type)  = shift;
-  my($flags) = shift;
-  my($line)  = shift;
+  my($self, $fh, $type, $flags, $line) = @_;
 
   if (defined $type && $self->{'parsing_expand'}) {
     if ($type eq $self->get_default_component_name()) {
@@ -1070,15 +1063,8 @@ sub handle_scoped_unknown {
 }
 
 sub process_component_line {
-  my($self)    = shift;
-  my($tag)     = shift;
-  my($line)    = shift;
-  my($flags)   = shift;
-  my($grname)  = shift;
-  my($current) = shift;
-  my($excarr)  = shift;
-  my($comps)   = shift;
-  my($count)   = shift;
+  my($self, $tag, $line, $flags,
+     $grname, $current, $excarr, $comps, $count) = @_;
   my($status)  = 1;
   my($error)   = undef;
   my(%exclude) = ();
@@ -1212,16 +1198,8 @@ sub process_component_line {
 
 
 sub parse_conditional {
-  my($self)    = shift;
-  my($fh)      = shift;
-  my($types)   = shift;
-  my($tag)     = shift;
-  my($flags)   = shift;
-  my($grname)  = shift;
-  my($current) = shift;
-  my($exclude) = shift;
-  my($comps)   = shift;
-  my($count)   = shift;
+  my($self, $fh, $types, $tag, $flags,
+     $grname, $current, $exclude, $comps, $count) = @_;
   my($status)  = 1;
   my($error)   = undef;
   my($add)     = 0;
@@ -1257,10 +1235,7 @@ sub parse_conditional {
 }
 
 sub parse_components {
-  my($self)    = shift;
-  my($fh)      = shift;
-  my($tag)     = shift;
-  my($name)    = shift;
+  my($self, $fh, $tag, $name) = @_;
   my($current) = $defgroup;
   my($status)  = 1;
   my($error)   = undef;
@@ -1429,10 +1404,7 @@ sub parse_components {
 
 
 sub parse_verbatim {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($type) = shift;
-  my($loc)  = shift;
+  my($self, $fh, $type, $loc) = @_;
 
   if (!defined $loc) {
     return 0, 'You must provide a location parameter to verbatim';
@@ -1465,10 +1437,7 @@ sub parse_verbatim {
 
 
 sub process_feature {
-  my($self)    = shift;
-  my($fh)      = shift;
-  my($names)   = shift;
-  my($parents) = shift;
+  my($self, $fh, $names, $parents) = @_;
   my($status)  = 1;
   my($error)   = undef;
 
@@ -1528,10 +1497,7 @@ sub process_feature {
 
 
 sub process_array_assignment {
-  my($self)  = shift;
-  my($aref)  = shift;
-  my($type)  = shift;
-  my($array) = shift;
+  my($self, $aref, $type, $array) = @_;
 
   if (!defined $$aref || $type == 0) {
     if ($type != -1) {
@@ -1560,10 +1526,7 @@ sub process_array_assignment {
 
 
 sub parse_define_custom {
-  my($self)   = shift;
-  my($fh)     = shift;
-  my($tag)    = shift;
-  my($modify) = shift;
+  my($self, $fh, $tag, $modify) = @_;
 
   ## Make the tag something _files
   $tag = lc($tag) . '_files';
@@ -1734,8 +1697,14 @@ sub parse_define_custom {
               ## Get it ready for regular expressions
               $value = $self->escape_regex_special($value);
 
-              ## Process the array assignment
+              ## Split the value into an array using a comma as the
+              ## separator.  If there are no elements in the array we're
+              ## going to add an empty element to the array.  This way,
+              ## assignments of blank values are useful.
               my(@array) = split(/\s*,\s*/, $value);
+              push(@array, '') if ($#array == -1);
+
+              ## Process the array assignment after adjusting the values
               $self->process_array_assignment(
                           \$self->{'generated_exts'}->{$tag}->{$name},
                           $type, \@array);
@@ -1799,10 +1768,7 @@ sub parse_define_custom {
 
 
 sub remove_duplicate_addition {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = shift;
-  my($nval)  = shift;
+  my($self, $name, $value, $nval) = @_;
 
   if (defined $nval) {
     ## If we are modifying the libs, libpaths, macros or includes
@@ -1925,9 +1891,7 @@ sub read_template_input {
 
 
 sub already_added {
-  my($self)  = shift;
-  my($array) = shift;
-  my($name)  = shift;
+  my($self, $array, $name) = @_;
 
   ## This method expects that the file name will be unix style
   $name =~ s/\\/\//g if ($self->{'convert_slashes'});
@@ -1945,10 +1909,7 @@ sub already_added {
 
 
 sub get_applied_custom_keyword {
-  my($self) = shift;
-  my($name) = shift;
-  my($type) = shift;
-  my($file) = shift;
+  my($self, $name, $type, $file) = @_;
 
   if (defined $self->{'flag_overrides'}->{$type} &&
       defined $self->{'flag_overrides'}->{$type}->{$file} &&
@@ -1964,9 +1925,7 @@ sub get_applied_custom_keyword {
 
 
 sub evaluate_optional_option {
-  my($self)  = shift;
-  my($opt)   = shift;
-  my($value) = shift;
+  my($self, $opt, $value) = @_;
 
   if ($opt =~ /^!\s*(.*)/) {
     return (!exists $$value{$1} ? 1 : 0);
@@ -1978,9 +1937,7 @@ sub evaluate_optional_option {
 
 
 sub process_optional_option {
-  my($self)   = shift;
-  my($opt)    = shift;
-  my($value)  = shift;
+  my($self, $opt, $value) = @_;
   my($status) = undef;
   my(@parts)  = grep(!/^$/, split(/\s+/, $opt));
   my($pcount) = scalar(@parts);
@@ -2026,13 +1983,9 @@ sub process_optional_option {
 
 
 sub add_optional_filename_portion {
-  my($self)    = shift;
-  my($gentype) = shift;
-  my($tag)     = shift;
+  my($self, $gentype, $tag, $file, $array) = @_;
 
   if (defined $self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}) {
-    my($file)  = shift;
-    my($array) = shift;
     foreach my $name (keys %{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}}) {
       foreach my $opt (keys %{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}->{$name}}) {
         ## Get the name value
@@ -2057,11 +2010,7 @@ sub add_optional_filename_portion {
 
 
 sub get_pre_keyword_array {
-  my($self)    = shift;
-  my($keyword) = shift;
-  my($gentype) = shift;
-  my($tag)     = shift;
-  my($file)    = shift;
+  my($self, $keyword, $gentype, $tag, $file) = @_;
 
   ## Get the general pre extension array
   my(@array) = @{$self->{'generated_exts'}->{$gentype}->{$keyword}};
@@ -2093,16 +2042,11 @@ sub get_pre_keyword_array {
 
 
 sub add_explicit_output {
-  my($self) = shift;
-  my($file) = shift;
-  my($type) = shift;
+  my($self, $file, $type, $tag, $array, $arrs) = @_;
 
   if (defined $self->{'custom_special_output'}->{$type} &&
       defined $self->{'custom_special_output'}->{$type}->{$file}) {
-    my($tag) = shift;
     if (defined $self->{'valid_components'}->{$tag}) {
-      my($array) = shift;
-      my($arrs)  = shift;
       my(@files) = ();
       foreach my $check (@{$self->{'custom_special_output'}->{$type}->{$file}}) {
         foreach my $regext (@{$self->{'valid_components'}->{$tag}}) {
@@ -2145,13 +2089,7 @@ sub add_explicit_output {
 }
 
 sub generated_filenames {
-  my($self)  = shift;
-  my($part)  = shift;
-  my($type)  = shift;
-  my($tag)   = shift;
-  my($file)  = shift;
-  my($noext) = shift;
-  my($arrs)  = shift;
+  my($self, $part, $type, $tag, $file, $noext, $arrs) = @_;
   my(@array) = ();
   my(@pearr) = $self->get_pre_keyword_array('pre_extension',
                                             $type, $tag, $file);
@@ -2229,11 +2167,7 @@ sub generated_filenames {
 
 
 sub add_generated_files {
-  my($self)    = shift;
-  my($gentype) = shift;
-  my($tag)     = shift;
-  my($group)   = shift;
-  my($arr)     = shift;
+  my($self, $gentype, $tag, $group, $arr) = @_;
 
   ## This method is called by list_default_generated.  It performs the
   ## actual file insertion and grouping.
@@ -2331,12 +2265,9 @@ sub add_generated_files {
 
 
 sub search_for_entry {
-  my($self)    = shift;
-  my($file)    = shift;
-  my($main)    = shift;
-  my($preproc) = shift;
-  my($name)    = undef;
-  my($fh)      = new FileHandle();
+  my($self, $file, $main, $preproc) = @_;
+  my($name) = undef;
+  my($fh)   = new FileHandle();
 
   if (open($fh, $file)) {
     my($poundifed) = 0;
@@ -2401,8 +2332,7 @@ sub search_for_entry {
 
 
 sub find_main_file {
-  my($self)    = shift;
-  my($sources) = shift;
+  my($self, $sources) = @_;
   my($main)    = $language{$self->get_language()}->[3];
   my($preproc) = $language{$self->get_language()}->[4];
 
@@ -2490,8 +2420,7 @@ sub generate_default_target_names {
 
 
 sub generate_default_pch_filenames {
-  my($self)    = shift;
-  my($files)   = shift;
+  my($self, $files) = @_;
   my($pchhdef) = (defined $self->get_assignment('pch_header'));
   my($pchcdef) = (defined $self->get_assignment('pch_source'));
 
@@ -2586,14 +2515,7 @@ sub remove_extra_pch_listings {
 
 
 sub sift_files {
-  my($self)   = shift;
-  my($files)  = shift;
-  my($exts)   = shift;
-  my($pchh)   = shift;
-  my($pchc)   = shift;
-  my($tag)    = shift;
-  my($array)  = shift;
-  my($alldir) = shift;
+  my($self, $files, $exts, $pchh, $pchc, $tag, $array, $alldir) = @_;
   my(@saved)  = ();
   my($saverc) = (!$alldir && $tag eq 'resource_files');
   my($havec)  = (defined $self->{'exclude_components'}->{$tag});
@@ -2653,30 +2575,19 @@ sub sift_files {
 
 
 sub sift_default_file_list {
-  my($self)    = shift;
-  my($tag)     = shift;
-  my($file)    = shift;
-  my($built)   = shift;
-  my($exts)    = shift;
-  my($recurse) = shift;
-  my($pchh)    = shift;
-  my($pchc)    = shift;
-  my($alldir)  = $recurse ||
-                 (defined $self->{'flag_overrides'}->{$tag} &&
-                  defined $self->{'flag_overrides'}->{$tag}->{$file} &&
-                  $self->{'flag_overrides'}->{$tag}->{$file}->{'recurse'});
-  my(@gen)     = $self->generate_default_file_list($file, [], undef, $alldir);
+  my($self, $tag, $file, $built, $exts, $recurse, $pchh, $pchc) = @_;
+  my($alldir) = $recurse ||
+                (defined $self->{'flag_overrides'}->{$tag} &&
+                 defined $self->{'flag_overrides'}->{$tag}->{$file} &&
+                 $self->{'flag_overrides'}->{$tag}->{$file}->{'recurse'});
+  my(@gen)    = $self->generate_default_file_list($file, [], undef, $alldir);
 
   $self->sift_files(\@gen, $exts, $pchh, $pchc, $tag, $built, $alldir);
 }
 
 
 sub correct_generated_files {
-  my($self)    = shift;
-  my($defcomp) = shift;
-  my($exts)    = shift;
-  my($tag)     = shift;
-  my($array)   = shift;
+  my($self, $defcomp, $exts, $tag, $array) = @_;
 
   if (defined $sourceComponents{$tag}) {
     my($grtag) = $grouped_key . $tag;
@@ -2804,22 +2715,20 @@ sub correct_generated_files {
 
 
 sub generate_default_components {
-  my($self)    = shift;
-  my($files)   = shift;
-  my($passed)  = shift;
-  my($vc)      = $self->{'valid_components'};
-  my($ovc)     = $language{$self->get_language()}->[0];
-  my(@tags)    = (defined $passed ? $passed :
-                                    sort { if (defined $$ovc{$a}) {
-                                             if (!defined $$ovc{$b}) {
-                                               return 1;
-                                             }
-                                           }
-                                           elsif (defined $$ovc{$b}) {
-                                             return -1;
-                                           }
-                                           return $a cmp $b;
-                                         } keys %$vc);
+  my($self, $files, $passed) = @_;
+  my($vc)   = $self->{'valid_components'};
+  my($ovc)  = $language{$self->get_language()}->[0];
+  my(@tags) = (defined $passed ? $passed :
+                                 sort { if (defined $$ovc{$a}) {
+                                          if (!defined $$ovc{$b}) {
+                                            return 1;
+                                          }
+                                        }
+                                        elsif (defined $$ovc{$b}) {
+                                          return -1;
+                                        }
+                                        return $a cmp $b;
+                                      } keys %$vc);
   my($pchh)    = $self->get_assignment('pch_header');
   my($pchc)    = $self->get_assignment('pch_source');
   my($recurse) = $self->get_assignment('recurse');
@@ -2890,12 +2799,10 @@ sub generate_default_components {
 
 
 sub remove_duplicated_files {
-  my($self)   = shift;
-  my($dest)   = shift;
-  my($source) = shift;
-  my($names)  = $self->{$dest};
-  my(@slist)  = $self->get_component_list($source, 1);
-  my(%shash)  = ();
+  my($self, $dest, $source) = @_;
+  my($names) = $self->{$dest};
+  my(@slist) = $self->get_component_list($source, 1);
+  my(%shash) = ();
 
   ## Convert the array into keys for a hash table
   @shash{@slist} = ();
@@ -2920,11 +2827,7 @@ sub remove_duplicated_files {
 
 
 sub generated_source_listed {
-  my($self)  = shift;
-  my($gent)  = shift;
-  my($tag)   = shift;
-  my($arr)   = shift;
-  my($sext)  = shift;
+  my($self, $gent, $tag, $arr, $sext) = @_;
   my($names) = $self->{$tag};
 
   ## Find out which generated source files are listed
@@ -2950,9 +2853,7 @@ sub generated_source_listed {
 
 
 sub list_default_generated {
-  my($self)    = shift;
-  my($gentype) = shift;
-  my($tags)    = shift;
+  my($self, $gentype, $tags) = @_;
 
   ## This method is called when the user has custom input files and has
   ## provided source files.  If the user defaults the component (i.e.
@@ -3002,11 +2903,8 @@ sub list_default_generated {
 
 
 sub prepend_gendir {
-  my($self)    = shift;
-  my($created) = shift;
-  my($ofile)   = shift;
-  my($gentype) = shift;
-  my($key)     = undef;
+  my($self, $created, $ofile, $gentype) = @_;
+  my($key) = undef;
 
   if (defined $self->{'flag_overrides'}->{$gentype}) {
     foreach my $ext (@{$self->{'valid_components'}->{$gentype}}) {
@@ -3041,13 +2939,8 @@ sub prepend_gendir {
 
 
 sub list_generated_file {
-  my($self)    = shift;
-  my($gentype) = shift;
-  my($tag)     = shift;
-  my($array)   = shift;
-  my($file)    = shift;
-  my($ofile)   = shift;
-  my($count)   = 0;
+  my($self, $gentype, $tag, $array, $file, $ofile) = @_;
+  my($count) = 0;
 
   ## Save the length of the basename for later.  We can not convert the
   ## slashes on $file as it needs to keep the back slashes since that's
@@ -3106,9 +2999,7 @@ sub list_generated_file {
 
 
 sub add_corresponding_component_files {
-  my($self)     = shift;
-  my($filecomp) = shift;
-  my($tag)      = shift;
+  my($self, $filecomp, $tag) = @_;
   my($grname)   = $grouped_key . $tag;
 
   ## Create a hash array keyed off of the existing files of the type
@@ -3386,8 +3277,7 @@ sub generate_defaults {
 
 
 sub set_project_name {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
 
   ## Save the unmodified project name so that when we
   ## need to determine the default target name, we can use
@@ -3431,11 +3321,9 @@ sub exe_target {
 
 
 sub get_component_list {
-  my($self)      = shift;
-  my($tag)       = shift;
-  my($noconvert) = shift;
-  my($names)     = $self->{$tag};
-  my(@list)      = ();
+  my($self, $tag, $noconvert) = @_;
+  my($names) = $self->{$tag};
+  my(@list)  = ();
 
   foreach my $name (keys %$names) {
     foreach my $key (keys %{$$names{$name}}) {
@@ -3462,12 +3350,7 @@ sub get_component_list {
 
 
 sub check_custom_output {
-  my($self)    = shift;
-  my($based)   = shift;
-  my($cinput)  = shift;
-  my($ainput)  = shift;
-  my($type)    = shift;
-  my($comps)   = shift;
+  my($self, $based, $cinput, $ainput, $type, $comps) = @_;
   my(@outputs) = ();
 
   foreach my $array ($self->generated_filenames($cinput, $based,
@@ -3525,9 +3408,7 @@ sub get_special_value {
 
 
 sub get_feature_value {
-  my($self)   = shift;
-  my($cmd)    = shift;
-  my($based)  = shift;
+  my($self, $cmd, $based) = @_;
 
   if ($cmd eq 'value') {
     my($val) = $self->{'feature_parser'}->get_value($based);
@@ -3541,10 +3422,7 @@ sub get_feature_value {
 
 
 sub get_grouped_value {
-  my($self)  = shift;
-  my($type)  = shift;
-  my($cmd)   = shift;
-  my($based) = shift;
+  my($self, $type, $cmd, $based) = @_;
   my($value) = undef;
 
   ## Make it all lower case
@@ -3636,12 +3514,7 @@ sub get_command_subs {
 
 
 sub replace_parameters {
-  my($self)   = shift;
-  my($str)    = shift;
-  my($valid)  = shift;
-  my($nowarn) = shift;
-  my($input)  = shift;
-  my($output) = shift;
+  my($self, $str, $valid, $nowarn, $input, $output) = @_;
 
   while ($str =~ /<%(\w+)(\(\w+\))?%>/) {
     my($name)     = $1;
@@ -3695,10 +3568,7 @@ sub replace_parameters {
 
 
 sub convert_command_parameters {
-  my($self)   = shift;
-  my($str)    = shift;
-  my($input)  = shift;
-  my($output) = shift;
+  my($self, $str, $input, $output) = @_;
   my(%nowarn) = ();
   my(%valid)  = %{$self->{'command_subs'}};
 
@@ -3931,12 +3801,9 @@ sub get_custom_value {
 
 
 sub check_features {
-  my($self)     = shift;
-  my($requires) = shift;
-  my($avoids)   = shift;
-  my($info)     = shift;
-  my($status)   = 1;
-  my($why)      = undef;
+  my($self, $requires, $avoids, $info) = @_;
+  my($status) = 1;
+  my($why)    = undef;
 
   if (defined $requires) {
     foreach my $require (split(/\s+/, $requires)) {
@@ -4002,9 +3869,7 @@ sub need_to_write_project {
 
 
 sub write_output_file {
-  my($self)     = shift;
-  my($name)     = shift;
-  my($webapp)   = shift;
+  my($self, $name, $webapp) = @_;
   my($status)   = 0;
   my($error)    = undef;
   my($tover)    = $self->get_template_override();
@@ -4313,8 +4178,7 @@ sub set_component_extensions {
 
 
 sub set_source_listing_callback {
-  my($self) = shift;
-  my($cb)   = shift;
+  my($self, $cb) = @_;
   $self->{'source_callback'} = $cb;
 }
 
@@ -4404,14 +4268,11 @@ sub get_template_input {
 
 
 sub update_project_info {
-  my($self)    = shift;
-  my($tparser) = shift;
-  my($append)  = shift;
-  my($names)   = shift;
-  my($sep)     = shift || '';
-  my($pi)      = $self->get_project_info();
-  my($value)   = '';
-  my($arr)     = ($append && defined $$pi[0] ? pop(@$pi) : []);
+  my($self, $tparser, $append, $names, $sep) = @_;
+  my($pi)    = $self->get_project_info();
+  my($value) = '';
+  my($arr)   = ($append && defined $$pi[0] ? pop(@$pi) : []);
+  $sep = '' if (!defined $sep);
 
   ## Set up the hash table when we are starting a new project_info
   if (!$append) {
@@ -4441,10 +4302,7 @@ sub update_project_info {
 
 
 sub adjust_value {
-  my($self)  = shift;
-  my($names) = shift;
-  my($value) = shift;
-  my($tp)    = shift;
+  my($self, $names, $value, $tp) = @_;
   my($atemp) = $self->get_addtemp();
 
   ## Perform any additions, subtractions
@@ -4555,10 +4413,9 @@ sub adjust_value {
 
 
 sub get_verbatim {
-  my($self)   = shift;
-  my($marker) = shift;
-  my($str)    = undef;
-  my($thash)  = $self->{'verbatim'}->{$self->{'pctype'}};
+  my($self, $marker) = @_;
+  my($str)   = undef;
+  my($thash) = $self->{'verbatim'}->{$self->{'pctype'}};
 
   if (defined $thash) {
     if (defined $thash->{$marker}) {
@@ -4581,9 +4438,7 @@ sub get_verbatim {
 
 
 sub generate_recursive_input_list {
-  my($self)    = shift;
-  my($dir)     = shift;
-  my($exclude) = shift;
+  my($self, $dir, $exclude) = @_;
   return $self->extension_recursive_input_list($dir,
                                                $exclude,
                                                $ProjectCreatorExtension);
@@ -4591,9 +4446,7 @@ sub generate_recursive_input_list {
 
 
 sub get_modified_project_file_name {
-  my($self) = shift;
-  my($name) = shift;
-  my($ext)  = shift;
+  my($self, $name, $ext) = @_;
   my($nmod) = $self->get_name_modifier();
 
   ## We don't apply the name modifier to the project file
@@ -4620,8 +4473,7 @@ sub get_feature_parser {
 
 
 sub preserve_assignment_order {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
   my($mapped) = $self->{'valid_names'}->{$name};
 
   ## Only return the value stored in the valid_names hash map if it's
@@ -4637,8 +4489,7 @@ sub preserve_assignment_order {
 
 
 sub add_to_template_input_value {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
   my($mapped) = $self->{'valid_names'}->{$name};
 
   ## Only return the value stored in the valid_names hash map if it's
@@ -4660,9 +4511,7 @@ sub dependency_combined_static_library {
 
 
 sub translate_value {
-  my($self) = shift;
-  my($key)  = shift;
-  my($val)  = shift;
+  my($self, $key, $val) = @_;
 
   if ($key eq 'after' && $val ne '') {
     my($arr) = $self->create_array($val);
@@ -4695,8 +4544,7 @@ sub requires_parameters {
 
 
 sub project_file_name {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
 
   if (!defined $name) {
     $name = $self->get_assignment('project_name');
@@ -4725,9 +4573,7 @@ sub remove_non_custom_settings {
 
 
 sub remove_wanted_extension {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($array) = shift;
+  my($self, $name, $array) = @_;
 
   foreach my $wanted (@$array) {
     if ($name =~ s/$wanted$//) {
@@ -4772,9 +4618,7 @@ sub resolve_alias {
 
 
 sub create_feature_parser {
-  my($self)         = shift;
-  my($features)     = shift;
-  my($feature)      = shift;
+  my($self, $features, $feature) = @_;
   my($gfeature)     = $self->{'gfeature_file'};
   my($typefeaturef) = (defined $gfeature ?
                                $self->mpc_dirname($gfeature) . '/' : '') .
@@ -4801,10 +4645,7 @@ sub create_feature_parser {
 
 
 sub restore_state_helper {
-  my($self) = shift;
-  my($skey) = shift;
-  my($old)  = shift;
-  my($new)  = shift;
+  my($self, $skey, $old, $new) = @_;
 
   if ($skey eq 'feature_file') {
     if (!(!defined $old && !defined $new ||
@@ -4863,8 +4704,7 @@ sub escape_spaces {
 
 
 sub validated_directory {
-  my($self) = shift;
-  my($dir)  = shift;
+  my($self, $dir) = @_;
   return $dir;
 }
 

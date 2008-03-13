@@ -13,7 +13,6 @@ project  {
     dependent         = $(XSC_DEP)
     command           = $(XSC_BIN)
     inputext          = .xsd
-    source_outputext  =
     keyword xscflags  = commandflags
   }
 }
