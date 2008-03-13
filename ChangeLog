@@ -1,3 +1,21 @@
+Thu Mar 13 02:07:59 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/global.features:
+
+          Disable the java feature.
+
+        * config/xsc_base.mpb:
+
+          Removed the empty source_outputext setting.
+
+        * modules/ProjectCreator.pm:
+
+          Allow the setting of *_outputext to empty to have output files
+          that are similar to the input name, but without an extension.
+
+          Also, changed function parameter code from shifting off of the
+          default array to assigning from the default array.
+
 Sun Mar  9 19:31:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/ProjectCreator.pm:
