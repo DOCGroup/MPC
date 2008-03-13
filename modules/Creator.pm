@@ -141,11 +141,12 @@ sub generate_default_input {
 
 
 sub parse_file {
-  my($self)  = shift;
-  my($input) = shift;
+  my($self, $input) = @_;
+
+  ## Save the last line number so we can put it back later
   my($oline) = $self->get_line_number();
 
-  ## Read the input file and get the last line number
+  ## Read the input file
   my($status, $errorString) = $self->read_file($input);
 
   if (!$status) {
