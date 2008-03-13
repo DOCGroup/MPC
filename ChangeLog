@@ -1,3 +1,16 @@
+Thu Mar 13 14:49:45 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Fixed an incorrect comment.
+
+        * modules/Driver.pm:
+
+          Changed to add command line options to the front of the argument
+          array so that options provided at the end by the user that require
+          a parameter (but are not given one) do not gobble up the added
+          options.
+
 Thu Mar 13 02:07:59 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/global.features:
