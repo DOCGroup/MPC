@@ -318,7 +318,10 @@ sub run {
   my($incs) = $cfg->get_value('includes');
   if (defined $incs) {
     foreach my $inc (split(/\s*,\s*/, $incs)) {
-      push(@args, '-include', $inc);
+      ## We must add it to the front so that options provided at the end
+      ## that require a parameter (but are not given one) do not gobble
+      ## up the -include option.
+      unshift(@args, '-include', $inc);
     }
   }
 
