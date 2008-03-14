@@ -1,3 +1,24 @@
+Fri Mar 14 16:43:24 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+
+          Update documentation on which options can not be used with
+          'cmdline'.
+
+        * modules/Driver.pm:
+        * modules/Options.pm:
+
+          Renamed the option data member from 'coexistence' to
+          'make_coexistence' to be consistent with the option name.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where -into passed to the 'cmdline' setting could
+          cause serious problems for the resulting generated project files.
+
+          Also, simplified the code used for warning about ignored options
+          provided to 'cmdline'.
+
 Thu Mar 13 14:49:45 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
