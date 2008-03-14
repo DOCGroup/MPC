@@ -118,6 +118,7 @@ sub new {
   $self->{'for_eclipse'}         = $foreclipse;
   $self->{'generate_dot'}        = $gendot;
   $self->{'generate_ins'}        = $genins;
+  $self->{'into'}                = $into;
   $self->{'verbose_ordering'}    = undef;
   $self->{'wctype'}              = $self->extractType("$self");
   $self->{'workspace_comments'}  = $comments;
@@ -153,16 +154,13 @@ sub new {
 
 
 sub set_verbose_ordering {
-  my($self)  = shift;
-  my($value) = shift;
+  my($self, $value) = @_;
   $self->{'verbose_ordering'} = $value;
 }
 
 
 sub modify_assignment_value {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = shift;
+  my($self, $name, $value) = @_;
 
   ## Workspace assignments do not need modification.
   return $value;
@@ -170,10 +168,7 @@ sub modify_assignment_value {
 
 
 sub parse_line {
-  my($self)   = shift;
-  my($ih)     = shift;
-  my($line)   = shift;
-  my($flags)  = shift;
+  my($self, $ih, $line, $flags) = @_;
   my($status, $error, @values) = $self->parse_known($line);
 
   ## Was the line recognized?
@@ -322,10 +317,8 @@ sub parse_line {
 
 
 sub aggregated_workspace {
-  my($self)  = shift;
-  my($file)  = shift;
-  my($flags) = shift;
-  my($fh)    = new FileHandle();
+  my($self, $file, $flags) = @_;
+  my($fh) = new FileHandle();
 
   if (open($fh, $file)) {
     my($oline) = $self->get_line_number();
@@ -388,13 +381,7 @@ sub aggregated_workspace {
 
 
 sub parse_scope {
-  my($self)        = shift;
-  my($fh)          = shift;
-  my($name)        = shift;
-  my($type)        = shift;
-  my($validNames)  = shift;
-  my($flags)       = shift;
-  my($elseflags)   = shift;
+  my($self, $fh, $name, $type, $validNames, $flags, $elseflags) = @_;
 
   if ($type eq $self->get_default_component_name()) {
     $type = $self->{'wctype'};
@@ -413,9 +400,8 @@ sub parse_scope {
 }
 
 sub process_types {
-  my($self)    = shift;
-  my($typestr) = shift;
-  my(%types)   = ();
+  my($self, $typestr) = @_;
+  my(%types) = ();
   @types{split(/\s*,\s*/, $typestr)} = ();
 
   ## If there is a negation at all, add our
@@ -438,10 +424,7 @@ sub process_types {
 }
 
 sub parse_exclude {
-  my($self)        = shift;
-  my($fh)          = shift;
-  my($typestr)     = shift;
-  my($flags)       = shift;
+  my($self, $fh, $typestr, $flags) = @_;
   my($status)      = 0;
   my($errorString) = 'Unable to process exclude';
   my($negated)     = (index($typestr, '!') >= 0);
@@ -541,9 +524,7 @@ sub parse_exclude {
 
 
 sub parse_associate {
-  my($self)        = shift;
-  my($fh)          = shift;
-  my($assoc_key)   = shift;
+  my($self, $fh, $assoc_key) = @_;
   my($status)      = 0;
   my($errorString) = 'Unable to process associate';
   my($count)       = 1;
@@ -607,8 +588,7 @@ sub parse_associate {
 
 
 sub excluded {
-  my($self) = shift;
-  my($file) = shift;
+  my($self, $file) = @_;
 
   foreach my $excluded (@{$self->{'exclude'}->{$self->{'wctype'}}}) {
     if ($excluded eq $file || index($file, "$excluded/") == 0) {
@@ -621,9 +601,7 @@ sub excluded {
 
 
 sub handle_scoped_end {
-  my($self)   = shift;
-  my($type)   = shift;
-  my($flags)  = shift;
+  my($self, $type, $flags) = @_;
   my($status) = 1;
   my($error)  = undef;
 
@@ -648,11 +626,7 @@ sub handle_scoped_end {
 
 
 sub handle_scoped_unknown {
-  my($self)   = shift;
-  my($fh)     = shift;
-  my($type)   = shift;
-  my($flags)  = shift;
-  my($line)   = shift;
+  my($self, $fh, $type, $flags, $line) = @_;
   my($status) = 1;
   my($error)  = undef;
   my($dupchk) = undef;
@@ -763,10 +737,7 @@ sub handle_scoped_unknown {
 
 
 sub search_for_files {
-  my($self)     = shift;
-  my($files)    = shift;
-  my($array)    = shift;
-  my($impl)     = shift;
+  my($self, $files, $array, $impl) = @_;
   my($excluded) = 0;
 
   foreach my $file (@$files) {
@@ -802,8 +773,7 @@ sub search_for_files {
 
 
 sub remove_duplicate_projects {
-  my($self)  = shift;
-  my($list)  = shift;
+  my($self, $list) = @_;
   my($count) = scalar(@$list);
 
   for(my $i = 0; $i < $count; ++$i) {
@@ -822,11 +792,8 @@ sub remove_duplicate_projects {
 
 
 sub generate_default_components {
-  my($self)     = shift;
-  my($files)    = shift;
-  my($impl)     = shift;
-  my($excluded) = shift;
-  my($pjf)      = $self->{'project_files'};
+  my($self, $files, $impl, $excluded) = @_;
+  my($pjf) = $self->{'project_files'};
 
   if (defined $$pjf[0]) {
     ## If we have files, then process directories
@@ -952,9 +919,7 @@ sub get_current_output_name {
 
 
 sub write_workspace {
-  my($self)      = shift;
-  my($creator)   = shift;
-  my($addfile)   = shift;
+  my($self, $creator, $addfile) = @_;
   my($status)    = 1;
   my($error)     = undef;
   my($duplicates) = 0;
@@ -1129,15 +1094,8 @@ sub write_workspace {
 
 
 sub save_project_info {
-  my($self)     = shift;
-  my($gen)      = shift;
-  my($gpi)      = shift;
-  my($gll)      = shift;
-  my($dir)      = shift;
-  my($projects) = shift;
-  my($pi)       = shift;
-  my($ll)       = shift;
-  my($c)        = 0;
+  my($self, $gen, $gpi, $gll, $dir, $projects, $pi, $ll) = @_;
+  my($c) = 0;
 
   ## For each file written
   foreach my $pj (@$gen) {
@@ -1158,8 +1116,7 @@ sub save_project_info {
 
 
 sub topname {
-  my($self) = shift;
-  my($file) = shift;
+  my($self, $file) = @_;
   my($dir)  = '.';
   my($rest) = $file;
   if ($file =~ /^([^\/\\]+)[\/\\](.*)/) {
@@ -1171,10 +1128,7 @@ sub topname {
 
 
 sub generate_hierarchy {
-  my($self)      = shift;
-  my($creator)   = shift;
-  my($origproj)  = shift;
-  my($originfo)  = shift;
+  my($self, $creator, $origproj, $originfo) = @_;
   my($current)   = undef;
   my(@saved)     = ();
   my(%sinfo)     = ();
@@ -1407,10 +1361,8 @@ sub generate_project_files {
 
 
 sub array_contains {
-  my($self)   = shift;
-  my($left)   = shift;
-  my($right)  = shift;
-  my(%check)  = ();
+  my($self, $left, $right) = @_;
+  my(%check) = ();
 
   ## Initialize the hash keys with the left side array
   @check{@$left} = ();
@@ -1427,10 +1379,7 @@ sub array_contains {
 
 
 sub non_intersection {
-  my($self)   = shift;
-  my($left)   = shift;
-  my($right)  = shift;
-  my($over)   = shift;
+  my($self, $left, $right, $over) = @_;
   my($status) = 0;
   my(%check)  = ();
 
@@ -1452,10 +1401,7 @@ sub non_intersection {
 
 
 sub indirect_dependency {
-  my($self)   = shift;
-  my($dir)    = shift;
-  my($ccheck) = shift;
-  my($cfile)  = shift;
+  my($self, $dir, $ccheck, $cfile) = @_;
 
   $self->{'indirect_checked'}->{$ccheck} = 1;
   if (index($self->{'project_info'}->{$ccheck}->[1], $cfile) >= 0) {
@@ -1478,11 +1424,9 @@ sub indirect_dependency {
 
 
 sub add_implicit_project_dependencies {
-  my($self)      = shift;
-  my($creator)   = shift;
-  my($cwd)       = shift;
-  my(%bidir)     = ();
-  my(%save)      = ();
+  my($self, $creator, $cwd) = @_;
+  my(%bidir) = ();
+  my(%save)  = ();
 
   ## Take the current working directory and regular expression'ize it.
   $cwd = $self->escape_regex_special($cwd);
@@ -1580,8 +1524,7 @@ sub get_lib_locations {
 
 
 sub get_first_level_directory {
-  my($self) = shift;
-  my($file) = shift;
+  my($self, $file) = @_;
   my($dir)  = undef;
   if (($file =~ tr/\///) > 0) {
     $dir = $file;
@@ -1602,10 +1545,7 @@ sub get_associated_projects {
 
 
 sub sort_within_group {
-  my($self)    = shift;
-  my($list)    = shift;
-  my($start)   = shift;
-  my($end)     = shift;
+  my($self, $list, $start, $end) = @_;
   my($deps)    = undef;
   my(%seen)    = ();
   my($ccount)  = 0;
@@ -1697,15 +1637,7 @@ sub sort_within_group {
 
 
 sub build_dependency_chain {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($len)    = shift;
-  my($list)   = shift;
-  my($ni)     = shift;
-  my($glen)   = shift;
-  my($groups) = shift;
-  my($map)    = shift;
-  my($gdeps)  = shift;
+  my($self, $name, $len, $list, $ni, $glen, $groups, $map, $gdeps) = @_;
   my($deps)   = $self->get_validated_ordering($name);
 
   if (defined $$deps[0]) {
@@ -1748,9 +1680,7 @@ sub build_dependency_chain {
 
 
 sub sort_by_groups {
-  my($self)    = shift;
-  my($list)    = shift;
-  my($grindex) = shift;
+  my($self, $list, $grindex) = @_;
   my(@groups)  = @$grindex;
   my($llen)    = scalar(@$list);
 
@@ -1868,11 +1798,9 @@ sub sort_by_groups {
 
 
 sub sort_dependencies {
-  my($self)     = shift;
-  my($projects) = shift;
-  my($groups)   = shift;
-  my(@list)     = sort { return $self->sort_projects_by_directory($a, $b) + 0;
-                       } @$projects;
+  my($self, $projects, $groups) = @_;
+  my(@list) = sort { return $self->sort_projects_by_directory($a, $b) + 0;
+                   } @$projects;
   ## The list above is sorted by directory in order to keep projects
   ## within the same directory together.  Otherwise, when groups are
   ## created we may get multiple groups for the same directory.
@@ -1921,12 +1849,8 @@ sub sort_dependencies {
 
 
 sub number_target_deps {
-  my($self)     = shift;
-  my($projects) = shift;
-  my($pjs)      = shift;
-  my($targets)  = shift;
-  my($groups)   = shift;
-  my(@list)     = $self->sort_dependencies($projects, $groups);
+  my($self, $projects, $pjs, $targets, $groups) = @_;
+  my(@list) = $self->sort_dependencies($projects, $groups);
 
   ## This block of code must be done after the list of dependencies
   ## has been sorted in order to get the correct project numbers.
@@ -1968,8 +1892,7 @@ sub number_target_deps {
 
 
 sub project_target_translation {
-  my($self) = shift;
-  my($case) = shift;
+  my($self, $case) = @_;
   my(%map)  = ();
 
   ## Translate project names to avoid target collision with
@@ -1993,8 +1916,7 @@ sub project_target_translation {
 
 
 sub optionError {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
   if (defined $str) {
     $self->warning("$self->{'current_input'}: $str.");
   }
@@ -2002,9 +1924,7 @@ sub optionError {
 
 
 sub process_cmdline {
-  my($self)       = shift;
-  my($cmdline)    = shift;
-  my($parameters) = shift;
+  my($self, $cmdline, $parameters) = @_;
 
   ## It's ok to use the cache
   $self->{'cacheok'} = 1;
@@ -2048,25 +1968,24 @@ sub process_cmdline {
         }
       }
 
-      ## Issue warnings for these options
-      if (defined $options->{'recurse'}) {
-        $self->optionError('-recurse is ignored');
+      ## Some option data members are named consistently with the MPC
+      ## option name.  In this case, we can use this foreach loop.
+      foreach my $consistent_opt ('exclude', 'for_eclipse', 'gendot',
+                                  'gfeature_file', 'into',
+                                  'make_coexistence', 'recurse') {
+        ## Issue warnings for the options provided by the user
+        if ($self->is_set($consistent_opt, $options)) {
+          $self->optionError("-$consistent_opt is ignored");
+        }
       }
-      if (defined $options->{'reldefs'}) {
+
+      ## For those that are inconsistent, we have special code to deal
+      ## with them.
+      if ($self->is_set('reldefs', $options)) {
         $self->optionError('-noreldefs is ignored');
       }
-      if (defined $options->{'coexistence'}) {
-        $self->optionError('-make_coexistence is ignored');
-      }
-      if (defined $options->{'into'}) {
-        $self->optionError('-into is ignored');
-      }
-      if (defined $options->{'gendot'}) {
-        $self->optionError('-gendot is ignored');
-      }
-      if (defined $options->{'for_eclipse'}) {
-        $self->optionError('-for_eclipse is ignored');
-      }
+
+      ## Make sure no input files were specified (we can't handle it).
       if (defined $options->{'input'}->[0]) {
         $self->optionError('Command line files ' .
                            'specified in a workspace are ignored');
@@ -2140,7 +2059,7 @@ sub project_creator {
                    $parameters{'name_modifier'},
                    $parameters{'apply_project'},
                    $self->{'generate_ins'} || $parameters{'genins'},
-                   $parameters{'into'},
+                   $self->{'into'},
                    $parameters{'language'},
                    $parameters{'use_env'},
                    $parameters{'expand_vars'},
@@ -2163,12 +2082,9 @@ sub make_coexistence {
 
 
 sub get_modified_workspace_name {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($ext)    = shift;
-  my($nows)   = shift;
-  my($nmod)   = $self->get_name_modifier();
-  my($oname)  = $name;
+  my($self, $name, $ext, $nows) = @_;
+  my($nmod)  = $self->get_name_modifier();
+  my($oname) = $name;
 
   if (defined $nmod) {
     $nmod =~ s/\*/$name/g;
@@ -2212,9 +2128,7 @@ sub get_modified_workspace_name {
 
 
 sub generate_recursive_input_list {
-  my($self)    = shift;
-  my($dir)     = shift;
-  my($exclude) = shift;
+  my($self, $dir, $exclude) = @_;
   return $self->extension_recursive_input_list($dir, $exclude, $wsext);
 }
 
@@ -2228,9 +2142,8 @@ sub verify_build_ordering {
 
 
 sub get_validated_ordering {
-  my($self)    = shift;
-  my($project) = shift;
-  my($deps)    = undef;
+  my($self, $project) = @_;
+  my($deps) = undef;
 
   if (defined $self->{'ordering_cache'}->{$project}) {
     $deps = $self->{'ordering_cache'}->{$project};
@@ -2293,11 +2206,9 @@ sub source_listing_callback {
 
 
 sub sort_projects_by_directory {
-  my($self)  = shift;
-  my($left)  = shift;
-  my($right) = shift;
-  my($sa)    = index($left, '/');
-  my($sb)    = index($right, '/');
+  my($self, $left, $right) = @_;
+  my($sa) = index($left, '/');
+  my($sb) = index($right, '/');
 
   if ($sa >= 0 && $sb == -1) {
     return 1;
@@ -2310,10 +2221,7 @@ sub sort_projects_by_directory {
 
 
 sub get_relative_dep_file {
-  my($self)    = shift;
-  my($creator) = shift;
-  my($project) = shift;
-  my($dep)     = shift;
+  my($self, $creator, $project, $dep) = @_;
 
   ## If the dependency is a filename, we have to find the key that
   ## matches the project file.

@@ -811,10 +811,10 @@ currently only two assignments allowed.
 
 The first is 'cmdline'.  The values given to the cmdline assignment will be
 processed as command line options, but only to the projects that are
-contained within the workspace (or the scope of the assignment).  The only
-valid command line options for cmdline are -base, -genins, -global, -include,
--language, -ti, -template, -static, -relative, -notoplevel, -value_template
-and -value_project.
+contained within the workspace (or the scope of the assignment).  All
+command line options are valid for cmdline, except for the following:
+-exclude, -for_eclipse, -gendot, -gfeature_file, -into, -make_coexistence,
+-noreldefs, and -recurse.
 
 The second assignment is 'implicit'.  This assignment takes two different
 types of values.  It takes a boolean value (0 or 1) to indicate that an
