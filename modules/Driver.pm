@@ -549,7 +549,7 @@ sub run {
                                 $options->{'features'},
                                 $options->{'hierarchy'},
                                 $options->{'exclude'},
-                                $options->{'coexistence'},
+                                $options->{'make_coexistence'},
                                 $options->{'name_modifier'},
                                 $options->{'apply_project'},
                                 $options->{'genins'},
