@@ -1,3 +1,26 @@
+Tue Mar 18 18:56:35 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Modified to write out N files per MPC project.  Now, a file will
+          be written out per template file associated with the project type.
+          However, the workspace can only "know" about one project file
+          (which is determined by the sub-classed project creator).
+
+        * modules/WB26ProjectCreator.pm:
+        * modules/WB26WorkspaceCreator.pm:
+
+          Combined all of the functionality from WB26WR* into these modules. 
+          The project creator causes 3 files per project to be written and 2
+          files per workspace.
+
+        * modules/WB26WRMAKEFILEProjectCreator.pm:
+        * modules/WB26WRMAKEFILEWorkspaceCreator.pm:
+        * modules/WB26WRPROJECTProjectCreator.pm:
+        * modules/WB26WRPROJECTWorkspaceCreator.pm:
+
+          Removed these files.
+
 Fri Mar 14 16:43:24 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
