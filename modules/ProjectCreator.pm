@@ -150,6 +150,7 @@ my(%sourceComponents)  = ('source_files'   => 1,
 
 my($defgroup)    = 'default_group';
 my($grouped_key) = 'grouped_';
+my($tikey)       = '/ti/';
 
 ## Matches with generic_outputext
 my($generic_key) = 'generic_files';
@@ -282,6 +283,7 @@ sub new {
 
   $self->{$self->{'type_check'}}   = 0;
   $self->{'feature_defined'}       = 0;
+  $self->{'features_changed'}      = undef;
   $self->{'project_info'}          = [];
   $self->{'lib_locations'}         = {};
   $self->{'reading_parent'}        = [];
@@ -1804,7 +1806,7 @@ sub remove_duplicate_addition {
 
 
 sub read_template_input {
-  my($self)        = shift;
+  my($self, $tkey) = @_;
   my($status)      = 1;
   my($errorString) = undef;
   my($file)        = undef;
@@ -1816,25 +1818,27 @@ sub read_template_input {
   if ($self->exe_target()) {
     if ($self->get_static() == 1) {
       $tag = 'lib_exe_template_input';
-      if (!defined $self->{$tag}->{$lang}) {
+      ## Check for the TemplateInputReader for the template key provided.
+      if (!defined $self->{$tag}->{$lang}->{$tkey}) {
         if (defined $$ti{'lib_exe'}) {
           $file = $$ti{'lib_exe'};
           $override = 1;
         }
         else {
-          $file = $self->get_lib_exe_template_input_file();
+          $file = $self->get_lib_exe_template_input_file($tkey);
         }
       }
     }
     else {
       $tag = 'dll_exe_template_input';
-      if (!defined $self->{$tag}->{$lang}) {
+      ## Check for the TemplateInputReader for the template key provided.
+      if (!defined $self->{$tag}->{$lang}->{$tkey}) {
         if (defined $$ti{'dll_exe'}) {
           $file = $$ti{'dll_exe'};
           $override = 1;
         }
         else {
-          $file = $self->get_dll_exe_template_input_file();
+          $file = $self->get_dll_exe_template_input_file($tkey);
         }
       }
     }
@@ -1842,25 +1846,27 @@ sub read_template_input {
   else {
     if ($self->get_static() == 1) {
       $tag = 'lib_template_input';
-      if (!defined $self->{$tag}->{$lang}) {
+      ## Check for the TemplateInputReader for the template key provided.
+      if (!defined $self->{$tag}->{$lang}->{$tkey}) {
         if (defined $$ti{'lib'}) {
           $file = $$ti{'lib'};
           $override = 1;
         }
         else {
-          $file = $self->get_lib_template_input_file();
+          $file = $self->get_lib_template_input_file($tkey);
         }
       }
     }
     else {
       $tag = 'dll_template_input';
-      if (!defined $self->{$tag}->{$lang}) {
+      ## Check for the TemplateInputReader for the template key provided.
+      if (!defined $self->{$tag}->{$lang}->{$tkey}) {
         if (defined $$ti{'dll'}) {
           $file = $$ti{'dll'};
           $override = 1;
         }
         else {
-          $file = $self->get_dll_template_input_file();
+          $file = $self->get_dll_template_input_file($tkey);
         }
       }
     }
@@ -1869,21 +1875,42 @@ sub read_template_input {
   if (defined $file) {
     my($tfile) = $self->search_include_path("$file.$TemplateInputExtension");
     if (defined $tfile) {
-      $self->{$tag}->{$lang} = new TemplateInputReader($self->get_include_path());
-      ($status, $errorString) = $self->{$tag}->{$lang}->read_file($tfile);
+      ## We haven't read this file yet, so we will create the template
+      ## input reader and store it in the entry for the template key
+      ## ($tkey) and the template input key ($tikey).
+      my $ti = new TemplateInputReader($self->get_include_path());
+      $self->{$tag}->{$lang}->{$tkey} = $ti;
+      $self->{$tag}->{$lang}->{$tikey} = $ti;
+
+      ## Process the template input file
+      ($status, $errorString) = $ti->read_file($tfile);
     }
     else {
+      ## Not finding a template input file is only an error if the user
+      ## specifically provided a template input file override.
       if ($override) {
         $status = 0;
         $errorString = "Unable to locate template input file: $file";
       }
     }
   }
+  else {
+    if (defined $self->{$tag}->{$lang}->{$tkey}) {
+      ## We have a TemplateInputReader for this template key, so we need
+      ## to set the entry corresponding to $tikey to it for use in the
+      ## get_template_input() method.
+      $self->{$tag}->{$lang}->{$tikey} = $self->{$tag}->{$lang}->{$tkey};
+    }
+  }
 
-  if ($status && defined $self->{$tag}->{$lang}) {
+  ## We do this regardless of whether or not this parser is cached or
+  ## not.  If the features have changed (through a workspace cmdline
+  ## setting), we need to reflect it.
+  if ($status && defined $self->{$tag}->{$lang}->{$tikey}) {
     ## Put the features into the template input set
-    my($features) = $self->{'feature_parser'}->get_names();
-    $self->{$tag}->{$lang}->parse_line(undef, "features = @$features");
+    my $features = $self->{'feature_parser'}->get_names();
+    $self->{$tag}->{$lang}->{$tikey}->parse_line(undef,
+                                                 "features = @$features");
   }
 
   return $status, $errorString;
@@ -3869,141 +3896,152 @@ sub need_to_write_project {
 
 
 sub write_output_file {
-  my($self, $name, $webapp) = @_;
+  my($self, $webapp) = @_;
   my($status)   = 0;
   my($error)    = undef;
   my($tover)    = $self->get_template_override();
-  my($template) = (defined $tover ? $tover : $self->get_template());
+  my @templates = $self->get_template();
 
-  ## If the template files does not end in the template extension
-  ## then we will add it on.
-  if ($template !~ /$TemplateExtension$/) {
-    $template = $template . ".$TemplateExtension";
-  }
+  ## The template override will override all templates
+  @templates = ($tover) if (defined $tover);
 
-  ## If the template file does not contain a path, then we
-  ## will search through the include paths for it.
-  my($tfile) = undef;
-  if ($template =~ /[\/\\]/i) {
-    $tfile = $template;
-  }
-  else {
-    $tfile = $self->search_include_path($template);
-  }
+  foreach my $template (@templates) {
+    ## Save the template name for use as a key for various function calls
+    my $otemplate = $template;
 
-  if (defined $tfile) {
-    ## Read in the template values for the
-    ## specific target and project type
-    ($status, $error) = $self->read_template_input();
+    ## Create the output file name based on the project name and the
+    ## template that we're currently using.
+    my $name = $self->transform_file_name(
+                  $self->project_file_name(undef, $otemplate));
 
-    if ($status) {
+    ## If the template files does not end in the template extension
+    ## then we will add it on.
+    if ($template !~ /$TemplateExtension$/) {
+      $template = $template . ".$TemplateExtension";
+    }
+
+    ## If the template file does not contain a path, then we
+    ## will search through the include paths for it.
+    my($tfile) = undef;
+    if ($template =~ /[\/\\]/i) {
+      $tfile = $template;
+    }
+    else {
+      $tfile = $self->search_include_path($template);
+    }
+
+    if (defined $tfile) {
+      ## Read in the template values for the specific target and project
+      ## type.  The template input file we get may depend upon the
+      ## current template that we're using.
+      ($status, $error) = $self->read_template_input($otemplate);
+      last if (!$status);
+
       my($tp) = new TemplateParser($self);
 
       ## Set the project_file assignment for the template parser
       $self->process_assignment('project_file', $name);
 
       ($status, $error) = $tp->parse_file($tfile);
+      last if (!$status);
 
-      if ($status) {
-        if (defined $self->{'source_callback'}) {
-          my($cb)     = $self->{'source_callback'};
-          my($pjname) = $self->get_assignment('project_name');
-          my(@list)   = $self->get_component_list('source_files');
-          if (UNIVERSAL::isa($cb, 'ARRAY')) {
-            my(@copy) = @$cb;
-            my($s) = shift(@copy);
-            &$s(@copy, $name, $pjname, @list);
-          }
-          elsif (UNIVERSAL::isa($cb, 'CODE')) {
-            &$cb($name, $pjname, @list);
-          }
-          else {
-            $self->warning("Ignoring callback: $cb.");
-          }
+      if (defined $self->{'source_callback'}) {
+        my($cb)     = $self->{'source_callback'};
+        my($pjname) = $self->get_assignment('project_name');
+        my(@list)   = $self->get_component_list('source_files');
+        if (UNIVERSAL::isa($cb, 'ARRAY')) {
+          my(@copy) = @$cb;
+          my($s) = shift(@copy);
+          &$s(@copy, $name, $pjname, @list);
+        }
+        elsif (UNIVERSAL::isa($cb, 'CODE')) {
+          &$cb($name, $pjname, @list);
+        }
+        else {
+          $self->warning("Ignoring callback: $cb.");
+        }
+      }
+
+      if ($self->get_toplevel()) {
+        my($outdir) = $self->get_outdir();
+        my($oname)  = $name;
+
+        $name = "$outdir/$name";
+
+        my($fh)  = new FileHandle();
+        my($dir) = $self->mpc_dirname($name);
+
+        if ($dir ne '.') {
+          mkpath($dir, 0, 0777);
         }
 
-        if ($self->get_toplevel()) {
-          my($outdir) = $self->get_outdir();
-          my($oname)  = $name;
-
-          $name = "$outdir/$name";
-
-          my($fh)  = new FileHandle();
-          my($dir) = $self->mpc_dirname($name);
-
-          if ($dir ne '.') {
-            mkpath($dir, 0, 0777);
-          }
-
-          if ($webapp) {
-            ## At this point in time, webapps do not get a project file,
-            ## but they do appear in the workspace
-          }
-          elsif ($self->compare_output()) {
-            ## First write the output to a temporary file
-            my($tmp) = "$outdir/MPC$>.$$";
-            my($different) = 1;
-            if (open($fh, ">$tmp")) {
-              my($lines) = $tp->get_lines();
-              foreach my $line (@$lines) {
-                print $fh $line;
-              }
-              close($fh);
-
-              if (!$self->files_are_different($name, $tmp)) {
-                $different = 0;
-              }
+        if ($webapp) {
+          ## At this point in time, webapps do not get a project file,
+          ## but they do appear in the workspace
+        }
+        elsif ($self->compare_output()) {
+          ## First write the output to a temporary file
+          my($tmp) = "$outdir/MPC$>.$$";
+          my($different) = 1;
+          if (open($fh, ">$tmp")) {
+            my($lines) = $tp->get_lines();
+            foreach my $line (@$lines) {
+              print $fh $line;
             }
-            else {
-              $error = "Unable to open $tmp for output.";
-              $status = 0;
-            }
+            close($fh);
 
-            if ($status) {
-              ## If they are different, then rename the temporary file
-              if ($different) {
-                unlink($name);
-                if (rename($tmp, $name)) {
-                  $self->post_file_creation($name);
-                }
-                else {
-                  $error = "Unable to open $name for output.";
-                  $status = 0;
-                }
-              }
-              else {
-                ## We will pretend that we wrote the file
-                unlink($tmp);
-              }
+            if (!$self->files_are_different($name, $tmp)) {
+              $different = 0;
             }
           }
           else {
-            if (open($fh, ">$name")) {
-              my($lines) = $tp->get_lines();
-              foreach my $line (@$lines) {
-                print $fh $line;
-              }
-              close($fh);
+            $error = "Unable to open $tmp for output.";
+            $status = 0;
+            last;
+          }
+
+          ## If they are different, then rename the temporary file
+          if ($different) {
+            unlink($name);
+            if (rename($tmp, $name)) {
               $self->post_file_creation($name);
             }
             else {
               $error = "Unable to open $name for output.";
               $status = 0;
+              last;
             }
           }
-
-          if ($status) {
-            $self->add_file_written($oname);
+          else {
+            ## We will pretend that we wrote the file
+            unlink($tmp);
           }
         }
+        else {
+          if (open($fh, ">$name")) {
+            my($lines) = $tp->get_lines();
+            foreach my $line (@$lines) {
+              print $fh $line;
+            }
+            close($fh);
+            $self->post_file_creation($name);
+          }
+          else {
+            $error = "Unable to open $name for output.";
+            $status = 0;
+            last;
+          }
+        }
+
+        $self->add_file_written($oname) if ($self->file_visible($otemplate));
       }
     }
+    else {
+      $error = "Unable to locate the template file: $template.";
+      $status = 0;
+      last;
+    }
   }
-  else {
-    $error = "Unable to locate the template file: $template.";
-    $status = 0;
-  }
-
   return $status, $error;
 }
 
@@ -4110,10 +4148,12 @@ sub write_project {
           }
         }
 
-        ($status, $error) = $self->write_output_file(
-                                     $self->transform_file_name(
-                                              $self->project_file_name()),
-                                     $webapp);
+        ## We don't need to pass a file name here.  write_output_file()
+        ## will determine the file name for itself.
+        ($status, $error) = $self->write_output_file($webapp);
+
+        ## Write the .ins file if the user requested it and we were
+        ## successful.
         if ($self->{'generate_ins'} && $status) {
           ($status, $error) = $self->write_install_file();
         }
@@ -4251,18 +4291,18 @@ sub get_template_input {
   ## checking for exe target and then defaulting to a lib target
   if ($self->exe_target()) {
     if ($self->get_static() == 1) {
-      return $self->{'lib_exe_template_input'}->{$lang};
+      return $self->{'lib_exe_template_input'}->{$lang}->{$tikey};
     }
     else {
-      return $self->{'dll_exe_template_input'}->{$lang};
+      return $self->{'dll_exe_template_input'}->{$lang}->{$tikey};
     }
   }
 
   if ($self->get_static() == 1) {
-    return $self->{'lib_template_input'}->{$lang};
+    return $self->{'lib_template_input'}->{$lang}->{$tikey};
   }
   else {
-    return $self->{'dll_template_input'}->{$lang};
+    return $self->{'dll_template_input'}->{$lang}->{$tikey};
   }
 }
 
@@ -4544,11 +4584,10 @@ sub requires_parameters {
 
 
 sub project_file_name {
-  my($self, $name) = @_;
+  my($self, $name, $template) = @_;
 
-  if (!defined $name) {
-    $name = $self->get_assignment('project_name');
-  }
+  ## Fill in the name if one wasn't provided
+  $name = $self->get_assignment('project_name') if (!defined $name);
 
   return $self->get_modified_project_file_name(
                                      $self->project_file_prefix() . $name,
@@ -4648,12 +4687,14 @@ sub restore_state_helper {
   my($self, $skey, $old, $new) = @_;
 
   if ($skey eq 'feature_file') {
-    if (!(!defined $old && !defined $new ||
+    if ($self->{'features_changed'} ||
+        !(!defined $old && !defined $new ||
           (defined $old && defined $new && $old eq $new))) {
       ## Create a new feature parser.  This relies on the fact that
       ## 'features' is restored first in restore_state().
       $self->{'feature_parser'} = $self->create_feature_parser(
                                            $self->get_features(), $new);
+      $self->{'features_changed'} = undef;
     }
   }
   elsif ($skey eq 'ti') {
@@ -4663,9 +4704,17 @@ sub restore_state_helper {
     foreach my $key (@keys) {
       if (!defined $$old{$key} || !defined $$new{$key} ||
           $$old{$key} ne $$new{$key}) {
-        $self->{$key . '_template_input'}->{$lang} = undef;
+        ## Clear out the template input reader that we're currently set
+        ## to use.
+        $self->{$key . '_template_input'}->{$lang}->{$tikey} = undef;
       }
     }
+  }
+  elsif ($skey eq 'features') {
+    ## If the user has changed the 'features' setting, then we need to
+    ## make sure that we create a new feature parser regardless of
+    ## whether or not the feature file has changed.
+    $self->{'features_changed'} = ("@$old" ne "@$new");
   }
 }
 
@@ -4678,6 +4727,11 @@ sub get_initial_relative_values {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub file_visible {
+  #my($self, $template) = @_;
+  return 1;
+}
 
 sub webapp_supported {
   #my($self) = shift;
@@ -4800,25 +4854,25 @@ sub override_exclude_component_extensions {
 
 
 sub get_dll_exe_template_input_file {
-  #my($self) = shift;
+  #my($self, $tkey) = @_;
   return undef;
 }
 
 
 sub get_lib_exe_template_input_file {
-  my($self) = shift;
-  return $self->get_dll_exe_template_input_file();
+  my($self, $tkey) = @_;
+  return $self->get_dll_exe_template_input_file($tkey);
 }
 
 
 sub get_lib_template_input_file {
-  my($self) = shift;
-  return $self->get_dll_template_input_file();
+  my($self, $tkey) = @_;
+  return $self->get_dll_template_input_file($tkey);
 }
 
 
 sub get_dll_template_input_file {
-  #my($self) = shift;
+  #my($self, $tkey) = @_;
   return undef;
 }
 

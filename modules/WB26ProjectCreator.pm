@@ -18,6 +18,15 @@ use vars qw(@ISA);
 @ISA = qw(ProjectCreator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my %templates = ('wb26'           => '.project',
+                 'wb26wrproject'  => '.wrproject',
+                 'wb26wrmakefile' => '.wrmakefile');
+my @tkeys = sort keys %templates;
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -27,19 +36,35 @@ sub crlf {
 }
 
 sub project_file_name {
-  my($self) = shift;
+  my($self, $name, $template) = @_;
 
-  return $self->get_modified_project_file_name($self->project_name(), '/.project');
+  ## Fill in the name and template if they weren't provided
+  $name = $self->project_name() if (!defined $name);
+  $template = 'wb26' if (!defined $template);
+
+  return $self->get_modified_project_file_name($name,
+                                               '/' . $templates{$template});
 }
 
 sub get_template {
   #my($self) = shift;
-  return 'wb26';
+  return @tkeys;
 }
 
 sub dependency_is_filename {
   #my($self) = shift;
   return 0;
+}
+
+sub requires_forward_slashes {
+  return 1;
+}
+
+sub file_visible {
+  ## We only want the project file visible to the workspace creator.
+  ## There can only be one and this is the it.
+  my($self, $template) = @_;
+  return $template eq 'wb26';
 }
 
 1;
