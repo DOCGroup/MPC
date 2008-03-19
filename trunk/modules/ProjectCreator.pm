@@ -3596,7 +3596,7 @@ sub replace_parameters {
 
 
 sub convert_command_parameters {
-  my($self, $str, $input, $output) = @_;
+  my($self, $ktype, $str, $input, $output) = @_;
   my(%nowarn) = ();
   my(%valid)  = %{$self->{'command_subs'}};
 
@@ -3609,7 +3609,19 @@ sub convert_command_parameters {
     $valid{'input_noext'}    = $input;
     $valid{'input_noext'}    =~ s/(\.[^\.]+)$//;
     $valid{'input_ext'}      = $1;
+
+    ## Check for the gendir setting associated with this input file.  We
+    ## have to check at so many levels so we don't inadvertantly create
+    ## intermediate hash tables.
+    if (defined $self->{'flag_overrides'}->{$ktype} &&
+        defined $self->{'flag_overrides'}->{$ktype}->{$input} &&
+        $self->{'flag_overrides'}->{$ktype}->{$input}->{'gendir'}) {
+      $valid{'gendir'} = $self->{'flag_overrides'}->{$ktype}->{$input}->{'gendir'};
+    }
   }
+
+  ## If there is no gendir setting, just set it to the current directory.
+  $valid{'gendir'} = '.' if (!defined $valid{'gendir'});
 
   if (defined $output) {
     my($first) = 1;
@@ -3816,7 +3828,7 @@ sub get_custom_value {
     $value = $self->get_assignment($cmd,
                                    $self->{'generated_exts'}->{$based});
     if (defined $value && ($customDefined{$cmd} & 0x10) != 0) {
-      $value = $self->convert_command_parameters($value, @params);
+      $value = $self->convert_command_parameters($based, $value, @params);
     }
   }
   elsif (defined $custom{$cmd}) {
