@@ -925,11 +925,11 @@ sub write_workspace {
   my($duplicates) = 0;
 
   if ($self->get_toplevel()) {
+    ## There is usually a progress indicator callback provided, but if
+    ## the output is being redirected, there will be no progress
+    ## indicator.
     my($progress) = $self->get_progress_callback();
-
-    if (defined $progress) {
-      &$progress();
-    }
+    &$progress() if (defined $progress);
 
     if ($addfile) {
       ## To be consistent across multiple project types, we disallow
