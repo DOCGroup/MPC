@@ -702,7 +702,7 @@ sub get_flag_overrides {
             ## pseudo variables and provide parameters.
             if (defined $pre && $prjc->requires_parameters($type)) {
               $value = $prjc->convert_command_parameters(
-                                      $value,
+                                      $key, $value,
                                       $self->prepare_parameters($pre));
             }
 
@@ -1451,32 +1451,36 @@ sub handle_noextension {
 
 
 sub perform_full_path {
-  my($self) = shift;
-  my($value) = shift;
+  my($self, $value) = @_;
 
-  #Expand all defined env vars
+  ## Expand all defined env vars
   $value =~ s/\$\((\w+)\)/$ENV{$1} || '$(' . $1 . ')'/ge;
 
-  #If we expanded all env vars, get absolute path
+  ## If we expanded all env vars, get absolute path
   if ($value =~ /\$\(\w+\)/) {
     $self->{'error_in_handle'} = "<%full_path%> couldn't expand " .
                                  "environment variables in $value";
     return $value;
   }
 
+  ## Always convert the slashes since they may be in the OS native
+  ## format and we need them in UNIX format.
+  $value =~ s/\\/\//g;
   my($dir) = $self->mpc_dirname($value);
   if (-e $dir) {
     $dir = Cwd::abs_path($dir);
   }
-  elsif ($dir !~ /^(?:[\/\\]|[A-Z]:[\/\\])/i) {
+  elsif ($dir !~ /^(?:\/|[A-Z]:\/)/i) {
     ## If the directory is is not already an absolute path, then we will
     ## assume that the directory is relative to the current directory
     ## (which will be the location of the MPC file).
-    $dir = $self->getcwd() . ($self->{'cslashes'} ? '\\' : '/') . $dir;
+    $dir = $self->getcwd() . '/' . $dir;
   }
   
-  return $dir . ($self->{'cslashes'} ? '\\' : '/') .
-         $self->mpc_basename($value);
+  ## Create the full path value and convert the slashes if necessary.
+  $value = $dir . '/' . $self->mpc_basename($value);
+  $value =~ s/\//\\/g if ($self->{'cslashes'});
+  return $value;
 }
 
 
