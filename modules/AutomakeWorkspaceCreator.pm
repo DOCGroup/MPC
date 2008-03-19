@@ -475,7 +475,7 @@ sub write_comps {
             my($inc_pattern) = $regok . '_include_HEADERS';
             my($pkg_pattern) = $regok . '_pkginclude_HEADERS';
             if (/^$inc_pattern\s*\+=\s*/ || /^$pkg_pattern\s*\+=\s*/) {
-              $_ =~ s/^$project_name/nobase/;
+              $_ =~ s/^$regok/nobase/;
             }
           }
 
@@ -613,12 +613,12 @@ sub write_comps {
 
 
 sub get_includedir {
-  my($self)  = shift;
-  my($value) = $self->getcwd();
-  my($start) = $self->getstartdir();
+  my $self  = shift;
+  my $value = $self->getcwd();
+  my $start = $self->getstartdir();
 
   ## Take off the starting directory
-  $value =~ s/$start//;
+  $value =~ s/\Q$start\E//;
   return $value;
 }
 
