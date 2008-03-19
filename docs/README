@@ -494,6 +494,8 @@ postcommand         Allows a user to execute arbitrary commands after
                     <%and%>       - Project non-specific and sign.
                     <%or%>        - Project non-specific or sign.
                     <%quote%>     - Project non-specific double quote.
+                    <%gendir%>    - The output directory specified by the
+                                    gendir setting.
 
                     If any referenced pseudo template variable does
                     not contain a value, then the particular setting

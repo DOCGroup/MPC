@@ -1,3 +1,22 @@
+Wed Mar 19 13:47:47 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+
+          Added the ability to use <%gendir%> in custom sections.  This
+          variable will contain the 'gendir' setting if provided and '.' if
+          it is not.
+
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where the 'full_path' function would use the current
+          directory if the value passed to it was a Windows style path.
+
+        * templates/wb26wrproject.mpd:
+
+          Added the 'full_path' usage back now that the function has been
+          fixed.
+
 Wed Mar 19 12:27:53 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
