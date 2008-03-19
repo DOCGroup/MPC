@@ -315,6 +315,7 @@ sub new {
   $self->{'addtemp_state'}         = undef;
   $self->{'command_subs'}          = $self->get_command_subs();
   $self->{'escape_spaces'}         = $self->escape_spaces();
+  $self->{'current_template'}      = undef;
 
   $self->add_default_matching_assignments();
   $self->reset_generating_types();
@@ -3907,12 +3908,13 @@ sub write_output_file {
 
   foreach my $template (@templates) {
     ## Save the template name for use as a key for various function calls
-    my $otemplate = $template;
+    $self->{'current_template'} = $template;
 
     ## Create the output file name based on the project name and the
     ## template that we're currently using.
     my $name = $self->transform_file_name(
-                  $self->project_file_name(undef, $otemplate));
+                  $self->project_file_name(undef,
+                                           $self->{'current_template'}));
 
     ## If the template files does not end in the template extension
     ## then we will add it on.
@@ -3934,7 +3936,8 @@ sub write_output_file {
       ## Read in the template values for the specific target and project
       ## type.  The template input file we get may depend upon the
       ## current template that we're using.
-      ($status, $error) = $self->read_template_input($otemplate);
+      ($status, $error) = $self->read_template_input(
+                                   $self->{'current_template'});
       last if (!$status);
 
       my($tp) = new TemplateParser($self);
@@ -4033,7 +4036,12 @@ sub write_output_file {
           }
         }
 
-        $self->add_file_written($oname) if ($self->file_visible($otemplate));
+        ## There may be more than one template associated with this
+        ## project creator.  If there is, we can only add one generated
+        ## file and we rely on the project creator to tell us which
+        ## template generates the file that we need to track.
+        $self->add_file_written($oname)
+                   if ($self->file_visible($self->{'current_template'}));
       }
     }
     else {
@@ -4309,18 +4317,11 @@ sub get_template_input {
 
 sub update_project_info {
   my($self, $tparser, $append, $names, $sep) = @_;
-  my($pi)    = $self->get_project_info();
-  my($value) = '';
-  my($arr)   = ($append && defined $$pi[0] ? pop(@$pi) : []);
+  my $value = '';
   $sep = '' if (!defined $sep);
 
-  ## Set up the hash table when we are starting a new project_info
-  if (!$append) {
-    $self->{'project_info_hash_table'} = {};
-  }
-
   ## Append the values of all names into one string
-  my($ncount) = scalar(@$names) - 1;
+  my $ncount = scalar(@$names) - 1;
   for(my $i = 0; $i <= $ncount; $i++) {
     $value .= $self->translate_value(
                                $$names[$i],
@@ -4328,14 +4329,28 @@ sub update_project_info {
     $value .= $sep if ($i != $ncount);
   }
 
-  ## If we haven't seen this value yet, put it on the array
-  if (!defined $self->{'project_info_hash_table'}->{"@$names $value"}) {
-    $self->{'project_info_hash_table'}->{"@$names $value"} = 1;
-    push(@$arr, $value);
-  }
+  ## There may be more than one template associated with this project
+  ## creator.  If there is, we can only add one generated file and we
+  ## rely on the project creator to tell us which template generates the
+  ## file that we need to track.
+  if ($self->file_visible($self->{'current_template'})) {
+    ## If we already have an array, take the one off the top.  Otherwise,
+    ## create a new one which will be added below.
+    my $arr = ($append && defined $self->{'project_info'}->[0] ?
+                            pop(@{$self->{'project_info'}}) : []);
 
-  ## Always push the array back onto the project_info
-  push(@$pi, $arr);
+    ## Set up the hash table when we are starting a new project_info
+    $self->{'project_info_hash_table'} = {}  if (!$append);
+
+    ## If we haven't seen this value yet, put it on the array
+    if (!defined $self->{'project_info_hash_table'}->{"@$names $value"}) {
+      $self->{'project_info_hash_table'}->{"@$names $value"} = 1;
+      push(@$arr, $value);
+    }
+
+    ## Always push the array back onto the project_info
+    push(@{$self->{'project_info'}}, $arr);
+  }
 
   return $value;
 }
