@@ -1459,20 +1459,24 @@ sub perform_full_path {
 
   #If we expanded all env vars, get absolute path
   if ($value =~ /\$\(\w+\)/) {
-    $self->{'error_in_handle'} = "<%full_path%> couldn't expand environment " 
-        . "variables in $value";
+    $self->{'error_in_handle'} = "<%full_path%> couldn't expand " .
+                                 "environment variables in $value";
     return $value;
   }
 
   my($dir) = $self->mpc_dirname($value);
-  if (!-e $dir) {
-    $self->{'error_in_handle'} = "The directory $dir does not exist -- can't ".
-        "convert to an absolute path in <%full_path%>\n";
-    return $value;
+  if (-e $dir) {
+    $dir = Cwd::abs_path($dir);
+  }
+  elsif ($dir !~ /^(?:[\/\\]|[A-Z]:[\/\\])/i) {
+    ## If the directory is is not already an absolute path, then we will
+    ## assume that the directory is relative to the current directory
+    ## (which will be the location of the MPC file).
+    $dir = $self->getcwd() . ($self->{'cslashes'} ? '\\' : '/') . $dir;
   }
   
-  return Cwd::abs_path($dir) . ($self->convert_slashes() ? '\\' : '/')
-    . $self->mpc_basename($value);
+  return $dir . ($self->{'cslashes'} ? '\\' : '/') .
+         $self->mpc_basename($value);
 }
 
 
