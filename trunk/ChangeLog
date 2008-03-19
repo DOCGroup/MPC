@@ -1,3 +1,12 @@
+Wed Mar 19 14:19:14 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Fixed a bug where filenames or paths were used directly within a
+          regular expression.  Thanks to Thomas Girard
+          <thomas dot g dot girard at free dot fr> for reporting it and
+          providing a patch.
+
 Wed Mar 19 13:47:47 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
