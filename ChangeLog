@@ -1,3 +1,29 @@
+Thu Mar 20 12:46:46 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+
+          Moved the recursive_includes and recursive_libpaths functionality
+          out of Creator and into ProjectCreator.  In the process, I fixed
+          the following bugs:
+
+          1) Setting and subtracting from recursive_* would cause the value
+             to be added instead of the performing desired function.
+          2) When values are added in the form of $(VAR)/dir, they are
+             expanded, recursed and then the recursed values are turned back
+             into the form of $(VAR)/...
+
+        * modules/DirectoryManager.pm:
+
+          Changed function parameter code from shifting off of the
+          default array to assigning from the default array.            
+
+        * modules/TemplateParser.pm:
+
+          Modified to use the DirectoryManager::path_is_relative() function
+          instead of rolling my own regular expression to check for relative
+          paths.
+
 Wed Mar 19 14:19:14 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeWorkspaceCreator.pm:

@@ -369,9 +369,61 @@ sub convert_to_template_assignment {
 }
 
 
+sub create_recursive_settings {
+  my($self, $name, $value, $assign) = @_;
+
+  ## Handle both recursive_includes and recursive_libpaths in one
+  ## search and replace.
+  if ($name =~ s/^recursive_//) {
+    ## This portion of code was lifted directly from Creator::relative()
+    ## but modified to always expand the variables.  We will turn the
+    ## expanded values back into variables below and once they're passed
+    ## off to the assignment processing code, they will be turned into
+    ## relative values (if possible).
+    if (index($value, '$') >= 0) {     
+      my $ovalue = $value;
+      my($rel, $how) = $self->get_initial_relative_values();
+      $value = $self->expand_variables($value, $rel, 0, undef, 1);
+
+      if ($ovalue eq $value || index($value, '$') >= 0) {
+        ($rel, $how) = $self->get_secondary_relative_values();
+        $value = $self->expand_variables($value, $rel, 0, undef, 1, 1);
+      }
+    }
+
+    ## Create an array out of the recursive directory list.  Convert all
+    ## of the relative or full path values back into $() values.
+    my @dirs = ();
+    my $elems = $self->create_array($value);
+    foreach my $elem (@$elems) {
+      my $dlist = $self->recursive_directory_list($elem, []);
+      if ($dlist eq '') {
+        ## This directory doesn't exist, just add the original value
+        push(@dirs, $elem);
+      }
+      else {
+        ## Create an array out of the directory list and add it to our
+        ## array.
+        my $array = $self->create_array($dlist);
+        push(@dirs, @$array);
+      }
+    }
+
+    ## We need to return a string, so we join it all together space
+    ## separated.
+    $value = join(' ', $self->back_to_variable(\@dirs));
+  }
+
+  return $name, $value;
+}
+
 sub process_assignment {
   my($self, $name, $value, $assign, $calledfrom) = @_;
   $calledfrom = 0 if (!defined $calledfrom);
+
+  ## See if the name is one of the special "recursive" settings.  If so,
+  ## fix up the value and change the name.
+  ($name, $value) = $self->create_recursive_settings($name, $value, $assign);
 
   ## Support the '*' mechanism as in the project name, to allow
   ## the user to correctly depend on another project within the same
@@ -417,6 +469,28 @@ sub process_assignment {
                                      $self->{'generated_exts'}->{$$mapped[0]});
     }
   }
+}
+
+
+sub process_assignment_add {
+  my($self, $name, $value, $assign) = @_;
+
+  ## See if the name is one of the special "recursive" settings.  If so,
+  ## fix up the value and change the name.
+  ($name, $value) = $self->create_recursive_settings($name, $value, $assign);
+
+  return $self->SUPER::process_assignment_add($name, $value, $assign);
+}
+
+
+sub process_assignment_sub {
+  my($self, $name, $value, $assign) = @_;
+
+  ## See if the name is one of the special "recursive" settings.  If so,
+  ## fix up the value and change the name.
+  ($name, $value) = $self->create_recursive_settings($name, $value, $assign);
+
+  return $self->SUPER::process_assignment_sub($name, $value, $assign);
 }
 
 
@@ -1767,6 +1841,79 @@ sub parse_define_custom {
   }
 
   return $status, $errorString;
+}
+
+
+sub back_to_variable {
+  my($self, $values) = @_;
+  my $cwd = $self->getcwd();
+  my $case_tolerant = $self->case_insensitive();
+  my @values = ();
+
+  ## Get both of the relative value hash maps and put them in an array
+  my @rels = ();
+  my($rel, $how) = $self->get_initial_relative_values();
+  push(@rels, $rel);
+  ($rel, $how) = $self->get_secondary_relative_values();
+  push(@rels, $rel);
+
+  ## Go through each value and try to convert it to a variable setting
+  foreach my $ovalue (@$values) {
+    ## Fix up the value, replacing '.' with the current working
+    ## directory.
+    my $value = $ovalue;
+    if ($value eq '.') {
+      $value = $cwd;
+    }
+    else {
+      $value =~ s/^.\//$cwd\//;
+    }
+    my $valuelen = length($value);
+
+    ## Go through each relative value hash map and see if any of the
+    ## values match the value that we're currently inspecting.
+    my $found = undef;
+    foreach my $rel (@rels) {
+      foreach my $key (keys %$rel) {
+        ## Get the relative replacement value and convert back-slashes
+        my $val = $$rel{$key};
+        $val =~ s/\\/\//g;
+
+        ## We only need to check for reverse replacement if the length
+        ## of the value is greater than or equal to the length of our
+        ## replacement value.
+        my $vlen = length($val);
+        if ($vlen <= $valuelen) {
+          ## Cut the string down by the length of the replacement value
+          my $lval = substr($value, 0, $vlen);
+
+          ## Check for equivalence, taking into account file system
+          ## case-insenitivity.
+          if ($case_tolerant) {
+            $found = (lc($lval) eq lc($val));
+          }
+          else {
+            $found = ($lval eq $val);
+          }
+
+          ## If they match, replace the value and save it in our array.
+          if ($found) {
+            substr($value, 0, length($val)) = "\$($key)";
+            push(@values, $value);
+            last;
+          }
+        }
+      }
+
+      ## Once it's been found, there's no reason to continue on through
+      ## the relative hash maps.
+      last if ($found);
+    }
+
+    push(@values, $ovalue) if (!$found);
+  }
+
+  return @values;
 }
 
 
