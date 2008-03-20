@@ -1470,7 +1470,7 @@ sub perform_full_path {
   if (-e $dir) {
     $dir = Cwd::abs_path($dir);
   }
-  elsif ($dir !~ /^(?:\/|[A-Z]:\/)/i) {
+  elsif ($self->{'prjc'}->path_is_relative($dir)) {
     ## If the directory is is not already an absolute path, then we will
     ## assume that the directory is relative to the current directory
     ## (which will be the location of the MPC file).

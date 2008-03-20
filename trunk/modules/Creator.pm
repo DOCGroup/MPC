@@ -635,17 +635,6 @@ sub process_assignment {
     $value =~ s/^\s+//;
     $value =~ s/\s+$//;
 
-    ## Handle both recursive_includes and recursive_libpaths in one
-    ## search and replace.
-    if ($name eq 'recursive_includes' || $name eq 'recursive_libpaths') {
-      $name =~ s/^recursive_//;
-      my @rel = $self->relative($value);
-      $value = $self->get_assignment($name, $assign);
-      foreach my $subdir (@rel) {
-        $value .= ' ' . $self->recursive_directory_list($subdir, []);
-      }
-    }
-
     ## Modify the assignment value before saving it
     $$assign{$name} = $self->modify_assignment_value($name, $value);
   }
@@ -1175,7 +1164,7 @@ sub relative {
       return \@built;
     }
     elsif (index($value, '$') >= 0) {
-      my($ovalue)   = $value;
+      my($ovalue) = $value;
       my($rel, $how) = $self->get_initial_relative_values();
       $value = $self->expand_variables($value, $rel,
                                        $expand_template, $scope, $how);

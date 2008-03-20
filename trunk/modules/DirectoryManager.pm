@@ -40,8 +40,7 @@ my($start) = $cwd;
 # ************************************************************
 
 sub cd {
-  my($self)   = shift;
-  my($dir)    = shift;
+  my($self, $dir) = @_;
   my($status) = chdir($dir);
 
   if ($status && $dir ne '.') {
@@ -99,8 +98,7 @@ sub mpc_basename {
 
 
 sub mpc_dirname {
-  my($self) = shift;
-  my($dir)  = shift;
+  my($self, $dir) = @_;
 
   if ($onVMS) {
     if (index($dir, '/') >= 0) {
@@ -119,8 +117,7 @@ sub mpc_dirname {
 
 
 sub mpc_glob {
-  my($self)    = shift;
-  my($pattern) = shift;
+  my($self, $pattern) = @_;
   my(@files)   = ();
 
   ## glob() provided by OpenVMS does not understand [] within
@@ -160,8 +157,7 @@ sub onVMS {
 
 
 sub path_is_relative {
-  my($self) = shift;
-  my($path) = shift;
+  my($self, $path) = @_;
   return (index($path, '/') != 0 && $path !~ /^[A-Z]:\//i);
 }
 
@@ -170,8 +166,7 @@ sub path_is_relative {
 # ************************************************************
 
 sub translate_directory {
-  my($self) = shift;
-  my($dir)  = shift;
+  my($self, $dir) = @_;
 
   ## Remove the current working directory from $dir (if it is contained)
   my($cwd) = $self->getcwd();
