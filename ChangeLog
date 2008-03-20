@@ -1,3 +1,9 @@
+Thu Mar 20 13:29:19 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrproject.mpd:
+          No need to use full_path for the includes. Within the workbench
+          we can define the environment variables
+
 Thu Mar 20 13:26:19 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
