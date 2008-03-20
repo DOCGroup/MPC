@@ -380,7 +380,7 @@ sub create_recursive_settings {
     ## expanded values back into variables below and once they're passed
     ## off to the assignment processing code, they will be turned into
     ## relative values (if possible).
-    if (index($value, '$') >= 0) {     
+    if (index($value, '$') >= 0) {
       my $ovalue = $value;
       my($rel, $how) = $self->get_initial_relative_values();
       $value = $self->expand_variables($value, $rel, 0, undef, 1);
@@ -4038,20 +4038,28 @@ sub check_features {
 
 
 sub need_to_write_project {
-  my($self) = shift;
+  my $self  = shift;
+  my $count = 0;
 
+  ## The order here is important, we must check for source or resource
+  ## files first and then for custom input files.
   foreach my $key ('source_files', 'resource_files',
                    keys %{$self->{'generated_exts'}}) {
-    my($names) = $self->{$key};
+    my $names = $self->{$key};
     foreach my $name (keys %$names) {
       foreach my $key (keys %{$names->{$name}}) {
         if (defined $names->{$name}->{$key}->[0]) {
-          return 1;
+          ## Return 1 if we have found a source file or a resource file.
+          ## Return 2 if we have found a custom input file (and thus no
+          ## source or resource files due to the foreach order).
+          return $count >= 2 ? 2 : 1;
         }
       }
     }
+    $count++;
   }
 
+  ## Indicate that there is no need to write the project
   return 0;
 }
 
@@ -4286,12 +4294,19 @@ sub write_project {
   if ($self->check_features($self->get_assignment('requires'),
                             $self->get_assignment('avoids'),
                             1)) {
-    my($webapp) = $self->get_assignment('webapp');
-    if ($webapp || $self->need_to_write_project()) {
+    my $webapp = $self->get_assignment('webapp');
+    my $ntwp = $self->need_to_write_project();
+    if ($webapp || $ntwp) {
       if ($webapp && !$self->webapp_supported()) {
         $self->warning("Web Applications are not supported by this type.");
       }
       else {
+        ## A return value of 2 from need_to_write_project() indicates
+        ## that the only reason that we need to write the project is that
+        ## there are custom input files (i.e., no source or resource
+        ## files).
+        $self->process_assignment('custom_only', '1') if ($ntwp == 2);
+
         if ($self->get_assignment('custom_only')) {
           $self->remove_non_custom_settings();
         }

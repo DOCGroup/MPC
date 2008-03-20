@@ -216,11 +216,11 @@ version         Specifies the version number for the library or executable
 macros          These values will be passed as macros to the compiler.
 libpaths        Specifies 1 or more locations to find libraries
 recursive_libpaths Specifies 1 or more locations to find libraries which will
-                be added recursively
+                be added recursively.
 includes        Specifies 1 or more locations to find include files
 libs            Specifies 1 or more libraries to link into the exe or library
 recursive_includes Specifies 1 or more locations to find include files which
-                will be added recursively
+                will be added recursively.
 lit_libs        Specifies 1 or more libraries to link into the exe or library.
                 If libraries receive a library decorator, then these will not.
 pure_libs       Specifies 1 or more libraries to link into the exe or library.
@@ -230,6 +230,9 @@ after           Specifies that this project must be built after 1 or more
                 project names listed.
 custom_only     Create a project that contains only custom generation
                 targets (any file type described by a Define_Custom section).
+                This will automatically be set to 1 when a project contains
+                no source or resource files, but does contain custom input
+                files.
 dynamicflags    Specifies preprocessor flags needed for dynamic libraries
 staticflags     Specifies preprocessor flags needed for static libraries
 
