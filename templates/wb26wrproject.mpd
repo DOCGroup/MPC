@@ -26,7 +26,7 @@
                 <stringAttribute value="-I$(WIND_BASE)/target/h"/>
                 <stringAttribute value="-I$(WIND_BASE)/target/h/wrn/coreip"/>
 <%foreach(includes)%>
-                <stringAttribute value="-I<%full_path(include)%>"/>
+                <stringAttribute value="-I<%include%>"/>
 <%endfor%>
             </listAttribute>
             <listAttribute key="BLD::Info|Macros">
