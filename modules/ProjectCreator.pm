@@ -1862,6 +1862,7 @@ sub back_to_variable {
     ## Fix up the value, replacing '.' with the current working
     ## directory.
     my $value = $ovalue;
+    $value =~ s/\\/\//g;
     if ($value eq '.') {
       $value = $cwd;
     }
