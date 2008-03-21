@@ -1,3 +1,19 @@
+Fri Mar 21 16:06:00 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/MakeWorkspaceBase.pm:
+
+          Fixed the post_workspace() parameters.  The file handle (which is
+          unused in the method) was not shifted.
+
+        * modules/WorkspaceCreator.pm:
+
+          Provide a mechanism for creating multiple output files per
+          workspace.
+
+        * modules/WB26WorkspaceCreator.pm:
+
+          Use the above mechanism for the wb26projects.lst file.
+
 Thu Mar 20 15:23:06 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:

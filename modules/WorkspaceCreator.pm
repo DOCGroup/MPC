@@ -918,6 +918,68 @@ sub get_current_output_name {
 }
 
 
+sub write_and_compare_file {
+  my($self, $outdir, $oname, $func, @params) = @_;
+  my $fh    = new FileHandle();
+  my $error = undef;
+
+  ## Set the output directory if one wasn't provided
+  $outdir = $self->get_outdir() if (!defined $outdir);
+
+  ## Create the full name and pull off the directory.  The directory
+  ## portion may not be the same as $outdir, since $name could possibly
+  ## contain a directory portion too.
+  my $name = "$outdir/$oname";
+  my $dir  = $self->mpc_dirname($name);
+
+  ## Make the full path if necessary
+  mkpath($dir, 0, 0777) if ($dir ne '.');
+
+  ## Set the current output data member to our file's full name
+  $self->{'current_output'} = $name;
+
+  if ($self->compare_output()) {
+    ## First write the output to a temporary file
+    my $tmp = "$outdir/MWC$>.$$";
+    my $different = 1;
+    if (open($fh, ">$tmp")) {
+      &$func($self, $fh, @params);
+      close($fh);
+
+      if (!$self->files_are_different($name, $tmp)) {
+        $different = 0;
+      }
+    }
+    else {
+      $error = "Unable to open $tmp for output.";
+    }
+
+    if (!defined $error) {
+      if ($different) {
+        unlink($name);
+        if (!rename($tmp, $name)) {
+          $error = "Unable to open $name for output";
+        }
+      }
+      else {
+        ## There is no need to rename, so remove our temp file.
+        unlink($tmp);
+      }
+    }
+  }
+  else {
+    if (open($fh, ">$name")) {
+      &$func($self, $fh, @params);
+      close($fh);
+    }
+    else {
+      $error = "Unable to open $name for output.";
+    }
+  }
+
+  return $error;
+}
+
 sub write_workspace {
   my($self, $creator, $addfile) = @_;
   my($status)    = 1;
@@ -954,11 +1016,7 @@ sub write_workspace {
       $self->{'per_project_workspace_name'} = 1;
     }
 
-    my($name)   = $self->transform_file_name($self->workspace_file_name());
-    my($outdir) = $self->get_outdir();
-    my($oname)  = $name;
-
-    $name = "$outdir/$name";
+    my($name) = $self->transform_file_name($self->workspace_file_name());
 
     my($abort_creation) = 0;
     if ($duplicates > 0) {
@@ -975,85 +1033,38 @@ sub write_workspace {
     }
 
     if (!$abort_creation) {
-      my($fh)  = new FileHandle();
-      my($dir) = $self->mpc_dirname($name);
-
       ## Verify and possibly modify the dependencies
       if ($addfile) {
         $self->verify_build_ordering();
       }
 
-      if ($dir ne '.') {
-        mkpath($dir, 0, 0777);
-      }
-
       if ($addfile || !$self->file_written($name)) {
-        $self->{'current_output'} = $name;
-        if ($self->compare_output()) {
-          ## First write the output to a temporary file
-          my($tmp) = "$outdir/MWC$>.$$";
-          my($different) = 1;
-          if (open($fh, ">$tmp")) {
-            $self->pre_workspace($fh, $creator, $addfile);
-            $self->write_comps($fh, $creator, $addfile);
+        $error = $self->write_and_compare_file(
+                          undef, $name,
+                          sub {
+                            my($self, $fh) = @_;
+                            $self->pre_workspace($fh, $creator, $addfile);
+                            $self->write_comps($fh, $creator, $addfile);
 
-            my($wsHelper) = WorkspaceHelper::get($self);
-            $wsHelper->perform_custom_processing($fh, $creator, $addfile);
+                            my $wsHelper = WorkspaceHelper::get($self);
+                            $wsHelper->perform_custom_processing($fh, $creator, $addfile);
 
-            $self->post_workspace($fh, $creator, $addfile);
-            close($fh);
-
-            if (!$self->files_are_different($name, $tmp)) {
-              $different = 0;
-            }
-          }
-          else {
-            $error = "Unable to open $tmp for output.";
-            $status = 0;
-          }
-
-          if ($status) {
-            if ($different) {
-              unlink($name);
-              if (rename($tmp, $name)) {
-                if ($addfile) {
-                  $self->add_file_written($oname);
-                }
-              }
-              else {
-                $error = 'Unable to open ' . $self->getcwd() .
-                         "/$name for output";
-                $status = 0;
-              }
-            }
-            else {
-              ## We will pretend that we wrote the file
-              unlink($tmp);
-              if ($addfile) {
-                $self->add_file_written($oname);
-              }
-            }
-          }
+                            $self->post_workspace($fh, $creator, $addfile);
+                          });
+        if (defined $error) {
+          $status = 0;
         }
         else {
-          if (open($fh, ">$name")) {
-            $self->pre_workspace($fh, $creator, $addfile);
-            $self->write_comps($fh, $creator, $addfile);
+          $self->add_file_written($name) if ($addfile);
+        }
+      }
 
-            my($wsHelper) = WorkspaceHelper::get($self);
-            $wsHelper->perform_custom_processing($fh, $creator, $addfile);
-
-            $self->post_workspace($fh, $creator, $addfile);
-            close($fh);
-
-            if ($addfile) {
-              $self->add_file_written($oname);
-            }
-          }
-          else {
-            $error = "Unable to open $name for output.";
-            $status = 0;
-          }
+      my $additional = $self->get_additional_output();
+      foreach my $entry (@$additional) {
+        $error = $self->write_and_compare_file(@$entry);
+        if (defined $error) {
+          $status = 0;
+          last;
         }
       }
 
@@ -2384,6 +2395,21 @@ sub post_workspace {
 sub requires_forward_slashes {
   #my($self) = shift;
   return 0;
+}
+
+sub get_additional_output {
+  #my $self = shift;
+
+  ## This method should return an array reference of array references.
+  ## For each entry, the array should be laid out as follows:
+  ## [ <directory or undef to use the current output directory>,
+  ##   <file name>,
+  ##   <function to write body of file, $self and $fh are first params>,
+  ##   <optional additional parameter 1>,
+  ##   ...,
+  ##   <optional additional parameter N>
+  ## ]
+  return [];
 }
 
 1;
