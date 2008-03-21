@@ -144,9 +144,7 @@ sub write_named_targets {
 
 
 sub post_workspace {
-  my($self)     = shift;
-  my($creator)  = shift;
-  my($toplevel) = shift;
+  my($self, $wsfh, $creator, $toplevel) = @_;
 
   if ($toplevel && $self->{'for_eclipse'}) {
     my($crlf)    = $self->crlf();
