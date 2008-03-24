@@ -1494,7 +1494,13 @@ sub parse_verbatim {
   if (!defined $self->{'verbatim'}->{$type}) {
     $self->{'verbatim'}->{$type} = {};
   }
-  $self->{'verbatim'}->{$type}->{$loc} = [];
+
+  ## Instead of always creating a new array for a particular type and
+  ## location, create a new array if there isn't one already.  This has
+  ## the effect of adding verbatim clauses instead of subsequently
+  ## overwriting them.
+  $self->{'verbatim'}->{$type}->{$loc} = []
+          if (!defined $self->{'verbatim'}->{$type}->{$loc});
   my($array) = $self->{'verbatim'}->{$type}->{$loc};
 
   while(<$fh>) {
