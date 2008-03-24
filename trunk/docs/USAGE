@@ -273,6 +273,12 @@ logging          - If this setting contains info=1, informational messages
                    information or warnings when processing projects or
                    workspaces.  Errors are always printed if any are
                    encountered.
+main_functions   - Provide additional main functions to be recognized in
+                   conjunction with automatic executable project
+                   recognition.  The value assigned should be of the form
+                   <language>:<func name>[, <language>:<func name>]*.  A
+                   function can be specified for all languages by just
+                   providing the function name.
 verbose_ordering - If this is set, mwc.pl will warn the user about
                    references to projects in the 'after' keyword that have
                    not been processed.

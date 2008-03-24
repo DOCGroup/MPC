@@ -235,6 +235,7 @@ my(%language) = ('cplusplus' => [ \%cppvc, \%cppec, {}    , 'main', 1 ],
                  'java'      => [ \%jvc,   {},      {}    , 'main', 0 ],
                  'vb'        => [ \%vbvc,  {},      \%vbma, 'Main', 0 ],
                 );
+my(%mains) = ();
 
 # ************************************************************
 # Subroutine Section
@@ -2441,7 +2442,7 @@ sub add_generated_files {
 
 
 sub search_for_entry {
-  my($self, $file, $main, $preproc) = @_;
+  my($self, $file, $marray, $preproc) = @_;
   my($name) = undef;
   my($fh)   = new FileHandle();
 
@@ -2492,13 +2493,19 @@ sub search_for_entry {
       }
 
       ## Check for main; Make sure it's not #if 0'ed and not commented out
-      if (!$poundifed && !$commented &&
-          (/\s+$main\s*\(/ || /^\s*$main\s*\(/)) {
-        ## If we've found a main, set the exename to the basename
-        ## of the cpp file with the extension removed
-        $name = $self->mpc_basename($file);
-        $name =~ s/\.[^\.]+$//;
-        last;
+      if (!$poundifed && !$commented) {
+        my $found = undef;
+        foreach my $main (@$marray) {
+          if (/\s+$main\s*\(/ || /^\s*$main\s*\(/) {
+            ## If we've found a main, set the exename to the basename
+            ## of the cpp file with the extension removed
+            $name = $self->mpc_basename($file);
+            $name =~ s/\.[^\.]+$//;
+            $found = 1;
+            last;
+          }
+          last if ($found);
+        }
       }
     }
     close($fh);
@@ -2509,11 +2516,17 @@ sub search_for_entry {
 
 sub find_main_file {
   my($self, $sources) = @_;
-  my($main)    = $language{$self->get_language()}->[3];
-  my($preproc) = $language{$self->get_language()}->[4];
+  my $lang    = $self->get_language();
+  my @main    = $language{$lang}->[3];
+  my $preproc = $language{$lang}->[4];
 
+  ## If additional main's have been supplied by the user for this
+  ## language type, then just push them onto the array.
+  push(@main, @{$mains{$lang}}) if (defined $mains{$lang});
+
+  ## Now search each source file until we've found a main function.
   foreach my $file (@$sources) {
-    my($exename) = $self->search_for_entry($file, $main, $preproc);
+    my $exename = $self->search_for_entry($file, \@main, $preproc);
     return $exename if (defined $exename);
   }
 
@@ -4912,6 +4925,30 @@ sub restore_state_helper {
 sub get_initial_relative_values {
   my($self) = shift;
   return $self->{'expanded'}, 1;
+}
+
+sub add_main_function {
+  my $langmain = shift;
+
+  ## See if a language was supplied.
+  if ($langmain =~ /([^:]+):(.+)/) {
+    ## If the language supplied is not one that we know about, return an
+    ## error message.
+    return 'Invalid language: ' . $1 if (!defined $language{$1});
+
+    ## Otherwise, add it to the list for the language.
+    push(@{$mains{$1}}, $2);
+  }
+  else {
+    ## No language was supplied, so add the main to all of the languages
+    ## that we support.
+    foreach my $lang (keys %language) {
+      push(@{$mains{$lang}}, $langmain);
+    }
+  }
+
+  ## Return no error message.
+  return undef;
 }
 
 # ************************************************************
