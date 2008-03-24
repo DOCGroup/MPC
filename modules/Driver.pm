@@ -31,6 +31,7 @@ my(%valid_cfg) = ('command_line'     => 1,
                   'dynamic_types'    => 1,
                   'includes'         => 1,
                   'logging'          => 1,
+                  'main_functions'   => 1,
                   'verbose_ordering' => 1,
                  );
 
@@ -356,26 +357,24 @@ sub run {
     }
   }
 
-  ## Set up the default creator, if no type is selected
-  if (!defined $options->{'creators'}->[0]) {
-    my($utype) = $cfg->get_value('default_type');
-    if (defined $utype) {
-      my($default) = $self->locate_default_type($utype);
-      if (defined $default) {
-        push(@{$options->{'creators'}}, $default);
-      }
-      else {
-        $self->error("Unable to locate the module that corresponds to " .
-                     "the '$utype' type.");
-        return 1;
-      }
-    }
-  }
-
   ## If there's still no default, issue an error
   if (!defined $options->{'creators'}->[0]) {
     $self->error('There is no longer a default project type.  Please ' .
                  'specify one in MPC.cfg or use the -type option.');
+    return 1;
+  }
+
+  ## Set up additional main functions to recognize
+  my $val = $cfg->get_value('main_functions');
+  if (defined $val) {
+    foreach my $main (split(/\s*,\s*/, $val)) {
+      my $err = ProjectCreator::add_main_function($main);
+      if (defined $err) {
+        $self->error("$err at line " . $cfg->get_line_number() .
+                     " of $cfgfile");
+        return 1;
+      }
+    }
   }
 
   if ($options->{'recurse'}) {
