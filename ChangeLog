@@ -1,3 +1,10 @@
+Mon Mar 24 17:10:23 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Changed 'verbatim' to add to existing verbatim settings instead of
+          overwritting them.
+
 Mon Mar 24 15:18:28 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/USAGE:
