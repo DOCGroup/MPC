@@ -239,7 +239,7 @@ staticflags     Specifies preprocessor flags needed for static libraries
 verbatim        This allows arbitrary information to be place in a generated
                 project file.  The syntax is as follows:
 
-                verbatim(<project type>, <location>) {
+                verbatim(<project type>, <location>[, 1]) {
                   ..
                   ..
                 }
@@ -247,8 +247,11 @@ verbatim        This allows arbitrary information to be place in a generated
                 When MPC is generating a project of type <project type> and
                 comes upon a marker that matches the <location> name, it
                 will place the text found inside the construct directly into
-                the generated project.  If you need to preserve white space,
-                the line or lines should be placed inside double quotes.
+                the generated project.  If the third and optional parameter is
+                passed and is true, the verbatim section will be added to
+                existing verbatim settings at the same location.  If you need
+                to preserve white space, the line or lines should be placed
+                inside double quotes.
 
 specific        This scope allows assignments that are specific to a
                 particular project type.  The syntax is as follows:
