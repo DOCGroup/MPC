@@ -900,8 +900,9 @@ sub parse_line {
       }
       else {
         if ($comp eq 'verbatim') {
-          my($type, $loc) = split(/\s*,\s*/, $name);
-          ($status, $errorString) = $self->parse_verbatim($ih, $type, $loc);
+          my($type, $loc, $add) = split(/\s*,\s*/, $name);
+          ($status, $errorString) = $self->parse_verbatim($ih, $type,
+                                                          $loc, $add);
         }
         elsif ($comp eq 'specific') {
           my($type) = $self->get_process_project_type($name);
@@ -1482,7 +1483,7 @@ sub parse_components {
 
 
 sub parse_verbatim {
-  my($self, $fh, $type, $loc) = @_;
+  my($self, $fh, $type, $loc, $add) = @_;
 
   if (!defined $loc) {
     return 0, 'You must provide a location parameter to verbatim';
@@ -1496,11 +1497,10 @@ sub parse_verbatim {
   }
 
   ## Instead of always creating a new array for a particular type and
-  ## location, create a new array if there isn't one already.  This has
-  ## the effect of adding verbatim clauses instead of subsequently
-  ## overwriting them.
+  ## location, create a new array if there isn't one already or the user
+  ## does not want to add to the existing verbatim settings.
   $self->{'verbatim'}->{$type}->{$loc} = []
-          if (!defined $self->{'verbatim'}->{$type}->{$loc});
+          if (!$add || !defined $self->{'verbatim'}->{$type}->{$loc});
   my($array) = $self->{'verbatim'}->{$type}->{$loc};
 
   while(<$fh>) {
