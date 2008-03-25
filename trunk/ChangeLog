@@ -1,3 +1,8 @@
+Tue Mar 25 14:35:19 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrproject.mpd:
+          Added support for link_group
+
 Tue Mar 25 11:43:40 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
