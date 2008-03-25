@@ -1,3 +1,16 @@
+Tue Mar 25 11:43:40 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+
+          Documented the new third and optional parameter to verbatim which
+          allows the addition of verbatim sections instead of overwriting.
+
+        * modules/ProjectCreator.pm:
+
+          Require a parameter to verbatim to enable the verbatim addition
+          feature.  Some existing ACE and TAO MPC files rely on the
+          overwriting behavior of verbatim.
+
 Mon Mar 24 17:10:23 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
