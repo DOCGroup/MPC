@@ -148,7 +148,7 @@
         <buildtarget buildtool="Partial Image Linker" name="PartialImage" passed="true" targetname="PartialImage">
             <attributes>
                 <mapAttribute>
-                    <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)ccppc -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) $(PARTIAL_LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
+                    <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)ccppc -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) <%if(link_groups)%>-Wl,--start-group<%endif%> $(PARTIAL_LIBS) <%if(link_groups)%>-Wl,--end-group<%endif%> $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
                 </mapAttribute>
             </attributes>
             <contents>
