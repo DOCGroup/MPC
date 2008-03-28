@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// $Id$
+
+project: mfc {
+  requires += unicode
+  specific {
+    unicode = 1
+  }
+}

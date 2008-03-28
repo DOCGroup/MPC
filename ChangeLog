@@ -1,3 +1,8 @@
+Fri Mar 28 15:30:00 UTC 2008  Simon Massey  <simon dot massey at prismtech dot com>
+
+        * config/unicode.mpb:
+          Allow for the already built-in unicode feature support to be recognised.
+
 Tue Mar 25 14:35:19 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrproject.mpd:
