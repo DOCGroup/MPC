@@ -22,6 +22,7 @@ qt            = 0
 rpc           = 0
 swig_java     = 0
 swig_perl     = 0
+unicode       = 0
 xerces        = 0
 xalanc        = 0
 ziparchive    = 0
