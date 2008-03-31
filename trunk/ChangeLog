@@ -1,6 +1,14 @@
+Mon Mar 31 12:36:58 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/wb26wrproject.txt:
+
+          Added documentation for the template variables for the
+          wb26wrproject template.
+
 Fri Mar 28 15:30:00 UTC 2008  Simon Massey  <simon dot massey at prismtech dot com>
 
         * config/unicode.mpb:
+        * config/global.features:
           Allow for the already built-in unicode feature support to be recognised.
 
 Tue Mar 25 14:35:19 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
