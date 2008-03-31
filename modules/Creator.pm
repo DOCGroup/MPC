@@ -1027,9 +1027,11 @@ sub expand_variables {
   my($warn)            = shift;
   my($cwd)             = $self->getcwd();
   my($start)           = 0;
+  my $forward_slashes  = $self->{'convert_slashes'} ||
+                         $self->{'requires_forward_slashes'};
 
   ## Fix up the value for Windows switch the \\'s to /
-  $cwd =~ s/\\/\//g if ($self->{'convert_slashes'});
+  $cwd =~ s/\\/\//g if ($forward_slashes);
 
   while(substr($value, $start) =~ /(\$\(([^)]+)\))/) {
     my($whole) = $1;
@@ -1037,13 +1039,13 @@ sub expand_variables {
     if (defined $$rel{$name}) {
       my($val) = $$rel{$name};
       if ($expand) {
-        $val =~ s/\//\\/g if ($self->{'convert_slashes'});
+        $val =~ s/\//\\/g if ($forward_slashes);
         substr($value, $start) =~ s/\$\([^)]+\)/$val/;
         $whole = $val;
       }
       else {
         ## Fix up the value for Windows switch the \\'s to /
-        $val =~ s/\\/\//g if ($self->{'convert_slashes'});
+        $val =~ s/\\/\//g if ($forward_slashes);
 
         my($icwd) = ($self->{'case_tolerant'} ? lc($cwd) : $cwd);
         my($ival) = ($self->{'case_tolerant'} ? lc($val) : $val);
@@ -1164,6 +1166,11 @@ sub relative {
       return \@built;
     }
     elsif (index($value, '$') >= 0) {
+      ## A form of this code lives in
+      ## ProjectCreator::create_recursive_settings.  If you are changing
+      ## something in this area, please look at the method in
+      ## ProjectCreator.pm to see if it needs changing too.
+
       my($ovalue) = $value;
       my($rel, $how) = $self->get_initial_relative_values();
       $value = $self->expand_variables($value, $rel,

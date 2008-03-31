@@ -1,3 +1,12 @@
+Mon Mar 31 13:46:46 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Modified expand_variables() to convert back slashes to forward
+          slashes if the the 'convert_slashes' or the
+          'requires_forward_slashes' data members are set to true.  This is
+          the case for the wb26 project type.
+
 Mon Mar 31 12:36:58 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/wb26wrproject.txt:
