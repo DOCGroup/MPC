@@ -1,3 +1,8 @@
+Wed Mar  2 18:58:46 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrproject.mpd:
+          Added support for linkflags
+
 Mon Mar 31 13:46:46 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
