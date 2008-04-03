@@ -82,7 +82,7 @@
             <stringAttribute key="BLD::Info|Tool|C-Compiler|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%ccompilerprefix% $(TOOL_PATH)ccppc %DebugModeFlags% %ToolFlags% $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|dbgFlags|PPC604gnu" value="-g"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|derivedSigs|PPC604gnu" value="*.o"/>
-            <stringAttribute key="BLD::Info|Tool|C-Compiler|flags|PPC604gnu" value="$(CC_ARCH_SPEC) -ansi  -Wall  -MD -MP"/>
+            <stringAttribute key="BLD::Info|Tool|C-Compiler|flags|PPC604gnu" value="$(CC_ARCH_SPEC) -Wall  -MD -MP"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|nonDbgFlags|PPC604gnu" value="-O2 -fstrength-reduce -fno-builtin"/>
             <booleanAttribute key="BLD::Info|Tool|C-Compiler|object" value="true"/>
             <booleanAttribute key="BLD::Info|Tool|C-Compiler|passAble" value="false"/>
