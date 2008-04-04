@@ -20,6 +20,7 @@ fixedbaseaddress = This corresponds to the Linker Advanced property "Fixed Base 
 generatemapfile = This corresponds to the Linker Debugging property "Generate Map File". The boolean value specifies the pull-down value in the IDE.
 guid = The value for this variable is generated during project generation.
 ignore_default_library_names = The value for this is evaluated as a space separated list of default library names to ignore. It corresponds to the Linker Input property "Ignore Specific Library".
+ignorealldefaultlibraries = Ignore all default libraries during linking.
 inlinefunctionexpansion = This corresponds to the C/C++ Optimization property "Inline Function Expansion". A value of 1 indicates /Ob1 (inline only those designated to be inlined). A value of 2 indicates /Ob2 (inline any suitable function).
 link_options = Allows passing arbitrary options to the linker.
 linkincremental = This setting corresponds to the Linker General property "Enable Incremental Linking". The values 1 and 2 correspond to NO and YES respectively.
