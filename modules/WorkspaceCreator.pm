@@ -2285,7 +2285,7 @@ sub create_command_line_string {
 
   foreach my $arg (@args) {
     $arg =~ s/^\-\-/-/;
-    $arg = "\"$arg\"" if ($arg =~ /\s/);
+    $arg = "\"$arg\"" if ($arg =~ /[\s\*]/);
     if (defined $str) {
       $str .= " $arg";
     }
