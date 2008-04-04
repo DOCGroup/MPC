@@ -1,3 +1,21 @@
+Fri Apr  4 11:26:34 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/boost_unit_test_framework.mpb:
+
+          Committing this on behalf of Kevin Heifner <heifnerk@ociweb.com>.
+
+          Starting with Boost 1.34 unit_test has had auto linking on
+          Windows.  Starting with Boost 1.35 having the explicit along with
+          the auto linking caused crashing on exit of compiled applications.
+          This change removes the explict lib for most Window compilers.
+          vc6 and vc7 will still use explicit linking on the grounds that
+          they will likely be using a pre-1.34 version of Boost. 
+
+        * modules/WorkspaceCreator.pm:
+
+          When printing the MPC options into the workspace, enclose the
+          parameter in double quotes if it contains a '*' charater too.
+
 Thu Mar  3 07:02:46 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrproject.mpd:
