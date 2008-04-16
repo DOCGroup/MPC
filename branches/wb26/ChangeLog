@@ -1,3 +1,10 @@
+Wed Apr 16 20:13:52 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
+
+        * templates/wb26wrmakefile.mpd:
+
+          In the generate_sources rule, replace spaces with a tab. The spaces
+          causes errors in WorkBench 2.6 when we clean the project.
+
 Mon Mar  7 08:24:46 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * docs/templates/wb26wrproject.txt:
