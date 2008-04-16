@@ -42,8 +42,12 @@ sub project_file_name {
   $name = $self->project_name() if (!defined $name);
   $template = 'wb26' if (!defined $template);
 
-  return $self->get_modified_project_file_name($name,
-                                               '/' . $templates{$template});
+  if ($self->{'make_coexistence'}) {
+    return $self->get_modified_project_file_name($name,
+                                                 '/' . $templates{$template});
+  } else {
+    return ($templates{$template});
+  }
 }
 
 sub get_template {

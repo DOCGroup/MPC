@@ -119,9 +119,14 @@
                 <stringAttribute value="PPC604gnu"/>
             </listAttribute>
             <intAttribute key="BuildSupportEnabled" value="1"/>
+<%if(standard_build)%>
+            <booleanAttribute key="BuildTargetCentric" value="false"/>
+<%else%>
             <booleanAttribute key="BuildTargetCentric" value="true"/>
+<%endif%>
         </mapAttribute>
     </attributes>
+<%if(!standard_build)%>
     <buildtargets>
 <%if(exename)%>
         <buildtarget buildtool="Linker" name="<%exename%>" passed="true" targetname="<%exename%>">
@@ -161,5 +166,6 @@
         </buildtarget>
 <%endif%>
     </buildtargets>
+<%endif%>
 </wrxml>
 

@@ -14,6 +14,7 @@ lib_modifier = Used to modifier a library name.  The value of this is appendend 
 lib_prefix = The dynamic and static library prefix.  The value for this depends on the project type.
 libname_prefix = This is a prefix that will be prepended to the actual library name (ex. libXY.so where X is libname_prefix and Y is sharedname).
 linkflags = Flags that are passed during the creation of dynamic libraries and executables.
+make_coexistence = This will be true if the -make_coexistence option was passed to MPC.
 need_staticflags = This will be true if the project is a static project.
 optimize = Indicate if the project will be optimized or not.
 output_dir = A configuration specific output directory for output targets.

@@ -15,6 +15,7 @@
 		<nature>com.windriver.ide.core.wrnature</nature>
 		<nature>com.windriver.ide.core.wrcorenature</nature>
 	</natures>
+<%if(!standard_build)%>
 	<linkedResources>
 <%if(source_files)%>
 <%foreach(source_files)%>
@@ -53,4 +54,5 @@
 <%endif%>
 <%endif%>
 	</linkedResources>
+<%endif%>
 </projectDescription>
