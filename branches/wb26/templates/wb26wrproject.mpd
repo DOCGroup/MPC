@@ -127,7 +127,7 @@
                 <stringAttribute value="<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>_partialImage"/>
             </listAttribute>
             <stringAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>_partialImage|ToolName" value="Partial Image Linker"/>
-            <booleanAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>_partialImage|passed" value="false"/>
+            <booleanAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>_partialImage|passed" value="true"/>
             <listAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>_partialImage|refs"/>
             <stringAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>|ToolName" value="Linker"/>
             <booleanAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>|passed" value="false"/>
@@ -141,12 +141,12 @@
 <%if(!standard_build)%>
     <buildtargets>
 <%if(exename)%>
-        <buildtarget buildtool="Linker" name="<%exename%>" passed="false" targetname="<%exename%>">
+        <buildtarget buildtool="Linker" name="<%exename%>" passed="true" targetname="<%exename%>">
 <%else%>
 <%if(sharedname || staticname)%>
-        <buildtarget buildtool="Librarian" name="<%if(sharedname)%>lib<%sharedname%><%else%>lib<%staticname%><%endif%>" passed="false" targetname="<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>">
+        <buildtarget buildtool="Librarian" name="<%if(sharedname)%>lib<%sharedname%><%else%>lib<%staticname%><%endif%>" passed="true" targetname="<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>">
 <%else%>
-        <buildtarget buildtool="Linker" name="<%exename%>" passed="false" targetname="<%exename%>">
+        <buildtarget buildtool="Linker" name="<%exename%>" passed="true" targetname="<%exename%>">
 <%endif%>
 <%endif%>
             <contents>
@@ -162,7 +162,7 @@
             </contents>
         </buildtarget>
 <%if(exename)%>
-        <buildtarget buildtool="Partial Image Linker" name="PartialImage" passed="false" targetname="PartialImage">
+        <buildtarget buildtool="Partial Image Linker" name="PartialImage" passed="true" targetname="PartialImage">
             <attributes>
                 <mapAttribute>
                     <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)ccppc -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) <%if(linkflags)%> <%linkflags%><%endif%><%if(link_groups)%>-Wl,--start-group<%endif%> $(PARTIAL_LIBS) <%if(link_groups)%>-Wl,--end-group<%endif%> $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
