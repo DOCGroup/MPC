@@ -108,13 +108,13 @@ deploy_output ::
 <%if(exeout)%>
 	PROJECT_TARGET=$(filter  %.out,$(PROJECT_TARGETS));\
 	if [ "$$PROJECT_TARGET" != "" ]; then\
-		cp "$(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)" "<%exeout%>";\
+		cp $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%exeout%>;\
 	fi
 <%else%>
 <%if(sharedname || staticname)%>
-	PROJECT_TARGET=$(filter  %.out,$(PROJECT_TARGETS));\
+	PROJECT_TARGET=$(filter  %.a,$(PROJECT_TARGETS));\
 	if [ "$$PROJECT_TARGET" != "" ]; then\
-		cp "$(OBJ_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)" "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>";\
+		cp $(OBJ_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>;\
 	fi
 <%endif%>
 <%endif%>
