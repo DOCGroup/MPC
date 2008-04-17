@@ -103,6 +103,22 @@ deploy_output ::
 	cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
 <%endif%>
 <%endif%>
+<%else%>
+<%if(exename)%>
+<%if(exeout)%>
+	PROJECT_TARGET=$(filter  %.out,$(PROJECT_TARGETS));\
+	if [ "$$PROJECT_TARGET" != "" ]; then\
+		cp "$(OBJ_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)" "<%exeout%>";\
+	fi
+<%else%>
+<%if(sharedname || staticname)%>
+	PROJECT_TARGET=$(filter  %.out,$(PROJECT_TARGETS));\
+	if [ "$$PROJECT_TARGET" != "" ]; then\
+		cp "$(OBJ_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)" "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>";\
+	fi
+<%endif%>
+<%endif%>
+<%endif%>
 <%endif%>
 	@echo ""
 
@@ -154,11 +170,17 @@ external_clean ::
 <%endfor%>
 <%if(exename)%>
 <%if(exeout)%>
-	rm -f <%exeout%>/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
+	PROJECT_TARGET=$(filter  %.out,$(PROJECT_TARGETS));\
+	if [ "$$PROJECT_TARGET" != "" ]; then\
+		rm -f "<%exeout%>/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)";\
+	fi
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
-	rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
+	PROJECT_TARGET=$(filter  %.out,$(PROJECT_TARGETS));\
+	if [ "$$PROJECT_TARGET" != "" ]; then\
+		rm -f "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)";\
+	fi
 <%endif%>
 <%endif%>
 	@echo ""
