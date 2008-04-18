@@ -96,11 +96,17 @@ deploy_output ::
 <%if(!standard_build)%>
 <%if(exename)%>
 <%if(exeout)%>
+	if [ ! -d <%exeout%> ]; then\
+		mkdir -p <%exeout%>;\
+	fi;\
 	cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%exeout%>
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
 <%if(libout || dllout)%>
+	if [ ! -d <%if(dllout)%><%dllout%><%else%><%libout%><%endif%> ]; then\
+		mkdir -p <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>;\
+	fi;\
 	cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
 <%endif%>
 <%endif%>
@@ -110,6 +116,9 @@ deploy_output ::
 <%if(exeout)%>
 	PROJECT_TARGET=$(filter %<%exe_ext%>,$(PROJECT_TARGETS));\
 	if [ "$$PROJECT_TARGET" != "" ]; then\
+		if [ ! -d <%exeout%> ]; then\
+			mkdir -p <%exeout%>;\
+		fi;\
 		if test -e <%exeout%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); then \
 			if test $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) -nt <%exeout%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); then \
 				cp $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%exeout%>;\
@@ -124,6 +133,9 @@ deploy_output ::
 <%if(libout || dllout)%>
 	PROJECT_TARGET=$(filter  %<%lib_ext%>,$(PROJECT_TARGETS));\
 	if [ "$$PROJECT_TARGET" != "" ]; then\
+		if [ ! -d <%if(dllout)%><%dllout%><%else%><%libout%><%endif%> ]; then\
+			mkdir -p <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>;\
+		fi;\
 		if test -e <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); then \
 			if test $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) -nt <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); then \
 				cp $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>;\
