@@ -70,7 +70,7 @@
 <%foreach(buildspecs)%>
             <stringAttribute key="BLD::Info|Tool|Assembler|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%assemblerprefix% $(TOOL_PATH)<%cxx%> %DebugModeFlags% %ToolFlags% $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
             <stringAttribute key="BLD::Info|Tool|Assembler|dbgFlags|<%buildspec%>" value="<%ass_dbgflags%>"/>
-            <stringAttribute key="BLD::Info|Tool|Assembler|derivedSigs|<%buildspec%>" value="*.o"/>
+            <stringAttribute key="BLD::Info|Tool|Assembler|derivedSigs|<%buildspec%>" value="<%ass_derivedsigs%>"/>
             <stringAttribute key="BLD::Info|Tool|Assembler|flags|<%buildspec%>" value="$(CC_ARCH_SPEC) <%ass_flags%>"/>
             <stringAttribute key="BLD::Info|Tool|Assembler|nonDbgFlags|<%buildspec%>" value="<%ass_nondbgflags%>"/>
 <%endfor%>
@@ -80,7 +80,7 @@
 <%foreach(buildspecs)%>
             <stringAttribute key="BLD::Info|Tool|C++-Compiler|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%cppcompilerprefix% $(TOOL_PATH)<%cxx%> %DebugModeFlags% %ToolFlags% $(ADDED_C++FLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
             <stringAttribute key="BLD::Info|Tool|C++-Compiler|dbgFlags|<%buildspec%>" value="<%cxx_dbgflags%>"/>
-            <stringAttribute key="BLD::Info|Tool|C++-Compiler|derivedSigs|<%buildspec%>" value="*.o"/>
+            <stringAttribute key="BLD::Info|Tool|C++-Compiler|derivedSigs|<%buildspec%>" value="<%cxx_derivedsigs%>"/>
             <stringAttribute key="BLD::Info|Tool|C++-Compiler|flags|<%buildspec%>" value="$(CC_ARCH_SPEC) <%cxx_flags%>"/>
             <stringAttribute key="BLD::Info|Tool|C++-Compiler|nonDbgFlags|<%buildspec%>" value="<%cxx_nondbgflags%>"/>
 <%endfor%>
@@ -90,7 +90,7 @@
 <%foreach(buildspecs)%>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%ccompilerprefix% $(TOOL_PATH)<%cxx%> %DebugModeFlags% %ToolFlags% $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|dbgFlags|<%buildspec%>" value="<%c_dbgflags%>"/>
-            <stringAttribute key="BLD::Info|Tool|C-Compiler|derivedSigs|<%buildspec%>" value="*.o"/>
+            <stringAttribute key="BLD::Info|Tool|C-Compiler|derivedSigs|<%buildspec%>" value="<%c_derivedsigs%>"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|flags|<%buildspec%>" value="$(CC_ARCH_SPEC) <%c_flags%>"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|nonDbgFlags|<%buildspec%>" value="<%c_nondbgflags%>"/>
 <%endfor%>
@@ -100,7 +100,7 @@
 <%foreach(buildspecs)%>
             <stringAttribute key="BLD::Info|Tool|Librarian|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%archiverprefix% $(TOOL_PATH)<%ar%> %ToolFlags% %OutFile% %Objects% $(ADDED_OBJECTS)"/>
             <stringAttribute key="BLD::Info|Tool|Librarian|dbgFlags|<%buildspec%>" value="<%ar_dbgflags%>"/>
-            <stringAttribute key="BLD::Info|Tool|Librarian|derivedSigs|<%buildspec%>" value="*<%ar_ext%>"/>
+            <stringAttribute key="BLD::Info|Tool|Librarian|derivedSigs|<%buildspec%>" value="*<%ar_derivedsigs%>"/>
             <stringAttribute key="BLD::Info|Tool|Librarian|flags|<%buildspec%>" value="<%ar_flags%>"/>
             <stringAttribute key="BLD::Info|Tool|Librarian|nonDbgFlags|<%buildspec%>" value="<%ar_nondbgflags%>"/>
 <%endfor%>
@@ -120,7 +120,7 @@
 <%foreach(buildspecs)%>
             <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)<%cxx%> -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) $(LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS) $(PARTIAL_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
             <stringAttribute key="BLD::Info|Tool|Partial Image Linker|dbgFlags|<%buildspec%>" value="<%part_dbgflags%>"/>
-            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|derivedSigs|<%buildspec%>" value="*.o"/>
+            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|derivedSigs|<%buildspec%>" value="<%part_derivedsigs%>"/>
             <stringAttribute key="BLD::Info|Tool|Partial Image Linker|flags|<%buildspec%>" value="<%part_flags%>"/>
             <stringAttribute key="BLD::Info|Tool|Partial Image Linker|nonDbgFlags|<%buildspec%>" value="<%part_nondbgflags%>"/>
 <%endfor%>
