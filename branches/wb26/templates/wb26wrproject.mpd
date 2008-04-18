@@ -47,7 +47,7 @@
             <stringAttribute key="BLD::Info|Macro|CPU|value|<%buildspec%>" value="<%cpu%>"/>
             <stringAttribute key="BLD::Info|Macro|LIBPATH|value|<%buildspec%>" value="<%foreach(libpaths)%><%fornotfirst(" ")%>-L<%libpath%><%endfor%>"/>
             <stringAttribute key="BLD::Info|Macro|LIBS|value|<%buildspec%>" value=""/>
-            <stringAttribute key="BLD::Info|Macro|PARTIAL_LIBS|value|<%buildspec%>" value="<%foreach(libs)%><%fornotfirst(" ")%>-l<%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"/>
+            <stringAttribute key="BLD::Info|Macro|PARTIAL_LIBS|value|<%buildspec%>" value="<%foreach(libs)%><%fornotfirst(" ")%>-l<%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%if(!standard_build)%><%lib_ext%><%endif%><%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"/>
             <stringAttribute key="BLD::Info|Macro|TOOL_FAMILY|value|<%buildspec%>" value="<%tool_family%>"/>
             <stringAttribute key="BLD::Info|Macro|TOOL_PATH|value|<%buildspec%>" value=""/>
             <stringAttribute key="BLD::Info|Macro|TOOL|value|<%buildspec%>" value="<%tool%>"/>
