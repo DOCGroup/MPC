@@ -16,7 +16,7 @@ includedir =
 // Build Specs Section
 // ***********************************************************************
 
-buildspecs = PPC604gnu
+buildspecs = PPC604gnu PPC603gnu PENTIUM4gnu
 default_buildspec = PPC604gnu
 
 PPC603gnu {

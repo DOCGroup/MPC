@@ -128,7 +128,7 @@
             <booleanAttribute key="BLD::Info|Tool|Partial Image Linker|passAble" value="true"/>
             <stringAttribute key="BLD::Info|Tool|Partial Image Linker|sigs" value=""/>
             <stringAttribute key="BLD::Info|cmd" value="%makeprefix% make --no-print-directory"/>
-            <stringAttribute key="BLD::Info|defaultSpec" value="PPC604gnu"/>
+            <stringAttribute key="BLD::Info|defaultSpec" value="<%default_buildspec%>"/>
 <%foreach(buildspecs)%>
             <stringAttribute key="BLD::Info|redirDir|<%buildspec%>" value="<%buildspec%>"/>
 <%endfor%>
