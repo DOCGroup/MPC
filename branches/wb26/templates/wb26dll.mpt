@@ -7,8 +7,28 @@ lib_prefix = lib
 lib_ext    = .a
 dll_ext    =
 exe_ext    = .out
+ar_ext     = .a
 
 linkflags =
 includedir =
+
+// ***********************************************************************
+// Build Specs Section
+// ***********************************************************************
+
+buildspecs = PPC604gnu
+default_buildspec = PPC604gnu
+
+PPC604gnu {
+  cc_arch_spec = -mcpu=604 -mstrict-align -mno-implicit-fp -mlongcall
+  cpu = PPC604
+  tool_family = gnu
+  tool = gnu
+  vx_cpu_family = ppc
+  cxx = ccppc
+  ar = arppc
+  nm = nmppc
+  munchflag = ppc
+}
 
 conditional_include "user_wb26dll"

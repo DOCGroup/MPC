@@ -22,13 +22,15 @@
             <stringAttribute key="BLD::Info|GlobalMacro|EXPAND_DBG" value="0"/>
             <stringAttribute key="BLD::Info|GlobalMacro|PROJECT_TYPE" value="DKM"/>
 <%endif%>
-            <listAttribute key="BLD::Info|Incl|PPC604gnu">
+<%foreach(buildspecs)%>
+            <listAttribute key="BLD::Info|Incl|<%buildspec%>">
                 <stringAttribute value="-I$(WIND_BASE)/target/h"/>
                 <stringAttribute value="-I$(WIND_BASE)/target/h/wrn/coreip"/>
 <%foreach(includes)%>
                 <stringAttribute value="-I<%include%>"/>
 <%endfor%>
             </listAttribute>
+<%endfor%>
             <listAttribute key="BLD::Info|Macros">
                 <stringAttribute value="VX_CPU_FAMILY"/>
                 <stringAttribute value="CPU"/>
@@ -40,15 +42,17 @@
                 <stringAttribute value="LIBS"/>
                 <stringAttribute value="PARTIAL_LIBS"/>
             </listAttribute>
-            <stringAttribute key="BLD::Info|Macro|CC_ARCH_SPEC|value|PPC604gnu" value="-mcpu=604 -mstrict-align -mno-implicit-fp -mlongcall"/>
-            <stringAttribute key="BLD::Info|Macro|CPU|value|PPC604gnu" value="PPC604"/>
-            <stringAttribute key="BLD::Info|Macro|LIBPATH|value|PPC604gnu" value="<%foreach(libpaths)%><%fornotfirst(" ")%>-L<%libpath%><%endfor%>"/>
-            <stringAttribute key="BLD::Info|Macro|LIBS|value|PPC604gnu" value=""/>
-            <stringAttribute key="BLD::Info|Macro|PARTIAL_LIBS|value|PPC604gnu" value="<%foreach(libs)%><%fornotfirst(" ")%>-l<%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"/>
-            <stringAttribute key="BLD::Info|Macro|TOOL_FAMILY|value|PPC604gnu" value="gnu"/>
-            <stringAttribute key="BLD::Info|Macro|TOOL_PATH|value|PPC604gnu" value=""/>
-            <stringAttribute key="BLD::Info|Macro|TOOL|value|PPC604gnu" value="gnu"/>
-            <stringAttribute key="BLD::Info|Macro|VX_CPU_FAMILY|value|PPC604gnu" value="ppc"/>
+<%foreach(buildspecs)%>
+            <stringAttribute key="BLD::Info|Macro|CC_ARCH_SPEC|value|<%buildspec%>" value="<%cc_arch_spec%>"/>
+            <stringAttribute key="BLD::Info|Macro|CPU|value|<%buildspec%>" value="<%cpu%>"/>
+            <stringAttribute key="BLD::Info|Macro|LIBPATH|value|<%buildspec%>" value="<%foreach(libpaths)%><%fornotfirst(" ")%>-L<%libpath%><%endfor%>"/>
+            <stringAttribute key="BLD::Info|Macro|LIBS|value|<%buildspec%>" value=""/>
+            <stringAttribute key="BLD::Info|Macro|PARTIAL_LIBS|value|<%buildspec%>" value="<%foreach(libs)%><%fornotfirst(" ")%>-l<%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"/>
+            <stringAttribute key="BLD::Info|Macro|TOOL_FAMILY|value|<%buildspec%>" value="<%tool_family%>"/>
+            <stringAttribute key="BLD::Info|Macro|TOOL_PATH|value|<%buildspec%>" value=""/>
+            <stringAttribute key="BLD::Info|Macro|TOOL|value|<%buildspec%>" value="<%tool%>"/>
+            <stringAttribute key="BLD::Info|Macro|VX_CPU_FAMILY|value|<%buildspec%>" value="<%vx_cpu_family%>"/>
+<%endfor%>
             <listAttribute key="BLD::Info|Tools">
                 <stringAttribute value="C-Compiler"/>
                 <stringAttribute value="C++-Compiler"/>
@@ -63,60 +67,76 @@
 <%endif%>
                 <stringAttribute value="Assembler"/>
             </listAttribute>
-            <stringAttribute key="BLD::Info|Tool|Assembler|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%assemblerprefix% $(TOOL_PATH)ccppc %DebugModeFlags% %ToolFlags% $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
-            <stringAttribute key="BLD::Info|Tool|Assembler|dbgFlags|PPC604gnu" value="-g"/>
-            <stringAttribute key="BLD::Info|Tool|Assembler|derivedSigs|PPC604gnu" value="*.o"/>
-            <stringAttribute key="BLD::Info|Tool|Assembler|flags|PPC604gnu" value="$(CC_ARCH_SPEC) -ansi   -xassembler-with-cpp -MD -MP"/>
-            <stringAttribute key="BLD::Info|Tool|Assembler|nonDbgFlags|PPC604gnu" value="-O2 -fstrength-reduce -fno-builtin"/>
+<%foreach(buildspecs)%>
+            <stringAttribute key="BLD::Info|Tool|Assembler|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%assemblerprefix% $(TOOL_PATH)<%cxx%> %DebugModeFlags% %ToolFlags% $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
+            <stringAttribute key="BLD::Info|Tool|Assembler|dbgFlags|<%buildspec%>" value="-g"/>
+            <stringAttribute key="BLD::Info|Tool|Assembler|derivedSigs|<%buildspec%>" value="*.o"/>
+            <stringAttribute key="BLD::Info|Tool|Assembler|flags|<%buildspec%>" value="$(CC_ARCH_SPEC) -ansi   -xassembler-with-cpp -MD -MP"/>
+            <stringAttribute key="BLD::Info|Tool|Assembler|nonDbgFlags|<%buildspec%>" value="-O2 -fstrength-reduce -fno-builtin"/>
+<%endfor%>
             <booleanAttribute key="BLD::Info|Tool|Assembler|object" value="true"/>
             <booleanAttribute key="BLD::Info|Tool|Assembler|passAble" value="false"/>
             <stringAttribute key="BLD::Info|Tool|Assembler|sigs" value="*.s"/>
-            <stringAttribute key="BLD::Info|Tool|C++-Compiler|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%cppcompilerprefix% $(TOOL_PATH)ccppc %DebugModeFlags% %ToolFlags% $(ADDED_C++FLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
-            <stringAttribute key="BLD::Info|Tool|C++-Compiler|dbgFlags|PPC604gnu" value="-g"/>
-            <stringAttribute key="BLD::Info|Tool|C++-Compiler|derivedSigs|PPC604gnu" value="*.o"/>
-            <stringAttribute key="BLD::Info|Tool|C++-Compiler|flags|PPC604gnu" value="$(CC_ARCH_SPEC) -ansi -Wall -MD -MP -fexceptions -frtti -fweak -Wunused"/>
-            <stringAttribute key="BLD::Info|Tool|C++-Compiler|nonDbgFlags|PPC604gnu" value="-O2 -fstrength-reduce -fno-builtin"/>
+<%foreach(buildspecs)%>
+            <stringAttribute key="BLD::Info|Tool|C++-Compiler|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%cppcompilerprefix% $(TOOL_PATH)<%cxx%> %DebugModeFlags% %ToolFlags% $(ADDED_C++FLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
+            <stringAttribute key="BLD::Info|Tool|C++-Compiler|dbgFlags|<%buildspec%>" value="-g"/>
+            <stringAttribute key="BLD::Info|Tool|C++-Compiler|derivedSigs|<%buildspec%>" value="*.o"/>
+            <stringAttribute key="BLD::Info|Tool|C++-Compiler|flags|<%buildspec%>" value="$(CC_ARCH_SPEC) -ansi -Wall -MD -MP -fexceptions -frtti -fweak -Wunused"/>
+            <stringAttribute key="BLD::Info|Tool|C++-Compiler|nonDbgFlags|<%buildspec%>" value="-O2 -fstrength-reduce -fno-builtin"/>
+<%endfor%>
             <booleanAttribute key="BLD::Info|Tool|C++-Compiler|object" value="true"/>
             <booleanAttribute key="BLD::Info|Tool|C++-Compiler|passAble" value="false"/>
             <stringAttribute key="BLD::Info|Tool|C++-Compiler|sigs" value="*.cpp;*.C;*.cxx;*.cc"/>
-            <stringAttribute key="BLD::Info|Tool|C-Compiler|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%ccompilerprefix% $(TOOL_PATH)ccppc %DebugModeFlags% %ToolFlags% $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
-            <stringAttribute key="BLD::Info|Tool|C-Compiler|dbgFlags|PPC604gnu" value="-g"/>
-            <stringAttribute key="BLD::Info|Tool|C-Compiler|derivedSigs|PPC604gnu" value="*.o"/>
-            <stringAttribute key="BLD::Info|Tool|C-Compiler|flags|PPC604gnu" value="$(CC_ARCH_SPEC) -Wall  -MD -MP"/>
-            <stringAttribute key="BLD::Info|Tool|C-Compiler|nonDbgFlags|PPC604gnu" value="-O2 -fstrength-reduce -fno-builtin"/>
+<%foreach(buildspecs)%>
+            <stringAttribute key="BLD::Info|Tool|C-Compiler|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%ccompilerprefix% $(TOOL_PATH)<%cxx%> %DebugModeFlags% %ToolFlags% $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
+            <stringAttribute key="BLD::Info|Tool|C-Compiler|dbgFlags|<%buildspec%>" value="-g"/>
+            <stringAttribute key="BLD::Info|Tool|C-Compiler|derivedSigs|<%buildspec%>" value="*.o"/>
+            <stringAttribute key="BLD::Info|Tool|C-Compiler|flags|<%buildspec%>" value="$(CC_ARCH_SPEC) -Wall  -MD -MP"/>
+            <stringAttribute key="BLD::Info|Tool|C-Compiler|nonDbgFlags|<%buildspec%>" value="-O2 -fstrength-reduce -fno-builtin"/>
+<%endfor%>
             <booleanAttribute key="BLD::Info|Tool|C-Compiler|object" value="true"/>
             <booleanAttribute key="BLD::Info|Tool|C-Compiler|passAble" value="false"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|sigs" value="*.c"/>
-            <stringAttribute key="BLD::Info|Tool|Librarian|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%archiverprefix% $(TOOL_PATH)arppc %ToolFlags% %OutFile% %Objects% $(ADDED_OBJECTS)"/>
-            <stringAttribute key="BLD::Info|Tool|Librarian|dbgFlags|PPC604gnu" value=""/>
-            <stringAttribute key="BLD::Info|Tool|Librarian|derivedSigs|PPC604gnu" value="*.a"/>
-            <stringAttribute key="BLD::Info|Tool|Librarian|flags|PPC604gnu" value="crus"/>
-            <stringAttribute key="BLD::Info|Tool|Librarian|nonDbgFlags|PPC604gnu" value=""/>
+<%foreach(buildspecs)%>
+            <stringAttribute key="BLD::Info|Tool|Librarian|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%archiverprefix% $(TOOL_PATH)<%ar%> %ToolFlags% %OutFile% %Objects% $(ADDED_OBJECTS)"/>
+            <stringAttribute key="BLD::Info|Tool|Librarian|dbgFlags|<%buildspec%>" value=""/>
+            <stringAttribute key="BLD::Info|Tool|Librarian|derivedSigs|<%buildspec%>" value="*<%ar_ext%>"/>
+            <stringAttribute key="BLD::Info|Tool|Librarian|flags|<%buildspec%>" value="crus"/>
+            <stringAttribute key="BLD::Info|Tool|Librarian|nonDbgFlags|<%buildspec%>" value=""/>
+<%endfor%>
             <booleanAttribute key="BLD::Info|Tool|Librarian|object" value="false"/>
             <booleanAttribute key="BLD::Info|Tool|Librarian|passAble" value="true"/>
             <stringAttribute key="BLD::Info|Tool|Librarian|sigs" value=""/>
-            <stringAttribute key="BLD::Info|Tool|Linker|cmd|PPC604gnu" value="echo &quot;building $@&quot;;rm -f %OutFile%;nmppc %Objects% $(ADDED_OBJECTS) %Libraries% | tclsh $(WIND_BASE)/host/resource/hutils/tcl/munch.tcl -c ppc &gt; $(OBJ_DIR)/ctdt.c;%ccompilerprefix% $(TOOL_PATH)ccppc %DebugModeFlags% $(CC_ARCH_SPEC) -fdollars-in-identifiers -Wall $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES)  -o $(OBJ_DIR)/ctdt.o -c $(OBJ_DIR)/ctdt.c;%linkerprefix% $(TOOL_PATH)ccppc -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% $(OBJ_DIR)/ctdt.o %Objects% $(ADDED_OBJECTS) %Libraries% $(LIBPATH) $(LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
-            <stringAttribute key="BLD::Info|Tool|Linker|dbgFlags|PPC604gnu" value="-g"/>
-            <stringAttribute key="BLD::Info|Tool|Linker|derivedSigs|PPC604gnu" value="<%if(exename)%>*<%exe_ext%><%else%>*<%lib_ext%><%endif%>"/>
-            <stringAttribute key="BLD::Info|Tool|Linker|flags|PPC604gnu" value="-T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT"/>
-            <stringAttribute key="BLD::Info|Tool|Linker|nonDbgFlags|PPC604gnu" value="-O2 -fstrength-reduce -fno-builtin"/>
+<%foreach(buildspecs)%>
+            <stringAttribute key="BLD::Info|Tool|Linker|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;rm -f %OutFile%;<%nm%> %Objects% $(ADDED_OBJECTS) %Libraries% | tclsh $(WIND_BASE)/host/resource/hutils/tcl/munch.tcl -c <%munchflag%> &gt; $(OBJ_DIR)/ctdt.c;%ccompilerprefix% $(TOOL_PATH)<%cxx%> %DebugModeFlags% $(CC_ARCH_SPEC) -fdollars-in-identifiers -Wall $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES)  -o $(OBJ_DIR)/ctdt.o -c $(OBJ_DIR)/ctdt.c;%linkerprefix% $(TOOL_PATH)<%cxx%> -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% $(OBJ_DIR)/ctdt.o %Objects% $(ADDED_OBJECTS) %Libraries% $(LIBPATH) $(LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
+            <stringAttribute key="BLD::Info|Tool|Linker|dbgFlags|<%buildspec%>" value="-g"/>
+            <stringAttribute key="BLD::Info|Tool|Linker|derivedSigs|<%buildspec%>" value="<%if(exename)%>*<%exe_ext%><%else%>*<%lib_ext%><%endif%>"/>
+            <stringAttribute key="BLD::Info|Tool|Linker|flags|<%buildspec%>" value="-T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT"/>
+            <stringAttribute key="BLD::Info|Tool|Linker|nonDbgFlags|<%buildspec%>" value="-O2 -fstrength-reduce -fno-builtin"/>
+<%endfor%>
             <booleanAttribute key="BLD::Info|Tool|Linker|object" value="false"/>
             <booleanAttribute key="BLD::Info|Tool|Linker|passAble" value="false"/>
             <stringAttribute key="BLD::Info|Tool|Linker|sigs" value=""/>
-            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)ccppc -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) $(LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS) $(PARTIAL_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
-            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|dbgFlags|PPC604gnu" value=""/>
-            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|derivedSigs|PPC604gnu" value="*.o"/>
-            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|flags|PPC604gnu" value=""/>
-            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|nonDbgFlags|PPC604gnu" value=""/>
+<%foreach(buildspecs)%>
+            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)<%cxx%> -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) $(LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS) $(PARTIAL_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
+            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|dbgFlags|<%buildspec%>" value=""/>
+            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|derivedSigs|<%buildspec%>" value="*.o"/>
+            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|flags|<%buildspec%>" value=""/>
+            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|nonDbgFlags|<%buildspec%>" value=""/>
+<%endfor%>
             <booleanAttribute key="BLD::Info|Tool|Partial Image Linker|object" value="false"/>
             <booleanAttribute key="BLD::Info|Tool|Partial Image Linker|passAble" value="true"/>
             <stringAttribute key="BLD::Info|Tool|Partial Image Linker|sigs" value=""/>
             <stringAttribute key="BLD::Info|cmd" value="%makeprefix% make --no-print-directory"/>
             <stringAttribute key="BLD::Info|defaultSpec" value="PPC604gnu"/>
-            <stringAttribute key="BLD::Info|redirDir|PPC604gnu" value="PPC604gnu"/>
+<%foreach(buildspecs)%>
+            <stringAttribute key="BLD::Info|redirDir|<%buildspec%>" value="<%buildspec%>"/>
+<%endfor%>
             <stringAttribute key="BLD::Info|redirRoot" value=""/>
             <listAttribute key="BLD::Info|specs">
-                <stringAttribute value="PPC604gnu"/>
+<%foreach(buildspecs)%>
+                <stringAttribute value="<%buildspec%>"/>
+<%endfor%>
             </listAttribute>
             <intAttribute key="BuildSupportEnabled" value="1"/>
 <%if(standard_build)%>
@@ -165,7 +185,9 @@
         <buildtarget buildtool="Partial Image Linker" name="PartialImage" passed="true" targetname="PartialImage">
             <attributes>
                 <mapAttribute>
-                    <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|PPC604gnu" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)ccppc -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) <%if(linkflags)%> <%linkflags%><%endif%><%if(link_groups)%>-Wl,--start-group<%endif%> $(PARTIAL_LIBS) <%if(link_groups)%>-Wl,--end-group<%endif%> $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
+<%foreach(buildspecs)%>
+                    <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)<%cxx%> -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) <%if(linkflags)%> <%linkflags%><%endif%><%if(link_groups)%>-Wl,--start-group<%endif%> $(PARTIAL_LIBS) <%if(link_groups)%>-Wl,--end-group<%endif%> $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
+<%endfor%>
                 </mapAttribute>
             </attributes>
             <contents>
