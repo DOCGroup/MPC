@@ -100,7 +100,9 @@ deploy_output ::
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
+<%if(libout || dllout)%>
 	cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
+<%endif%>
 <%endif%>
 <%endif%>
 <%else%>
@@ -119,6 +121,7 @@ deploy_output ::
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
+<%if(libout || dllout)%>
 	PROJECT_TARGET=$(filter  %<%lib_ext%>,$(PROJECT_TARGETS));\
 	if [ "$$PROJECT_TARGET" != "" ]; then\
 		if test -e <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); then \
@@ -129,6 +132,7 @@ deploy_output ::
 				cp $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>;\
 		fi \
 	fi
+<%endif%>
 <%endif%>
 <%endif%>
 <%endif%>
