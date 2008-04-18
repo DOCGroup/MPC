@@ -14,6 +14,10 @@ c_derivedsigs = *.o
 part_derivedsigs = *.o
 ar_derivedsigs = .a
 
+platform = VxWorks
+platform_name = vxworks-6.4
+project_type = DownloadableKernelModuleProject
+
 linkflags =
 includedir =
 

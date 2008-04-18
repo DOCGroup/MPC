@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wrxml>
-    <properties platform="VxWorks" platform_name="vxworks-6.4" root="1" type="DownloadableKernelModuleProject"/>
+    <properties platform="<%platform%>" platform_name="<%platform_name%>" root="1" type="<%project_type%>"/>
     <attributes>
         <mapAttribute>
             <listAttribute key="BLD::Info|GlobalMacros">
