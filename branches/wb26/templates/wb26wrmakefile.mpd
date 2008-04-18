@@ -125,7 +125,7 @@ deploy_output ::
 			if test $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) -nt <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); then \
 				cp $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>;\
 			fi \
-		else 
+		else \
 				cp $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>;\
 		fi \
 	fi
