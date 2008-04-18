@@ -71,7 +71,7 @@
             <stringAttribute key="BLD::Info|Tool|Assembler|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%assemblerprefix% $(TOOL_PATH)<%cxx%> %DebugModeFlags% %ToolFlags% $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
             <stringAttribute key="BLD::Info|Tool|Assembler|dbgFlags|<%buildspec%>" value="<%ass_dbgflags%>"/>
             <stringAttribute key="BLD::Info|Tool|Assembler|derivedSigs|<%buildspec%>" value="*.o"/>
-            <stringAttribute key="BLD::Info|Tool|Assembler|flags|<%buildspec%>" value="<%ass_flags%>"/>
+            <stringAttribute key="BLD::Info|Tool|Assembler|flags|<%buildspec%>" value="$(CC_ARCH_SPEC) <%ass_flags%>"/>
             <stringAttribute key="BLD::Info|Tool|Assembler|nonDbgFlags|<%buildspec%>" value="<%ass_nondbgflags%>"/>
 <%endfor%>
             <booleanAttribute key="BLD::Info|Tool|Assembler|object" value="true"/>
@@ -81,7 +81,7 @@
             <stringAttribute key="BLD::Info|Tool|C++-Compiler|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%cppcompilerprefix% $(TOOL_PATH)<%cxx%> %DebugModeFlags% %ToolFlags% $(ADDED_C++FLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
             <stringAttribute key="BLD::Info|Tool|C++-Compiler|dbgFlags|<%buildspec%>" value="<%cxx_dbgflags%>"/>
             <stringAttribute key="BLD::Info|Tool|C++-Compiler|derivedSigs|<%buildspec%>" value="*.o"/>
-            <stringAttribute key="BLD::Info|Tool|C++-Compiler|flags|<%buildspec%>" value="<%cxx_flags%>"/>
+            <stringAttribute key="BLD::Info|Tool|C++-Compiler|flags|<%buildspec%>" value="$(CC_ARCH_SPEC) <%cxx_flags%>"/>
             <stringAttribute key="BLD::Info|Tool|C++-Compiler|nonDbgFlags|<%buildspec%>" value="<%cxx_nondbgflags%>"/>
 <%endfor%>
             <booleanAttribute key="BLD::Info|Tool|C++-Compiler|object" value="true"/>
@@ -91,7 +91,7 @@
             <stringAttribute key="BLD::Info|Tool|C-Compiler|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%ccompilerprefix% $(TOOL_PATH)<%cxx%> %DebugModeFlags% %ToolFlags% $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|dbgFlags|<%buildspec%>" value="<%c_dbgflags%>"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|derivedSigs|<%buildspec%>" value="*.o"/>
-            <stringAttribute key="BLD::Info|Tool|C-Compiler|flags|<%buildspec%>" value="<%c_flags%>"/>
+            <stringAttribute key="BLD::Info|Tool|C-Compiler|flags|<%buildspec%>" value="$(CC_ARCH_SPEC) <%c_flags%>"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|nonDbgFlags|<%buildspec%>" value="<%c_nondbgflags%>"/>
 <%endfor%>
             <booleanAttribute key="BLD::Info|Tool|C-Compiler|object" value="true"/>
