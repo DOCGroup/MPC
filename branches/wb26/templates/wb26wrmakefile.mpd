@@ -10,12 +10,12 @@ WIND_USR := $(subst \,/,$(WIND_USR))
 <%if(exename)%>
 ACE_TARGET_PREFIX :=
 ACE_TARGET_NAME := <%exename%>
-ACE_TARGET_EXT := .out
+ACE_TARGET_EXT := <%exe_ext%>
 <%else%>
 <%if(sharedname || staticname)%>
-ACE_TARGET_PREFIX := lib
+ACE_TARGET_PREFIX := <%lib_prefix%>
 ACE_TARGET_NAME := <%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>
-ACE_TARGET_EXT := .a
+ACE_TARGET_EXT := <%lib_ext%>
 <%endif%>
 <%endif%>
 
@@ -115,7 +115,7 @@ deploy_output ::
 <%if(sharedname || staticname)%>
 	PROJECT_TARGET=$(filter  %.a,$(PROJECT_TARGETS));\
 	if [ "$$PROJECT_TARGET" != "" ]; then\
-		cp $(OBJ_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>;\
+		cp $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>;\
 	fi
 <%endif%>
 <%endif%>
