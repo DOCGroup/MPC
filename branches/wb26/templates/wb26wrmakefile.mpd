@@ -121,7 +121,7 @@ deploy_output ::
 <%if(sharedname || staticname)%>
 	PROJECT_TARGET=$(filter  %<%lib_ext%>,$(PROJECT_TARGETS));\
 	if [ "$$PROJECT_TARGET" != "" ]; then\
-		if test -e <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); \
+		if test -e <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); then \
 			if test $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) -nt <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); then \
 				cp $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>;\
 			fi \
