@@ -198,16 +198,16 @@ external_clean ::
 <%endfor%>
 <%if(exename)%>
 <%if(exeout)%>
-	PROJECT_TARGET=$(filter  %.out,$(PROJECT_TARGETS));\
+	PROJECT_TARGET=$(filter  %<%exe_ext%>,$(PROJECT_TARGETS));\
 	if [ "$$PROJECT_TARGET" != "" ]; then\
-		rm -f "<%exeout%>/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)";\
+		rm -f <%exeout%>/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT);\
 	fi
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
-	PROJECT_TARGET=$(filter  %.out,$(PROJECT_TARGETS));\
+	PROJECT_TARGET=$(filter  %<%lib_ext%>,$(PROJECT_TARGETS));\
 	if [ "$$PROJECT_TARGET" != "" ]; then\
-		rm -f "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)";\
+		rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT);\
 	fi
 <%endif%>
 <%endif%>
