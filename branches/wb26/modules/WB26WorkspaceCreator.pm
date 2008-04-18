@@ -93,12 +93,8 @@ sub list_file_body {
 
   ## Print out each target separately
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
-    if ($self->make_coexistence()) {
-      print $fh Cwd::abs_path($self->mpc_dirname($project)),
+    print $fh Cwd::abs_path($self->mpc_dirname($project)),
                 '/.project', $crlf;
-    } else {
-      print $fh Cwd::abs_path('.'), '/.project', $crlf;
-    }
   }
 }
 
