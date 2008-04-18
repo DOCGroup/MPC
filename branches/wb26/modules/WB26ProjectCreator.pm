@@ -71,4 +71,14 @@ sub file_visible {
   return $template eq 'wb26';
 }
 
+sub get_dll_exe_template_input_file {
+  #my($self) = shift;
+  return 'wb26exe';
+}
+
+sub get_dll_template_input_file {
+  #my($self) = shift;
+  return 'wb26dll';
+}
+
 1;

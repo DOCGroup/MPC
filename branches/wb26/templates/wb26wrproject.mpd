@@ -97,7 +97,7 @@
             <stringAttribute key="BLD::Info|Tool|Librarian|sigs" value=""/>
             <stringAttribute key="BLD::Info|Tool|Linker|cmd|PPC604gnu" value="echo &quot;building $@&quot;;rm -f %OutFile%;nmppc %Objects% $(ADDED_OBJECTS) %Libraries% | tclsh $(WIND_BASE)/host/resource/hutils/tcl/munch.tcl -c ppc &gt; $(OBJ_DIR)/ctdt.c;%ccompilerprefix% $(TOOL_PATH)ccppc %DebugModeFlags% $(CC_ARCH_SPEC) -fdollars-in-identifiers -Wall $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES)  -o $(OBJ_DIR)/ctdt.o -c $(OBJ_DIR)/ctdt.c;%linkerprefix% $(TOOL_PATH)ccppc -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% $(OBJ_DIR)/ctdt.o %Objects% $(ADDED_OBJECTS) %Libraries% $(LIBPATH) $(LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
             <stringAttribute key="BLD::Info|Tool|Linker|dbgFlags|PPC604gnu" value="-g"/>
-            <stringAttribute key="BLD::Info|Tool|Linker|derivedSigs|PPC604gnu" value="<%if(exename)%>*.out<%else%>*.a<%endif%>"/>
+            <stringAttribute key="BLD::Info|Tool|Linker|derivedSigs|PPC604gnu" value="<%if(exename)%>*<%ext_ext%><%else%>*.<%lib_ext%><%endif%>"/>
             <stringAttribute key="BLD::Info|Tool|Linker|flags|PPC604gnu" value="-T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT"/>
             <stringAttribute key="BLD::Info|Tool|Linker|nonDbgFlags|PPC604gnu" value="-O2 -fstrength-reduce -fno-builtin"/>
             <booleanAttribute key="BLD::Info|Tool|Linker|object" value="false"/>
@@ -123,15 +123,15 @@
             <booleanAttribute key="BuildTargetCentric" value="false"/>
 <%if(exename || sharedname || staticname)%>
             <listAttribute key="BLD::Tgt|Targets">
-                <stringAttribute value="<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>"/>
-                <stringAttribute value="<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>_partialImage"/>
+                <stringAttribute value="<%if(exename)%><%exename%><%else%><%if(staticname)%><%lib_prefix%><%staticname%><%else%><%lib_prefix%><%sharedname%><%endif%><%endif%>"/>
+                <stringAttribute value="<%if(exename)%><%exename%><%else%><%if(staticname)%><%lib_prefix%><%staticname%><%else%><%lib_prefix%><%sharedname%><%endif%><%endif%>_partialImage"/>
             </listAttribute>
-            <stringAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>_partialImage|ToolName" value="Partial Image Linker"/>
-            <booleanAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>_partialImage|passed" value="true"/>
-            <listAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>_partialImage|refs"/>
-            <stringAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>|ToolName" value="Linker"/>
-            <booleanAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>|passed" value="false"/>
-            <listAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%>lib<%staticname%><%else%>lib<%sharedname%><%endif%><%endif%>|refs"/>
+            <stringAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%><%lib_prefix%><%staticname%><%else%><%lib_prefix%><%sharedname%><%endif%><%endif%>_partialImage|ToolName" value="Partial Image Linker"/>
+            <booleanAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%><%lib_prefix%><%staticname%><%else%><%lib_prefix%><%sharedname%><%endif%><%endif%>_partialImage|passed" value="true"/>
+            <listAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%><%lib_prefix%><%staticname%><%else%><%lib_prefix%><%sharedname%><%endif%><%endif%>_partialImage|refs"/>
+            <stringAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%><%lib_prefix%><%staticname%><%else%><%lib_prefix%><%sharedname%><%endif%><%endif%>|ToolName" value="Linker"/>
+            <booleanAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%><%lib_prefix%><%staticname%><%else%><%lib_prefix%><%sharedname%><%endif%><%endif%>|passed" value="false"/>
+            <listAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%><%lib_prefix%><%staticname%><%else%><%lib_prefix%><%sharedname%><%endif%><%endif%>|refs"/>
 <%endif%>
 <%else%>
             <booleanAttribute key="BuildTargetCentric" value="true"/>
@@ -144,7 +144,7 @@
         <buildtarget buildtool="Linker" name="<%exename%>" passed="true" targetname="<%exename%>">
 <%else%>
 <%if(sharedname || staticname)%>
-        <buildtarget buildtool="Librarian" name="<%if(sharedname)%>lib<%sharedname%><%else%>lib<%staticname%><%endif%>" passed="true" targetname="<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>">
+        <buildtarget buildtool="Librarian" name="<%if(sharedname)%><%lib_prefix%><%sharedname%><%else%><%lib_prefix%><%staticname%><%endif%>" passed="true" targetname="<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>">
 <%else%>
         <buildtarget buildtool="Linker" name="<%exename%>" passed="true" targetname="<%exename%>">
 <%endif%>
