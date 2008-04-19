@@ -118,7 +118,7 @@
             <booleanAttribute key="BLD::Info|Tool|Linker|passAble" value="false"/>
             <stringAttribute key="BLD::Info|Tool|Linker|sigs" value=""/>
 <%foreach(buildspecs)%>
-            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)<%cxx%> -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) $(LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS) $(PARTIAL_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
+            <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)<%cxx%> -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) <%if(linkflags)%> <%linkflags%><%endif%><%if(link_groups)%> -Wl,--start-group<%endif%> $(PARTIAL_LIBS) $(LIBS) <%if(link_groups)%>-Wl,--end-group<%endif%> $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
             <stringAttribute key="BLD::Info|Tool|Partial Image Linker|dbgFlags|<%buildspec%>" value="<%part_dbgflags%>"/>
             <stringAttribute key="BLD::Info|Tool|Partial Image Linker|derivedSigs|<%buildspec%>" value="<%part_derivedsigs%>"/>
             <stringAttribute key="BLD::Info|Tool|Partial Image Linker|flags|<%buildspec%>" value="<%part_flags%>"/>
@@ -186,7 +186,7 @@
             <attributes>
                 <mapAttribute>
 <%foreach(buildspecs)%>
-                    <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)<%cxx%> -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) <%if(linkflags)%> <%linkflags%><%endif%><%if(link_groups)%>-Wl,--start-group<%endif%> $(PARTIAL_LIBS) <%if(link_groups)%>-Wl,--end-group<%endif%> $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
+                    <stringAttribute key="BLD::Info|Tool|Partial Image Linker|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%linkerprefix% $(TOOL_PATH)<%cxx%> -r -nostdlib -Wl,-X %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) $(LIBPATH) <%if(linkflags)%> <%linkflags%><%endif%><%if(link_groups)%> -Wl,--start-group<%endif%> $(PARTIAL_LIBS) <%if(link_groups)%>-Wl,--end-group<%endif%> $(ADDED_LIBPATH) $(ADDED_LIBS) &amp;&amp; if [ &quot;$(EXPAND_DBG)&quot; = &quot;1&quot; ]; then plink &quot;$@&quot;;fi"/>
 <%endfor%>
                 </mapAttribute>
             </attributes>
