@@ -2,6 +2,13 @@ Sat Apr 19 05:40:49 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
 
         * templates/wb26wrproject.mpd:
 
+          Make the linkage of Workbench "standard build" similar to Workbnech 
+          "flexible build." Namely, add linkflags and link_groups to 
+          standard build.
+
+          For both standard and flexible build, add a space between for 
+          link_groups to seperate it from linkflags.
+
 Wed Apr 16 20:13:52 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
 
         * templates/wb26wrmakefile.mpd:
