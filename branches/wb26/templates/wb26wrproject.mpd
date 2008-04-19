@@ -13,14 +13,11 @@
                 <stringAttribute value="EXPAND_DBG"/>
             </listAttribute>
             <stringAttribute key="BLD::Info|GlobalMacro|DEFINES" value="<%foreach(defines common_defines macros staticflags)%>-D<%define%> <%endfor%>"/>
+            <stringAttribute key="BLD::Info|GlobalMacro|PROJECT_TYPE" value="DKM"/>
+            <stringAttribute key="BLD::Info|GlobalMacro|EXPAND_DBG" value="0"/>
 <%if(sharedname || staticname)%>
             <stringAttribute key="BLD::Info|GlobalMacro|DO_STRIP" value="0"/>
-            <stringAttribute key="BLD::Info|GlobalMacro|EXPAND_DBG" value="0"/>
-            <stringAttribute key="BLD::Info|GlobalMacro|PROJECT_TYPE" value="DKM"/>
             <stringAttribute key="BLD::Info|GlobalMacro|SHAREDLIB_VERSION" value=""/>
-<%else%>
-            <stringAttribute key="BLD::Info|GlobalMacro|EXPAND_DBG" value="0"/>
-            <stringAttribute key="BLD::Info|GlobalMacro|PROJECT_TYPE" value="DKM"/>
 <%endif%>
 <%foreach(buildspecs)%>
             <listAttribute key="BLD::Info|Incl|<%buildspec%>">
