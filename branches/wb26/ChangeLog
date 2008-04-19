@@ -1,10 +1,19 @@
+Sat Apr 19 19:50:41 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
+
+        * templates/wb26wrmakefile.mpd:
+
+          When we don't use make_coexistence MPC option, all make files will
+          be placed in the same directory as the MPC file. Hence, in the
+          custom step of invoking the TAO IDL compiler, we don't need to
+          go to an upper directory.
+
 Sat Apr 19 17:46:55 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
 
         * templates/wb26.mpd:
 
           For a flat flexible build (when we don't use make_coexistence MPC option)
-          don't generate LinkedResources and Links to files. It is uncessary. 
-          That makes the appearance of the files more appealing in WorkBench. 
+          don't generate LinkedResources and Links to files. It is uncessary.
+          That makes the appearance of the files more appealing in WorkBench.
 
 Sat Apr 19 05:40:49 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
 
