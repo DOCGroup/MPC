@@ -1,12 +1,20 @@
+Sat Apr 19 17:46:55 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
+
+        * templates/wb26.mpd:
+
+          For a flat flexible build (when we don't use make_coexistence MPC option)
+          don't generate LinkedResources and Links to files. It is uncessary. 
+          That makes the appearance of the files more appealing in WorkBench. 
+
 Sat Apr 19 05:40:49 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
 
         * templates/wb26wrproject.mpd:
 
-          Make the linkage of Workbench "standard build" similar to Workbnech 
-          "flexible build." Namely, add linkflags and link_groups to 
+          Make the linkage of Workbench "standard build" similar to Workbnech
+          "flexible build." Namely, add linkflags and link_groups to
           standard build.
 
-          For both standard and flexible build, add a space between for 
+          For both standard and flexible build, add a space between for
           link_groups to seperate it from linkflags.
 
 Wed Apr 16 20:13:52 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>

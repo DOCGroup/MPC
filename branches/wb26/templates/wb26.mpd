@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
         <name><%project_name%></name>
 	<comment></comment>
@@ -15,7 +15,7 @@
 		<nature>com.windriver.ide.core.wrnature</nature>
 		<nature>com.windriver.ide.core.wrcorenature</nature>
 	</natures>
-<%if(!standard_build)%>
+<%if(!standard_build && make_coexistence)%>
 	<linkedResources>
 <%if(source_files)%>
 <%foreach(source_files)%>
