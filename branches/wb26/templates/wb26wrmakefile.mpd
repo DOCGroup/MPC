@@ -87,7 +87,7 @@ generate_sources ::
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
-		<%if(make_coexistence)%>cd ../.. ; <%endif%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%>
+		<%if(make_coexistence)%>cd ../.. ; <%endif%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%>;\
 <%endif%>
 <%endfor%>
 <%endfor%>
@@ -209,28 +209,33 @@ clean :: external_clean $(CLEAN_STEP) _clean
 
 # entry point for extending the build clean
 external_clean ::
+<%if(exename)%>
+<%if(exeout)%>
+	PROJECT_TARGET=$(filter  %<%exe_ext%>,$(PROJECT_TARGETS));\
+<%endif%>
+<%else%>
+<%if(sharedname || staticname)%>
+	PROJECT_TARGET=$(filter  %<%lib_ext%>,$(PROJECT_TARGETS));\
+<%endif%>
+<%endif%>
+	if [ "$$PROJECT_TARGET" != "" ]; then\
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
-	<%if(make_coexistence)%>cd ../.. ; <%endif%>rm -f <%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%>
+		<%if(make_coexistence)%>cd ../.. ; <%endif%>rm -f <%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%>;\
 <%endif%>
 <%endfor%>
 <%endfor%>
 <%if(exename)%>
 <%if(exeout)%>
-	PROJECT_TARGET=$(filter  %<%exe_ext%>,$(PROJECT_TARGETS));\
-	if [ "$$PROJECT_TARGET" != "" ]; then\
 		rm -f <%exeout%>/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT);\
-	fi
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
-	PROJECT_TARGET=$(filter  %<%lib_ext%>,$(PROJECT_TARGETS));\
-	if [ "$$PROJECT_TARGET" != "" ]; then\
 		rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT);\
+<%endif%>
+<%endif%>
 	fi
-<%endif%>
-<%endif%>
 	@echo ""
 
 <%if(standard_build)%>
