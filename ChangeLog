@@ -1,3 +1,9 @@
+Wed Apr 23 14:36:32 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26.mpd:
+        * templates/wb26wrproject.mpd:
+          Added support for source_dirs
+
 Wed Apr 23 14:31:32 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         Merging in the changes from the wb26 branch

@@ -178,11 +178,12 @@
 <%if(exename)%>
                 <buildtargetreference name="/<%project_name%>/PartialImage"/>
 <%else%>
-<%if(source_files)%>
 <%foreach(source_files)%>
                 <file name="/<%project_name%>/<%source_file%>"/>
 <%endfor%>
-<%endif%>
+<%foreach(source_dirs)%>
+                <folder name="/<%source_dir%>" recursive="false"/>
+<%endfor%>
 <%endif%>
             </contents>
         </buildtarget>
@@ -196,11 +197,12 @@
                 </mapAttribute>
             </attributes>
             <contents>
-<%if(source_files)%>
 <%foreach(source_files)%>
                 <file name="/<%project_name%>/<%source_file%>"/>
 <%endfor%>
-<%endif%>
+<%foreach(source_dirs)%>
+                <folder name="/<%source_dir%>" recursive="false"/>
+<%endfor%>
             </contents>
         </buildtarget>
 <%endif%>
