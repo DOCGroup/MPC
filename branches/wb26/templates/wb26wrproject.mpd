@@ -153,6 +153,10 @@
             <stringAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%><%lib_prefix%><%staticname%><%else%><%lib_prefix%><%sharedname%><%endif%><%endif%>|ToolName" value="Linker"/>
             <booleanAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%><%lib_prefix%><%staticname%><%else%><%lib_prefix%><%sharedname%><%endif%><%endif%>|passed" value="false"/>
             <listAttribute key="BLD::Tgt|Target|<%if(exename)%><%exename%><%else%><%if(staticname)%><%lib_prefix%><%staticname%><%else%><%lib_prefix%><%sharedname%><%endif%><%endif%>|refs"/>
+<%if(exename)%>
+                <stringAttribute value="<%exename%>_partialImage"/>
+            </listAttribute>
+<%endif%>
 <%endif%>
 <%else%>
             <booleanAttribute key="BuildTargetCentric" value="true"/>
