@@ -13,7 +13,6 @@ default_platform = Win32
 
 Win32 {
   output_subdir    = I386
-  cpu_defines      = _M_IX86
 }
 
 x64 {
