@@ -11,15 +11,15 @@ WIND_USR := $(subst \,/,$(WIND_USR))
 ACE_TARGET_PREFIX :=
 ACE_TARGET_NAME := <%exename%>
 ACE_TARGET_EXT := <%exe_ext%>
+PROJECT_TARGET=$(filter %<%exe_ext%>,$(PROJECT_TARGETS))
 <%else%>
 <%if(sharedname || staticname)%>
 ACE_TARGET_PREFIX := <%lib_prefix%>
 ACE_TARGET_NAME := <%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>
 ACE_TARGET_EXT := <%lib_ext%>
+PROJECT_TARGET=$(filter %<%lib_ext%>,$(PROJECT_TARGETS))
 <%endif%>
 <%endif%>
-
-PROJECT_TARGET=$(filter %.a,$(PROJECT_TARGETS))
 
 <%if(standard_build)%>
 all : generate_sources pre_recursion subdirs_all post_recursion pre_build main_all post_build
@@ -207,35 +207,34 @@ clean ::
 clean :: external_clean $(CLEAN_STEP) _clean
 
 # entry point for extending the build clean
+<%if(standard_build)%>
+ifneq ($(PROJECT_TARGET),)
+<%endif%>
 external_clean ::
-<%if(exename)%>
-<%if(exeout)%>
-	PROJECT_TARGET=$(filter  %<%exe_ext%>,$(PROJECT_TARGETS));\
-<%endif%>
-<%else%>
-<%if(sharedname || staticname)%>
-	PROJECT_TARGET=$(filter  %<%lib_ext%>,$(PROJECT_TARGETS));\
-<%endif%>
-<%endif%>
-	if [ "$$PROJECT_TARGET" != "" ]; then\
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
-		<%if(make_coexistence)%>cd ../.. ; <%endif%>rm -f <%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%>;\
+	<%if(make_coexistence)%>cd ../.. ; <%endif%>rm -f <%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%>
 <%endif%>
 <%endfor%>
 <%endfor%>
 <%if(exename)%>
 <%if(exeout)%>
-		rm -f <%exeout%>/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT);\
+	rm -f <%exeout%>/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
-		rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT);\
+	rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
 <%endif%>
 <%endif%>
-	fi
 	@echo ""
+<%if(standard_build)%>
+else
+external_clean ::
+	@echo ""
+endif
+<%endif%>
+
 
 <%if(standard_build)%>
 _clean :
