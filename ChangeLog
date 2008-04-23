@@ -1,3 +1,46 @@
+Wed Apr 23 14:31:32 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        Merging in the changes from the wb26 branch
+
+        * docs/templates/common.txt:
+          Document the new make_coexistence
+
+        * docs/templates/wb26.txt:
+        * docs/templates/wb26wrproject.txt:
+          Renamed wb26wrproject to wb26
+
+        * modules/ProjectCreator.pm:
+          Changed from Chad Elliot to make the make_coexistence
+          commandline flag available in the template
+
+        * modules/WB26ProjectCreator.pm:
+          Use make_coexistence and added template input files
+
+        * modules/WB26WorkspaceCreator.pm:
+          Supports make_coexistence
+
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt
+          Removed _M_AMD64, this is a define that is set by the
+          compiler
+
+        * templates/vc8platforms.mpt:
+          Removed _M_IX86_, this is set by the msvc compiler, we shouldn't
+          set this. This fixes bugzilla 3293, thanks to David Highley
+          <dhighley at highley-recommended dot com> for reporting this
+
+        * templates/wb26.mpd:
+        * templates/wb26dll.mpt:
+        * templates/wb26exe.mpt:
+        * templates/wb26wrmakefile.mpd:
+        * templates/wb26wrproject.mpd:
+          By default we now generate the project files in the same
+          directory as the mpc file, this means you can only have one
+          project in a directory. If you don't want this, use
+          -make_coexistence on the commandline. Also support
+          -value_template standard_build=1 to support a standard build,
+          but this support is not ready yet.
+
 Mon Mar  7 08:24:46 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * docs/templates/wb26wrproject.txt:

@@ -317,6 +317,7 @@ sub new {
   $self->{'command_subs'}          = $self->get_command_subs();
   $self->{'escape_spaces'}         = $self->escape_spaces();
   $self->{'current_template'}      = undef;
+  $self->{'make_coexistence'}      = $makeco;
 
   $self->add_default_matching_assignments();
   $self->reset_generating_types();
@@ -2028,41 +2029,48 @@ sub read_template_input {
     }
   }
 
-  if (defined $file) {
-    my($tfile) = $self->search_include_path("$file.$TemplateInputExtension");
-    if (defined $tfile) {
-      ## We haven't read this file yet, so we will create the template
-      ## input reader and store it in the entry for the template key
-      ## ($tkey) and the template input key ($tikey).
-      my $ti = new TemplateInputReader($self->get_include_path());
-      $self->{$tag}->{$lang}->{$tkey} = $ti;
-      $self->{$tag}->{$lang}->{$tikey} = $ti;
-
-      ## Process the template input file
-      ($status, $errorString) = $ti->read_file($tfile);
-    }
-    else {
-      ## Not finding a template input file is only an error if the user
-      ## specifically provided a template input file override.
-      if ($override) {
-        $status = 0;
-        $errorString = "Unable to locate template input file: $file";
-      }
-    }
+  if (defined $self->{$tag}->{$lang}->{$tkey}) {
+    ## We have a TemplateInputReader for this template key, so we need
+    ## to set the entry corresponding to $tikey to it for use in the
+    ## get_template_input() method.
+    $self->{$tag}->{$lang}->{$tikey} = $self->{$tag}->{$lang}->{$tkey};
   }
   else {
-    if (defined $self->{$tag}->{$lang}->{$tkey}) {
-      ## We have a TemplateInputReader for this template key, so we need
-      ## to set the entry corresponding to $tikey to it for use in the
-      ## get_template_input() method.
-      $self->{$tag}->{$lang}->{$tikey} = $self->{$tag}->{$lang}->{$tkey};
+    ## We haven't read this file yet, so we will create the template
+    ## input reader and store it in the entry for the template key
+    ## ($tkey) and the template input key ($tikey).
+    my $ti = new TemplateInputReader($self->get_include_path());
+    $self->{$tag}->{$lang}->{$tkey} = $ti;
+    $self->{$tag}->{$lang}->{$tikey} = $ti;
+
+    ## Process the template input file
+    if (defined $file) {
+      my($tfile) = $self->search_include_path("$file.$TemplateInputExtension");
+      if (defined $tfile) {
+        ($status, $errorString) = $ti->read_file($tfile);
+      }
+      else {
+        ## Not finding a template input file is only an error if the user
+        ## specifically provided a template input file override.
+        if ($override) {
+          $status = 0;
+          $errorString = "Unable to locate template input file: $file";
+        }
+      }
+    }
+
+    ## Now that we've read in the template input file, set up our
+    ## automatic template variables.
+    if ($self->{'make_coexistence'}) {
+      $ti->parse_line(undef,
+                      "make_coexistence = $self->{'make_coexistence'}");
     }
   }
 
   ## We do this regardless of whether or not this parser is cached or
   ## not.  If the features have changed (through a workspace cmdline
   ## setting), we need to reflect it.
-  if ($status && defined $self->{$tag}->{$lang}->{$tikey}) {
+  if ($status) {
     ## Put the features into the template input set
     my $features = $self->{'feature_parser'}->get_names();
     $self->{$tag}->{$lang}->{$tikey}->parse_line(undef,
@@ -4564,9 +4572,10 @@ sub adjust_value {
 
       ## If the template variable is a complex name, then we need to make
       ## sure that the mapped value belongs to the correct type based on
-      ## the base of the complex name.  The $tp variable will, in the
-      ## majority of all calls to this method, be defined so it is
-      ## checked second to avoid checking it if the name isn't complex.
+      ## the base of the complex name.  The $tp (TemplateParser) variable
+      ## will, in the majority of all calls to this method, be defined so
+      ## it is checked second to avoid checking it if the name isn't
+      ## complex.
       if ($base =~ /(.+)\->/ && defined $tp) {
         my $v = $tp->get_value($1);
         if (defined $v) {
