@@ -19,10 +19,12 @@ ACE_TARGET_EXT := <%lib_ext%>
 <%endif%>
 <%endif%>
 
+PROJECT_TARGET=$(filter %.a,$(PROJECT_TARGETS))
+
 <%if(standard_build)%>
-all : pre_recursion subdirs_all post_recursion pre_build main_all post_build
+all : generate_sources pre_recursion subdirs_all post_recursion pre_build main_all post_build
 <%else%>
-all : pre_build main_all post_build
+all : generate_sources pre_build main_all post_build
 <%endif%>
 
 <%if(!standard_build)%>
@@ -70,24 +72,25 @@ external_build ::
 	@echo ""
 
 # main entry point for pre processing prior to the build
-pre_build :: $(PRE_BUILD_STEP) generate_sources
+pre_build :: $(PRE_BUILD_STEP)
 	@echo ""
 
 # entry point for generating sources prior to the build
-generate_sources ::
 <%if(standard_build)%>
-	PROJECT_TARGET=$(filter %<%if(exename)%><%exe_ext%><%else%><%lib_ext%><%endif%>,$(PROJECT_TARGETS));\
-	if [ "$$PROJECT_TARGET" != "" ]; then\
+ifneq ($(PROJECT_TARGET),)
 <%endif%>
+generate_sources ::
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
-		<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ;<%endif%><%endif%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%><%if(standard_build)%>;\<%endif%>
+		<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ;<%endif%><%endif%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%>
 <%endif%>
 <%endfor%>
 <%endfor%>
 <%if(standard_build)%>
-	fi 
+else
+generate_sources ::
+	@echo ""
 <%endif%>
 
 # main entry point for post processing after the build
