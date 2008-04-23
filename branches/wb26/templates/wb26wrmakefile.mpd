@@ -91,6 +91,7 @@ generate_sources ::
 else
 generate_sources ::
 	@echo ""
+endif
 <%endif%>
 
 # main entry point for post processing after the build
