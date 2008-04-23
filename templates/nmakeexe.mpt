@@ -29,7 +29,7 @@ Win64 {
 x64 {
   machine_description = x64
   machine             = AMD64
-  cpu_defines         = _M_AMD64 _AMD64_
+  cpu_defines         = _AMD64_
   add_compile         = /Wp64
   platform_defines    = _WIN64
 }
