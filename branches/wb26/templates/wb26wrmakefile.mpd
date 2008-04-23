@@ -76,18 +76,13 @@ pre_build :: $(PRE_BUILD_STEP) generate_sources
 # entry point for generating sources prior to the build
 generate_sources ::
 <%if(standard_build)%>
-<%if(exename)%>
-	PROJECT_TARGET=$(filter %<%exe_ext%>,$(PROJECT_TARGETS));\
+	PROJECT_TARGET=$(filter %<%if(exename)%><%exe_ext%><%else%><%lib_ext%><%endif%>,$(PROJECT_TARGETS));\
 	if [ "$$PROJECT_TARGET" != "" ]; then\
-<%else%>
-	PROJECT_TARGET=$(filter  %<%lib_ext%>,$(PROJECT_TARGETS));\
-	if [ "$$PROJECT_TARGET" != "" ]; then\
-<%endif%>
 <%endif%>
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
-		<%if(make_coexistence)%>cd ../.. ; <%endif%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%>;\
+		<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ;<%endif%><%endif%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%><%if(standard_build)%>;\<%endif%>
 <%endif%>
 <%endfor%>
 <%endfor%>
