@@ -1,0 +1,96 @@
+# The file ".wrmakefile" is the template used by the Wind River Workbench to
+# generate the makefiles of this project. Add user-specific build targets and
+# make rules only(!) in this project's ".wrmakefile" file. These will then be
+# automatically dumped into the makefiles.
+
+WIND_HOME := $(subst \,/,$(WIND_HOME))
+WIND_BASE := $(subst \,/,$(WIND_BASE))
+WIND_USR := $(subst \,/,$(WIND_USR))
+
+<%if(exename)%>
+ACE_TARGET_PREFIX :=
+ACE_TARGET_NAME := <%exename%>
+ACE_TARGET_EXT := .out
+<%else%>
+<%if(sharedname || staticname)%>
+ACE_TARGET_PREFIX := lib
+ACE_TARGET_NAME := <%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>
+ACE_TARGET_EXT := .a
+<%endif%>
+<%endif%>
+
+all : pre_build main_all post_build
+
+_clean ::
+	@echo "make: removing targets and objects of `pwd`"
+
+%IDE_GENERATED%
+
+-include $(PRJ_ROOT_DIR)/*.makefile
+
+-include *.makefile
+
+<%if(custom_only)%>
+main_all : external_build
+	@echo "make: built targets of `pwd`"
+<%else%>
+main_all : external_build $(PROJECT_TARGETS)
+	@echo "make: built targets of `pwd`"
+<%endif%>
+
+# entry point for extending the build
+external_build ::
+	@echo ""
+
+# main entry point for pre processing prior to the build
+pre_build :: $(PRE_BUILD_STEP) generate_sources
+	@echo ""
+
+# entry point for generating sources prior to the build
+generate_sources ::
+<%foreach(custom_types)%>
+<%foreach(custom_type->input_files)%>
+<%if(custom_type->input_file->output_files)%>
+	cd ../.. ; <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%>
+<%endif%>
+<%endfor%>
+<%endfor%>
+
+# main entry point for post processing after the build
+post_build :: $(POST_BUILD_STEP) deploy_output
+	@echo ""
+
+# entry point for deploying output after the build
+deploy_output ::
+<%if(exename)%>
+<%if(exeout)%>
+	cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%exeout%>
+<%endif%>
+<%else%>
+<%if(sharedname || staticname)%>
+	cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
+<%endif%>
+<%endif%>
+	@echo ""
+
+clean :: external_clean $(CLEAN_STEP) _clean
+
+# entry point for extending the build clean
+external_clean ::
+<%foreach(custom_types)%>
+<%foreach(custom_type->input_files)%>
+<%if(custom_type->input_file->output_files)%>
+	cd ../.. ; rm -f <%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%>
+<%endif%>
+<%endfor%>
+<%endfor%>
+<%if(exename)%>
+<%if(exeout)%>
+	rm -f <%exeout%>/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
+<%endif%>
+<%else%>
+<%if(sharedname || staticname)%>
+	rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
+<%endif%>
+<%endif%>
+	@echo ""
