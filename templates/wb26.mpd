@@ -17,7 +17,6 @@
 	</natures>
 <%if(!standard_build && make_coexistence)%>
 	<linkedResources>
-<%if(source_files)%>
 <%foreach(source_files)%>
 		<link>
 			<name><%source_file%></name>
@@ -25,8 +24,6 @@
 			<location><%full_path(source_file)%></location>
 		</link>
 <%endfor%>
-<%endif%>
-<%if(header_files)%>
 <%foreach(header_files)%>
                 <link>
                         <name><%header_file%></name>
@@ -34,8 +31,6 @@
                         <location><%full_path(header_file)%></location>
                 </link>
 <%endfor%>
-<%endif%>
-<%if(inline_files)%>
 <%foreach(inline_files)%>
                 <link>
                         <name><%inline_file%></name>
@@ -43,7 +38,6 @@
                         <location><%full_path(inline_file)%></location>
                 </link>
 <%endfor%>
-<%if(template_files)%>
 <%foreach(template_files)%>
                 <link>
                         <name><%template_file%></name>
@@ -51,8 +45,6 @@
                         <location><%full_path(template_file)%></location>
                 </link>
 <%endfor%>
-<%endif%>
-<%endif%>
 	</linkedResources>
 <%endif%>
 </projectDescription>
