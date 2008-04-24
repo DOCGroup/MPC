@@ -1,7 +1,7 @@
 // -*- MPC -*-
 // $Id$
 
-project: mfc {
+project {
   requires += unicode
   specific {
     unicode = 1
