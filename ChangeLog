@@ -1,3 +1,9 @@
+Thu Apr 24 07:06:32 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          With a custom only project set the PROJECT_TARGET value so that
+          the custom rules are triggered
+
 Wed Apr 23 14:36:32 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26.mpd:
