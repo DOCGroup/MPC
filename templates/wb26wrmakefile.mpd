@@ -20,6 +20,9 @@ ACE_TARGET_EXT := <%lib_ext%>
 PROJECT_TARGET=$(filter %<%lib_ext%>,$(PROJECT_TARGETS))
 <%endif%>
 <%endif%>
+<%if(custom_only)%>
+PROJECT_TARGET=CUSTOM_ONLY
+<%endif%>
 
 <%if(standard_build)%>
 all : generate_sources pre_recursion subdirs_all post_recursion pre_build main_all post_build
