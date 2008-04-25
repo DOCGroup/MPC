@@ -2,7 +2,7 @@
 // $Id$
 
 project {
-  requires += unicode
+  requires += uses_wchar
   specific {
     unicode = 1
   }
