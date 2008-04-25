@@ -1,3 +1,16 @@
+Fri Apr 25 19:05:59 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Added a -s option that allows the user to specify a starting
+          directory instead of using the current directory.  Thanks to
+          Hubert Talbot <Hubert dot Talbot at criq dot qc dot ca> for
+          providing the idea and original implementation.
+
+        * docs/USAGE:
+
+          Document the default logging settings.
+
 Fri Apr 25 09:12:00 UTC 2008  Simon Massey  <sma at pristmech dot com>
 
         * config/global.features:

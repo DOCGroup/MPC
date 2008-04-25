@@ -36,7 +36,7 @@ my($exclude)    = undef;
 my($verbose)    = 0;
 my($lbuildf)    = 0;
 my(@foundFiles) = ();
-my($version)    = '1.14';
+my($version)    = '1.15';
 
 eval 'symlink("", "");';
 my($hasSymlink) = ($@ eq '');
@@ -433,6 +433,8 @@ sub usageAndExit {
                "<current directory>/build.\n",
                "-d  Set the directory permissions mode.\n",
                "-f  Link build files (Makefile, .dsw, .sln, .etc).\n",
+               "-s  Set the start directory. It defaults to the ",
+               "<current directory>.\n",
                "-v  Enable verbose mode.\n";
 
   exit(0);
@@ -446,8 +448,9 @@ sub usageAndExit {
 my($dmode)    = 0777;
 my($absolute) = 0;
 my($hardlink) = !$hasSymlink;
-my($builddir) = getcwd() . '/build';
+my($builddir) = undef;
 my(@builds)   = ();
+my($startdir) = undef;
 
 for(my $i = 0; $i <= $#ARGV; ++$i) {
   if ($ARGV[$i] eq '-a') {
@@ -490,6 +493,15 @@ for(my $i = 0; $i <= $#ARGV; ++$i) {
   elsif ($ARGV[$i] eq '-v') {
     $verbose = 1;
   }
+  elsif ($ARGV[$i] eq '-s') {
+    ++$i;
+    if (defined $ARGV[$i]) {
+      $startdir = $ARGV[$i];
+    }
+    else {
+      usageAndExit('-s requires an argument');
+    }
+  }
   elsif ($ARGV[$i] =~ /^-/) {
     usageAndExit('Unknown option: ' . $ARGV[$i]);
   }
@@ -497,6 +509,13 @@ for(my $i = 0; $i <= $#ARGV; ++$i) {
     push(@builds, $ARGV[$i]);
   }
 }
+
+if (defined $startdir && !chdir($startdir)) {
+  print "ERROR: Unable to change directory to $startdir\n";
+  exit(1);
+}
+
+$builddir = getcwd() . '/build' if (!defined $builddir);
 
 if (index($builddir, getcwd()) == 0) {
   $exclude = substr($builddir, length(getcwd()) + 1);

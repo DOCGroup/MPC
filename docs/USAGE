@@ -272,7 +272,7 @@ logging          - If this setting contains info=1, informational messages
                    contains none of these, MPC will not print out any
                    information or warnings when processing projects or
                    workspaces.  Errors are always printed if any are
-                   encountered.
+                   encountered.  The default is warn=1 diag=1 detail=1.
 main_functions   - Provide additional main functions to be recognized in
                    conjunction with automatic executable project
                    recognition.  The value assigned should be of the form
