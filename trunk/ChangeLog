@@ -1,3 +1,14 @@
+Wed Apr 30 18:59:45 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/openmpi.mpb:
+
+          Added a very simple base project for Open MPI.
+
+        * templates/make.mpd:
+
+          Add the .NOTPARALLEL target if there is multiple files generated
+          by a custom command.
+
 Wed Apr 30 11:36:17 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
@@ -14,7 +25,7 @@ Wed Apr 30 11:36:17 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
              directories were not propagated to the files located within
              that directory.  Now, they are copied over to files found
              within the traversed directory.
-             
+
 Sun Apr 27 18:49:45 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
 
         * templates/wb26wrproject.mpd:
