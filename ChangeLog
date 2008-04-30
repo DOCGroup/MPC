@@ -1,12 +1,29 @@
+Wed Apr 30 11:36:17 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed two different bugs:
+
+          1) Using ^ with a wildcard did not function properly if the
+             generated files were not already there.  Now, the wildcard
+             expansion (prefixed by ^) is not done until the end and
+             performed on the list of added files instead of the file
+             system.
+
+          2) Flag overrides, such as recurse, gendir, etc., specified for
+             directories were not propagated to the files located within
+             that directory.  Now, they are copied over to files found
+             within the traversed directory.
+             
 Sun Apr 27 18:49:45 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
 
         * templates/wb26wrproject.mpd:
-        
+
           Minor change to the following commit:
           Sun Apr 27 18:15:32 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
           Make sure the quote is closed after it is opened. Workbench complains
-          otherwise.          
+          otherwise.
 
 Sun Apr 27 18:15:32 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
