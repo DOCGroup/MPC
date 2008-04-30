@@ -1227,7 +1227,9 @@ sub process_component_line {
     if ($line =~ /^"([^"]+)"$/) {
       push(@files, $1);
     }
-    elsif ($line =~ /[\?\*\[\]]/) {
+    ## Don't glob the line if we're wanting to remove the file.  Wait
+    ## until later to do the wildcard expansion (in remove_excluded).
+    elsif (!$rem && $line =~ /[\?\*\[\]]/) {
       @files = $self->mpc_glob($line);
     }
     else {
@@ -2961,8 +2963,24 @@ sub generate_default_components {
                 my($alldirs) = 1;
                 foreach my $file (@$array) {
                   if (-d $file) {
-                    $self->sift_default_file_list($tag, $file, \@built,
+                    my @portion;
+                    $self->sift_default_file_list($tag, $file, \@portion,
                                                   $exts, $recurse, $pchh, $pchc);
+
+                    ## Since the file was actually a directory, we will
+                    ## need to propagate the flag overrides (if there are
+                    ## any) to the newly located files.
+                    if (defined $self->{'flag_overrides'}->{$tag} &&
+                        defined $self->{'flag_overrides'}->{$tag}->{$file}) {
+                      foreach my $built (@portion) {
+                        $self->{'flag_overrides'}->{$tag}->{$built} =
+                             $self->{'flag_overrides'}->{$tag}->{$file};
+                      }
+                    }
+
+                    ## Always push the @portion array onto the back of
+                    ## @built.
+                    push(@built, @portion);
                   }
                   else {
                     $alldirs = undef;
@@ -3354,6 +3372,26 @@ sub remove_excluded {
             splice(@{$$names{$name}->{$comp}}, $i, 1);
             --$i;
             --$count;
+          }
+          else {
+            ## The file does not match exactly with one of the files to
+            ## remove.  Look for wildcard specifications in the files to
+            ## be removed and perform the removal if one of them matches
+            ## the current file.
+            foreach my $key (keys %{$self->{'remove_files'}->{$tag}}) {
+              if ($key =~ /[\*\?\[\]]/) {
+                my $regex = $key;
+                $regex =~ s/\./\\./g;
+                $regex =~ s/\*/\.\*/g;
+                $regex =~ s/\?/\./g;
+                if ($file =~ /^$regex$/) {
+                  splice(@{$$names{$name}->{$comp}}, $i, 1);
+                  --$i;
+                  --$count;
+                  last;
+                }
+              }
+            }
           }
         }
       }
