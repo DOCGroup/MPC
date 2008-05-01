@@ -1,3 +1,10 @@
+Thu May  1 14:32:09 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Added a template method to allow project creators to disable the
+          "no useful targets" warning.
+
 Wed Apr 30 18:59:45 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/openmpi.mpb:
