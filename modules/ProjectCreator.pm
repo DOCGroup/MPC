@@ -4407,7 +4407,7 @@ sub write_project {
         }
       }
     }
-    else {
+    elsif ($self->warn_useless_project()) {
       my($msg) = $self->transform_file_name($self->project_file_name()) .
                  " has no useful targets.";
 
@@ -4884,19 +4884,6 @@ sub remove_wanted_extension {
   return $name;
 }
 
-# ************************************************************
-# Accessors used by support scripts
-# ************************************************************
-
-sub getKeywords {
-  return \%validNames;
-}
-
-sub getValidComponents {
-  my($language) = shift;
-  return (defined $language{$language} ? $language{$language}->[0] : undef);
-}
-
 
 sub resolve_alias {
   if (index($_[1], 'install') >= 0) {
@@ -5002,6 +4989,19 @@ sub add_main_function {
 
   ## Return no error message.
   return undef;
+}
+
+# ************************************************************
+# Accessors used by support scripts
+# ************************************************************
+
+sub getKeywords {
+  return \%validNames;
+}
+
+sub getValidComponents {
+  my($language) = shift;
+  return (defined $language{$language} ? $language{$language}->[0] : undef);
 }
 
 # ************************************************************
@@ -5164,6 +5164,10 @@ sub get_template {
 
 sub requires_forward_slashes {
   return 0;
+}
+
+sub warn_useless_project {
+  return 1;
 }
 
 1;
