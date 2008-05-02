@@ -1,3 +1,8 @@
+Fri May  2 11:57:32 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26dll.mpt:
+          Added PPC85XXgnu buildspec
+
 Thu May  1 14:32:09 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
