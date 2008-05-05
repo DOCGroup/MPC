@@ -1,3 +1,9 @@
+Mon May  5 07:40:10 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * clone_build_tree.pl:
+          Don't clone wb26/vxtest generated files, .d files and Makefiles
+          in subdirectories
+
 Fri May  2 11:57:32 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26dll.mpt:
