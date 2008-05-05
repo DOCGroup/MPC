@@ -1,3 +1,26 @@
+Mon May  5 15:45:04 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/mpich.mpb:
+
+          Use MPI_ROOT instead of MPICH_ROOT.  This is in keeping with the
+          generic-ness of the environment variables to allow drop-in
+          replacements for different implementations.
+
+        * config/openmpi.mpb:
+
+          Added "requires += mpi".
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where files added through a directory would not be
+          removed as duplicate if the generated files had the 'gendir' value
+          set on them with one or more slash.  This only affected Windows
+          project types.  
+
+        * registry.pl:
+
+          Fixed the registry value remove option.
+
 Mon May  5 07:40:10 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * clone_build_tree.pl:

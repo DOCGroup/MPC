@@ -25,7 +25,7 @@ my($Registry) = undef;
 my($MPC_ROOT) = $FindBin::Bin;
 $MPC_ROOT =~ s!/!\\!g;
 
-my($version) = '1.2';
+my($version) = '1.3';
 my(%types)   = ('nmake' => ['NMAKE', 'NMAKE'],
                 'bmake' => ['Borland Make', 'Borland Make'],
                 'vc6'   => ['DSW', 'DSP'],
@@ -148,11 +148,13 @@ if (defined $ARGV[0]) {
     foreach my $type (keys %types) {
       delete_key('HKEY_CLASSES_ROOT/Directory/shell/MPC' . uc($type) . '/');
     }
+
+    exit(0);
   }
   else {
     print STDERR "registry v$version\n",
                  "Usage: ", basename($0), " [-r]\n\n",
-                 "       -r  Remove MPC related registry keys (this does not work).\n\n",
+                 "       -r  Remove MPC related registry keys.\n\n",
                  "Set the MPC_ROOT environment variable to the location of this script.\n",
                  "Also, add context menus for .mwc files and directories.\n";
     exit(0);
@@ -171,6 +173,6 @@ foreach my $type (keys %types) {
 }
 
 print "You may need to log out and then ",
-      "log back in for these settings to take effect.\n";
+      "log back in for some of these settings to take effect.\n";
 
 exit(0);
