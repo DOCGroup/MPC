@@ -80,33 +80,39 @@ sub findCallback {
                   ! /^.*\.ilk\z/s   &&
                   ! /^.*\.pdb\z/s   &&
                   ! /^.*\.pch\z/s   &&
-                  ! /^.*\.log\z/s
+                  ! /^.*\.log\z/s   &&
+                  ! /^.*\.d\z/s
                  );
 
     if ($matches) {
       if (!$lbuildf) {
-        $matches = (! /^.*\.dsp\z/s       &&
-                    ! /^.*\.dsw\z/s       &&
-                    ! /^.*\.vcproj\z/s    &&
-                    ! /^.*\.sln\z/s       &&
-                    ! /^Makefile.*\z/s    &&
-                    ! /^GNUmakefile.*\z/s &&
-                    ! /^.*\.am\z/s        &&
-                    ! /^\.depend\..*\z/s  &&
-                    ! /^.*\.vcn\z/s       &&
-                    ! /^.*\.vcp\z/s       &&
-                    ! /^.*\.vcw\z/s       &&
-                    ! /^.*\.vpj\z/s       &&
-                    ! /^.*\.vpw\z/s       &&
-                    ! /^.*\.cbx\z/s       &&
-                    ! /^.*\.bpgr\z/s      &&
-                    ! /^.*\.bmak\z/s      &&
-                    ! /^.*\.bmake\z/s     &&
-                    ! /^.*\.mak\z/s       &&
-                    ! /^.*\.nmake\z/s     &&
-                    ! /^.*\.bld\z/s       &&
-                    ! /^.*\.icc\z/s       &&
-                    ! /^.*\.icp\z/s
+        $matches = (! /^.*\.dsp\z/s        &&
+                    ! /^.*\.dsw\z/s        &&
+                    ! /^.*\.vcproj\z/s     &&
+                    ! /^.*\.sln\z/s        &&
+                    ! /^Makefile.*\z/s     &&
+                    ! /^GNUmakefile.*\z/s  &&
+                    ! /^.*\.am\z/s         &&
+                    ! /^\.depend\..*\z/s   &&
+                    ! /^.*\.vcn\z/s        &&
+                    ! /^.*\.vcp\z/s        &&
+                    ! /^.*\.vcw\z/s        &&
+                    ! /^.*\.vpj\z/s        &&
+                    ! /^.*\.vpw\z/s        &&
+                    ! /^.*\.cbx\z/s        &&
+                    ! /^.*\.bpgr\z/s       &&
+                    ! /^.*\.bmak\z/s       &&
+                    ! /^.*\.bmake\z/s      &&
+                    ! /^.*\.mak\z/s        &&
+                    ! /^.*\.nmake\z/s      &&
+                    ! /^.*\.bld\z/s        &&
+                    ! /^.*\.icc\z/s        &&
+                    ! /^.*\.icp\z/s        &&
+                    ! /^.*\.project\z/s    &&
+                    ! /^.*\.wrproject\z/s  &&
+                    ! /^.*\.wrmakefile\z/s &&
+                    ! /^.*\.vxtest\z/s &&
+                    ! /^.*\MakeFile\z/s
                   );
       }
 
