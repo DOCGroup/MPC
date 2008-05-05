@@ -111,8 +111,7 @@ sub findCallback {
                     ! /^.*\.project\z/s    &&
                     ! /^.*\.wrproject\z/s  &&
                     ! /^.*\.wrmakefile\z/s &&
-                    ! /^.*\.vxtest\z/s &&
-                    ! /^.*\MakeFile\z/s
+                    ! /^.*\.vxtest\z/s
                   );
       }
 
