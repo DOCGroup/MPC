@@ -2261,6 +2261,7 @@ sub add_explicit_output {
                   defined $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} &&
                   $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} ne '.') {
                 $dir = $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} . '/';
+                $dir =~ s/\\/\//g if ($self->{'convert_slashes'});
               }
 
               push(@files, "$dir$check");
@@ -2326,6 +2327,7 @@ sub generated_filenames {
       }
       else {
         $dir = $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} . '/';
+        $dir =~ s/\\/\//g if ($self->{'convert_slashes'});
       }
     }
 
@@ -3147,6 +3149,7 @@ sub prepend_gendir {
           if (defined $dir) {
             ## Convert the file to unix style for basename
             $created =~ s/\\/\//g;
+            $dir =~ s/\\/\//g if ($self->{'convert_slashes'});
             return ($dir eq '.' ? '' : "$dir/") .
                    $self->mpc_basename($created);
           }
