@@ -124,13 +124,13 @@ sub add_dependencies {
     my $cwd  = $self->getcwd();
     while(<$fh>) {
       if (/MPC\s+ADD\s+DEPENDENCIES/) {
+        $write = 1;
         my $crlf = $self->crlf();
         my $deps = $self->get_validated_ordering($proj);
         foreach my $dep (@$deps) {
           my $relative = $self->get_relative_dep_file($creator,
                                                       "$cwd/$proj", $dep);
           if (defined $relative) {
-            $write = 1;
             push(@read, "        <project>$dep\</project>$crlf");
           }
         }
@@ -160,13 +160,13 @@ sub add_dependencies {
     my $cwd  = $self->getcwd();
     while(<$fh>) {
       if (/MPC\s+ADD\s+DEPENDENCIES/) {
+        $write = 1;
         my $crlf = $self->crlf();
         my $deps = $self->get_validated_ordering($proj);
         foreach my $dep (@$deps) {
           my $relative = $self->get_relative_dep_file($creator,
                                                       "$cwd/$proj", $dep);
           if (defined $relative) {
-            $write = 1;
             push(@read, "        <subproject project=\"/$dep\"/>$crlf");
           }
         }
