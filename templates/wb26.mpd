@@ -2,8 +2,11 @@
 <projectDescription>
         <name><%project_name%></name>
 	<comment></comment>
+<%if(after)%>
 	<projects>
+                 <!-- MPC ADD DEPENDENCIES -->
 	</projects>
+<%endif%>
 	<buildSpec>
 		<buildCommand>
 			<name>com.windriver.ide.core.wrbuilder</name>
