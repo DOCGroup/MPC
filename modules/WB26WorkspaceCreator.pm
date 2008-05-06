@@ -118,6 +118,38 @@ sub add_dependencies {
   my $fh      = new FileHandle();
   my $outfile = $self->get_outdir() . '/' . $proj;
 
+  if (open($fh, $outfile)) {
+    my $write;
+    my @read = ();
+    my $cwd  = $self->getcwd();
+    while(<$fh>) {
+      if (/MPC\s+ADD\s+DEPENDENCIES/) {
+        my $crlf = $self->crlf();
+        my $deps = $self->get_validated_ordering($proj);
+        foreach my $dep (@$deps) {
+          my $relative = $self->get_relative_dep_file($creator,
+                                                      "$cwd/$proj", $dep);
+          if (defined $relative) {
+            $write = 1;
+            push(@read, "        <project>$dep\</project>$crlf");
+          }
+        }
+        last if (!$write);
+      }
+      else {
+        push(@read, $_);
+      }
+    }
+    close($fh);
+
+    if ($write && open($fh, ">$outfile")) {
+      foreach my $line (@read) {
+        print $fh $line;
+      }
+      close($fh);
+    }
+  }
+
   ## The dependencies need to go into the .wrproject, so transform the
   ## name.
   $outfile =~ s/\.project$/.wrproject/;
