@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wrxml>
     <properties platform="<%platform%>" platform_name="<%platform_name%>" root="1" type="<%project_type%>"/>
+<%if(after)%>
+    <subprojects>
+        <!-- MPC ADD DEPENDENCIES -->
+    </subprojects>
+<%endif%>
     <attributes>
         <mapAttribute>
             <listAttribute key="BLD::Info|GlobalMacros">
