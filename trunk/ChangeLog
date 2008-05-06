@@ -1,3 +1,13 @@
+Tue May  6 18:05:10 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/WB26WorkspaceCreator.pm:
+          When we find MPC ADD DIRECTIVES set write to 1 so that when a
+          project has no dependencies we remove this MPC ADD DIRECTIVES
+          from the generated files
+
+        * templates/wb26.mpd:
+          Use tabs instead of space
+
 Tue May  6 13:40:10 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/WB26WorkspaceCreator.pm

@@ -4,7 +4,7 @@
 	<comment></comment>
 <%if(after)%>
 	<projects>
-                 <!-- MPC ADD DEPENDENCIES -->
+		<!-- MPC ADD DEPENDENCIES -->
 	</projects>
 <%endif%>
 	<buildSpec>
