@@ -1,3 +1,8 @@
+Tue May  6 07:12:10 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/WB26WorkspaceCreator.pm:
+          Added helper to create subprojects
+
 Mon May  5 15:45:04 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/mpich.mpb:
@@ -15,7 +20,7 @@ Mon May  5 15:45:04 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
           Fixed a bug where files added through a directory would not be
           removed as duplicate if the generated files had the 'gendir' value
           set on them with one or more slash.  This only affected Windows
-          project types.  
+          project types.
 
         * registry.pl:
 
