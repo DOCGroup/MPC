@@ -1,3 +1,9 @@
+Wed May  7 13:30:37 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WB26WorkspaceCreator.pm:
+
+          Removed unnecessary and repeated code.
+
 Wed May  7 08:01:10 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/WB26WorkspaceCreator.pm:
