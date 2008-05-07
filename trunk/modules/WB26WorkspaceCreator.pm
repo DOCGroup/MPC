@@ -115,10 +115,11 @@ sub list_file_body {
 
 sub add_dependencies {
   my($self, $creator, $proj) = @_;
-  my $fh      = new FileHandle();
-  my $outfile = $self->get_outdir() . '/' . $proj;
+  my $fh       = new FileHandle();
+  my($outdir)  = Cwd::abs_path($self->mpc_dirname($proj));
+  my($outfile) = $outdir . '/.project';
 
-  if (open($fh, $outfile)) {
+  if (open($fh, "$outfile")) {
     my $write;
     my @read = ();
     my $cwd  = $self->getcwd();
@@ -131,7 +132,7 @@ sub add_dependencies {
           my $relative = $self->get_relative_dep_file($creator,
                                                       "$cwd/$proj", $dep);
           if (defined $relative) {
-            push(@read, "        <project>$dep\</project>$crlf");
+            push(@read, "\t\t<project>$dep\</project>$crlf");
           }
         }
         last if (!$write);
@@ -150,9 +151,8 @@ sub add_dependencies {
     }
   }
 
-  ## The dependencies need to go into the .wrproject, so transform the
-  ## name.
-  $outfile =~ s/\.project$/.wrproject/;
+  ## The dependencies need to go into the .wrproject
+  $outfile = $outdir . '/.wrproject';
 
   if (open($fh, $outfile)) {
     my $write;
