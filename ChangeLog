@@ -1,3 +1,9 @@
+Wed May  7 08:01:10 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/WB26WorkspaceCreator.pm:
+          Improved getting the location of the .project/.wrproject file
+          at the moment environment variables are used
+
 Tue May  6 18:05:10 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/WB26WorkspaceCreator.pm:
