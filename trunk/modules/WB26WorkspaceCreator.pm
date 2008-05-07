@@ -70,13 +70,8 @@ sub write_comps {
 }
 
 sub post_workspace {
-  my($self)    = shift;
-  my($fh)      = shift;
-  my($creator) = shift;
-  my($crlf)    = $self->crlf();
-  my $pjs  = $self->get_project_info();
-  my @list = $self->sort_dependencies($self->get_projects(), 0);
-  my $all  = 'description.buildorder=';
+  my($self, $fh, $creator) = @_;
+  my $crlf = $self->crlf();
 
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     print $fh "$project$crlf";
@@ -86,7 +81,8 @@ sub post_workspace {
 
 sub get_additional_output {
   ## Create the accompanying list file.  It always goes in the same
-  ## directory as the first workspace output file.
+  ## directory as the first workspace output file.  See
+  ## WorkspaceCreator.pm for a description of the array elements.
   return [[undef, 'wb26projects.lst', \&list_file_body]];
 }
 
@@ -115,75 +111,49 @@ sub list_file_body {
 
 sub add_dependencies {
   my($self, $creator, $proj) = @_;
-  my $fh       = new FileHandle();
-  my($outdir)  = Cwd::abs_path($self->mpc_dirname($proj));
-  my($outfile) = $outdir . '/.project';
+  my $fh      = new FileHandle();
+  my $pre     = "\t\t" . '<project>';
+  my $post    = '</project>';
+  my $outdir  = Cwd::abs_path($self->mpc_dirname($proj));
+  my $outfile = $outdir . '/.project';
 
-  if (open($fh, "$outfile")) {
-    my $write;
-    my @read = ();
-    my $cwd  = $self->getcwd();
-    while(<$fh>) {
-      if (/MPC\s+ADD\s+DEPENDENCIES/) {
-        $write = 1;
-        my $crlf = $self->crlf();
-        my $deps = $self->get_validated_ordering($proj);
-        foreach my $dep (@$deps) {
-          my $relative = $self->get_relative_dep_file($creator,
-                                                      "$cwd/$proj", $dep);
-          if (defined $relative) {
-            push(@read, "\t\t<project>$dep\</project>$crlf");
+  ## Go through twice to edit both the .project and .wrproject files
+  for(my $i = 0; $i < 2; $i++) {
+    if (open($fh, "$outfile")) {
+      my @read = ();
+      my $cwd  = $self->getcwd();
+      while(<$fh>) {
+        if (/MPC\s+ADD\s+DEPENDENCIES/) {
+          my $crlf = $self->crlf();
+          my $deps = $self->get_validated_ordering($proj);
+          foreach my $dep (@$deps) {
+            my $relative = $self->get_relative_dep_file($creator,
+                                                        "$cwd/$proj", $dep);
+            if (defined $relative) {
+              push(@read, "$pre$dep$post$crlf");
+            }
           }
         }
-        last if (!$write);
-      }
-      else {
-        push(@read, $_);
-      }
-    }
-    close($fh);
-
-    if ($write && open($fh, ">$outfile")) {
-      foreach my $line (@read) {
-        print $fh $line;
-      }
-      close($fh);
-    }
-  }
-
-  ## The dependencies need to go into the .wrproject
-  $outfile = $outdir . '/.wrproject';
-
-  if (open($fh, $outfile)) {
-    my $write;
-    my @read = ();
-    my $cwd  = $self->getcwd();
-    while(<$fh>) {
-      if (/MPC\s+ADD\s+DEPENDENCIES/) {
-        $write = 1;
-        my $crlf = $self->crlf();
-        my $deps = $self->get_validated_ordering($proj);
-        foreach my $dep (@$deps) {
-          my $relative = $self->get_relative_dep_file($creator,
-                                                      "$cwd/$proj", $dep);
-          if (defined $relative) {
-            push(@read, "        <subproject project=\"/$dep\"/>$crlf");
-          }
+        else {
+          push(@read, $_);
         }
-        last if (!$write);
-      }
-      else {
-        push(@read, $_);
-      }
-    }
-    close($fh);
-
-    if ($write && open($fh, ">$outfile")) {
-      foreach my $line (@read) {
-        print $fh $line;
       }
       close($fh);
+
+      if (open($fh, ">$outfile")) {
+        foreach my $line (@read) {
+          print $fh $line;
+        }
+        close($fh);
+      }
     }
+
+    ## The dependencies need to go into the .wrproject too, so transform
+    ## the name and the pre and post values.
+    $outfile = $outdir . '/.wrproject';
+    $pre = '        <subproject project="/';
+    $post = '"/>';
+
   }
 }
 
