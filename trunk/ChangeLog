@@ -1,3 +1,13 @@
+Sun May 11 19:38:10 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * docs/templates/wb26.txt:
+        * templates/wb26.mpd:
+        * templates/wb26wrproject.mpd:
+          Added enable_subprojects which has to be set as value_template
+          to turn on the generation of subprojects because subprojects
+          can cause long compile/clean times when using standard
+          build support
+
 Wed May  7 13:30:37 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WB26WorkspaceCreator.pm:
