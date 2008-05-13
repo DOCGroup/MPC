@@ -244,8 +244,13 @@ endif
 
 <%if(standard_build)%>
 _clean :
-	@echo "make: removing targets and objects of `pwd`";\
-	rm -f $(OBJECTS) $(PROJECT_TARGETS) $(DEP_FILES) $(wildcard $(OBJ_DIR)/*.unstripped) $(wildcard $(OBJ_DIR)/ctdt.*)
+	if [ -d $(OBJ_DIR) ]; then\
+		echo "make: removing targets and objects of `pwd`";\
+		rm -f $(OBJECTS) $(PROJECT_TARGETS) $(DEP_FILES) $(wildcard $(OBJ_DIR)/*.unstripped) $(wildcard $(OBJ_DIR)/ctdt.*) \
+		rm -rf $(OBJ_DIR);\
+	else\
+		echo "make: removing targets and objects of `pwd`, already done";\
+	fi
 
 build_all_specs :
 	@echo "building target default for ALL build-specs";\
