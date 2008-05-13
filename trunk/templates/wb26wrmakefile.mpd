@@ -24,6 +24,10 @@ PROJECT_TARGET=$(filter %<%lib_ext%>,$(PROJECT_TARGETS))
 PROJECT_TARGET=CUSTOM_ONLY
 <%endif%>
 
+<%if(standard_build && !enable_subprojects)%>
+DEPLIBS = $(foreach lib,<%foreach(libs)%> <%libname_prefix%><%lib%><%endfor%> <%lit_libs%>, $(foreach libpath,<%foreach(libpaths)%><%if(targetoutdir)%> <%libpath%>/<%targetoutdir%><%endif%> <%libpath%><%endfor%>, $(wildcard $(libpath)/lib$(lib).a)))
+<%endif%>
+
 <%if(standard_build)%>
 all : generate_sources pre_recursion subdirs_all post_recursion pre_build main_all post_build
 <%else%>
