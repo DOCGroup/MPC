@@ -16,10 +16,22 @@
                 <stringAttribute value="SHAREDLIB_VERSION"/>
 <%endif%>
                 <stringAttribute value="EXPAND_DBG"/>
+                <stringAttribute value="LIBPATH"/>
+                <stringAttribute value="LIBS"/>
+                <stringAttribute value="PARTIAL_LIBS"/>
+<%if(standard_build)%>
+                <stringAttribute value="SUB_OBJECTS"/>
+<%endif%>
             </listAttribute>
             <stringAttribute key="BLD::Info|GlobalMacro|DEFINES" value="<%foreach(defines common_defines macros staticflags)%>-D<%define%> <%endfor%>"/>
             <stringAttribute key="BLD::Info|GlobalMacro|PROJECT_TYPE" value="DKM"/>
             <stringAttribute key="BLD::Info|GlobalMacro|EXPAND_DBG" value="0"/>
+            <stringAttribute key="BLD::Info|GlobalMacro|LIBPATH" value="<%foreach(libpaths)%><%fornotfirst(" ")%>-L<%libpath%><%endfor%>"/>
+            <stringAttribute key="BLD::Info|GlobalMacro|PARTIAL_LIBS" value="<%foreach(libs)%><%fornotfirst(" ")%>-l<%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%if(!standard_build)%><%lib_ext%><%endif%><%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"/>
+            <stringAttribute key="BLD::Info|GlobalMacro|LIBS" value=""/>
+<%if(standard_build)%>
+            <stringAttribute key="BLD::Info|GlobalMacro|SUB_OBJECTS" value="$(PARTIAL_LIBS)"/>
+<%endif%>
 <%if(sharedname || staticname)%>
             <stringAttribute key="BLD::Info|GlobalMacro|DO_STRIP" value="0"/>
             <stringAttribute key="BLD::Info|GlobalMacro|SHAREDLIB_VERSION" value=""/>
@@ -40,16 +52,10 @@
                 <stringAttribute value="TOOL"/>
                 <stringAttribute value="TOOL_PATH"/>
                 <stringAttribute value="CC_ARCH_SPEC"/>
-                <stringAttribute value="LIBPATH"/>
-                <stringAttribute value="LIBS"/>
-                <stringAttribute value="PARTIAL_LIBS"/>
             </listAttribute>
 <%foreach(buildspecs)%>
             <stringAttribute key="BLD::Info|Macro|CC_ARCH_SPEC|value|<%buildspec%>" value="<%cc_arch_spec%>"/>
             <stringAttribute key="BLD::Info|Macro|CPU|value|<%buildspec%>" value="<%cpu%>"/>
-            <stringAttribute key="BLD::Info|Macro|LIBPATH|value|<%buildspec%>" value="<%foreach(libpaths)%><%fornotfirst(" ")%>-L<%libpath%><%endfor%>"/>
-            <stringAttribute key="BLD::Info|Macro|LIBS|value|<%buildspec%>" value=""/>
-            <stringAttribute key="BLD::Info|Macro|PARTIAL_LIBS|value|<%buildspec%>" value="<%foreach(libs)%><%fornotfirst(" ")%>-l<%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%if(!standard_build)%><%lib_ext%><%endif%><%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"/>
             <stringAttribute key="BLD::Info|Macro|TOOL_FAMILY|value|<%buildspec%>" value="<%tool_family%>"/>
             <stringAttribute key="BLD::Info|Macro|TOOL_PATH|value|<%buildspec%>" value=""/>
             <stringAttribute key="BLD::Info|Macro|TOOL|value|<%buildspec%>" value="<%tool%>"/>
