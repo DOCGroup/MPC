@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wrxml>
     <properties platform="<%platform%>" platform_name="<%platform_name%>" root="1" type="<%project_type%>"/>
-<%if(after && enable_subprojects)%>
+<%if(after && enable_subprojects && exename)%>
     <subprojects>
         <!-- MPC ADD DEPENDENCIES -->
     </subprojects>
