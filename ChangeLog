@@ -1,3 +1,9 @@
+Wed May 14 18:32:10 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26.mpd:
+        * templates/wb26wrproject.mpd:
+          Limit the cases subprojects are used
+
 Tue May 13 18:32:10 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrproject.mpd:

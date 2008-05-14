@@ -2,7 +2,7 @@
 <projectDescription>
         <name><%project_name%></name>
 	<comment></comment>
-<%if(after && enable_subprojects)%>
+<%if(after && enable_subprojects && exename)%>
 	<projects>
 		<!-- MPC ADD DEPENDENCIES -->
 	</projects>
