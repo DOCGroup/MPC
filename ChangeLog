@@ -1,3 +1,8 @@
+Mon May 19 14:29:21 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          Build subdirs before subprojects
+
 Wed May 14 18:32:10 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26.mpd:
