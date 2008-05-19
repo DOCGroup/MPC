@@ -1,3 +1,9 @@
+Mon May 19 18:53:21 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          Added dependencies so that the executable gets relinked when
+          one of the libraries change
+
 Mon May 19 14:29:21 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrmakefile.mpd:

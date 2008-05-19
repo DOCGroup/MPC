@@ -24,7 +24,7 @@ PROJECT_TARGET=$(filter %<%lib_ext%>,$(PROJECT_TARGETS))
 PROJECT_TARGET=CUSTOM_ONLY
 <%endif%>
 
-<%if(standard_build && !enable_subprojects)%>
+<%if(standard_build && exename)%>
 DEPLIBS = $(foreach lib,<%foreach(libs)%> <%libname_prefix%><%lib%><%endfor%> <%lit_libs%>, $(foreach libpath,<%foreach(libpaths)%><%if(targetoutdir)%> <%libpath%>/<%targetoutdir%><%endif%> <%libpath%><%endfor%>, $(wildcard $(libpath)/lib$(lib).a)))
 <%endif%>
 
@@ -40,6 +40,10 @@ _clean ::
 <%endif%>
 
 %IDE_GENERATED%
+
+<%if(standard_build && exename)%>
+$(OBJ_DIR)/<%exename%>_partialImage.o : $(OBJECTS) $(SUB_OBJECTS) $(DEPLIBS)
+<%endif%>
 
 <%if(!standard_build)%>
 -include $(PRJ_ROOT_DIR)/*.makefile
