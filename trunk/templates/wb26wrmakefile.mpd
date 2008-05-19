@@ -180,10 +180,19 @@ endif
 <%endif%>
 
 <%if(standard_build)%>
+
+# order subdirs to use subprojects first 
+isSubProject = $(if $(subst $(subst $(CURDIR)/,,$(dir)),,$(dir)),, $(dir))  
+SUB_PROJECTS := $(foreach dir, $(SUBDIRS), $(isSubProject))
+isSubFolder = $(if $(subst $(subst $(CURDIR)/,,$(dir)),,$(dir)), $(dir))  
+SUB_FOLDERS := $(foreach dir, $(SUBDIRS), $(isSubFolder))
+
+SUBDIRS_ORDERED := $(SUB_PROJECTS) $(SUB_FOLDERS) 
+
 # recursive make in SUBDIRS
 subdirs_all :
 	@_PWD=`pwd`;\
-	for dir in _dummy_ $(SUBDIRS); do\
+	for dir in _dummy_ $(SUBDIRS_ORDERED); do\
 		if [ "$$dir" = "_dummy_" ]; then\
 			continue ;\
 	fi;\
@@ -199,7 +208,7 @@ subdirs_all :
 
 clean ::
 	@_PWD=`pwd`;\
-	for dir in _dummy_ $(SUBDIRS); do\
+	for dir in _dummy_ $(SUBDIRS_ORDERED); do\
 		if [ "$$dir" = "_dummy_" ]; then\
 			continue ;\
 		fi;\
