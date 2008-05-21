@@ -23,7 +23,7 @@ use File::Basename;
 # ******************************************************************
 
 my($insext)   = 'ins';
-my($version)  = '1.8';
+my($version)  = '1.9';
 my(%defaults) = ('header_files'   => 1,
                  'idl_files'      => 1,
                  'inline_files'   => 1,
@@ -152,7 +152,7 @@ sub determineSpecialName {
     if (opendir($fh, $odir)) {
       foreach my $file (grep(!/^\.\.?$/, readdir($fh))) {
         if ($file =~ /^lib$name\.(a|so|sl)/ ||
-            $file =~ /^$name.*\.(dll|lib)$/i) {
+            $file =~ /^(lib)?$name.*\.(dll|lib)$/i) {
           push(@libs, "$dir$insdir$file");
         }
       }
