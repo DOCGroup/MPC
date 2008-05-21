@@ -32,33 +32,33 @@ use File::Basename;
 # Data Section
 # ******************************************************************
 
-my($exclude)    = undef;
-my($verbose)    = 0;
-my($lbuildf)    = 0;
-my(@foundFiles) = ();
-my($version)    = '1.15';
+my $exclude;
+my @foundFiles;
+my $verbose = 0;
+my $lbuildf = 0;
+my $version = '1.16';
 
 eval 'symlink("", "");';
-my($hasSymlink) = ($@ eq '');
+my $hasSymlink = ($@ eq '');
 
 # ******************************************************************
 # Subroutine Section
 # ******************************************************************
 
 sub findCallback {
-  my($matches) = !(/^CVS\z/s && ($File::Find::prune = 1)            ||
-                   /^\.svn\z/s && ($File::Find::prune = 1)          ||
-                   defined $exclude &&
-                   /^$exclude\z/s && ($File::Find::prune = 1)       ||
-                   /^\.cvsignore\z/s && ($File::Find::prune = 1)    ||
-                   /^build\z/s && ($File::Find::prune = 1)          ||
-                   /^\..*obj\z/s && ($File::Find::prune = 1)        ||
-                   /^Templates\.DB\z/s && ($File::Find::prune = 1)  ||
-                   /^Debug\z/s && ($File::Find::prune = 1)          ||
-                   /^Release\z/s && ($File::Find::prune = 1)        ||
-                   /^Static_Debug\z/s && ($File::Find::prune = 1)   ||
-                   /^Static_Release\z/s && ($File::Find::prune = 1)
-                  );
+  my $matches = !(/^CVS\z/s && ($File::Find::prune = 1)            ||
+                  /^\.svn\z/s && ($File::Find::prune = 1)          ||
+                  defined $exclude &&
+                  /^$exclude\z/s && ($File::Find::prune = 1)       ||
+                  /^\.cvsignore\z/s && ($File::Find::prune = 1)    ||
+                  /^build\z/s && ($File::Find::prune = 1)          ||
+                  /^\..*obj\z/s && ($File::Find::prune = 1)        ||
+                  /^Templates\.DB\z/s && ($File::Find::prune = 1)  ||
+                  /^Debug\z/s && ($File::Find::prune = 1)          ||
+                  /^Release\z/s && ($File::Find::prune = 1)        ||
+                  /^Static_Debug\z/s && ($File::Find::prune = 1)   ||
+                  /^Static_Release\z/s && ($File::Find::prune = 1)
+                 );
 
   if ($matches) {
     $matches &&= (! -l $_           &&
@@ -132,11 +132,10 @@ sub getFileList {
 
 
 sub backupAndMoveModified {
-  my($realpath) = shift;
-  my($linkpath) = shift;
-  my($mltime)   = -M $linkpath;
-  my($mrtime)   = -M $realpath;
-  my($status)   = 1;
+  my($realpath, $linkpath) = @_;
+  my $mltime   = -M $linkpath;
+  my $mrtime   = -M $realpath;
+  my $status   = 1;
 
   ## -M returns the number of days since modification.  Therefore,
   ## a smaller time means that it has been modified more recently.
@@ -176,13 +175,12 @@ sub backupAndMoveModified {
 
 
 sub hardlink {
-  my($realpath) = shift;
-  my($linkpath) = shift;
+  my($realpath, $linkpath) = @_;
 
   if ($^O eq 'MSWin32' && ! -e $realpath) {
     ## If the real file "doesn't exist", then we need to
     ## look up the short file name.
-    my($short) = Win32::GetShortPathName($realpath);
+    my $short = Win32::GetShortPathName($realpath);
 
     ## If we were able to find the short file name, then we need to
     ## try again.
@@ -206,23 +204,19 @@ sub hardlink {
 
 
 sub symlinkFiles {
-  my($files)     = shift;
-  my($fullbuild) = shift;
-  my($dmode)     = shift;
-  my($startdir)  = shift;
-  my($absolute)  = shift;
-  my($sdlength)  = length($startdir) + 1;
-  my($partial)   = ($absolute ? undef :
-                                substr($fullbuild, $sdlength,
-                                       length($fullbuild) - $sdlength));
+  my($files, $fullbuild, $dmode, $startdir, $absolute) = @_;
+  my $sdlength = length($startdir) + 1;
+  my $partial  = ($absolute ? undef :
+                              substr($fullbuild, $sdlength,
+                                     length($fullbuild) - $sdlength));
 
   foreach my $file (@$files) {
-    my($fullpath) = "$fullbuild/$file";
+    my $fullpath = "$fullbuild/$file";
     if (-e $fullpath) {
       ## We need to make sure that we're not attempting to mix hardlinks
       ## and softlinks.
       if (! -d $fullpath && ! -l $fullpath) {
-        my($stat) = stat($fullpath);
+        my $stat = stat($fullpath);
         if ($stat->nlink() > 1) {
           print STDERR "ERROR: Attempting to mix softlinks ",
                        "with a hardlink build.\n",
@@ -252,10 +246,10 @@ sub symlinkFiles {
           }
         }
         else {
-          my($buildfile) = "$partial/$file";
-          my($slashcount) = ($buildfile =~ tr/\///);
-          my($real) = ($slashcount == 0 ? './' : ('../' x $slashcount)) .
-                      $file;
+          my $buildfile = "$partial/$file";
+          my $slashcount = ($buildfile =~ tr/\///);
+          my $real = ($slashcount == 0 ? './' : ('../' x $slashcount)) .
+                     $file;
           if ($verbose) {
             print "symlink $real $fullpath\n";
           }
@@ -268,30 +262,32 @@ sub symlinkFiles {
     }
   }
 
-  ## Remove links that point to non-existant files
-  sub lcheck {
-    if (-l $_ && ! -e $_) {
-      unlink($_);
-      if ($verbose) {
-        print "Removing $File::Find::dir/$_\n";
-      }
-    }
+  ## Remove links that point to non-existant files.  The subroutine is
+  ## now anonymous to avoid the "will not stay shared" warning for %dirs.
+  my %dirs;
+  File::Find::find({wanted => sub {
+                                if (-l $_ && ! -e $_) {
+                                  unlink($_);
+                                  $dirs{$File::Find::dir} = 1;
+                                  if ($verbose) {
+                                    print "Removing $File::Find::dir/$_\n";
+                                  }
+                                }
+                              }
+                   }, $fullbuild);
+  foreach my $key (keys %dirs) {
+    rmdir($key);
   }
-  File::Find::find({wanted => \&lcheck}, $fullbuild);
-
   return 0;
 }
 
 
 sub hardlinkFiles {
-  my($files)     = shift;
-  my($fullbuild) = shift;
-  my($dmode)     = shift;
-  my($startdir)  = shift;
-  my(@hardlinks) = ();
+  my($files, $fullbuild, $dmode, $startdir) = @_;
+  my @hardlinks;
 
   foreach my $file (@$files) {
-    my($fullpath) = "$fullbuild/$file";
+    my $fullpath = "$fullbuild/$file";
     if (-d $file) {
       if (! -e $fullpath) {
         if ($verbose) {
@@ -332,20 +328,26 @@ sub hardlinkFiles {
   }
 
   ## Remove links that point to non-existant files
-  my($lfh) = new FileHandle();
-  my($txt) = "$fullbuild/clone_build_tree.links";
+  my $lfh = new FileHandle();
+  my $txt = "$fullbuild/clone_build_tree.links";
   if (open($lfh, $txt)) {
+    my %dirs;
     while(<$lfh>) {
-      my($line) = $_;
+      my $line = $_;
       $line =~ s/\s+$//;
       if (! -e $line) {
-        unlink("$fullbuild/$line");
+        my $full = "$fullbuild/$line";
+        unlink($full);
+        $dirs{dirname($full)} = 1;
         if ($verbose) {
-          print "Removing $fullbuild/$line\n";
+          print "Removing $full\n";
         }
       }
     }
     close($lfh);
+    foreach my $key (keys %dirs) {
+      rmdir($key);
+    }
   }
 
   ## Rewrite the link file.
@@ -362,14 +364,10 @@ sub hardlinkFiles {
 
 
 sub linkFiles {
-  my($absolute)  = shift;
-  my($dmode)     = shift;
-  my($hardlink)  = shift;
-  my($builddir)  = shift;
-  my($builds)    = shift;
-  my($status)    = 0;
-  my($starttime) = time();
-  my($startdir)  = getcwd();
+  my($absolute, $dmode, $hardlink, $builddir, $builds) = @_;
+  my $status    = 0;
+  my $starttime = time();
+  my $startdir  = getcwd();
 
   ## Ensure that the build directory exists and is writable
   mkpath($builddir, 0, $dmode);
@@ -380,13 +378,13 @@ sub linkFiles {
 
   ## Search for the clonable files
   print "Searching $startdir for files...\n";
-  my($files) = getFileList();
-  my($findtime) = time() - $starttime;
+  my $files = getFileList();
+  my $findtime = time() - $starttime;
   print 'Found ', scalar(@$files), ' files and directories in ',
         $findtime, ' second', ($findtime == 1 ? '' : 's'), ".\n";
 
   foreach my $build (@$builds) {
-    my($fullbuild) = "$builddir/$build";
+    my $fullbuild = "$builddir/$build";
 
     ## Create all of the links for this build
     if (-d $fullbuild) {
@@ -416,12 +414,12 @@ sub linkFiles {
 
 
 sub usageAndExit {
-  my($msg) = shift;
+  my $msg = shift;
   if (defined $msg) {
     print STDERR "$msg\n";
   }
-  my($base) = basename($0);
-  my($spc)  = ' ' x (length($base) + 8);
+  my $base = basename($0);
+  my $spc  = ' ' x (length($base) + 8);
 
   print STDERR "$base v$version\n\n",
                "Create a tree identical in layout to the current directory\n",
@@ -450,12 +448,12 @@ sub usageAndExit {
 # Main Section
 # ******************************************************************
 
-my($dmode)    = 0777;
-my($absolute) = 0;
-my($hardlink) = !$hasSymlink;
-my($builddir) = undef;
-my(@builds)   = ();
-my($startdir) = undef;
+my $dmode    = 0777;
+my $absolute = 0;
+my $hardlink = !$hasSymlink;
+my $builddir;
+my @builds;
+my $startdir;
 
 for(my $i = 0; $i <= $#ARGV; ++$i) {
   if ($ARGV[$i] eq '-a') {
@@ -531,7 +529,7 @@ else {
 }
 
 if (!defined $builds[0]) {
-  my($cwd) = getcwd();
+  my $cwd = getcwd();
   if (chdir($builddir)) {
     @builds = glob('*');
     chdir($cwd);
