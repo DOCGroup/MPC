@@ -1,3 +1,17 @@
+Fri May 30 15:48:49 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/vc8.txt:
+
+          Document the template variables used by the vc8 (and vc9)
+          template.
+
+        * templates/vc8.mpd:
+
+          Modified the 'ImportLibrary' template variable to override the
+          setting of the ImportLibrary instead of duplicating the
+          ImportLibrary setting which is controled by the 'type_is_dynamic'
+          template variable and the 'sharedname' project setting.
+
 Wed May 21 11:43:19 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * clone_build_tree.pl:
