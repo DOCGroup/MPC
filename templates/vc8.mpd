@@ -439,14 +439,15 @@
 <%if(TurnOffAssemblyGeneration)%>
 				TurnOffAssemblyGeneration="<%TurnOffAssemblyGeneration%>"
 <%endif%>
+<%if(ImportLibrary)%>
+				ImportLibrary="<%ImportLibrary%>"
+<%else%>
 <%if(type_is_dynamic && sharedname)%>
 				ImportLibrary="<%libout%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
+<%endif%>
 <%if(SupportUnloadOfDelayLoadedDLL)%>
 				SupportUnloadOfDelayLoadedDLL="<%SupportUnloadOfDelayLoadedDLL%>"
-<%endif%>
-<%if(ImportLibrary)%>
-				ImportLibrary="<%ImportLibrary%>"
 <%endif%>
 <%if(MergeSections)%>
 				MergeSections="<%MergeSections%>"
