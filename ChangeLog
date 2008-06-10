@@ -1,3 +1,10 @@
+Tue Jun 10 14:45:18 UTC 2008  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Enhanced support for MinGW with "-type make".
+
 Fri May 30 15:54:22 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * MPC version 3.6.0 released.

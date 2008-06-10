@@ -35,6 +35,7 @@ pchext           = .gch
 versupport       = 1
 supports_include = 1
 visibility       =
+depgen_flags     =
 
 // ***********************************************************************
 // Configuration Section
@@ -312,8 +313,25 @@ cygwin {
   exe_ext    = .exe
   rc         = windres
   res_ext    = .o
+  depgen_flags = -t make
 }
 
+// MinGW compiler with the MSYS shell, make, etc.
+mingw_msys {
+  versupport   =
+  lib_prefix   =
+  dll_ext      = .dll
+  lib_ext      = .lib
+  exe_ext      = .exe
+  ldlibs       = -lwsock32 -lnetapi32
+  rc           = rc
+  pic          =
+  depgen_flags = -t make
+}
+
+// MinGW compiler with either:
+// a) a native Windows shell and make, or
+// b) MSYS's make passing --win32 (which will use cmd.exe as its subshell)
 mingw {
   versupport   =
   lib_prefix   =
@@ -330,6 +348,9 @@ mingw {
   move         = move /y
   testdirstart = if not exist
   testdirend   =
+  pic          =
+  slash        = \\
+  depgen_flags = -t make
 }
 
 dmc_win {
@@ -349,6 +370,7 @@ dmc_win {
   supports_include =
   testdirstart     = if not exist
   testdirend       =
+  depgen_flags     = -t make
 }
 
 tandem {
