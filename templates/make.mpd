@@ -321,7 +321,7 @@ $(DEPENDENCIES):
 
 depend:
 <%if(source_files || pch_source)%>
-	-<%depgen("$(MPC_ROOT)/depgen.pl")%> $(CFLAGS) $(CCFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> $(NUL)
+	-<%depgen("$(MPC_ROOT)/depgen.pl")%> <%depgen_flags%> $(CFLAGS) $(CCFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> $(NUL)
 <%else%>
 	@-:
 <%endif%>
