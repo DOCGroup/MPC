@@ -21,17 +21,16 @@ use File::Basename;
 # Data Section
 # ******************************************************************
 
-my($version) = '1.2';
+my $version = '1.2';
 
 # ******************************************************************
 # Subroutine Section
 # ******************************************************************
 
 sub generate_export_header {
-  my($name)   = shift;
-  my($output) = shift;
-  my($fh)     = new FileHandle();
-  my($status) = 0;
+  my($name, $output) = @_;
+  my $fh = new FileHandle();
+  my $status = 0;
 
   if (open($fh, ">$output")) {
     $name = uc($name);
@@ -88,7 +87,7 @@ EOM
 }
 
 sub usageAndExit {
-  my($str) = shift;
+  my $str = shift;
   if (defined $str) {
     print STDERR "$str\n";
   }
@@ -101,8 +100,8 @@ sub usageAndExit {
 # Main Section
 # ******************************************************************
 
-my($name)   = shift;
-my($output) = shift;
+my $name   = shift;
+my $output = shift;
 
 if (!defined $name) {
   usageAndExit();

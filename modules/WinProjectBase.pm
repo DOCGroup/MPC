@@ -16,7 +16,7 @@ use strict;
 # Data Section
 # ************************************************************
 
-my($max_win_env) = 'MPC_MAX_WIN_FILE_LENGTH';
+my $max_win_env = 'MPC_MAX_WIN_FILE_LENGTH';
 
 # ************************************************************
 # Subroutine Section
@@ -35,8 +35,7 @@ sub case_insensitive {
 
 
 sub translate_directory {
-  my($self) = shift;
-  my($dir)  = shift;
+  my($self, $dir) = @_;
 
   ## Call the base class version
   $dir = $self->DirectoryManager::translate_directory($dir);
@@ -49,10 +48,10 @@ sub translate_directory {
   ## limitation (including the cwd (- c:\) and object file name).  So, we
   ## check the total length against a predetermined "acceptable" value.
   ## This acceptable value is modifiable through the environment.
-  my($maxenv) = $ENV{$max_win_env};
-  my($maxlen) = (defined $maxenv && $maxenv =~ /^\d+$/ ? $maxenv : 128) + 3;
-  my($dirlen) = length($dir);
-  my($diff)   = (length($self->getcwd()) + $dirlen + 1) - $maxlen;
+  my $maxenv = $ENV{$max_win_env};
+  my $maxlen = (defined $maxenv && $maxenv =~ /^\d+$/ ? $maxenv : 128) + 3;
+  my $dirlen = length($dir);
+  my $diff   = (length($self->getcwd()) + $dirlen + 1) - $maxlen;
 
   if ($diff > 0) {
     if ($diff > $dirlen) {
@@ -70,8 +69,7 @@ sub translate_directory {
 
 
 sub validated_directory {
-  my($self) = shift;
-  my($dir)  = shift;
+  my($self, $dir) = @_;
 
   ## $(...) could contain a drive letter and Windows can not
   ## make a directory that resembles a drive letter.  So, we have
@@ -86,8 +84,7 @@ sub validated_directory {
 
 
 sub crlf {
-  my($self) = shift;
-  return $self->windows_crlf();
+  return $_[0]->windows_crlf();
 }
 
 

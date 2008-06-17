@@ -17,8 +17,7 @@ use strict;
 # ************************************************************
 
 sub crlf {
-  my($self) = shift;
-  return $self->windows_crlf();
+  return $_[0]->windows_crlf();
 }
 
 

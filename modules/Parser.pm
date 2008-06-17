@@ -24,16 +24,15 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my(%filecache) = ();
+my %filecache;
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub new {
-  my($class) = shift;
-  my($inc)   = shift;
-  my($self)  = $class->SUPER::new();
+  my($class, $inc) = @_;
+  my $self = $class->SUPER::new();
 
   $self->{'line_number'} = 0;
   $self->{'include'}     = $inc;
@@ -43,8 +42,7 @@ sub new {
 
 
 sub strip_line {
-  my($self) = shift;
-  my($line) = shift;
+  my($self, $line) = @_;
 
   ++$self->{'line_number'};
   $line =~ s/\/\/.*//;
@@ -64,12 +62,10 @@ sub preprocess_line {
 
 
 sub read_file {
-  my($self)        = shift;
-  my($input)       = shift;
-  my($cache)       = shift;
-  my($ih)          = new FileHandle();
-  my($status)      = 1;
-  my($errorString) = undef;
+  my($self, $input, $cache) = @_;
+  my $ih = new FileHandle();
+  my $status = 1;
+  my $errorString;
 
   $self->{'line_number'} = 0;
   if (open($ih, $input)) {
@@ -81,7 +77,7 @@ sub read_file {
       }
 
       while(<$ih>) {
-        my($line) = $self->preprocess_line($ih, $_);
+        my $line = $self->preprocess_line($ih, $_);
 
         ## Push the line onto the array for this file
         push(@{$filecache{$input}}, $line);
@@ -116,13 +112,12 @@ sub read_file {
 
 
 sub cached_file_read {
-  my($self)  = shift;
-  my($input) = shift;
-  my($lines) = $filecache{$input};
+  my($self, $input) = @_;
+  my $lines = $filecache{$input};
 
   if (defined $lines) {
-    my($status) = 1;
-    my($error)  = undef;
+    my $status = 1;
+    my $error;
     $self->{'line_number'} = 0;
     foreach my $line (@$lines) {
       ++$self->{'line_number'};
@@ -140,35 +135,30 @@ sub cached_file_read {
 
 
 sub get_line_number {
-  my($self) = shift;
-  return $self->{'line_number'};
+  return $_[0]->{'line_number'};
 }
 
 
 sub set_line_number {
-  my($self)   = shift;
-  my($number) = shift;
+  my($self, $number) = @_;
   $self->{'line_number'} = $number;
 }
 
 
 sub slash_to_backslash {
-  my($self) = shift;
-  my($file) = shift;
+  my($self, $file) = @_;
   $file =~ s/\//\\/g;
   return $file;
 }
 
 
 sub get_include_path {
-  my($self) = shift;
-  return $self->{'include'};
+  return $_[0]->{'include'};
 }
 
 
 sub search_include_path {
-  my($self)  = shift;
-  my($file)  = shift;
+  my($self, $file) = @_;
 
   foreach my $include ('.', @{$self->{'include'}}) {
     if (-r "$include/$file") {
@@ -181,8 +171,7 @@ sub search_include_path {
 
 
 sub escape_regex_special {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
 
   $name =~ s/([\+\-\\\$\[\]\(\)\.])/\\$1/g;
   return $name;

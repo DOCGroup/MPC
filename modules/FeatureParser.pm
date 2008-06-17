@@ -22,10 +22,10 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub new {
-  my($class)    = shift;
-  my($features) = shift;
-  my(@files)    = @_;
-  my($self)     = $class->SUPER::new();
+  my $class    = shift;
+  my $features = shift;
+  my @files    = @_;
+  my $self     = $class->SUPER::new();
 
   ## Set the values associative array
   $self->{'values'} = {};
@@ -37,7 +37,7 @@ sub new {
       if (!$status) {
         ## We only want to warn the user about problems
         ## with the feature file.
-        my($lnumber) = $self->get_line_number();
+        my $lnumber = $self->get_line_number();
         $self->warning($self->mpc_basename($f) . ": line $lnumber: $warn");
       }
     }
@@ -58,11 +58,9 @@ sub new {
 
 
 sub parse_line {
-  my($self)   = shift;
-  my($if)     = shift;
-  my($line)   = shift;
-  my($status) = 1;
-  my($error)  = undef;
+  my($self, $if, $line) = @_;
+  my $status = 1;
+  my $error;
 
   if ($line eq '') {
   }
@@ -79,15 +77,13 @@ sub parse_line {
 
 
 sub get_names {
-  my($self)  = shift;
-  my(@names) = keys %{$self->{'values'}};
+  my @names = keys %{$_[0]->{'values'}};
   return \@names;
 }
 
 
 sub get_value {
-  my($self) = shift;
-  my($tag)  = shift;
+  my($self, $tag) = @_;
   return $self->{'values'}->{lc($tag)};
 }
 

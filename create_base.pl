@@ -19,7 +19,7 @@ use FileHandle;
 use File::Spec;
 use File::Basename;
 
-my($basePath) = $FindBin::Bin;
+my $basePath = $FindBin::Bin;
 if ($^O eq 'VMS') {
   $basePath = File::Spec->rel2abs(dirname($0)) if ($basePath eq '');
     $basePath = VMS::Filespec::unixify($basePath);
@@ -32,7 +32,7 @@ require Creator;
 # Data Section
 # ******************************************************************
 
-my($version) = '0.1';
+my $version = '0.1';
 
 # ******************************************************************
 # Subroutine Section
@@ -40,7 +40,7 @@ my($version) = '0.1';
 
 sub gather_info {
   my $name = shift;
-  my $fh   = new FileHandle();
+  my $fh = new FileHandle();
 
   if (open($fh, $name)) {
     my @lines = ();
