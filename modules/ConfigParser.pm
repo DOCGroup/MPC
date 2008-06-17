@@ -22,9 +22,8 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub new {
-  my($class) = shift;
-  my($valid) = shift;
-  my($self)  = $class->SUPER::new();
+  my($class, $valid) = @_;
+  my $self = $class->SUPER::new();
 
   ## Set the values associative array
   $self->{'values'} = {};
@@ -36,17 +35,15 @@ sub new {
 
 
 sub parse_line {
-  my($self)   = shift;
-  my($if)     = shift;
-  my($line)   = shift;
-  my($status) = 1;
-  my($error)  = undef;
+  my($self, $if, $line) = @_;
+  my $status = 1;
+  my $error;
 
   if ($line eq '') {
   }
   elsif ($line =~ /^([^=]+)\s*=\s*(.*)$/) {
-    my($name)  = $1;
-    my($value) = $2;
+    my $name  = $1;
+    my $value = $2;
     $name =~ s/\s+$//;
 
     ## Pre-process the name and value
@@ -76,26 +73,23 @@ sub parse_line {
 
 
 sub get_names {
-  my($self)  = shift;
-  my(@names) = keys %{$self->{'values'}};
+  my @names = keys %{$_[0]->{'values'}};
   return \@names;
 }
 
 
 sub get_value {
-  my($self) = shift;
-  my($tag)  = shift;
+  my($self, $tag) = @_;
   return $self->{'values'}->{$tag} || $self->{'values'}->{lc($tag)};
 }
 
 
 sub preprocess {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
   while($str =~ /\$([\(\w\)]+)/) {
-    my($name) = $1;
+    my $name = $1;
     $name =~ s/[\(\)]//g;
-    my($val) = $ENV{$name};
+    my $val = $ENV{$name};
     if (!defined $val) {
       $val = '';
       if (!defined $self->{'warned'}->{$name}) {

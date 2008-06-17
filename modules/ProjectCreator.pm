@@ -27,51 +27,51 @@ use vars qw(@ISA);
 # ************************************************************
 
 ## The basic extensions known to a project creator
-my($BaseClassExtension)      = 'mpb';
-my($ProjectCreatorExtension) = 'mpc';
-my($TemplateExtension)       = 'mpd';
-my($TemplateInputExtension)  = 'mpt';
+my $BaseClassExtension      = 'mpb';
+my $ProjectCreatorExtension = 'mpc';
+my $TemplateExtension       = 'mpd';
+my $TemplateInputExtension  = 'mpt';
 
 ## This feature is enabled or disabled depending on whether
 ## or not the -static option is used.
-my($static_libs_feature) = 'static_libs_only';
+my $static_libs_feature = 'static_libs_only';
 
 ## Valid names for assignments within a project
 ## Bit Meaning
 ## 0   Preserve the order for additions (1) or invert it (0)
 ## 1   Add this value to template input value (if there is one)
 ## 2   Preserve <% %> settings for evaluation within the template
-my(%validNames) = ('exename'            => 1,
-                   'sharedname'         => 1,
-                   'staticname'         => 1,
-                   'libpaths'           => 3,
-                   'recursive_libpaths' => 3,
-                   'exeout'             => 1,
-                   'includes'           => 3,
-                   'recursive_includes' => 3,
-                   'after'              => 1,
-                   'custom_only'        => 1,
-                   'libs'               => 2,
-                   'lit_libs'           => 2,
-                   'managed'            => 1,
-                   'pure_libs'          => 2,
-                   'pch_header'         => 1,
-                   'pch_source'         => 1,
-                   'prebuild'           => 5,
-                   'postbuild'          => 5,
-                   'dllout'             => 1,
-                   'libout'             => 1,
-                   'dynamicflags'       => 3,
-                   'staticflags'        => 3,
-                   'version'            => 1,
-                   'recurse'            => 1,
-                   'requires'           => 3,
-                   'avoids'             => 3,
-                   'tagname'            => 1,
-                   'tagchecks'          => 1,
-                   'macros'             => 3,
-                   'webapp'             => 1,
-                  );
+my %validNames = ('exename'            => 1,
+                  'sharedname'         => 1,
+                  'staticname'         => 1,
+                  'libpaths'           => 3,
+                  'recursive_libpaths' => 3,
+                  'exeout'             => 1,
+                  'includes'           => 3,
+                  'recursive_includes' => 3,
+                  'after'              => 1,
+                  'custom_only'        => 1,
+                  'libs'               => 2,
+                  'lit_libs'           => 2,
+                  'managed'            => 1,
+                  'pure_libs'          => 2,
+                  'pch_header'         => 1,
+                  'pch_source'         => 1,
+                  'prebuild'           => 5,
+                  'postbuild'          => 5,
+                  'dllout'             => 1,
+                  'libout'             => 1,
+                  'dynamicflags'       => 3,
+                  'staticflags'        => 3,
+                  'version'            => 1,
+                  'recurse'            => 1,
+                  'requires'           => 3,
+                  'avoids'             => 3,
+                  'tagname'            => 1,
+                  'tagchecks'          => 1,
+                  'macros'             => 3,
+                  'webapp'             => 1,
+                 );
 
 ## Custom definitions only
 ## Bit  Meaning
@@ -80,144 +80,144 @@ my(%validNames) = ('exename'            => 1,
 ## 2    Value is always scalar
 ## 3    Name can also be used in an 'optional' clause
 ## 4    Needs <%...%> conversion
-my(%customDefined) = ('automatic'                   => 0x04,
-                      'dependent'                   => 0x14,
-                      'command'                     => 0x14,
-                      'commandflags'                => 0x14,
-                      'precommand'                  => 0x14,
-                      'postcommand'                 => 0x14,
-                      'inputext'                    => 0x01,
-                      'libpath'                     => 0x04,
-                      'output_option'               => 0x14,
-                      'pch_postrule'                => 0x04,
-                      'pre_extension'               => 0x08,
-                      'source_pre_extension'        => 0x08,
-                      'template_pre_extension'      => 0x08,
-                      'header_pre_extension'        => 0x08,
-                      'inline_pre_extension'        => 0x08,
-                      'documentation_pre_extension' => 0x08,
-                      'resource_pre_extension'      => 0x08,
-                      'generic_pre_extension'       => 0x08,
-                      'pre_filename'                => 0x08,
-                      'source_pre_filename'         => 0x08,
-                      'template_pre_filename'       => 0x08,
-                      'header_pre_filename'         => 0x08,
-                      'inline_pre_filename'         => 0x08,
-                      'documentation_pre_filename'  => 0x08,
-                      'resource_pre_filename'       => 0x08,
-                      'generic_pre_filename'        => 0x08,
-                      'source_outputext'            => 0x0a,
-                      'template_outputext'          => 0x0a,
-                      'header_outputext'            => 0x0a,
-                      'inline_outputext'            => 0x0a,
-                      'documentation_outputext'     => 0x0a,
-                      'resource_outputext'          => 0x0a,
-                      'generic_outputext'           => 0x0a,
-                     );
+my %customDefined = ('automatic'                   => 0x04,
+                     'dependent'                   => 0x14,
+                     'command'                     => 0x14,
+                     'commandflags'                => 0x14,
+                     'precommand'                  => 0x14,
+                     'postcommand'                 => 0x14,
+                     'inputext'                    => 0x01,
+                     'libpath'                     => 0x04,
+                     'output_option'               => 0x14,
+                     'pch_postrule'                => 0x04,
+                     'pre_extension'               => 0x08,
+                     'source_pre_extension'        => 0x08,
+                     'template_pre_extension'      => 0x08,
+                     'header_pre_extension'        => 0x08,
+                     'inline_pre_extension'        => 0x08,
+                     'documentation_pre_extension' => 0x08,
+                     'resource_pre_extension'      => 0x08,
+                     'generic_pre_extension'       => 0x08,
+                     'pre_filename'                => 0x08,
+                     'source_pre_filename'         => 0x08,
+                     'template_pre_filename'       => 0x08,
+                     'header_pre_filename'         => 0x08,
+                     'inline_pre_filename'         => 0x08,
+                     'documentation_pre_filename'  => 0x08,
+                     'resource_pre_filename'       => 0x08,
+                     'generic_pre_filename'        => 0x08,
+                     'source_outputext'            => 0x0a,
+                     'template_outputext'          => 0x0a,
+                     'header_outputext'            => 0x0a,
+                     'inline_outputext'            => 0x0a,
+                     'documentation_outputext'     => 0x0a,
+                     'resource_outputext'          => 0x0a,
+                     'generic_outputext'           => 0x0a,
+                    );
 
 ## Custom sections as well as definitions
 ## Value  Meaning
 ## 0    No modifications
 ## 1    Needs <%...%> conversion
-my(%custom) = ('command'       => 1,
-               'commandflags'  => 1,
-               'dependent'     => 1,
-               'gendir'        => 0,
-               'precommand'    => 1,
-               'postcommand'   => 1,
-              );
+my %custom = ('command'       => 1,
+              'commandflags'  => 1,
+              'dependent'     => 1,
+              'gendir'        => 0,
+              'precommand'    => 1,
+              'postcommand'   => 1,
+             );
 
 ## All matching assignment arrays will get these keywords
-my(@default_matching_assignments) = ('recurse',
-                                    );
+my @default_matching_assignments = ('recurse',
+                                   );
 
 ## These matching assingment arrays will get added, but only to the
 ## specific project component types.
-my(%default_matching_assignments) = ('source_files' => ['buildflags',
-                                                        'managed',
-                                                        'no_pch',
-                                                       ],
-                                    );
+my %default_matching_assignments = ('source_files' => ['buildflags',
+                                                       'managed',
+                                                       'no_pch',
+                                                      ],
+                                   );
 
 ## Deal with these components in a special way
-my(%specialComponents) = ('header_files'   => 1,
-                          'inline_files'   => 1,
-                          'template_files' => 1,
-                         );
-my(%sourceComponents)  = ('source_files'   => 1,
-                          'template_files' => 1,
-                         );
+my %specialComponents = ('header_files'   => 1,
+                         'inline_files'   => 1,
+                         'template_files' => 1,
+                        );
+my %sourceComponents  = ('source_files'   => 1,
+                         'template_files' => 1,
+                        );
 
-my($defgroup)    = 'default_group';
-my($grouped_key) = 'grouped_';
-my($tikey)       = '/ti/';
+my $defgroup    = 'default_group';
+my $grouped_key = 'grouped_';
+my $tikey       = '/ti/';
 
 ## Matches with generic_outputext
-my($generic_key) = 'generic_files';
+my $generic_key = 'generic_files';
 
 # ************************************************************
 # C++ Specific Component Settings
 # ************************************************************
 
 ## Valid component names within a project along with the valid file extensions
-my(%cppvc) = ('source_files'        => [ "\\.cpp", "\\.cxx", "\\.cc", "\\.c", "\\.C", ],
-              'template_files'      => [ "_T\\.cpp", "_T\\.cxx", "_T\\.cc", "_T\\.c", "_T\\.C", "_t\\.cpp", "_t\\.cxx", "_t\\.cc", "_t\\.c", "_t\\.C" ],
-              'header_files'        => [ "\\.h", "\\.hpp", "\\.hxx", "\\.hh", ],
-              'inline_files'        => [ "\\.i", "\\.ipp", "\\.inl", ],
-              'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
-              'resource_files'      => [ "\\.rc", ],
-             );
+my %cppvc = ('source_files'        => [ "\\.cpp", "\\.cxx", "\\.cc", "\\.c", "\\.C", ],
+             'template_files'      => [ "_T\\.cpp", "_T\\.cxx", "_T\\.cc", "_T\\.c", "_T\\.C", "_t\\.cpp", "_t\\.cxx", "_t\\.cc", "_t\\.c", "_t\\.C" ],
+             'header_files'        => [ "\\.h", "\\.hpp", "\\.hxx", "\\.hh", ],
+             'inline_files'        => [ "\\.i", "\\.ipp", "\\.inl", ],
+             'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
+             'resource_files'      => [ "\\.rc", ],
+            );
 
 ## Exclude these extensions when auto generating the component values
-my(%cppec) = ('source_files' => $cppvc{'template_files'},
-             );
+my %cppec = ('source_files' => $cppvc{'template_files'},
+            );
 
 # ************************************************************
 # C# Specific Component Settings
 # ************************************************************
 
 ## Valid component names within a project along with the valid file extensions
-my(%csvc) = ('source_files'        => [ "\\.cs" ],
-             'config_files'        => [ "\\.config" ],
-             'resx_files'          => [ "\\.resx", "\\.resources" ],
-             'aspx_files'          => [ "\\.aspx" ],
-             'ico_files'           => [ "\\.ico" ],
-             'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
-            );
+my %csvc = ('source_files'        => [ "\\.cs" ],
+            'config_files'        => [ "\\.config" ],
+            'resx_files'          => [ "\\.resx", "\\.resources" ],
+            'aspx_files'          => [ "\\.aspx" ],
+            'ico_files'           => [ "\\.ico" ],
+            'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
+           );
 
-my(%csma) = ('source_files' => [ 'dependent_upon',
-                                 'subtype',
-                               ],
-             'resx_files'   => [ 'dependent_upon',
-                                 'generates_source',
-                                 'subtype',
-                               ],
-            );
+my %csma = ('source_files' => [ 'dependent_upon',
+                                'subtype',
+                              ],
+            'resx_files'   => [ 'dependent_upon',
+                                'generates_source',
+                                'subtype',
+                              ],
+           );
 
 # ************************************************************
 # Java Specific Component Settings
 # ************************************************************
 
 ## Valid component names within a project along with the valid file extensions
-my(%jvc) = ('source_files'        => [ "\\.java" ],
-            'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
-           );
+my %jvc = ('source_files'        => [ "\\.java" ],
+           'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
+          );
 
 # ************************************************************
 # Visual Basic Specific Component Settings
 # ************************************************************
 
 ## Valid component names within a project along with the valid file extensions
-my(%vbvc) = ('source_files'        => [ "\\.vb" ],
-             'config_files'        => [ "\\.config" ],
-             'resx_files'          => [ "\\.resx" ],
-             'aspx_files'          => [ "\\.aspx" ],
-             'ico_files'           => [ "\\.ico" ],
-             'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
-            );
+my %vbvc = ('source_files'        => [ "\\.vb" ],
+            'config_files'        => [ "\\.config" ],
+            'resx_files'          => [ "\\.resx" ],
+            'aspx_files'          => [ "\\.aspx" ],
+            'ico_files'           => [ "\\.ico" ],
+            'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
+           );
 
-my(%vbma) = ('source_files' => [ 'subtype' ],
-            );
+my %vbma = ('source_files' => [ 'subtype' ],
+           );
 
 # ************************************************************
 # Language Specific Component Settings
@@ -230,57 +230,28 @@ my(%vbma) = ('source_files' => [ 'subtype' ],
 # 2     Assignments available in standard file types
 # 3     The entry point for executables
 # 4     The language uses a C preprocessor
-my(%language) = ('cplusplus' => [ \%cppvc, \%cppec, {}    , 'main', 1 ],
-                 'csharp'    => [ \%csvc,  {},      \%csma, 'Main', 0 ],
-                 'java'      => [ \%jvc,   {},      {}    , 'main', 0 ],
-                 'vb'        => [ \%vbvc,  {},      \%vbma, 'Main', 0 ],
-                );
-my(%mains) = ();
+my %language = ('cplusplus' => [ \%cppvc, \%cppec, {}    , 'main', 1 ],
+                'csharp'    => [ \%csvc,  {},      \%csma, 'Main', 0 ],
+                'java'      => [ \%jvc,   {},      {}    , 'main', 0 ],
+                'vb'        => [ \%vbvc,  {},      \%vbma, 'Main', 0 ],
+               );
+my %mains;
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub new {
-  my($class)      = shift;
-  my($global)     = shift;
-  my($inc)        = shift;
-  my($template)   = shift;
-  my($ti)         = shift;
-  my($dynamic)    = shift;
-  my($static)     = shift;
-  my($relative)   = shift;
-  my($addtemp)    = shift;
-  my($addproj)    = shift;
-  my($progress)   = shift;
-  my($toplevel)   = shift;
-  my($baseprojs)  = shift;
-  my($gfeature)   = shift;
-  my($relative_f) = shift;
-  my($feature)    = shift;
-  my($features)   = shift;
-  my($hierarchy)  = shift;
-  my($exclude)    = shift;
-  my($makeco)     = shift;
-  my($nmod)       = shift;
-  my($applypj)    = shift;
-  my($genins)     = shift;
-  my($into)       = shift;
-  my($language)   = shift;
-  my($use_env)    = shift;
-  my($expandvars) = shift;
-  my($gendot)     = shift;
-  my($comments)   = shift;
-  my($foreclipse) = shift;
-  my($self)       = $class->SUPER::new($global, $inc,
-                                       $template, $ti, $dynamic, $static,
-                                       $relative, $addtemp, $addproj,
-                                       $progress, $toplevel, $baseprojs,
-                                       $feature, $features,
-                                       $hierarchy, $nmod, $applypj,
-                                       $into, $language, $use_env,
-                                       $expandvars,
-                                       'project');
+  my($class, $global, $inc, $template, $ti, $dynamic, $static, $relative, $addtemp, $addproj, $progress, $toplevel, $baseprojs, $gfeature, $relative_f, $feature, $features, $hierarchy, $exclude, $makeco, $nmod, $applypj, $genins, $into, $language, $use_env, $expandvars, $gendot, $comments, $foreclipse) = @_;
+  my $self = $class->SUPER::new($global, $inc,
+                                $template, $ti, $dynamic, $static,
+                                $relative, $addtemp, $addproj,
+                                $progress, $toplevel, $baseprojs,
+                                $feature, $features,
+                                $hierarchy, $nmod, $applypj,
+                                $into, $language, $use_env,
+                                $expandvars,
+                                'project');
 
   $self->{$self->{'type_check'}}   = 0;
   $self->{'feature_defined'}       = 0;
@@ -335,9 +306,9 @@ sub is_keyword {
 
 
 sub read_global_configuration {
-  my($self)   = shift;
-  my($input)  = $self->get_global_cfg();
-  my($status) = 1;
+  my $self   = shift;
+  my $input  = $self->get_global_cfg();
+  my $status = 1;
 
   if (defined $input) {
     ## If it doesn't contain a path, search the include path
@@ -364,7 +335,7 @@ sub convert_to_template_assignment {
   ## If the value we are going to set for $name has been used as a
   ## scoped template variable, we need to hijack the whole assignment
   ## and turn it into a template variable assignment.
-  my($atemp) = $self->get_addtemp();
+  my $atemp = $self->get_addtemp();
   foreach my $key (grep(/::$name$/, keys %$atemp)) {
     $self->update_template_variable(0, $calledfrom, $key, $value);
   }
@@ -464,7 +435,7 @@ sub process_assignment {
   ## scoped keyword mapping is done through the parse_scoped_assignment()
   ## method.
   if (!defined $assign || $assign == $self->get_assignment_hash()) {
-    my($mapped) = $self->{'valid_names'}->{$name};
+    my $mapped = $self->{'valid_names'}->{$name};
     if (defined $mapped && UNIVERSAL::isa($mapped, 'ARRAY')) {
       $self->parse_scoped_assignment($$mapped[0], 0,
                                      $$mapped[1], $value,
@@ -530,7 +501,7 @@ sub get_assignment_for_modification {
   ## If we weren't passed an assignment hash, then we need to
   ## look one up that may possibly correctly deal with keyword mappings
   if (!defined $assign) {
-    my($mapped) = $self->{'valid_names'}->{$name};
+    my $mapped = $self->{'valid_names'}->{$name};
 
     if (defined $mapped && UNIVERSAL::isa($mapped, 'ARRAY')) {
       $name   = $$mapped[1];
@@ -539,7 +510,7 @@ sub get_assignment_for_modification {
   }
 
   ## Get the assignment value
-  my($value) = $self->get_assignment($name, $assign);
+  my $value = $self->get_assignment($name, $assign);
 
   ## If we are involved in a subtraction, we get back a value and
   ## it's a scoped or mapped assignment, then we need to possibly
@@ -555,18 +526,18 @@ sub get_assignment_for_modification {
 
 sub begin_project {
   my($self, $parents) = @_;
-  my($status) = 1;
-  my($error)  = undef;
+  my $status = 1;
+  my $error;
 
   ## Deal with the inheritance hierarchy first
   ## Add in the base projects from the command line
   if (!$self->{'reading_global'} &&
       !defined $self->{'reading_parent'}->[0]) {
-    my($baseprojs) = $self->get_baseprojs();
+    my $baseprojs = $self->get_baseprojs();
 
     if (defined $parents) {
       foreach my $base (@$baseprojs) {
-        my($found) = 0;
+        my $found = 0;
         foreach my $parent (@$parents) {
           if ($base eq $parent) {
             $found = 1;
@@ -586,8 +557,8 @@ sub begin_project {
   if (defined $parents) {
     foreach my $parent (@$parents) {
       ## Read in the parent onto ourself
-      my($file) = $self->search_include_path(
-                           "$parent.$BaseClassExtension");
+      my $file = $self->search_include_path(
+                          "$parent.$BaseClassExtension");
       if (!defined $file) {
         $file = $self->search_include_path(
                              "$parent.$ProjectCreatorExtension");
@@ -611,11 +582,11 @@ sub begin_project {
             push(@{$self->{'reading_parent'}}, $file);
 
             ## Collect up some information about the inheritance tree
-            my($tree) = $self->{'current_input'};
+            my $tree = $self->{'current_input'};
             if (!defined $self->{'inheritance_tree'}->{$tree}) {
               $self->{'inheritance_tree'}->{$tree} = {};
             }
-            my($hash) = $self->{'inheritance_tree'}->{$tree};
+            my $hash = $self->{'inheritance_tree'}->{$tree};
             foreach my $p (@{$self->{'reading_parent'}}) {
               if (!defined $$hash{$p}) {
                 $$hash{$p} = {};
@@ -670,11 +641,11 @@ sub begin_project {
 
 sub get_process_project_type {
   my($self, $types) = @_;
-  my($type)    = '';
-  my($defcomp) = $self->get_default_component_name();
+  my $type    = '';
+  my $defcomp = $self->get_default_component_name();
 
   foreach my $t (split(/\s*,\s*/, $types)) {
-    my($not) = ($t =~ s/^!\s*//);
+    my $not = ($t =~ s/^!\s*//);
     if ($not) {
       if ($t eq $self->{'pctype'}) {
         $type = '';
@@ -708,8 +679,8 @@ sub parse_line {
 
   if ($status && defined $values[0]) {
     if ($values[0] eq $self->{'grammar_type'}) {
-      my($name)      = $values[1];
-      my($typecheck) = $self->{'type_check'};
+      my $name      = $values[1];
+      my $typecheck = $self->{'type_check'};
       if (defined $name && $name eq '}') {
         ## Project Ending
         if (!defined $self->{'reading_parent'}->[0] &&
@@ -719,7 +690,7 @@ sub parse_line {
 
           ## Perform any additions, subtractions
           ## or overrides for the project values.
-          my($addproj) = $self->get_addproj();
+          my $addproj = $self->get_addproj();
           foreach my $ap (keys %$addproj) {
             if (defined $self->{'valid_names'}->{$ap}) {
               foreach my $val (@{$$addproj{$ap}}) {
@@ -757,11 +728,11 @@ sub parse_line {
             if ($status == 1) {
               ## Save the library name and location
               foreach my $name ('sharedname', 'staticname') {
-                my($val) = $self->get_assignment($name);
+                my $val = $self->get_assignment($name);
                 if (defined $val) {
-                  my($cwd)   = $self->getcwd();
-                  my($start) = $self->getstartdir();
-                  my($amount) = 0;
+                  my $cwd    = $self->getcwd();
+                  my $start  = $self->getstartdir();
+                  my $amount = 0;
                   if ($cwd eq $start) {
                     $amount = length($start);
                   }
@@ -885,8 +856,8 @@ sub parse_line {
       }
     }
     elsif ($values[0] eq 'component') {
-      my($comp) = $values[1];
-      my($name) = $values[2];
+      my $comp = $values[1];
+      my $name = $values[2];
       if (defined $name) {
         $name =~ s/^\(\s*//;
         $name =~ s/\s*\)$//;
@@ -895,7 +866,7 @@ sub parse_line {
         $name = $self->get_default_component_name();
       }
 
-      my($vc) = $self->{'valid_components'};
+      my $vc = $self->{'valid_components'};
       if (defined $$vc{$comp}) {
         ($status, $errorString) = $self->parse_components($ih, $comp, $name);
       }
@@ -906,7 +877,7 @@ sub parse_line {
                                                           $loc, $add);
         }
         elsif ($comp eq 'specific') {
-          my($type) = $self->get_process_project_type($name);
+          my $type = $self->get_process_project_type($name);
           if ($type eq $self->{'pctype'} ||
               $type eq $self->get_default_component_name()) {
             ($status, $errorString) = $self->parse_scope(
@@ -968,11 +939,11 @@ sub parse_line {
 
 sub parse_scoped_assignment {
   my($self, $tag, $type, $name, $value, $flags) = @_;
-  my($over)   = {};
-  my($status) = 0;
+  my $over   = {};
+  my $status = 0;
 
   ## Map the assignment name on a scoped assignment
-  my($mapped) = $self->{'valid_names'}->{$name};
+  my $mapped = $self->{'valid_names'}->{$name};
   if (defined $mapped && UNIVERSAL::isa($mapped, 'ARRAY')) {
     $name = $$mapped[1];
   }
@@ -1001,7 +972,7 @@ sub parse_scoped_assignment {
       ## If there is no value in $$flags, then we need to get
       ## the outer scope value and put it in there.
       if (!defined $self->get_assignment($name, $flags)) {
-        my($outer) = $self->get_assignment($name);
+        my $outer = $self->get_assignment($name);
         $self->process_assignment($name, $outer, $flags);
       }
       $self->process_assignment_add($name, $value, $flags);
@@ -1010,7 +981,7 @@ sub parse_scoped_assignment {
       ## If there is no value in $$flags, then we need to get
       ## the outer scope value and put it in there.
       if (!defined $self->get_assignment($name, $flags)) {
-        my($outer) = $self->get_assignment($name);
+        my $outer = $self->get_assignment($name);
         $self->process_assignment($name, $outer, $flags);
       }
       $self->process_assignment_sub($name, $value, $flags);
@@ -1021,23 +992,23 @@ sub parse_scoped_assignment {
 
 
 sub update_template_variable {
-  my($self)   = shift;
-  my($check)  = shift;
-  my(@values) = @_;
+  my $self   = shift;
+  my $check  = shift;
+  my @values = @_;
 
   ## Save the addtemp state if we haven't done so before
   if (!defined $self->{'addtemp_state'}) {
-    my(%state) = $self->save_state('addtemp');
+    my %state = $self->save_state('addtemp');
     $self->{'addtemp_state'} = \%state;
   }
 
   ## If the name that is used within a specific is a mapped keyword
   ## then we need to translate it into the mapped keyword as it will
   ## be used by the TemplateParser.
-  my($name) = undef;
+  my $name;
   if ($values[1] =~ /(.*::)(.*)/) {
-    my($base)   = $1;
-    my($mapped) = $self->{'valid_names'}->{$2};
+    my $base   = $1;
+    my $mapped = $self->{'valid_names'}->{$2};
     if (defined $mapped && UNIVERSAL::isa($mapped, 'ARRAY')) {
       $name = $values[1];
       $values[1] = $base . 'custom_type->' . $$mapped[1];
@@ -1045,13 +1016,13 @@ sub update_template_variable {
   }
 
   ## Now modify the addtemp values
-  my($atemp) = $self->get_addtemp();
+  my $atemp = $self->get_addtemp();
   $self->information("'$values[1]' was used as a template modifier.");
 
   if ($check && !defined $atemp->{$values[1]}) {
     $name = $values[1] if (!defined $name);
     if ($name =~ s/.*:://) {
-      my($value) = $self->get_assignment($name);
+      my $value = $self->get_assignment($name);
       if (defined $value) {
         $atemp->{$values[1]} = [[0, $value, undef, $name]];
       }
@@ -1064,7 +1035,7 @@ sub update_template_variable {
     ## the command line.  That way, adjust_value() does not need to
     ## sort the values (and have knowledge about which came from the
     ## command line and which didn't).
-    my($max) = scalar(@{$atemp->{$values[1]}});
+    my $max = scalar(@{$atemp->{$values[1]}});
     for(my $i = 0; $i < $max; $i++) {
       if ($atemp->{$values[1]}->[$i]->[2]) {
         splice(@{$atemp->{$values[1]}}, $i, 0,
@@ -1081,9 +1052,9 @@ sub update_template_variable {
 
 
 sub handle_unknown_assignment {
-  my($self)   = shift;
-  my($type)   = shift;
-  my(@values) = @_;
+  my $self   = shift;
+  my $type   = shift;
+  my @values = @_;
 
   ## Unknown assignments within a 'specific' section are handled as
   ## template value modifications.  These are handled exactly as the
@@ -1107,10 +1078,10 @@ sub handle_scoped_unknown {
     }
     else {
       if (!defined $self->{'expanded'}->{$type}) {
-        my($ok) = 1;
+        my $ok = 1;
         while($line =~ /\$(\w+)/) {
-          my($name) = $1;
-          my($val)  = '';
+          my $name = $1;
+          my $val  = '';
           if ($name eq 'PWD') {
             $val = $self->getcwd();
           }
@@ -1145,10 +1116,10 @@ sub handle_scoped_unknown {
 sub process_component_line {
   my($self, $tag, $line, $flags,
      $grname, $current, $excarr, $comps, $count) = @_;
-  my($status)  = 1;
-  my($error)   = undef;
-  my(%exclude) = ();
-  my(@values)  = ();
+  my $status = 1;
+  my $error;
+  my %exclude;
+  my @values;
 
   ## If this returns true, then we've found an assignment
   if ($self->parse_assignment($line, \@values)) {
@@ -1160,8 +1131,8 @@ sub process_component_line {
   else {
     ## If we successfully remove a '!' from the front, then
     ## the file(s) listed are to be excluded
-    my($rem) = ($line =~ s/^\^\s*//);
-    my($exc) = $rem || ($line =~ s/^!\s*//);
+    my $rem = ($line =~ s/^\^\s*//);
+    my $exc = $rem || ($line =~ s/^!\s*//);
 
     ## Convert any $(...) in this line before we process any
     ## wild card characters.  If we do not, scoped assignments will
@@ -1176,10 +1147,10 @@ sub process_component_line {
     if ((index($line, '>>') >= 0 || index($line, '<<') >= 0) &&
         $line =~ /(.*)\s+(>>|<<)\s+(.*)/) {
       $line    = $1;
-      my($oop) = $2;
-      my($iop) = ($oop eq '>>' ? '<<' : '>>');
-      my($out) = ($oop eq '>>' ? $3 : undef);
-      my($dep) = ($oop eq '<<' ? $3 : undef);
+      my $oop = $2;
+      my $iop = ($oop eq '>>' ? '<<' : '>>');
+      my $out = ($oop eq '>>' ? $3 : undef);
+      my $dep = ($oop eq '<<' ? $3 : undef);
 
       $line =~ s/\s+$//;
       if (index($line, $iop) >= 0 && $line =~ /(.*)\s+$iop\s+(.*)/) {
@@ -1200,7 +1171,7 @@ sub process_component_line {
       }
 
       ## Keys used internally to MPC need to be in forward slash format.
-      my($key) = $line;
+      my $key = $line;
       $key =~ s/\\/\//g if ($self->{'convert_slashes'});
       if (defined $out) {
         if (!defined $self->{'custom_special_output'}->{$tag}) {
@@ -1223,7 +1194,7 @@ sub process_component_line {
 
     ## Set up the files array.  If the line contains a wild card
     ## character use CORE::glob() to get the files specified.
-    my(@files) = ();
+    my @files;
     if ($line =~ /^"([^"]+)"$/) {
       push(@files, $1);
     }
@@ -1255,7 +1226,7 @@ sub process_component_line {
     }
     else {
       ## Set the flag overrides for each file
-      my($over) = $self->{'flag_overrides'}->{$tag};
+      my $over = $self->{'flag_overrides'}->{$tag};
       if (defined $over) {
         foreach my $file (@files) {
           $$over{$file} = $flags;
@@ -1282,17 +1253,17 @@ sub process_component_line {
 sub parse_conditional {
   my($self, $fh, $types, $tag, $flags,
      $grname, $current, $exclude, $comps, $count) = @_;
-  my($status)  = 1;
-  my($error)   = undef;
-  my($add)     = 0;
-  my($type)    = $self->get_process_project_type($types);
+  my $status = 1;
+  my $error;
+  my $add = 0;
+  my $type = $self->get_process_project_type($types);
 
   if ($type eq $self->{'pctype'}) {
     $add = 1;
   }
 
   while(<$fh>) {
-    my($line) = $self->preprocess_line($fh, $_);
+    my $line = $self->preprocess_line($fh, $_);
 
     if ($line eq '') {
     }
@@ -1318,17 +1289,17 @@ sub parse_conditional {
 
 sub parse_components {
   my($self, $fh, $tag, $name) = @_;
-  my($current) = $defgroup;
-  my($status)  = 1;
-  my($error)   = undef;
-  my($names)   = {};
-  my($comps)   = {};
-  my($set)     = undef;
-  my(%flags)   = ();
-  my(@exclude) = ();
-  my($custom)  = defined $self->{'generated_exts'}->{$tag};
-  my($grtag)   = $grouped_key . $tag;
-  my($grname)  = undef;
+  my $current = $defgroup;
+  my $status = 1;
+  my $error;
+  my $names = {};
+  my $comps = {};
+  my $set;
+  my %flags;
+  my @exclude;
+  my $custom = defined $self->{'generated_exts'}->{$tag};
+  my $grtag = $grouped_key . $tag;
+  my $grname;
 
   if ($custom) {
     ## For the custom scoped assignments, we want to put a copy of
@@ -1356,9 +1327,9 @@ sub parse_components {
     $$comps{$current} = [];
   }
 
-  my($count) = 0;
+  my $count = 0;
   while(<$fh>) {
-    my($line) = $self->preprocess_line($fh, $_);
+    my $line = $self->preprocess_line($fh, $_);
 
     if ($line eq '') {
     }
@@ -1404,9 +1375,9 @@ sub parse_components {
         ## We are at the end of a component.  If the only group
         ## we added was the default group, then we need to remove
         ## the group setting altogether.
-        my($groups) = $self->get_assignment($grtag);
+        my $groups = $self->get_assignment($grtag);
         if (defined $groups) {
-          my($grarray) = $self->create_array($groups);
+          my $grarray = $self->create_array($groups);
           if (scalar(@$grarray) == 1 && $$grarray[0] eq $defgroup) {
             $self->process_assignment($grtag, undef);
           }
@@ -1433,9 +1404,9 @@ sub parse_components {
   ## store an array of directories that the user supplied.  Otherwise,
   ## we just store a 1.
   if (defined $specialComponents{$tag}) {
-    my(@dirs) = ();
+    my @dirs;
     foreach my $name (keys %$names) {
-      my($comps) = $$names{$name};
+      my $comps = $$names{$name};
       foreach my $comp (keys %$comps) {
         foreach my $item (@{$$comps{$comp}}) {
           if (-d $item) {
@@ -1460,11 +1431,11 @@ sub parse_components {
   ## listed and we attempted to exclude files, then we need to find the
   ## set of files that don't match the excluded files and add them.
   if ($status && defined $exclude[0] && defined $grname) {
-    my($alldir)  = $self->get_assignment('recurse') || $flags{'recurse'};
-    my(%checked) = ();
-    my(@files)   = ();
+    my $alldir = $self->get_assignment('recurse') || $flags{'recurse'};
+    my %checked;
+    my @files;
     foreach my $exc (@exclude) {
-      my($dname) = $self->mpc_dirname($exc);
+      my $dname = $self->mpc_dirname($exc);
       if (!defined $checked{$dname}) {
         $checked{$dname} = 1;
         push(@files, $self->generate_default_file_list($dname,
@@ -1504,10 +1475,10 @@ sub parse_verbatim {
   ## does not want to add to the existing verbatim settings.
   $self->{'verbatim'}->{$type}->{$loc} = []
           if (!$add || !defined $self->{'verbatim'}->{$type}->{$loc});
-  my($array) = $self->{'verbatim'}->{$type}->{$loc};
+  my $array = $self->{'verbatim'}->{$type}->{$loc};
 
   while(<$fh>) {
-    my($line) = $self->preprocess_line($fh, $_);
+    my $line = $self->preprocess_line($fh, $_);
 
     if ($line =~ /^}$/) {
       ## This is not an error,
@@ -1525,11 +1496,11 @@ sub parse_verbatim {
 
 sub process_feature {
   my($self, $fh, $names, $parents) = @_;
-  my($status)  = 1;
-  my($error)   = undef;
+  my $status = 1;
+  my $error;
 
-  my($requires) = '';
-  my($avoids)   = '';
+  my $requires = '';
+  my $avoids   = '';
   foreach my $name (@$names) {
     if ($name =~ /^!\s*(.*)$/) {
       if ($avoids ne '') {
@@ -1559,9 +1530,9 @@ sub process_feature {
     ## Otherwise, we read in all the lines until we find the
     ## closing brace for the feature and it appears to the parser
     ## that nothing was defined.
-    my($curly) = 1;
+    my $curly = 1;
     while(<$fh>) {
-      my($line) = $self->preprocess_line($fh, $_);
+      my $line = $self->preprocess_line($fh, $_);
 
       ## This is a very simplistic way of finding the end of
       ## the feature definition.  It will work as long as no spurious
@@ -1596,7 +1567,7 @@ sub process_array_assignment {
       push(@{$$aref}, @$array);
     }
     elsif ($type == -1) {
-      my($count) = scalar(@{$$aref});
+      my $count = scalar(@{$$aref});
       for(my $i = 0; $i < $count; ++$i) {
         foreach my $val (@$array) {
           if ($$aref->[$i] eq $val) {
@@ -1631,22 +1602,22 @@ sub parse_define_custom {
     return 0, "$tag has not yet been defined and can not be modified";
   }
 
-  my($status)      = 0;
-  my($errorString) = "Unable to process $tag";
+  my $status      = 0;
+  my $errorString = "Unable to process $tag";
 
   ## Update the custom_types assignment
   $self->process_assignment_add('custom_types', $tag) if (!$modify);
 
   if (!defined $self->{'matching_assignments'}->{$tag}) {
-    my(@keys) = keys %custom;
+    my @keys = keys %custom;
     push(@keys, @default_matching_assignments);
     $self->{'matching_assignments'}->{$tag} = \@keys;
   }
 
-  my($optname) = undef;
-  my($inscope) = 0;
+  my $optname;
+  my $inscope = 0;
   while(<$fh>) {
-    my($line) = $self->preprocess_line($fh, $_);
+    my $line = $self->preprocess_line($fh, $_);
 
     if ($line eq '') {
     }
@@ -1676,10 +1647,10 @@ sub parse_define_custom {
       }
       else {
         if ($line =~ /(\w+)\s*\(([^\)]+)\)\s*(\+)?=\s*(.*)/) {
-          my($name) = lc($1);
-          my($opt)  = $2;
-          my($add)  = $3;
-          my(@val)  = split(/\s*,\s*/, $4);
+          my $name = lc($1);
+          my $opt  = $2;
+          my $add  = $3;
+          my @val  = split(/\s*,\s*/, $4);
 
           ## Fix $opt spacing
           $opt =~ s/(\&\&|\|\|)/ $1 /g;
@@ -1710,8 +1681,8 @@ sub parse_define_custom {
       ## Propagate the custom defined values into the mapped values
       foreach my $key (keys %{$self->{'valid_names'}}) {
         if (UNIVERSAL::isa($self->{'valid_names'}->{$key}, 'ARRAY')) {
-          my($value) = $self->{'generated_exts'}->{$tag}->{
-                                 $self->{'valid_names'}->{$key}->[1]};
+          my $value = $self->{'generated_exts'}->{$tag}->{
+                                $self->{'valid_names'}->{$key}->[1]};
           if (defined $value) {
             ## Bypass the process_assignment() defined in this class
             ## to avoid unwanted keyword mapping.
@@ -1736,16 +1707,14 @@ sub parse_define_custom {
       last;
     }
     else {
-      my(@values) = ();
+      my @values;
       ## If this returns true, then we've found an assignment
       if ($self->parse_assignment($line, \@values)) {
-        my($type)  = $values[0];
-        my($name)  = $values[1];
-        my($value) = $values[2];
+        my($type, $name, $value) = @values;
         if (defined $customDefined{$name}) {
           if (($customDefined{$name} & 0x01) != 0) {
             $value = $self->escape_regex_special($value);
-            my(@array) = split(/\s*,\s*/, $value);
+            my @array = split(/\s*,\s*/, $value);
             $self->process_array_assignment(
                       \$self->{'valid_components'}->{$tag}, $type, \@array);
           }
@@ -1788,7 +1757,7 @@ sub parse_define_custom {
               ## separator.  If there are no elements in the array we're
               ## going to add an empty element to the array.  This way,
               ## assignments of blank values are useful.
-              my(@array) = split(/\s*,\s*/, $value);
+              my @array = split(/\s*,\s*/, $value);
               push(@array, '') if ($#array == -1);
 
               ## Process the array assignment after adjusting the values
@@ -1806,9 +1775,9 @@ sub parse_define_custom {
       }
       elsif ($line =~ /^(\w+)\s+(\w+)(\s*=\s*(\w+)?)?/) {
         ## Check for keyword mapping here
-        my($keyword) = $1;
-        my($newkey)  = $2;
-        my($mapkey)  = $4;
+        my $keyword = $1;
+        my $newkey  = $2;
+        my $mapkey  = $4;
         if ($keyword eq 'keyword') {
           if (defined $self->{'valid_names'}->{$newkey}) {
             $status = 0;
@@ -1939,8 +1908,8 @@ sub remove_duplicate_addition {
     if ($name eq 'macros' || $name eq 'libpaths' ||
         $name eq 'includes' || $name =~ /libs$/ ||
         index($name, $grouped_key) == 0) {
-      my($allowed) = '';
-      my(%parts)   = ();
+      my $allowed = '';
+      my %parts;
 
       ## Convert the array into keys for a hash table
       @parts{@{$self->create_array($nval)}} = ();
@@ -1951,7 +1920,7 @@ sub remove_duplicate_addition {
       $value = $self->modify_assignment_value($name, $value);
       foreach my $val (@{$self->create_array($value)}) {
         if (!exists $parts{$val}) {
-          my($qt) = ($val =~ /\s/ ? '"' : '');
+          my $qt = ($val =~ /\s/ ? '"' : '');
           $allowed .= $qt . $val . $qt . ' ';
         }
       }
@@ -1966,13 +1935,13 @@ sub remove_duplicate_addition {
 
 sub read_template_input {
   my($self, $tkey) = @_;
-  my($status)      = 1;
-  my($errorString) = undef;
-  my($file)        = undef;
-  my($tag)         = undef;
-  my($ti)          = $self->get_ti_override();
-  my($lang)        = $self->get_language();
-  my($override)    = undef;
+  my $status = 1;
+  my $errorString;
+  my $file;
+  my $tag;
+  my $ti = $self->get_ti_override();
+  my $lang = $self->get_language();
+  my $override;
 
   if ($self->exe_target()) {
     if ($self->get_static() == 1) {
@@ -2047,7 +2016,7 @@ sub read_template_input {
 
     ## Process the template input file
     if (defined $file) {
-      my($tfile) = $self->search_include_path("$file.$TemplateInputExtension");
+      my $tfile = $self->search_include_path("$file.$TemplateInputExtension");
       if (defined $tfile) {
         ($status, $errorString) = $ti->read_file($tfile);
       }
@@ -2091,7 +2060,7 @@ sub already_added {
 
   ## Remove the leading ./
   $name =~ s/^\.\///;
-  my($dsname) = "./$name";
+  my $dsname = "./$name";
 
   foreach my $file (@$array) {
     return 1 if ($file eq $name || $file eq $dsname);
@@ -2131,9 +2100,9 @@ sub evaluate_optional_option {
 
 sub process_optional_option {
   my($self, $opt, $value) = @_;
-  my($status) = undef;
-  my(@parts)  = grep(!/^$/, split(/\s+/, $opt));
-  my($pcount) = scalar(@parts);
+  my $status;
+  my @parts  = grep(!/^$/, split(/\s+/, $opt));
+  my $pcount = scalar(@parts);
 
   for(my $i = 0; $i < $pcount; $i++) {
     if ($parts[$i] eq '&&' || $parts[$i] eq '||') {
@@ -2182,11 +2151,11 @@ sub add_optional_filename_portion {
     foreach my $name (keys %{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}}) {
       foreach my $opt (keys %{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}->{$name}}) {
         ## Get the name value
-        my($value) = $self->get_applied_custom_keyword($name,
-                                                       $gentype, $file);
+        my $value = $self->get_applied_custom_keyword($name,
+                                                      $gentype, $file);
 
         ## Convert the value into a hash map for easy lookup
-        my(%values) = ();
+        my %values;
         if (defined $value) {
           @values{split(/\s+/, $value)} = ();
         }
@@ -2206,10 +2175,10 @@ sub get_pre_keyword_array {
   my($self, $keyword, $gentype, $tag, $file) = @_;
 
   ## Get the general pre extension array
-  my(@array) = @{$self->{'generated_exts'}->{$gentype}->{$keyword}};
+  my @array = @{$self->{'generated_exts'}->{$gentype}->{$keyword}};
 
   ## Add the component specific pre extension array
-  my(@additional) = ();
+  my @additional;
   $tag =~ s/files$/$keyword/;
   if (defined $self->{'generated_exts'}->{$gentype}->{$tag}) {
     push(@additional, @{$self->{'generated_exts'}->{$gentype}->{$tag}});
@@ -2240,11 +2209,11 @@ sub add_explicit_output {
   if (defined $self->{'custom_special_output'}->{$type} &&
       defined $self->{'custom_special_output'}->{$type}->{$file}) {
     if (defined $self->{'valid_components'}->{$tag}) {
-      my(@files) = ();
+      my @files;
       foreach my $check (@{$self->{'custom_special_output'}->{$type}->{$file}}) {
         foreach my $regext (@{$self->{'valid_components'}->{$tag}}) {
           if ($check =~ /$regext$/) {
-            my($add) = 1;
+            my $add = 1;
             if ($tag eq 'source_files') {
               foreach my $tregext (@{$self->{'valid_components'}->{'template_files'}}) {
                 if ($check =~ /$tregext$/) {
@@ -2255,7 +2224,7 @@ sub add_explicit_output {
             }
             if ($add) {
               ## If gendir was specified, then we need to account for that
-              my($dir) = '';
+              my $dir = '';
               if (defined $self->{'flag_overrides'}->{$type} &&
                   defined $self->{'flag_overrides'}->{$type}->{$file} &&
                   defined $self->{'flag_overrides'}->{$type}->{$file}->{'gendir'} &&
@@ -2284,16 +2253,16 @@ sub add_explicit_output {
 
 sub generated_filenames {
   my($self, $part, $type, $tag, $file, $noext, $arrs) = @_;
-  my(@array) = ();
-  my(@pearr) = $self->get_pre_keyword_array('pre_extension',
-                                            $type, $tag, $file);
-  my(@pfarr) = $self->get_pre_keyword_array('pre_filename',
-                                            $type, $tag, $file);
-  my(@exts)  = (defined $self->{'generated_exts'}->{$type}->{$tag} ?
-                  @{$self->{'generated_exts'}->{$type}->{$tag}} : ());
+  my @array;
+  my @pearr = $self->get_pre_keyword_array('pre_extension',
+                                           $type, $tag, $file);
+  my @pfarr = $self->get_pre_keyword_array('pre_filename',
+                                           $type, $tag, $file);
+  my @exts  = (defined $self->{'generated_exts'}->{$type}->{$tag} ?
+                 @{$self->{'generated_exts'}->{$type}->{$tag}} : ());
 
   if (!defined $exts[0]) {
-    my($backtag) = $tag;
+    my $backtag = $tag;
     if ($backtag =~ s/files$/outputext/) {
       $self->add_optional_filename_portion($type, $backtag,
                                            $file, \@exts);
@@ -2306,8 +2275,8 @@ sub generated_filenames {
     ## is nothing for us to do.
   }
   else {
-    my($dir)  = '';
-    my($base) = undef;
+    my $dir  = '';
+    my $base;
 
     ## Correctly deal with pre filename and directories
     if ($part =~ /(.*[\/\\])([^\/\\]+)$/) {
@@ -2333,7 +2302,7 @@ sub generated_filenames {
 
     ## Loop through creating all of the possible file names
     foreach my $pe (@pearr) {
-      my(@genfile) = ();
+      my @genfile;
       $pe =~ s/\\\././g;
       foreach my $pf (@pfarr) {
         $pf =~ s/\\\././g;
@@ -2368,7 +2337,7 @@ sub add_generated_files {
   ## actual file insertion and grouping.
 
   ## Get the generated filenames
-  my(@added) = ();
+  my @added;
   foreach my $file (keys %$arr) {
     foreach my $gen ($self->generated_filenames($$arr{$file}, $gentype,
                                                 $tag, $file, 1)) {
@@ -2377,12 +2346,12 @@ sub add_generated_files {
   }
 
   if (defined $added[0]) {
-    my($names) = $self->{$tag};
+    my $names = $self->{$tag};
 
     ## Get all files in one list and save the directory
     ## and component group in a hashed array.
-    my(@all) = ();
-    my(%dircomp) = ();
+    my @all;
+    my %dircomp;
     foreach my $name (keys %$names) {
       foreach my $key (keys %{$$names{$name}}) {
         push(@all, @{$$names{$name}->{$key}});
@@ -2395,7 +2364,7 @@ sub add_generated_files {
     ## Create a small array of only the files we want to add.
     ## We put them all together so we can keep them in order when
     ## we put them at the front of the main file list.
-    my(@oktoadd) = ();
+    my @oktoadd;
     foreach my $file (@added) {
       if (!$self->already_added(\@all, $file)) {
         push(@oktoadd, $file);
@@ -2405,10 +2374,10 @@ sub add_generated_files {
     ## If we have files to add, make sure we add them to a group
     ## that has the same directory location as the files we're adding.
     if (defined $oktoadd[0]) {
-      my($key) = (defined $group ? $group :
-                          $dircomp{$self->mpc_dirname($oktoadd[0])});
+      my $key = (defined $group ? $group :
+                         $dircomp{$self->mpc_dirname($oktoadd[0])});
       if (!defined $key) {
-        my($check) = $oktoadd[0];
+        my $check = $oktoadd[0];
         foreach my $regext (@{$self->{'valid_components'}->{$tag}}) {
           if ($check =~ s/$regext$//) {
             last;
@@ -2420,7 +2389,7 @@ sub add_generated_files {
               foreach my $ckey (keys %{$self->{$vc}->{$name}}) {
                 if ($ckey ne $defgroup) {
                   foreach my $ofile (@{$self->{$vc}->{$name}->{$ckey}}) {
-                    my($file) = $ofile;
+                    my $file = $ofile;
                     foreach my $regext (@{$self->{'valid_components'}->{$vc}}) {
                       if ($file =~ s/$regext$//) {
                         last;
@@ -2461,12 +2430,12 @@ sub add_generated_files {
 
 sub search_for_entry {
   my($self, $file, $marray, $preproc) = @_;
-  my($name) = undef;
-  my($fh)   = new FileHandle();
+  my $name;
+  my $fh = new FileHandle();
 
   if (open($fh, $file)) {
-    my($poundifed) = 0;
-    my($commented) = 0;
+    my $poundifed = 0;
+    my $commented = 0;
 
     while(<$fh>) {
       if (!$commented) {
@@ -2553,12 +2522,12 @@ sub find_main_file {
 
 
 sub generate_default_target_names {
-  my($self) = shift;
+  my $self = shift;
 
   if (!$self->exe_target()) {
-    my($sharedname) = $self->get_assignment('sharedname');
-    my($staticname) = $self->get_assignment('staticname');
-    my($shared_empty) = undef;
+    my $sharedname = $self->get_assignment('sharedname');
+    my $staticname = $self->get_assignment('staticname');
+    my $shared_empty;
 
     if (defined $sharedname) {
       if ($sharedname eq '') {
@@ -2580,8 +2549,8 @@ sub generate_default_target_names {
     ## through the source files for a main()
     if (!$self->lib_target()) {
       ## Set the exename assignment
-      my(@sources) = $self->get_component_list('source_files', 1);
-      my($exename) = $self->find_main_file(\@sources);
+      my @sources = $self->get_component_list('source_files', 1);
+      my $exename = $self->find_main_file(\@sources);
       if (defined $exename) {
         $self->process_assignment('exename', $exename);
       }
@@ -2608,7 +2577,7 @@ sub generate_default_target_names {
   ## unset the sharedname, so that we can insure that projects of
   ## various types only generate static targets.
   if ($self->get_static() == 1) {
-    my($sharedname) = $self->get_assignment('sharedname');
+    my $sharedname = $self->get_assignment('sharedname');
     if (defined $sharedname) {
       $self->process_assignment('sharedname', undef);
     }
@@ -2616,7 +2585,7 @@ sub generate_default_target_names {
 
   ## Check for the use of an asterisk in the name
   foreach my $key ('exename', 'sharedname', 'staticname') {
-    my($value) = $self->get_assignment($key);
+    my $value = $self->get_assignment($key);
     if (defined $value && index($value, '*') >= 0) {
       $value = $self->fill_type_name($value,
                                      $self->{'unmodified_project_name'});
@@ -2628,15 +2597,15 @@ sub generate_default_target_names {
 
 sub generate_default_pch_filenames {
   my($self, $files) = @_;
-  my($pchhdef) = (defined $self->get_assignment('pch_header'));
-  my($pchcdef) = (defined $self->get_assignment('pch_source'));
+  my $pchhdef = (defined $self->get_assignment('pch_header'));
+  my $pchcdef = (defined $self->get_assignment('pch_source'));
 
   if (!$pchhdef || !$pchcdef) {
-    my($pname)     = $self->get_assignment('project_name');
-    my($hcount)    = 0;
-    my($ccount)    = 0;
-    my($hmatching) = undef;
-    my($cmatching) = undef;
+    my $pname     = $self->get_assignment('project_name');
+    my $hcount    = 0;
+    my $ccount    = 0;
+    my $hmatching;
+    my $cmatching;
     foreach my $file (@$files) {
       ## If the file doesn't even contain _pch, then there's no point
       ## in looping through all of the extensions
@@ -2678,9 +2647,9 @@ sub generate_default_pch_filenames {
 
 
 sub fix_pch_filenames {
-  my($self) = shift;
+  my $self = shift;
   foreach my $type ('pch_header', 'pch_source') {
-    my($pch) = $self->get_assignment($type);
+    my $pch = $self->get_assignment($type);
     if (defined $pch && $pch eq '') {
       $self->process_assignment($type, undef);
     }
@@ -2689,12 +2658,12 @@ sub fix_pch_filenames {
 
 
 sub remove_extra_pch_listings {
-  my($self) = shift;
-  my(@pchs) = ('pch_header', 'pch_source');
-  my(@tags) = ('header_files', 'source_files');
+  my $self = shift;
+  my @pchs = ('pch_header', 'pch_source');
+  my @tags = ('header_files', 'source_files');
 
   for(my $j = 0; $j < 2; ++$j) {
-    my($pch) = $self->get_assignment($pchs[$j]);
+    my $pch = $self->get_assignment($pchs[$j]);
 
     if (defined $pch) {
       ## If we are converting slashes, then we need to
@@ -2702,12 +2671,12 @@ sub remove_extra_pch_listings {
       $pch =~ s/\\/\//g if ($self->{'convert_slashes'});
 
       ## Find out which files are duplicated
-      my($names) = $self->{$tags[$j]};
+      my $names = $self->{$tags[$j]};
       foreach my $name (keys %$names) {
-        my($comps) = $$names{$name};
+        my $comps = $$names{$name};
         foreach my $key (keys %$comps) {
-          my($array) = $$comps{$key};
-          my($count) = scalar(@$array);
+          my $array = $$comps{$key};
+          my $count = scalar(@$array);
           for(my $i = 0; $i < $count; ++$i) {
             if ($pch eq $$array[$i]) {
               splice(@$array, $i, 1);
@@ -2723,9 +2692,9 @@ sub remove_extra_pch_listings {
 
 sub sift_files {
   my($self, $files, $exts, $pchh, $pchc, $tag, $array, $alldir) = @_;
-  my(@saved)  = ();
-  my($saverc) = (!$alldir && $tag eq 'resource_files');
-  my($havec)  = (defined $self->{'exclude_components'}->{$tag});
+  my @saved;
+  my $saverc = (!$alldir && $tag eq 'resource_files');
+  my $havec  = (defined $self->{'exclude_components'}->{$tag});
 
   foreach my $ext (@$exts) {
     foreach my $file (grep(/$ext$/, @$files)) {
@@ -2733,7 +2702,7 @@ sub sift_files {
       if ((!defined $pchh || $file ne $pchh) &&
           (!defined $pchc || $file ne $pchc)) {
         if ($havec) {
-          my($exclude) = 0;
+          my $exclude = 0;
           foreach my $exc (@{$self->{'exclude_components'}->{$tag}}) {
             if ($file =~ /$exc$/) {
               $exclude = 1;
@@ -2764,9 +2733,9 @@ sub sift_files {
       push(@$array, $saved[0]);
     }
     else {
-      my($pjname) = $self->escape_regex_special(
-                              $self->transform_file_name(
-                                  $self->get_assignment('project_name')));
+      my $pjname = $self->escape_regex_special(
+                             $self->transform_file_name(
+                                 $self->get_assignment('project_name')));
       ## Use a case insensitive search.
       ## After all, this is a Windows specific file type.
       foreach my $save (@saved) {
@@ -2783,11 +2752,11 @@ sub sift_files {
 
 sub sift_default_file_list {
   my($self, $tag, $file, $built, $exts, $recurse, $pchh, $pchc) = @_;
-  my($alldir) = $recurse ||
-                (defined $self->{'flag_overrides'}->{$tag} &&
-                 defined $self->{'flag_overrides'}->{$tag}->{$file} &&
-                 $self->{'flag_overrides'}->{$tag}->{$file}->{'recurse'});
-  my(@gen)    = $self->generate_default_file_list($file, [], undef, $alldir);
+  my $alldir = $recurse ||
+               (defined $self->{'flag_overrides'}->{$tag} &&
+                defined $self->{'flag_overrides'}->{$tag}->{$file} &&
+                $self->{'flag_overrides'}->{$tag}->{$file}->{'recurse'});
+  my @gen    = $self->generate_default_file_list($file, [], undef, $alldir);
 
   $self->sift_files(\@gen, $exts, $pchh, $pchc, $tag, $built, $alldir);
 }
@@ -2797,18 +2766,18 @@ sub correct_generated_files {
   my($self, $defcomp, $exts, $tag, $array) = @_;
 
   if (defined $sourceComponents{$tag}) {
-    my($grtag) = $grouped_key . $tag;
+    my $grtag = $grouped_key . $tag;
     foreach my $gentype (keys %{$self->{'generated_exts'}}) {
       ## If we are auto-generating the source_files, then
       ## we need to make sure that any generated source
       ## files that are added are put at the front of the list.
-      my($newgroup) = undef;
-      my(@input) = ();
+      my $newgroup;
+      my @input;
 
       ## If I call keys %{$self->{$gentype}} using perl 5.6.1
       ## it returns nothing.  I have to put it in an
       ## intermediate variable to ensure that I get the keys.
-      my($names) = $self->{$gentype};
+      my $names = $self->{$gentype};
       foreach my $name (keys %$names) {
         foreach my $key (keys %{$$names{$name}}) {
           push(@input, @{$$names{$name}->{$key}});
@@ -2819,22 +2788,22 @@ sub correct_generated_files {
       }
 
       if (defined $input[0]) {
-        my(@front) = ();
-        my(@copy)  = @$array;
+        my @front;
+        my @copy = @$array;
 
         @$array = ();
         foreach my $input (@input) {
-          my($part) = $self->remove_wanted_extension(
-                         $input,
-                         $self->{'valid_components'}->{$gentype});
+          my $part = $self->remove_wanted_extension(
+                        $input,
+                        $self->{'valid_components'}->{$gentype});
 
-          my(@files) = $self->generated_filenames($part, $gentype,
-                                                  $tag, $input);
+          my @files = $self->generated_filenames($part, $gentype,
+                                                 $tag, $input);
           if (defined $copy[0]) {
-            my($found) = 0;
+            my $found = 0;
             foreach my $file (@files) {
               for(my $i = 0; $i < scalar(@copy); $i++) {
-                my($re) = $self->escape_regex_special($copy[$i]);
+                my $re = $self->escape_regex_special($copy[$i]);
                 if ($file eq $copy[$i] || $file =~ /[\/\\]$re$/) {
                   ## No need to check for previously added files
                   ## here since there are none.
@@ -2854,12 +2823,12 @@ sub correct_generated_files {
               ## file extension and see if it matches one in the accepted
               ## extensions.
               if (defined $files[0]) {
-                my($ext) = undef;
+                my $ext;
                 if ($files[0] =~ /.*(\.[^\.]+)$/) {
                   $ext = $self->escape_regex_special($1);
                 }
                 if (defined $ext) {
-                  my($efound) = undef;
+                  my $efound;
                   foreach my $possible (@$exts) {
                     if ($ext eq $possible) {
                       $efound = 1;
@@ -2882,7 +2851,7 @@ sub correct_generated_files {
             }
           }
           else {
-            my($ext) = $$exts[0];
+            my $ext = $$exts[0];
             foreach my $file (@files) {
               if ($file =~ /$ext$/) {
                 push(@front, $file);
@@ -2923,23 +2892,23 @@ sub correct_generated_files {
 
 sub generate_default_components {
   my($self, $files, $passed) = @_;
-  my($vc)   = $self->{'valid_components'};
-  my($ovc)  = $language{$self->get_language()}->[0];
-  my(@tags) = (defined $passed ? $passed :
-                                 sort { if (defined $$ovc{$a}) {
-                                          if (!defined $$ovc{$b}) {
-                                            return 1;
-                                          }
-                                        }
-                                        elsif (defined $$ovc{$b}) {
-                                          return -1;
-                                        }
-                                        return $a cmp $b;
-                                      } keys %$vc);
-  my($pchh)    = $self->get_assignment('pch_header');
-  my($pchc)    = $self->get_assignment('pch_source');
-  my($recurse) = $self->get_assignment('recurse');
-  my($defcomp) = $self->get_default_component_name();
+  my $vc   = $self->{'valid_components'};
+  my $ovc  = $language{$self->get_language()}->[0];
+  my @tags = (defined $passed ? $passed :
+                                sort { if (defined $$ovc{$a}) {
+                                         if (!defined $$ovc{$b}) {
+                                           return 1;
+                                         }
+                                       }
+                                       elsif (defined $$ovc{$b}) {
+                                         return -1;
+                                       }
+                                       return $a cmp $b;
+                                     } keys %$vc);
+  my $pchh    = $self->get_assignment('pch_header');
+  my $pchc    = $self->get_assignment('pch_source');
+  my $recurse = $self->get_assignment('recurse');
+  my $defcomp = $self->get_default_component_name();
 
   ## The order of @tags does make a difference in the way that generated
   ## files get added.  Hence the sort call on the valid component keys to
@@ -2948,21 +2917,21 @@ sub generate_default_components {
   foreach my $tag (@tags) {
     if (!defined $self->{'generated_exts'}->{$tag} ||
         $self->{'generated_exts'}->{$tag}->{'automatic'}) {
-      my($exts) = $$vc{$tag};
+      my $exts = $$vc{$tag};
       if (defined $$exts[0]) {
         if (defined $self->{$tag}) {
           ## If the tag is defined, then process directories
-          my($names) = $self->{$tag};
+          my $names = $self->{$tag};
           foreach my $name (keys %$names) {
-            my($comps) = $$names{$name};
+            my $comps = $$names{$name};
             foreach my $comp (keys %$comps) {
-              my($array) = $$comps{$comp};
+              my $array = $$comps{$comp};
               if (defined $passed) {
                 $self->sift_files($files, $exts, $pchh, $pchc, $tag, $array);
               }
               else {
-                my(@built) = ();
-                my($alldirs) = 1;
+                my @built;
+                my $alldirs = 1;
                 foreach my $file (@$array) {
                   if (-d $file) {
                     my @portion;
@@ -3003,10 +2972,10 @@ sub generate_default_components {
         else {
           ## Generate default values for undefined tags
           $self->{$tag} = {};
-          my($comps) = {};
+          my $comps = {};
           $self->{$tag}->{$defcomp} = $comps;
           $$comps{$defgroup} = [];
-          my($array) = $$comps{$defgroup};
+          my $array = $$comps{$defgroup};
 
           $self->{'defaulted'}->{$tag} = 1;
 
@@ -3023,9 +2992,9 @@ sub generate_default_components {
 
 sub remove_duplicated_files {
   my($self, $dest, $source) = @_;
-  my($names) = $self->{$dest};
-  my(@slist) = $self->get_component_list($source, 1);
-  my(%shash) = ();
+  my $names = $self->{$dest};
+  my @slist = $self->get_component_list($source, 1);
+  my %shash;
 
   ## Convert the array into keys for a hash table
   @shash{@slist} = ();
@@ -3033,8 +3002,8 @@ sub remove_duplicated_files {
   ## Find out which source files are listed
   foreach my $name (keys %$names) {
     foreach my $key (keys %{$$names{$name}}) {
-      my($array) = $$names{$name}->{$key};
-      my($count) = scalar(@$array);
+      my $array = $$names{$name}->{$key};
+      my $count = scalar(@$array);
       for(my $i = 0; $i < $count; ++$i) {
         ## Is the source file in the component array?
         if (exists $shash{$$array[$i]}) {
@@ -3051,11 +3020,11 @@ sub remove_duplicated_files {
 
 sub generated_source_listed {
   my($self, $gent, $tag, $arr, $sext) = @_;
-  my($names) = $self->{$tag};
+  my $names = $self->{$tag};
 
   ## Find out which generated source files are listed
   foreach my $name (keys %$names) {
-    my($comps) = $$names{$name};
+    my $comps = $$names{$name};
     foreach my $key (keys %$comps) {
       foreach my $val (@{$$comps{$key}}) {
         foreach my $i (keys %$arr) {
@@ -3088,12 +3057,12 @@ sub list_default_generated {
     ## need to add the generated files
     if (defined $self->{$gentype}) {
       ## Build up the list of files
-      my(%arr)   = ();
-      my($names) = $self->{$gentype};
-      my($group) = undef;
+      my %arr;
+      my $names = $self->{$gentype};
+      my $group;
       foreach my $name (keys %$names) {
         foreach my $key (keys %{$$names{$name}}) {
-          my($array) = $$names{$name}->{$key};
+          my $array = $$names{$name}->{$key};
 
           if ($key ne $defgroup) {
             $group = $key;
@@ -3127,11 +3096,11 @@ sub list_default_generated {
 
 sub prepend_gendir {
   my($self, $created, $ofile, $gentype) = @_;
-  my($key) = undef;
+  my $key;
 
   if (defined $self->{'flag_overrides'}->{$gentype}) {
     foreach my $ext (@{$self->{'valid_components'}->{$gentype}}) {
-      my($e) = $ext;
+      my $e = $ext;
       $e =~ s/\\//g;
       $key = "$ofile$e";
       if (defined $self->{'flag_overrides'}->{$gentype}->{$key}) {
@@ -3145,7 +3114,7 @@ sub prepend_gendir {
     if (defined $key) {
       foreach my $ma (@{$self->{'matching_assignments'}->{$gentype}}) {
         if ($ma eq 'gendir') {
-          my($dir) = $self->{'flag_overrides'}->{$gentype}->{$key}->{$ma};
+          my $dir = $self->{'flag_overrides'}->{$gentype}->{$key}->{$ma};
           if (defined $dir) {
             ## Convert the file to unix style for basename
             $created =~ s/\\/\//g;
@@ -3164,18 +3133,18 @@ sub prepend_gendir {
 
 sub list_generated_file {
   my($self, $gentype, $tag, $array, $file, $ofile) = @_;
-  my($count) = 0;
+  my $count = 0;
 
   ## Save the length of the basename for later.  We can not convert the
   ## slashes on $file as it needs to keep the back slashes since that's
   ## what comes from generated_filenames() below.  This is, of course, if
   ## we are converting slashes in the first place.
-  my($fcopy) = $file;
+  my $fcopy = $file;
   $fcopy =~ s/.*[\/\\]//;
-  my($blen) = length($fcopy);
+  my $blen = length($fcopy);
 
   foreach my $gen ($self->get_component_list($gentype, 1)) {
-    my($input) = $gen;
+    my $input = $gen;
     foreach my $ext (@{$self->{'valid_components'}->{$gentype}}) {
       ## Remove the extension.
       ## If it works, then we can exit this loop.
@@ -3224,13 +3193,13 @@ sub list_generated_file {
 
 sub add_corresponding_component_files {
   my($self, $filecomp, $tag) = @_;
-  my($grname)   = $grouped_key . $tag;
+  my $grname   = $grouped_key . $tag;
 
   ## Create a hash array keyed off of the existing files of the type
   ## that we plan on adding.
-  my($fexist)  = 0;
-  my(%scfiles) = ();
-  my($names)   = $self->{$tag};
+  my $fexist  = 0;
+  my %scfiles;
+  my $names   = $self->{$tag};
   foreach my $name (keys %$names) {
     ## Check to see if files exist in the default group
     if (defined $$names{$name}->{$defgroup} &&
@@ -3243,17 +3212,17 @@ sub add_corresponding_component_files {
   }
 
   ## Create an array of extensions for the files we want to add
-  my(@exts) = ();
+  my @exts;
   foreach my $ext (@{$self->{'valid_components'}->{$tag}}) {
     push(@exts, $ext);
     $exts[$#exts] =~ s/\\//g;
   }
 
   ## Check each file against a possible new file addition
-  my($adddefaultgroup) = 0;
-  my($oktoadddefault)  = 0;
+  my $adddefaultgroup = 0;
+  my $oktoadddefault  = 0;
   foreach my $sfile (keys %$filecomp) {
-    my($found) = 0;
+    my $found = 0;
     foreach my $ext (@exts) {
       if (exists $scfiles{"$sfile$ext"}) {
         $found = 1;
@@ -3263,8 +3232,8 @@ sub add_corresponding_component_files {
 
     if (!$found) {
       ## Get the array of files for the selected component name
-      my($array) = [];
-      my($comp)  = $$filecomp{$sfile};
+      my $array = [];
+      my $comp  = $$filecomp{$sfile};
       foreach my $name (keys %$names) {
         if (defined $$names{$name}->{$comp}) {
           $array = $$names{$name}->{$comp};
@@ -3281,7 +3250,7 @@ sub add_corresponding_component_files {
       if (!$found) {
         foreach my $ext (@exts) {
           if (-r "$sfile$ext") {
-            my($file) = "$sfile$ext";
+            my $file = "$sfile$ext";
             if (!$self->already_added($array, $file)) {
               push(@$array, $file);
               ++$found;
@@ -3298,8 +3267,8 @@ sub add_corresponding_component_files {
           $adddefaultgroup = 1;
         }
         else {
-          my($compexists) = undef;
-          my($grval)      = $self->get_assignment($grname);
+          my $compexists;
+          my $grval      = $self->get_assignment($grname);
           if (defined $grval) {
             foreach my $grkey (@{$self->create_array($grval)}) {
               if ($grkey eq $comp) {
@@ -3337,8 +3306,8 @@ sub add_corresponding_component_files {
 
 
 sub get_default_project_name {
-  my($self) = shift;
-  my($name) = $self->{'current_input'};
+  my $self = shift;
+  my $name = $self->{'current_input'};
 
   if ($name eq '') {
     $name = $self->transform_file_name($self->base_directory());
@@ -3360,17 +3329,17 @@ sub get_default_project_name {
 
 
 sub remove_excluded {
-  my($self) = shift;
-  my(@tags) = @_;
+  my $self = shift;
+  my @tags = @_;
 
   ## Process each file type and remove the excluded files
   foreach my $tag (@tags) {
-    my($names) = $self->{$tag};
+    my $names = $self->{$tag};
     foreach my $name (keys %$names) {
       foreach my $comp (keys %{$$names{$name}}) {
-        my($count) = scalar(@{$$names{$name}->{$comp}});
+        my $count = scalar(@{$$names{$name}->{$comp}});
         for(my $i = 0; $i < $count; ++$i) {
-          my($file) = $$names{$name}->{$comp}->[$i];
+          my $file = $$names{$name}->{$comp}->[$i];
           if (defined $self->{'remove_files'}->{$tag}->{$file}) {
             splice(@{$$names{$name}->{$comp}}, $i, 1);
             --$i;
@@ -3405,7 +3374,7 @@ sub remove_excluded {
 
 
 sub generate_defaults {
-  my($self) = shift;
+  my $self = shift;
 
   ## Generate default project name
   if (!defined $self->get_assignment('project_name')) {
@@ -3413,9 +3382,9 @@ sub generate_defaults {
   }
 
   ## Generate the default pch file names (if needed)
-  my(@files) = $self->generate_default_file_list(
-                                 '.', [],
-                                 undef, $self->get_assignment('recurse'));
+  my @files = $self->generate_default_file_list(
+                                '.', [],
+                                undef, $self->get_assignment('recurse'));
   $self->generate_default_pch_filenames(\@files);
 
   ## If the pch file names are empty strings then we need to fix that
@@ -3437,9 +3406,9 @@ sub generate_defaults {
   ## the generated file list.  I want to ensure that source_files comes
   ## first in the list to pick up group information (since source_files
   ## are most likely going to be grouped than anything else).
-  my(@vc) = reverse sort { return  1 if $a eq 'source_files';
-                           return -1 if $b eq 'source_files';
-                           return $a cmp $b; } keys %{$self->{'valid_components'}};
+  my @vc = reverse sort { return  1 if $a eq 'source_files';
+                          return -1 if $b eq 'source_files';
+                          return $a cmp $b; } keys %{$self->{'valid_components'}};
   foreach my $gentype (keys %{$self->{'generated_exts'}}) {
     $self->list_default_generated($gentype, \@vc);
   }
@@ -3450,13 +3419,13 @@ sub generate_defaults {
 
   ## Collect up all of the source files that have already been listed
   ## with the extension removed.
-  my(%sourcecomp) = ();
+  my %sourcecomp;
   foreach my $sourcetag (keys %sourceComponents) {
-    my($names) = $self->{$sourcetag};
+    my $names = $self->{$sourcetag};
     foreach my $name (keys %$names) {
       foreach my $comp (keys %{$$names{$name}}) {
         foreach my $sfile (@{$$names{$name}->{$comp}}) {
-          my($mod) = $sfile;
+          my $mod = $sfile;
           $mod =~ s/\.[^\.]+$//;
           $sourcecomp{$mod} = $comp;
         }
@@ -3475,14 +3444,14 @@ sub generate_defaults {
   foreach my $tag (keys %specialComponents) {
     if (!$self->{'special_supplied'}->{$tag} ||
         UNIVERSAL::isa($self->{'special_supplied'}->{$tag}, 'ARRAY')) {
-      my($names) = $self->{$tag};
+      my $names = $self->{$tag};
       if (defined $names) {
         ## We only want to generate default components if we have
         ## defaulted the source files or we have no files listed
         ## in the current special component.
-        my($ok) = $self->{'defaulted'}->{'source_files'};
+        my $ok = $self->{'defaulted'}->{'source_files'};
         if (!$ok) {
-          my(@all) = ();
+          my @all;
           foreach my $name (keys %$names) {
             foreach my $key (keys %{$$names{$name}}) {
               push(@all, @{$$names{$name}->{$key}});
@@ -3494,10 +3463,10 @@ sub generate_defaults {
           ## If the "special" type was supplied and it was all
           ## directories, we need to use those directories to generate
           ## the default components instead of the current directory.
-          my($fileref) = \@files;
+          my $fileref = \@files;
           if (defined $self->{'special_supplied'}->{$tag} &&
               UNIVERSAL::isa($self->{'special_supplied'}->{$tag}, 'ARRAY')) {
-            my(@special) = ();
+            my @special;
             foreach my $dir (@{$self->{'special_supplied'}->{$tag}}) {
               push(@special, $self->generate_default_file_list(
                                          $dir, [], undef,
@@ -3513,7 +3482,7 @@ sub generate_defaults {
 
   ## Now that all of the other files have been added
   ## we need to remove those that have need to be removed
-  my(@rmkeys) = keys %{$self->{'remove_files'}};
+  my @rmkeys = keys %{$self->{'remove_files'}};
   if (defined $rmkeys[0]) {
     $self->remove_excluded(@rmkeys);
   }
@@ -3531,7 +3500,7 @@ sub set_project_name {
   ## If we are applying the name modifier to the project
   ## then we will modify the project name
   if ($self->get_apply_project()) {
-    my($nmod) = $self->get_name_modifier();
+    my $nmod = $self->get_name_modifier();
 
     if (defined $nmod) {
       $nmod =~ s/\*/$name/g;
@@ -3546,28 +3515,26 @@ sub set_project_name {
 
 
 sub project_name {
-  my($self) = shift;
-  return $self->get_assignment('project_name');
+  return $_[0]->get_assignment('project_name');
 }
 
 
 sub lib_target {
-  my($self) = shift;
+  my $self = shift;
   return (defined $self->get_assignment('sharedname') ||
           defined $self->get_assignment('staticname'));
 }
 
 
 sub exe_target {
-  my($self) = shift;
-  return (defined $self->get_assignment('exename'));
+  return (defined $_[0]->get_assignment('exename'));
 }
 
 
 sub get_component_list {
   my($self, $tag, $noconvert) = @_;
-  my($names) = $self->{$tag};
-  my(@list)  = ();
+  my $names = $self->{$tag};
+  my @list;
 
   foreach my $name (keys %$names) {
     foreach my $key (keys %{$$names{$name}}) {
@@ -3595,7 +3562,7 @@ sub get_component_list {
 
 sub check_custom_output {
   my($self, $based, $cinput, $ainput, $type, $comps) = @_;
-  my(@outputs) = ();
+  my @outputs;
 
   foreach my $array ($self->generated_filenames($cinput, $based,
                                                 $type, $ainput, 0, 1)) {
@@ -3611,9 +3578,9 @@ sub check_custom_output {
         last;
       }
       else {
-        my($base) = $built;
+        my $base = $built;
         $base =~ s/\\/\//g if ($self->{'convert_slashes'});
-        my($re) = $self->escape_regex_special($self->mpc_basename($base));
+        my $re = $self->escape_regex_special($self->mpc_basename($base));
         foreach my $c (@$comps) {
           ## We only match if the built file name matches from
           ## beginning to end or from a slash to the end.
@@ -3631,11 +3598,11 @@ sub check_custom_output {
 
 
 sub get_special_value {
-  my($self)   = shift;
-  my($type)   = shift;
-  my($cmd)    = shift;
-  my($based)  = shift;
-  my(@params) = @_;
+  my $self   = shift;
+  my $type   = shift;
+  my $cmd    = shift;
+  my $based  = shift;
+  my @params = @_;
 
   if ($type eq 'feature') {
     return $self->get_feature_value($cmd, $based);
@@ -3655,7 +3622,7 @@ sub get_feature_value {
   my($self, $cmd, $based) = @_;
 
   if ($cmd eq 'value') {
-    my($val) = $self->{'feature_parser'}->get_value($based);
+    my $val = $self->{'feature_parser'}->get_value($based);
     if (defined $val && $val != 0) {
       return 1;
     }
@@ -3667,7 +3634,7 @@ sub get_feature_value {
 
 sub get_grouped_value {
   my($self, $type, $cmd, $based) = @_;
-  my($value) = undef;
+  my $value;
 
   ## Make it all lower case
   $type = lc($type);
@@ -3680,14 +3647,14 @@ sub get_grouped_value {
     $type .= 's';
   }
 
-  my($names) = $self->{$type};
+  my $names = $self->{$type};
   if ($cmd eq 'files') {
     foreach my $name (keys %$names) {
-      my($comps) = $$names{$name};
+      my $comps = $$names{$name};
       foreach my $comp (keys %$comps) {
         if ($comp eq $based) {
           if ($self->{'convert_slashes'}) {
-            my(@converted) = ();
+            my @converted;
             foreach my $file (@{$$comps{$comp}}) {
               push(@converted, $self->slash_to_backslash($file));
             }
@@ -3697,7 +3664,7 @@ sub get_grouped_value {
             $value = $$comps{$comp};
           }
           if ($self->{'sort_files'}) {
-            my(@sorted) = sort { $self->file_sorter($a, $b) } @$value;
+            my @sorted = sort { $self->file_sorter($a, $b) } @$value;
             $value = \@sorted;
           }
           last;
@@ -3718,8 +3685,8 @@ sub get_grouped_value {
 
 
 sub get_command_subs {
-  my($self)  = shift;
-  my(%valid) = ();
+  my $self = shift;
+  my %valid;
 
   ## Add the built-in OS compatibility commands
   if (UNIVERSAL::isa($self, 'WinProjectBase') ||
@@ -3761,10 +3728,10 @@ sub replace_parameters {
   my($self, $str, $valid, $nowarn, $input, $output) = @_;
 
   while ($str =~ /<%(\w+)(\(\w+\))?%>/) {
-    my($name)     = $1;
-    my($modifier) = $2;
+    my $name     = $1;
+    my $modifier = $2;
     if (defined $modifier) {
-      my($tmp) = $name;
+      my $tmp = $name;
       $name = $modifier;
       $name =~ s/[\(\)]//g;
       $modifier = $tmp;
@@ -3772,7 +3739,7 @@ sub replace_parameters {
 
     if (exists $$valid{$name}) {
       if (defined $$valid{$name}) {
-        my($replace) = $$valid{$name};
+        my $replace = $$valid{$name};
         if (defined $modifier) {
           if ($modifier eq 'noextension') {
             $replace =~ s/\.[^\.]+$//;
@@ -3813,8 +3780,8 @@ sub replace_parameters {
 
 sub convert_command_parameters {
   my($self, $ktype, $str, $input, $output) = @_;
-  my(%nowarn) = ();
-  my(%valid)  = %{$self->{'command_subs'}};
+  my %nowarn;
+  my %valid = %{$self->{'command_subs'}};
 
   ## Add in the values that change for every call to this function
   $valid{'temporary'} = 'temp.$$$$.' . int(rand(0xffffffff));
@@ -3840,10 +3807,10 @@ sub convert_command_parameters {
   $valid{'gendir'} = '.' if (!defined $valid{'gendir'});
 
   if (defined $output) {
-    my($first) = 1;
+    my $first = 1;
     $valid{'output'} = "@$output";
     foreach my $out (@$output) {
-      my($noext) = $out;
+      my $noext = $out;
       $noext =~ s/(\.[^\.]+)$//;
 
       $valid{'output_ext'}       = $1;
@@ -3857,7 +3824,7 @@ sub convert_command_parameters {
   ## Add in the specific types of output files
   if (defined $output) {
     foreach my $type (keys %{$self->{'valid_components'}}) {
-      my($key) = $type;
+      my $key = $type;
       $key =~ s/s$//gi;
       $nowarn{$key} = 1;
       $nowarn{$key . '_noext'} = 1;
@@ -3879,20 +3846,20 @@ sub convert_command_parameters {
 
 
 sub get_custom_value {
-  my($self)   = shift;
-  my($cmd)    = shift;
-  my($based)  = shift;
-  my(@params) = @_;
-  my($value)  = undef;
+  my $self   = shift;
+  my $cmd    = shift;
+  my $based  = shift;
+  my @params = @_;
+  my $value;
 
   if ($cmd eq 'input_files') {
     ## Get the component list for the component type
-    my(@array) = $self->get_component_list($based);
+    my @array = $self->get_component_list($based);
 
     ## Check for directories in the component list.  If the component
     ## type is not automatic, we may have directories here and will need
     ## to get the file list for that type.
-    my($once) = undef;
+    my $once;
     for(my $i = 0; $i < scalar(@array); ++$i) {
       if (-d $array[$i]) {
         if (!defined $once) {
@@ -3901,7 +3868,7 @@ sub get_custom_value {
                    'pchc'    => $self->get_assignment('pch_source'),
                   };
         }
-        my(@built) = ();
+        my @built;
         $self->sift_default_file_list($based, $array[$i], \@built,
                                       $self->{'valid_components'}->{$based},
                                       $$once{'recurse'},
@@ -3914,17 +3881,17 @@ sub get_custom_value {
     $value = \@array;
 
     $self->{'custom_output_files'} = {};
-    my(%vcomps) = ();
+    my %vcomps;
     foreach my $vc (keys %{$self->{'valid_components'}}) {
-      my(@comps) = $self->get_component_list($vc);
+      my @comps = $self->get_component_list($vc);
       $vcomps{$vc} = \@comps;
     }
     $vcomps{$generic_key} = [];
 
     foreach my $input (@array) {
-      my(@outputs) = ();
-      my($ainput)  = $input;
-      my($cinput)  = $input;
+      my @outputs;
+      my $ainput = $input;
+      my $cinput = $input;
 
       ## Remove the extension
       $cinput =~ s/\.[^\.]+$//;
@@ -3944,7 +3911,7 @@ sub get_custom_value {
       if (defined $self->{'custom_special_output'}->{$based} &&
           defined $self->{'custom_special_output'}->{$based}->{$ainput}) {
         foreach my $file (@{$self->{'custom_special_output'}->{$based}->{$ainput}}) {
-          my($found) = 0;
+          my $found = 0;
           foreach my $output (@outputs) {
             if ($output eq $file) {
               $found = 1;
@@ -3984,7 +3951,7 @@ sub get_custom_value {
             ## We've found a file that matches one of the source file
             ## extensions.  Now we have to make sure that it doesn't
             ## match a template file extension.
-            my($matched) = 0;
+            my $matched = 0;
             foreach my $text (@{$self->{'valid_components'}->{'template_files'}}) {
               if ($file =~ /$text$/) {
                 $matched = 1;
@@ -4005,7 +3972,7 @@ sub get_custom_value {
     if (defined $self->{'custom_output_files'}) {
       $value = [];
       foreach my $file (@{$self->{'custom_output_files'}->{$based}}) {
-        my($source) = 0;
+        my $source = 0;
         foreach my $ext (@{$self->{'valid_components'}->{'source_files'}}) {
           if ($file =~ /$ext$/) {
             $source = 1;
@@ -4028,7 +3995,7 @@ sub get_custom_value {
     }
   }
   elsif ($cmd eq 'inputexts') {
-    my(@array) = @{$self->{'valid_components'}->{$based}};
+    my @array = @{$self->{'valid_components'}->{$based}};
     foreach my $val (@array) {
       $val =~ s/\\\.//g;
     }
@@ -4058,12 +4025,12 @@ sub get_custom_value {
 
 sub check_features {
   my($self, $requires, $avoids, $info) = @_;
-  my($status) = 1;
-  my($why)    = undef;
+  my $status = 1;
+  my $why;
 
   if (defined $requires) {
     foreach my $require (split(/\s+/, $requires)) {
-      my($fval) = $self->{'feature_parser'}->get_value($require);
+      my $fval = $self->{'feature_parser'}->get_value($require);
 
       ## By default, if the feature is not listed, then it is enabled.
       if (defined $fval && !$fval) {
@@ -4084,7 +4051,7 @@ sub check_features {
   if ($status) {
     if (defined $avoids) {
       foreach my $avoid (split(/\s+/, $avoids)) {
-        my($fval) = $self->{'feature_parser'}->get_value($avoid);
+        my $fval = $self->{'feature_parser'}->get_value($avoid);
 
         ## By default, if the feature is not listed, then it is enabled.
         if (!defined $fval || $fval) {
@@ -4134,9 +4101,9 @@ sub need_to_write_project {
 
 sub write_output_file {
   my($self, $webapp) = @_;
-  my($status)   = 0;
-  my($error)    = undef;
-  my($tover)    = $self->get_template_override();
+  my $status = 0;
+  my $error;
+  my $tover = $self->get_template_override();
   my @templates = $self->get_template();
 
   ## The template override will override all templates
@@ -4160,7 +4127,7 @@ sub write_output_file {
 
     ## If the template file does not contain a path, then we
     ## will search through the include paths for it.
-    my($tfile) = undef;
+    my $tfile;
     if ($template =~ /[\/\\]/i) {
       $tfile = $template;
     }
@@ -4176,7 +4143,7 @@ sub write_output_file {
                                    $self->{'current_template'});
       last if (!$status);
 
-      my($tp) = new TemplateParser($self);
+      my $tp = new TemplateParser($self);
 
       ## Set the project_file assignment for the template parser
       $self->process_assignment('project_file', $name);
@@ -4185,12 +4152,12 @@ sub write_output_file {
       last if (!$status);
 
       if (defined $self->{'source_callback'}) {
-        my($cb)     = $self->{'source_callback'};
-        my($pjname) = $self->get_assignment('project_name');
-        my(@list)   = $self->get_component_list('source_files');
+        my $cb     = $self->{'source_callback'};
+        my $pjname = $self->get_assignment('project_name');
+        my @list   = $self->get_component_list('source_files');
         if (UNIVERSAL::isa($cb, 'ARRAY')) {
-          my(@copy) = @$cb;
-          my($s) = shift(@copy);
+          my @copy = @$cb;
+          my $s = shift(@copy);
           &$s(@copy, $name, $pjname, @list);
         }
         elsif (UNIVERSAL::isa($cb, 'CODE')) {
@@ -4202,13 +4169,13 @@ sub write_output_file {
       }
 
       if ($self->get_toplevel()) {
-        my($outdir) = $self->get_outdir();
-        my($oname)  = $name;
+        my $outdir = $self->get_outdir();
+        my $oname  = $name;
 
         $name = "$outdir/$name";
 
-        my($fh)  = new FileHandle();
-        my($dir) = $self->mpc_dirname($name);
+        my $fh  = new FileHandle();
+        my $dir = $self->mpc_dirname($name);
 
         if ($dir ne '.') {
           mkpath($dir, 0, 0777);
@@ -4220,10 +4187,10 @@ sub write_output_file {
         }
         elsif ($self->compare_output()) {
           ## First write the output to a temporary file
-          my($tmp) = "$outdir/MPC$>.$$";
-          my($different) = 1;
+          my $tmp = "$outdir/MPC$>.$$";
+          my $different = 1;
           if (open($fh, ">$tmp")) {
-            my($lines) = $tp->get_lines();
+            my $lines = $tp->get_lines();
             foreach my $line (@$lines) {
               print $fh $line;
             }
@@ -4258,7 +4225,7 @@ sub write_output_file {
         }
         else {
           if (open($fh, ">$name")) {
-            my($lines) = $tp->get_lines();
+            my $lines = $tp->get_lines();
             foreach my $line (@$lines) {
               print $fh $line;
             }
@@ -4291,22 +4258,22 @@ sub write_output_file {
 
 
 sub write_install_file {
-  my($self)    = shift;
-  my($fh)      = new FileHandle();
-  my($insfile) = $self->transform_file_name(
-                           $self->get_assignment('project_name')) .
-                 '.ins';
-  my($outdir)  = $self->get_outdir();
+  my $self = shift;
+  my $fh = new FileHandle();
+  my $insfile = $self->transform_file_name(
+                          $self->get_assignment('project_name')) .
+                '.ins';
+  my $outdir = $self->get_outdir();
 
   $insfile = "$outdir/$insfile";
 
   unlink($insfile);
   if (open($fh, ">$insfile")) {
     foreach my $vc (keys %{$self->{'valid_components'}}) {
-      my($names) = $self->{$vc};
+      my $names = $self->{$vc};
       foreach my $name (keys %$names) {
         foreach my $key (keys %{$$names{$name}}) {
-          my($array) = $$names{$name}->{$key};
+          my $array = $$names{$name}->{$key};
           if (defined $$array[0]) {
             print $fh "$vc:\n";
             foreach my $file (@$array) {
@@ -4318,16 +4285,16 @@ sub write_install_file {
       }
     }
     if ($self->exe_target()) {
-      my($exeout) = $self->get_assignment('exeout');
+      my $exeout = $self->get_assignment('exeout');
       print $fh "exe_output:\n",
                 (defined $exeout ? $self->relative($exeout) : ''),
                 ' ', $self->get_assignment('exename'), "\n";
     }
     elsif ($self->lib_target()) {
-      my($shared) = $self->get_assignment('sharedname');
-      my($static) = $self->get_assignment('staticname');
-      my($dllout) = $self->relative($self->get_assignment('dllout'));
-      my($libout) = $self->relative($self->get_assignment('libout'));
+      my $shared = $self->get_assignment('sharedname');
+      my $static = $self->get_assignment('staticname');
+      my $dllout = $self->relative($self->get_assignment('dllout'));
+      my $libout = $self->relative($self->get_assignment('libout'));
 
       print $fh "lib_output:\n";
 
@@ -4350,10 +4317,10 @@ sub write_install_file {
 
 
 sub write_project {
-  my($self)      = shift;
-  my($status)    = 2;
-  my($error)     = undef;
-  my($progress)  = $self->get_progress_callback();
+  my $self = shift;
+  my $status = 2;
+  my $error;
+  my $progress = $self->get_progress_callback();
 
   if (defined $progress) {
     &$progress();
@@ -4382,13 +4349,13 @@ sub write_project {
         if ($self->{'escape_spaces'}) {
           foreach my $name ('exename', 'sharedname', 'staticname',
                             'exeout', 'dllout', 'libout') {
-            my($value) = $self->get_assignment($name);
+            my $value = $self->get_assignment($name);
             if (defined $value && $value =~ s/(\s)/\\$1/g) {
               $self->process_assignment($name, $value);
             }
           }
           foreach my $key (keys %{$self->{'valid_components'}}) {
-            my($names) = $self->{$key};
+            my $names = $self->{$key};
             foreach my $name (keys %$names) {
               foreach my $key (keys %{$$names{$name}}) {
                 foreach my $file (@{$$names{$name}->{$key}}) {
@@ -4411,8 +4378,8 @@ sub write_project {
       }
     }
     elsif ($self->warn_useless_project()) {
-      my($msg) = $self->transform_file_name($self->project_file_name()) .
-                 " has no useful targets.";
+      my $msg = $self->transform_file_name($self->project_file_name()) .
+                " has no useful targets.";
 
       if ($self->{'current_input'} eq '') {
         $self->information($msg);
@@ -4428,39 +4395,36 @@ sub write_project {
 
 
 sub get_project_info {
-  my($self) = shift;
-  return $self->{'project_info'};
+  return $_[0]->{'project_info'};
 }
 
 
 sub get_lib_locations {
-  my($self) = shift;
-  return $self->{'lib_locations'};
+  return $_[0]->{'lib_locations'};
 }
 
 
 sub get_inheritance_tree {
-  my($self) = shift;
-  return $self->{'inheritance_tree'};
+  return $_[0]->{'inheritance_tree'};
 }
 
 
 sub set_component_extensions {
-  my($self) = shift;
-  my($vc)   = $self->{'valid_components'};
-  my($ec)   = $self->{'exclude_components'};
+  my $self = shift;
+  my $vc = $self->{'valid_components'};
+  my $ec = $self->{'exclude_components'};
 
   foreach my $key (keys %$vc) {
-    my($ov) = $self->override_valid_component_extensions($key,
-                                                         @{$$vc{$key}});
+    my $ov = $self->override_valid_component_extensions($key,
+                                                        @{$$vc{$key}});
     if (defined $ov) {
       $$vc{$key} = $ov;
     }
   }
 
   foreach my $key (keys %$ec) {
-    my($ov) = $self->override_exclude_component_extensions($key,
-                                                           @{$$ec{$key}});
+    my $ov = $self->override_exclude_component_extensions($key,
+                                                          @{$$ec{$key}});
     if (defined $ov) {
       $$ec{$key} = $ov;
     }
@@ -4475,7 +4439,7 @@ sub set_source_listing_callback {
 
 
 sub reset_values {
-  my($self) = shift;
+  my $self = shift;
 
   ## Only put data structures that need to be cleared
   ## out when the mpc file is done being read, not at the
@@ -4488,8 +4452,8 @@ sub reset_values {
 
 
 sub add_default_matching_assignments {
-  my($self) = shift;
-  my($lang) = $self->get_language();
+  my $self = shift;
+  my $lang = $self->get_language();
 
   if (defined $lang) {
     foreach my $key (keys %{$language{$lang}->[0]}) {
@@ -4507,17 +4471,17 @@ sub add_default_matching_assignments {
 
 
 sub reset_generating_types {
-  my($self)  = shift;
-  my($lang)  = $self->get_language();
+  my $self  = shift;
+  my $lang = $self->get_language();
 
   if (defined $lang) {
-    my(%reset) = ('valid_components'     => $language{$lang}->[0],
-                  'custom_only_removed'  => $language{$lang}->[0],
-                  'exclude_components'   => $language{$lang}->[1],
-                  'matching_assignments' => $language{$lang}->[2],
-                  'generated_exts'       => {},
-                  'valid_names'          => \%validNames,
-                 );
+    my %reset = ('valid_components'     => $language{$lang}->[0],
+                 'custom_only_removed'  => $language{$lang}->[0],
+                 'exclude_components'   => $language{$lang}->[1],
+                 'matching_assignments' => $language{$lang}->[2],
+                 'generated_exts'       => {},
+                 'valid_names'          => \%validNames,
+                );
 
     foreach my $r (keys %reset) {
       $self->{$r} = {};
@@ -4535,8 +4499,8 @@ sub reset_generating_types {
 
 
 sub get_template_input {
-  my($self) = shift;
-  my($lang) = $self->get_language();
+  my $self = shift;
+  my $lang = $self->get_language();
 
   ## This follows along the same logic as read_template_input() by
   ## checking for exe target and then defaulting to a lib target
@@ -4601,14 +4565,14 @@ sub update_project_info {
 
 sub adjust_value {
   my($self, $names, $value, $tp) = @_;
-  my($atemp) = $self->get_addtemp();
+  my $atemp = $self->get_addtemp();
 
   ## Perform any additions, subtractions
   ## or overrides for the template values.
   foreach my $name (@$names) {
     if (defined $name && defined $atemp->{lc($name)}) {
-      my($lname) = lc($name);
-      my($base)  = $lname;
+      my $lname = lc($name);
+      my $base  = $lname;
       $base =~ s/.*:://;
 
       ## If the template variable is a complex name, then we need to make
@@ -4636,14 +4600,14 @@ sub adjust_value {
         }
       }
 
-      my($replace) = (defined $self->{'valid_names'}->{$base} &&
-                      ($self->{'valid_names'}->{$base} & 0x04) == 0);
+      my $replace = (defined $self->{'valid_names'}->{$base} &&
+                     ($self->{'valid_names'}->{$base} & 0x04) == 0);
       foreach my $val (@{$atemp->{$lname}}) {
         if ($replace && index($$val[1], '<%') >= 0) {
           $$val[1] = $self->replace_parameters($$val[1],
                                                $self->{'command_subs'});
         }
-        my($arr) = $self->create_array($$val[1]);
+        my $arr = $self->create_array($$val[1]);
         if ($$val[0] > 0) {
           if (!defined $value) {
             $value = '';
@@ -4672,7 +4636,7 @@ sub adjust_value {
         }
         elsif ($$val[0] < 0) {
           if (defined $value) {
-            my($parts) = undef;
+            my $parts;
             if (UNIVERSAL::isa($value, 'ARRAY')) {
               $parts = $value;
             }
@@ -4683,7 +4647,7 @@ sub adjust_value {
             $value = [];
             foreach my $part (@$parts) {
               if ($part ne '') {
-                my($found) = 0;
+                my $found = 0;
                 foreach my $ae (@$arr) {
                   if ($part eq $ae) {
                     $found = 1;
@@ -4713,12 +4677,12 @@ sub adjust_value {
 
 sub get_verbatim {
   my($self, $marker) = @_;
-  my($str)   = undef;
-  my($thash) = $self->{'verbatim'}->{$self->{'pctype'}};
+  my $str;
+  my $thash = $self->{'verbatim'}->{$self->{'pctype'}};
 
   if (defined $thash) {
     if (defined $thash->{$marker}) {
-      my($crlf) = $self->crlf();
+      my $crlf = $self->crlf();
       foreach my $line (@{$thash->{$marker}}) {
         if (!defined $str) {
           $str = '';
@@ -4746,7 +4710,7 @@ sub generate_recursive_input_list {
 
 sub get_modified_project_file_name {
   my($self, $name, $ext) = @_;
-  my($nmod) = $self->get_name_modifier();
+  my $nmod = $self->get_name_modifier();
 
   ## We don't apply the name modifier to the project file
   ## name if we have already applied it to the project name
@@ -4760,20 +4724,18 @@ sub get_modified_project_file_name {
 
 
 sub get_valid_names {
-  my($self) = shift;
-  return $self->{'valid_names'};
+  return $_[0]->{'valid_names'};
 }
 
 
 sub get_feature_parser {
-  my($self) = shift;
-  return $self->{'feature_parser'};
+  return $_[0]->{'feature_parser'};
 }
 
 
 sub preserve_assignment_order {
   my($self, $name) = @_;
-  my($mapped) = $self->{'valid_names'}->{$name};
+  my $mapped = $self->{'valid_names'}->{$name};
 
   ## Only return the value stored in the valid_names hash map if it's
   ## defined and it's not an array reference.  The array reference is
@@ -4789,7 +4751,7 @@ sub preserve_assignment_order {
 
 sub add_to_template_input_value {
   my($self, $name) = @_;
-  my($mapped) = $self->{'valid_names'}->{$name};
+  my $mapped = $self->{'valid_names'}->{$name};
 
   ## Only return the value stored in the valid_names hash map if it's
   ## defined and it's not an array reference.  The array reference is
@@ -4813,13 +4775,13 @@ sub translate_value {
   my($self, $key, $val) = @_;
 
   if ($key eq 'after' && $val ne '') {
-    my($arr) = $self->create_array($val);
+    my $arr = $self->create_array($val);
     $val = '';
 
     if ($self->require_dependencies()) {
       foreach my $entry (@$arr) {
         if ($self->get_apply_project()) {
-          my($nmod) = $self->get_name_modifier();
+          my $nmod = $self->get_name_modifier();
           if (defined $nmod) {
             $nmod =~ s/\*/$entry/g;
             $entry = $nmod;
@@ -4855,7 +4817,7 @@ sub project_file_name {
 
 
 sub remove_non_custom_settings {
-  my($self) = shift;
+  my $self = shift;
 
   ## Remove any files that may have automatically been added
   ## to this project
@@ -4890,7 +4852,7 @@ sub remove_wanted_extension {
 
 sub resolve_alias {
   if (index($_[1], 'install') >= 0) {
-    my($resolved) = $_[1];
+    my $resolved = $_[1];
     if ($resolved =~ s/(.*::)install$/$1exeout/) {
     }
     elsif ($resolved eq 'install') {
@@ -4904,23 +4866,23 @@ sub resolve_alias {
 
 sub create_feature_parser {
   my($self, $features, $feature) = @_;
-  my($gfeature)     = $self->{'gfeature_file'};
-  my($typefeaturef) = (defined $gfeature ?
-                               $self->mpc_dirname($gfeature) . '/' : '') .
-                      $self->{'pctype'} . '.features';
+  my $gfeature     = $self->{'gfeature_file'};
+  my $typefeaturef = (defined $gfeature ?
+                              $self->mpc_dirname($gfeature) . '/' : '') .
+                     $self->{'pctype'} . '.features';
   $typefeaturef = undef if (! -r $typefeaturef);
   if (defined $feature && $feature !~ /[\/\\]/i) {
-    my($searched) = $self->search_include_path($feature);
+    my $searched = $self->search_include_path($feature);
     $feature = $searched if (defined $searched);
   }
-  my($fp) = new FeatureParser($features,
-                              $gfeature,
-                              $typefeaturef,
-                              $feature);
+  my $fp = new FeatureParser($features,
+                             $gfeature,
+                             $typefeaturef,
+                             $feature);
 
-  my($slo) = $fp->get_value($static_libs_feature);
+  my $slo = $fp->get_value($static_libs_feature);
   if (!defined $slo) {
-    my($sval) = $self->get_static() || 0;
+    my $sval = $self->get_static() || 0;
     $fp->parse_line(undef,
                     $static_libs_feature . ' = ' . $sval);
   }
@@ -4944,8 +4906,8 @@ sub restore_state_helper {
     }
   }
   elsif ($skey eq 'ti') {
-    my($lang) = $self->get_language();
-    my(@keys) = keys %$old;
+    my $lang = $self->get_language();
+    my @keys = keys %$old;
     @keys = keys %$new if (!defined $keys[0]);
     foreach my $key (@keys) {
       if (!defined $$old{$key} || !defined $$new{$key} ||
@@ -4966,8 +4928,7 @@ sub restore_state_helper {
 
 
 sub get_initial_relative_values {
-  my($self) = shift;
-  return $self->{'expanded'}, 1;
+  return $_[0]->{'expanded'}, 1;
 }
 
 sub add_main_function {
@@ -5003,7 +4964,7 @@ sub getKeywords {
 }
 
 sub getValidComponents {
-  my($language) = shift;
+  my $language = shift;
   return (defined $language{$language} ? $language{$language}->[0] : undef);
 }
 
@@ -5161,8 +5122,7 @@ sub get_dll_template_input_file {
 
 
 sub get_template {
-  my($self) = shift;
-  return $self->{'pctype'};
+  return $_[0]->{'pctype'};
 }
 
 sub requires_forward_slashes {

@@ -17,14 +17,12 @@ use strict;
 # ************************************************************
 
 sub parse_assignment {
-  my($self)   = shift;
-  my($line)   = shift;
-  my($values) = shift;
+  my($self, $line, $values) = @_;
 
   ## In MPC, a scope can have spaces in it.  However, it can not end
   ## in a space.
   if ($line =~ /^((\w+[\s\w]+\w::)*\w+)\s*([\-+]?=)\s*(.*)?/) {
-    my($op) = ($3 eq '+=' ? 1 : $3 eq '-=' ? -1 : 0);
+    my $op = ($3 eq '+=' ? 1 : $3 eq '-=' ? -1 : 0);
     push(@$values, $op, $self->resolve_alias(lc($1)), $4);
     return 1;
   }
@@ -34,9 +32,8 @@ sub parse_assignment {
 
 
 sub extractType {
-  my($self) = shift;
-  my($name) = shift;
-  my($type) = $name;
+  my($self, $name) = @_;
+  my $type = $name;
 
   if ($name =~ /(.*)(Project|Workspace)Creator/) {
     $type = $1;
@@ -47,12 +44,11 @@ sub extractType {
 
 
 sub process_special {
-  my($self) = shift;
-  my($line) = shift;
+  my($self, $line) = @_;
 
   ## Replace all escaped double quotes and escaped backslashes
   ## with special characters
-  my($escaped) = ($line =~ s/\\\\/\01/g);
+  my $escaped = ($line =~ s/\\\\/\01/g);
   $escaped |= ($line =~ s/\\"/\02/g);
 
   ## Un-escape all other characters
@@ -72,12 +68,11 @@ sub process_special {
 
 
 sub create_array {
-  my($self)  = shift;
-  my($line)  = shift;
-  my(@array) = ();
+  my($self, $line) = @_;
+  my @array;
 
   ## Replace all escaped double and single quotes with special characters
-  my($escaped) = ($line =~ s/\\\"/\01/g);
+  my $escaped = ($line =~ s/\\\"/\01/g);
   $escaped |= ($line =~ s/\\\'/\02/g);
   $escaped |= ($line =~ s/\\ /\03/g);
   $escaped |= ($line =~ s/\\\t/\04/g);

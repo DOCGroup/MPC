@@ -18,11 +18,11 @@ use File::Basename;
 # Data Section
 # ************************************************************
 
-my($onVMS) = ($^O eq 'VMS');
-my($case_insensitive) = File::Spec->case_tolerant();
-my($cwd) = Cwd::getcwd();
+my $onVMS = ($^O eq 'VMS');
+my $case_insensitive = File::Spec->case_tolerant();
+my $cwd = Cwd::getcwd();
 if ($^O eq 'cygwin' && $cwd !~ /[A-Za-z]:/) {
-  my($cyg) = `cygpath -w $cwd`;
+  my $cyg = `cygpath -w $cwd`;
   if (defined $cyg) {
     $cyg =~ s/\\/\//g;
     chop($cwd = $cyg);
@@ -33,7 +33,7 @@ elsif ($onVMS) {
   $cwd = VMS::Filespec::unixify($cwd);
   $cwd =~ s!/$!!g;
 }
-my($start) = $cwd;
+my $start = $cwd;
 
 # ************************************************************
 # Subroutine Section
@@ -41,7 +41,7 @@ my($start) = $cwd;
 
 sub cd {
   my($self, $dir) = @_;
-  my($status) = chdir($dir);
+  my $status = chdir($dir);
 
   if ($status && $dir ne '.') {
     ## First strip out any /./ or ./ or /.
@@ -54,7 +54,7 @@ sub cd {
     if (index($dir, '..') >= 0) {
       $cwd = Cwd::getcwd();
       if ($^O eq 'cygwin' && $cwd !~ /[A-Za-z]:/) {
-        my($cyg) = `cygpath -w $cwd`;
+        my $cyg = `cygpath -w $cwd`;
         if (defined $cyg) {
           $cyg =~ s/\\/\//g;
           chop($cwd = $cyg);
@@ -118,19 +118,19 @@ sub mpc_dirname {
 
 sub mpc_glob {
   my($self, $pattern) = @_;
-  my(@files)   = ();
+  my @files;
 
   ## glob() provided by OpenVMS does not understand [] within
   ## the pattern.  So, we implement our own through recursive calls
   ## to mpc_glob().
   if ($onVMS && $pattern =~ /(.*)\[([^\]]+)\](.*)/) {
-    my($pre)  = $1;
-    my($mid)  = $2;
-    my($post) = $3;
+    my $pre  = $1;
+    my $mid  = $2;
+    my $post = $3;
     for(my $i = 0; $i < length($mid); $i++) {
-      my($p) = $pre . substr($mid, $i, 1) . $post;
+      my $p = $pre . substr($mid, $i, 1) . $post;
       foreach my $new (DirectoryManager::mpc_glob($self, $p)) {
-        my($found) = undef;
+        my $found;
         foreach my $file (@files) {
           if ($file eq $new) {
             $found = 1;
@@ -169,17 +169,17 @@ sub translate_directory {
   my($self, $dir) = @_;
 
   ## Remove the current working directory from $dir (if it is contained)
-  my($cwd) = $self->getcwd();
+  my $cwd = $self->getcwd();
   $cwd =~ s/\//\\/g if ($self->convert_slashes());
   if (index($dir, $cwd) == 0) {
-    my($cwdl) = length($cwd);
+    my $cwdl = length($cwd);
     return '.' if (length($dir) == $cwdl);
     $dir = substr($dir, $cwdl + 1);
   }
 
   ## Translate .. to $dd
   if (index($dir, '..') >= 0) {
-    my($dd) = 'dotdot';
+    my $dd = 'dotdot';
     $dir =~ s/^\.\.([\/\\])/$dd$1/;
     $dir =~ s/([\/\\])\.\.$/$1$dd/;
     $dir =~ s/([\/\\])\.\.([\/\\])/$1$dd$2/g;

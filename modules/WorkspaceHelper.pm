@@ -16,14 +16,14 @@ use strict;
 # Data Section
 # ************************************************************
 
-my(%required) = ();
+my %required;
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub get {
-  my($type) = shift;
+  my $type = shift;
 
   ## Create the helper name
   $type =~ s/Creator/Helper/;
@@ -52,16 +52,13 @@ sub get {
 
 
 sub new {
-  my($class) = shift;
-  return bless {
-               }, $class;
+  my $class = shift;
+  return bless {}, $class;
 }
 
 
 sub modify_value {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = shift;
+  my($self, $name, $value) = @_;
   return $value;
 }
 

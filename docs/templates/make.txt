@@ -21,6 +21,7 @@ cxx = Holds the C/C++ compiler.
 cxxint = This is Green Hills specific and specifies the type of integration.
 delete = A utility to delete a file.
 depgen = A utility to generate make dependencies.
+depgen_flags = Flags to be passed to the dependency generator utility.
 devnull = The null device for a particular platform.
 dld = The linker to create dynamic libraries.
 dmclink = Used by the dmc compiler, this determines if the dmc special mode of linking is used.
