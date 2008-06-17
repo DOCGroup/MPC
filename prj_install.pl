@@ -22,35 +22,35 @@ use File::Basename;
 # Data Section
 # ******************************************************************
 
-my($insext)   = 'ins';
-my($version)  = '1.9';
-my(%defaults) = ('header_files'   => 1,
-                 'idl_files'      => 1,
-                 'inline_files'   => 1,
-                 'pidl_files'     => 1,
-                 'template_files' => 1,
-                 'mpb_files'      => 1,
-                );
+my $insext   = 'ins';
+my $version  = '1.9';
+my %defaults = ('header_files'   => 1,
+                'idl_files'      => 1,
+                'inline_files'   => 1,
+                'pidl_files'     => 1,
+                'template_files' => 1,
+                'mpb_files'      => 1,
+               );
 
-my(%special)  = ('exe_output' => 1,
-                 'lib_output' => 1,
-                );
+my %special  = ('exe_output' => 1,
+                'lib_output' => 1,
+               );
 
-my(%actual)    = ();
-my(%base)      = ();
-my(%override)  = ();
-my($keepgoing) = 0;
+my %actual;
+my %base;
+my %override;
+my $keepgoing = 0;
 
 eval 'symlink("", "");';
-my($hasSymlink) = ($@ eq '');
+my $hasSymlink = ($@ eq '');
 
 # ******************************************************************
 # Subroutine Section
 # ******************************************************************
 
 sub rm_updirs {
-  my($path)  = shift;
-  my(@parts) = split(/[\/\\]/, $path);
+  my $path  = shift;
+  my @parts = split(/[\/\\]/, $path);
 
   ## Split the path into parts and check for '..'.  If we find one
   ## and the previous entry wasn't one, then we can remove them both.
@@ -64,21 +64,18 @@ sub rm_updirs {
 }
 
 sub copyFiles {
-  my($files)   = shift;
-  my($insdir)  = shift;
-  my($symlink) = shift;
-  my($verbose) = shift;
-  my($type)    = ($symlink ? 'link' : 'copy');
-  my($cwd)     = getcwd();
+  my($files, $insdir, $symlink, $verbose) = @_;
+  my $type = ($symlink ? 'link' : 'copy');
+  my $cwd = getcwd();
 
   foreach my $file (@$files) {
-    my($dest) = rm_updirs($insdir . '/' .
-                          (defined $actual{$file} ?
-                                  "$actual{$file}/" .
-                                  basename($file) : $file));
-    my($fulldir) = dirname($dest);
+    my $dest = rm_updirs($insdir . '/' .
+                         (defined $actual{$file} ?
+                                 "$actual{$file}/" .
+                                 basename($file) : $file));
+    my $fulldir = dirname($dest);
     if (! -d $fulldir) {
-      my($tmp) = '';
+      my $tmp = '';
       foreach my $part (split(/[\/\\]/, $fulldir)) {
         $tmp .= $part . '/';
         mkdir($tmp, 0755);
@@ -89,7 +86,7 @@ sub copyFiles {
       if ($verbose) {
         print '', ($symlink ? 'Linking' : 'Copying'), " to $dest\n";
       }
-      my($status) = undef;
+      my $status;
       if ($symlink) {
         unlink($dest);
         $status = symlink("$cwd/$file", $dest);
@@ -118,9 +115,7 @@ sub copyFiles {
 
 
 sub determineSpecialName {
-  my($tag)  = shift;
-  my($dir)  = shift;
-  my($info) = shift;
+  my($tag, $dir, $info) = @_;
 
   my($insdir, $name) = split(/\s+/, $info);
   if (defined $name) {
@@ -131,10 +126,10 @@ sub determineSpecialName {
     $insdir = '';
   }
 
-  my($odir) = ($dir eq '' ? '.' : $dir) . '/' . $insdir;
+  my $odir = ($dir eq '' ? '.' : $dir) . '/' . $insdir;
   if ($tag eq 'exe_output') {
-    my(@exes) = ();
-    my($fh)   = new FileHandle();
+    my @exes;
+    my $fh   = new FileHandle();
     if (opendir($fh, $odir)) {
       foreach my $file (grep(!/^\.\.?$/, readdir($fh))) {
         if ($file =~ /^$name$/ ||
@@ -147,8 +142,8 @@ sub determineSpecialName {
     return @exes;
   }
   elsif ($tag eq 'lib_output') {
-    my(@libs) = ();
-    my($fh)   = new FileHandle();
+    my @libs;
+    my $fh   = new FileHandle();
     if (opendir($fh, $odir)) {
       foreach my $file (grep(!/^\.\.?$/, readdir($fh))) {
         if ($file =~ /^lib$name\.(a|so|sl)/ ||
@@ -166,11 +161,11 @@ sub determineSpecialName {
 
 
 sub replaceVariables {
-  my($line) = shift;
+  my $line = shift;
   while($line =~ /(\$\(([^)]+)\))/) {
-    my($whole) = $1;
-    my($name)  = $2;
-    my($val)   = (defined $ENV{$name} ? $ENV{$name} : '');
+    my $whole = $1;
+    my $name = $2;
+    my $val = (defined $ENV{$name} ? $ENV{$name} : '');
     $line =~ s/\$\([^)]+\)/$val/;
   }
   return $line;
@@ -178,18 +173,16 @@ sub replaceVariables {
 
 
 sub loadInsFiles {
-  my($files)   = shift;
-  my($tags)    = shift;
-  my($verbose) = shift;
-  my($fh)      = new FileHandle();
-  my(@copy)    = ();
+  my($files, $tags, $verbose) = @_;
+  my $fh = new FileHandle();
+  my @copy;
 
   foreach my $file (@$files) {
     if (open($fh, $file)) {
       if ($verbose) {
         print "Loading $file\n";
       }
-      my($base) = dirname($file);
+      my $base = dirname($file);
       if ($base eq '.') {
         $base = '';
       }
@@ -198,9 +191,9 @@ sub loadInsFiles {
         $base .= '/';
       }
 
-      my($current) = undef;
+      my $current;
       while(<$fh>) {
-        my($line) = $_;
+        my $line = $_;
         $line =~ s/^\s+//;
         $line =~ s/\s+$//;
 
@@ -215,7 +208,7 @@ sub loadInsFiles {
           }
           elsif (defined $current) {
             $line = replaceVariables($line);
-            my($start) = $#copy + 1;
+            my $start = $#copy + 1;
             if (defined $special{$current}) {
               push(@copy, determineSpecialName($current, $base, $line));
             }
@@ -249,11 +242,11 @@ sub loadInsFiles {
 
 
 sub getInsFiles {
-  my($file)  = shift;
-  my(@files) = ();
+  my $file  = shift;
+  my @files;
 
   if (-d $file) {
-    my($fh) = new FileHandle();
+    my $fh = new FileHandle();
     if (opendir($fh, $file)) {
       foreach my $f (grep(!/^\.\.?$/, readdir($fh))) {
         push(@files, getInsFiles("$file/$f"));
@@ -269,12 +262,12 @@ sub getInsFiles {
 
 
 sub usageAndExit {
-  my($msg) = shift;
+  my $msg = shift;
   if (defined $msg) {
     print STDERR "$msg\n";
   }
-  my($base) = basename($0);
-  my($spc)  = ' ' x (length($base) + 8);
+  my $base = basename($0);
+  my $spc  = ' ' x (length($base) + 8);
   print STDERR "$base v$version\n",
                "Usage: $base [-a tag1[,tagN]] [-b tag=dir] ",
                ($hasSymlink ? '[-l] ' : ''), "[-o tag=dir]\n",
@@ -291,7 +284,7 @@ sub usageAndExit {
                "-v  Enables verbose mode.\n",
                "\n",
                "The default set of tags are:\n";
-  my($first) = 1;
+  my $first = 1;
   foreach my $key (sort keys %defaults) {
     print STDERR '', ($first ? '' : ', '), $key;
     $first = 0;
@@ -305,15 +298,15 @@ sub usageAndExit {
 # Main Section
 # ******************************************************************
 
-my($verbose)  = undef;
-my($first)    = 1;
-my($insdir)   = undef;
-my($symlink)  = undef;
-my(@insfiles) = ();
-my(%tags)     = %defaults;
+my $verbose;
+my $first = 1;
+my $insdir;
+my $symlink;
+my @insfiles;
+my %tags = %defaults;
 
 for(my $i = 0; $i <= $#ARGV; ++$i) {
-  my($arg) = $ARGV[$i];
+  my $arg = $ARGV[$i];
   if ($arg =~ /^-/) {
     if ($arg eq '-a') {
       ++$i;
@@ -403,8 +396,8 @@ elsif (!defined $insfiles[0]) {
   exit(1);
 }
 
-my($status) = 1;
-my(@files)  = loadInsFiles(\@insfiles, \%tags, $verbose);
+my $status = 1;
+my @files  = loadInsFiles(\@insfiles, \%tags, $verbose);
 if (defined $files[0]) {
   $status = (copyFiles(\@files, $insdir, $symlink, $verbose) ? 0 : 1);
 }

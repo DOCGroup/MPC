@@ -17,8 +17,7 @@ use strict;
 # ************************************************************
 
 sub targets {
-  my($self) = shift;
-  return $self->{'make_targets'};
+  return $_[0]->{'make_targets'};
 }
 
 sub workspace_file_prefix {
@@ -34,13 +33,12 @@ sub workspace_file_extension {
 
 
 sub supports_make_coexistence {
-  my($self) = shift;
-  return ($self->workspace_file_extension() ne '');
+  return ($_[0]->workspace_file_extension() ne '');
 }
 
 
 sub workspace_file_name {
-  my($self) = shift;
+  my $self = shift;
   return $self->get_modified_workspace_name(
                                  $self->workspace_file_prefix(),
                                  $self->make_coexistence() ?
@@ -55,11 +53,7 @@ sub workspace_per_project {
 
 
 sub workspace_preamble {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($crlf) = shift;
-  my($name) = shift;
-  my($id)   = shift;
+  my($self, $fh, $crlf, $name, $id) = @_;
 
   $self->print_workspace_comment($fh,
             '#----------------------------------------------------------------------------', $crlf,
@@ -79,25 +73,14 @@ sub workspace_preamble {
 
 
 sub write_named_targets {
-  my($self)    = shift;
-  my($fh)      = shift;
-  my($crlf)    = shift;
-  my($targnum) = shift;
-  my($list)    = shift;
-  my($remain)  = shift;
-  my($targpre) = shift;
-  my($allpre)  = shift;
-  my($trans)   = shift;
-  my($phony)   = shift;
-  my($andsym)  = shift;
-  my($maxline) = shift;
+  my($self, $fh, $crlf, $targnum, $list, $remain, $targpre, $allpre, $trans, $phony, $andsym, $maxline) = @_;
 
   ## Save the targets for later
   $self->{'make_targets'} = $remain;
 
   ## Print out the "all" target
   if (defined $maxline) {
-    my($all) = 'all:';
+    my $all = 'all:';
     foreach my $project (@$list) {
       $all .= " $$trans{$project}";
     }
@@ -115,7 +98,7 @@ sub write_named_targets {
     }
   }
 
-  ## Print out all other targets here  
+  ## Print out all other targets here
   print $fh "$crlf$crlf$remain:$crlf";
   $self->write_project_targets($fh, $crlf,
                                $targpre . '$(@)', $list, $andsym);
@@ -128,7 +111,7 @@ sub write_named_targets {
       foreach my $number (@{$$targnum{$project}}) {
         print $fh " $$trans{$$list[$number]}";
       }
-    }  
+    }
     print $fh $crlf;
     $self->write_project_targets($fh, $crlf,
                                  $targpre . $allpre . 'all',
@@ -147,15 +130,15 @@ sub post_workspace {
   my($self, $wsfh, $creator, $toplevel) = @_;
 
   if ($toplevel && $self->{'for_eclipse'}) {
-    my($crlf)    = $self->crlf();
-    my($outdir)  = $self->get_outdir();
-    my($fh)      = new FileHandle();
-    my($outfile) = "$outdir/.cdtproject";
-    my($pjt)     = $self->get_eclipse_cdtproject();
+    my $crlf    = $self->crlf();
+    my $outdir  = $self->get_outdir();
+    my $fh      = new FileHandle();
+    my $outfile = "$outdir/.cdtproject";
+    my $pjt     = $self->get_eclipse_cdtproject();
 
     if (open($fh, ">$outfile")) {
-      my($cmd) = ("$self" =~ /^nmake/i ? 'nmake' : 'make');
-      my($stop) = ("$self" =~ /^bmake/i ? 'true' : 'false');
+      my $cmd = ("$self" =~ /^nmake/i ? 'nmake' : 'make');
+      my $stop = ("$self" =~ /^bmake/i ? 'true' : 'false');
       print $fh $$pjt[0];
       foreach my $target ('all',
                           grep(/^[\w\-]+$/, split(/\s+/, $self->targets()))) {
@@ -188,7 +171,7 @@ sub post_workspace {
 
 
 sub get_eclipse_cdtproject {
-  my($self) = shift;
+  my $self = shift;
   if (!defined $self->{'eclipse_cdtproject'}) {
     $self->{'eclipse_cdtproject'} = [
 '<?xml version="1.0" encoding="UTF-8"?>
@@ -256,7 +239,7 @@ sub get_eclipse_cdtproject {
 
 
 sub get_eclipse_project {
-  my($self) = shift;
+  my $self = shift;
   if (!defined $self->{'eclipse_project'}) {
     $self->{'eclipse_project'} = [
 '<?xml version="1.0" encoding="UTF-8"?>

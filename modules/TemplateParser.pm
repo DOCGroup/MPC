@@ -29,63 +29,62 @@ use vars qw(@ISA);
 # 1 means there is a perform_ method available (used by foreach and nested)
 # 2 means there is a doif_ method available (used by if)
 # 3 means that parameters to perform_ should not be evaluated
-my(%keywords) = ('if'              => 0,
-                 'else'            => 0,
-                 'endif'           => 0,
-                 'noextension'     => 2,
-                 'dirname'         => 5,
-                 'basename'        => 0,
-                 'basenoextension' => 0,
-                 'foreach'         => 0,
-                 'forfirst'        => 0,
-                 'fornotfirst'     => 0,
-                 'fornotlast'      => 0,
-                 'forlast'         => 0,
-                 'endfor'          => 0,
-                 'eval'            => 0,
-                 'comment'         => 0,
-                 'marker'          => 0,
-                 'uc'              => 0,
-                 'lc'              => 0,
-                 'ucw'             => 0,
-                 'normalize'       => 2,
-                 'flag_overrides'  => 1,
-                 'reverse'         => 3,
-                 'sort'            => 3,
-                 'uniq'            => 3,
-                 'multiple'        => 5,
-                 'starts_with'     => 5,
-                 'ends_with'       => 5,
-                 'contains'        => 5,
-                 'remove_from'     => 0xf,
-                 'compares'        => 5,
-                 'duplicate_index' => 5,
-                 'transdir'        => 5,
-                 'has_extension'   => 5,
-                 'keyname_used'    => 0,
-                 'scope'           => 0,
-                 'full_path'       => 2,
-                );
+my %keywords = ('if'              => 0,
+                'else'            => 0,
+                'endif'           => 0,
+                'noextension'     => 2,
+                'dirname'         => 5,
+                'basename'        => 0,
+                'basenoextension' => 0,
+                'foreach'         => 0,
+                'forfirst'        => 0,
+                'fornotfirst'     => 0,
+                'fornotlast'      => 0,
+                'forlast'         => 0,
+                'endfor'          => 0,
+                'eval'            => 0,
+                'comment'         => 0,
+                'marker'          => 0,
+                'uc'              => 0,
+                'lc'              => 0,
+                'ucw'             => 0,
+                'normalize'       => 2,
+                'flag_overrides'  => 1,
+                'reverse'         => 3,
+                'sort'            => 3,
+                'uniq'            => 3,
+                'multiple'        => 5,
+                'starts_with'     => 5,
+                'ends_with'       => 5,
+                'contains'        => 5,
+                'remove_from'     => 0xf,
+                'compares'        => 5,
+                'duplicate_index' => 5,
+                'transdir'        => 5,
+                'has_extension'   => 5,
+                'keyname_used'    => 0,
+                'scope'           => 0,
+                'full_path'       => 2,
+               );
 
-my(%target_type_vars) = ('type_is_static'   => 1,
-                         'need_staticflags' => 1,
-                         'type_is_dynamic'  => 1,
-                         'type_is_binary'   => 1,
-                        );
+my %target_type_vars = ('type_is_static'   => 1,
+                        'need_staticflags' => 1,
+                        'type_is_dynamic'  => 1,
+                        'type_is_binary'   => 1,
+                       );
 
-my(%arrow_op_ref) = ('custom_type'     => 'custom types',
-                     'grouped_.*_file' => 'grouped files',
-                     'feature'         => 'features',
-                    );
+my %arrow_op_ref = ('custom_type'     => 'custom types',
+                    'grouped_.*_file' => 'grouped files',
+                    'feature'         => 'features',
+                   );
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub new {
-  my($class) = shift;
-  my($prjc)  = shift;
-  my($self)  = $class->SUPER::new();
+  my($class, $prjc) = @_;
+  my $self = $class->SUPER::new();
 
   $self->{'prjc'}                 = $prjc;
   $self->{'ti'}                   = $prjc->get_template_input();
@@ -123,8 +122,7 @@ sub new {
 
 
 sub tp_basename {
-  my($self) = shift;
-  my($file) = shift;
+  my($self, $file) = @_;
 
   if ($self->{'cslashes'}) {
     $file =~ s/.*[\/\\]//;
@@ -137,9 +135,8 @@ sub tp_basename {
 
 
 sub validated_dirname {
-  my($self)  = shift;
-  my($file)  = shift;
-  my($index) = rindex($file, ($self->{'cslashes'} ? '\\' : '/'));
+  my($self, $file) = @_;
+  my $index = rindex($file, ($self->{'cslashes'} ? '\\' : '/'));
 
   if ($index >= 0) {
     return $self->{'prjc'}->validated_directory(substr($file, 0, $index));
@@ -151,9 +148,8 @@ sub validated_dirname {
 
 
 sub tp_dirname {
-  my($self)  = shift;
-  my($file)  = shift;
-  my($index) = rindex($file, ($self->{'cslashes'} ? '\\' : '/'));
+  my($self, $file) = @_;
+  my $index = rindex($file, ($self->{'cslashes'} ? '\\' : '/'));
 
   if ($index >= 0) {
     return substr($file, 0, $index);
@@ -192,12 +188,12 @@ sub append_current {
     $_[0]->{'eval_str'} .= $_[1];
   }
   else {
-    my($value) = $_[1];
-    my($scope) = $_[0]->{'scopes'};
+    my $value = $_[1];
+    my $scope = $_[0]->{'scopes'};
     while(defined $$scope{'scope'}) {
       $scope = $$scope{'scope'};
       if (defined $$scope{'escape'}) {
-        my($key) = $$scope{'escape'};
+        my $key = $$scope{'escape'};
         if ($key eq '\\') {
           $value =~ s/\\/\\\\/g;
         }
@@ -218,9 +214,8 @@ sub append_current {
 
 
 sub split_parameters {
-  my($self)   = shift;
-  my($str)    = shift;
-  my(@params) = ();
+  my($self, $str) = @_;
+  my @params;
 
   while($str =~ /^(\w+\([^\)]+\))\s*,\s*(.*)/) {
     push(@params, $1);
@@ -238,25 +233,24 @@ sub split_parameters {
 
 
 sub set_current_values {
-  my($self) = shift;
-  my($name) = shift;
-  my($set)  = 0;
+  my($self, $name) = @_;
+  my $set = 0;
 
   ## If any value within a foreach matches the name
   ## of a hash table within the template input we will
   ## set the values of that hash table in the current scope
   if (defined $self->{'ti'}) {
-    my($counter) = $self->{'foreach'}->{'count'};
+    my $counter = $self->{'foreach'}->{'count'};
     if ($counter >= 0) {
       ## Variable names are case-insensitive in MPC, however this can
       ## cause problems when dealing with template variable values that
       ## happen to match HASH names only by case-insensitivity.  So, we
       ## now make HASH names match with case-sensitivity.
-      my($value) = $self->{'ti'}->get_value($name);
+      my $value = $self->{'ti'}->get_value($name);
       if (defined $value && UNIVERSAL::isa($value, 'HASH') &&
           $self->{'ti'}->get_realname($name) eq $name) {
         $self->{'foreach'}->{'scope_name'}->[$counter] = $name;
-        my(%copy) = ();
+        my %copy;
         foreach my $key (keys %$value) {
           $copy{$key} = $self->{'prjc'}->adjust_value(
                     [$name . '::' . $key, $name], $$value{$key}, $self);
@@ -277,14 +271,13 @@ sub set_current_values {
 
 
 sub get_value {
-  my($self)    = shift;
-  my($name)    = shift;
-  my($value)   = undef;
-  my($counter) = $self->{'foreach'}->{'count'};
-  my($fromprj) = 0;
-  my($scope)   = undef;
-  my($sname)   = undef;
-  my($adjust)  = 1;
+  my($self, $name) = @_;
+  my $value;
+  my $counter = $self->{'foreach'}->{'count'};
+  my $fromprj = 0;
+  my $scope;
+  my $sname;
+  my $adjust = 1;
 
   ## $name should always be all lower-case
   $name = lc($name);
@@ -325,8 +318,8 @@ sub get_value {
       if (!defined $value) {
         ## Calling adjust_value here allows us to pick up template
         ## overrides before getting values elsewhere.
-        my($uvalue) = $self->{'prjc'}->adjust_value([$sname, $name],
-                                                    [], $self);
+        my $uvalue = $self->{'prjc'}->adjust_value([$sname, $name],
+                                                   [], $self);
         if (defined $$uvalue[0]) {
           $value = $uvalue;
           $adjust = 0;
@@ -354,9 +347,9 @@ sub get_value {
                 ## it to fill in the value before defaulting to undef.
                 $value = $self->{'prjc'}->fill_value($name);
                 if (!defined $value && $name =~ /^(.*)\->(\w+)/) {
-                  my($pre)  = $1;
-                  my($post) = $2;
-                  my($base) = $self->get_value($pre);
+                  my $pre  = $1;
+                  my $post = $2;
+                  my $base = $self->get_value($pre);
 
                   if (defined $base) {
                     $value = $self->{'prjc'}->get_special_value(
@@ -386,9 +379,9 @@ sub get_value {
   ## push the project value onto that (to avoid modifying the original).
   if (!$fromprj && defined $self->{'vnames'}->{$name} &&
       $self->{'prjc'}->add_to_template_input_value($name)) {
-    my($pjval) = $self->{'prjc'}->get_assignment($name);
+    my $pjval = $self->{'prjc'}->get_assignment($name);
     if (defined $pjval) {
-      my(@copy) = @$value;
+      my @copy = @$value;
       if (!UNIVERSAL::isa($pjval, 'ARRAY')) {
         $pjval = $self->create_array($pjval);
       }
@@ -402,15 +395,15 @@ sub get_value {
 
 
 sub get_value_with_default {
-  my($self)  = shift;
-  my($name)  = lc(shift);
-  my($value) = $self->get_value($name);
+  my $self  = shift;
+  my $name = lc(shift);
+  my $value = $self->get_value($name);
 
   if (!defined $value) {
     $value = $self->{'defaults'}->{$name};
     if (defined $value) {
-      my($counter) = $self->{'foreach'}->{'count'};
-      my($sname)   = undef;
+      my $counter = $self->{'foreach'}->{'count'};
+      my $sname;
 
       if ($counter >= 0) {
         ## Find the outer most scope for our variable name
@@ -447,17 +440,17 @@ sub get_value_with_default {
 
 
 sub process_foreach {
-  my($self)   = shift;
-  my($index)  = $self->{'foreach'}->{'count'};
-  my($text)   = $self->{'foreach'}->{'text'}->[$index];
-  my(@values) = ();
-  my($name)   = $self->{'foreach'}->{'name'}->[$index];
-  my(@cmds)   = ();
-  my($val)    = $self->{'foreach'}->{'vars'}->[$index];
-  my($check_for_mixed) = undef;
+  my $self   = shift;
+  my $index = $self->{'foreach'}->{'count'};
+  my $text = $self->{'foreach'}->{'text'}->[$index];
+  my @values;
+  my $name = $self->{'foreach'}->{'name'}->[$index];
+  my @cmds;
+  my $val = $self->{'foreach'}->{'vars'}->[$index];
+  my $check_for_mixed;
 
   if ($val =~ /^((\w+),\s*)?flag_overrides\((.*)\)$/) {
-    my($over) = $self->get_flag_overrides($3);
+    my $over = $self->get_flag_overrides($3);
     $name = $2;
     if (defined $over) {
       $val = $self->create_array($over);
@@ -470,12 +463,12 @@ sub process_foreach {
   else {
     ## Pull out modifying commands first
     while ($val =~ /(\w+)\((.+)\)/) {
-      my($cmd) = $1;
-      $val     = $2;
+      my $cmd = $1;
+      $val = $2;
       if (($keywords{$cmd} & 0x02) != 0) {
         push(@cmds, 'perform_' . $cmd);
         if (($keywords{$cmd} & 0x08) != 0) {
-          my(@params) = $self->split_parameters($val);
+          my @params = $self->split_parameters($val);
           $val = \@params;
           last;
         }
@@ -491,9 +484,9 @@ sub process_foreach {
       @values = @$val;
     }
     else {
-      my($names) = $self->create_array($val);
+      my $names = $self->create_array($val);
       foreach my $n (@$names) {
-        my($vals) = $self->get_value($n);
+        my $vals = $self->get_value($n);
         if (defined $vals && $vals ne '') {
           if (!UNIVERSAL::isa($vals, 'ARRAY')) {
             $vals = $self->create_array($vals);
@@ -520,8 +513,8 @@ sub process_foreach {
   $self->{'foreach'}->{'text'}->[$index] = '';
 
   if (defined $values[0]) {
-    my($scope) = $self->{'foreach'}->{'scope'}->[$index];
-    my($base)  = $self->{'foreach'}->{'base'}->[$index];
+    my $scope = $self->{'foreach'}->{'scope'}->[$index];
+    my $base  = $self->{'foreach'}->{'base'}->[$index];
 
     $$scope{'forlast'}     = '';
     $$scope{'fornotlast'}  = 1;
@@ -531,14 +524,14 @@ sub process_foreach {
     ## If the foreach values are mixed (HASH and SCALAR), then
     ## remove the SCALAR values.
     if ($check_for_mixed) {
-      my(%mixed) = ();
-      my($mixed) = 0;
+      my %mixed;
+      my $mixed = 0;
       foreach my $mval (@values) {
         $mixed{$mval} = $self->set_current_values($mval);
         $mixed |= $mixed{$mval};
       }
       if ($mixed) {
-        my(@nvalues) = ();
+        my @nvalues;
         foreach my $key (sort keys %mixed) {
           if ($mixed{$key}) {
             push(@nvalues, $key);
@@ -547,7 +540,7 @@ sub process_foreach {
 
         ## Set the new values only if they are different
         ## from the original (except for order).
-        my(@sorted) = sort(@values);
+        my @sorted = sort(@values);
         if (@sorted != @nvalues) {
           @values = @nvalues;
         }
@@ -555,7 +548,7 @@ sub process_foreach {
     }
 
     for(my $i = 0; $i <= $#values; ++$i) {
-      my($value) = $values[$i];
+      my $value = $values[$i];
 
       ## Set the corresponding values in the temporary scope
       $self->set_current_values($value);
@@ -600,16 +593,15 @@ sub process_foreach {
 
 
 sub handle_endif {
-  my($self) = shift;
-  my($name) = shift;
-  my($end)  = pop(@{$self->{'sstack'}});
+  my($self, $name) = @_;
+  my $end = pop(@{$self->{'sstack'}});
   pop(@{$self->{'lstack'}});
 
   if (!defined $end) {
     return "Unmatched $name";
   }
   else {
-    my($in) = index($end, $name);
+    my $in = index($end, $name);
     if ($in == 0) {
       $self->{'if_skip'} = 0;
     }
@@ -623,19 +615,18 @@ sub handle_endif {
 
 
 sub handle_endfor {
-  my($self) = shift;
-  my($name) = shift;
-  my($end)  = pop(@{$self->{'sstack'}});
+  my($self, $name) = @_;
+  my $end = pop(@{$self->{'sstack'}});
   pop(@{$self->{'lstack'}});
 
   if (!defined $end) {
     return "Unmatched $name";
   }
   else {
-    my($in) = index($end, $name);
+    my $in = index($end, $name);
     if ($in == 0) {
-      my($index) = $self->{'foreach'}->{'count'};
-      my($error) = $self->process_foreach();
+      my $index = $self->{'foreach'}->{'count'};
+      my $error = $self->process_foreach();
       if (!defined $error) {
         --$self->{'foreach'}->{'count'};
         $self->append_current($self->{'foreach'}->{'text'}->[$index]);
@@ -652,24 +643,23 @@ sub handle_endfor {
 
 
 sub get_flag_overrides {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($type)  = undef;
+  my($self, $name) = @_;
+  my $type;
 
   ## Split the name and type parameters
   ($name, $type) = split(/,\s*/, $name);
 
-  my($file) = $self->get_value($name);
+  my $file = $self->get_value($name);
   if (defined $file) {
     ## Save the name prefix (if there is one) for
     ## command parameter conversion at the end
-    my($pre) = undef;
+    my $pre;
     if ($name =~ /^(\w+)->/) {
       $pre = $1;
 
       ## Replace the custom_type key with the actual custom type
       if ($pre eq 'custom_type') {
-        my($ct) = $self->get_value($pre);
+        my $ct = $self->get_value($pre);
         $name = $ct if (defined $ct);
       }
       elsif ($pre =~ /^grouped_(.*_file)$/) {
@@ -677,25 +667,25 @@ sub get_flag_overrides {
       }
     }
 
-    my($fo)  = $self->{'prjc'}->{'flag_overrides'};
-    my($key) = (defined $$fo{$name . 's'} ? $name . 's' :
-                        (defined $$fo{$name} ? $name : undef));
+    my $fo  = $self->{'prjc'}->{'flag_overrides'};
+    my $key = (defined $$fo{$name . 's'} ? $name . 's' :
+                       (defined $$fo{$name} ? $name : undef));
 
     if (defined $key) {
       ## Convert the file name into a unix style file name
-      my($ustyle) = $file;
+      my $ustyle = $file;
       $ustyle =~ s/\\/\//g if ($self->{'cslashes'});
 
       ## Save the directory portion for checking in the foreach
-      my($dir) = $self->mpc_dirname($ustyle);
+      my $dir = $self->mpc_dirname($ustyle);
 
-      my($of) = (defined $$fo{$key}->{$ustyle} ? $ustyle :
-                    (defined $$fo{$key}->{$dir} ? $dir : undef));
+      my $of = (defined $$fo{$key}->{$ustyle} ? $ustyle :
+                   (defined $$fo{$key}->{$dir} ? $dir : undef));
       if (defined $of) {
-        my($prjc) = $self->{'prjc'};
+        my $prjc = $self->{'prjc'};
         foreach my $aname (@{$prjc->{'matching_assignments'}->{$key}}) {
           if ($aname eq $type && defined $$fo{$key}->{$of}->{$aname}) {
-            my($value) = $$fo{$key}->{$of}->{$aname};
+            my $value = $$fo{$key}->{$of}->{$aname};
 
             ## If the name that we're overriding has a value and
             ## requires parameters, then we will convert all of the
@@ -718,8 +708,7 @@ sub get_flag_overrides {
 
 
 sub get_multiple {
-  my($self)  = shift;
-  my($name)  = shift;
+  my($self, $name) = @_;
   return $self->doif_multiple(
                   $self->create_array(
                            $self->get_value_with_default($name)));
@@ -727,8 +716,7 @@ sub get_multiple {
 
 
 sub doif_multiple {
-  my($self)  = shift;
-  my($value) = shift;
+  my($self, $value) = @_;
 
   if (defined $value) {
     return (scalar(@$value) > 1);
@@ -738,12 +726,11 @@ sub doif_multiple {
 
 
 sub handle_multiple {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = $self->get_value_with_default($name);
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($name);
 
   if (defined $val) {
-    my($array) = $self->create_array($val);
+    my $array = $self->create_array($val);
     $self->append_current(scalar(@$array));
   }
   else {
@@ -753,15 +740,13 @@ sub handle_multiple {
 
 
 sub get_starts_with {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
   return $self->doif_starts_with([$str]);
 }
 
 
 sub doif_starts_with {
-  my($self) = shift;
-  my($val)  = shift;
+  my($self, $val) = @_;
 
   if (defined $val) {
     my($name, $pattern) = $self->split_parameters("@$val");
@@ -774,11 +759,10 @@ sub doif_starts_with {
 
 
 sub handle_starts_with {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
 
   if (defined $str) {
-    my($val) = $self->doif_starts_with([$str]);
+    my $val = $self->doif_starts_with([$str]);
 
     if (defined $val) {
       $self->append_current($val);
@@ -791,15 +775,13 @@ sub handle_starts_with {
 
 
 sub get_ends_with {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
   return $self->doif_ends_with([$str]);
 }
 
 
 sub doif_ends_with {
-  my($self) = shift;
-  my($val)  = shift;
+  my($self, $val) = @_;
 
   if (defined $val) {
     my($name, $pattern) = $self->split_parameters("@$val");
@@ -812,11 +794,10 @@ sub doif_ends_with {
 
 
 sub handle_ends_with {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
 
   if (defined $str) {
-    my($val) = $self->doif_ends_with([$str]);
+    my $val = $self->doif_ends_with([$str]);
 
     if (defined $val) {
       $self->append_current($val);
@@ -829,12 +810,11 @@ sub handle_ends_with {
 
 
 sub handle_keyname_used {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
 
   if (defined $str) {
     my($name, $key) = $self->split_parameters($str);
-    my($file) = $self->get_value_with_default($name);
+    my $file = $self->get_value_with_default($name);
     if (defined $self->{'keyname_used'}->{$file}->{$key}) {
       $self->append_current($self->{'keyname_used'}->{$file}->{$key}++);
     }
@@ -846,14 +826,13 @@ sub handle_keyname_used {
 
 
 sub handle_scope {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
 
   if (defined $str) {
     my($state, $func, $param) = $self->split_parameters($str);
     if (defined $state) {
-      my($pscope) = undef;
-      my($scope) = $self->{'scopes'};
+      my $pscope;
+      my $scope = $self->{'scopes'};
 
       while(defined $$scope{'scope'}) {
         $pscope = $scope;
@@ -887,15 +866,13 @@ sub handle_scope {
 }
 
 sub get_has_extension {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
   return $self->doif_has_extension([$str]);
 }
 
 
 sub doif_has_extension {
-  my($self) = shift;
-  my($val)  = shift;
+  my($self, $val) = @_;
 
   if (defined $val) {
     return ($self->tp_basename(
@@ -906,11 +883,10 @@ sub doif_has_extension {
 
 
 sub handle_has_extension {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
 
   if (defined $str) {
-    my($val) = $self->doif_has_extension([$str]);
+    my $val = $self->doif_has_extension([$str]);
 
     if (defined $val) {
       $self->append_current($val);
@@ -923,15 +899,13 @@ sub handle_has_extension {
 
 
 sub get_contains {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
   return $self->doif_contains([$str]);
 }
 
 
 sub doif_contains {
-  my($self) = shift;
-  my($val)  = shift;
+  my($self, $val) = @_;
 
   if (defined $val) {
     my($name, $pattern) = $self->split_parameters("@$val");
@@ -944,11 +918,10 @@ sub doif_contains {
 
 
 sub handle_contains {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
 
   if (defined $str) {
-    my($val) = $self->doif_contains([$str]);
+    my $val = $self->doif_contains([$str]);
 
     if (defined $val) {
       $self->append_current($val);
@@ -961,24 +934,21 @@ sub handle_contains {
 
 
 sub get_remove_from {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
   return $self->doif_remove_from($str);
 }
 
 
 sub doif_remove_from {
-  my($self)    = shift;
-  my($str)     = shift;
-  my(@params)  = $self->split_parameters($str);
-  my(@removed) = $self->perform_remove_from(\@params);
+  my($self, $str) = @_;
+  my @params = $self->split_parameters($str);
+  my @removed = $self->perform_remove_from(\@params);
   return (defined $removed[0] ? 1 : undef);
 }
 
 
 sub perform_remove_from {
-  my($self) = shift;
-  my($val)  = shift;
+  my($self, $val) = @_;
   my($source, $pattern, $target, $tremove) = @$val;
 
   ## $source should be a component name (e.g., source_files,
@@ -989,12 +959,12 @@ sub perform_remove_from {
   ## $tremove from the end of it.
   if (defined $source && defined $target &&
       defined $self->{'values'}->{$source}) {
-    my($tval) = $self->get_value_with_default($target);
+    my $tval = $self->get_value_with_default($target);
     if (defined $tval) {
       $tval =~ s/$tremove$// if (defined $tremove);
       $tval = $self->escape_regex_special($tval);
-      my(@removed) = ();
-      my($max) = scalar(@{$self->{'values'}->{$source}});
+      my @removed;
+      my $max = scalar(@{$self->{'values'}->{$source}});
       for(my $i = 0; $i < $max;) {
         if ($self->{'values'}->{$source}->[$i] =~ /^$tval$pattern$/) {
           push(@removed, splice(@{$self->{'values'}->{$source}}, $i, 1));
@@ -1013,12 +983,11 @@ sub perform_remove_from {
 
 
 sub handle_remove_from {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
 
   if (defined $str) {
-    my(@params) = $self->split_parameters($str);
-    my($val) = $self->perform_remove_from(\@params);
+    my @params = $self->split_parameters($str);
+    my $val = $self->perform_remove_from(\@params);
 
     if (defined $val) {
       $self->append_current("@$val");
@@ -1028,15 +997,13 @@ sub handle_remove_from {
 
 
 sub get_compares {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
   return $self->doif_compares([$str]);
 }
 
 
 sub doif_compares {
-  my($self) = shift;
-  my($val)  = shift;
+  my($self, $val) = @_;
 
   if (defined $val) {
     my($name, $pattern) = $self->split_parameters("@$val");
@@ -1049,11 +1016,10 @@ sub doif_compares {
 
 
 sub handle_compares {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
 
   if (defined $str) {
-    my($val) = $self->doif_compares([$str]);
+    my $val = $self->doif_compares([$str]);
 
     if (defined $val) {
       $self->append_current($val);
@@ -1066,12 +1032,11 @@ sub handle_compares {
 
 
 sub get_reverse {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = $self->get_value_with_default($name);
+  my($self, $name) = @_;
+  my $value = $self->get_value_with_default($name);
 
   if (defined $value) {
-    my(@array) = $self->perform_reverse($self->create_array($value));
+    my @array = $self->perform_reverse($self->create_array($value));
     return \@array;
   }
 
@@ -1080,31 +1045,28 @@ sub get_reverse {
 
 
 sub perform_reverse {
-  my($self)  = shift;
-  my($value) = shift;
+  my($self, $value) = @_;
   return reverse(@$value);
 }
 
 
 sub handle_reverse {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = $self->get_value_with_default($name);
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($name);
 
   if (defined $val) {
-    my(@array) = $self->perform_reverse($self->create_array($val));
+    my @array = $self->perform_reverse($self->create_array($val));
     $self->append_current("@array");
   }
 }
 
 
 sub get_sort {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = $self->get_value_with_default($name);
+  my($self, $name) = @_;
+  my $value = $self->get_value_with_default($name);
 
   if (defined $value) {
-    my(@array) = $self->perform_sort($self->create_array($value));
+    my @array = $self->perform_sort($self->create_array($value));
     return \@array;
   }
 
@@ -1113,31 +1075,28 @@ sub get_sort {
 
 
 sub perform_sort {
-  my($self)  = shift;
-  my($value) = shift;
+  my($self, $value) = @_;
   return sort(@$value);
 }
 
 
 sub handle_sort {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = $self->get_value_with_default($name);
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($name);
 
   if (defined $val) {
-    my(@array) = $self->perform_sort($self->create_array($val));
+    my @array = $self->perform_sort($self->create_array($val));
     $self->append_current("@array");
   }
 }
 
 
 sub get_uniq {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = $self->get_value_with_default($name);
+  my($self, $name) = @_;
+  my $value = $self->get_value_with_default($name);
 
   if (defined $value) {
-    my(@array) = $self->perform_uniq($self->create_array($value));
+    my @array = $self->perform_uniq($self->create_array($value));
     return \@array;
   }
 
@@ -1146,32 +1105,29 @@ sub get_uniq {
 
 
 sub perform_uniq {
-  my($self)  = shift;
-  my($value) = shift;
-  my(%value) = ();
+  my($self, $value) = @_;
+  my %value;
   @value{@$value} = ();
   return sort(keys %value);
 }
 
 
 sub handle_uniq {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = $self->get_value_with_default($name);
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($name);
 
   if (defined $val) {
-    my(@array) = $self->perform_uniq($self->create_array($val));
+    my @array = $self->perform_uniq($self->create_array($val));
     $self->append_current("@array");
   }
 }
 
 
 sub process_compound_if {
-  my($self) = shift;
-  my($str)  = shift;
+  my($self, $str) = @_;
 
   if (index($str, '||') >= 0) {
-    my($ret) = 0;
+    my $ret = 0;
     foreach my $v (split(/\s*\|\|\s*/, $str)) {
       $ret |= $self->process_compound_if($v);
       if ($ret != 0) {
@@ -1181,7 +1137,7 @@ sub process_compound_if {
     return 0;
   }
   elsif (index($str, '&&') >= 0) {
-    my($ret) = 1;
+    my $ret = 1;
     foreach my $v (split(/\s*\&\&\s*/, $str)) {
       $ret &&= $self->process_compound_if($v);
       if ($ret == 0) {
@@ -1192,15 +1148,15 @@ sub process_compound_if {
   }
   else {
     ## See if we need to reverse the return value
-    my($not) = 0;
+    my $not = 0;
     if ($str =~ /^!+(.*)/) {
       $not = 1;
       $str = $1;
     }
 
     ## Get the value based on the string
-    my(@cmds) = ();
-    my($val)  = undef;
+    my @cmds;
+    my $val;
     while ($str =~ /(\w+)\((.+)\)(.*)/) {
       if ($3 eq '') {
         push(@cmds, $1);
@@ -1216,13 +1172,13 @@ sub process_compound_if {
 
     if (defined $cmds[0]) {
       ## Start out calling get_xxx on the string
-      my($type) = 0x01;
-      my($prefix) = 'get_';
+      my $type = 0x01;
+      my $prefix = 'get_';
 
       $val = $str;
       foreach my $cmd (reverse @cmds) {
         if (defined $keywords{$cmd} && ($keywords{$cmd} & $type) != 0) {
-          my($func) = "$prefix$cmd";
+          my $func = "$prefix$cmd";
           $val = $self->$func($val);
 
           ## Now that we have a value, we need to switch over
@@ -1240,7 +1196,7 @@ sub process_compound_if {
     }
 
     ## See if any portion of the value is defined and not empty
-    my($ret) = 0;
+    my $ret = 0;
     if (defined $val) {
       if (UNIVERSAL::isa($val, 'ARRAY')) {
         foreach my $v (@$val) {
@@ -1260,9 +1216,8 @@ sub process_compound_if {
 
 
 sub handle_if {
-  my($self) = shift;
-  my($val)  = shift;
-  my($name) = 'endif';
+  my($self, $val) = @_;
+  my $name = 'endif';
 
   push(@{$self->{'lstack'}},
        "<%if($val)%> (" . $self->get_line_number() . '?)');
@@ -1280,9 +1235,9 @@ sub handle_if {
 
 
 sub handle_else {
-  my($self)  = shift;
-  my(@scopy) = @{$self->{'sstack'}};
-  my($index) = index($scopy[$#scopy], 'endif');
+  my $self  = shift;
+  my @scopy = @{$self->{'sstack'}};
+  my $index = index($scopy[$#scopy], 'endif');
   if ($index >= 0) {
     if ($index == 0) {
       $self->{'if_skip'} ^= 1;
@@ -1299,15 +1254,15 @@ sub handle_else {
 
 
 sub handle_foreach {
-  my($self)        = shift;
-  my($val)         = lc(shift);
-  my($name)        = 'endfor';
-  my($errorString) = undef;
+  my $self        = shift;
+  my $val = lc(shift);
+  my $name = 'endfor';
+  my $errorString;
 
   push(@{$self->{'lstack'}}, $self->get_line_number());
   if (!$self->{'if_skip'}) {
-    my($base)  = 1;
-    my($vname) = undef;
+    my $base = 1;
+    my $vname;
     if ($val =~ /flag_overrides\([^\)]+\)/) {
     }
     elsif ($val =~ /([^,]*),(.*)/) {
@@ -1344,7 +1299,7 @@ sub handle_foreach {
       ## with variables that can be used with the -> operator
       if (defined $vname) {
         foreach my $ref (keys %arrow_op_ref) {
-          my($name_re)  = $ref . 's';
+          my $name_re  = $ref . 's';
           if ($val =~ /^$ref\->/ || $val =~ /^$name_re$/) {
             $errorString = 'The foreach variable can not be ' .
                            'named when dealing with ' .
@@ -1355,7 +1310,7 @@ sub handle_foreach {
     }
 
     push(@{$self->{'sstack'}}, $name);
-    my($index) = ++$self->{'foreach'}->{'count'};
+    my $index = ++$self->{'foreach'}->{'count'};
 
     $self->{'foreach'}->{'base'}->[$index]  = $base;
     $self->{'foreach'}->{'name'}->[$index]  = $vname;
@@ -1373,9 +1328,7 @@ sub handle_foreach {
 
 
 sub handle_special {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = shift;
+  my($self, $name, $val) = @_;
 
   ## If $name (fornotlast, forfirst, etc.) is set to 1
   ## Then we append the $val onto the current string that's
@@ -1387,29 +1340,26 @@ sub handle_special {
 
 
 sub handle_uc {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
 
   $self->append_current(uc($self->get_value_with_default($name)));
 }
 
 
 sub handle_lc {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
 
   $self->append_current(lc($self->get_value_with_default($name)));
 }
 
 
 sub handle_ucw {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = $self->get_value_with_default($name);
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($name);
 
   substr($val, 0, 1) = uc(substr($val, 0, 1));
   while($val =~ /[_\s]([a-z])/) {
-    my($uc) = uc($1);
+    my $uc = uc($1);
     $val =~ s/[_\s][a-z]/ $uc/;
   }
   $self->append_current($val);
@@ -1417,34 +1367,30 @@ sub handle_ucw {
 
 
 sub perform_normalize {
-  my($self)  = shift;
-  my($value) = shift;
+  my($self, $value) = @_;
   $value =~ tr/\/\\\-$()./_/;
   return $value;
 }
 
 
 sub handle_normalize {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = $self->get_value_with_default($name);
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($name);
 
   $self->append_current($self->perform_normalize($val));
 }
 
 
 sub perform_noextension {
-  my($self)  = shift;
-  my($value) = shift;
+  my($self, $value) = @_;
   $value =~ s/\.[^\.]+$//;
   return $value;
 }
 
 
 sub handle_noextension {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = $self->get_value_with_default($name);
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($name);
 
   $self->append_current($self->perform_noextension($val));
 }
@@ -1466,7 +1412,7 @@ sub perform_full_path {
   ## Always convert the slashes since they may be in the OS native
   ## format and we need them in UNIX format.
   $value =~ s/\\/\//g;
-  my($dir) = $self->mpc_dirname($value);
+  my $dir = $self->mpc_dirname($value);
   if (-e $dir) {
     $dir = Cwd::abs_path($dir);
   }
@@ -1476,7 +1422,7 @@ sub perform_full_path {
     ## (which will be the location of the MPC file).
     $dir = $self->getcwd() . '/' . $dir;
   }
-  
+
   ## Create the full path value and convert the slashes if necessary.
   $value = $dir . '/' . $self->mpc_basename($value);
   $value =~ s/\//\\/g if ($self->{'cslashes'});
@@ -1485,39 +1431,36 @@ sub perform_full_path {
 
 
 sub handle_full_path {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = $self->get_value_with_default($name);
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($name);
 
   $self->append_current($self->perform_full_path($val));
 }
 
 
 sub evaluate_nested_functions {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = shift;
+  my($self, $name, $val) = @_;
 
   ## Get the value based on the string
-  my(@cmds) = ($name);
+  my @cmds = ($name);
   while ($val =~ /(\w+)\((.+)\)/) {
     push(@cmds, $1);
     $val = $2;
   }
 
   ## Start out calling get_xxx on the string
-  my($type) = 0x01;
-  my($prefix) = 'get_';
+  my $type = 0x01;
+  my $prefix = 'get_';
 
   foreach my $cmd (reverse @cmds) {
     if (defined $keywords{$cmd} && ($keywords{$cmd} & $type) != 0) {
-      my($func) = "$prefix$cmd";
+      my $func = "$prefix$cmd";
       if ($type == 0x01) {
         $val = $self->$func($val);
         $val = [ $val ] if (!UNIVERSAL::isa($val, 'ARRAY'));
       }
       else {
-        my(@array) = $self->$func($val);
+        my @array = $self->$func($val);
         $val = \@array;
       }
 
@@ -1537,15 +1480,13 @@ sub evaluate_nested_functions {
 }
 
 sub get_dirname {
-  my($self)  = shift;
-  my($name)  = shift;
+  my($self, $name) = @_;
   return $self->doif_dirname($self->get_value_with_default($name));
 }
 
 
 sub doif_dirname {
-  my($self)  = shift;
-  my($value) = shift;
+  my($self, $value) = @_;
 
   if (defined $value) {
     $value = $self->validated_dirname($value);
@@ -1556,8 +1497,7 @@ sub doif_dirname {
 
 
 sub handle_dirname {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
 
   $self->append_current(
             $self->validated_dirname($self->get_value_with_default($name)));
@@ -1565,8 +1505,7 @@ sub handle_dirname {
 
 
 sub handle_basename {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
 
   $self->append_current(
             $self->tp_basename($self->get_value_with_default($name)));
@@ -1574,9 +1513,8 @@ sub handle_basename {
 
 
 sub handle_basenoextension {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = $self->tp_basename($self->get_value_with_default($name));
+  my($self, $name) = @_;
+  my $val = $self->tp_basename($self->get_value_with_default($name));
 
   $val =~ s/\.[^\.]+$//;
   $self->append_current($val);
@@ -1584,9 +1522,8 @@ sub handle_basenoextension {
 
 
 sub handle_flag_overrides {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = $self->get_flag_overrides($name);
+  my($self, $name) = @_;
+  my $value = $self->get_flag_overrides($name);
 
   if (defined $value) {
     $self->append_current($value);
@@ -1595,9 +1532,8 @@ sub handle_flag_overrides {
 
 
 sub handle_marker {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = $self->{'prjc'}->get_verbatim($name);
+  my($self, $name) = @_;
+  my $val = $self->{'prjc'}->get_verbatim($name);
 
   if (defined $val) {
     $self->append_current($val);
@@ -1606,9 +1542,8 @@ sub handle_marker {
 
 
 sub handle_eval {
-  my($self) = shift;
-  my($name) = shift;
-  my($val)  = $self->get_value_with_default($name);
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($name);
 
   if (defined $val) {
     if (index($val, "<%eval($name)%>") >= 0) {
@@ -1636,32 +1571,29 @@ sub handle_eval {
 
 
 sub handle_pseudo {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
   $self->append_current($self->{'cmds'}->{$name});
 }
 
 
 sub get_duplicate_index {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
   return $self->doif_duplicate_index($self->get_value_with_default($name));
 }
 
 
 sub doif_duplicate_index {
-  my($self)  = shift;
-  my($value) = shift;
+  my($self, $value) = @_;
 
   if (defined $value) {
-    my($base) = lc($self->tp_basename($value));
-    my($path) = $self->validated_dirname($value);
+    my $base = lc($self->tp_basename($value));
+    my $path = $self->validated_dirname($value);
 
     if (!defined $self->{'dupfiles'}->{$base}) {
       $self->{'dupfiles'}->{$base} = [$path];
     }
     else {
-      my($index) = 1;
+      my $index = 1;
       foreach my $file (@{$self->{'dupfiles'}->{$base}}) {
         if ($file eq $path) {
           return $index;
@@ -1679,11 +1611,10 @@ sub doif_duplicate_index {
 
 
 sub handle_duplicate_index {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
 
-  my($value) = $self->doif_duplicate_index(
-                        $self->get_value_with_default($name));
+  my $value = $self->doif_duplicate_index(
+                       $self->get_value_with_default($name));
   if (defined $value) {
     $self->append_current($value);
   }
@@ -1691,15 +1622,13 @@ sub handle_duplicate_index {
 
 
 sub get_transdir {
-  my($self)  = shift;
-  my($name)  = shift;
+  my($self, $name) = @_;
   return $self->doif_transdir($self->get_value_with_default($name));
 }
 
 
 sub doif_transdir {
-  my($self)  = shift;
-  my($value) = shift;
+  my($self, $value) = @_;
 
   if ($value =~ /([\/\\])/) {
     return $self->{'prjc'}->translate_directory(
@@ -1711,9 +1640,8 @@ sub doif_transdir {
 
 
 sub handle_transdir {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = $self->doif_transdir($self->get_value_with_default($name));
+  my($self, $name) = @_;
+  my $value = $self->doif_transdir($self->get_value_with_default($name));
 
   if (defined $value) {
     $self->append_current($value);
@@ -1722,19 +1650,18 @@ sub handle_transdir {
 
 
 sub prepare_parameters {
-  my($self)   = shift;
-  my($prefix) = shift;
-  my($input)  = $self->get_value($prefix . '->input_file');
-  my($output) = undef;
+  my($self, $prefix) = @_;
+  my $input = $self->get_value($prefix . '->input_file');
+  my $output;
 
   if (defined $input) {
     $input =~ s/\//\\/g if ($self->{'cslashes'});
     $output = $self->get_value($prefix . '->input_file->output_files');
 
     if (defined $output) {
-      my($size) = scalar(@$output);
+      my $size = scalar(@$output);
       for(my $i = 0; $i < $size; ++$i) {
-        my($fo) = $self->get_flag_overrides($prefix . '->input_file, gendir');
+        my $fo = $self->get_flag_overrides($prefix . '->input_file, gendir');
         if (defined $fo) {
           $$output[$i] = ($fo eq '.' ? '' : $fo . '/') .
                          $self->tp_basename($$output[$i]);
@@ -1750,15 +1677,14 @@ sub prepare_parameters {
 
 
 sub process_name {
-  my($self)        = shift;
-  my($line)        = shift;
-  my($length)      = 0;
-  my($errorString) = undef;
+  my($self, $line) = @_;
+  my $length = 0;
+  my $errorString;
 
   ## Split the line into a name and value
   if ($line =~ /([^%\(]+)(\(([^%]+)\))?%>/) {
-    my($name) = lc($1);
-    my($val)  = $3;
+    my $name = lc($1);
+    my $val  = $3;
     $length += length($name);
 
     if (defined $val) {
@@ -1802,7 +1728,7 @@ sub process_name {
             $self->evaluate_nested_functions($name, $val);
           }
           else {
-            my($func) = 'handle_' . $name;
+            my $func = 'handle_' . $name;
             $self->$func($val);
             if ($self->{'error_in_handle'}) {
               $errorString = $self->{'error_in_handle'};
@@ -1826,10 +1752,10 @@ sub process_name {
     }
   }
   else {
-    my($error)  = $line;
-    my($length) = length($line);
+    my $error  = $line;
+    my $length = length($line);
     for(my $i = 0; $i < $length; ++$i) {
-      my($part) = substr($line, $i, 2);
+      my $part = substr($line, $i, 2);
       if ($part eq '%>') {
         $error = substr($line, 0, $i + 2);
         last;
@@ -1843,9 +1769,9 @@ sub process_name {
 
 
 sub collect_data {
-  my($self)  = shift;
-  my($prjc)  = $self->{'prjc'};
-  my($cwd)   = $self->getcwd();
+  my $self  = shift;
+  my $prjc = $self->{'prjc'};
+  my $cwd = $self->getcwd();
 
   ## Set the current working directory
   $cwd =~ s/\//\\/g if ($self->{'cslashes'});
@@ -1853,7 +1779,7 @@ sub collect_data {
 
   ## Collect the components into {'values'} somehow
   foreach my $key (keys %{$prjc->{'valid_components'}}) {
-    my(@list) = $prjc->get_component_list($key);
+    my @list = $prjc->get_component_list($key);
     if (defined $list[0]) {
       $self->{'values'}->{$key} = \@list;
     }
@@ -1863,8 +1789,8 @@ sub collect_data {
   ## 'type_is_static'.  If we are generating static projects, let
   ## all of the templates know that we 'need_staticflags'.
   ## If there is a sharedname then this project 'type_is_dynamic'.
-  my($sharedname) = $prjc->get_assignment('sharedname');
-  my($staticname) = $prjc->get_assignment('staticname');
+  my $sharedname = $prjc->get_assignment('sharedname');
+  my $staticname = $prjc->get_assignment('staticname');
   if (!defined $sharedname && defined $staticname) {
     $self->{'override_target_type'} = 1;
     $self->{'values'}->{'type_is_static'}   = 1;
@@ -1896,7 +1822,7 @@ sub collect_data {
   ## We need to save this value in our known values
   ## since each guid generated will be different.  We need
   ## this to correspond to the same guid used in the workspace.
-  my($guid) = $prjc->update_project_info($self, 1, ['guid']);
+  my $guid = $prjc->update_project_info($self, 1, ['guid']);
   $self->{'values'}->{'guid'} = $guid;
 
   ## In order for VC7 to mix languages, we need to keep track
@@ -1905,7 +1831,7 @@ sub collect_data {
 
   ## Some Windows based projects can't deal with certain version
   ## values.  So, for those we provide a translated version.
-  my($version) = $prjc->get_assignment('version');
+  my $version = $prjc->get_assignment('version');
   if (defined $version) {
     $self->{'values'}->{'win_version'} =
                         WinVersionTranslator::translate($version);
@@ -1914,11 +1840,9 @@ sub collect_data {
 
 
 sub parse_line {
-  my($self)        = $_[0];
-  #my($ih)          = $_[1];
-  my($line)        = $_[2];
-  my($errorString) = undef;
-  my($startempty)  = ($line eq '');
+  my($self, $ih, $line) = @_;
+  my $errorString;
+  my $startempty = ($line eq '');
 
   ## If processing a foreach or the line only
   ## contains a keyword, then we do
@@ -1933,9 +1857,9 @@ sub parse_line {
     $self->{'built'} = '';
   }
 
-  my($start) = index($line, '<%');
+  my $start = index($line, '<%');
   if ($start >= 0) {
-    my($append_name) = undef;
+    my $append_name;
     if ($start > 0) {
       if (!$self->{'if_skip'}) {
         $self->append_current(substr($line, 0, $start));
@@ -1943,11 +1867,11 @@ sub parse_line {
       $line = substr($line, $start);
     }
 
-    my($nlen) = 0;
+    my $nlen = 0;
     foreach my $item (split('<%', $line)) {
-      my($name)   = 1;
-      my($length) = length($item);
-      my($endi)   = index($item, '%>');
+      my $name   = 1;
+      my $length = length($item);
+      my $endi   = index($item, '%>');
       for(my $i = 0; $i < $length; ++$i) {
         if ($i == $endi) {
           ++$i;
@@ -1967,8 +1891,8 @@ sub parse_line {
           }
         }
         elsif ($name) {
-          my($efcheck) = (index($item, 'endfor%>') == 0);
-          my($focheck) = ($efcheck ? 0 : (index($item, 'foreach(') == 0));
+          my $efcheck = (index($item, 'endfor%>') == 0);
+          my $focheck = ($efcheck ? 0 : (index($item, 'foreach(') == 0));
 
           if ($focheck && $self->{'foreach'}->{'count'} >= 0) {
             ++$self->{'foreach'}->{'nested'};
@@ -2032,23 +1956,22 @@ sub parse_line {
 
 
 sub parse_file {
-  my($self)  = shift;
-  my($input) = shift;
+  my($self, $input) = @_;
 
   $self->collect_data();
   my($status, $errorString) = $self->cached_file_read($input);
 
   if ($status) {
     if (defined $self->{'sstack'}->[0]) {
-      my($sstack) = $self->{'sstack'};
-      my($lstack) = $self->{'lstack'};
+      my $sstack = $self->{'sstack'};
+      my $lstack = $self->{'lstack'};
       $status = 0;
       $errorString = "Missing an '$$sstack[0]' starting at $$lstack[0]";
     }
   }
 
   if (!$status) {
-    my($linenumber) = $self->get_line_number();
+    my $linenumber = $self->get_line_number();
     $errorString = "$input: line $linenumber:\n$errorString";
   }
 
@@ -2057,8 +1980,7 @@ sub parse_file {
 
 
 sub get_lines {
-  my($self) = shift;
-  return $self->{'lines'};
+  return $_[0]->{'lines'};
 }
 
 

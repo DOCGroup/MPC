@@ -21,27 +21,26 @@ use File::Basename;
 # Data Section
 # ******************************************************************
 
-my($Registry) = undef;
-my($MPC_ROOT) = $FindBin::Bin;
+my $Registry;
+my $MPC_ROOT = $FindBin::Bin;
 $MPC_ROOT =~ s!/!\\!g;
 
-my($version) = '1.3';
-my(%types)   = ('nmake' => ['NMAKE', 'NMAKE'],
-                'bmake' => ['Borland Make', 'Borland Make'],
-                'vc6'   => ['DSW', 'DSP'],
-                'vc71'  => ['SLN 7.1', 'VCPROJ 7.1'],
-                'vc8'   => ['SLN 8.0', 'VCPROJ 8.0'],
-                'vc9'   => ['SLN 9.0', 'VCPROJ 9.0'],
-               );
+my $version = '1.3';
+my %types   = ('nmake' => ['NMAKE', 'NMAKE'],
+               'bmake' => ['Borland Make', 'Borland Make'],
+               'vc6'   => ['DSW', 'DSP'],
+               'vc71'  => ['SLN 7.1', 'VCPROJ 7.1'],
+               'vc8'   => ['SLN 8.0', 'VCPROJ 8.0'],
+               'vc9'   => ['SLN 9.0', 'VCPROJ 9.0'],
+              );
 
 # ******************************************************************
 # Subroutine Section
 # ******************************************************************
 
 sub set_ext_icon {
-  my($ext)  = shift;
-  my($num)  = shift;
-  my($extf) = $ext . 'file';
+  my($ext, $num) = @_;
+  my $extf = $ext . 'file';
   $Registry->{"HKEY_CLASSES_ROOT/.$ext/"} = {'/' => $extf};
   $Registry->{"HKEY_CLASSES_ROOT/$extf/"} = {};
   $Registry->{"HKEY_CLASSES_ROOT/$extf/DefaultIcon/"} =
@@ -50,17 +49,16 @@ sub set_ext_icon {
 
 
 sub set_dir_command {
-  my($type)  = shift;
-  my($desc)  = shift;
-  my($shell) = 'HKEY_CLASSES_ROOT/Directory/shell';
-  my($hash)  = $Registry->{$shell};
+  my($type, $desc) = @_;
+  my $shell = 'HKEY_CLASSES_ROOT/Directory/shell';
+  my $hash = $Registry->{$shell};
 
   if (!defined $hash) {
     $Registry->{$shell} = {};
     $hash = $Registry->{$shell};
   }
 
-  my($key) = 'MPC' . uc($type) . '/';
+  my $key = 'MPC' . uc($type) . '/';
   $hash->{$key} = {'/' => "MPC -> $desc"};
 
   $key .= 'command/';
@@ -69,17 +67,16 @@ sub set_dir_command {
 
 
 sub set_mwc_command {
-  my($type)  = shift;
-  my($desc)  = shift;
-  my($shell) = 'HKEY_CLASSES_ROOT/mwcfile/shell';
-  my($hash)  = $Registry->{$shell};
+  my($type, $desc) = @_;
+  my $shell = 'HKEY_CLASSES_ROOT/mwcfile/shell';
+  my $hash = $Registry->{$shell};
 
   if (!defined $hash) {
     $Registry->{$shell} = {};
     $hash = $Registry->{$shell};
   }
 
-  my($key) = 'MPC' . uc($type) . '/';
+  my $key = 'MPC' . uc($type) . '/';
   $hash->{$key} = {'/' => "MPC -> $desc"};
 
   $key .= 'command/';
@@ -90,17 +87,16 @@ sub set_mwc_command {
 
 
 sub set_mpc_command {
-  my($type)  = shift;
-  my($desc)  = shift;
-  my($shell) = 'HKEY_CLASSES_ROOT/mpcfile/shell';
-  my($hash)  = $Registry->{$shell};
+  my($type, $desc) = @_;
+  my $shell = 'HKEY_CLASSES_ROOT/mpcfile/shell';
+  my $hash = $Registry->{$shell};
 
   if (!defined $hash) {
     $Registry->{$shell} = {};
     $hash = $Registry->{$shell};
   }
 
-  my($key) = 'MPC' . uc($type) . '/';
+  my $key = 'MPC' . uc($type) . '/';
   $hash->{$key} = {'/' => "MPC -> $desc"};
 
   $key .= 'command/';
@@ -109,8 +105,8 @@ sub set_mpc_command {
 
 
 sub delete_key {
-  my($key) = shift;
-  my($val) = $Registry->{$key};
+  my $key = shift;
+  my $val = $Registry->{$key};
 
   if (UNIVERSAL::isa($val, 'HASH')) {
     foreach my $k (keys %$val) {

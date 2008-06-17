@@ -17,8 +17,8 @@ use strict;
 # ************************************************************
 
 ## This is the starting major and minor version
-my($version) = '3.6';
-my($once)    = 1;
+my $version = '3.6';
+my $once    = 1;
 
 # ************************************************************
 # Subroutine Section
@@ -34,7 +34,7 @@ sub get {
     ## time of the release of the major and minor version.  We then
     ## add the total number of ChangeLog entries to the base to
     ## get the beta version.
-    my($base) = -1;
+    my $base = -1;
     if (open(CLH, ::getBasePath() . '/ChangeLog')) {
       while(<CLH>) {
         if (/^\w\w\w\s\w\w\w\s/) {

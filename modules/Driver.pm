@@ -24,27 +24,27 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my($index)     = 0;
-my(@progress)  = ('|', '/', '-', '\\');
-my(%valid_cfg) = ('command_line'     => 1,
-                  'default_type'     => 1,
-                  'dynamic_types'    => 1,
-                  'includes'         => 1,
-                  'logging'          => 1,
-                  'main_functions'   => 1,
-                  'verbose_ordering' => 1,
-                 );
+my $index     = 0;
+my @progress  = ('|', '/', '-', '\\');
+my %valid_cfg = ('command_line'     => 1,
+                 'default_type'     => 1,
+                 'dynamic_types'    => 1,
+                 'includes'         => 1,
+                 'logging'          => 1,
+                 'main_functions'   => 1,
+                 'verbose_ordering' => 1,
+                );
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub new {
-  my($class)    = shift;
-  my($path)     = shift;
-  my($name)     = shift;
-  my(@creators) = @_;
-  my($self)     = $class->SUPER::new();
+  my $class    = shift;
+  my $path     = shift;
+  my $name     = shift;
+  my @creators = @_;
+  my $self = $class->SUPER::new();
 
   $self->{'path'}     = $path;
   $self->{'basepath'} = ::getBasePath();
@@ -61,9 +61,9 @@ sub new {
 
 
 sub locate_default_type {
-  my($self) = shift;
-  my($name) = lc(shift) . lc($self->{'type'}) . '.pm';
-  my($fh)   = new FileHandle();
+  my $self = shift;
+  my $name = lc(shift) . lc($self->{'type'}) . '.pm';
+  my $fh = new FileHandle();
 
   foreach my $dir (@INC) {
     if (opendir($fh, $dir)) {
@@ -82,11 +82,10 @@ sub locate_default_type {
 
 
 sub locate_dynamic_directories {
-  my($self)   = shift;
-  my($dtypes) = shift;
+  my($self, $dtypes) = @_;
 
   if (defined $dtypes) {
-    my(@directories) = ();
+    my @directories;
     foreach my $dir (split(/\s*,\s*/, $dtypes)) {
       if (-d $dir) {
         if (-d "$dir/modules" || -d "$dir/config" || -d "$dir/templates") {
@@ -105,18 +104,17 @@ sub locate_dynamic_directories {
 
 
 sub add_dynamic_creators {
-  my($self) = shift;
-  my($dirs) = shift;
-  my($type) = $self->{'type'};
+  my($self, $dirs) = @_;
+  my $type = $self->{'type'};
 
   foreach my $dir (@$dirs) {
-    my($fh) = new FileHandle();
+    my $fh = new FileHandle();
     if (opendir($fh, "$dir/modules")) {
       foreach my $file (readdir($fh)) {
         if ($file =~ /(.+$type)\.pm$/i) {
           my $name = $1;
           if ($^O eq 'VMS') {
-            my($fh) = new FileHandle();
+            my $fh = new FileHandle();
             if (open($fh, $dir . "/modules/" . $file)) {
               my $line = <$fh>;
               if ($line =~ /^\s*package\s+(.+);/) {
@@ -135,17 +133,15 @@ sub add_dynamic_creators {
 }
 
 sub parse_line {
-  my($self)        = shift;
-  my($ih)          = shift;
-  my($line)        = shift;
-  my($status)      = 1;
-  my($errorString) = undef;
+  my($self, $ih, $line) = @_;
+  my $status = 1;
+  my $errorString;
 
   if ($line eq '') {
   }
   elsif ($line =~ /^([\w\*]+)(\s*,\s*(.*))?$/) {
-    my($name)  = $1;
-    my($value) = $3;
+    my $name  = $1;
+    my $value = $3;
     if (defined $value) {
       $value =~ s/^\s+//;
       $value =~ s/\s+$//;
@@ -186,8 +182,7 @@ sub parse_line {
 
 
 sub optionError {
-  my($self) = shift;
-  my($line) = shift;
+  my($self, $line) = @_;
 
   $self->printUsage($line, $self->{'name'}, Version::get(),
                     keys %{$self->{'types'}});
@@ -196,9 +191,7 @@ sub optionError {
 
 
 sub find_file {
-  my($self)     = shift;
-  my($includes) = shift;
-  my($file)     = shift;
+  my($self, $includes, $file) = @_;
 
   foreach my $inc (@$includes) {
     if (-r $inc . '/' . $file) {
@@ -211,17 +204,15 @@ sub find_file {
 
 
 sub determine_cfg_file {
-  my($self) = shift;
-  my($cfg)  = shift;
-  my($odir) = shift;
-  my($ci)   = $self->case_insensitive();
+  my($self, $cfg, $odir) = @_;
+  my $ci = $self->case_insensitive();
 
   $odir = lc($odir) if ($ci);
   foreach my $name (@{$cfg->get_names()}) {
-    my($value) = $cfg->get_value($name);
+    my $value = $cfg->get_value($name);
     if (index($odir, ($ci ? lc($name) : $name)) == 0) {
       $self->warning("$value does not exist.") if (!-d $value);
-      my($cfgfile) = $value . '/MPC.cfg';
+      my $cfgfile = $value . '/MPC.cfg';
       return $cfgfile if (-e $cfgfile);
     }
   }
@@ -231,18 +222,18 @@ sub determine_cfg_file {
 
 
 sub run {
-  my($self)    = shift;
-  my(@args)    = @_;
-  my($cfgfile) = undef;
+  my $self = shift;
+  my @args = @_;
+  my $cfgfile;
 
   ## Save the original directory outside of the loop
   ## to avoid calling it multiple times.
-  my($orig_dir) = $self->getcwd();
+  my $orig_dir = $self->getcwd();
 
   ## Read the code base config file from the config directory
   ## under $MPC_ROOT
-  my($cbcfg)  = new ConfigParser();
-  my($cbfile) = "$self->{'basepath'}/config/base.cfg";
+  my $cbcfg  = new ConfigParser();
+  my $cbfile = "$self->{'basepath'}/config/base.cfg";
   if (-r $cbfile) {
     my($status, $error) = $cbcfg->read_file($cbfile);
     if (!$status) {
@@ -262,9 +253,9 @@ sub run {
   }
 
   ## Read the MPC config file
-  my($cfg) = new ConfigParser(\%valid_cfg);
+  my $cfg = new ConfigParser(\%valid_cfg);
   if (defined $cfgfile) {
-    my($ellipses) = $cfgfile;
+    my $ellipses = $cfgfile;
     $ellipses =~ s!.*(/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+)!...$1!;
     $self->diagnostic("Using $ellipses");
     my($status, $error) = $cfg->read_file($cfgfile);
@@ -280,8 +271,8 @@ sub run {
 
   ## After we read the config file, see if the user has provided
   ## dynamic types
-  my($dynamic) = $self->locate_dynamic_directories(
-                          $cfg->get_value('dynamic_types'));
+  my $dynamic = $self->locate_dynamic_directories(
+                         $cfg->get_value('dynamic_types'));
   if (defined $dynamic) {
     ## If so, add in the creators found in the dynamic directories
     $self->add_dynamic_creators($dynamic);
@@ -299,24 +290,24 @@ sub run {
 
   ## Dynamically load in each perl module and set up
   ## the type tags and project creators
-  my($creators) = $self->{'creators'};
+  my $creators = $self->{'creators'};
   foreach my $creator (@$creators) {
-    my($tag) = $self->extractType($creator);
+    my $tag = $self->extractType($creator);
     $self->{'types'}->{$tag} = $creator;
   }
 
   ## Before we process the arguments, we will prepend the command_line
   ## config variable.
-  my($cmd) = $cfg->get_value('command_line');
+  my $cmd = $cfg->get_value('command_line');
   if (defined $cmd) {
-    my($envargs) = $self->create_array($cmd);
+    my $envargs = $self->create_array($cmd);
     unshift(@args, @$envargs);
   }
 
   ## Now add in the includes to the command line arguments.
   ## It is done this way to allow the Options module to process
   ## the include path as it does all others.
-  my($incs) = $cfg->get_value('includes');
+  my $incs = $cfg->get_value('includes');
   if (defined $incs) {
     foreach my $inc (split(/\s*,\s*/, $incs)) {
       ## We must add it to the front so that options provided at the end
@@ -326,10 +317,10 @@ sub run {
     }
   }
 
-  my($options) = $self->options($self->{'name'},
-                                $self->{'types'},
-                                1,
-                                @args);
+  my $options = $self->options($self->{'name'},
+                               $self->{'types'},
+                               1,
+                               @args);
   if (!defined $options) {
     ## If options are not defined, that means that calling options
     ## took care of whatever functionality that was required and
@@ -339,13 +330,13 @@ sub run {
 
   ## Set up a hash that we can use to keep track of what
   ## has been 'required'
-  my(%loaded) = ();
+  my %loaded;
 
   ## Set up the default creator, if no type is selected
   if (!defined $options->{'creators'}->[0]) {
-    my($utype) = $cfg->get_value('default_type');
+    my $utype = $cfg->get_value('default_type');
     if (defined $utype) {
-      my($default) = $self->locate_default_type($utype);
+      my $default = $self->locate_default_type($utype);
       if (defined $default) {
         push(@{$options->{'creators'}}, $default);
       }
@@ -387,16 +378,16 @@ sub run {
     else {
       ## We have to load at least one creator here in order
       ## to call the generate_recursive_input_list virtual function.
-      my($name) = $options->{'creators'}->[0];
+      my $name = $options->{'creators'}->[0];
       if (!$loaded{$name}) {
         require "$name.pm";
         $loaded{$name} = 1;
       }
 
       ## Generate the recursive input list
-      my($creator) = $name->new();
-      my(@input) = $creator->generate_recursive_input_list(
-                                              '.', $options->{'exclude'});
+      my $creator = $name->new();
+      my @input = $creator->generate_recursive_input_list(
+                                             '.', $options->{'exclude'});
       $options->{'input'} = \@input;
 
       ## If no files were found above, then we issue a warning
@@ -422,11 +413,11 @@ sub run {
   $self->debug("INCLUDES: @{$options->{'include'}}");
 
   ## Set the global feature file
-  my($global_feature_file) = (defined $options->{'gfeature_file'} &&
-                              -r $options->{'gfeature_file'} ?
-                                 $options->{'gfeature_file'} : undef);
+  my $global_feature_file = (defined $options->{'gfeature_file'} &&
+                             -r $options->{'gfeature_file'} ?
+                                $options->{'gfeature_file'} : undef);
   if (!defined $global_feature_file) {
-    my($gf) = 'global.features';
+    my $gf = 'global.features';
     $global_feature_file = $self->find_file($options->{'include'}, $gf);
     if (!defined $global_feature_file) {
       $global_feature_file = $self->{'basepath'} . '/config/' . $gf;
@@ -446,11 +437,11 @@ sub run {
                                             'global.mpb');
   }
   ## Set the relative
-  my($relative_file) = (defined $options->{'relative_file'} &&
-                              -r $options->{'relative_file'} ?
-                                 $options->{'relative_file'} : undef);
+  my $relative_file = (defined $options->{'relative_file'} &&
+                             -r $options->{'relative_file'} ?
+                                $options->{'relative_file'} : undef);
   if (!defined $relative_file) {
-    my($gf) = 'default.rel';
+    my $gf = 'default.rel';
     $relative_file = $self->find_file($options->{'include'}, $gf);
     if (!defined $relative_file) {
       $relative_file = $self->{'basepath'} . '/config/' . $gf;
@@ -472,10 +463,10 @@ sub run {
         }
         if (defined $self->{'reldefs'}->{$key} &&
             !defined $options->{'relative'}->{$key}) {
-          my($value) = $self->{'reldefs'}->{$key};
+          my $value = $self->{'reldefs'}->{$key};
           if ($value =~ /\$(\w+)(.*)?/) {
-            my($var)   = $1;
-            my($extra) = $2;
+            my $var   = $1;
+            my $extra = $2;
             $options->{'relative'}->{$key} =
                        (defined $options->{'relative'}->{$var} ?
                                 $options->{'relative'}->{$var} : '') .
@@ -506,17 +497,17 @@ sub run {
   $| = 1;
 
   ## Keep the starting time for the total output
-  my($startTime) = time();
-  my($loopTimes) = 0;
+  my $startTime = time();
+  my $loopTimes = 0;
 
   ## Generate the files
-  my($status) = 0;
+  my $status = 0;
   foreach my $cfile (@{$options->{'input'}}) {
     ## To correctly reference any pathnames in the input file, chdir to
     ## its directory if there's any directory component to the specified path.
     ## mpc_basename() always expects UNIX file format.
     $cfile =~ s/\\/\//g;
-    my($base) = ($cfile eq '' ? '' : $self->mpc_basename($cfile));
+    my $base = ($cfile eq '' ? '' : $self->mpc_basename($cfile));
 
     if (-d $cfile) {
       $base = '';
@@ -529,42 +520,42 @@ sub run {
         require "$name.pm";
         $loaded{$name} = 1;
       }
-      my($file) = $cfile;
-      my($creator) = $name->new($options->{'global'},
-                                $options->{'include'},
-                                $options->{'template'},
-                                $options->{'ti'},
-                                $options->{'dynamic'},
-                                $options->{'static'},
-                                $options->{'relative'},
-                                $options->{'addtemp'},
-                                $options->{'addproj'},
-                                (-t 1 ? \&progress : undef),
-                                $options->{'toplevel'},
-                                $options->{'baseprojs'},
-                                $global_feature_file,
-                                $options->{'relative_file'},
-                                $options->{'feature_file'},
-                                $options->{'features'},
-                                $options->{'hierarchy'},
-                                $options->{'exclude'},
-                                $options->{'make_coexistence'},
-                                $options->{'name_modifier'},
-                                $options->{'apply_project'},
-                                $options->{'genins'},
-                                $options->{'into'},
-                                $options->{'language'},
-                                $options->{'use_env'},
-                                $options->{'expand_vars'},
-                                $options->{'gendot'},
-                                $options->{'comments'},
-                                $options->{'for_eclipse'});
+      my $file = $cfile;
+      my $creator = $name->new($options->{'global'},
+                               $options->{'include'},
+                               $options->{'template'},
+                               $options->{'ti'},
+                               $options->{'dynamic'},
+                               $options->{'static'},
+                               $options->{'relative'},
+                               $options->{'addtemp'},
+                               $options->{'addproj'},
+                               (-t 1 ? \&progress : undef),
+                               $options->{'toplevel'},
+                               $options->{'baseprojs'},
+                               $global_feature_file,
+                               $options->{'relative_file'},
+                               $options->{'feature_file'},
+                               $options->{'features'},
+                               $options->{'hierarchy'},
+                               $options->{'exclude'},
+                               $options->{'make_coexistence'},
+                               $options->{'name_modifier'},
+                               $options->{'apply_project'},
+                               $options->{'genins'},
+                               $options->{'into'},
+                               $options->{'language'},
+                               $options->{'use_env'},
+                               $options->{'expand_vars'},
+                               $options->{'gendot'},
+                               $options->{'comments'},
+                               $options->{'for_eclipse'});
 
       ## Update settings based on the configuration file
       $creator->set_verbose_ordering($cfg->get_value('verbose_ordering'));
 
       if ($base ne $file) {
-        my($dir) = ($base eq '' ? $file : $self->mpc_dirname($file));
+        my $dir = ($base eq '' ? $file : $self->mpc_dirname($file));
         if (!$creator->cd($dir)) {
           $self->error("Unable to change to directory: $dir");
           $status++;
@@ -572,27 +563,27 @@ sub run {
         }
         $file = $base;
       }
-      my($diag) = 'Generating \'' . $self->extractType($name) .
-                  '\' output using ';
+      my $diag = 'Generating \'' . $self->extractType($name) .
+                 '\' output using ';
       if ($file eq '') {
         $diag .= 'default input';
       }
       else {
-        my($partial)  = $self->getcwd();
-        my($oescaped) = $self->escape_regex_special($orig_dir) . '(/)?';
+        my $partial  = $self->getcwd();
+        my $oescaped = $self->escape_regex_special($orig_dir) . '(/)?';
         $partial =~ s!\\!/!g;
         $partial =~ s/^$oescaped//;
         $diag .= ($partial ne '' ? "$partial/" : '') . $file;
       }
       $self->diagnostic($diag);
-      my($start) = time();
+      my $start = time();
       if (!$creator->generate($file)) {
         $self->error("Unable to process: " .
                      ($file eq '' ? 'default input' : $file));
         $status++;
         last;
       }
-      my($total) = time() - $start;
+      my $total = time() - $start;
       $self->diagnostic('Generation Time: ' .
                         (int($total / 60) > 0 ? int($total / 60) . 'm ' : '') .
                         ($total % 60) . 's');
@@ -606,7 +597,7 @@ sub run {
   ## If we went through the loop more than once, we need to print
   ## out the total amount of time
   if ($loopTimes > 1) {
-    my($total) = time() - $startTime;
+    my $total = time() - $startTime;
     $self->diagnostic('     Total Time: ' .
                       (int($total / 60) > 0 ? int($total / 60) . 'm ' : '') .
                       ($total % 60) . 's');

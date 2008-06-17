@@ -20,28 +20,28 @@ use ProjectCreator;
 # Data Section
 # ************************************************************
 
-my($deflang)   = 'cplusplus';
-my(%languages) = ('cplusplus' => 1,
-                  'csharp'    => 1,
-                  'java'      => 1,
-                  'vb'        => 1,
-                 );
+my $deflang   = 'cplusplus';
+my %languages = ('cplusplus' => 1,
+                 'csharp'    => 1,
+                 'java'      => 1,
+                 'vb'        => 1,
+                );
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub printUsage {
-  my($self)    = shift;
-  my($msg)     = shift;
-  my($base)    = shift;
-  my($version) = shift;
-  my(@types)   = @_;
+  my $self    = shift;
+  my $msg     = shift;
+  my $base    = shift;
+  my $version = shift;
+  my @types   = @_;
 
   if (defined $msg) {
     print STDERR "ERROR: $msg\n";
   }
-  my($spaces) = (' ' x (length($base) + 8));
+  my $spaces = (' ' x (length($base) + 8));
   print STDERR "$base v$version\n" .
                "Usage: $base [-global <file>] [-include <directory>] [-recurse]\n" .
                $spaces . "[-ti <dll | lib | dll_exe | lib_exe>:<file>] [-hierarchy]\n" .
@@ -57,12 +57,12 @@ sub printUsage {
                $spaces . "[-relative_file <file name>] [-for_eclipse]\n" .
                $spaces . "[-language <";
 
-  my($olen) = length($spaces) + 12;
-  my($len)  = $olen;
-  my($mlen) = 77;
-  my(@keys) = sort keys %languages;
+  my $olen = length($spaces) + 12;
+  my $len  = $olen;
+  my $mlen = 77;
+  my @keys = sort keys %languages;
   for(my $i = 0; $i <= $#keys; $i++) {
-    my($klen) = length($keys[$i]);
+    my $klen = length($keys[$i]);
     $len += $klen;
     if ($len > $mlen) {
       print STDERR "\n$spaces        ";
@@ -81,7 +81,7 @@ sub printUsage {
   $len  = $olen;
   @keys = sort @types;
   for(my $i = 0; $i <= $#keys; $i++) {
-    my($klen) = length($keys[$i]);
+    my $klen = length($keys[$i]);
     $len += $klen;
     if ($len > $mlen) {
       print STDERR "\n$spaces        ";
@@ -181,20 +181,18 @@ sub optionError {
 
 
 sub completion_command {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($types) = shift;
-  my($str)   = "complete $name " .
-               "'c/-/(gendot genins global include type template relative " .
-               "ti static noreldefs notoplevel feature_file use_env " .
-               "value_template value_project make_coexistence language " .
-               "hierarchy exclude name_modifier apply_project version " .
-               "expand_vars gfeature_file nocomments for_eclipse relative_file)/' " .
-               "'c/dll:/f/' 'c/dll_exe:/f/' 'c/lib_exe:/f/' 'c/lib:/f/' " .
-               "'n/-ti/(dll lib dll_exe lib_exe)/:' ";
+  my($self, $name, $types) = @_;
+  my $str = "complete $name " .
+            "'c/-/(gendot genins global include type template relative " .
+            "ti static noreldefs notoplevel feature_file use_env " .
+            "value_template value_project make_coexistence language " .
+            "hierarchy exclude name_modifier apply_project version " .
+            "expand_vars gfeature_file nocomments for_eclipse relative_file)/' " .
+            "'c/dll:/f/' 'c/dll_exe:/f/' 'c/lib_exe:/f/' 'c/lib:/f/' " .
+            "'n/-ti/(dll lib dll_exe lib_exe)/:' ";
 
   $str .= "'n/-language/(";
-  my(@keys) = sort keys %languages;
+  my @keys = sort keys %languages;
   for(my $i = 0; $i <= $#keys; $i++) {
     $str .= $keys[$i];
     if ($i != $#keys) {
@@ -216,47 +214,47 @@ sub completion_command {
 
 
 sub options {
-  my($self)       = shift;
-  my($name)       = shift;
-  my($types)      = shift;
-  my($defaults)   = shift;
-  my(@args)       = @_;
-  my(@include)    = ();
-  my(@input)      = ();
-  my(@creators)   = ();
-  my(@baseprojs)  = ();
-  my(%ti)         = ();
-  my(%relative)   = ();
-  my(%addtemp)    = ();
-  my(%addproj)    = ();
-  my(@exclude)    = ();
-  my($global)     = undef;
-  my($template)   = undef;
-  my($feature_f)  = undef;
-  my($gfeature_f) = undef;
-  my($relative_f) = undef;
-  my(@features)   = ();
-  my($nmodifier)  = undef;
-  my($into)       = undef;
-  my($hierarchy)  = 0;
-  my($language)   = ($defaults ? $deflang : undef);
-  my($dynamic)    = ($defaults ? 1 : undef);
-  my($comments)   = ($defaults ? 1 : undef);
-  my($reldefs)    = ($defaults ? 1 : undef);
-  my($toplevel)   = ($defaults ? 1 : undef);
-  my($use_env)    = ($defaults ? 0 : undef);
-  my($expandvars) = ($defaults ? 0 : undef);
-  my($static)     = ($defaults ? 0 : undef);
-  my($recurse)    = ($defaults ? 0 : undef);
-  my($makeco)     = ($defaults ? 0 : undef);
-  my($applypj)    = ($defaults ? 0 : undef);
-  my($genins)     = ($defaults ? 0 : undef);
-  my($gendot)     = ($defaults ? 0 : undef);
-  my($foreclipse) = ($defaults ? 0 : undef);
+  my $self     = shift;
+  my $name     = shift;
+  my $types    = shift;
+  my $defaults = shift;
+  my @args     = @_;
+  my @include;
+  my @input;
+  my @creators;
+  my @baseprojs;
+  my %ti;
+  my %relative;
+  my %addtemp;
+  my %addproj;
+  my @exclude;
+  my $global;
+  my $template;
+  my $feature_f;
+  my $gfeature_f;
+  my $relative_f;
+  my @features;
+  my $nmodifier;
+  my $into;
+  my $hierarchy = 0;
+  my $language = ($defaults ? $deflang : undef);
+  my $dynamic = ($defaults ? 1 : undef);
+  my $comments = ($defaults ? 1 : undef);
+  my $reldefs = ($defaults ? 1 : undef);
+  my $toplevel = ($defaults ? 1 : undef);
+  my $use_env = ($defaults ? 0 : undef);
+  my $expandvars = ($defaults ? 0 : undef);
+  my $static = ($defaults ? 0 : undef);
+  my $recurse = ($defaults ? 0 : undef);
+  my $makeco = ($defaults ? 0 : undef);
+  my $applypj = ($defaults ? 0 : undef);
+  my $genins = ($defaults ? 0 : undef);
+  my $gendot = ($defaults ? 0 : undef);
+  my $foreclipse = ($defaults ? 0 : undef);
 
   ## Process the command line arguments
   for(my $i = 0; $i <= $#args; $i++) {
-    my($arg) = $args[$i];
+    my $arg = $args[$i];
     $arg =~ s/^--/-/;
 
     if ($arg eq '-apply_project') {
@@ -281,10 +279,10 @@ sub options {
         $self->optionError('-type requires an argument');
       }
       else {
-        my($type) = lc($args[$i]);
+        my $type = lc($args[$i]);
         if (defined $types->{$type}) {
-          my($call)  = $types->{$type};
-          my($found) = 0;
+          my $call  = $types->{$type};
+          my $found = 0;
           foreach my $creator (@creators) {
             if ($creator eq $call) {
               $found = 1;
@@ -371,7 +369,7 @@ sub options {
     }
     elsif ($arg eq '-include') {
       $i++;
-      my($include) = $args[$i];
+      my $include = $args[$i];
       if (!defined $include) {
         $self->optionError('-include requires a directory argument');
       }
@@ -408,7 +406,7 @@ sub options {
     }
     elsif ($arg eq '-name_modifier') {
       $i++;
-      my($nmod) = $args[$i];
+      my $nmod = $args[$i];
       if (!defined $nmod) {
         $self->optionError('-name_modifier requires a modifier argument');
       }
@@ -437,14 +435,14 @@ sub options {
     }
     elsif ($arg eq '-relative') {
       $i++;
-      my($rel) = $args[$i];
+      my $rel = $args[$i];
       if (!defined $rel) {
         $self->optionError('-relative requires a variable assignment argument');
       }
       else {
         if ($rel =~ /(\w+)\s*=\s*(.*)/) {
-          my($name) = $1;
-          my($val)  = $2;
+          my $name = $1;
+          my $val  = $2;
           $val =~ s/^\s+//;
           $val =~ s/\s+$//;
 
@@ -466,14 +464,14 @@ sub options {
     }
     elsif ($arg eq '-ti') {
       $i++;
-      my($tmpi) = $args[$i];
+      my $tmpi = $args[$i];
       if (!defined $tmpi) {
         $self->optionError('-ti requires a template input argument');
       }
       else {
         if ($tmpi =~ /((dll|lib|dll_exe|lib_exe):)?(.*)/) {
-          my($key)  = $2;
-          my($name) = $3;
+          my $key  = $2;
+          my $name = $3;
           if (defined $key) {
             $ti{$key} = $name;
           }
@@ -493,13 +491,13 @@ sub options {
     }
     elsif ($arg eq '-value_template') {
       $i++;
-      my($value) = $args[$i];
+      my $value = $args[$i];
       if (!defined $value) {
         $self->optionError('-value_template requires a variable assignment argument');
       }
       else {
-        my(@values) = ();
-        my($pc) = new ProjectCreator();
+        my @values;
+        my $pc = new ProjectCreator();
         if ($pc->parse_assignment($value, \@values)) {
           $addtemp{$values[1]} = [] if (!defined $addtemp{$values[1]});
           ## The extra parameter (3rd) indicates that this value was
@@ -507,7 +505,7 @@ sub options {
           ## used in ProjectCreator::update_template_variable().
           push(@{$addtemp{$values[1]}}, [$values[0], $values[2], 1]);
 
-          my($keywords) = ProjectCreator::getKeywords();
+          my $keywords = ProjectCreator::getKeywords();
           if (defined $$keywords{$values[1]}) {
             $self->warning($values[1] . ' is a project keyword; you ' .
                            'should use -value_project instead.');
@@ -520,13 +518,13 @@ sub options {
     }
     elsif ($arg eq '-value_project') {
       $i++;
-      my($value) = $args[$i];
+      my $value = $args[$i];
       if (!defined $value) {
         $self->optionError('-value_project requires a variable assignment argument');
       }
       else {
-        my(@values) = ();
-        my($pc) = new ProjectCreator();
+        my @values;
+        my $pc = new ProjectCreator();
         if ($pc->parse_assignment($value, \@values)) {
           $addproj{$values[1]} = [] if (!defined $addproj{$values[1]});
           push(@{$addproj{$values[1]}}, [$values[0], $values[2]]);
@@ -589,9 +587,7 @@ sub options {
 
 
 sub is_set {
-  my($self)    = shift;
-  my($key)     = shift;
-  my($options) = shift;
+  my($self, $key, $options) = @_;
 
   if (defined $options->{$key}) {
     if (UNIVERSAL::isa($options->{$key}, 'ARRAY')) {
@@ -600,7 +596,7 @@ sub is_set {
       }
     }
     elsif (UNIVERSAL::isa($options->{$key}, 'HASH')) {
-      my(@keys) = keys %{$options->{$key}};
+      my @keys = keys %{$options->{$key}};
       if (defined $keys[0]) {
         return 'HASH';
       }

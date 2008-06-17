@@ -21,16 +21,15 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my($mpt)  = 'mpt';
+my $mpt = 'mpt';
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub new {
-  my($class) = shift;
-  my($inc)   = shift;
-  my($self)  = Parser::new($class, $inc);
+  my($class, $inc) = @_;
+  my $self = Parser::new($class, $inc);
 
   $self->{'values'}    = {};
   $self->{'cindex'}    = 0;
@@ -42,20 +41,18 @@ sub new {
 
 
 sub parse_line {
-  my($self)        = shift;
-  my($ih)          = shift;
-  my($line)        = shift;
-  my($status)      = 1;
-  my($errorString) = undef;
-  my($current)     = $self->{'current'};
+  my($self, $ih, $line) = @_;
+  my $status = 1;
+  my $errorString;
+  my $current = $self->{'current'};
 
   if ($line eq '') {
   }
   elsif ($line =~ /^([\w\s\(\)\.]+)\s*{$/) {
     ## Entering a new scope
-    my($rname) = $1;
+    my $rname = $1;
     $rname =~ s/\s+$//;
-    my($name) = lc($rname);
+    my $name = lc($rname);
     $self->{'realnames'}->{$name} = $rname;
 
     if (!defined $$current[$self->{'cindex'}]->{$name}) {
@@ -75,9 +72,9 @@ sub parse_line {
     }
   }
   elsif ($line =~ /^(\w+)\s*(\+=|=)\s*(.*)?/) {
-    my($name)  = lc($1);
-    my($op)    = $2;
-    my($value) = $3;
+    my $name  = lc($1);
+    my $op    = $2;
+    my $value = $3;
 
     if (defined $value) {
       $value = $self->create_array($value);
@@ -94,9 +91,9 @@ sub parse_line {
     }
   }
   elsif ($line =~ /^conditional_include\s+"([\w\s\-\+\/\\\.]+)"$/) {
-    my($file) = $self->search_include_path("$1.$mpt");
+    my $file = $self->search_include_path("$1.$mpt");
     if (defined $file) {
-      my($ol) = $self->get_line_number();
+      my $ol = $self->get_line_number();
       ($status, $errorString) = $self->read_file($file);
       $self->set_line_number($ol);
     }
@@ -111,15 +108,13 @@ sub parse_line {
 
 
 sub get_value {
-  my($self) = shift;
-  my($tag)  = shift;
+  my($self, $tag) = @_;
   return $self->{'values'}->{lc($tag)};
 }
 
 
 sub get_realname {
-  my($self) = shift;
-  my($tag)  = shift;
+  my($self, $tag) = @_;
   return $self->{'realnames'}->{lc($tag)};
 }
 

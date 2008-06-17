@@ -23,51 +23,29 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my($assign_key)  = 'assign';
-my($gassign_key) = 'global_assign';
-my(%non_convert) = ('prebuild' => 1,
-                    'postbuild' => 1,
-                   );
-my(@statekeys) = ('global', 'include', 'template', 'ti',
-                  'dynamic', 'static', 'relative', 'addtemp',
-                  'addproj', 'progress', 'toplevel', 'baseprojs',
-                  'features', 'feature_file', 'hierarchy',
-                  'name_modifier', 'apply_project', 'into', 'use_env',
-                  'expand_vars', 'language',
-                 );
+my $assign_key  = 'assign';
+my $gassign_key = 'global_assign';
+my %non_convert = ('prebuild' => 1,
+                   'postbuild' => 1,
+                  );
+my @statekeys = ('global', 'include', 'template', 'ti',
+                 'dynamic', 'static', 'relative', 'addtemp',
+                 'addproj', 'progress', 'toplevel', 'baseprojs',
+                 'features', 'feature_file', 'hierarchy',
+                 'name_modifier', 'apply_project', 'into', 'use_env',
+                 'expand_vars', 'language',
+                );
 
-my(%all_written) = ();
-my($onVMS) = DirectoryManager::onVMS();
+my %all_written;
+my $onVMS = DirectoryManager::onVMS();
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub new {
-  my($class)      = shift;
-  my($global)     = shift;
-  my($inc)        = shift;
-  my($template)   = shift;
-  my($ti)         = shift;
-  my($dynamic)    = shift;
-  my($static)     = shift;
-  my($relative)   = shift;
-  my($addtemp)    = shift;
-  my($addproj)    = shift;
-  my($progress)   = shift;
-  my($toplevel)   = shift;
-  my($baseprojs)  = shift;
-  my($feature)    = shift;
-  my($features)   = shift;
-  my($hierarchy)  = shift;
-  my($nmodifier)  = shift;
-  my($applypj)    = shift;
-  my($into)       = shift;
-  my($language)   = shift;
-  my($use_env)    = shift;
-  my($expandvars) = shift;
-  my($type)       = shift;
-  my($self)       = Parser::new($class, $inc);
+  my($class, $global, $inc, $template, $ti, $dynamic, $static, $relative, $addtemp, $addproj, $progress, $toplevel, $baseprojs, $feature, $features, $hierarchy, $nmodifier, $applypj, $into, $language, $use_env, $expandvars, $type) = @_;
+  my $self = Parser::new($class, $inc);
 
   $self->{'relative'}        = $relative;
   $self->{'template'}        = $template;
@@ -107,14 +85,12 @@ sub new {
 
 
 sub preprocess_line {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($line) = shift;
+  my($self, $fh, $line) = @_;
 
   $line = $self->strip_line($line);
   while ($line =~ /\\$/) {
     $line =~ s/\s*\\$/ /;
-    my($next) = $fh->getline();
+    my $next = $fh->getline();
     if (defined $next) {
       $line .= $self->strip_line($next);
     }
@@ -124,7 +100,7 @@ sub preprocess_line {
 
 
 sub generate_default_input {
-  my($self)  = shift;
+  my $self  = shift;
   my($status,
      $error) = $self->parse_line(undef, "$self->{'grammar_type'} {");
 
@@ -144,7 +120,7 @@ sub parse_file {
   my($self, $input) = @_;
 
   ## Save the last line number so we can put it back later
-  my($oline) = $self->get_line_number();
+  my $oline = $self->get_line_number();
 
   ## Read the input file
   my($status, $errorString) = $self->read_file($input);
@@ -168,9 +144,8 @@ sub parse_file {
 
 
 sub generate {
-  my($self)   = shift;
-  my($input)  = shift;
-  my($status) = 1;
+  my($self, $input) = @_;
+  my $status = 1;
 
   ## Reset the files_written hash array between processing each file
   $self->{'files_written'} = {};
@@ -204,12 +179,11 @@ sub generate {
 
 
 sub parse_known {
-  my($self)        = shift;
-  my($line)        = shift;
-  my($status)      = 1;
-  my($errorString) = undef;
-  my($type)        = $self->{'grammar_type'};
-  my(@values)      = ();
+  my($self, $line) = @_;
+  my $status = 1;
+  my $errorString;
+  my $type = $self->{'grammar_type'};
+  my @values;
 
   ##
   ## Each regexp that looks for the '{' looks for it at the
@@ -221,8 +195,8 @@ sub parse_known {
   if ($line eq '') {
   }
   elsif ($line =~ /^$type\s*(\([^\)]+\))?\s*(:.*)?\s*{$/) {
-    my($name)    = $1;
-    my($parents) = $2;
+    my $name    = $1;
+    my $parents = $2;
     if ($self->{$self->{'type_check'}}) {
       $errorString = "Did not find the end of the $type";
       $status = 0;
@@ -231,7 +205,7 @@ sub parse_known {
       if (defined $parents) {
         $parents =~ s/^:\s*//;
         $parents =~ s/\s+$//;
-        my(@parents) = split(/\s*,\s*/, $parents);
+        my @parents = split(/\s*,\s*/, $parents);
         if (!defined $parents[0]) {
           ## The : was used, but no parents followed.  This
           ## is an error.
@@ -253,15 +227,15 @@ sub parse_known {
     }
   }
   elsif ($line =~ /^(feature)\s*\(([^\)]+)\)\s*(:.*)?\s*{$/) {
-    my($type)    = $1;
-    my($name)    = $2;
-    my($parents) = $3;
-    my(@names)   = split(/\s*,\s*/, $name);
+    my $type    = $1;
+    my $name    = $2;
+    my $parents = $3;
+    my @names   = split(/\s*,\s*/, $name);
 
     if (defined $parents) {
       $parents =~ s/^:\s*//;
       $parents =~ s/\s+$//;
-      my(@parents) = split(/\s*,\s*/, $parents);
+      my @parents = split(/\s*,\s*/, $parents);
       if (!defined $parents[0]) {
         ## The : was used, but no parents followed.  This
         ## is an error.
@@ -280,8 +254,8 @@ sub parse_known {
     ## If this returns true, then we've found an assignment
   }
   elsif ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
-    my($comp) = lc($1);
-    my($name) = $2;
+    my $comp = lc($1);
+    my $name = $2;
 
     if (defined $name) {
       $name =~ s/^\(\s*//;
@@ -302,22 +276,16 @@ sub parse_known {
 
 
 sub parse_scope {
-  my($self)        = shift;
-  my($fh)          = shift;
-  my($name)        = shift;
-  my($type)        = shift;
-  my($validNames)  = shift;
-  my($flags)       = shift;
-  my($elseflags)   = shift;
-  my($status)      = 0;
-  my($errorString) = "Unable to process $name";
+  my($self, $fh, $name, $type, $validNames, $flags, $elseflags) = @_;
+  my $status = 0;
+  my $errorString = "Unable to process $name";
 
   if (!defined $flags) {
     $flags = {};
   }
 
   while(<$fh>) {
-    my($line) = $self->preprocess_line($fh, $_);
+    my $line = $self->preprocess_line($fh, $_);
 
     if ($line eq '') {
     }
@@ -349,7 +317,7 @@ sub parse_scope {
       }
     }
     else {
-      my(@values) = ();
+      my @values;
       if (defined $validNames && $self->parse_assignment($line, \@values)) {
         if (defined $$validNames{$values[1]}) {
           ## If $type is not defined, we don't even need to bother with
@@ -392,29 +360,25 @@ sub parse_scope {
 
 
 sub base_directory {
-  my($self) = shift;
+  my $self = shift;
   return $self->mpc_basename($self->getcwd());
 }
 
 
 sub generate_default_file_list {
-  my($self)    = shift;
-  my($dir)     = shift;
-  my($exclude) = shift;
-  my($fileexc) = shift;
-  my($recurse) = shift;
-  my($dh)      = new FileHandle();
-  my(@files)   = ();
+  my($self, $dir, $exclude, $fileexc, $recurse) = @_;
+  my $dh = new FileHandle();
+  my @files;
 
   if (opendir($dh, $dir)) {
-    my($prefix)   = ($dir ne '.' ? "$dir/" : '');
-    my($have_exc) = (defined $$exclude[0]);
-    my($skip)     = 0;
+    my $prefix   = ($dir ne '.' ? "$dir/" : '');
+    my $have_exc = (defined $$exclude[0]);
+    my $skip     = 0;
     foreach my $file (grep(!/^\.\.?$/,
                            ($onVMS ? map {$_ =~ s/\.dir$//; $_} readdir($dh) :
                                      readdir($dh)))) {
       ## Prefix each file name with the directory only if it's not '.'
-      my($full) = $prefix . $file;
+      my $full = $prefix . $file;
 
       if ($have_exc) {
         foreach my $exc (@$exclude) {
@@ -456,8 +420,7 @@ sub generate_default_file_list {
 
 
 sub transform_file_name {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
 
   $name =~ s/[\s\-]/_/g;
   return $name;
@@ -465,16 +428,14 @@ sub transform_file_name {
 
 
 sub file_written {
-  my($self) = shift;
-  my($file) = shift;
+  my($self, $file) = @_;
   return (defined $all_written{$self->getcwd() . '/' . $file});
 }
 
 
 sub add_file_written {
-  my($self) = shift;
-  my($file) = shift;
-  my($key)  = lc($file);
+  my($self, $file) = @_;
+  my $key = lc($file);
 
   if (defined $self->{'files_written'}->{$key}) {
     $self->warning("$self->{'grammar_type'} $file " .
@@ -492,20 +453,17 @@ sub add_file_written {
 
 
 sub extension_recursive_input_list {
-  my($self)    = shift;
-  my($dir)     = shift;
-  my($exclude) = shift;
-  my($ext)     = shift;
-  my($fh)      = new FileHandle();
-  my(@files)   = ();
+  my($self, $dir, $exclude, $ext) = @_;
+  my $fh = new FileHandle();
+  my @files;
 
   if (opendir($fh, $dir)) {
-    my($prefix) = ($dir ne '.' ? "$dir/" : '');
-    my($skip)   = 0;
+    my $prefix = ($dir ne '.' ? "$dir/" : '');
+    my $skip   = 0;
     foreach my $file (grep(!/^\.\.?$/,
                            ($onVMS ? map {$_ =~ s/\.dir$//; $_} readdir($fh) :
                                      readdir($fh)))) {
-      my($full) = $prefix . $file;
+      my $full = $prefix . $file;
 
       ## Check for command line exclusions
       if (defined $$exclude[0]) {
@@ -539,15 +497,13 @@ sub extension_recursive_input_list {
 }
 
 sub recursive_directory_list {
-  my($self)        = shift;
-  my($dir)         = shift;
-  my($exclude)     = shift;
-  my($directories) = '';
-  my($fh)          = new FileHandle();
+  my($self, $dir, $exclude) = @_;
+  my $directories = '';
+  my $fh = new FileHandle();
 
   if (opendir($fh, $dir)) {
-    my($prefix) = ($dir ne '.' ? "$dir/" : '');
-    my($skip)   = 0;
+    my $prefix = ($dir ne '.' ? "$dir/" : '');
+    my $skip   = 0;
     if (defined $$exclude[0]) {
       foreach my $exc (@$exclude) {
         if ($dir eq $exc) {
@@ -566,7 +522,7 @@ sub recursive_directory_list {
     foreach my $file (grep(!/^\.\.?$/,
                            ($onVMS ? map {$_ =~ s/\.dir$//; $_} readdir($fh) :
                                      readdir($fh)))) {
-      my($full) = $prefix . $file;
+      my $full = $prefix . $file;
 
       ## Check for command line exclusions
       if (defined $$exclude[0]) {
@@ -596,9 +552,7 @@ sub recursive_directory_list {
 
 
 sub modify_assignment_value {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = shift;
+  my($self, $name, $value) = @_;
 
   if ($self->{'convert_slashes'} &&
       index($name, 'flags') == -1 && !defined $non_convert{$name}) {
@@ -612,16 +566,13 @@ sub modify_assignment_value {
 sub get_assignment_hash {
   ## NOTE: If anything in this block changes, then you must make the
   ## same change in process_assignment.
-  my($self) = shift;
+  my $self = shift;
   return $self->{$self->{'reading_global'} ? $gassign_key : $assign_key};
 }
 
 
 sub process_assignment {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($value)  = shift;
-  my($assign) = shift;
+  my($self, $name, $value, $assign) = @_;
 
   ## If no hash table was passed in
   if (!defined $assign) {
@@ -645,11 +596,7 @@ sub process_assignment {
 
 
 sub addition_core {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($value)  = shift;
-  my($nval)   = shift;
-  my($assign) = shift;
+  my($self, $name, $value, $nval, $assign) = @_;
 
   if (defined $nval) {
     if ($self->preserve_assignment_order($name)) {
@@ -667,11 +614,8 @@ sub addition_core {
 
 
 sub process_assignment_add {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($value)  = shift;
-  my($assign) = shift;
-  my($nval)   = $self->get_assignment_for_modification($name, $assign);
+  my($self, $name, $value, $assign) = @_;
+  my $nval = $self->get_assignment_for_modification($name, $assign);
 
   ## Remove all duplicate parts from the value to be added.
   ## Whether anything gets removed or not is up to the implementation
@@ -686,21 +630,17 @@ sub process_assignment_add {
 
 
 sub subtraction_core {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($value)  = shift;
-  my($nval)   = shift;
-  my($assign) = shift;
+  my($self, $name, $value, $nval, $assign) = @_;
 
   if (defined $nval) {
-    my($last)  = 1;
-    my($found) = undef;
+    my $last  = 1;
+    my $found;
 
     ## Escape any regular expression special characters
     $value = $self->escape_regex_special($value);
 
     ## If necessary, split the value into an array
-    my($elements) = ($value =~ /\s/ ? $self->create_array($value) : [$value]);
+    my $elements = ($value =~ /\s/ ? $self->create_array($value) : [$value]);
     for(my $i = 0; $i <= $last; $i++) {
       if ($i == $last) {
         ## If we did not find the string to subtract in the original
@@ -713,7 +653,7 @@ sub subtraction_core {
         ## value if any of the elements were found in the original value
         foreach my $elem (@$elements) {
           ## First try with quotes, then try again without them
-          my($re) = ($j == 0 ? '"' . $elem . '"' : $elem);
+          my $re = ($j == 0 ? '"' . $elem . '"' : $elem);
 
           if ($nval =~ s/\s+$re\s+/ / || $nval =~ s/\s+$re$// ||
               $nval =~ s/^$re\s+//    || $nval =~ s/^$re$//) {
@@ -732,11 +672,8 @@ sub subtraction_core {
 
 
 sub process_assignment_sub {
-  my($self)   = shift;
-  my($name)   = shift;
-  my($value)  = shift;
-  my($assign) = shift;
-  my($nval)   = $self->get_assignment_for_modification($name, $assign);
+  my($self, $name, $value, $assign) = @_;
+  my $nval = $self->get_assignment_for_modification($name, $assign);
 
   ## Remove double quotes if there are any
   $value =~ s/^\"(.*)\"$/$1/;
@@ -746,17 +683,15 @@ sub process_assignment_sub {
 
 
 sub fill_type_name {
-  my($self)  = shift;
-  my($names) = shift;
-  my($def)   = shift;
-  my($array) = ($names =~ /\s/ ? $self->create_array($names) : [$names]);
+  my($self, $names, $def) = @_;
+  my $array = ($names =~ /\s/ ? $self->create_array($names) : [$names]);
 
   $names = '';
   foreach my $name (@$array) {
     if ($name =~ /\*/) {
-      my($pre)  = $def . '_';
-      my($mid)  = '_' . $def . '_';
-      my($post) = '_' . $def;
+      my $pre  = $def . '_';
+      my $mid  = '_' . $def . '_';
+      my $post = '_' . $def;
 
       ## Replace the beginning and end first then the middle
       $name =~ s/^\*/$pre/;
@@ -773,14 +708,14 @@ sub fill_type_name {
       if ($name =~ /[A-Z][0-9a-z_]+/) {
         ## Do the first word
         if ($name =~ /^([a-z])([^_]+)/) {
-          my($first) = uc($1);
-          my($rest)  = $2;
+          my $first = uc($1);
+          my $rest  = $2;
           $name =~ s/^[a-z][^_]+/$first$rest/;
         }
         ## Do subsequent words
         while($name =~ /(_[a-z])([^_]+)/) {
-          my($first) = uc($1);
-          my($rest)  = $2;
+          my $first = uc($1);
+          my $rest  = $2;
           $name =~ s/_[a-z][^_]+/$first$rest/;
         }
       }
@@ -795,9 +730,8 @@ sub fill_type_name {
 
 
 sub save_state {
-  my($self)     = shift;
-  my($selected) = shift;
-  my(%state)    = ();
+  my($self, $selected) = @_;
+  my %state;
 
   ## Make a deep copy of each state value.  That way our array
   ## references and hash references do not get accidentally modified.
@@ -826,22 +760,20 @@ sub save_state {
 
 
 sub restore_state {
-  my($self)     = shift;
-  my($state)    = shift;
-  my($selected) = shift;
+  my($self, $state, $selected) = @_;
 
   ## Make a deep copy of each state value.  That way our array
   ## references and hash references do not get accidentally modified.
   foreach my $skey (defined $selected ? $selected : @statekeys) {
-    my($old) = $self->{$skey};
+    my $old = $self->{$skey};
     if (defined $state->{$skey} &&
         UNIVERSAL::isa($state->{$skey}, 'ARRAY')) {
-      my(@arr) = @{$state->{$skey}};
+      my @arr = @{$state->{$skey}};
       $self->{$skey} = \@arr;
     }
     elsif (defined $state->{$skey} &&
            UNIVERSAL::isa($state->{$skey}, 'HASH')) {
-      my(%hash) = %{$state->{$skey}};
+      my %hash = %{$state->{$skey}};
       $self->{$skey} = \%hash;
     }
     else {
@@ -853,81 +785,69 @@ sub restore_state {
 
 
 sub get_global_cfg {
-  my($self) = shift;
-  return $self->{'global'};
+  return $_[0]->{'global'};
 }
 
 
 sub get_template_override {
-  my($self) = shift;
-  return $self->{'template'};
+  return $_[0]->{'template'};
 }
 
 
 sub get_ti_override {
-  my($self) = shift;
-  return $self->{'ti'};
+  return $_[0]->{'ti'};
 }
 
 
 sub get_relative {
-  my($self) = shift;
-  return $self->{'relative'};
+  return $_[0]->{'relative'};
 }
 
 
 sub get_progress_callback {
-  my($self) = shift;
-  return $self->{'progress'};
+  return $_[0]->{'progress'};
 }
 
 
 sub get_addtemp {
-  my($self) = shift;
-  return $self->{'addtemp'};
+  return $_[0]->{'addtemp'};
 }
 
 
 sub get_addproj {
-  my($self) = shift;
-  return $self->{'addproj'};
+  return $_[0]->{'addproj'};
 }
 
 
 sub get_toplevel {
-  my($self) = shift;
-  return $self->{'toplevel'};
+  return $_[0]->{'toplevel'};
 }
 
 
 sub get_into {
-  my($self) = shift;
-  return $self->{'into'};
+  return $_[0]->{'into'};
 }
 
 
 sub get_use_env {
-  my($self) = shift;
-  return $self->{'use_env'};
+  return $_[0]->{'use_env'};
 }
 
 
 sub get_expand_vars {
-  my($self) = shift;
-  return $self->{'expand_vars'};
+  return $_[0]->{'expand_vars'};
 }
 
 
 sub get_files_written {
-  my($self)  = shift;
-  return $self->{'real_fwritten'};
+  return $_[0]->{'real_fwritten'};
 }
 
 
 sub get_assignment {
-  my($self)   = shift;
-  my($name)   = $self->resolve_alias(shift);
-  my($assign) = shift;
+  my $self   = shift;
+  my $name = $self->resolve_alias(shift);
+  my $assign = shift;
 
   ## If no hash table was passed in
   if (!defined $assign) {
@@ -940,29 +860,23 @@ sub get_assignment {
 
 
 sub get_assignment_for_modification {
-  my($self)        = shift;
-  my($name)        = shift;
-  my($assign)      = shift;
-  my($subtraction) = shift;
+  my($self, $name, $assign, $subtraction) = @_;
   return $self->get_assignment($name, $assign);
 }
 
 
 sub get_baseprojs {
-  my($self) = shift;
-  return $self->{'baseprojs'};
+  return $_[0]->{'baseprojs'};
 }
 
 
 sub get_dynamic {
-  my($self) = shift;
-  return $self->{'dynamic'};
+  return $_[0]->{'dynamic'};
 }
 
 
 sub get_static {
-  my($self) = shift;
-  return $self->{'static'};
+  return $_[0]->{'static'};
 }
 
 
@@ -973,40 +887,35 @@ sub get_default_component_name {
 
 
 sub get_features {
-  my($self) = shift;
-  return $self->{'features'};
+  return $_[0]->{'features'};
 }
 
 
 sub get_hierarchy {
-  my($self) = shift;
-  return $self->{'hierarchy'};
+  return $_[0]->{'hierarchy'};
 }
 
 
 sub get_name_modifier {
-  my($self) = shift;
-  return $self->{'name_modifier'};
+  return $_[0]->{'name_modifier'};
 }
 
 
 sub get_apply_project {
-  my($self) = shift;
-  return $self->{'apply_project'};
+  return $_[0]->{'apply_project'};
 }
 
 
 sub get_language {
-  my($self) = shift;
-  return $self->{'language'};
+  return $_[0]->{'language'};
 }
 
 
 sub get_outdir {
-  my($self) = shift;
+  my $self = shift;
   if (defined $self->{'into'}) {
-    my($outdir) = $self->getcwd();
-    my($re)     = $self->escape_regex_special($self->getstartdir());
+    my $outdir = $self->getcwd();
+    my $re = $self->escape_regex_special($self->getstartdir());
 
     $outdir =~ s/^$re//;
     return $self->{'into'} . $outdir;
@@ -1018,15 +927,9 @@ sub get_outdir {
 
 
 sub expand_variables {
-  my($self)            = shift;
-  my($value)           = shift;
-  my($rel)             = shift;
-  my($expand_template) = shift;
-  my($scope)           = shift;
-  my($expand)          = shift;
-  my($warn)            = shift;
-  my($cwd)             = $self->getcwd();
-  my($start)           = 0;
+  my($self, $value, $rel, $expand_template, $scope, $expand, $warn) = @_;
+  my $cwd = $self->getcwd();
+  my $start = 0;
   my $forward_slashes  = $self->{'convert_slashes'} ||
                          $self->{'requires_forward_slashes'};
 
@@ -1034,10 +937,10 @@ sub expand_variables {
   $cwd =~ s/\\/\//g if ($forward_slashes);
 
   while(substr($value, $start) =~ /(\$\(([^)]+)\))/) {
-    my($whole) = $1;
-    my($name)  = $2;
+    my $whole = $1;
+    my $name  = $2;
     if (defined $$rel{$name}) {
-      my($val) = $$rel{$name};
+      my $val = $$rel{$name};
       if ($expand) {
         $val =~ s/\//\\/g if ($forward_slashes);
         substr($value, $start) =~ s/\$\([^)]+\)/$val/;
@@ -1047,19 +950,19 @@ sub expand_variables {
         ## Fix up the value for Windows switch the \\'s to /
         $val =~ s/\\/\//g if ($forward_slashes);
 
-        my($icwd) = ($self->{'case_tolerant'} ? lc($cwd) : $cwd);
-        my($ival) = ($self->{'case_tolerant'} ? lc($val) : $val);
-        my($iclen) = length($icwd);
-        my($ivlen) = length($ival);
+        my $icwd = ($self->{'case_tolerant'} ? lc($cwd) : $cwd);
+        my $ival = ($self->{'case_tolerant'} ? lc($val) : $val);
+        my $iclen = length($icwd);
+        my $ivlen = length($ival);
 
         ## If the relative value contains the current working
         ## directory plus additional subdirectories, we must pull
         ## off the additional directories into a temporary where
         ## it can be put back after the relative replacement is done.
-        my($append) = undef;
+        my $append;
         if (index($ival, $icwd) == 0 && $iclen != $ivlen &&
             substr($ival, $iclen, 1) eq '/') {
-          my($diff) = $ivlen - $iclen;
+          my $diff = $ivlen - $iclen;
           $append = substr($ival, $iclen);
           substr($ival, $iclen, $diff) = '';
           $ivlen -= $diff;
@@ -1067,10 +970,10 @@ sub expand_variables {
 
         if (index($icwd, $ival) == 0 &&
             ($iclen == $ivlen || substr($icwd, $ivlen, 1) eq '/')) {
-          my($current) = $icwd;
+          my $current = $icwd;
           substr($current, 0, $ivlen) = '';
 
-          my($dircount) = ($current =~ tr/\///);
+          my $dircount = ($current =~ tr/\///);
           if ($dircount == 0) {
             $ival = '.';
           }
@@ -1094,18 +997,18 @@ sub expand_variables {
           $whole = $val;
         }
         else {
-          my($loc) = index(substr($value, $start), $whole);
+          my $loc = index(substr($value, $start), $whole);
           $start += $loc if ($loc > 0);
         }
       }
     }
     elsif ($expand_template ||
            $self->expand_variables_from_template_values()) {
-      my($ti) = $self->get_template_input();
-      my($val) = (defined $ti ? $ti->get_value($name) : undef);
-      my($sname) = (defined $scope ? $scope . "::$name" : undef);
-      my($arr) = $self->adjust_value([$sname, $name],
-                                     (defined $val ? $val : []));
+      my $ti = $self->get_template_input();
+      my $val = (defined $ti ? $ti->get_value($name) : undef);
+      my $sname = (defined $scope ? $scope . "::$name" : undef);
+      my $arr = $self->adjust_value([$sname, $name],
+                                    (defined $val ? $val : []));
       if (UNIVERSAL::isa($arr, 'HASH')) {
         $self->warning("$name conflicts with a template variable scope");
       }
@@ -1124,7 +1027,7 @@ sub expand_variables {
         if ($expand && $warn) {
           $self->warning("Unable to expand $name.");
         }
-        my($loc) = index(substr($value, $start), $whole);
+        my $loc = index(substr($value, $start), $whole);
         $start += $loc if ($loc > 0);
       }
     }
@@ -1133,7 +1036,7 @@ sub expand_variables {
       $whole = '';
     }
     else {
-      my($loc) = index(substr($value, $start), $whole);
+      my $loc = index(substr($value, $start), $whole);
       $start += $loc if ($loc > 0);
     }
     $start += length($whole);
@@ -1146,16 +1049,13 @@ sub expand_variables {
 
 
 sub relative {
-  my($self)            = shift;
-  my($value)           = shift;
-  my($expand_template) = shift;
-  my($scope)           = shift;
+  my($self, $value, $expand_template, $scope) = @_;
 
   if (defined $value) {
     if (UNIVERSAL::isa($value, 'ARRAY')) {
-      my(@built) = ();
+      my @built;
       foreach my $val (@$value) {
-        my($rel) = $self->relative($val, $expand_template, $scope);
+        my $rel = $self->relative($val, $expand_template, $scope);
         if (UNIVERSAL::isa($rel, 'ARRAY')) {
           push(@built, @$rel);
         }
@@ -1171,7 +1071,7 @@ sub relative {
       ## something in this area, please look at the method in
       ## ProjectCreator.pm to see if it needs changing too.
 
-      my($ovalue) = $value;
+      my $ovalue = $value;
       my($rel, $how) = $self->get_initial_relative_values();
       $value = $self->expand_variables($value, $rel,
                                        $expand_template, $scope, $how);
@@ -1213,7 +1113,7 @@ sub get_initial_relative_values {
 
 
 sub get_secondary_relative_values {
-  my($self) = shift;
+  my $self = shift;
   return ($self->{'use_env'} ? \%ENV :
                                $self->{'relative'}), $self->{'expand_vars'};
 }
@@ -1245,9 +1145,7 @@ sub compare_output {
 
 
 sub files_are_different {
-  my($self) = shift;
-  my($old)  = shift;
-  my($new)  = shift;
+  my($self, $old, $new) = @_;
   return !(-r $old && -s $new == -s $old && compare($new, $old) == 0);
 }
 
@@ -1260,28 +1158,21 @@ sub handle_scoped_end {
 }
 
 sub handle_unknown_assignment {
-  my($self)   = shift;
-  my($type)   = shift;
-  my(@values) = @_;
+  my $self   = shift;
+  my $type   = shift;
+  my @values = @_;
   return 0, "Invalid assignment name: '$values[1]'";
 }
 
 
 sub handle_scoped_unknown {
-  my($self)  = shift;
-  my($fh)    = shift;
-  my($type)  = shift;
-  my($flags) = shift;
-  my($line)  = shift;
+  my($self, $fh, $type, $flags, $line) = @_;
   return 0, "Unrecognized line: $line";
 }
 
 
 sub remove_duplicate_addition {
-  my($self)    = shift;
-  my($name)    = shift;
-  my($value)   = shift;
-  my($current) = shift;
+  my($self, $name, $value, $current) = @_;
   return $value;
 }
 

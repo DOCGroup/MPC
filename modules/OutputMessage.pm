@@ -16,30 +16,29 @@ use strict;
 # Data Section
 # ************************************************************
 
-my($debugtag) = 'DEBUG: ';
-my($infotag)  = 'INFORMATION: ';
-my($warntag)  = 'WARNING: ';
-my($errortag) = 'ERROR: ';
+my $debugtag = 'DEBUG: ';
+my $infotag  = 'INFORMATION: ';
+my $warntag  = 'WARNING: ';
+my $errortag = 'ERROR: ';
 
-my($debug)       = 0;
-my($information) = 0;
-my($warnings)    = 1;
-my($diagnostic)  = 1;
-my($details)     = 1;
+my $debug       = 0;
+my $information = 0;
+my $warnings    = 1;
+my $diagnostic  = 1;
+my $details     = 1;
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub new {
-  my($class) = shift;
-  return bless {
-               }, $class;
+  my $class = shift;
+  return bless {}, $class;
 }
 
 
 sub set_levels {
-  my($str) = shift;
+  my $str = shift;
 
   if (defined $str) {
     $debug       = ($str =~ /debug\s*=\s*(\d+)/i ? $1 : 0);
@@ -51,9 +50,7 @@ sub set_levels {
 }
 
 sub split_message {
-  my($self) = shift;
-  my($msg)  = shift;
-  my($spc)  = shift;
+  my($self, $msg, $spc) = @_;
 
   $msg =~ s/\.\s+/.\n$spc/g;
   return $msg . "\n";
@@ -62,8 +59,7 @@ sub split_message {
 
 sub details {
   if ($details) {
-    my($self) = shift;
-    my($msg)  = shift;
+    my($self, $msg) = @_;
     print "$msg\n";
   }
 }
@@ -71,8 +67,7 @@ sub details {
 
 sub diagnostic {
   if ($diagnostic) {
-    my($self) = shift;
-    my($msg)  = shift;
+    my($self, $msg) = @_;
     print "$msg\n";
   }
 }
@@ -80,8 +75,7 @@ sub diagnostic {
 
 sub debug {
   if ($debug) {
-    my($self) = shift;
-    my($msg)  = shift;
+    my($self, $msg) = @_;
     print "$debugtag$msg\n";
   }
 }
@@ -89,8 +83,7 @@ sub debug {
 
 sub information {
   if ($information) {
-    my($self) = shift;
-    my($msg)  = shift;
+    my($self, $msg) = @_;
     print $infotag . $self->split_message($msg, ' ' x length($infotag));
   }
 }
@@ -98,17 +91,14 @@ sub information {
 
 sub warning {
   if ($warnings) {
-    my($self) = shift;
-    my($msg)  = shift;
+    my($self, $msg) = @_;
     print $warntag . $self->split_message($msg, ' ' x length($warntag));
   }
 }
 
 
 sub error {
-  my($self) = shift;
-  my($msg)  = shift;
-  my($pre)  = shift;
+  my($self, $msg, $pre) = @_;
 
   if (defined $pre) {
     print STDERR "$pre\n";
