@@ -28,7 +28,7 @@ sub compare_output {
 
 
 sub require_dependencies {
-  my($self) = shift;
+  my $self = shift;
 
   ## Only write dependencies for non-static projects
   ## and static exe projects, unless the user wants the

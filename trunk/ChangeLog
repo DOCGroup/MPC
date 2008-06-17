@@ -1,3 +1,42 @@
+Tue Jun 17 17:16:07 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/make.txt:
+
+          Document the 'depgen_flags' template variable.
+
+        * combine_dsw.pl:
+        * create_base.pl:
+        * depgen.pl:
+        * generate_export_header.pl:
+        * mpc.pl:
+        * mwc.pl:
+        * prj_install.pl:
+        * registry.pl:
+        * modules/ConfigParser.pm:
+        * modules/Creator.pm:
+        * modules/DirectoryManager.pm:
+        * modules/Driver.pm:
+        * modules/FeatureParser.pm:
+        * modules/GUID.pm:
+        * modules/MakeWorkspaceBase.pm:
+        * modules/Options.pm:
+        * modules/OutputMessage.pm:
+        * modules/Parser.pm:
+        * modules/ProjectCreator.pm:
+        * modules/StringProcessor.pm:
+        * modules/TemplateInputReader.pm:
+        * modules/TemplateParser.pm:
+        * modules/VCProjectBase.pm:
+        * modules/Version.pm:
+        * modules/WinProjectBase.pm:
+        * modules/WinWorkspaceBase.pm:
+        * modules/WorkspaceCreator.pm:
+        * modules/WorkspaceHelper.pm:
+
+          Removed unnecessary parenthesis around variable declarations. 
+          This provides a very minor performance increase due to reduced
+          perl op codes.
+
 Tue Jun 10 14:45:18 UTC 2008  Adam Mitz  <mitza@ociweb.com>
 
         * templates/make.mpd:

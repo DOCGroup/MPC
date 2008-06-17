@@ -18,7 +18,7 @@ use FindBin;
 use File::Spec;
 use File::Basename;
 
-my($basePath) = $FindBin::Bin;
+my $basePath = $FindBin::Bin;
 if ($^O eq 'VMS') {
   $basePath = File::Spec->rel2abs(dirname($0)) if ($basePath eq '');
   $basePath = VMS::Filespec::unixify($basePath);
@@ -31,5 +31,5 @@ require Driver;
 # Main Section
 # ************************************************************
 
-my($driver) = new Driver();
+my $driver = new Driver();
 exit($driver->run(\@ARGV));

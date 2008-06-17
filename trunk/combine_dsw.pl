@@ -21,14 +21,14 @@ use File::Basename;
 # Data Section
 # ******************************************************************
 
-my($version) = '1.3';
+my $version = '1.3';
 
 # ******************************************************************
 # Subroutine Section
 # ******************************************************************
 
 sub usageAndExit {
-  my($str) = shift;
+  my $str = shift;
   if (defined $str) {
     print STDERR "$str\n";
   }
@@ -52,12 +52,12 @@ sub usageAndExit {
 # Main Section
 # ******************************************************************
 
-my($output) = undef;
-my($unlink) = undef;
-my(@input)  = ();
+my $output;
+my $unlink;
+my @input;
 
 for(my $i = 0; $i <= $#ARGV; $i++) {
-  my($arg) = $ARGV[$i];
+  my $arg = $ARGV[$i];
   if ($arg =~ /^-/) {
     if ($arg eq '-u') {
       $unlink = 1;
@@ -80,18 +80,18 @@ if (!defined $output || !defined $input[0]) {
   usageAndExit();
 }
 
-my($tmp) = "$output.tmp";
-my($oh)  = new FileHandle();
+my $tmp = "$output.tmp";
+my $oh  = new FileHandle();
 
 if (open($oh, ">$tmp")) {
-  my($msident) = 0;
+  my $msident = 0;
   for(my $i = 0; $i <= $#input; ++$i) {
-    my($input)  = $input[$i];
-    my($fh)     = new FileHandle();
-    my($global) = ($i == $#input);
+    my $input  = $input[$i];
+    my $fh     = new FileHandle();
+    my $global = ($i == $#input);
 
     if (open($fh, $input)) {
-      my($in_global) = 0;
+      my $in_global = 0;
       while(<$fh>) {
         if (/Microsoft\s+(Developer\s+Studio|eMbedded\s+Visual)/) {
           if ($msident == 0) {
