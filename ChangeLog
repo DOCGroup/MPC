@@ -1,3 +1,9 @@
+Thu Jun 19 01:27:55 UTC 2008  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * config/boost_system.mpb:
+
+          Base project for using the Boost system library.
+
 Tue Jun 17 17:16:07 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/make.txt:
@@ -33,7 +39,7 @@ Tue Jun 17 17:16:07 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
         * modules/WorkspaceCreator.pm:
         * modules/WorkspaceHelper.pm:
 
-          Removed unnecessary parenthesis around variable declarations. 
+          Removed unnecessary parenthesis around variable declarations.
           This provides a very minor performance increase due to reduced
           perl op codes.
 
