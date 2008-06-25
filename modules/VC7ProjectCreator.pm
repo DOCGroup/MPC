@@ -137,4 +137,10 @@ sub get_template {
 }
 
 
+sub get_cmdsep_symbol {
+  #my($self) = shift;
+  return '&amp;';
+}
+
+
 1;
