@@ -88,6 +88,12 @@ sub crlf {
 }
 
 
+sub get_cmdsep_symbol {
+  #my($self) = shift;
+  return '&';
+}
+
+
 sub file_sorter {
   #my($self)  = shift;
   #my($left)  = shift;

@@ -206,6 +206,8 @@ postbuild       If this is defined in the project, the value will be
                   <%quote%>  - Project non-specific double quote.
                   <%equote%> - Project non-specific escaped quote.
                   <%crlf%>   - Platform non-specific line ending.
+                  <%cmdsep%> - Project/platform non-specific command separator
+                               which always runs the right-hand side command.
 prebuild        This is similar to postbuild except that it will be
                 performed before the build instead of after.
 recurse         If set to 1, MPC will recurse into directories listed under
@@ -449,8 +451,10 @@ postcommand         Allows a user to execute arbitrary commands after
                     <%input%>     - The input file for the original command.
                     <%output%>    - The output created by the original command.
                     <%input_basename%>  - The basename of the input file.
+                    <%input_dirname%>   - The directory of the input file.
                     <%input_noext%>     - The input file with no extension.
                     <%output_basename%> - The basename of the output file.
+                    <%output_dirname%>  - The directory of the output file.
                     <%output_noext%>    - The output file with no extension.
                       The output file can be referenced as a generic output
                       file using <%output%> or can be referenced as a
@@ -502,6 +506,9 @@ postcommand         Allows a user to execute arbitrary commands after
                     <%quote%>     - Project non-specific double quote.
                     <%gendir%>    - The output directory specified by the
                                     gendir setting.
+                    <%cmdsep%>    - Project/platform non-specific command
+                                    separator which always runs the right-hand
+                                    side command.
 
                     If any referenced pseudo template variable does
                     not contain a value, then the particular setting

@@ -1,3 +1,20 @@
+Wed Jun 25 21:38:16 UTC 2008  Adam Mitz  <mitza@ociweb.com>
+
+        * docs/README:
+
+          Documented the following changes.
+
+        * modules/ProjectCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+        * modules/WinProjectBase.pm:
+
+          Added the <%cmdsep%> pseudovariable that can be used in prebuild,
+          postbuild, and postcommand.  It works like <%and%> and <%or%> but it
+          unconditionally runs the right-hand side command.
+          For postcommand, added <%input_dirname%> and <%output_dirname%> which
+          work like their <%*_basename%> counterparts but return the directory
+          portion of the file name.
+
 Thu Jun 19 01:27:55 UTC 2008  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * config/boost_system.mpb:
