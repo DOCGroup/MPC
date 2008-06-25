@@ -3719,6 +3719,7 @@ sub get_command_subs {
   $valid{'quote'}  = $self->get_quote_symbol();
   $valid{'equote'} = $self->get_escaped_quote_symbol();
   $valid{'crlf'}   = $self->crlf();
+  $valid{'cmdsep'}= $self->get_cmdsep_symbol();
 
   return \%valid;
 }
@@ -3745,7 +3746,7 @@ sub replace_parameters {
             $replace =~ s/\.[^\.]+$//;
           }
           else {
-            $self->warning("Uknown parameter modifier $modifier.");
+            $self->warning("Unknown parameter modifier $modifier.");
           }
         }
         $str =~ s/<%\w+(\(\w+\))?%>/$replace/;
@@ -3789,6 +3790,7 @@ sub convert_command_parameters {
   if (defined $input) {
     $valid{'input'}          = $input;
     $valid{'input_basename'} = $self->mpc_basename($input);
+    $valid{'input_dirname'}  = $self->mpc_dirname($input);
     $valid{'input_noext'}    = $input;
     $valid{'input_noext'}    =~ s/(\.[^\.]+)$//;
     $valid{'input_ext'}      = $1;
@@ -3817,6 +3819,8 @@ sub convert_command_parameters {
       $valid{'output_noext'}    .= (!$first ? ' ' : '') . $noext;
       $valid{'output_basename'} .= (!$first ? ' ' : '') .
                                    $self->mpc_basename($out);
+      $valid{'output_dirname'}  .= (!$first ? ' ' : '') .
+                                   $self->mpc_dirname($out);
       $first = 0;
     }
   }
@@ -5037,6 +5041,12 @@ sub get_and_symbol {
 sub get_or_symbol {
   #my($self) = shift;
   return '||';
+}
+
+
+sub get_cmdsep_symbol {
+  #my($self) = shift;
+  return ';';
 }
 
 
