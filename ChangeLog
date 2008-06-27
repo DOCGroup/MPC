@@ -1,3 +1,21 @@
+Fri Jun 27 12:59:39 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/ixml.mpb:
+        * config/upnp.mpb:
+
+          Added base projects for use with the open source project Linux SDK
+          for UPnP Devices.
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+
+          Split the functionality of the 'automatic' keyword into to two. 
+          'automatic_in' now specifies that input files are automatically
+          added and 'automatic_out' specifies that generated output files
+          are automatically added to the project.  These both default to
+          true as 'automatic' did.  'automatic' is still accepted, but
+          deprecated.
+
 Wed Jun 25 21:38:16 UTC 2008  Adam Mitz  <mitza@ociweb.com>
 
         * docs/README:

@@ -80,7 +80,8 @@ my %validNames = ('exename'            => 1,
 ## 2    Value is always scalar
 ## 3    Name can also be used in an 'optional' clause
 ## 4    Needs <%...%> conversion
-my %customDefined = ('automatic'                   => 0x04,
+my %customDefined = ('automatic_in'                => 0x04,
+                     'automatic_out'               => 0x04,
                      'dependent'                   => 0x14,
                      'command'                     => 0x14,
                      'commandflags'                => 0x14,
@@ -1698,8 +1699,11 @@ sub parse_define_custom {
       if (!defined $self->{'generated_exts'}->{$tag}->{'pre_extension'}) {
         $self->{'generated_exts'}->{$tag}->{'pre_extension'} = [ '' ];
       }
-      if (!defined $self->{'generated_exts'}->{$tag}->{'automatic'}) {
-        $self->{'generated_exts'}->{$tag}->{'automatic'} = 1;
+      if (!defined $self->{'generated_exts'}->{$tag}->{'automatic_in'}) {
+        $self->{'generated_exts'}->{$tag}->{'automatic_in'} = 1;
+      }
+      if (!defined $self->{'generated_exts'}->{$tag}->{'automatic_out'}) {
+        $self->{'generated_exts'}->{$tag}->{'automatic_out'} = 1;
       }
       if (!defined $self->{'valid_components'}->{$tag}) {
         $self->{'valid_components'}->{$tag} = [];
@@ -1711,67 +1715,83 @@ sub parse_define_custom {
       ## If this returns true, then we've found an assignment
       if ($self->parse_assignment($line, \@values)) {
         my($type, $name, $value) = @values;
-        if (defined $customDefined{$name}) {
-          if (($customDefined{$name} & 0x01) != 0) {
-            $value = $self->escape_regex_special($value);
-            my @array = split(/\s*,\s*/, $value);
-            $self->process_array_assignment(
-                      \$self->{'valid_components'}->{$tag}, $type, \@array);
-          }
-          else {
-            if (!defined $self->{'generated_exts'}->{$tag}) {
-              $self->{'generated_exts'}->{$tag} = {};
-            }
-            ## Try to convert the value into a relative path
-            $value = $self->relative($value);
-
-            if (($customDefined{$name} & 0x04) != 0) {
-              if ($type == 0) {
-                $self->process_assignment(
-                                   $name, $value,
-                                   $self->{'generated_exts'}->{$tag});
-              }
-              elsif ($type == 1) {
-                $self->process_assignment_add(
-                                   $name, $value,
-                                   $self->{'generated_exts'}->{$tag});
-              }
-              elsif ($type == -1) {
-                $self->process_assignment_sub(
-                                   $name, $value,
-                                   $self->{'generated_exts'}->{$tag});
-              }
+        ## The 'automatic' keyword has always contained two distinct
+        ## functions.  The first is to automatically add input files of
+        ## the specified extension.  And the second is to automatically
+        ## add generated files to the right components.  It has now been
+        ## split into separate functionality and we map the 'automatic'
+        ## keyword to the two new ones here.
+        my $ok = 1;
+        my @names = $name eq 'automatic' ?
+                        ('automatic_in', 'automatic_out') : $name;
+        foreach $name (@names) {
+          if (defined $customDefined{$name}) {
+            if (($customDefined{$name} & 0x01) != 0) {
+              $value = $self->escape_regex_special($value);
+              my @array = split(/\s*,\s*/, $value);
+              $self->process_array_assignment(
+                        \$self->{'valid_components'}->{$tag}, $type, \@array);
             }
             else {
-              if (($customDefined{$name} & 0x02) != 0) {
-                ## Transform the name from something outputext to
-                ## something files.  We expect this to match the
-                ## names of valid_assignments.
-                $name =~ s/outputext/files/g;
+              if (!defined $self->{'generated_exts'}->{$tag}) {
+                $self->{'generated_exts'}->{$tag} = {};
               }
+              ## Try to convert the value into a relative path
+              $value = $self->relative($value);
 
-              ## Get it ready for regular expressions
-              $value = $self->escape_regex_special($value);
+              if (($customDefined{$name} & 0x04) != 0) {
+                if ($type == 0) {
+                  $self->process_assignment(
+                                     $name, $value,
+                                     $self->{'generated_exts'}->{$tag});
+                }
+                elsif ($type == 1) {
+                  $self->process_assignment_add(
+                                     $name, $value,
+                                     $self->{'generated_exts'}->{$tag});
+                }
+                elsif ($type == -1) {
+                  $self->process_assignment_sub(
+                                     $name, $value,
+                                     $self->{'generated_exts'}->{$tag});
+                }
+              }
+              else {
+                if (($customDefined{$name} & 0x02) != 0) {
+                  ## Transform the name from something outputext to
+                  ## something files.  We expect this to match the
+                  ## names of valid_assignments.
+                  $name =~ s/outputext/files/g;
+                }
 
-              ## Split the value into an array using a comma as the
-              ## separator.  If there are no elements in the array we're
-              ## going to add an empty element to the array.  This way,
-              ## assignments of blank values are useful.
-              my @array = split(/\s*,\s*/, $value);
-              push(@array, '') if ($#array == -1);
+                ## Get it ready for regular expressions
+                $value = $self->escape_regex_special($value);
 
-              ## Process the array assignment after adjusting the values
-              $self->process_array_assignment(
-                          \$self->{'generated_exts'}->{$tag}->{$name},
-                          $type, \@array);
+                ## Split the value into an array using a comma as the
+                ## separator.  If there are no elements in the array we're
+                ## going to add an empty element to the array.  This way,
+                ## assignments of blank values are useful.
+                my @array = split(/\s*,\s*/, $value);
+                push(@array, '') if ($#array == -1);
+
+                ## Process the array assignment after adjusting the values
+                $self->process_array_assignment(
+                            \$self->{'generated_exts'}->{$tag}->{$name},
+                            $type, \@array);
+              }
             }
           }
+          else {
+            $ok = 0;
+            $status = 0;
+            $errorString = "Invalid assignment name: '$name'";
+            last;
+          }
         }
-        else {
-          $status = 0;
-          $errorString = "Invalid assignment name: '$name'";
-          last;
-        }
+
+        ## $status is zero until the end of the define custom block, so
+        ## we can't use it for this check.
+        last if (!$ok);
       }
       elsif ($line =~ /^(\w+)\s+(\w+)(\s*=\s*(\w+)?)?/) {
         ## Check for keyword mapping here
@@ -2173,6 +2193,9 @@ sub add_optional_filename_portion {
 
 sub get_pre_keyword_array {
   my($self, $keyword, $gentype, $tag, $file) = @_;
+
+  ## There's nothing to return if this is not defined
+  return () if (!defined $self->{'generated_exts'}->{$gentype}->{$keyword});
 
   ## Get the general pre extension array
   my @array = @{$self->{'generated_exts'}->{$gentype}->{$keyword}};
@@ -2768,6 +2791,10 @@ sub correct_generated_files {
   if (defined $sourceComponents{$tag}) {
     my $grtag = $grouped_key . $tag;
     foreach my $gentype (keys %{$self->{'generated_exts'}}) {
+      ## If we are not automatically adding generated output, then we
+      ## need to skip this component type.
+      next if (!$self->{'generated_exts'}->{$tag}->{'automatic_out'});
+
       ## If we are auto-generating the source_files, then
       ## we need to make sure that any generated source
       ## files that are added are put at the front of the list.
@@ -2896,9 +2923,7 @@ sub generate_default_components {
   my $ovc  = $language{$self->get_language()}->[0];
   my @tags = (defined $passed ? $passed :
                                 sort { if (defined $$ovc{$a}) {
-                                         if (!defined $$ovc{$b}) {
-                                           return 1;
-                                         }
+                                         return 1 if (!defined $$ovc{$b});
                                        }
                                        elsif (defined $$ovc{$b}) {
                                          return -1;
@@ -2916,7 +2941,7 @@ sub generate_default_components {
   ## issue if a user defined type generates another user defined type.
   foreach my $tag (@tags) {
     if (!defined $self->{'generated_exts'}->{$tag} ||
-        $self->{'generated_exts'}->{$tag}->{'automatic'}) {
+        $self->{'generated_exts'}->{$tag}->{'automatic_in'}) {
       my $exts = $$vc{$tag};
       if (defined $$exts[0]) {
         if (defined $self->{$tag}) {
@@ -2961,8 +2986,8 @@ sub generate_default_components {
                   }
                 }
                 if ($alldirs) {
-                   $self->correct_generated_files($defcomp, $exts,
-                                                  $tag, \@built);
+                  $self->correct_generated_files($defcomp, $exts,
+                                                 $tag, \@built);
                 }
                 $$comps{$comp} = \@built;
               }
@@ -3052,7 +3077,8 @@ sub list_default_generated {
   ## source_files, resource_files, etc.) they are filled in by the
   ## generate_default_components method.
 
-  if ($self->{'generated_exts'}->{$gentype}->{'automatic'}) {
+  if (defined $self->{'generated_exts'}->{$gentype} &&
+      $self->{'generated_exts'}->{$gentype}->{'automatic_out'}) {
     ## After all source and headers have been defaulted, see if we
     ## need to add the generated files
     if (defined $self->{$gentype}) {
