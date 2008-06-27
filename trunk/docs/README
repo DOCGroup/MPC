@@ -372,7 +372,8 @@ definition.
 
 project {
   Define_Custom(MOC) {
-    automatic        = 0
+    automatic_in     = 0
+    automatic_out    = 0
     command          = $(QTDIR)/bin/moc
     postcommand      = echo <%quote%>#include <%lt%>some.h<%gt%><%quote%> <%gt%> <%temporary%> <%and%> \
                        <%cat%> <%output%> <%gt%><%gt%> <%temporary%> <%and%> \
@@ -400,15 +401,20 @@ order to specify the input files for this new file type.
 Here is a list of keywords that can be used within the scope of
 Define_Custom or Modify_Custom:
 
-automatic           If set to 1, then attempt to automatically determine
+automatic           This keyword is deprecated.  Use automatic_in and
+                    automatic_out instead.
+automatic_in        If set to 1, then attempt to automatically determine
                     which files belong to the set of input files for the
                     custom type.  If set to 0, then no files are
                     automatically added to the input files.  If omitted,
-                    then automatic is assumed to be 1.  Custom file types
-                    that are automatic will have the side effect of possibly
-                    adding files to Source_Files, Inline_Files, Header_Files
-                    Template_Files, Resource_Files and Documentation_Files
-                    depending on which extension types the command generates.
+                    automatic_in is assumed to be 1.
+automatic_out       If set to 1, then attempt to automatically determine
+                    which generated files belong to the set of components
+                    (e.g., Source_Files, Header_Files, etc.) based on the
+                    type of file generated from the custom command.  If set
+                    to 0, then no files are automatically added to the
+                    various components.  If omitted, automatic_out is
+                    assumed to be 1.
 dependent           If this is given a value, then a dependency upon that
                     value will be given to all of the generated files.
                     The default for this is unset and no dependency will be
@@ -581,7 +587,8 @@ unrelated filenames (i.e. foo !~ hello).
 
 project {
   Define_Custom(Quogen) {
-    automatic           = 0
+    automatic_in        = 0
+    automatic_out       = 0
     command             = perl quogen.pl
     commandflags        = --debuglevel=1 --language=c++ \
                           --kernel_language=c++
@@ -675,7 +682,8 @@ of the Define_Custom:
 
 project {
   Define_Custom(CIDL) {
-    automatic         = 0;
+    automatic_in      = 0;
+    automatic_out     = 0;
     command           =  $(CIAO_ROOT)/bin/cidlc
     commandflags      = -I$(TAO_ROOT)/tao -I$(TAO_ROOT)/orbsvcs/orbsvcs --
     inputext          = .cidl
@@ -724,7 +732,8 @@ The following feature definition requires that the qt feature be enabled.
 
 feature(qt) {
   Define_Custom(MOC) {
-    automatic        = 0
+    automatic_in     = 0
+    automatic_out    = 0
     command          = $(QTDIR)/bin/moc
     output_option    = -o
     inputext         = .h
@@ -842,32 +851,32 @@ or base projects (when addition is used) when the project is created.
 
 Defaulting Behavior
 -------------------
-1) If a project name is not specified
+1) If a project name is not specified:
 
    it will be defaulted to the name of the mpc file without the extension
 
-2) If a particular list is not specified (Source_Files, Header_Files, etc.)
+2) If a particular list is not specified (Source_Files, Header_Files, etc.):
 
    all of the files in the directory will be added to the corresponding list
    by extension
 
-3) If the custom type is automatic and custom files (ex. idl files) exist in
-   the directory and the custom files components (ex. IDL_Files) are left
-   defaulted (i.e. not listed) or the custom files components are specified
-   and none of the custom generated files are listed in the corresponding
-   lists
+3) If the custom type is automatic (both input and output) and custom files
+   (ex., idl files) exist in the directory and the custom files components
+   (ex., IDL_Files) are left defaulted (i.e. not listed) or the custom files
+   components are specified and none of the custom generated files are listed
+   in the corresponding lists:
 
    the custom files are added to the custom files component list if they
    weren't specified and all of the (would be) generated files will be added
    to the front of the corresponding lists (source, inline and header lists)
 
 4) If files are listed in the Source_Files list and a corresponding header or
-   inline file exists
+   inline file exists:
 
    the corresponding file will be added to the corresponding list (if it
    isn't already there)
 
-5) If a sharedname is specified and staticname is not
+5) If a sharedname is specified and staticname is not:
 
    staticname is assigned the sharedname value (the same applies if
    staticname is specified and sharedname is not)
@@ -878,7 +887,7 @@ Defaulting Behavior
    the project target is considered an executable, otherwise it is considered
    a library.
 
-7) If pch_header is not specified and a header file matches *_pch.h
+7) If pch_header is not specified and a header file matches *_pch.h:
 
    it is assumed to be the precompiled header file (the same applies to
    pch_source)
