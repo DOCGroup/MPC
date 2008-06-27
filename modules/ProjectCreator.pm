@@ -2793,7 +2793,7 @@ sub correct_generated_files {
     foreach my $gentype (keys %{$self->{'generated_exts'}}) {
       ## If we are not automatically adding generated output, then we
       ## need to skip this component type.
-      next if (!$self->{'generated_exts'}->{$tag}->{'automatic_out'});
+      next if (!$self->{'generated_exts'}->{$gentype}->{'automatic_out'});
 
       ## If we are auto-generating the source_files, then
       ## we need to make sure that any generated source
