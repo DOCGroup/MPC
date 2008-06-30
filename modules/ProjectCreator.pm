@@ -538,16 +538,7 @@ sub begin_project {
 
     if (defined $parents) {
       foreach my $base (@$baseprojs) {
-        my $found = 0;
-        foreach my $parent (@$parents) {
-          if ($base eq $parent) {
-            $found = 1;
-            last;
-          }
-        }
-        if (!$found) {
-          push(@$parents, $base);
-        }
+        push(@$parents, $base) if (!StringProcessor::fgrep($base, $parents));
       }
     }
     else {
@@ -567,11 +558,9 @@ sub begin_project {
 
       if (defined $file) {
         if (defined $self->{'reading_parent'}->[0]) {
-          foreach my $currently (@{$self->{'reading_parent'}}) {
-            if ($currently eq $file) {
-              $status = 0;
-              $error = 'Cyclic inheritance detected: ' . $parent;
-            }
+          if (StringProcessor::fgrep($file, $self->{'reading_parent'})) {
+            $status = 0;
+            $error = 'Cyclic inheritance detected: ' . $parent;
           }
         }
 
@@ -950,12 +939,8 @@ sub parse_scoped_assignment {
   }
 
   if (defined $self->{'matching_assignments'}->{$tag}) {
-    foreach my $possible (@{$self->{'matching_assignments'}->{$tag}}) {
-      if ($possible eq $name) {
-        $status = 1;
-        last;
-      }
-    }
+    $status = 1 if (StringProcessor::fgrep($name,
+                                           $self->{'matching_assignments'}->{$tag}));
   }
 
   if ($status) {
@@ -1570,13 +1555,10 @@ sub process_array_assignment {
     elsif ($type == -1) {
       my $count = scalar(@{$$aref});
       for(my $i = 0; $i < $count; ++$i) {
-        foreach my $val (@$array) {
-          if ($$aref->[$i] eq $val) {
-            splice(@{$$aref}, $i, 1);
-            --$i;
-            --$count;
-            last;
-          }
+        if (StringProcessor::fgrep($$aref->[$i], $array)) {
+          splice(@{$$aref}, $i, 1);
+          --$i;
+          --$count;
         }
       }
     }
@@ -2277,6 +2259,32 @@ sub add_explicit_output {
 sub generated_filenames {
   my($self, $part, $type, $tag, $file, $noext, $arrs) = @_;
   my @array;
+
+  ## A custom type is not allowed to generate it's own input files
+  return () if ($type eq $tag);
+
+  ## We will need to use 'generic_files' instead of $tag if $tag is
+  ## defined in 'generated_exts', but only for the type that will
+  ## actually generate the right type of generic file.
+  if (defined $self->{'generated_exts'}->{$tag}) {
+    my $good;
+    if (defined $self->{'generated_exts'}->{$type}->{$generic_key}) {
+      foreach my $inputext (@{$self->{'generated_exts'}->{$type}->{$generic_key}}) {
+        my $ext = $inputext;
+        $ext =~ s/\\//g;
+        foreach my $extreg (@{$self->{'valid_components'}->{$tag}}) {
+          if ($ext =~ /$extreg$/) {
+            $tag = $generic_key;
+            $good = 1;
+            last;
+          }
+        }
+        last if ($good);
+      }
+    }
+    return () if (!$good);
+  }
+
   my @pearr = $self->get_pre_keyword_array('pre_extension',
                                            $type, $tag, $file);
   my @pfarr = $self->get_pre_keyword_array('pre_filename',
@@ -2855,17 +2863,10 @@ sub correct_generated_files {
                   $ext = $self->escape_regex_special($1);
                 }
                 if (defined $ext) {
-                  my $efound;
-                  foreach my $possible (@$exts) {
-                    if ($ext eq $possible) {
-                      $efound = 1;
-                      last;
-                    }
-                  }
                   ## If it doesn't match one of the accepted extensions,
                   ## then just use the first extension from the type for
                   ## which we are generating.
-                  $ext = $$exts[0] if (!$efound);
+                  $ext = $$exts[0] if (!StringProcessor::fgrep($ext, $exts));
                 }
 
                 ## Add all the files that match the chosen extension
@@ -2922,6 +2923,11 @@ sub generate_default_components {
   my $vc   = $self->{'valid_components'};
   my $ovc  = $language{$self->get_language()}->[0];
   my @tags = (defined $passed ? $passed :
+                                ## Sort the components so that custom
+                                ## types come before the built-in MPC
+                                ## types.  That way, files that get
+                                ## generated can be used as input for the
+                                ## built-in types.
                                 sort { if (defined $$ovc{$a}) {
                                          return 1 if (!defined $$ovc{$b});
                                        }
@@ -3007,6 +3013,19 @@ sub generate_default_components {
           if (!defined $specialComponents{$tag}) {
             $self->sift_files($files, $exts, $pchh, $pchc, $tag, $array);
             $self->correct_generated_files($defcomp, $exts, $tag, $array);
+          }
+        }
+
+        ## If the type that we're generating defaults for ($tag) is a
+        ## custom type, then we need to see if other custom types
+        ## ($gentype) will generate files that will be used as input.  It
+        ## has to be done here so that the built-in types will have all
+        ## of the possible input files that they can.
+        if (defined $self->{'generated_exts'}->{$tag}) {
+          foreach my $gentype (keys %{$self->{'generated_exts'}}) {
+            if ($gentype ne $tag) {
+              $self->list_default_generated($gentype, [$tag]);
+            }
           }
         }
       }
@@ -3105,9 +3124,10 @@ sub list_default_generated {
       foreach my $type (@$tags) {
         ## Do not add generated files if they are "special"
         ## unless they haven't been explicitly supplied.
-        if (!$specialComponents{$type} ||
-            (!$self->{'special_supplied'}->{$type} ||
-             UNIVERSAL::isa($self->{'special_supplied'}->{$type}, 'ARRAY'))) {
+        if ($gentype ne $type &&
+            (!$specialComponents{$type} ||
+             (!$self->{'special_supplied'}->{$type} ||
+              UNIVERSAL::isa($self->{'special_supplied'}->{$type}, 'ARRAY')))) {
           if (!$self->generated_source_listed(
                                 $gentype, $type, \%arr,
                                 $self->{'valid_components'}->{$gentype})) {
@@ -3138,16 +3158,14 @@ sub prepend_gendir {
     }
 
     if (defined $key) {
-      foreach my $ma (@{$self->{'matching_assignments'}->{$gentype}}) {
-        if ($ma eq 'gendir') {
-          my $dir = $self->{'flag_overrides'}->{$gentype}->{$key}->{$ma};
-          if (defined $dir) {
-            ## Convert the file to unix style for basename
-            $created =~ s/\\/\//g;
-            $dir =~ s/\\/\//g if ($self->{'convert_slashes'});
-            return ($dir eq '.' ? '' : "$dir/") .
-                   $self->mpc_basename($created);
-          }
+      if (StringProcessor::fgrep('gendir',
+                                 $self->{'matching_assignments'}->{$gentype})) {
+        my $dir = $self->{'flag_overrides'}->{$gentype}->{$key}->{'gendir'};
+        if (defined $dir) {
+          ## Convert the file to unix style for basename
+          $created =~ s/\\/\//g;
+          $dir =~ s/\\/\//g if ($self->{'convert_slashes'});
+          return ($dir eq '.' ? '' : "$dir/") . $self->mpc_basename($created);
         }
       }
     }
@@ -3293,18 +3311,9 @@ sub add_corresponding_component_files {
           $adddefaultgroup = 1;
         }
         else {
-          my $compexists;
-          my $grval      = $self->get_assignment($grname);
-          if (defined $grval) {
-            foreach my $grkey (@{$self->create_array($grval)}) {
-              if ($grkey eq $comp) {
-                $compexists = 1;
-                last;
-              }
-            }
-          }
-
-          if (!$compexists) {
+          my $grval = $self->get_assignment($grname);
+          if (!defined $grval ||
+              !StringProcessor::fgrep($comp, $self->create_array($grval))) {
             $self->process_assignment_add($grname, $comp);
           }
           $oktoadddefault = 1;
@@ -3399,6 +3408,31 @@ sub remove_excluded {
 }
 
 
+sub sort_generated_types {
+  ## We need to sort the custom component types such that a custom type
+  ## that generates input for another custom type comes first in the
+  ## list.
+  my($self, $left, $right, $norecurse) = @_;
+  foreach my $key (keys %{$self->{'generated_exts'}->{$left}}) {
+    if ($key =~ /_files$/) {
+      foreach my $regex (@{$self->{'generated_exts'}->{$left}->{$key}}) {
+        my $ext = $regex;
+        $ext =~ s/\\//g;
+        foreach my $vreg (@{$self->{'valid_components'}->{$right}}) {
+          if ($ext =~ /$vreg$/) {
+            return -1;
+          }
+        }
+      }
+    }
+  }
+  if (!$norecurse && $self->sort_generated_types($right, $left, 1) == -1) {
+    return 1;
+  }
+
+  return 0;
+}
+
 sub generate_defaults {
   my $self = shift;
 
@@ -3432,10 +3466,11 @@ sub generate_defaults {
   ## the generated file list.  I want to ensure that source_files comes
   ## first in the list to pick up group information (since source_files
   ## are most likely going to be grouped than anything else).
-  my @vc = reverse sort { return  1 if $a eq 'source_files';
-                          return -1 if $b eq 'source_files';
-                          return $a cmp $b; } keys %{$self->{'valid_components'}};
-  foreach my $gentype (keys %{$self->{'generated_exts'}}) {
+  my @vc = sort { return -1 if $a eq 'source_files';
+                  return  1 if $b eq 'source_files';
+                  return $b cmp $a; } keys %{$self->{'valid_components'}};
+  foreach my $gentype (sort { $self->sort_generated_types($a, $b)
+                            }keys %{$self->{'generated_exts'}}) {
     $self->list_default_generated($gentype, \@vc);
   }
 
@@ -3444,7 +3479,7 @@ sub generate_defaults {
   $self->remove_excluded('source_files');
 
   ## Collect up all of the source files that have already been listed
-  ## with the extension removed.
+  ## with the extension removed for use directly below.
   my %sourcecomp;
   foreach my $sourcetag (keys %sourceComponents) {
     my $names = $self->{$sourcetag};
@@ -3677,23 +3712,21 @@ sub get_grouped_value {
   if ($cmd eq 'files') {
     foreach my $name (keys %$names) {
       my $comps = $$names{$name};
-      foreach my $comp (keys %$comps) {
-        if ($comp eq $based) {
-          if ($self->{'convert_slashes'}) {
-            my @converted;
-            foreach my $file (@{$$comps{$comp}}) {
-              push(@converted, $self->slash_to_backslash($file));
-            }
-            $value = \@converted;
+      my @keys = keys %$comps;
+      if (StringProcessor::fgrep($based, \@keys)) {
+        if ($self->{'convert_slashes'}) {
+          my @converted;
+          foreach my $file (@{$$comps{$based}}) {
+            push(@converted, $self->slash_to_backslash($file));
           }
-          else {
-            $value = $$comps{$comp};
-          }
-          if ($self->{'sort_files'}) {
-            my @sorted = sort { $self->file_sorter($a, $b) } @$value;
-            $value = \@sorted;
-          }
-          last;
+          $value = \@converted;
+        }
+        else {
+          $value = $$comps{$based};
+        }
+        if ($self->{'sort_files'}) {
+          my @sorted = sort { $self->file_sorter($a, $b) } @$value;
+          $value = \@sorted;
         }
       }
     }
@@ -3930,27 +3963,25 @@ sub get_custom_value {
       ## change them back for this parameter
       $ainput =~ s/\\/\//g if ($self->{'convert_slashes'});
 
-      ## Add all of the output files
-      foreach my $vc (keys %{$self->{'valid_components'}}, $generic_key) {
+      ## Add all of the output files.  We can not add $generic_key to the
+      ## list here (as it used to be).  It may have been handled by
+      ## generated_filenames.
+      foreach my $vc (keys %{$self->{'valid_components'}}) {
         push(@outputs,
              $self->check_custom_output($based, $cinput,
                                         $ainput, $vc, $vcomps{$vc}));
+      }
+      foreach my $file ($self->check_custom_output($based, $cinput,
+                                                   $ainput, $generic_key,
+                                                   $vcomps{$generic_key})) {
+        push(@outputs, $file) if (!StringProcessor::fgrep($file, \@outputs));
       }
 
       ## Add specially listed files avoiding duplicates
       if (defined $self->{'custom_special_output'}->{$based} &&
           defined $self->{'custom_special_output'}->{$based}->{$ainput}) {
         foreach my $file (@{$self->{'custom_special_output'}->{$based}->{$ainput}}) {
-          my $found = 0;
-          foreach my $output (@outputs) {
-            if ($output eq $file) {
-              $found = 1;
-              last;
-            }
-          }
-          if (!$found) {
-            push(@outputs, $file);
-          }
+          push(@outputs, $file) if (!StringProcessor::fgrep($file, \@outputs));
         }
       }
 
@@ -4646,12 +4677,9 @@ sub adjust_value {
             ## Avoid adding duplicates.  If the existing array contains
             ## the value already, remove it from the newly created array.
             for(my $i = 0; $i < scalar(@$value); $i++) {
-              foreach my $ae (@$arr) {
-                if ($$value[$i] eq $ae) {
-                  splice(@$value, $i, 1);
-                  $i--;
-                  last;
-                }
+              if (StringProcessor::fgrep($$value[$i], $arr)) {
+                splice(@$value, $i, 1);
+                $i--;
               }
             }
 
@@ -4677,16 +4705,7 @@ sub adjust_value {
             $value = [];
             foreach my $part (@$parts) {
               if ($part ne '') {
-                my $found = 0;
-                foreach my $ae (@$arr) {
-                  if ($part eq $ae) {
-                    $found = 1;
-                    last;
-                  }
-                }
-                if (!$found) {
-                  push(@$value, $part);
-                }
+                push(@$value, $part) if (!StringProcessor::fgrep($part, $arr));
               }
             }
           }
