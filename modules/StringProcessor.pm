@@ -124,4 +124,12 @@ sub resolve_alias {
   return $_[1];
 }
 
+sub fgrep {
+  my($str, $array) = @_;
+  foreach my $target (@$array) {
+    return 1 if ($str eq $target);
+  }
+  return undef;
+}
+
 1;

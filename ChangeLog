@@ -1,3 +1,16 @@
+Mon Jun 30 14:55:51 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/StringProcessor.pm:
+
+          Added a simple fgrep function that will find a string in an array
+          reference.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where custom defines that generate output that can be
+          used as automatic input to other custom defines did not work
+          properly.  Now, they are automatically added when possible.
+
 Fri Jun 27 12:59:39 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/ixml.mpb:
@@ -9,7 +22,7 @@ Fri Jun 27 12:59:39 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
         * docs/README:
         * modules/ProjectCreator.pm:
 
-          Split the functionality of the 'automatic' keyword into to two. 
+          Split the functionality of the 'automatic' keyword into to two.
           'automatic_in' now specifies that input files are automatically
           added and 'automatic_out' specifies that generated output files
           are automatically added to the project.  These both default to
