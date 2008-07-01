@@ -1,0 +1,109 @@
+Mon Jun 30 14:55:51 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/StringProcessor.pm:
+
+          Added a simple fgrep function that will find a string in an array
+          reference.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where custom defines that generate output that can be
+          used as automatic input to other custom defines did not work
+          properly.  Now, they are automatically added when possible.
+
+Fri Jun 27 12:59:39 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/ixml.mpb:
+        * config/upnp.mpb:
+
+          Added base projects for use with the open source project Linux SDK
+          for UPnP Devices.
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+
+          Split the functionality of the 'automatic' keyword into to two.
+          'automatic_in' now specifies that input files are automatically
+          added and 'automatic_out' specifies that generated output files
+          are automatically added to the project.  These both default to
+          true as 'automatic' did.  'automatic' is still accepted, but
+          deprecated.
+
+Wed Jun 25 21:38:16 UTC 2008  Adam Mitz  <mitza@ociweb.com>
+
+        * docs/README:
+
+          Documented the following changes.
+
+        * modules/ProjectCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+        * modules/WinProjectBase.pm:
+
+          Added the <%cmdsep%> pseudovariable that can be used in prebuild,
+          postbuild, and postcommand.  It works like <%and%> and <%or%> but it
+          unconditionally runs the right-hand side command.
+          For postcommand, added <%input_dirname%> and <%output_dirname%> which
+          work like their <%*_basename%> counterparts but return the directory
+          portion of the file name.
+
+Thu Jun 19 01:27:55 UTC 2008  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * config/boost_system.mpb:
+
+          Base project for using the Boost system library.
+
+Tue Jun 17 17:16:07 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/make.txt:
+
+          Document the 'depgen_flags' template variable.
+
+        * combine_dsw.pl:
+        * create_base.pl:
+        * depgen.pl:
+        * generate_export_header.pl:
+        * mpc.pl:
+        * mwc.pl:
+        * prj_install.pl:
+        * registry.pl:
+        * modules/ConfigParser.pm:
+        * modules/Creator.pm:
+        * modules/DirectoryManager.pm:
+        * modules/Driver.pm:
+        * modules/FeatureParser.pm:
+        * modules/GUID.pm:
+        * modules/MakeWorkspaceBase.pm:
+        * modules/Options.pm:
+        * modules/OutputMessage.pm:
+        * modules/Parser.pm:
+        * modules/ProjectCreator.pm:
+        * modules/StringProcessor.pm:
+        * modules/TemplateInputReader.pm:
+        * modules/TemplateParser.pm:
+        * modules/VCProjectBase.pm:
+        * modules/Version.pm:
+        * modules/WinProjectBase.pm:
+        * modules/WinWorkspaceBase.pm:
+        * modules/WorkspaceCreator.pm:
+        * modules/WorkspaceHelper.pm:
+
+          Removed unnecessary parenthesis around variable declarations.
+          This provides a very minor performance increase due to reduced
+          perl op codes.
+
+Tue Jun 10 14:45:18 UTC 2008  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Enhanced support for MinGW with "-type make".
+
+Fri May 30 15:54:22 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * MPC version 3.6.0 released.
+
+Local Variables:
+mode: change-log
+add-log-time-format: (lambda () (progn (setq tz (getenv TZ)) (set-time-zone-rule UTC) (setq time (format-time-string %a %b %e %H:%M:%S %Z %Y (current-time))) (set-time-zone-rule tz) time))
+indent-tabs-mode: nil
+End:
