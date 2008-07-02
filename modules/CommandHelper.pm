@@ -33,10 +33,8 @@ my %notfound;
 # ************************************************************
 
 sub get {
-  my $type = shift;
-
   ## Create the helper name
-  my $type = uc($type);
+  my $type = uc(shift);
   $type =~ s/_FILES$/Helper/;
 
   ## Don't search the filesystem again if we didn't find one the first
