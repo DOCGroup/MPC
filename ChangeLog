@@ -1,3 +1,13 @@
+Wed Jul  2 14:04:39 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/CommandHelper.pm:
+        * modules/ProjectCreator.pm:
+
+          Added a command helper that can be dynamically loaded to assist
+          the project creator in determining which files will be generated
+          by a command.  This is useful when the output of a file can not be
+          represented by the usual Define_Custom syntax.
+
 Mon Jun 30 14:55:51 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/StringProcessor.pm:

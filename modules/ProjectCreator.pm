@@ -18,6 +18,7 @@ use Creator;
 use TemplateInputReader;
 use TemplateParser;
 use FeatureParser;
+use CommandHelper;
 
 use vars qw(@ISA);
 @ISA = qw(Creator);
@@ -2258,18 +2259,30 @@ sub add_explicit_output {
 
 sub generated_filenames {
   my($self, $part, $type, $tag, $file, $noext, $arrs) = @_;
-  my @array;
 
   ## A custom type is not allowed to generate it's own input files
   return () if ($type eq $tag);
 
-  ## We will need to use 'generic_files' instead of $tag if $tag is
-  ## defined in 'generated_exts', but only for the type that will
-  ## actually generate the right type of generic file.
+  ## See if the type for which we are generating ($tag) is also a custom
+  ## file type.  If it is, we need to do some massaging.
+  my $otag = $tag;
   if (defined $self->{'generated_exts'}->{$tag}) {
+    ## If the custom type ($type) doesn't specify that it generates
+    ## generic files, we need to see if there is a command helper for
+    ## this type's command and see what sort of output it knows about.
+    my $inputexts = $self->{'generated_exts'}->{$type}->{$generic_key};
+    if (!defined $inputexts) {
+      my $cmdHelper = CommandHelper::get(
+                        $self->{'generated_exts'}->{$type}->{'command'});
+      $inputexts = $cmdHelper->get_outputexts() if (defined $cmdHelper);
+    }
+
+    ## We will need to use 'generic_files' instead of $tag if $tag is
+    ## defined in 'generated_exts', but only for the type that will
+    ## actually generate the right type of generic file.
     my $good;
-    if (defined $self->{'generated_exts'}->{$type}->{$generic_key}) {
-      foreach my $inputext (@{$self->{'generated_exts'}->{$type}->{$generic_key}}) {
+    if (defined $inputexts) {
+      foreach my $inputext (@$inputexts) {
         my $ext = $inputext;
         $ext =~ s/\\//g;
         foreach my $extreg (@{$self->{'valid_components'}->{$tag}}) {
@@ -2300,6 +2313,7 @@ sub generated_filenames {
     }
   }
 
+  my @array;
   if (!defined $exts[0] && $#pearr == 0 && $#pfarr == 0 &&
       $pearr[0] eq '' && $pfarr[0] eq '') {
     ## If both arrays are defined to be the defaults, then there
@@ -2356,7 +2370,9 @@ sub generated_filenames {
     }
   }
 
-  $self->add_explicit_output($file, $type, $tag, \@array, $arrs);
+  ## Now add the explicit output.  We need to use the original tag value
+  ## ($otag) so that we can find the custom output files.
+  $self->add_explicit_output($file, $type, $otag, \@array, $arrs);
   return @array;
 }
 
@@ -2936,18 +2952,21 @@ sub generate_default_components {
                                        }
                                        return $a cmp $b;
                                      } keys %$vc);
-  my $pchh    = $self->get_assignment('pch_header');
-  my $pchc    = $self->get_assignment('pch_source');
-  my $recurse = $self->get_assignment('recurse');
-  my $defcomp = $self->get_default_component_name();
+  my $pchh     = $self->get_assignment('pch_header');
+  my $pchc     = $self->get_assignment('pch_source');
+  my $recurse  = $self->get_assignment('recurse');
+  my $defcomp  = $self->get_default_component_name();
+  my $genext   = $self->{'generated_exts'};
+  my $flo      = $self->{'flag_overrides'};
+  my $cmdflags = 'commandflags';
 
   ## The order of @tags does make a difference in the way that generated
   ## files get added.  Hence the sort call on the valid component keys to
   ## ensure that user defined types come first.  There still may be an
   ## issue if a user defined type generates another user defined type.
   foreach my $tag (@tags) {
-    if (!defined $self->{'generated_exts'}->{$tag} ||
-        $self->{'generated_exts'}->{$tag}->{'automatic_in'}) {
+    if (!defined $genext->{$tag} ||
+        $genext->{$tag}->{'automatic_in'}) {
       my $exts = $$vc{$tag};
       if (defined $$exts[0]) {
         if (defined $self->{$tag}) {
@@ -2972,11 +2991,10 @@ sub generate_default_components {
                     ## Since the file was actually a directory, we will
                     ## need to propagate the flag overrides (if there are
                     ## any) to the newly located files.
-                    if (defined $self->{'flag_overrides'}->{$tag} &&
-                        defined $self->{'flag_overrides'}->{$tag}->{$file}) {
+                    if (defined $flo->{$tag} &&
+                        defined $flo->{$tag}->{$file}) {
                       foreach my $built (@portion) {
-                        $self->{'flag_overrides'}->{$tag}->{$built} =
-                             $self->{'flag_overrides'}->{$tag}->{$file};
+                        $flo->{$tag}->{$built} = $flo->{$tag}->{$file};
                       }
                     }
 
@@ -3021,10 +3039,33 @@ sub generate_default_components {
         ## ($gentype) will generate files that will be used as input.  It
         ## has to be done here so that the built-in types will have all
         ## of the possible input files that they can.
-        if (defined $self->{'generated_exts'}->{$tag}) {
-          foreach my $gentype (keys %{$self->{'generated_exts'}}) {
+        if (defined $genext->{$tag}) {
+          foreach my $gentype (keys %{$genext}) {
             if ($gentype ne $tag) {
               $self->list_default_generated($gentype, [$tag]);
+            }
+          }
+
+          ## Now that we have the files for this type ($tag), we need to
+          ## locate a command helper for the custom command and see if it
+          ## knows about any additional output files based on the file
+          ## name.
+          my $cmdHelper = CommandHelper::get($genext->{$tag}->{'command'});
+          if (defined $cmdHelper) {
+            my $names = $self->{$tag};
+            foreach my $name (keys %$names) {
+              my $comps = $$names{$name};
+              foreach my $comp (keys %$comps) {
+                my $array = $$comps{$comp};
+                foreach my $file (@$array) {
+                  my $flags = defined $flo->{$tag}->{$file} ?
+                                $flo->{$tag}->{$file}->{$cmdflags} :
+                                $genext->{$tag}->{$cmdflags};
+                  my $add_out = $cmdHelper->get_output($file, $flags);
+                  push(@{$self->{'custom_special_output'}->{$tag}->{$file}},
+                       @$add_out);
+                }
+              }
             }
           }
         }
