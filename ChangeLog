@@ -1,3 +1,11 @@
+Wed Jul  2 16:35:22 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/CommandHelper.pm:
+        * modules/ProjectCreator.pm:
+
+          Modified the helper to be keyed off of the define custom name
+          instead of the define custom command name.
+
 Wed Jul  2 14:04:39 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/CommandHelper.pm:
