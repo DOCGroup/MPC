@@ -2269,11 +2269,10 @@ sub generated_filenames {
   if (defined $self->{'generated_exts'}->{$tag}) {
     ## If the custom type ($type) doesn't specify that it generates
     ## generic files, we need to see if there is a command helper for
-    ## this type's command and see what sort of output it knows about.
+    ## this type and see what sort of output it knows about.
     my $inputexts = $self->{'generated_exts'}->{$type}->{$generic_key};
     if (!defined $inputexts) {
-      my $cmdHelper = CommandHelper::get(
-                        $self->{'generated_exts'}->{$type}->{'command'});
+      my $cmdHelper = CommandHelper::get($type);
       $inputexts = $cmdHelper->get_outputexts() if (defined $cmdHelper);
     }
 
@@ -3050,7 +3049,7 @@ sub generate_default_components {
           ## locate a command helper for the custom command and see if it
           ## knows about any additional output files based on the file
           ## name.
-          my $cmdHelper = CommandHelper::get($genext->{$tag}->{'command'});
+          my $cmdHelper = CommandHelper::get($tag);
           if (defined $cmdHelper) {
             my $names = $self->{$tag};
             foreach my $name (keys %$names) {
