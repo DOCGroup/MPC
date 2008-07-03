@@ -1,3 +1,11 @@
+Thu Jul  3 14:49:52 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          For the previous change to generate_default_components(), we only
+          need to do this if the list of component tags was not provided to
+          the method.
+
 Thu Jul  3 11:46:23 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
