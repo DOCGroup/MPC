@@ -346,6 +346,9 @@ realclean: clean
 <%if(exename || sharedname || staticname)%>
         -if exist "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" del "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)"
 <%endif%>
+<%if(postclean)%>
+	-<%eval(postclean)%>
+<%endif%>        
 
 <%if(prebuild)%>
 __prebuild__:

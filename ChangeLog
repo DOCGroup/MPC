@@ -1,3 +1,19 @@
+Thu Jul  3 16:36:30 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+
+          Added a new keyword, postclean, which is similar to postbuild
+          except that it is executed during the realclean target.
+
+        * templates/bmake.mpd:
+        * templates/html.mpd:
+        * templates/make.mpd:
+        * templates/nmake.mpd:
+
+          Added the use of postclean.
+
 Thu Jul  3 14:49:52 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

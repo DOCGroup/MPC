@@ -25,8 +25,9 @@ use vars qw(@ISA);
 
 my $assign_key  = 'assign';
 my $gassign_key = 'global_assign';
-my %non_convert = ('prebuild' => 1,
+my %non_convert = ('prebuild'  => 1,
                    'postbuild' => 1,
+                   'postclean' => 1,
                   );
 my @statekeys = ('global', 'include', 'template', 'ti',
                  'dynamic', 'static', 'relative', 'addtemp',
