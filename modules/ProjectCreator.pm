@@ -3026,35 +3026,38 @@ sub generate_default_components {
     }
   }
 
-  foreach my $tag (@gc) {
-    ## We need to see if other custom types ($gentype) will generate
-    ## files that will be used as input.  It has to be done here so that
-    ## the built-in types will have all of the possible input files that
-    ## they can.
-    foreach my $gentype (@gc) {
-      if ($gentype ne $tag) {
-        $self->list_default_generated($gentype, [$tag]);
+  ## We only want to do this when the list of tags was not passed in
+  if (!defined $passed) {
+    foreach my $tag (@gc) {
+      ## We need to see if other custom types ($gentype) will generate
+      ## files that will be used as input.  It has to be done here so that
+      ## the built-in types will have all of the possible input files that
+      ## they can.
+      foreach my $gentype (@gc) {
+        if ($gentype ne $tag) {
+          $self->list_default_generated($gentype, [$tag]);
+        }
       }
-    }
 
-    ## Now that we have the files for this type ($tag), we need to
-    ## locate a command helper for the custom command and see if it
-    ## knows about any additional output files based on the file
-    ## name.
-    my $cmdHelper = CommandHelper::get($tag);
-    if (defined $cmdHelper) {
-      my $names = $self->{$tag};
-      foreach my $name (keys %$names) {
-        my $comps = $$names{$name};
-        foreach my $comp (keys %$comps) {
-          my $array = $$comps{$comp};
-          foreach my $file (@$array) {
-            my $flags = defined $flo->{$tag}->{$file} ?
-                          $flo->{$tag}->{$file}->{$cmdflags} :
-                          $genext->{$tag}->{$cmdflags};
-            my $add_out = $cmdHelper->get_output($file, $flags);
-            push(@{$self->{'custom_special_output'}->{$tag}->{$file}},
-                 @$add_out);
+      ## Now that we have the files for this type ($tag), we need to
+      ## locate a command helper for the custom command and see if it
+      ## knows about any additional output files based on the file
+      ## name.
+      my $cmdHelper = CommandHelper::get($tag);
+      if (defined $cmdHelper) {
+        my $names = $self->{$tag};
+        foreach my $name (keys %$names) {
+          my $comps = $$names{$name};
+          foreach my $comp (keys %$comps) {
+            my $array = $$comps{$comp};
+            foreach my $file (@$array) {
+              my $flags = defined $flo->{$tag}->{$file} ?
+                            $flo->{$tag}->{$file}->{$cmdflags} :
+                            $genext->{$tag}->{$cmdflags};
+              my $add_out = $cmdHelper->get_output($file, $flags);
+              push(@{$self->{'custom_special_output'}->{$tag}->{$file}},
+                   @$add_out);
+            }
           }
         }
       }
