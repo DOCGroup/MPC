@@ -83,6 +83,7 @@
 <tr><td>pch_source</td><td><%pch_source%></td></tr>
 <tr><td>prebuild</td><td><%prebuild%></td></tr>
 <tr><td>postbuild</td><td><%postbuild%></td></tr>
+<tr><td>postclean</td><td><%postclean%></td></tr>
 <tr><td>pure_libs</td><td><%pure_libs%></td></tr>
 <tr><td>recurse</td><td><%recurse%></td></tr>
 <tr><td>requires</td><td><%requires%></td></tr>

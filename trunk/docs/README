@@ -210,6 +210,11 @@ postbuild       If this is defined in the project, the value will be
                                which always runs the right-hand side command.
 prebuild        This is similar to postbuild except that it will be
                 performed before the build instead of after.
+postclean       This is similar to postbuild except that it will be
+                performed after cleaning up the project (the realclean
+                target for make based project types).  NOTE: This is not
+                used in the IDE based project types since there is no hook
+                for such an action.
 recurse         If set to 1, MPC will recurse into directories listed under
                 component listings and add any component corresponding files
                 to the list.  This keyword can be used as a global project

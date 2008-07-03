@@ -123,6 +123,9 @@ REALCLEAN : CLEAN
 <%endfor%>
 <%endfor%>
 <%endfor%>
+<%if(postclean)%>
+	-<%eval(postclean)%>
+<%endif%>        
 
 "$(INTDIR)" :
     if not exist "<%intermediate_dir%>\$(NULL)" mkdir "<%intermediate_dir%>"
