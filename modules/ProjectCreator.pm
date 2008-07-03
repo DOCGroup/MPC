@@ -60,6 +60,7 @@ my %validNames = ('exename'            => 1,
                   'pch_source'         => 1,
                   'prebuild'           => 5,
                   'postbuild'          => 5,
+                  'postclean'          => 5,
                   'dllout'             => 1,
                   'libout'             => 1,
                   'dynamicflags'       => 3,
@@ -3810,7 +3811,7 @@ sub get_command_subs {
   $valid{'quote'}  = $self->get_quote_symbol();
   $valid{'equote'} = $self->get_escaped_quote_symbol();
   $valid{'crlf'}   = $self->crlf();
-  $valid{'cmdsep'}= $self->get_cmdsep_symbol();
+  $valid{'cmdsep'} = $self->get_cmdsep_symbol();
 
   return \%valid;
 }

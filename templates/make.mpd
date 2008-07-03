@@ -300,6 +300,9 @@ realclean: clean
 <%if(obj_dir)%>
 	-$(RM) <%targetoutdir%><%obj_dir%>
 <%endif%>
+<%if(postclean)%>
+	-<%eval(postclean)%>
+<%endif%>
 
 <%if(prebuild)%>
 __prebuild__:
