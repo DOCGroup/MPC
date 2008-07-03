@@ -2935,38 +2935,28 @@ sub correct_generated_files {
 
 sub generate_default_components {
   my($self, $files, $passed) = @_;
-  my $vc   = $self->{'valid_components'};
-  my $ovc  = $language{$self->get_language()}->[0];
-  my @tags = (defined $passed ? $passed :
-                                ## Sort the components so that custom
-                                ## types come before the built-in MPC
-                                ## types.  That way, files that get
-                                ## generated can be used as input for the
-                                ## built-in types.
-                                sort { if (defined $$ovc{$a}) {
-                                         return 1 if (!defined $$ovc{$b});
-                                       }
-                                       elsif (defined $$ovc{$b}) {
-                                         return -1;
-                                       }
-                                       return $a cmp $b;
-                                     } keys %$vc);
+  my $genext   = $self->{'generated_exts'};
+  my @gc       = reverse sort { $self->sort_generated_types($a, $b)
+                              } keys %$genext;
+  my @tags     = (defined $passed ? $passed :
+                    (@gc, keys %{$language{$self->get_language()}->[0]}));
   my $pchh     = $self->get_assignment('pch_header');
   my $pchc     = $self->get_assignment('pch_source');
   my $recurse  = $self->get_assignment('recurse');
   my $defcomp  = $self->get_default_component_name();
-  my $genext   = $self->{'generated_exts'};
   my $flo      = $self->{'flag_overrides'};
   my $cmdflags = 'commandflags';
 
   ## The order of @tags does make a difference in the way that generated
-  ## files get added.  Hence the sort call on the valid component keys to
-  ## ensure that user defined types come first.  There still may be an
-  ## issue if a user defined type generates another user defined type.
+  ## files get added.  Hence the sort call on the generate_exts keys to
+  ## ensure that user defined types come first.  They are reverse sorted
+  ## using the custom sort function to ensure that user defined types
+  ## that rely on other user defined types for input files are processed
+  ## first.
   foreach my $tag (@tags) {
     if (!defined $genext->{$tag} ||
         $genext->{$tag}->{'automatic_in'}) {
-      my $exts = $$vc{$tag};
+      my $exts = $self->{'valid_components'}->{$tag};
       if (defined $$exts[0]) {
         if (defined $self->{$tag}) {
           ## If the tag is defined, then process directories
@@ -3032,40 +3022,39 @@ sub generate_default_components {
             $self->correct_generated_files($defcomp, $exts, $tag, $array);
           }
         }
+      }
+    }
+  }
 
-        ## If the type that we're generating defaults for ($tag) is a
-        ## custom type, then we need to see if other custom types
-        ## ($gentype) will generate files that will be used as input.  It
-        ## has to be done here so that the built-in types will have all
-        ## of the possible input files that they can.
-        if (defined $genext->{$tag}) {
-          foreach my $gentype (keys %{$genext}) {
-            if ($gentype ne $tag) {
-              $self->list_default_generated($gentype, [$tag]);
-            }
-          }
+  foreach my $tag (@gc) {
+    ## We need to see if other custom types ($gentype) will generate
+    ## files that will be used as input.  It has to be done here so that
+    ## the built-in types will have all of the possible input files that
+    ## they can.
+    foreach my $gentype (@gc) {
+      if ($gentype ne $tag) {
+        $self->list_default_generated($gentype, [$tag]);
+      }
+    }
 
-          ## Now that we have the files for this type ($tag), we need to
-          ## locate a command helper for the custom command and see if it
-          ## knows about any additional output files based on the file
-          ## name.
-          my $cmdHelper = CommandHelper::get($tag);
-          if (defined $cmdHelper) {
-            my $names = $self->{$tag};
-            foreach my $name (keys %$names) {
-              my $comps = $$names{$name};
-              foreach my $comp (keys %$comps) {
-                my $array = $$comps{$comp};
-                foreach my $file (@$array) {
-                  my $flags = defined $flo->{$tag}->{$file} ?
-                                $flo->{$tag}->{$file}->{$cmdflags} :
-                                $genext->{$tag}->{$cmdflags};
-                  my $add_out = $cmdHelper->get_output($file, $flags);
-                  push(@{$self->{'custom_special_output'}->{$tag}->{$file}},
-                       @$add_out);
-                }
-              }
-            }
+    ## Now that we have the files for this type ($tag), we need to
+    ## locate a command helper for the custom command and see if it
+    ## knows about any additional output files based on the file
+    ## name.
+    my $cmdHelper = CommandHelper::get($tag);
+    if (defined $cmdHelper) {
+      my $names = $self->{$tag};
+      foreach my $name (keys %$names) {
+        my $comps = $$names{$name};
+        foreach my $comp (keys %$comps) {
+          my $array = $$comps{$comp};
+          foreach my $file (@$array) {
+            my $flags = defined $flo->{$tag}->{$file} ?
+                          $flo->{$tag}->{$file}->{$cmdflags} :
+                          $genext->{$tag}->{$cmdflags};
+            my $add_out = $cmdHelper->get_output($file, $flags);
+            push(@{$self->{'custom_special_output'}->{$tag}->{$file}},
+                 @$add_out);
           }
         }
       }
@@ -3510,7 +3499,7 @@ sub generate_defaults {
                   return  1 if $b eq 'source_files';
                   return $b cmp $a; } keys %{$self->{'valid_components'}};
   foreach my $gentype (sort { $self->sort_generated_types($a, $b)
-                            }keys %{$self->{'generated_exts'}}) {
+                            } keys %{$self->{'generated_exts'}}) {
     $self->list_default_generated($gentype, \@vc);
   }
 
