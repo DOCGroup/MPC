@@ -452,6 +452,11 @@ libpath             If the command requires an additional library path, add
 output_option       If the command takes an option to specify only a single
                     file output name, then set it here.  Otherwise, this
                     should be omitted.
+output_follows_input This setting defaults to 1 and indicates that output
+                    files from the custom command will end up in the same
+                    directory as the input files.  If this is set to 0, it
+                    is assumed that the output files will go into the same
+                    directory as the .mpc file.
 pch_postrule        If this is set to 1, then a rule will be added to the
                     custom rule that will modify the source output files to
                     include the precompiled header file.

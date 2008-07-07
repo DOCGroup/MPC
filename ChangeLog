@@ -1,3 +1,15 @@
+Mon Jul  7 17:00:33 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+
+          MPC had always assumed that output files went into the same
+          directory as the input file (unless specified otherwise through
+          gendir).  Now, in the Define_Custom for the command, this
+          assumption can be modified.  If 'output_follows_input' is set to
+          0, it will assume that output files go into the same directory as
+          the project (unless specified otherwise through gendir).
+
 Mon Jul  7 13:10:46 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
