@@ -1,3 +1,12 @@
+Mon Jul  7 13:10:46 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Modified the behavior of adding to prebuild, postbuild, and
+          postclean.  Values that are added are now separated via the
+          command separator for the project type.  This will assure that
+          multiple commands are executed separately (and unconditionally).
+
 Thu Jul  3 16:36:30 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
