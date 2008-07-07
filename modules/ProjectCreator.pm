@@ -473,6 +473,21 @@ sub process_assignment_sub {
 sub addition_core {
   my($self, $name, $value, $nval, $assign) = @_;
 
+  ## If there is a previous value ($nval) and the keyword is going to be
+  ## evaled, we need to separate the values with a command separator.
+  ## This has to be done at the MPC level because it isn't always
+  ## possible for the user to know if a value has already been added to
+  ## the keyword (prebuild, postbuild and postclean).
+  if (defined $nval &&
+      defined $validNames{$name} && ($validNames{$name} & 4)) {
+    if ($self->preserve_assignment_order($name)) {
+      $value = '<%cmdsep%> ' . $value;
+    }
+    else {
+      $value .= '<%cmdsep%>';
+    }
+  }
+
   ## For an addition, we need to see if it is a project keyword being
   ## used within a 'specific' section.  If it is, we may need to update
   ## scoped settings for that variable (which are in essence template
