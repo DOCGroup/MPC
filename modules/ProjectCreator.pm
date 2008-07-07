@@ -91,6 +91,7 @@ my %customDefined = ('automatic_in'                => 0x04,
                      'postcommand'                 => 0x14,
                      'inputext'                    => 0x01,
                      'libpath'                     => 0x04,
+                     'output_follows_input'        => 0x04,
                      'output_option'               => 0x14,
                      'pch_postrule'                => 0x04,
                      'pre_extension'               => 0x08,
@@ -1704,6 +1705,9 @@ sub parse_define_custom {
       if (!defined $self->{'generated_exts'}->{$tag}->{'automatic_out'}) {
         $self->{'generated_exts'}->{$tag}->{'automatic_out'} = 1;
       }
+      if (!defined $self->{'generated_exts'}->{$tag}->{'output_follows_input'}) {
+        $self->{'generated_exts'}->{$tag}->{'output_follows_input'} = 1;
+      }
       if (!defined $self->{'valid_components'}->{$tag}) {
         $self->{'valid_components'}->{$tag} = [];
       }
@@ -2340,7 +2344,10 @@ sub generated_filenames {
 
     ## Correctly deal with pre filename and directories
     if ($part =~ /(.*[\/\\])([^\/\\]+)$/) {
-      $dir = $1;
+      ## Split the directory and base name of the file.  Only set the
+      ## directory if the output follows the input directory.
+      $dir = $1
+        if ($self->{'generated_exts'}->{$type}->{'output_follows_input'});
       $base = $2;
     }
     else {
