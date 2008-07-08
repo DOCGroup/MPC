@@ -1,3 +1,12 @@
+Tue Jul  8 15:35:29 UTC 2008  Steve Huston  <shuston@riverace.com>
+
+        * templates/vc8.mpd: Allow a project to be a "make output" type using
+          the VCNMakeTool section instead of the usual compile, link, etc.
+          sections. This allows one to drive nmake-type projects from a
+          VC project. Also, enable setting the DebugInformationFormat even
+          when doing an optimize/Release build. Thanks to Kelly Hickel for
+          contributing these.
+
 Tue Jul  8 13:09:22 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

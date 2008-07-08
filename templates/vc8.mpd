@@ -44,6 +44,14 @@
 			ManagedExtensions="<%managed%>"
 <%endif%>
 			>
+<%if(makeoutput)%>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="<%makebuild%> CONF=<%configuration%>"
+				ReBuildCommandLine="<%makerebuild%> CONF=<%configuration%>"
+				CleanCommandLine="<%makeclean%> CONF=<%configuration%>"
+				Output="<%makeoutput%>"/>
+<%else%>
 			<Tool
 				Name="VCPreBuildEventTool"
 <%if(prebuild)%>
@@ -215,7 +223,7 @@
 				WarnAsError="<%WarnAsError%>"
 <%endif%>
 				Detect64BitPortabilityProblems="<%Detect64BitPortabilityProblems("true")%>"
-<%if(!optimize)%>
+<%if(!optimize || debug_format)%>
 				DebugInformationFormat="<%debug_format("3")%>"
 <%endif%>
 <%if(CallingConvention)%>
@@ -501,6 +509,7 @@
 				CommandLine="<%eval(postbuild)%>"
 <%endif%>
 			/>
+<%endif%>
 		</Configuration>
 <%endfor%>
 <%endfor%>
