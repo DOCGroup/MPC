@@ -1,3 +1,11 @@
+Tue Jul  8 13:09:22 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug in my change from Thu Jul  3 11:46:23 UTC 2008.  Files
+          were not being automatically added when they didn't exist on the
+          file system.
+
 Mon Jul  7 17:00:33 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
