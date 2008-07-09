@@ -866,15 +866,8 @@ sub parse_line {
     elsif ($values[0] eq 'component') {
       my $comp = $values[1];
       my $name = $values[2];
-      if (defined $name) {
-        $name =~ s/^\(\s*//;
-        $name =~ s/\s*\)$//;
-      }
-      else {
-        $name = $self->get_default_component_name();
-      }
+      my $vc   = $self->{'valid_components'};
 
-      my $vc = $self->{'valid_components'};
       if (defined $$vc{$comp}) {
         ($status, $errorString) = $self->parse_components($ih, $comp, $name);
       }
@@ -1159,8 +1152,8 @@ sub process_component_line {
       $line =~ s/\s+$//;
       if (index($line, $iop) >= 0 && $line =~ /(.*)\s+$iop\s+(.*)/) {
         $line = $1;
-        $out  = ($iop eq '>>' ? $2 : $out);
-        $dep  = ($iop eq '<<' ? $2 : $dep);
+        $out  = $2 if ($iop eq '>>');
+        $dep  = $2 if ($iop eq '<<');
         $line =~ s/\s+$//;
       }
 
@@ -1796,41 +1789,33 @@ sub parse_define_custom {
         ## we can't use it for this check.
         last if (!$ok);
       }
-      elsif ($line =~ /^(\w+)\s+(\w+)(\s*=\s*(\w+)?)?/) {
+      elsif ($line =~ /^keyword\s+(\w+)(?:\s*=\s*(\w+)?)?/) {
         ## Check for keyword mapping here
-        my $keyword = $1;
-        my $newkey  = $2;
-        my $mapkey  = $4;
-        if ($keyword eq 'keyword') {
-          if (defined $self->{'valid_names'}->{$newkey}) {
-            $status = 0;
-            $errorString = "Cannot map $newkey onto an " .
-                           "existing keyword";
-            last;
-          }
-          elsif (!defined $mapkey) {
-            $self->{'valid_names'}->{$newkey} = 1;
-          }
-          elsif ($newkey ne $mapkey) {
-            if (defined $customDefined{$mapkey}) {
-              $self->{'valid_names'}->{$newkey} = [ $tag, $mapkey ];
-            }
-            else {
-              $status = 0;
-              $errorString = "Cannot map $newkey to an " .
-                             "undefined custom keyword: $mapkey";
-              last;
-            }
+        my $newkey = $1;
+        my $mapkey = $2;
+        if (defined $self->{'valid_names'}->{$newkey}) {
+          $status = 0;
+          $errorString = "Cannot map $newkey onto an " .
+                         "existing keyword";
+          last;
+        }
+        elsif (!defined $mapkey) {
+          $self->{'valid_names'}->{$newkey} = 1;
+        }
+        elsif ($newkey ne $mapkey) {
+          if (defined $customDefined{$mapkey}) {
+            $self->{'valid_names'}->{$newkey} = [ $tag, $mapkey ];
           }
           else {
             $status = 0;
-            $errorString = "Cannot map $newkey to $mapkey";
+            $errorString = "Cannot map $newkey to an " .
+                           "undefined custom keyword: $mapkey";
             last;
           }
         }
         else {
           $status = 0;
-          $errorString = "Unrecognized line: $line";
+          $errorString = "Cannot map $newkey to $mapkey";
           last;
         }
       }
@@ -3232,16 +3217,14 @@ sub list_generated_file {
   my($self, $gentype, $tag, $array, $file, $ofile) = @_;
   my $count = 0;
 
-  ## Save the length of the basename for later.  We can not convert the
-  ## slashes on $file as it needs to keep the back slashes since that's
-  ## what comes from generated_filenames() below.  This is, of course, if
-  ## we are converting slashes in the first place.
-  my $fcopy = $file;
-  $fcopy =~ s/.*[\/\\]//;
-  my $blen = length($fcopy);
-
+  ## Go through each file listed in our original type and attempt to find
+  ## out if it is the generated file we may need to add ($file).
   foreach my $gen ($self->get_component_list($gentype, 1)) {
     my $input = $gen;
+
+    ## Take the file and see if it contains an extension that our
+    ## generating type ($gentype) knows about.  If it does, remove it and
+    ## stop looking for the extension.
     foreach my $ext (@{$self->{'valid_components'}->{$gentype}}) {
       ## Remove the extension.
       ## If it works, then we can exit this loop.
@@ -3258,28 +3241,25 @@ sub list_generated_file {
       $gen =~ s/\.[^\.]+$//;
     }
 
-    ## See if we need to add the file.  We only need to bother
-    ## if the length of the basename $gen is less than or equal to the
-    ## length of the basename $file because they couldn't possibly match if
-    ## they weren't.
-    if (length($self->mpc_basename($gen)) <= $blen) {
-      foreach my $created ($self->generated_filenames($gen, $gentype,
-                                                      $tag, $input)) {
-        ## $gen is a file that has a custom definition that generates
-        ## files of the type $tag.  The $file passed in is of type
-        ## $gentype and, as far as I can tell, $created will always be
-        ## longer or of the same length of $file.  It doesn't really
-        ## matter if $file contains a '.' or not.
-        if (index($created, $file) != -1) {
-          if (defined $ofile) {
-            $created = $self->prepend_gendir($created, $ofile, $gentype);
-          }
-          if (!$self->already_added($array, $created)) {
-            push(@$array, $created);
-            ++$count;
-          }
-          last;
+    ## See if we need to add the file.  We always need to check since the
+    ## output file may have absolutely nothing in common with the input
+    ## file.
+    foreach my $created ($self->generated_filenames($gen, $gentype,
+                                                    $tag, $input)) {
+      ## $gen is a file that has a custom definition that generates
+      ## files of the type $tag.  The $file passed in is of type
+      ## $gentype and, as far as I can tell, $created will always be
+      ## longer or of the same length of $file.  It doesn't really
+      ## matter if $file contains a '.' or not.
+      if (index($created, $file) != -1) {
+        if (defined $ofile) {
+          $created = $self->prepend_gendir($created, $ofile, $gentype);
         }
+        if (!$self->already_added($array, $created)) {
+          push(@$array, $created);
+          ++$count;
+        }
+        last;
       }
     }
   }
