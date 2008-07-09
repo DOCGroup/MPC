@@ -1,3 +1,27 @@
+Wed Jul  9 13:46:02 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeProjectCreator.pm:
+        * modules/MakeProjectBase.pm:
+        * modules/Parser.pm:
+
+          Reduce op code count.
+
+        * modules/CommandHelper.pm:
+
+          Added a debug message to assist users in figuring out why their
+          helper isn't being picked up.
+
+        * modules/Creator.pm:
+
+          Modified recursive_directory_list() to skip .svn and CVS
+          directories.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a very old and incorrect assumption that output file names
+          generated as part of a custom definition had to be longer than the
+          length of the input file name.
+
 Tue Jul  8 15:35:29 UTC 2008  Steve Huston  <shuston@riverace.com>
 
         * templates/vc8.mpd: Allow a project to be a "make output" type using
