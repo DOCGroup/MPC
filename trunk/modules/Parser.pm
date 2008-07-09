@@ -72,9 +72,7 @@ sub read_file {
     $self->debug("Open $input");
     if ($cache) {
       ## If we don't have an array for this file, then start one
-      if (!defined $filecache{$input}) {
-        $filecache{$input} = [];
-      }
+      $filecache{$input} = [] if (!defined $filecache{$input});
 
       while(<$ih>) {
         my $line = $self->preprocess_line($ih, $_);
@@ -84,9 +82,7 @@ sub read_file {
 
         ($status, $errorString) = $self->parse_line($ih, $line);
 
-        if (!$status) {
-          last;
-        }
+        last if (!$status);
       }
     }
     else {
@@ -94,9 +90,7 @@ sub read_file {
         ($status, $errorString) = $self->parse_line(
                                     $ih, $self->preprocess_line($ih, $_));
 
-        if (!$status) {
-          last;
-        }
+        last if (!$status);
       }
     }
     $self->debug("Close $input");
@@ -123,9 +117,7 @@ sub cached_file_read {
       ++$self->{'line_number'};
       ($status, $error) = $self->parse_line(undef, $line);
 
-      if (!$status) {
-        last;
-      }
+      last if (!$status);
     }
     return $status, $error;
   }
@@ -161,9 +153,7 @@ sub search_include_path {
   my($self, $file) = @_;
 
   foreach my $include ('.', @{$self->{'include'}}) {
-    if (-r "$include/$file") {
-      return "$include/$file";
-    }
+    return "$include/$file" if (-r "$include/$file");
   }
 
   return undef;

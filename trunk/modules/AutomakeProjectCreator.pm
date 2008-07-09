@@ -35,11 +35,7 @@ sub fill_value {
 
   if ($name eq 'am_version') {
     $value = $self->get_assignment('version');
-    if (defined $value) {
-      if (($value =~ tr/./:/) < 2) {
-        $value .= ':0';
-      }
-    }
+    $value .= ':0' if (defined $value && ($value =~ tr/./:/) < 2);
   }
 
   return $value;

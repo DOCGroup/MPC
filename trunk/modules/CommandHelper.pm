@@ -44,6 +44,9 @@ sub get {
   ## Return the helper if we've already created one
   return $required{$type} if (defined $required{$type});
 
+  ## Assist users in figuring out why their helper isn't being picked up.
+  OutputMessage::debug(undef, "Searching @INC for $type.pm");
+
   ## If we can find a helper with this name, we will
   ## create a singleton of that type and return it.
   foreach my $inc (@INC) {
@@ -76,7 +79,7 @@ sub get_outputexts {
   ## This method is expected to return an array reference containing the
   ## extensions for files returned by the get_output() method.  They will
   ## be used as regular expressions so regular expression characters
-  ## (such as '.', '[', ']', etc. must be escaped).
+  ## (such as '.', '[', ']', etc.) must be escaped.
   return [];
 }
 

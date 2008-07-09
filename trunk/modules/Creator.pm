@@ -92,9 +92,7 @@ sub preprocess_line {
   while ($line =~ /\\$/) {
     $line =~ s/\s*\\$/ /;
     my $next = $fh->getline();
-    if (defined $next) {
-      $line .= $self->strip_line($next);
-    }
+    $line .= $self->strip_line($next) if (defined $next);
   }
   return $line;
 }
@@ -105,13 +103,11 @@ sub generate_default_input {
   my($status,
      $error) = $self->parse_line(undef, "$self->{'grammar_type'} {");
 
-  if ($status) {
-    ($status, $error) = $self->parse_line(undef, '}');
-  }
+  ## Parse the finish line if there was no error
+  ($status, $error) = $self->parse_line(undef, '}') if ($status);
 
-  if (!$status) {
-    $self->error($error);
-  }
+  ## Display the error if there was one
+  $self->error($error) if (!$status);
 
   return $status;
 }
@@ -281,9 +277,8 @@ sub parse_scope {
   my $status = 0;
   my $errorString = "Unable to process $name";
 
-  if (!defined $flags) {
-    $flags = {};
-  }
+  ## Make sure $flags has a hash map reference
+  $flags = {} if (!defined $flags);
 
   while(<$fh>) {
     my $line = $self->preprocess_line($fh, $_);
@@ -340,9 +335,7 @@ sub parse_scope {
           ($status,
            $errorString) = $self->handle_unknown_assignment($type,
                                                             @values);
-          if (!$status) {
-            last;
-          }
+          last if (!$status);
         }
       }
       else {
@@ -350,9 +343,7 @@ sub parse_scope {
                                                                $type,
                                                                $flags,
                                                                $line);
-        if (!$status) {
-          last;
-        }
+        last if (!$status);
       }
     }
   }
@@ -525,12 +516,17 @@ sub recursive_directory_list {
                                      readdir($fh)))) {
       my $full = $prefix . $file;
 
-      ## Check for command line exclusions
-      if (defined $$exclude[0]) {
-        foreach my $exc (@$exclude) {
-          if ($full eq $exc) {
-            $skip = 1;
-            last;
+      if ($file eq '.svn' || $file eq 'CVS') {
+        $skip = 1;
+      }
+      else {
+        ## Check for command line exclusions
+        if (defined $$exclude[0]) {
+          foreach my $exc (@$exclude) {
+            if ($full eq $exc) {
+              $skip = 1;
+              last;
+            }
           }
         }
       }
@@ -624,9 +620,7 @@ sub process_assignment_add {
   $value = $self->remove_duplicate_addition($name, $value, $nval);
 
   ## If there is anything to add, then do so
-  if ($value ne '') {
-    $self->addition_core($name, $value, $nval, $assign);
-  }
+  $self->addition_core($name, $value, $nval, $assign) if ($value ne '');
 }
 
 
@@ -982,9 +976,7 @@ sub expand_variables {
             $ival = '../' x $dircount;
             $ival =~ s/\/$//;
           }
-          if (defined $append) {
-            $ival .= $append;
-          }
+          $ival .= $append if (defined $append);
           $ival =~ s/\//\\/g if ($self->{'convert_slashes'});
           substr($value, $start) =~ s/\$\([^)]+\)/$ival/;
           $whole = $ival;
@@ -1025,9 +1017,7 @@ sub expand_variables {
         $whole = '' if ($whole ne $val);
       }
       else {
-        if ($expand && $warn) {
-          $self->warning("Unable to expand $name.");
-        }
+        $self->warning("Unable to expand $name.") if ($expand && $warn);
         my $loc = index(substr($value, $start), $whole);
         $start += $loc if ($loc > 0);
       }
