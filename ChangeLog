@@ -1,3 +1,17 @@
+Thu Jul 10 15:28:50 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * devtools/document_template.pl:
+
+          Fixed a bug where template variables used within template
+          functions were ignored.
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+
+          Added the ability to utilize project settings within the
+          Define_Custom command, commandflags, dependent, output_option,
+          and postcommand settings.
+
 Thu Jul 10 14:29:44 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/MakeProjectCreator.pm:

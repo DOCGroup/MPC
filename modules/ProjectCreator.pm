@@ -3803,9 +3803,14 @@ sub replace_parameters {
       $modifier = $tmp;
     }
 
-    if (exists $$valid{$name}) {
-      if (defined $$valid{$name}) {
-        my $replace = $$valid{$name};
+    ## Support both pseudo variables and project settings
+    if (exists $$valid{$name} || $self->is_keyword($name)) {
+      ## If the pseudo variable is defined or the project setting has a
+      ## value, then we'll need to do the replacement.
+      my $prjval;
+      if (defined $$valid{$name} ||
+          ($prjval = $self->get_assignment($name))) {
+        my $replace = $$valid{$name} || $prjval;
         if (defined $modifier) {
           if ($modifier eq 'noextension') {
             $replace =~ s/\.[^\.]+$//;
