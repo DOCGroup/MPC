@@ -18,7 +18,7 @@ use DependencyWriter;
 # Data Section
 # ************************************************************
 
-my($writers) = {};
+my $writers = {};
 
 # ************************************************************
 # Subroutine Section
@@ -30,9 +30,7 @@ sub register {
 
 
 sub create {
-  if (defined $$writers{$_[0]}) {
-    return $$writers{$_[0]}->new();
-  }
+  return $$writers{$_[0]}->new() if (defined $$writers{$_[0]});
 
   print STDERR "WARNING: Invalid dependency writer type: $_[0]\n";
   return new DependencyWriter();

@@ -21,11 +21,8 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub process {
-  my($objects) = $_[1];
-  my($files)   = $_[2];
-
   ## Sort the dependencies to make them reproducible
-  return "@$objects: \\\n  " . join(" \\\n  ", sort @$files) . "\n";
+  return "@{$_[1]}: \\\n  " . join(" \\\n  ", sort @{$_[2]}) . "\n";
 }
 
 
