@@ -18,7 +18,7 @@ use ObjectGenerator;
 # Data Section
 # ************************************************************
 
-my($generators) = {};
+my $generators = {};
 
 # ************************************************************
 # Subroutine Section
@@ -30,9 +30,7 @@ sub register {
 
 
 sub create {
-  if (defined $$generators{$_[0]}) {
-    return $$generators{$_[0]}->new();
-  }
+  return $$generators{$_[0]}->new() if (defined $$generators{$_[0]});
 
   print STDERR "WARNING: Invalid object generator type: $_[0]\n";
   return new ObjectGenerator();

@@ -21,13 +21,13 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub process {
-  my($sources) = $_[1];
-  my($files)   = $_[2];
-  my($total)   = 0;
+  my $sources = $_[1];
+  my $files   = $_[2];
+  my $total   = 0;
 
   $$sources[0] =~ s/\//\\/g;
   $$sources[0] =~ s/\\\\/\\/g;
-  my($dep) = "$$sources[0] :\\\n";
+  my $dep = "$$sources[0] :\\\n";
 
   ## Sort the dependencies to make them reproducible
   foreach my $file (sort @$files) {

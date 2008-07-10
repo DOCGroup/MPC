@@ -19,10 +19,7 @@ use File::Basename;
 # ************************************************************
 
 sub new {
-  my($class)   = shift;
-  my($macros)  = shift;
-  my($ipaths)  = shift;
-  my($exclude) = shift;
+  my($class, $macros, $ipaths, $exclude) = @_;
   return bless {'macros'  => $macros,
                 'ipaths'  => $ipaths,
                 'exclude' => $exclude,
@@ -34,18 +31,18 @@ sub new {
 
 
 sub process {
-  my($self)     = shift;
-  my($file)     = shift;
-  my($noinline) = shift;
-  my($noincs)   = shift;
-  my($fh)       = new FileHandle();
+  my($self, $file, $noinline, $noincs) = @_;
+  my $fh = new FileHandle();
 
+  ## Open the file, but if we can't we'll just silently ignore it.
   if (open($fh, $file)) {
-    my($ifcount) = 0;
-    my(@zero)    = ();
-    my($files)   = $self->{'files'};
-    my($recurse) = ++$self->{'recurse'};
-    my($dir)     = dirname($file);
+    my @zero;
+    my $ifcount = 0;
+    my $files   = $self->{'files'};
+    my $dir     = dirname($file);
+
+    ## We only need to keep track of recursion inside this block
+    my $recurse = ++$self->{'recurse'};
 
     $$files{$file} = [];
     while(<$fh>) {
@@ -79,7 +76,7 @@ sub process {
       elsif (!defined $zero[0] &&
              /^\s*#\s*include\s+[<"]([^">]+)[">]/o) {
         ## Locate the include file
-        my($inc) = undef;
+        my $inc;
         if (exists $self->{'ifound'}->{$1}) {
           $inc = $self->{'ifound'}->{$1};
         }
@@ -120,6 +117,7 @@ sub process {
     }
     close($fh);
 
+    ## We only need to keep track of recursion inside this block
     --$self->{'recurse'};
   }
 
@@ -127,8 +125,8 @@ sub process {
   ## If the last file to be processed isn't accessable then
   ## we still need to return the array reference of includes.
   if (!$noincs) {
-    my(@files)  = ($file);
-    my(%ifiles) = ();
+    my @files = ($file);
+    my %ifiles;
 
     foreach my $processed (@files) {
       foreach my $inc (@{$self->{'files'}->{$processed}}) {
