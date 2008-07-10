@@ -421,9 +421,7 @@ sub get_value_with_default {
 
       ## If the user set the variable to empty, we will go ahead and use
       ## the default value (since we know we have one at this point).
-      if (!defined $value) {
-        $value = $self->{'defaults'}->{$name};
-      }
+      $value = $self->{'defaults'}->{$name} if (!defined $value);
     }
     else {
       #$self->warning("$name defaulting to empty string.");
@@ -431,11 +429,7 @@ sub get_value_with_default {
     }
   }
 
-  if (UNIVERSAL::isa($value, 'ARRAY')) {
-    $value = "@$value";
-  }
-
-  return $value;
+  return (UNIVERSAL::isa($value, 'ARRAY') ? "@$value" : $value);
 }
 
 
@@ -456,9 +450,7 @@ sub process_foreach {
       $val = $self->create_array($over);
       @values = @$val;
     }
-    if (!defined $name) {
-      $name = '__unnamed__';
-    }
+    $name = '__unnamed__' if (!defined $name);
   }
   else {
     ## Pull out modifying commands first
@@ -533,17 +525,13 @@ sub process_foreach {
       if ($mixed) {
         my @nvalues;
         foreach my $key (sort keys %mixed) {
-          if ($mixed{$key}) {
-            push(@nvalues, $key);
-          }
+          push(@nvalues, $key) if ($mixed{$key});
         }
 
         ## Set the new values only if they are different
         ## from the original (except for order).
         my @sorted = sort(@values);
-        if (@sorted != @nvalues) {
-          @values = @nvalues;
-        }
+        @values = @nvalues if (@sorted != @nvalues);
       }
     }
 
@@ -582,13 +570,27 @@ sub process_foreach {
       ++$self->{'foreach'}->{'processing'};
       my($status, $error) = $self->parse_line(undef, $text);
       --$self->{'foreach'}->{'processing'};
-      if (defined $error) {
-        return $error;
-      }
+      return $error if (defined $error);
     }
   }
 
   return undef;
+}
+
+
+sub generic_handle {
+  my($self, $func, $str) = @_;
+
+  if (defined $str) {
+    my $val = $self->$func([$str]);
+
+    if (defined $val) {
+      $self->append_current($val);
+    }
+    else {
+      $self->append_current(0);
+    }
+  }
 }
 
 
@@ -710,18 +712,13 @@ sub get_flag_overrides {
 sub get_multiple {
   my($self, $name) = @_;
   return $self->doif_multiple(
-                  $self->create_array(
-                           $self->get_value_with_default($name)));
+                  $self->create_array($self->get_value_with_default($name)));
 }
 
 
 sub doif_multiple {
   my($self, $value) = @_;
-
-  if (defined $value) {
-    return (scalar(@$value) > 1);
-  }
-  return undef;
+  return defined $value ? (scalar(@$value) > 1) : undef;
 }
 
 
@@ -760,17 +757,7 @@ sub doif_starts_with {
 
 sub handle_starts_with {
   my($self, $str) = @_;
-
-  if (defined $str) {
-    my $val = $self->doif_starts_with([$str]);
-
-    if (defined $val) {
-      $self->append_current($val);
-    }
-    else {
-      $self->append_current(0);
-    }
-  }
+  $self->generic_handle('doif_starts_with', $str);
 }
 
 
@@ -795,17 +782,7 @@ sub doif_ends_with {
 
 sub handle_ends_with {
   my($self, $str) = @_;
-
-  if (defined $str) {
-    my $val = $self->doif_ends_with([$str]);
-
-    if (defined $val) {
-      $self->append_current($val);
-    }
-    else {
-      $self->append_current(0);
-    }
-  }
+  $self->generic_handle('doif_ends_with', $str);
 }
 
 
@@ -884,17 +861,7 @@ sub doif_has_extension {
 
 sub handle_has_extension {
   my($self, $str) = @_;
-
-  if (defined $str) {
-    my $val = $self->doif_has_extension([$str]);
-
-    if (defined $val) {
-      $self->append_current($val);
-    }
-    else {
-      $self->append_current(0);
-    }
-  }
+  $self->generic_handle('doif_has_extension', $str);
 }
 
 
@@ -919,17 +886,7 @@ sub doif_contains {
 
 sub handle_contains {
   my($self, $str) = @_;
-
-  if (defined $str) {
-    my $val = $self->doif_contains([$str]);
-
-    if (defined $val) {
-      $self->append_current($val);
-    }
-    else {
-      $self->append_current(0);
-    }
-  }
+  $self->generic_handle('doif_contains', $str);
 }
 
 
@@ -988,10 +945,7 @@ sub handle_remove_from {
   if (defined $str) {
     my @params = $self->split_parameters($str);
     my $val = $self->perform_remove_from(\@params);
-
-    if (defined $val) {
-      $self->append_current("@$val");
-    }
+    $self->append_current("@$val") if (defined $val);
   }
 }
 
@@ -1017,17 +971,7 @@ sub doif_compares {
 
 sub handle_compares {
   my($self, $str) = @_;
-
-  if (defined $str) {
-    my $val = $self->doif_compares([$str]);
-
-    if (defined $val) {
-      $self->append_current($val);
-    }
-    else {
-      $self->append_current(0);
-    }
-  }
+  $self->generic_handle('doif_compares', $str);
 }
 
 
@@ -1130,9 +1074,7 @@ sub process_compound_if {
     my $ret = 0;
     foreach my $v (split(/\s*\|\|\s*/, $str)) {
       $ret |= $self->process_compound_if($v);
-      if ($ret != 0) {
-        return 1;
-      }
+      return 1 if ($ret != 0);
     }
     return 0;
   }
@@ -1140,9 +1082,7 @@ sub process_compound_if {
     my $ret = 1;
     foreach my $v (split(/\s*\&\&\s*/, $str)) {
       $ret &&= $self->process_compound_if($v);
-      if ($ret == 0) {
-        return 0;
-      }
+      return 0 if ($ret == 0);
     }
     return 1;
   }
@@ -1245,10 +1185,7 @@ sub handle_else {
     $self->{'sstack'}->[$#scopy] .= ':';
   }
 
-  if (($self->{'sstack'}->[$#scopy] =~ tr/:/:/) > 1) {
-    return 'Unmatched else';
-  }
-
+  return 'Unmatched else' if (($self->{'sstack'}->[$#scopy] =~ tr/:/:/) > 1);
   return undef;
 }
 
@@ -1333,9 +1270,7 @@ sub handle_special {
   ## If $name (fornotlast, forfirst, etc.) is set to 1
   ## Then we append the $val onto the current string that's
   ## being built.
-  if ($self->get_value($name)) {
-    $self->append_current($val);
-  }
+  $self->append_current($val) if ($self->get_value($name));
 }
 
 
@@ -1524,20 +1459,14 @@ sub handle_basenoextension {
 sub handle_flag_overrides {
   my($self, $name) = @_;
   my $value = $self->get_flag_overrides($name);
-
-  if (defined $value) {
-    $self->append_current($value);
-  }
+  $self->append_current($value) if (defined $value);
 }
 
 
 sub handle_marker {
   my($self, $name) = @_;
   my $val = $self->{'prjc'}->get_verbatim($name);
-
-  if (defined $val) {
-    $self->append_current($val);
-  }
+  $self->append_current($val) if (defined $val);
 }
 
 
@@ -1595,9 +1524,7 @@ sub doif_duplicate_index {
     else {
       my $index = 1;
       foreach my $file (@{$self->{'dupfiles'}->{$base}}) {
-        if ($file eq $path) {
-          return $index;
-        }
+        return $index if ($file eq $path);
         ++$index;
       }
 
@@ -1612,12 +1539,9 @@ sub doif_duplicate_index {
 
 sub handle_duplicate_index {
   my($self, $name) = @_;
-
   my $value = $self->doif_duplicate_index(
                        $self->get_value_with_default($name));
-  if (defined $value) {
-    $self->append_current($value);
-  }
+  $self->append_current($value) if (defined $value);
 }
 
 
@@ -1642,10 +1566,7 @@ sub doif_transdir {
 sub handle_transdir {
   my($self, $name) = @_;
   my $value = $self->doif_transdir($self->get_value_with_default($name));
-
-  if (defined $value) {
-    $self->append_current($value);
-  }
+  $self->append_current($value) if (defined $value);
 }
 
 
@@ -1738,9 +1659,7 @@ sub process_name {
       }
     }
     elsif (defined $self->{'cmds'}->{$name}) {
-      if (!$self->{'if_skip'}) {
-        $self->handle_pseudo($name);
-      }
+      $self->handle_pseudo($name) if (!$self->{'if_skip'});
     }
     else {
       if (!$self->{'if_skip'}) {
@@ -1780,9 +1699,7 @@ sub collect_data {
   ## Collect the components into {'values'} somehow
   foreach my $key (keys %{$prjc->{'valid_components'}}) {
     my @list = $prjc->get_component_list($key);
-    if (defined $list[0]) {
-      $self->{'values'}->{$key} = \@list;
-    }
+    $self->{'values'}->{$key} = \@list if (defined $list[0]);
   }
 
   ## If there is a staticname and no sharedname then this project
@@ -1938,9 +1855,7 @@ sub parse_line {
     }
   }
   else {
-    if (!$self->{'if_skip'}) {
-      $self->append_current($line);
-    }
+    $self->append_current($line) if (!$self->{'if_skip'});
   }
 
   if ($self->{'foreach'}->{'count'} < 0 && !$self->{'eval'} &&
@@ -1963,17 +1878,15 @@ sub parse_file {
 
   if ($status) {
     if (defined $self->{'sstack'}->[0]) {
-      my $sstack = $self->{'sstack'};
-      my $lstack = $self->{'lstack'};
       $status = 0;
-      $errorString = "Missing an '$$sstack[0]' starting at $$lstack[0]";
+      $errorString = "Missing an '$self->{'sstack'}->[0]' starting at " .
+                     $self->{'lstack'}->[0];
     }
   }
 
-  if (!$status) {
-    my $linenumber = $self->get_line_number();
-    $errorString = "$input: line $linenumber:\n$errorString";
-  }
+  ## Add in the line number if there is an error
+  $errorString = "$input: line " .
+                 $self->get_line_number() . ":\n$errorString" if (!$status);
 
   return $status, $errorString;
 }
