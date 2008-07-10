@@ -19,37 +19,36 @@ use DependencyEditor;
 # Data Section
 # ************************************************************
 
-my($version)  = '1.1';
-my($os)       = ($^O eq 'MSWin32' ? 'Windows' : 'UNIX');
-my(%types);
-my(%defaults) = ('UNIX'    => 'make',
-                 'Windows' => 'nmake',
-                );
+my $version  = '1.2';
+my $os       = ($^O eq 'MSWin32' ? 'Windows' : 'UNIX');
+my %types;
+my %defaults = ('UNIX'    => 'make',
+                'Windows' => 'nmake',
+               );
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub BEGIN {
-  my($fh) = new FileHandle();
-  my(%writers) = ();
-  my(%generators) = ();
+  my $fh = new FileHandle();
+  my(%writers, %generators);
 
   ## Find all the dependency writers and object generators
   foreach my $dir (@INC) {
     if (opendir($fh, $dir)) {
       foreach my $module (readdir($fh)) {
         if ($module =~ /(.+)DependencyWriter\.pm$/) {
-          my($type)  = lc($1);
-          my($class) = $module;
+          my $type  = lc($1);
+          my $class = $module;
           $class =~ s/\.pm$//;
           require $module;
           $writers{$type} = $class;
           $types{$type} = 1;
         }
         elsif ($module =~ /(.+)ObjectGenerator\.pm$/) {
-          my($type)  = lc($1);
-          my($class) = $module;
+          my $type  = lc($1);
+          my $class = $module;
           $class =~ s/\.pm$//;
           require $module;
           $generators{$type} = $class;
@@ -66,16 +65,16 @@ sub BEGIN {
 
 
 sub new {
-  my($class) = shift;
-  my($self)  = bless {'automatic' => [],
-                     }, $class;
+  my $class = shift;
+  my $self  = bless {'automatic' => [],
+                    }, $class;
 
   foreach my $add (@_) {
     if ($add =~ /(UNIX|Windows)=(.*)/) {
       $defaults{$1} = $2;
     }
     elsif ($add =~ /automatic=(.*)/) {
-      my(@auto) = split(/,/, $1);
+      my @auto = split(/,/, $1);
       $self->{'automatic'} = \@auto;
     }
     else {
@@ -88,9 +87,8 @@ sub new {
 
 
 sub usageAndExit {
-  my($self) = shift;
-  my($opt)  = shift;
-  my($base) = basename($0);
+  my($self, $opt) = @_;
+  my $base = basename($0);
 
   if (defined $opt) {
     print "$opt.\n";
@@ -120,7 +118,7 @@ sub usageAndExit {
         "-n   Do not include inline files (ending in .i or .inl) in the " .
         "dependencies.\n" .
         "-t   Use specified type (";
-  my(@keys) = sort keys %types;
+  my @keys = sort keys %types;
   for(my $i = 0; $i <= $#keys; ++$i) {
     print "$keys[$i]" .
           ($i != $#keys ? $i == $#keys - 1 ? ' or ' : ', ' : '');;
@@ -129,7 +127,7 @@ sub usageAndExit {
         "     The default is ";
   @keys = sort keys %defaults;
   for(my $i = 0; $i <= $#keys; ++$i) {
-    my($def) = $keys[$i];
+    my $def = $keys[$i];
     print $defaults{$def} . " on $def" .
           ($i != $#keys ? $i == $#keys - 1 ? ' and ' : ', ' : '');
   }
@@ -139,10 +137,7 @@ sub usageAndExit {
 
 
 sub setReplace {
-  my($self)    = shift;
-  my($replace) = shift;
-  my($name)    = shift;
-  my($value)   = shift;
+  my($self, $replace, $name, $value) = @_;
 
   if (defined $name) {
     ## The key will be used in a regular expression.
@@ -156,21 +151,15 @@ sub setReplace {
 
 
 sub run {
-  my($self)     = shift;
-  my($args)     = shift;
-  my($argc)     = scalar(@$args);
-  my($type)     = $defaults{$os};
-  my($noinline) = undef;
-  my(@files)    = ();
-  my(%macros)   = ();
-  my(@ipaths)   = ();
-  my(%replace)  = ();
-  my(%exclude)  = ();
-  my($output)   = '-';
-  my($needsrc)  = 1;
+  my($self, $args) = @_;
+  my $argc    = scalar(@$args);
+  my $type    = $defaults{$os};
+  my $output  = '-';
+  my $needsrc = 1;
+  my($noinline, @files, %macros, @ipaths, %replace, %exclude);
 
   for(my $i = 0; $i < $argc; ++$i) {
-    my($arg) = $$args[$i];
+    my $arg = $$args[$i];
     if ($arg =~ /^\-D(\w+)(=(.*))?/) {
       $macros{$1} = $3;
     }
@@ -186,7 +175,7 @@ sub run {
       ++$i;
       $arg = $$args[$i];
       if (defined $arg) {
-        my($val) = $ENV{$arg};
+        my $val = $ENV{$arg};
         if (defined $val) {
           $self->setReplace(\%replace, $val, "\$($arg)");
         }
@@ -249,7 +238,7 @@ sub run {
     }
   }
 
-  my($editor) = new DependencyEditor();
+  my $editor = new DependencyEditor();
   return $editor->process($output, $type, $noinline, \%macros,
                           \@ipaths, \%replace, \%exclude, \@files);
 }

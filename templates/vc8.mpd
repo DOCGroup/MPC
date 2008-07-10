@@ -509,6 +509,12 @@
 				CommandLine="<%eval(postbuild)%>"
 <%endif%>
 			/>
+<%if(postclean)%>
+			<Tool
+				Name="VCPostCleanEventTool"
+				CommandLine="<%eval(postclean)%>"
+			/>
+<%endif%>
 <%endif%>
 		</Configuration>
 <%endfor%>

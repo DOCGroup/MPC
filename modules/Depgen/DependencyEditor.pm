@@ -20,24 +20,16 @@ use DependencyGenerator;
 # ************************************************************
 
 sub new {
-  return bless {
-               }, $_[0];
+  return bless {}, $_[0];
 }
 
 
 sub process {
-  my($self)     = shift;
-  my($output)   = shift;
-  my($type)     = shift;
-  my($noinline) = shift;
-  my($macros)   = shift;
-  my($ipaths)   = shift;
-  my($replace)  = shift;
-  my($exclude)  = shift;
-  my($files)    = shift;
+  my($self, $output, $type, $noinline, $macros,
+     $ipaths, $replace, $exclude, $files) = @_;
 
   ## Back up the original file and receive the contents
-  my($contents) = undef;
+  my $contents;
   if (-s $output) {
     $contents = [];
     if (!$self->backup($output, $contents)) {
@@ -46,8 +38,8 @@ sub process {
     }
   }
 
-  ## Write out the new file
-  my($fh) = new FileHandle();
+  ## Write out the contents of the file
+  my $fh = new FileHandle();
   if (open($fh, ">$output")) {
     if (defined $contents) {
       foreach my $line (@$contents) {
@@ -55,16 +47,19 @@ sub process {
       }
     }
 
+    ## Write out the new dependency marker
     print $fh "# DO NOT DELETE THIS LINE -- depgen.pl uses it.\n",
               "# DO NOT PUT ANYTHING AFTER THIS LINE, IT WILL GO AWAY.\n\n";
 
-    my($dep) = new DependencyGenerator($macros, $ipaths, $replace,
-                                       $type, $noinline, $exclude);
+    ## Generate the new dependencies and write them to the file
+    my $dep = new DependencyGenerator($macros, $ipaths, $replace,
+                                      $type, $noinline, $exclude);
     ## Sort the files so the dependencies are reproducible
     foreach my $file (sort @$files) {
       print $fh $dep->process($file), "\n";
     }
 
+    ## Write out the end of the block warning
     print $fh "# IF YOU PUT ANYTHING HERE IT WILL GO AWAY\n";
     close($fh);
   }
@@ -78,17 +73,17 @@ sub process {
 
 
 sub backup {
-  my($self)     = shift;
-  my($source)   = shift;
-  my($contents) = shift;
-  my($status)   = 0;
-  my($fh)       = new FileHandle();
-  my($backup)   = "$source.bak";
+  my($self, $source, $contents) = @_;
+  my $status;
+  my $fh     = new FileHandle();
+  my $backup = "$source.bak";
 
+  ## Back up the file.  While doing so, keep track of the contents of the
+  ## file and keep everything except the old dependencies.
   if (open($fh, $source)) {
-    my($oh) = new FileHandle();
+    my $oh = new FileHandle();
     if (open($oh, ">$backup")) {
-      my($record) = 1;
+      my $record = 1;
       $status = 1;
       while(<$fh>) {
         print $oh $_;
@@ -103,8 +98,9 @@ sub backup {
       }
       close($oh);
 
-      ## Set file permission
-      my(@buf) = stat($source);
+      ## Set file permission so that the backup has the same permissions
+      ## as the original file.
+      my @buf = stat($source);
       if (defined $buf[8] && defined $buf[9]) {
         utime($buf[8], $buf[9], $backup);
       }

@@ -201,6 +201,12 @@
 				CommandLine="<%eval(prelink)%>"
 <%endif%>
 			/>
+<%if(postclean)%>
+			<Tool
+				Name="VCPostCleanEventTool"
+				CommandLine="<%eval(postclean)%>"
+			/>  
+<%endif%>
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="<%if(unicode)%>UNICODE;_UNICODE;<%endif%><%foreach(defines macros)%><%define%><%fornotlast(";")%><%endfor%>"

@@ -1,3 +1,28 @@
+Thu Jul 10 19:03:14 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Depgen/DependencyEditor.pm:
+        * modules/Depgen/DependencyGenerator.pm:
+        * modules/Depgen/DependencyWriter.pm:
+        * modules/Depgen/DependencyWriterFactory.pm:
+        * modules/Depgen/Driver.pm:
+        * modules/Depgen/MakeDependencyWriter.pm:
+        * modules/Depgen/MakeObjectGenerator.pm:
+        * modules/Depgen/NMakeDependencyWriter.pm:
+        * modules/Depgen/NMakeObjectGenerator.pm:
+        * modules/Depgen/ObjectGenerator.pm:
+        * modules/Depgen/ObjectGeneratorFactory.pm:
+        * modules/Depgen/Preprocessor.pm:
+
+          Cleaned up the code and reduced op code count.
+
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Added a VCPostCleanEventTool, which doesn't exist in Visual
+          Studio, to hold the 'postclean' settings.  This is mainly here to
+          enable another script to come along and perform the postclean
+          function.
+
 Thu Jul 10 18:28:33 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:

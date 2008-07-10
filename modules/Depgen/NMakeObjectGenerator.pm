@@ -7,7 +7,7 @@ use vars qw(@ISA);
 @ISA = qw(WinProjectBase DirectoryManager);
 
 sub new {
-  return bless {};
+  return bless {}, $_[0];
 }
 
 1;
@@ -32,16 +32,18 @@ use vars qw(@ISA);
 @ISA = qw(ObjectGenerator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my $wpb = new WinProjectBaseEx();
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub process {
-  my($file) = $_[1];
-
-  my($wpb) = new WinProjectBaseEx;
-  my($noext) = $wpb->translate_directory($file);
+  my $noext = $wpb->translate_directory($_[1]);
   $noext =~ s/\.[^\.]+$//o;
-
   return [ "\"\$(INTDIR)\\$noext.obj\"" ];
 }
 

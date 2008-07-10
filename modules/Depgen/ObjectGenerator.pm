@@ -17,14 +17,12 @@ use strict;
 # ************************************************************
 
 sub new {
-  return bless {
-               }, $_[0];
+  return bless {}, $_[0];
 }
 
 
 sub process {
-  #my($self) = shift;
-  #my($file) = shift;
+  #my($self, $file) = @_;
   return [];
 }
 

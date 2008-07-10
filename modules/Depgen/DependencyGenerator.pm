@@ -21,20 +21,14 @@ use ObjectGeneratorFactory;
 # ************************************************************
 
 sub new {
-  my($class)    = shift;
-  my($macros)   = shift;
-  my($ipaths)   = shift;
-  my($replace)  = shift;
-  my($type)     = shift;
-  my($noinline) = shift;
-  my($exclude)  = shift;
-  my($self)     = bless {'pre'      => new Preprocessor($macros,
-                                                        $ipaths, $exclude),
-                         'replace'  => $replace,
-                         'dwrite'   => DependencyWriterFactory::create($type),
-                         'objgen'   => ObjectGeneratorFactory::create($type),
-                         'noinline' => $noinline,
-                        }, $class;
+  my($class, $macros, $ipaths, $replace, $type, $noinline, $exclude) = @_;
+  my $self     = bless {'pre'      => new Preprocessor($macros,
+                                                       $ipaths, $exclude),
+                        'replace'  => $replace,
+                        'dwrite'   => DependencyWriterFactory::create($type),
+                        'objgen'   => ObjectGeneratorFactory::create($type),
+                        'noinline' => $noinline,
+                       }, $class;
 
   ## Set the current working directory, but
   ## escape regular expression special characters
@@ -44,7 +38,7 @@ sub new {
   ## Sort the replace keys to get the longest key first.  This way
   ## when we are replacing portions of the file path, we replace the
   ## most we can.
-  my(@repkeys) = sort { length($b) <=> length($a) } keys %$replace;
+  my @repkeys = sort { length($b) <=> length($a) } keys %$replace;
   $self->{'repkeys'} = \@repkeys;
 
   return $self;
@@ -52,17 +46,16 @@ sub new {
 
 
 sub process {
-  my($self) = shift;
-  my($file) = shift;
+  my($self, $file) = @_;
 
   ## Generate the dependency string
-  my($depstr) = $self->{'dwrite'}->process(
-                   $self->{'objgen'}->process($file),
-                   $self->{'pre'}->process($file, $self->{'noinline'}));
+  my $depstr = $self->{'dwrite'}->process(
+                  $self->{'objgen'}->process($file),
+                  $self->{'pre'}->process($file, $self->{'noinline'}));
 
   ## Perform the replacements on the dependency string
   $depstr =~ s/$self->{'cwd'}//go;
-  my($replace) = $self->{'replace'};
+  my $replace = $self->{'replace'};
   foreach my $rep (@{$self->{'repkeys'}}) {
     $depstr =~ s/$rep/$$replace{$rep}/g;
   }
