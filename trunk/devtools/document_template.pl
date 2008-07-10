@@ -38,7 +38,7 @@ require StringProcessor;
 my(%keywords) = ();
 my(%arrow_op) = ();
 my($doc_ext)  = '.txt';
-my($version)  = '1.1';
+my($version)  = '1.2';
 
 # ******************************************************************
 # Subroutine Section
@@ -237,9 +237,21 @@ if (open($fh, $input)) {
             }
             elsif ($name eq 'if') {
               $vname =~ s/(!|&&|\|\|)//g;
-              foreach my $keyword (keys %keywords) {
-                $vname =~ s/$keyword\(.*[\)]?//g;
-              }
+
+              ## Keep pulling off keyword functions until we get down to
+              ## the actual template variable used in the function call.
+              my $retry;
+              do {
+                $retry = undef;
+                foreach my $keyword (keys %keywords) {
+                  if ($vname =~ s/$keyword\((.*)[\)]?/$1/g) {
+                    $retry = 1 if ($vname ne '');
+                    last;
+                  }
+                }
+              } while($retry);
+              $vname =~ s/\s*,.*//;
+
               if ($vname !~ /^\s*$/) {
                 $name = lc($vname);
                 $key  = lc($vname);
