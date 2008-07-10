@@ -19,34 +19,62 @@ use vars qw(@ISA);
 @ISA = qw(MakeProjectBase ProjectCreator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my %info = ('cplusplus' => {'dllexe'   => 'makeexe',
+                            'dll'      => 'makedll',
+                            'template' => 'make',
+                           },
+            'csharp'    => {'dllexe'   => 'make.net',
+                            'dll'      => 'make.net',
+                            'template' => 'make.net',
+                           },
+            'java'      => {'dllexe'   => 'makeexe',
+                            'dll'      => 'makedll',
+                            'template' => 'make',
+                           },
+            'vb'        => {'dllexe'   => 'make.net',
+                            'dll'      => 'make.net',
+                            'template' => 'make.net',
+                           },
+           );
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub escape_spaces {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub get_dll_exe_template_input_file {
-  #my($self) = shift;
-  return 'makeexe';
+  return $info{$_[0]->get_language()}->{'dllexe'};
 }
 
 
 sub get_dll_template_input_file {
-  #my($self) = shift;
-  return 'makedll';
+  return $info{$_[0]->get_language()}->{'dll'};
 }
 
 
+sub get_template {
+  my($self) = shift;
+  return $info{$self->get_language()}->{'template'};
+}
+
 sub fill_value {
-  my($self)  = shift;
-  my($name)  = shift;
+  my($self, $name) = @_;
 
   if ($name eq 'compilers') {
-    if ($self->get_language() eq 'java') {
+    my $language = $self->get_language();
+    if ($language eq 'java') {
       return 'java';
+    }
+    elsif ($language eq 'csharp') {
+      return 'mcs';
     }
     else {
       return 'gcc';
@@ -56,8 +84,8 @@ sub fill_value {
     return $self->get_language();
   }
   elsif ($name eq 'main') {
-    my(@sources) = $self->get_component_list('source_files', 1);
-    my($exename) = $self->find_main_file(\@sources);
+    my @sources = $self->get_component_list('source_files', 1);
+    my $exename = $self->find_main_file(\@sources);
     return $exename if (defined $exename);
   }
 
