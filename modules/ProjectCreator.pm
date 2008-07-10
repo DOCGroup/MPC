@@ -110,6 +110,14 @@ my %customDefined = ('automatic_in'                => 0x04,
                      'documentation_pre_filename'  => 0x08,
                      'resource_pre_filename'       => 0x08,
                      'generic_pre_filename'        => 0x08,
+                     'pre_dirname'                 => 0x08,
+                     'source_pre_dirname'          => 0x08,
+                     'template_pre_dirname'        => 0x08,
+                     'header_pre_dirname'          => 0x08,
+                     'inline_pre_dirname'          => 0x08,
+                     'documentation_pre_dirname'   => 0x08,
+                     'resource_pre_dirname'        => 0x08,
+                     'generic_pre_dirname'         => 0x08,
                      'source_outputext'            => 0x0a,
                      'template_outputext'          => 0x0a,
                      'header_outputext'            => 0x0a,
@@ -1675,6 +1683,9 @@ sub parse_define_custom {
       if (!defined $self->{'generated_exts'}->{$tag}->{'pre_filename'}) {
         $self->{'generated_exts'}->{$tag}->{'pre_filename'} = [ '' ];
       }
+      if (!defined $self->{'generated_exts'}->{$tag}->{'pre_dirname'}) {
+        $self->{'generated_exts'}->{$tag}->{'pre_dirname'} = [ '' ];
+      }
       if (!defined $self->{'generated_exts'}->{$tag}->{'pre_extension'}) {
         $self->{'generated_exts'}->{$tag}->{'pre_extension'} = [ '' ];
       }
@@ -2290,6 +2301,8 @@ sub generated_filenames {
                                            $type, $tag, $file);
   my @pfarr = $self->get_pre_keyword_array('pre_filename',
                                            $type, $tag, $file);
+  my @pdarr = $self->get_pre_keyword_array('pre_dirname',
+                                           $type, $tag, $file);
   my @exts  = (defined $self->{'generated_exts'}->{$type}->{$tag} ?
                  @{$self->{'generated_exts'}->{$type}->{$tag}} : ());
 
@@ -2302,8 +2315,8 @@ sub generated_filenames {
   }
 
   my @array;
-  if (!defined $exts[0] && $#pearr == 0 && $#pfarr == 0 &&
-      $pearr[0] eq '' && $pfarr[0] eq '') {
+  if (!defined $exts[0] && $#pearr == 0 && $#pfarr == 0 && $#pdarr == 0 &&
+      $pearr[0] eq '' && $pfarr[0] eq '' && $pdarr[0] eq '') {
     ## If both arrays are defined to be the defaults, then there
     ## is nothing for us to do.
   }
@@ -2342,13 +2355,15 @@ sub generated_filenames {
       $pe =~ s/\\\././g;
       foreach my $pf (@pfarr) {
         $pf =~ s/\\\././g;
-        if ($noext) {
-          push(@genfile, "$dir$pf$base$pe");
-        }
-        else {
-          foreach my $ext (@exts) {
-            $ext =~ s/\\\././g;
-            push(@genfile, "$dir$pf$base$pe$ext");
+        foreach my $pd (@pdarr) {
+          if ($noext) {
+            push(@genfile, "$pd$dir$pf$base$pe");
+          }
+          else {
+            foreach my $ext (@exts) {
+              $ext =~ s/\\\././g;
+              push(@genfile, "$pd$dir$pf$base$pe$ext");
+            }
           }
         }
       }
