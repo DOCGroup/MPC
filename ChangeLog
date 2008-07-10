@@ -1,3 +1,13 @@
+Thu Jul 10 18:28:33 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+
+          Added a new feature, pre_dirname, which is similar to pre_filename
+          except that the value is prepended to the output directory for
+          generated files.  If a separate directory is desired, the
+          pre_dirname setting should end in a slash.
+
 Thu Jul 10 15:28:50 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * devtools/document_template.pl:
