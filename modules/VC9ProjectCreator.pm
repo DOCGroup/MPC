@@ -17,16 +17,14 @@ use VC8ProjectCreator;
 use vars qw(@ISA);
 @ISA = qw(VC8ProjectCreator);
 
-my(%config) = ('vcversion' => '9.00',
-              );
+my %config = ('vcversion' => '9.00');
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub get_configurable {
-  my($self)   = shift;
-  my($name)   = shift;
+  my($self, $name) = @_;
   return $config{$name};
 }
 

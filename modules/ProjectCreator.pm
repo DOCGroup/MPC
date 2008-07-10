@@ -84,9 +84,9 @@ my %validNames = ('exename'            => 1,
 ## 4    Needs <%...%> conversion
 my %customDefined = ('automatic_in'                => 0x04,
                      'automatic_out'               => 0x04,
-                     'dependent'                   => 0x14,
                      'command'                     => 0x14,
                      'commandflags'                => 0x14,
+                     'dependent'                   => 0x14,
                      'precommand'                  => 0x14,
                      'postcommand'                 => 0x14,
                      'inputext'                    => 0x01,
@@ -1275,9 +1275,7 @@ sub parse_conditional {
                                               $tag, $line, $flags,
                                               $grname, $current,
                                               $exclude, $comps, $count);
-      if (!$status) {
-        last;
-      }
+      last if (!$status);
     }
   }
 
@@ -1349,9 +1347,7 @@ sub parse_components {
                                          $fh, $2, $tag, \%flags, \$grname,
                                          $current, \@exclude, $comps,
                                          \$count);
-      if (!$status) {
-        last;
-      }
+      last if (!$status);
     }
     elsif ($line =~ /^}$/) {
       if (!defined $$comps{$current}->[0] && !defined $exclude[0]) {
@@ -1390,9 +1386,7 @@ sub parse_components {
                                                         \$grname, $current,
                                                         \@exclude, $comps,
                                                         \$count);
-      if (!$status) {
-        last;
-      }
+      last if (!$status);
     }
   }
 
@@ -1477,14 +1471,10 @@ sub parse_verbatim {
   while(<$fh>) {
     my $line = $self->preprocess_line($fh, $_);
 
-    if ($line =~ /^}$/) {
-      ## This is not an error,
-      ## this is the end of the verbatim
-      last;
-    }
-    else {
-      push(@$array, $line);
-    }
+    ## This is not an error,
+    ## this is the end of the verbatim
+    last if ($line =~ /^}$/);
+    push(@$array, $line);
   }
 
   return 1, undef;
@@ -1500,15 +1490,11 @@ sub process_feature {
   my $avoids   = '';
   foreach my $name (@$names) {
     if ($name =~ /^!\s*(.*)$/) {
-      if ($avoids ne '') {
-        $avoids .= ' ';
-      }
+      $avoids .= ' ' if ($avoids ne '');
       $avoids .= $1;
     }
     else {
-      if ($requires ne '') {
-        $requires .= ' ';
-      }
+      $requires .= ' ' if ($requires ne '');
       $requires .= $name;
     }
   }
@@ -2164,9 +2150,7 @@ sub add_optional_filename_portion {
 
         ## Convert the value into a hash map for easy lookup
         my %values;
-        if (defined $value) {
-          @values{split(/\s+/, $value)} = ();
-        }
+        @values{split(/\s+/, $value)} = () if (defined $value);
 
         ## See if the option or options are contained in the value
         if ($self->process_optional_option($opt, \%values)) {
@@ -2433,9 +2417,7 @@ sub add_generated_files {
       if (!defined $key) {
         my $check = $oktoadd[0];
         foreach my $regext (@{$self->{'valid_components'}->{$tag}}) {
-          if ($check =~ s/$regext$//) {
-            last;
-          }
+          last if ($check =~ s/$regext$//);
         }
         foreach my $vc (keys %{$self->{'valid_components'}}) {
           if ($vc ne $tag) {
@@ -2445,9 +2427,7 @@ sub add_generated_files {
                   foreach my $ofile (@{$self->{$vc}->{$name}->{$ckey}}) {
                     my $file = $ofile;
                     foreach my $regext (@{$self->{'valid_components'}->{$vc}}) {
-                      if ($file =~ s/$regext$//) {
-                        last;
-                      }
+                      last if ($file =~ s/$regext$//);
                     }
                     if ($file eq $check) {
                       $key = $ckey;
@@ -2871,9 +2851,7 @@ sub correct_generated_files {
                   last;
                 }
               }
-              if ($found) {
-                last;
-              }
+              last if ($found);
             }
             if (!$found) {
               ## The first file listed in @files is the preferred
@@ -3187,12 +3165,9 @@ sub prepend_gendir {
       my $e = $ext;
       $e =~ s/\\//g;
       $key = "$ofile$e";
-      if (defined $self->{'flag_overrides'}->{$gentype}->{$key}) {
-        last;
-      }
-      else {
-        $key = undef;
-      }
+
+      last if (defined $self->{'flag_overrides'}->{$gentype}->{$key});
+      $key = undef;
     }
 
     if (defined $key) {
@@ -3228,9 +3203,7 @@ sub list_generated_file {
     foreach my $ext (@{$self->{'valid_components'}->{$gentype}}) {
       ## Remove the extension.
       ## If it works, then we can exit this loop.
-      if ($gen =~ s/$ext$//) {
-        last;
-      }
+      last if ($gen =~ s/$ext$//);
     }
 
     ## If the user provided file does not match any of the
@@ -4100,17 +4073,12 @@ sub get_custom_value {
     $based =~ s/\\/\//g if ($self->{'convert_slashes'});
     $value = $self->{'custom_special_depend'}->{$based};
   }
-  elsif (defined $customDefined{$cmd} &&
-         ($customDefined{$cmd} & 0x04) != 0) {
+  elsif (defined $customDefined{$cmd}) {
     $value = $self->get_assignment($cmd,
                                    $self->{'generated_exts'}->{$based});
-    if (defined $value && ($customDefined{$cmd} & 0x10) != 0) {
+    if (defined $value && ($customDefined{$cmd} & 0x14) != 0) {
       $value = $self->convert_command_parameters($based, $value, @params);
     }
-  }
-  elsif (defined $custom{$cmd}) {
-    $value = $self->get_assignment($cmd,
-                                   $self->{'generated_exts'}->{$based});
   }
 
   return $value;

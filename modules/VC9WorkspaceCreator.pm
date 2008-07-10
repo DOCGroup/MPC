@@ -22,19 +22,18 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my(%lang_map) = ('cplusplus' => 'Visual C#',
-                 'csharp'    => 'Visual C#',
-                 'vb'        => 'Visual Basic',
-                 'java'      => 'Visual J#');
+my %lang_map = ('cplusplus' => 'Visual C#',
+                'csharp'    => 'Visual C#',
+                'vb'        => 'Visual Basic',
+                'java'      => 'Visual J#');
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub pre_workspace {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($crlf) = $self->crlf();
+  my($self, $fh) = @_;
+  my $crlf = $self->crlf();
 
   print $fh '﻿', $crlf,
             'Microsoft Visual Studio Solution File, Format Version 10.00', $crlf;

@@ -1,3 +1,20 @@
+Thu Jul 10 14:29:44 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/MakeProjectCreator.pm:
+        * templates/make.net.mpd:
+        * templates/make.net.mpt:
+
+          Added support for compiling C# code using Mono.
+
+        * modules/Creator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/StringProcessor.pm:
+        * modules/TemplateParser.pm:
+        * modules/VC9ProjectCreator.pm:
+        * modules/VC9WorkspaceCreator.pm:
+
+          Decreased op code count.
+
 Wed Jul  9 13:46:02 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeProjectCreator.pm:
