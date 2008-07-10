@@ -531,6 +531,13 @@ postcommand         Allows a user to execute arbitrary commands after
                     not contain a value, then the particular setting
                     (command, commandflags, dependent, postcommand or
                     output_option) will not be used.
+
+                    It should also be noted that use of automatically
+                    generated project settings, such as sharedname, exename,
+                    etc., may not exist at the time that a project setting
+                    is evaluated and will end up empty.  To avoid this
+                    situation, explicitly set project settings that are
+                    going to be used within this context.
 pre_extension       If the command produces multiple files of the same
                     extension, this comma separated list can be used to
                     specify them.  For example, tao_idl creates two types of
@@ -564,6 +571,25 @@ resource_pre_filename       This is the same as pre_filename except that it
 documentation_pre_filename  This is the same as pre_filename except that it
                             only applies to documentation files.
 generic_pre_filename        This is the same as pre_filename except that it
+                            only applies to generic files.
+pre_dirname                 This is similar to pre_filename except that the
+                            value is prepended to the directory portion of
+                            the file name instead of the file name itself.
+                            If a separate directory is desired, the
+                            pre_dirname setting should end in a slash.
+source_pre_dirname          This is the same as pre_dirname except that it
+                            only applies to source files.
+inline_pre_dirname          This is the same as pre_dirname except that it
+                            only applies to inline files.
+header_pre_dirname          This is the same as pre_dirname except that it
+                            only applies to header files.
+template_pre_dirname        This is the same as pre_dirname except that it
+                            only applies to template files.
+resource_pre_dirname        This is the same as pre_dirname except that it
+                            only applies to resource files.
+documentation_pre_dirname   This is the same as pre_dirname except that it
+                            only applies to documentation files.
+generic_pre_dirname         This is the same as pre_dirname except that it
                             only applies to generic files.
 source_outputext    This is a comma separated list of possible source file
                     output extensions.  If the command does not produce
