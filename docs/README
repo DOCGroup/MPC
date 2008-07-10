@@ -504,9 +504,10 @@ postcommand         Allows a user to execute arbitrary commands after
                         <%input_ext%>
                         <%output_ext%>
 
-                    The following pseudo template variables are valid for
-                    use within the command, commandflags, dependent,
-                    postcommand and output_option settings:
+                    The following pseudo template variables, in addition to
+                    all project settings, are valid for use within the
+                    command, commandflags, dependent, postcommand and
+                    output_option settings:
 
                     <%temporary%> - A temporary file name.
                     <%cat%>       - Platform non-specific command to cat a file.
