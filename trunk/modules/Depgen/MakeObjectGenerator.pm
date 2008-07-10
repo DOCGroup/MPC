@@ -21,19 +21,15 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub process {
-  my($noext)   = $_[1];
-  my(@objects) = ();
-  my(@exts)    = ('o');
-  my(@dirs)    = (defined $ENV{VDIR} ? $ENV{VDIR} : '');
+  my $noext = $_[1];
+  my @exts  = ('o');
+  my @dirs  = (defined $ENV{VDIR} ? $ENV{VDIR} : '');
   $noext =~ s/\.[^\.]+$//o;
 
-  if (defined $ENV{SOEXT}) {
-    push(@exts, $ENV{SOEXT});
-  }
-  if (defined $ENV{VSHDIR}) {
-    push(@dirs, $ENV{VSHDIR});
-  }
+  push(@exts, $ENV{SOEXT}) if (defined $ENV{SOEXT});
+  push(@dirs, $ENV{VSHDIR}) if (defined $ENV{VSHDIR});
 
+  my @objects;
   foreach my $dirs (@dirs) {
     foreach my $ext (@exts) {
       push(@objects, "$dirs$noext.$ext");
