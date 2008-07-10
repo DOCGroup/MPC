@@ -1,3 +1,10 @@
+Thu Jul 10 22:34:12 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * vs_postclean.pl:
+
+          Added a script to perform the postclean step for Visual Studio
+          projects.
+
 Thu Jul 10 19:03:14 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Depgen/DependencyEditor.pm:
