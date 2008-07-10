@@ -7,7 +7,7 @@
 TARGETDIR       =<%if(exename && exeout)%> <%exeout%><%slash%><%targetoutdir%><%else%><%if(sharedname && libout)%> <%libout%><%slash%><%targetoutdir%><%endif%><%endif%>
 TARGET          =<%if(exename)%> $(TARGETDIR)<%exename%><%exe_ext%><%else%><%if(sharedname)%> $(TARGETDIR)<%lib_prefix%><%libname_prefix%><%sharedname%><%dll_ext%><%endif%><%endif%>
 LDFLAGS         =<%if(libpaths)%> <%lib_flag%><%foreach(libpaths)%><%libpath%><%fornotlast(",")%><%endfor%><%endif%>
-CFLAGS          =<%if(optimize)%> <%opt_flag%><%endif%><%if(macros)%> <%def_flag%><%foreach(macros)%><%macro%><%fornotlast(",")%><%endfor%><%endif%><%if(keyfile)%> <%key_flag%><%keyfile%><%endif%><%if(compares(allowunsafeblocks, true))%> <%unsafe_flag%><%endif%>
+CFLAGS          =<%if(compile_flags)%> <%compile_flags%><%endif%><%if(optimize)%> <%opt_flag%><%endif%><%if(macros)%> <%def_flag%><%foreach(macros)%><%macro%><%fornotlast(",")%><%endfor%><%endif%><%if(keyfile)%> <%key_flag%><%keyfile%><%endif%><%if(compares(allowunsafeblocks, true))%> <%unsafe_flag%><%endif%>
 TESTDIRSTART    = <%testdirstart("test -d")%>                                
 TESTDIREND      = <%testdirend("||")%>
 RM              = <%delete("rm -rf")%>
