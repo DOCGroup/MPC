@@ -63,7 +63,7 @@ sub read_proj {
 
   ## Convert frequently used XML sequences to plain characters.
   $cmd =~ s/&amp;/&/g;
-  $cmd =~ s/&quot;/\'/g;
+  $cmd =~ s/&quot;/\"/g;
   $cmd =~ s/&gt;/>/g;
   $cmd =~ s/&lt;/</g;
 
