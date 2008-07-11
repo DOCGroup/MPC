@@ -1,10 +1,28 @@
+Fri Jul 11 14:56:44 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+
+          Added a pseudo template variable, rmdir, which will be defined
+          depending upon the project type.  It will be 'rmdir /s/q' on
+          Windows and 'rm -rf' on UNIX.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Fixed a bug where the configure.ac.Makefiles did not contain the
+          correct names if the -name_modifier option was used.
+
+        * modules/WorkspaceCreator.pm:
+
+          Reduced op code count.
+
 Fri Jul 11 14:30:53 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
         * modules/ProjectCreator.pm:
 
           Added a pseudo template variable, slash, which will be defined
-          depending upon the projec type.
+          depending upon the project type.
 
         * templates/make.net.mpt:
         * templates/makedll.mpt:

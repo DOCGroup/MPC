@@ -129,7 +129,8 @@ sub write_comps {
   ## directory. The list contains of all the Makefiles generated down
   ## the tree. configure.ac can include this to get an up-to-date list
   ## of all the involved Makefiles.
-  my($mfh);
+  my $mfh;
+  my $makefile;
   if ($toplevel) {
     my($need_acmfile) = 1;
     if (! -e "$outdir/$acfile") {
@@ -169,7 +170,9 @@ sub write_comps {
       open($mfh, ">$outdir/$acmfile");
       ## The top-level is never listed as a dependency, so it needs to be
       ## added explicitly.
-      print $mfh "AC_CONFIG_FILES([ Makefile ])$crlf";
+      $makefile = $self->mpc_basename($self->get_current_output_name());
+      $makefile =~ s/\.am$//;
+      print $mfh "AC_CONFIG_FILES([ $makefile ])$crlf";
       $proj_dir_seen{'.'} = 1;
     }
   }
@@ -200,11 +203,11 @@ sub write_comps {
           $inter_dir .= $dep;
           if (!defined $proj_dir_seen{$inter_dir}) {
             $proj_dir_seen{$inter_dir} = 1;
-            print $mfh "AC_CONFIG_FILES([ $inter_dir" . "/Makefile ])$crlf";
+            print $mfh "AC_CONFIG_FILES([ $inter_dir/$makefile ])$crlf";
           }
           $inter_dir .= '/';
         }
-        print $mfh "AC_CONFIG_FILES([ $dep_dir" . "/Makefile ])$crlf";
+        print $mfh "AC_CONFIG_FILES([ $dep_dir/$makefile ])$crlf";
       }
     }
 
