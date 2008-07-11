@@ -1,3 +1,15 @@
+Fri Jul 11 15:18:27 UTC 2008  Adam Mitz  <mitza@ociweb.com>
+
+        * docs/README:
+
+          Cleaned up some typos (stray semicolons)
+
+        * vs_postclean.pl:
+
+          Restore current directory after changing it.
+          Translate &amp;, etc.
+          Added support for solutions, all referenced projects will be cleaned.
+
 Fri Jul 11 14:56:44 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
@@ -34,8 +46,8 @@ Fri Jul 11 11:10:00 UTC 2008  Simon Massey  <sma at prismtech dot com>
 
         * templates/make.net.mpt:
 
-          Added $Id$ to appease a non-MPC related script that, for some
-          reason, insists on applying it's influence on MPC.
+          Added dollar-Id-dollar to appease a non-MPC related script that, for
+          some reason, insists on applying it's influence on MPC.
 
 Thu Jul 10 22:34:12 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 

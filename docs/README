@@ -722,9 +722,9 @@ of the Define_Custom:
 
 project {
   Define_Custom(CIDL) {
-    automatic_in      = 0;
-    automatic_out     = 0;
-    command           =  $(CIAO_ROOT)/bin/cidlc
+    automatic_in      = 0
+    automatic_out     = 0
+    command           = $(CIAO_ROOT)/bin/cidlc
     commandflags      = -I$(TAO_ROOT)/tao -I$(TAO_ROOT)/orbsvcs/orbsvcs --
     inputext          = .cidl
     source_outputext  = _svnt.cpp
