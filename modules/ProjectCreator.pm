@@ -3779,6 +3779,7 @@ sub get_command_subs {
     $valid{'os'}    = 'win32';
     $valid{'rm'}    = 'del /f/s/q';
     $valid{'nul'}   = 'nul';
+    $valid{'slash'} = '\\';
   }
   else {
     $valid{'cat'}   = 'cat';
@@ -3789,6 +3790,7 @@ sub get_command_subs {
     $valid{'os'}    = 'unix';
     $valid{'rm'}    = 'rm -rf';
     $valid{'nul'}   = '/dev/null';
+    $valid{'slash'} = '/';
   }
 
   ## Add the project specific compatibility commands

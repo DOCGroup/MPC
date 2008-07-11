@@ -28,7 +28,6 @@ compile_flags    =
 arflags          =
 pchsupport       = 1
 targetoutdir     =
-slash            = /
 libopt           = -l
 build64bit       = 1
 pchext           = .gch

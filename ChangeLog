@@ -1,8 +1,23 @@
+Fri Jul 11 14:30:53 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+
+          Added a pseudo template variable, slash, which will be defined
+          depending upon the projec type.
+
+        * templates/make.net.mpt:
+        * templates/makedll.mpt:
+
+          Rely on the slash psuedo template variable instead of defining one
+          in these template input files.
+
 Fri Jul 11 11:10:00 UTC 2008  Simon Massey  <sma at prismtech dot com>
 
         * templates/make.net.mpt:
 
-          Corrected Fuzz error.
+          Added $Id$ to appease a non-MPC related script that, for some
+          reason, insists on applying it's influence on MPC.
 
 Thu Jul 10 22:34:12 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
