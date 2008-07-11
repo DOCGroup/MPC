@@ -1,3 +1,9 @@
+Fri Jul 11 11:10:00 UTC 2008  Simon Massey  <sma at prismtech dot com>
+
+        * templates/make.net.mpt:
+
+          Corrected Fuzz error.
+
 Thu Jul 10 22:34:12 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * vs_postclean.pl:
