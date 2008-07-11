@@ -61,6 +61,7 @@ sub read_proj {
     close($fh);
   }
 
+  ## Convert frequently used XML sequences to plain characters.
   $cmd =~ s/&amp;/&/g;
   $cmd =~ s/&quot;/\'/g;
   $cmd =~ s/&gt;/>/g;
@@ -122,7 +123,8 @@ if ($ARGV[0] =~ /^CFG=(.+)/) {
 foreach my $file (@ARGV) {
   if (substr($file, -4, 4) eq '.sln') {
     clean_sln($cfg, $file);
-  } else {
+  }
+  else {
     clean_proj($cfg, $file);
   }
 }
