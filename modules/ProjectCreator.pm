@@ -3778,6 +3778,7 @@ sub get_command_subs {
     $valid{'mv'}    = 'move /y';
     $valid{'os'}    = 'win32';
     $valid{'rm'}    = 'del /f/s/q';
+    $valid{'rmdir'} = 'rmdir /s/q';
     $valid{'nul'}   = 'nul';
     $valid{'slash'} = '\\';
   }
@@ -3789,6 +3790,7 @@ sub get_command_subs {
     $valid{'mv'}    = 'mv -f';
     $valid{'os'}    = 'unix';
     $valid{'rm'}    = 'rm -rf';
+    $valid{'rmdir'} = 'rm -rf';
     $valid{'nul'}   = '/dev/null';
     $valid{'slash'} = '/';
   }
