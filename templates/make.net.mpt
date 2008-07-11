@@ -3,8 +3,6 @@
 
 conditional_include "windowscommon"
 
-slash = /
-
 mcs {
   main_flag   = -main:
   out_flag    = -out:

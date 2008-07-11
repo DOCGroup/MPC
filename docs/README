@@ -204,6 +204,7 @@ postbuild       If this is defined in the project, the value will be
                   <%and%>    - Project non-specific and sign.
                   <%or%>     - Project non-specific or sign.
                   <%quote%>  - Project non-specific double quote.
+                  <%slash%>  - Platform non-specific directory separator.
                   <%equote%> - Project non-specific escaped quote.
                   <%crlf%>   - Platform non-specific line ending.
                   <%cmdsep%> - Project/platform non-specific command separator
