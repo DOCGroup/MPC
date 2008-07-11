@@ -198,6 +198,8 @@ postbuild       If this is defined in the project, the value will be
                   <%mv%>     - Platform non-specific move command.
                   <%os%>     - Returns either win32 or unix.
                   <%rm%>     - Platform non-specific delete command.
+                  <%rmdir%>  - Platform non-specific recursive directory
+                               delete command.
                   <%nul%>    - Platform non-specific null device.
                   <%gt%>     - Project non-specific greater than sign.
                   <%lt%>     - Project non-specific less than sign.

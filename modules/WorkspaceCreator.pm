@@ -190,9 +190,7 @@ sub parse_line {
               $status = $self->parse_file($file);
               pop(@{$self->{'reading_parent'}});
 
-              if (!$status) {
-                $error = "Invalid parent: $parent";
-              }
+              $error = "Invalid parent: $parent" if (!$status);
             }
             else {
               $status = 0;
@@ -266,9 +264,10 @@ sub parse_line {
     }
   }
   elsif ($status == -1) {
-    if (index($line, '$') >= 0) {
-      $line = $self->relative($line);
-    }
+    ## If the line contains a variable, try to replace it with an actual
+    ## value.
+    $line = $self->relative($line) if (index($line, '$') >= 0);
+
     foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
                                                  $line) {
       if ($expfile =~ /\.$wsext$/) {
@@ -432,9 +431,11 @@ sub parse_exclude {
           if ($line =~ /^"([^"]+)"$/) {
             $line = $1;
           }
-          if (index($line, '$') >= 0) {
-            $line = $self->relative($line);
-          }
+
+          ## If the line contains a variable, try to replace it with an
+          ## actual value.
+          $line = $self->relative($line) if (index($line, '$') >= 0);
+
           if (defined $self->{'scoped_basedir'} &&
               $self->path_is_relative($line)) {
             $line = $self->{'scoped_basedir'} . '/' . $line;
@@ -535,9 +536,11 @@ sub parse_associate {
         if ($line =~ /^"([^"]+)"$/) {
           $line = $1;
         }
-        if (index($line, '$') >= 0) {
-          $line = $self->relative($line);
-        }
+
+        ## If the line contains a variable, try to replace it with an
+        ## actual value.
+        $line = $self->relative($line) if (index($line, '$') >= 0);
+
         if (defined $self->{'scoped_basedir'} &&
             $self->path_is_relative($line)) {
           $line = $self->{'scoped_basedir'} . '/' . $line;
@@ -562,9 +565,7 @@ sub excluded {
   my($self, $file) = @_;
 
   foreach my $excluded (@{$self->{'exclude'}->{$self->{'wctype'}}}) {
-    if ($excluded eq $file || index($file, "$excluded/") == 0) {
-      return 1;
-    }
+    return 1 if ($excluded eq $file || index($file, "$excluded/") == 0);
   }
 
   return 0;
@@ -617,9 +618,9 @@ sub handle_scoped_unknown {
     return $status, $error;
   }
 
-  if (index($line, '$') >= 0) {
-    $line = $self->relative($line);
-  }
+  ## If the line contains a variable, try to replace it with an actual
+  ## value.
+  $line = $self->relative($line) if (index($line, '$') >= 0);
 
   if (defined $self->{'scoped_basedir'}) {
     if ($self->path_is_relative($line)) {
@@ -659,9 +660,7 @@ sub handle_scoped_unknown {
 
       my @acceptable;
       foreach my $file (@files) {
-        if (!defined $remove{$file}) {
-          push(@acceptable, $file);
-        }
+        push(@acceptable, $file) if (!defined $remove{$file});
       }
       @files = @acceptable;
     }
@@ -720,20 +719,20 @@ sub search_for_files {
       $self->search_for_files(\@f, $array, $impl);
       if ($impl) {
         $file =~ s/^\.\///;
-        if ($onVMS) {
-          # Strip out ^ symbols
-          $file =~ s/\^//g;
-        }
+
+        # Strip out ^ symbols
+        $file =~ s/\^//g if ($onVMS);
+
         unshift(@$array, $file);
       }
     }
     else {
       if ($file =~ /\.mpc$/) {
         $file =~ s/^\.\///;
-        if ($onVMS) {
-          # Strip out ^ symbols
-          $file =~ s/\^//g;
-        }
+
+        # Strip out ^ symbols
+        $file =~ s/\^//g if ($onVMS);
+
         unshift(@$array, $file);
       }
     }
@@ -811,9 +810,7 @@ sub generate_default_components {
     ## If no files were found, then we push the empty
     ## string, so the Project Creator will generate
     ## the default project file.
-    if (!defined $$pjf[0] && !$excluded) {
-      push(@$pjf, '');
-    }
+    push(@$pjf, '') if (!defined $$pjf[0] && !$excluded);
   }
 }
 
@@ -915,9 +912,7 @@ sub write_and_compare_file {
       &$func($self, $fh, @params);
       close($fh);
 
-      if (!$self->files_are_different($name, $tmp)) {
-        $different = 0;
-      }
+      $different = 0 if (!$self->files_are_different($name, $tmp));
     }
     else {
       $error = "Unable to open $tmp for output.";
@@ -926,9 +921,7 @@ sub write_and_compare_file {
     if (!defined $error) {
       if ($different) {
         unlink($name);
-        if (!rename($tmp, $name)) {
-          $error = "Unable to open $name for output";
-        }
+        $error = "Unable to open $name for output" if (!rename($tmp, $name));
       }
       else {
         ## There is no need to rename, so remove our temp file.
@@ -1064,9 +1057,7 @@ sub write_workspace {
       }
     }
 
-    if (!$addfile) {
-      $self->{'per_project_workspace_name'} = undef;
-    }
+    $self->{'per_project_workspace_name'} = undef if (!$addfile);
   }
 
   return $status, $error;
@@ -1141,9 +1132,8 @@ sub generate_hierarchy {
         $self->{'workspace_name'} = $self->base_directory();
 
         my($status, $error) = $self->write_workspace($creator);
-        if (!$status) {
-          $self->error($error);
-        }
+        $self->error($error) if (!$status);
+
         $self->cd($cwd);
       }
 
@@ -1167,9 +1157,8 @@ sub generate_hierarchy {
     $self->{'workspace_name'} = $self->base_directory();
 
     my($status, $error) = $self->write_workspace($creator);
-    if (!$status) {
-      $self->error($error);
-    }
+    $self->error($error) if (!$status);
+
     $self->cd($cwd);
   }
 }
@@ -1300,9 +1289,7 @@ sub generate_project_files {
       }
 
       ## Return things to the way they were
-      if (defined $self->{'scoped_assign'}->{$ofile}) {
-        $impl = $previmpl;
-      }
+      $impl = $previmpl if (defined $self->{'scoped_assign'}->{$ofile});
       if ($restore) {
         $self->{'cacheok'} = $prevcache;
         $creator->restore_state(\%gstate);
@@ -1349,9 +1336,7 @@ sub array_contains {
 
   ## Check each element on the right against the left.
   foreach my $r (@$right) {
-    if (exists $check{$r}) {
-      return 1;
-    }
+    return 1 if (exists $check{$r});
   }
 
   return 0;
@@ -1567,9 +1552,7 @@ sub sort_within_group {
     ## Keep track of the previous project movement
     $seen{$key} = 1;
     $prevpjs = $movepjs;
-    if ($previ < $i) {
-      $movepjs = [];
-    }
+    $movepjs = [] if ($previ < $i);
     $previ = $i;
 
     $deps = $self->get_validated_ordering($$list[$i]);
@@ -1603,9 +1586,7 @@ sub sort_within_group {
           }
         }
       }
-      if ($moved) {
-        $i--;
-      }
+      --$i if ($moved);
     }
   }
 }
@@ -1666,9 +1647,7 @@ sub sort_by_groups {
   my %dupcheck;
   foreach my $proj (@$list) {
     my $base = $self->mpc_basename($proj);
-    if (defined $dupcheck{$base}) {
-      return;
-    }
+    return undef if (defined $dupcheck{$base});
     $dupcheck{$base} = $proj;
   }
 
@@ -1721,9 +1700,7 @@ sub sort_by_groups {
     my %gdeps;
     for(my $i = $groups[$gi]->[0]; $i <= $groups[$gi]->[1]; ++$i) {
       my $deps = $self->get_validated_ordering($$list[$i]);
-      if (defined $$deps[0]) {
-        @gdeps{@$deps} = ();
-      }
+      @gdeps{@$deps} = () if (defined $$deps[0]);
     }
 
     ## Search the rest of the groups for any of the group dependencies
@@ -1804,15 +1781,11 @@ sub sort_dependencies {
 
       ## Next, sort the individual groups
       foreach my $gr (@grindex) {
-        if ($$gr[0] != $$gr[1]) {
-          $self->sort_within_group(\@list, @$gr);
-        }
+        $self->sort_within_group(\@list, @$gr) if ($$gr[0] != $$gr[1]);
       }
 
       ## Now sort the groups as single entities
-      if ($#grindex > 0) {
-        $self->sort_by_groups(\@list, \@grindex);
-      }
+      $self->sort_by_groups(\@list, \@grindex) if ($#grindex > 0);
     }
     else {
       $self->sort_within_group(\@list, 0, $#list);
@@ -1849,15 +1822,11 @@ sub number_target_deps {
           my $key = ($self->{'dependency_is_filename'} ?
                              $self->mpc_basename($list[$j]) :
                              $self->{'project_info'}->{$list[$j]}->[0]);
-          if (exists $dhash{$key}) {
-            push(@numbers, $j);
-          }
+          push(@numbers, $j) if (exists $dhash{$key});
         }
 
         ## Store the array in the hash keyed on the project file.
-        if (defined $numbers[0]) {
-          $$targets{$project} = \@numbers;
-        }
+        $$targets{$project} = \@numbers if (defined $numbers[0]);
       }
     }
   }
@@ -1892,9 +1861,7 @@ sub project_target_translation {
 
 sub optionError {
   my($self, $str) = @_;
-  if (defined $str) {
-    $self->warning("$self->{'current_input'}: $str.");
-  }
+  $self->warning("$self->{'current_input'}: $str.") if (defined $str);
 }
 
 
@@ -2070,9 +2037,7 @@ sub get_modified_workspace_name {
   ## but that's ok, it will only be a per project workspace.
   ## Also, if we don't want the workspace name attached ($nows) then
   ## we just return the name plus the extension.
-  if ($nows || $self->{'per_project_workspace_name'}) {
-    return "$name$ext";
-  }
+  return "$name$ext" if ($nows || $self->{'per_project_workspace_name'});
 
   my $pwd    = $self->getcwd();
   my $type   = $self->{'wctype'};
