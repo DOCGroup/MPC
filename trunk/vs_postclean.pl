@@ -17,6 +17,7 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 use strict;
 use FileHandle;
 use File::Basename;
+use Cwd;
 
 # ******************************************************************
 # Data Section
@@ -60,6 +61,11 @@ sub read_proj {
     close($fh);
   }
 
+  $cmd =~ s/&amp;/&/g;
+  $cmd =~ s/&quot;/\'/g;
+  $cmd =~ s/&gt;/>/g;
+  $cmd =~ s/&lt;/</g;
+
   ## Return the command line (undef if there was no postclean)
   return $cmd;
 }
@@ -72,12 +78,28 @@ sub clean_proj {
 
   ## Move to the directory of the project and run the command
   if (defined $cmd) {
+    my $current_dir = getcwd();
     if (chdir(dirname($file))) {
       system($cmd);
+      chdir($current_dir);
     }
     else {
       print "WARNING: Unable to postclean $file\n";
     }
+  }
+}
+
+sub clean_sln {
+  my($cfg, $file) = @_;
+  my $fh = new FileHandle();
+
+  if (open($fh, $file)) {
+    while (<$fh>) {
+      if (/^Project\([^)]+\) = "[^\"]+", "([^\"]+)"/) {
+        clean_proj($cfg, $1);
+      }
+    }
+    close($fh);
   }
 }
 
@@ -87,7 +109,7 @@ sub clean_proj {
 
 if ($#ARGV == -1) {
   print "PostClean v$version\n",
-        "Usage: ", basename($0), " [CFG=<configuration>] <project files>\n";
+        "Usage: ", basename($0), " [CFG=<configuration>] <project or solution files>\n";
   exit(0);
 }
 
@@ -98,5 +120,9 @@ if ($ARGV[0] =~ /^CFG=(.+)/) {
 }
 
 foreach my $file (@ARGV) {
-  clean_proj($cfg, $file);
+  if (substr($file, -4, 4) eq '.sln') {
+    clean_sln($cfg, $file);
+  } else {
+    clean_proj($cfg, $file);
+  }
 }
