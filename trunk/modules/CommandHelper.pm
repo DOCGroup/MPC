@@ -83,4 +83,14 @@ sub get_outputexts {
   return [];
 }
 
+sub get_tied {
+  ## This method is called with a file name and an array reference of
+  ## files.  The first expected return value is an array reference of those
+  ## files listed in the passed array reference that are in some way tied
+  ## to the file name passed in.  The second is a component name to help
+  ## MPC figure out a way to tie the files together.  The result of "tied"
+  ## files is that they may be compiled after the file name passed in.
+  return [], undef;
+}
+
 1;
