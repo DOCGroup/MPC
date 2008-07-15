@@ -1,3 +1,22 @@
+Tue Jul 15 16:08:40 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/CommandHelper.pm:
+
+          Extended the interface to allow the helper to provide "tied"
+          custom files.
+
+        * modules/ProjectCreator.pm:
+
+          Made the following changes:
+
+          1) Added an optimization to generated_source_listed() to avoid
+             attempting to add custom generated files if they couldn't
+             possibly be generated.
+          2) Added the ability for a command helper to "tie" files together
+             so that they are processed closely together.
+          3) Fixed a bug where an output file could end up being listed more
+             than once in the custom output files value.
+
 Fri Jul 11 18:13:36 UTC 2008  Adam Mitz  <mitza@ociweb.com>
 
         * vs_postclean.pl:
