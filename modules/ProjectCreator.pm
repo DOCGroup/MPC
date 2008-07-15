@@ -3103,8 +3103,13 @@ sub generated_source_listed {
     foreach my $key (keys %$comps) {
       foreach my $val (@{$$comps{$key}}) {
         foreach my $i (keys %$arr) {
-          foreach my $re ($self->generated_filenames($$arr{$i}, $gent,
-                                                     $tag, $i)) {
+          ## If $gent doesn't cause $tag files to be generated, then we
+          ## can just return a non-zero value to short-circuit attempting
+          ## to add generated files after the caller continues.
+          my @gfiles = $self->generated_filenames($$arr{$i}, $gent, $tag, $i);
+          return 2 if ($#gfiles == -1);
+
+          foreach my $re (@gfiles) {
             $re = $self->escape_regex_special($re);
             if ($val =~ /$re$/) {
               return 1;
@@ -3490,8 +3495,9 @@ sub generate_defaults {
   my @vc = sort { return -1 if $a eq 'source_files';
                   return  1 if $b eq 'source_files';
                   return $b cmp $a; } keys %{$self->{'valid_components'}};
-  foreach my $gentype (sort { $self->sort_generated_types($a, $b)
-                            } keys %{$self->{'generated_exts'}}) {
+  my @gvc = sort { $self->sort_generated_types($a, $b)
+                 } keys %{$self->{'generated_exts'}};
+  foreach my $gentype (@gvc) {
     $self->list_default_generated($gentype, \@vc);
   }
 
@@ -3567,6 +3573,57 @@ sub generate_defaults {
   my @rmkeys = keys %{$self->{'remove_files'}};
   if (defined $rmkeys[0]) {
     $self->remove_excluded(@rmkeys);
+  }
+
+  ## Tie custom files together if need be.  This currently only applies
+  ## to types with command helpers.  At some point, if it is found to be
+  ## desirous, we could extend the MPC syntax somehow to support this
+  ## sort of thing manually.
+  my $dep = 'dependent';
+  foreach my $gentype (@gvc) {
+    my $cmdHelper = CommandHelper::get($gentype);
+    if (defined $cmdHelper) {
+      ## There has to be at least two files files in order for
+      ## something to be tied together.
+      my @files = $self->get_component_list($gentype, 1);
+      if ($#files >= 1) {
+        foreach my $file (@files) {
+          my $part = $self->remove_wanted_extension(
+                            $file, $self->{'valid_components'}->{$gentype});
+          my($tied, $vc) = $cmdHelper->get_tied($file, \@files);
+          foreach my $tie (@$tied) {
+            my @gen;
+            if (!defined $vc) {
+              foreach $vc (@vc) {
+                @gen = $self->generated_filenames($part, $gentype,
+                                                  $vc, $file);
+                last if ($#gen >= 0);
+              }
+            }
+
+            ## We have a tied file, now we need to actually perform
+            ## the tieing of the two.  We will do this by saying that
+            ## the output of the original is necessary for the
+            ## processing of the tied file.
+            @gen = $self->generated_filenames($part, $gentype,
+                                              $vc, $file) if (!$gen[0]);
+
+            ## We have found a set of files that are generated
+            ## based on the component type of the original file
+            ## ($gentype), so we just add the first one and
+            ## we're done.
+            my $first = $gen[0];
+            $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep} =
+              $self->{'generated_exts'}->{$gentype}->{$dep}
+              if (!defined $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep});
+
+            $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep} .= " $first"
+            if (!defined $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep} ||
+                $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep} !~ /\b$first\b/);
+          }
+        }
+      }
+    }
   }
 }
 
@@ -3997,9 +4054,13 @@ sub get_custom_value {
       ## list here (as it used to be).  It may have been handled by
       ## generated_filenames.
       foreach my $vc (keys %{$self->{'valid_components'}}) {
-        push(@outputs,
-             $self->check_custom_output($based, $cinput,
-                                        $ainput, $vc, $vcomps{$vc}));
+        ## The output of multiple components could be input for the
+        ## current component type ($based).  We need to avoid adding
+        ## duplicates here.
+        foreach my $file ($self->check_custom_output(
+                            $based, $cinput, $ainput, $vc, $vcomps{$vc})) {
+          push(@outputs, $file) if (!StringProcessor::fgrep($file, \@outputs));
+        }
       }
       foreach my $file ($self->check_custom_output($based, $cinput,
                                                    $ainput, $generic_key,
