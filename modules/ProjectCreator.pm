@@ -3867,8 +3867,10 @@ sub get_command_subs {
 
 
 sub replace_parameters {
-  my($self, $str, $valid, $nowarn, $input, $output) = @_;
+  my($self, $str, $valid, $nowarn, $input, $output, $always_clear) = @_;
 
+  my %saved;
+  my $count = 0;
   while ($str =~ /<%(\w+)(\(\w+\))?%>/) {
     my $name     = $1;
     my $modifier = $2;
@@ -3882,11 +3884,23 @@ sub replace_parameters {
     ## Support both pseudo variables and project settings
     if (exists $$valid{$name} || $self->is_keyword($name)) {
       ## If the pseudo variable is defined or the project setting has a
-      ## value, then we'll need to do the replacement.
-      my $prjval;
-      if (defined $$valid{$name} ||
-          ($prjval = $self->get_assignment($name))) {
-        my $replace = $$valid{$name} || $prjval;
+      ## value, then we'll need to do the replacement.  However, if it's
+      ## a project keyword and it's not defined, we will need to delay
+      ## the replacement until later (unless $always_clear is true).
+      my $replace;
+      my $clear = $always_clear;
+      if (defined $$valid{$name}) {
+        $replace = $$valid{$name};
+      }
+      elsif ($self->is_keyword($name)) {
+        $replace = $self->get_assignment($name);
+      }
+      else {
+        $clear = 1;
+      }
+
+      ## Perform the modification and replacement here
+      if (defined $replace) {
         if (defined $modifier) {
           if ($modifier eq 'noextension') {
             $replace =~ s/\.[^\.]+$//;
@@ -3897,8 +3911,17 @@ sub replace_parameters {
         }
         $str =~ s/<%\w+(\(\w+\))?%>/$replace/;
       }
-      else {
+      elsif ($clear) {
+        ## We need to clear out this variable usage.
         $str =~ s/<%\w+(\(\w+\))?%>//;
+      }
+      else {
+        ## Save this variable usage to be put back after we're done
+        ## processing the string.
+        my $key = "\1" . $count++ . "\1";
+        if ($str =~ s/(<%\w+(\(\w+\))?%>)/$key/) {
+          $saved{$key} = $1;
+        }
       }
     }
     else {
@@ -3921,6 +3944,11 @@ sub replace_parameters {
     }
   }
 
+  ## Replace the saved variables so that they may be replaced (or
+  ## removed) later on.
+  foreach my $key (keys %saved) {
+    $str =~ s/$key/$saved{$key}/;
+  }
   return $str;
 }
 
@@ -3991,7 +4019,7 @@ sub convert_command_parameters {
     }
   }
 
-  return $self->replace_parameters($str, \%valid, \%nowarn, $input, $output);
+  return $self->replace_parameters($str, \%valid, \%nowarn, $input, $output, 1);
 }
 
 
