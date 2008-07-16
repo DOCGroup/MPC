@@ -1,3 +1,16 @@
+Wed Jul 16 16:11:33 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/CommandHelper.pm:
+
+          Fixed a comment.
+
+        * modules/ProjectCreator.pm:
+
+          Delay replacing <%...%> that contain project keywords until they
+          are used by the template.  Doing this allows the values to be used
+          regardless of the order in which keywords are processed within the
+          project.
+
 Tue Jul 15 16:08:40 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/CommandHelper.pm:
