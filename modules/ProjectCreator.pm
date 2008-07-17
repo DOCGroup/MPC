@@ -1204,7 +1204,8 @@ sub process_component_line {
     if (defined $cmdHelper) {
       my $key = $line;
       $key =~ s/\\/\//g if ($self->{'convert_slashes'});
-      my $add_out = $cmdHelper->get_output($key, $flags);
+      my $cmdflags = $$flags{'commandflags'};
+      my $add_out = $cmdHelper->get_output($key, $cmdflags);
       push(@{$self->{'custom_special_output'}->{$tag}->{$key}}, @$add_out);
     }
 
