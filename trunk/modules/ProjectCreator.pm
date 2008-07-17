@@ -1197,6 +1197,17 @@ sub process_component_line {
       }
     }
 
+    ## If there is a command helper, we need to add the output files
+    ## here.  It is possible that helper determined output files are
+    ## the only files added by this component type.
+    my $cmdHelper = CommandHelper::get($tag);
+    if (defined $cmdHelper) {
+      my $key = $line;
+      $key =~ s/\\/\//g if ($self->{'convert_slashes'});
+      my $add_out = $cmdHelper->get_output($key, $flags);
+      push(@{$self->{'custom_special_output'}->{$tag}->{$key}}, @$add_out);
+    }
+
     ## Set up the files array.  If the line contains a wild card
     ## character use CORE::glob() to get the files specified.
     my @files;
@@ -2435,7 +2446,15 @@ sub add_generated_files {
           last if ($check =~ s/$regext$//);
         }
         foreach my $vc (keys %{$self->{'valid_components'}}) {
-          if ($vc ne $tag) {
+          ## If this component name does not match the component name for
+          ## which we are adding files and there are components defined
+          ## for it, we will look to see if we can find a matching group
+          ## name.  We have to make sure that we do not use the hash map
+          ## ($self->{$vc}) unless it's defined.  Doing so will
+          ## automatically create the map and that will cause MPC to
+          ## think that the user provided the empty setting (when it
+          ## wasn't).
+          if ($vc ne $tag && defined $self->{$vc}) {
             foreach my $name (keys %{$self->{$vc}}) {
               foreach my $ckey (keys %{$self->{$vc}->{$name}}) {
                 if ($ckey ne $defgroup) {

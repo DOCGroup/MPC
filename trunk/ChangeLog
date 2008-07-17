@@ -1,3 +1,17 @@
+Thu Jul 17 13:50:33 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where a command helper returns output files for a
+          particular component type and file, but they were not taken into
+          account within the project.
+
+          Also, fixed another bug relating to the group determiniation of
+          automatically added files.  In doing so, the components for other
+          component types were being defined but set to an empty set which
+          was causing problems with automatically adding file to these
+          components.
+
 Wed Jul 16 16:11:33 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/CommandHelper.pm:
