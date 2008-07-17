@@ -1,3 +1,10 @@
+Thu Jul 17 15:10:48 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          We need to pass the 'commandflags' setting to the command helper,
+          not the hash map containing all of the type settings.
+
 Thu Jul 17 13:50:33 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
