@@ -98,11 +98,9 @@ sub get_info_hash {
 sub translate_value {
   my($self, $key, $val) = @_;
 
-  if ($key eq 'platform' && $val eq 'AnyCPU') {
-    ## Microsoft uses AnyCPU in the project file, but
-    ## uses Any CPU in the solution file.
-    $val = 'Any CPU';
-  }
+  ## Microsoft uses AnyCPU in the project file, but uses Any CPU in the
+  ## solution file.
+  $val = 'Any CPU' if ($key eq 'platform' && $val eq 'AnyCPU');
 
   return $self->SUPER::translate_value($key, $val);
 }

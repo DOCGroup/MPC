@@ -787,11 +787,9 @@ sub generate_default_components {
       }
     }
 
-    ## If the workspace is set to implicit
-    if ($impl) {
-      ## Remove duplicates from this list
-      $self->remove_duplicate_projects(\@built);
-    }
+    ## If the workspace is set to implicit remove duplicates from this
+    ## list.
+    $self->remove_duplicate_projects(\@built) if ($impl);
 
     ## Set the project files
     $self->{'project_files'} = \@built;
@@ -801,11 +799,9 @@ sub generate_default_components {
     ## and in the subdirectories.
     $excluded |= $self->search_for_files($files, $pjf, $impl);
 
-    ## If the workspace is set to implicit
-    if ($impl) {
-      ## Remove duplicates from this list
-      $self->remove_duplicate_projects($pjf);
-    }
+    ## If the workspace is set to implicit remove duplicates from this
+    ## list.
+    $self->remove_duplicate_projects($pjf) if ($impl);
 
     ## If no files were found, then we push the empty
     ## string, so the Project Creator will generate
