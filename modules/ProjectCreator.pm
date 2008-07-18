@@ -829,10 +829,8 @@ sub parse_line {
           }
         }
 
-        if ($status) {
-          ## Signify that we have a valid project
-          $self->{$typecheck} = 1;
-        }
+        ## Signify that we have a valid project
+        $self->{$typecheck} = 1 if ($status);
       }
     }
     elsif ($values[0] eq '0') {
@@ -1661,11 +1659,10 @@ sub parse_define_custom {
         if (UNIVERSAL::isa($self->{'valid_names'}->{$key}, 'ARRAY')) {
           my $value = $self->{'generated_exts'}->{$tag}->{
                                 $self->{'valid_names'}->{$key}->[1]};
-          if (defined $value) {
-            ## Bypass the process_assignment() defined in this class
-            ## to avoid unwanted keyword mapping.
-            $self->SUPER::process_assignment($key, $value);
-          }
+
+          ## Bypass the process_assignment() defined in this class
+          ## to avoid unwanted keyword mapping.
+          $self->SUPER::process_assignment($key, $value) if (defined $value);
         }
       }
 
@@ -2481,10 +2478,8 @@ sub search_for_entry {
     my $commented = 0;
 
     while(<$fh>) {
-      if (!$commented) {
-        ## Remove c++ style comments
-        $_ =~ s/\/\/.*//;
-      }
+      ## Remove c++ style comments
+      $_ =~ s/\/\/.*// if (!$commented);
 
       ## Remove one line c style comments
       $_ =~ s/\/\*.*\*\///g;
@@ -4230,12 +4225,10 @@ sub need_to_write_project {
     my $names = $self->{$key};
     foreach my $name (keys %$names) {
       foreach my $key (keys %{$names->{$name}}) {
-        if (defined $names->{$name}->{$key}->[0]) {
-          ## Return 1 if we have found a source file or a resource file.
-          ## Return 2 if we have found a custom input file (and thus no
-          ## source or resource files due to the foreach order).
-          return $count >= 2 ? 2 : 1;
-        }
+        ## Return 1 if we have found a source file or a resource file.
+        ## Return 2 if we have found a custom input file (and thus no
+        ## source or resource files due to the foreach order).
+        return ($count >= 2 ? 2 : 1) if (defined $names->{$name}->{$key}->[0]);
       }
     }
     $count++;
