@@ -23,15 +23,14 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub escape_spaces {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub fill_value {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = undef;
+  my($self, $name) = @_;
+  my $value;
 
   if ($name eq 'am_version') {
     $value = $self->get_assignment('version');
@@ -43,19 +42,19 @@ sub fill_value {
 
 
 sub project_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '.am';
 }
 
 
 sub get_dll_exe_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'automakeexe';
 }
 
 
 sub get_dll_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'automakedll';
 }
 

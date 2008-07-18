@@ -140,6 +140,11 @@ sub backupAndMoveModified {
   ## -M returns the number of days since modification.  Therefore,
   ## a smaller time means that it has been modified more recently.
   ## This is different than what stat() returns.
+
+  ## If the hard linked file is newer than the original file, that means
+  ## the link has been broken by something and needs to be "fixed".  We
+  ## will back up the original file and move the modified file into it's
+  ## place.
   if ($mltime < $mrtime) {
     $status = 0;
 
@@ -158,10 +163,9 @@ sub backupAndMoveModified {
       }
     }
   }
-  elsif ($mltime != $mrtime) {
-    $status = 0;
-  }
-  elsif (-s $linkpath != -s $realpath) {
+  elsif ($mltime != $mrtime || -s $linkpath != -s $realpath) {
+    ## The two files are different in some way, we need to make a backup
+    ## so that we don't cause a loss of data/work.
     $status = 0;
   }
 
@@ -250,9 +254,8 @@ sub symlinkFiles {
           my $slashcount = ($buildfile =~ tr/\///);
           my $real = ($slashcount == 0 ? './' : ('../' x $slashcount)) .
                      $file;
-          if ($verbose) {
-            print "symlink $real $fullpath\n";
-          }
+
+          print "symlink $real $fullpath\n" if ($verbose);
           if (!symlink($real, $fullpath)) {
             print STDERR "ERROR: Unable to symlink $fullpath\n";
             return 1;
@@ -339,9 +342,7 @@ sub hardlinkFiles {
         my $full = "$fullbuild/$line";
         unlink($full);
         $dirs{dirname($full)} = 1;
-        if ($verbose) {
-          print "Removing $full\n";
-        }
+        print "Removing $full\n" if ($verbose);
       }
     }
     close($lfh);
@@ -405,9 +406,7 @@ sub linkFiles {
     print "Finished in $fullbuild\n";
   }
 
-  if ($status == 0) {
-    print 'Total time: ', time() - $starttime, " seconds.\n";
-  }
+  print 'Total time: ', time() - $starttime, " seconds.\n" if ($status == 0);
 
   return $status;
 }
@@ -415,9 +414,9 @@ sub linkFiles {
 
 sub usageAndExit {
   my $msg = shift;
-  if (defined $msg) {
-    print STDERR "$msg\n";
-  }
+
+  print STDERR "$msg\n" if (defined $msg);
+
   my $base = basename($0);
   my $spc  = ' ' x (length($base) + 8);
 

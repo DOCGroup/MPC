@@ -22,7 +22,7 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub compare_output {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
@@ -39,7 +39,7 @@ sub require_dependencies {
 
 
 sub dependency_is_filename {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 

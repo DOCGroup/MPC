@@ -23,51 +23,47 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my($targets) = 'clean depend generated realclean $(CUSTOM_TARGETS)';
+my $targets = 'clean depend generated realclean $(CUSTOM_TARGETS)';
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub write_project_targets {
-  my($self)   = shift;
-  my($fh)     = shift;
-  my($crlf)   = shift;
-  my($target) = shift;
-  my($list)   = shift;
+  my($self, $fh, $crlf, $target, $list) = @_;
 
+  ## Print out a make command for each project
   foreach my $project (@$list) {
-    my($dname) = $self->mpc_dirname($project);
-    my($chdir) = ($dname ne '.');
+    my $dname = $self->mpc_dirname($project);
+    my $chdir = ($dname ne '.');
     print $fh "\t\@",
               ($chdir ? "cd $dname && " : ''),
               "\$(MAKE) -f ",
               ($chdir ? $self->mpc_basename($project) : $project),
               " $target$crlf";
   }
-}  
+}
 
 sub pre_workspace {
-  my($self) = shift;
-  my($fh)   = shift;
+  my($self, $fh) = @_;
   $self->workspace_preamble($fh, $self->crlf(), 'Make Workspace',
                             '$Id$');
 }
 
 
 sub write_comps {
-  my($self)    = shift;
-  my($fh)      = shift;
-  my(%targnum) = ();   
-  my(@list)    = $self->number_target_deps($self->get_projects(),
-                                           $self->get_project_info(),
-                                           \%targnum, 0);
+  my($self, $fh) = @_;
+  my %targnum;
+  my @list = $self->number_target_deps($self->get_projects(),
+                                       $self->get_project_info(),
+                                       \%targnum, 0);
 
+  ## Send all the information to our base class method
   $self->write_named_targets($fh, $self->crlf(), \%targnum, \@list,
                              $targets, '', 'generated ',
                              $self->project_target_translation(1), 1);
 }
-  
+
 
 
 

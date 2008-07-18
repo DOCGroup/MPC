@@ -326,9 +326,7 @@ sub read_global_configuration {
     ## If it doesn't contain a path, search the include path
     if ($input !~ /[\/\\]/) {
       $input = $self->search_include_path($input);
-      if (!defined $input) {
-        $input = $self->get_global_cfg();
-      }
+      $input = $self->get_global_cfg() if (!defined $input);
     }
 
     ## Read and parse the global project file
@@ -604,9 +602,7 @@ sub begin_project {
             }
             my $hash = $self->{'inheritance_tree'}->{$tree};
             foreach my $p (@{$self->{'reading_parent'}}) {
-              if (!defined $$hash{$p}) {
-                $$hash{$p} = {};
-              }
+              $$hash{$p} = {} if (!defined $$hash{$p});
               $hash = $$hash{$p};
             }
 
@@ -616,9 +612,7 @@ sub begin_project {
             ## Take the base project file off of the parent stack
             pop(@{$self->{'reading_parent'}});
 
-            if (!$status) {
-              $error = "Invalid parent: $parent";
-            }
+            $error = "Invalid parent: $parent" if (!$status);
           }
           else {
             ## The base project has already been read.  So, if
@@ -1028,9 +1022,7 @@ sub update_template_variable {
     $name = $values[1] if (!defined $name);
     if ($name =~ s/.*:://) {
       my $value = $self->get_assignment($name);
-      if (defined $value) {
-        $atemp->{$values[1]} = [[0, $value, undef, $name]];
-      }
+      $atemp->{$values[1]} = [[0, $value, undef, $name]] if (defined $value);
     }
   }
 
@@ -1066,9 +1058,7 @@ sub handle_unknown_assignment {
   ## -value_template option in Options.pm.
 
   ## If $type is not defined, then we are skipping this section
-  if (defined $type) {
-    $self->update_template_variable(1, @values);
-  }
+  $self->update_template_variable(1, @values) if (defined $type);
 
   return 1, undef;
 }
@@ -1252,9 +1242,7 @@ sub process_component_line {
 
       foreach my $file (@files) {
         ## Add the file if we're not excluding it
-        if (!defined $exclude{$file}) {
-          push(@{$$comps{$current}}, $file);
-        }
+        push(@{$$comps{$current}}, $file) if (!defined $exclude{$file});
 
         ## The user listed a file explicitly, whether we
         ## excluded it or not.
@@ -1275,9 +1263,7 @@ sub parse_conditional {
   my $add = 0;
   my $type = $self->get_process_project_type($types);
 
-  if ($type eq $self->{'pctype'}) {
-    $add = 1;
-  }
+  $add = 1 if ($type eq $self->{'pctype'});
 
   while(<$fh>) {
     my $line = $self->preprocess_line($fh, $_);
@@ -1338,9 +1324,7 @@ sub parse_components {
   else {
     $$names{$name} = $comps;
   }
-  if (!defined $$comps{$current}) {
-    $$comps{$current} = [];
-  }
+  $$comps{$current} = [] if (!defined $$comps{$current});
 
   my $count = 0;
   while(<$fh>) {
@@ -1352,9 +1336,7 @@ sub parse_components {
       if (!$set) {
         $current = $1;
         $set = 1;
-        if (!defined $$comps{$current}) {
-          $$comps{$current} = [];
-        }
+        $$comps{$current} = [] if (!defined $$comps{$current});
       }
       else {
         $status = 0;
@@ -1540,12 +1522,9 @@ sub process_feature {
       ## This is a very simplistic way of finding the end of
       ## the feature definition.  It will work as long as no spurious
       ## open curly braces are counted.
-      if ($line =~ /{$/) {
-        ++$curly;
-      }
-      if ($line =~ /^}/) {
-        --$curly;
-      }
+      ++$curly if ($line =~ /{$/);
+      --$curly if ($line =~ /^}/);
+
       if ($curly == 0) {
         $self->{'feature_defined'} = 0;
         last;
@@ -1589,9 +1568,8 @@ sub parse_define_custom {
   ## Make the tag something _files
   $tag = lc($tag) . '_files';
 
-  if ($tag eq $generic_key) {
-    return 0, "$tag is reserved";
-  }
+  ## We can not have a custom type named "generic"
+  return 0, "$tag is reserved" if ($tag eq $generic_key);
 
   if (defined $self->{'valid_components'}->{$tag}) {
     if (!$modify) {
@@ -2431,9 +2409,7 @@ sub add_generated_files {
     ## we put them at the front of the main file list.
     my @oktoadd;
     foreach my $file (@added) {
-      if (!$self->already_added(\@all, $file)) {
-        push(@oktoadd, $file);
-      }
+      push(@oktoadd, $file) if (!$self->already_added(\@all, $file));
     }
 
     ## If we have files to add, make sure we add them to a group
@@ -2476,9 +2452,7 @@ sub add_generated_files {
             last if (defined $key);
           }
         }
-        if (!defined $key) {
-          $key = $defgroup;
-        }
+        $key = $defgroup if (!defined $key);
       }
       foreach my $name (keys %$names) {
         if (!defined $$names{$name}->{$key}) {
@@ -2620,9 +2594,7 @@ sub generate_default_target_names {
       ## Set the exename assignment
       my @sources = $self->get_component_list('source_files', 1);
       my $exename = $self->find_main_file(\@sources);
-      if (defined $exename) {
-        $self->process_assignment('exename', $exename);
-      }
+      $self->process_assignment('exename', $exename) if (defined $exename);
 
       ## If we still don't have a project type, then we will
       ## default to a library if there are source or resource files
@@ -2684,9 +2656,7 @@ sub generate_default_pch_filenames {
             if ($file =~ /(.*_pch$ext)$/) {
               $self->process_assignment('pch_header', $1);
               ++$hcount;
-              if (index($file, $pname) >= 0) {
-                $hmatching = $file;
-              }
+              $hmatching = $file if (index($file, $pname) >= 0);
               last;
             }
           }
@@ -2696,9 +2666,7 @@ sub generate_default_pch_filenames {
             if ($file =~ /(.*_pch$ext)$/) {
               $self->process_assignment('pch_source', $1);
               ++$ccount;
-              if (index($file, $pname) >= 0) {
-                $cmatching = $file;
-              }
+              $cmatching = $file if (index($file, $pname) >= 0);
               last;
             }
           }
@@ -2717,11 +2685,11 @@ sub generate_default_pch_filenames {
 
 sub fix_pch_filenames {
   my $self = shift;
+
+  ## Unset the precompiled header settings if they are set but empty
   foreach my $type ('pch_header', 'pch_source') {
     my $pch = $self->get_assignment($type);
-    if (defined $pch && $pch eq '') {
-      $self->process_assignment($type, undef);
-    }
+    $self->process_assignment($type, undef) if (defined $pch && $pch eq '');
   }
 }
 
@@ -2788,9 +2756,7 @@ sub sift_files {
           next;
         }
 
-        if (!$self->already_added($array, $file)) {
-          push(@$array, $file);
-        }
+        push(@$array, $file) if (!$self->already_added($array, $file));
       }
     }
   }
@@ -2854,9 +2820,7 @@ sub correct_generated_files {
       foreach my $name (keys %$names) {
         foreach my $key (keys %{$$names{$name}}) {
           push(@input, @{$$names{$name}->{$key}});
-          if ($key ne $defgroup) {
-            $newgroup = $key;
-          }
+          $newgroup = $key if ($key ne $defgroup);
         }
       }
 
@@ -2907,9 +2871,7 @@ sub correct_generated_files {
 
                 ## Add all the files that match the chosen extension
                 foreach my $file (@files) {
-                  if ($file =~ /$ext$/) {
-                    push(@front, $file);
-                  }
+                  push(@front, $file) if ($file =~ /$ext$/);
                 }
               }
             }
@@ -2917,9 +2879,7 @@ sub correct_generated_files {
           else {
             my $ext = $$exts[0];
             foreach my $file (@files) {
-              if ($file =~ /$ext$/) {
-                push(@front, $file);
-              }
+              push(@front, $file) if ($file =~ /$ext$/);
             }
           }
         }
@@ -3131,9 +3091,7 @@ sub generated_source_listed {
 
           foreach my $re (@gfiles) {
             $re = $self->escape_regex_special($re);
-            if ($val =~ /$re$/) {
-              return 1;
-            }
+            return 1 if ($val =~ /$re$/);
           }
         }
       }
@@ -3165,9 +3123,8 @@ sub list_default_generated {
         foreach my $key (keys %{$$names{$name}}) {
           my $array = $$names{$name}->{$key};
 
-          if ($key ne $defgroup) {
-            $group = $key;
-          }
+          ## Take the last group name we encounter
+          $group = $key if ($key ne $defgroup);
 
           foreach my $val (@$array) {
             $arr{$val} = $self->remove_wanted_extension(
@@ -3250,9 +3207,7 @@ sub list_generated_file {
     ## extensions specified by the custom definition, we need
     ## to remove the extension or else this file will not be
     ## added to the project.
-    if ($gen eq $input) {
-      $gen =~ s/\.[^\.]+$//;
-    }
+    $gen =~ s/\.[^\.]+$// if ($gen eq $input);
 
     ## See if we need to add the file.  We always need to check since the
     ## output file may have absolutely nothing in common with the input
@@ -3465,9 +3420,7 @@ sub sort_generated_types {
         my $ext = $regex;
         $ext =~ s/\\//g;
         foreach my $vreg (@{$self->{'valid_components'}->{$right}}) {
-          if ($ext =~ /$vreg$/) {
-            return -1;
-          }
+          return -1 if ($ext =~ /$vreg$/);
         }
       }
     }
@@ -3591,9 +3544,7 @@ sub generate_defaults {
   ## Now that all of the other files have been added
   ## we need to remove those that have need to be removed
   my @rmkeys = keys %{$self->{'remove_files'}};
-  if (defined $rmkeys[0]) {
-    $self->remove_excluded(@rmkeys);
-  }
+  $self->remove_excluded(@rmkeys) if (defined $rmkeys[0]);
 
   ## Tie custom files together if need be.  This currently only applies
   ## to types with command helpers.  At some point, if it is found to be
@@ -3802,9 +3753,7 @@ sub get_grouped_value {
   $type =~ s/^$grouped_key//;
 
   ## Add the s if it isn't there
-  if ($type !~ /s$/) {
-    $type .= 's';
-  }
+  $type .= 's' if ($type !~ /s$/);
 
   my $names = $self->{$type};
   if ($cmd eq 'files') {
@@ -4158,9 +4107,7 @@ sub get_custom_value {
                 last;
               }
             }
-            if (!$matched) {
-              push(@$value, $file);
-            }
+            push(@$value, $file) if (!$matched);
             last;
           }
         }
@@ -4188,9 +4135,7 @@ sub get_custom_value {
             last if ($source);
           }
         }
-        if (!$source) {
-          push(@$value, $file);
-        }
+        push(@$value, $file) if (!$source);
       }
     }
   }
@@ -4372,9 +4317,7 @@ sub write_output_file {
         my $fh  = new FileHandle();
         my $dir = $self->mpc_dirname($name);
 
-        if ($dir ne '.') {
-          mkpath($dir, 0, 0777);
-        }
+        mkpath($dir, 0, 0777) if ($dir ne '.');
 
         if ($webapp) {
           ## At this point in time, webapps do not get a project file,
@@ -4391,9 +4334,7 @@ sub write_output_file {
             }
             close($fh);
 
-            if (!$self->files_are_different($name, $tmp)) {
-              $different = 0;
-            }
+            $different = 0 if (!$self->files_are_different($name, $tmp));
           }
           else {
             $error = "Unable to open $tmp for output.";
@@ -4517,9 +4458,7 @@ sub write_project {
   my $error;
   my $progress = $self->get_progress_callback();
 
-  if (defined $progress) {
-    &$progress();
-  }
+  &$progress() if (defined $progress);
 
   if ($self->check_features($self->get_assignment('requires'),
                             $self->get_assignment('avoids'),
@@ -4612,17 +4551,13 @@ sub set_component_extensions {
   foreach my $key (keys %$vc) {
     my $ov = $self->override_valid_component_extensions($key,
                                                         @{$$vc{$key}});
-    if (defined $ov) {
-      $$vc{$key} = $ov;
-    }
+    $$vc{$key} = $ov if (defined $ov);
   }
 
   foreach my $key (keys %$ec) {
     my $ov = $self->override_exclude_component_extensions($key,
                                                           @{$$ec{$key}});
-    if (defined $ov) {
-      $$ec{$key} = $ov;
-    }
+    $$ec{$key} = $ov if (defined $ov);
   }
 }
 
@@ -4784,9 +4719,7 @@ sub adjust_value {
             if (defined $$val[3]) {
               my $mapped = $self->{'valid_names'}->{$$val[3]};
               if (defined $mapped && UNIVERSAL::isa($mapped, 'ARRAY')) {
-                if ($v ne $$mapped[0]) {
-                  $found = 1;
-                }
+                $found = 1 if ($v ne $$mapped[0]);
               }
               last;
             }
@@ -4867,9 +4800,7 @@ sub get_verbatim {
     if (defined $thash->{$marker}) {
       my $crlf = $self->crlf();
       foreach my $line (@{$thash->{$marker}}) {
-        if (!defined $str) {
-          $str = '';
-        }
+        $str = '' if (!defined $str);
         $str .= $self->process_special($line) . $crlf;
       }
       if (defined $str) {
@@ -4949,7 +4880,7 @@ sub add_to_template_input_value {
 
 
 sub dependency_combined_static_library {
-  #my($self) = shift;
+  #my $self = shift;
   return defined $ENV{MPC_DEPENDENCY_COMBINED_STATIC_LIBRARY};
 }
 
@@ -4981,8 +4912,8 @@ sub translate_value {
 
 
 sub requires_parameters {
-  #my($self) = shift;
-  #my($name) = shift;
+  #my $self = shift;
+  #my $name = shift;
   return $custom{$_[1]};
 }
 
@@ -5019,9 +4950,7 @@ sub remove_wanted_extension {
   my($self, $name, $array) = @_;
 
   foreach my $wanted (@$array) {
-    if ($name =~ s/$wanted$//) {
-      return $name;
-    }
+    return $name if ($name =~ s/$wanted$//);
   }
 
   ## If the user provided file does not match any of the
@@ -5161,25 +5090,25 @@ sub file_visible {
 }
 
 sub webapp_supported {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
 
 sub use_win_compatibility_commands {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
 
 sub post_file_creation {
-  #my($self) = shift;
-  #my($file) = shift;
+  #my $self = shift;
+  #my $file = shift;
 }
 
 
 sub escape_spaces {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
@@ -5190,98 +5119,98 @@ sub validated_directory {
 }
 
 sub get_quote_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return '"';
 }
 
 sub get_escaped_quote_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return '\\"';
 }
 
 sub get_gt_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return '>';
 }
 
 
 sub get_lt_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return '<';
 }
 
 
 sub get_and_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return '&&';
 }
 
 
 sub get_or_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return '||';
 }
 
 
 sub get_cmdsep_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return ';';
 }
 
 
 sub dollar_special {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
 
 sub expand_variables_from_template_values {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub require_dependencies {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub dependency_is_filename {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub fill_value {
-  #my($self) = shift;
-  #my($name) = shift;
+  #my $self = shift;
+  #my $name = shift;
   return undef;
 }
 
 
 sub project_file_prefix {
-  #my($self) = shift;
+  #my $self = shift;
   return '';
 }
 
 
 sub project_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '';
 }
 
 
 sub override_valid_component_extensions {
-  #my($self) = shift;
-  #my($comp) = shift;
+  #my $self = shift;
+  #my $comp = shift;
   return undef;
 }
 
 
 sub override_exclude_component_extensions {
-  #my($self) = shift;
-  #my($comp) = shift;
+  #my $self = shift;
+  #my $comp = shift;
   return undef;
 }
 

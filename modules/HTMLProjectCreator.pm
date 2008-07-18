@@ -22,25 +22,22 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my($style_indent) = .5;
+my $style_indent = .5;
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub file_sorter {
-  #my($self)  = shift;
-  #my($left)  = shift;
-  #my($right) = shift;
+  #my $self  = shift;
+  #my $left  = shift;
+  #my $right = shift;
   return lc($_[1]) cmp lc($_[2]);
 }
 
 
 sub label_nodes {
-  my($self)  = shift;
-  my($hash)  = shift;
-  my($nodes) = shift;
-  my($level) = shift;
+  my($self, $hash, $nodes, $level) = @_;
 
   foreach my $key (sort keys %$hash) {
     push(@$nodes, [$level, $key]);
@@ -50,44 +47,36 @@ sub label_nodes {
 
 
 sub count_levels {
-  my($self)    = shift;
-  my($hash)    = shift;
-  my($current) = shift;
-  my($count)   = shift;
+  my($self, $hash, $current, $count) = @_;
 
   foreach my $key (keys %$hash) {
     $self->count_levels($$hash{$key}, $current + 1, $count);
   }
-  if ($current > $$count) {
-    $$count = $current;
-  }
+  $$count = $current if ($current > $$count);
 }
 
 
 sub fill_value {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = undef;
+  my($self, $name) = @_;
+  my $value;
 
   if ($name eq 'inheritance_nodes') {
     ## Get the nodes with numeric labels for the level
-    my(@nodes) = ();
+    my @nodes;
     $self->label_nodes($self->get_inheritance_tree(), \@nodes, 0);
 
     ## Push each node onto the value array
     $value = [];
     for(my $i = 0; $i <= $#nodes; ++$i) {
-      my($file) = $nodes[$i]->[1];
-      my($dir)  = $self->mpc_dirname($file);
-      my($base) = $self->mpc_basename($file);
+      my $file = $nodes[$i]->[1];
+      my $dir  = $self->mpc_dirname($file);
+      my $base = $self->mpc_basename($file);
 
       ## Relative paths do not work at all in a web browser
-      if ($dir eq '.') {
-        $file = $base;
-      }
+      $file = $base if ($dir eq '.');
 
-      my($path) = ($base eq $file ? $self->getcwd() . '/' : '');
-      my($name) = undef;
+      my $path = ($base eq $file ? $self->getcwd() . '/' : '');
+      my $name;
 
       if ($i == 0) {
         ## If this is the first node, then replace the base filename
@@ -111,13 +100,13 @@ sub fill_value {
   }
   elsif ($name eq 'tree_styles') {
     ## Count the number of levels deep the inheritance goes
-    my($count) = 0;
+    my $count = 0;
     $self->count_levels($self->get_inheritance_tree(), 0, \$count);
 
-    my($margin) = 0;
-    my($start)  = 100;
-    my($max)    = 255;
-    my($inc)    = ($count ne 0 ? int(($max - $start) / $count) : $max);
+    my $margin = 0;
+    my $start  = 100;
+    my $max    = 255;
+    my $inc    = ($count ne 0 ? int(($max - $start) / $count) : $max);
 
     ## Push each tree style onto the value array
     $value = [];
@@ -136,7 +125,7 @@ sub fill_value {
 
 
 sub project_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '.html';
 }
 

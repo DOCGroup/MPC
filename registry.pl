@@ -53,14 +53,19 @@ sub set_dir_command {
   my $shell = 'HKEY_CLASSES_ROOT/Directory/shell';
   my $hash = $Registry->{$shell};
 
+  ## If there is no shell setting, just create an empty one.  However,
+  ## this isn't very likely.
   if (!defined $hash) {
     $Registry->{$shell} = {};
     $hash = $Registry->{$shell};
   }
 
+  ## Create an entry for this project type (vc6, vc7, etc.)
   my $key = 'MPC' . uc($type) . '/';
   $hash->{$key} = {'/' => "MPC -> $desc"};
 
+  ## Now store the command for creating a workspace for this project
+  ## type.
   $key .= 'command/';
   $hash->{$key} = {'/' => "cmd /c \"cd %L && $MPC_ROOT\\mwc.pl -type $type -recurse || pause\""};
 }
@@ -71,17 +76,24 @@ sub set_mwc_command {
   my $shell = 'HKEY_CLASSES_ROOT/mwcfile/shell';
   my $hash = $Registry->{$shell};
 
+  ## Create the new entry for the mwc files.  This is likely to not
+  ## exist.
   if (!defined $hash) {
     $Registry->{$shell} = {};
     $hash = $Registry->{$shell};
   }
 
+  ## Create an entry for this project type (vc6, vc7, etc.)
   my $key = 'MPC' . uc($type) . '/';
   $hash->{$key} = {'/' => "MPC -> $desc"};
 
+  ## Now store the command for creating a workspace for this project
+  ## type.
   $key .= 'command/';
   $hash->{$key} = {'/' => "cmd /c \"$MPC_ROOT\\mwc.pl -type $type %L || pause\""};
 
+  ## Since MPC will create a workspace out of a directory, we want to do
+  ## the same thing for directories too.
   set_dir_command($type, $desc);
 }
 
@@ -91,14 +103,19 @@ sub set_mpc_command {
   my $shell = 'HKEY_CLASSES_ROOT/mpcfile/shell';
   my $hash = $Registry->{$shell};
 
+  ## Create the new entry for the mpc files.  This is likely to not
+  ## exist.
   if (!defined $hash) {
     $Registry->{$shell} = {};
     $hash = $Registry->{$shell};
   }
 
+  ## Create an entry for this project type (vc6, vc7, etc.)
   my $key = 'MPC' . uc($type) . '/';
   $hash->{$key} = {'/' => "MPC -> $desc"};
 
+  ## Now store the command for creating a single project for this project
+  ## type.
   $key .= 'command/';
   $hash->{$key} = {'/' => "cmd /c \"$MPC_ROOT\\mpc.pl -type $type %L || pause\""};
 }
@@ -108,11 +125,15 @@ sub delete_key {
   my $key = shift;
   my $val = $Registry->{$key};
 
+  ## Delete everything associated with this key (recursively traversing
+  ## each key).
   if (UNIVERSAL::isa($val, 'HASH')) {
     foreach my $k (keys %$val) {
       delete_key($key . $k);
     }
   }
+
+  ## Now get the key itself.
   delete $Registry->{$key};
 }
 
@@ -121,19 +142,23 @@ sub delete_key {
 # ******************************************************************
 
 if ($^O eq 'MSWin32') {
+  ## Pull in the registry modules and import the necessary items.
   require Win32::TieRegistry;
   Win32::TieRegistry->import(TiedRef => \$Registry,
                              Delimiter => '/');
 }
 else {
+  ## Currently, no other registry type is supported.
   print "ERROR: This script will only run on Windows.\n";
   exit(1);
 }
 
 if (defined $ARGV[0]) {
   if ($ARGV[0] eq '-r') {
+    ## Get rid of the MPC_ROOT environment variable.
     delete $Registry->{'HKEY_CURRENT_USER/Environment/MPC_ROOT'};
 
+    ## Now delete all the keys that this script knows how to make.
     delete_key('HKEY_CLASSES_ROOT/.mwc/');
     delete_key('HKEY_CLASSES_ROOT/mwcfile/');
     delete_key('HKEY_CLASSES_ROOT/.mpc/');
@@ -157,12 +182,15 @@ if (defined $ARGV[0]) {
   }
 }
 
+## Set the MPC_ROOT environment variable.
 $Registry->{'HKEY_CURRENT_USER/Environment/MPC_ROOT'} = [$MPC_ROOT, 'REG_SZ'];
 
+## Associate the icons with the various MPC file types.
 set_ext_icon('mwc', 0);
 set_ext_icon('mpc', 1);
 set_ext_icon('mpb', 1);
 
+## Create the command settings for each type
 foreach my $type (keys %types) {
   set_mwc_command($type, $types{$type}->[0]);
   set_mpc_command($type, $types{$type}->[1]);

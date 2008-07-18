@@ -161,8 +161,8 @@ sub tp_dirname {
 
 
 sub strip_line {
-  #my($self) = shift;
-  #my($line) = shift;
+  #my $self = shift;
+  #my $line = shift;
 
   ## Override strip_line() from Parser.
   ## We need to preserve leading space and
@@ -178,8 +178,8 @@ sub strip_line {
 ## built.  This line may be a foreach line or a general
 ## line without a foreach.
 sub append_current {
-#  my($self)  = shift;
-#  my($value) = shift;
+  #my $self  = shift;
+  #my $value = shift;
 
   if ($_[0]->{'foreach'}->{'count'} >= 0) {
     $_[0]->{'foreach'}->{'text'}->[$_[0]->{'foreach'}->{'count'}] .= $_[1];

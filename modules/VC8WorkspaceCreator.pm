@@ -22,22 +22,24 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my(%lang_map) = ('cplusplus' => 'Visual C#',
-                 'csharp'    => 'Visual C#',
-                 'vb'        => 'Visual Basic',
-                 'java'      => 'Visual J#');
+my %lang_map = ('cplusplus' => 'Visual C#',
+                'csharp'    => 'Visual C#',
+                'vb'        => 'Visual Basic',
+                'java'      => 'Visual J#');
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub pre_workspace {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($crlf) = $self->crlf();
+  my($self, $fh) = @_;
+  my $crlf = $self->crlf();
 
+  ## This identifies it as a Visual Studio 2005 file
   print $fh '﻿', $crlf,
             'Microsoft Visual Studio Solution File, Format Version 9.00', $crlf;
+
+  ## Optionally print the workspace comment
   $self->print_workspace_comment($fh,
             '# Visual Studio 2005', $crlf,
             '# $Id$', $crlf,
@@ -50,38 +52,41 @@ sub pre_workspace {
 }
 
 sub post_workspace {
-  my($self)     = shift;
-  my($fh)       = shift;
-  my($creator)  = shift;
-  my($pjs)      = $self->get_project_info();
-  my(@projects) = ();
-  my(%gmap)     = ();
+  my($self, $fh, $creator) = @_;
+  my $pjs = $self->get_project_info();
+  my @projects = $self->sort_dependencies($self->get_projects(), 0);
+  my %gmap;
 
-  foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
+  ## Store a map of the project name to project guid
+  foreach my $project (@projects) {
     my($name, $deps, $guid) = @{$$pjs{$project}};
     $gmap{$name} = $guid;
-    push(@projects, $project);
   }
 
+  ## Now go through the projects and check for the need to add external
+  ## references.
   foreach my $project (@projects) {
-    my($ph)     = new FileHandle();
-    my($outdir) = $self->get_outdir();
-    $outdir     = $self->getcwd() if ($outdir eq '.');
+    my $ph     = new FileHandle();
+    my $outdir = $self->get_outdir();
+    $outdir    = $self->getcwd() if ($outdir eq '.');
     if (open($ph, "$outdir/$project")) {
-      my($write) = 0;
-      my(@read)  = ();
-      my($crlf)  = $self->crlf();
-      my($cwd)   = $self->getcwd();
+      my $write;
+      my @read;
+      my $crlf = $self->crlf();
+      my $cwd  = $self->getcwd();
 
       while(<$ph>) {
+        ## This is a comment found in vc8.mpd if the project contains the
+        ## 'after' keyword setting and the 'add_references' template
+        ## variable setting.
         if (/^(\s*)<!\-\-\s+MPC\s+ADD\s+DEPENDENCIES\s+([^\s]+)?/) {
-          my($spc)  = $1;
-          my($lang) = $2;
-          my($deps) = $self->get_validated_ordering($project);
+          my $spc  = $1;
+          my $lang = $2;
+          my $deps = $self->get_validated_ordering($project);
           foreach my $dep (@$deps) {
-            my($relative) = $self->get_relative_dep_file($creator,
-                                                         "$cwd/$project",
-                                                         $dep);          
+            my $relative = $self->get_relative_dep_file($creator,
+                                                        "$cwd/$project",
+                                                        $dep);
             if (defined $relative) {
               if (defined $lang && $lang eq 'cplusplus') {
                 push(@read, $spc . '<ProjectReference' . $crlf .
@@ -98,6 +103,8 @@ sub post_workspace {
                             $spc . '  <Name>' . $dep . '</Name>' . $crlf,
                             $spc . '</ProjectReference>' . $crlf);
               }
+
+              ## Indicate that we need to re-write the file
               $write = 1;
             }
           }
@@ -109,6 +116,7 @@ sub post_workspace {
       }
       close($ph);
 
+      ## If we need to re-write the file, then do so
       if ($write && open($ph, ">$outdir/$project")) {
         foreach my $line (@read) {
           print $ph $line;
@@ -120,42 +128,41 @@ sub post_workspace {
 }
 
 sub adjust_names {
-  my($self) = shift;
-  my($name) = shift;
-  my($proj) = shift;
-  my($lang) = shift;
+  my($self, $name, $proj, $lang) = @_;
 
+  ## For websites, the project needs to be the directory of the actual
+  ## project file with a trailing slash.  The name needs a trailing slash
+  ## too.
   if ($lang eq 'website') {
     $proj = $self->mpc_dirname($proj);
-    $proj =~ s/\.vcproj$//;
     $proj .= '\\';
     $name .= '\\';
   }
 
-  $proj =~ s/\//\\/g; 
+  ## This always needs to be a path with the Windows style directory
+  ## separator.
+  $proj =~ s/\//\\/g;
   return $name, $proj;
 }
 
 sub get_short_config_name {
-  my($self) = shift;
-  my($cfg)  = shift;
-  return $cfg;
+  #my($self, $cfg) = @_;
+  return $_[1];
 }
 
 sub get_solution_config_section_name {
-  #my($self) = shift;
+  #my $self = shift;
   return 'SolutionConfigurationPlatforms';
 }
 
 sub get_project_config_section_name {
-  #my($self) = shift;
+  #my $self = shift;
   return 'ProjectConfigurationPlatforms';
 }
 
 sub print_additional_sections {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($crlf) = $self->crlf();
+  my($self, $fh) = @_;
+  my $crlf = $self->crlf();
 
   print $fh "\tGlobalSection(SolutionProperties) = preSolution$crlf",
             "\t\tHideSolutionNode = FALSE$crlf",
@@ -163,33 +170,30 @@ sub print_additional_sections {
 }
 
 sub allow_empty_dependencies {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
 sub print_inner_project {
-  my($self)             = shift;
-  my($fh)               = shift;
-  my($gen)              = shift;
-  my($currguid)         = shift;
-  my($deps)             = shift;
-  my($name)             = shift;
-  my($name_to_guid_map) = shift;
-  my($proj_language)    = shift;
-  my($cfgs)             = shift;
+  my($self, $fh, $gen, $currguid, $deps, $name, $name_to_guid_map, $proj_language, $cfgs) = @_;
 
+  ## We need to perform a lot of work, but only for websites.
   if ($proj_language eq 'website') {
-    my($crlf)      = $self->crlf();
-    my($language)  = $self->get_language();
-    my($directory) = ($name eq '.\\' ?
-                        $self->get_workspace_name() . '\\' : $name);
-    my($notrail)   = $directory;
+    my $crlf      = $self->crlf();
+    my $language  = $self->get_language();
+    my $directory = ($name eq '.\\' ?
+                       $self->get_workspace_name() . '\\' : $name);
+
+    ## We need the directory name with no trailing back-slash for use
+    ## below.
+    my $notrail   = $directory;
     $notrail =~ s/\\$//;
 
     # Print the website project.
     print $fh "\tProjectSection(WebsiteProperties) = preProject", $crlf;
 
-    my($references) = undef;
+    ## Print out the references
+    my $references;
     foreach my $dep (@$deps) {
       if (defined $$name_to_guid_map{$dep}) {
         $references = "\t\t" .
@@ -197,11 +201,10 @@ sub print_inner_project {
         $references .= "{$$name_to_guid_map{$dep}}|$dep;";
       }
     }
-    if (defined $references) {
-      print $fh $references, '"', $crlf;
-    }
+    print $fh $references, '"', $crlf if (defined $references);
 
-    my(%cfg_seen) = ();
+    ## And now the configurations
+    my %cfg_seen;
     foreach my $config (@$cfgs) {
       $config =~ s/\|.*//;
       if (!$cfg_seen{$config}) {
@@ -223,12 +226,8 @@ sub print_inner_project {
   else {
     # We can ignore this project and pass it to the
     # SUPER since it's not a website.
-    $self->SUPER::print_inner_project($fh,
-                                      $gen,   
-                                      $currguid,
-                                      $deps,    
-                                      $name,
-                                      $name_to_guid_map);
+    $self->SUPER::print_inner_project($fh, $gen, $currguid, $deps,
+                                      $name, $name_to_guid_map);
   }
 }
 

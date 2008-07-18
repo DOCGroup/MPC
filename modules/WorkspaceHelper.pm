@@ -42,9 +42,7 @@ sub get {
 
     ## If we can't find the helper, we just create an
     ## empty helper and return that.
-    if (!$required{$type}) {
-      $required{$type} = new WorkspaceHelper();
-    }
+    $required{$type} = new WorkspaceHelper() if (!$required{$type});
   }
 
   return $required{$type};
@@ -64,27 +62,27 @@ sub modify_value {
 
 
 sub modify_libpath {
-  #my($self)    = shift;
-  #my($str)     = shift;
-  #my($reldir)  = shift;
-  #my($libname) = shift;
+  #my $self    = shift;
+  #my $str     = shift;
+  #my $reldir  = shift;
+  #my $libname = shift;
   return undef;
 }
 
 
 sub write_settings {
-  #my($self)   = shift;
-  #my($fh)     = shift;
-  #my(@locals) = @_;
+  #my $self   = shift;
+  #my $fh     = shift;
+  #my @locals = @_;
   return 1, undef;
 }
 
 
 sub perform_custom_processing {
-  #my($self)     = shift;
-  #my($fh)       = shift;
-  #my($creator)  = shift;
-  #my($toplevel) = shift;
+  #my $self     = shift;
+  #my $fh       = shift;
+  #my $creator  = shift;
+  #my $toplevel = shift;
 }
 
 1;

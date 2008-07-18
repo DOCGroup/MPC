@@ -23,13 +23,13 @@ my $max_win_env = 'MPC_MAX_WIN_FILE_LENGTH';
 # ************************************************************
 
 sub convert_slashes {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub case_insensitive {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
@@ -89,15 +89,15 @@ sub crlf {
 
 
 sub get_cmdsep_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return '&';
 }
 
 
 sub file_sorter {
-  #my($self)  = shift;
-  #my($left)  = shift;
-  #my($right) = shift;
+  #my $self  = shift;
+  #my $left  = shift;
+  #my $right = shift;
   return lc($_[1]) cmp lc($_[2]);
 }
 

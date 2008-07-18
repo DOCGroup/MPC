@@ -1,7 +1,7 @@
 package SLEWorkspaceCreator;
 
 # ************************************************************
-# Description   : A Sle Workspace Creator
+# Description   : The SLE Workspace Creator
 # Author        : Johnny Willemsen
 # Create Date   : 3/23/2004
 # ************************************************************
@@ -24,21 +24,20 @@ use vars qw(@ISA);
 
 
 sub compare_output {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub workspace_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '.vpw';
 }
 
 
 sub pre_workspace {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($crlf) = $self->crlf();
+  my($self, $fh) = @_;
+  my $crlf = $self->crlf();
 
   print $fh "<!DOCTYPE Workspace SYSTEM \"http://www.slickedit.com/dtd/vse/8.1/vpw.dtd\">$crlf" .
             "<Workspace Version=\"8.1\" VendorName=\"SlickEdit\">$crlf";
@@ -46,9 +45,8 @@ sub pre_workspace {
 
 
 sub write_comps {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($crlf) = $self->crlf();
+  my($self, $fh) = @_;
+  my $crlf = $self->crlf();
 
   print $fh "\t<Projects>$crlf";
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
@@ -59,8 +57,7 @@ sub write_comps {
 
 
 sub post_workspace {
-  my($self) = shift;
-  my($fh)   = shift;
+  my($self, $fh) = @_;
   print $fh '</Workspace>' . $self->crlf();
 }
 

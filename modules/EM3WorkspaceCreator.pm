@@ -24,17 +24,19 @@ use vars qw(@ISA);
 
 
 sub workspace_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '.vcw';
 }
 
 
 sub pre_workspace {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($crlf) = $self->crlf();
+  my($self, $fh) = @_;
+  my $crlf = $self->crlf();
 
+  ## This identifies it as a Visual C++ for WinCE file
   print $fh 'Microsoft eMbedded Visual Tools Workspace File, Format Version 3.00', $crlf;
+
+  ## Optionally print the workspace comment
   $self->print_workspace_comment($fh,
             '#', $crlf,
             '# $Id$', $crlf,
