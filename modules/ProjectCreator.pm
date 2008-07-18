@@ -3962,8 +3962,13 @@ sub convert_command_parameters {
       $valid{'output_noext'}    .= (!$first ? ' ' : '') . $noext;
       $valid{'output_basename'} .= (!$first ? ' ' : '') .
                                    $self->mpc_basename($out);
+
+      ## In order to call dirname, we must make sure that the directory
+      ## separators are forward slashes.
+      my $file = $out;
+      $file =~ s/\\/\//g if ($self->{'convert_slashes'});
       $valid{'output_dirname'}  .= (!$first ? ' ' : '') .
-                                   $self->mpc_dirname($out);
+                                   $self->mpc_dirname($file);
       $first = 0;
     }
   }
