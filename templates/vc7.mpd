@@ -205,7 +205,7 @@
 			<Tool
 				Name="VCPostCleanEventTool"
 				CommandLine="<%eval(postclean)%>"
-			/>  
+			/>
 <%endif%>
 			<Tool
 				Name="VCResourceCompilerTool"
