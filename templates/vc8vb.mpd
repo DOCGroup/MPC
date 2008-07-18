@@ -20,7 +20,7 @@
     <ApplicationIcon><%ico_file%></ApplicationIcon>
 <%endif%>
 <%endfor%>
-<%endif%> 
+<%endif%>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
 <%if(exename || sharedname || staticname)%>
@@ -74,7 +74,7 @@
 <%endfor%>
   <ItemGroup>
 <%if(after)%>
-    <!-- MPC ADD DEPENDENCIES -->  
+    <!-- MPC ADD DEPENDENCIES -->
 <%endif%>
 <%foreach(libs)%>
     <Reference Include="<%libname_prefix%><%lib%>">

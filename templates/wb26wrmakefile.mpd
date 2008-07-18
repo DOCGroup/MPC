@@ -126,7 +126,7 @@ deploy_output ::
 		fi \
 	else \
 		cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%exeout%>;\
-	fi 
+	fi
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
@@ -140,7 +140,7 @@ deploy_output ::
 		fi \
 	else \
 		cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>;\
-	fi 
+	fi
 <%endif%>
 <%endif%>
 <%endif%>
@@ -156,7 +156,7 @@ deploy_output ::
 		fi \
 	else \
 		cp $(OBJ_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) <%exeout%>;\
-	fi 
+	fi
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
@@ -185,13 +185,13 @@ endif
 
 <%if(standard_build)%>
 
-# order subdirs to use subprojects first 
-isSubProject = $(if $(subst $(subst $(CURDIR)/,,$(dir)),,$(dir)),, $(dir))  
+# order subdirs to use subprojects first
+isSubProject = $(if $(subst $(subst $(CURDIR)/,,$(dir)),,$(dir)),, $(dir))
 SUB_PROJECTS := $(foreach dir, $(SUBDIRS), $(isSubProject))
-isSubFolder = $(if $(subst $(subst $(CURDIR)/,,$(dir)),,$(dir)), $(dir))  
+isSubFolder = $(if $(subst $(subst $(CURDIR)/,,$(dir)),,$(dir)), $(dir))
 SUB_FOLDERS := $(foreach dir, $(SUBDIRS), $(isSubFolder))
 
-SUBDIRS_ORDERED := $(SUB_PROJECTS) $(SUB_FOLDERS) 
+SUBDIRS_ORDERED := $(SUB_PROJECTS) $(SUB_FOLDERS)
 
 # recursive make in SUBDIRS
 subdirs_all :
