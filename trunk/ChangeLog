@@ -1,3 +1,20 @@
+Fri Jul 18 17:58:58 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/make.net.mpd:
+
+          Fixed a bug where TARGETDIR was not set if there was no exeout set
+          and the project was an executable.
+
+        * templates/automake.mpd:
+        * templates/bmake.mpd:
+        * templates/cccommon.mpt:
+        * templates/nmake.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8vb.mpd:
+        * templates/wb26wrmakefile.mpd:
+
+          Removed trailing white-space.
+
 Fri Jul 18 17:22:56 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

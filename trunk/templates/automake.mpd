@@ -127,7 +127,7 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%normalize(exename)%><%lib_modifier%>_CPPFLAGS = $(<%normalize(exename)%>_CPPFLAGS_COMMON)<%if(compile_flags)%> <%compile_flags%><%endif%>
 <%else%>
 lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%><%lib_modifier%>_la_CPPFLAGS = $(lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normalize(staticname)%><%endif%>_CPPFLAGS_COMMON)<%if(compile_flags)%> <%compile_flags%><%endif%>
-<%endif%> 
+<%endif%>
 <%endfor%>
 <%endif%>
 <%endif%>
@@ -196,7 +196,7 @@ lib<%libname_prefix%><%if(sharedname)%><%normalize(sharedname)%><%else%><%normal
 <%foreach(configurations)%>
 <%normalize(exename)%><%lib_modifier%>_LDFLAGS = $(<%normalize(exename)%>_LDFLAGS_COMMON)
 <%endfor%>
-<%endif%> 
+<%endif%>
 <%endif%>
 <%else%>
 <%if(linkflags || libpaths || am_version && install_this_target || am_release && install_this_target)%>

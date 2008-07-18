@@ -348,7 +348,7 @@ realclean: clean
 <%endif%>
 <%if(postclean)%>
 	-<%eval(postclean)%>
-<%endif%>        
+<%endif%>
 
 <%if(prebuild)%>
 __prebuild__:

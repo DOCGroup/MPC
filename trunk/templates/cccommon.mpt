@@ -9,7 +9,7 @@ dll_ext    = .dll
 exe_ext    = .out
 
 configurations = Debug Release
-common_defines = 
+common_defines =
 rtti           = 1
 big_endian     =
 windows_style  = 1
