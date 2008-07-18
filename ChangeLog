@@ -1,3 +1,13 @@
+Fri Jul 18 17:22:56 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug with the 'output_dirname' template variable.  For
+          Windows based project types, the input file used back-slashes and
+          taking dirname() of that sort of text on UNIX will not result in
+          the expected value.  We must ensure that the text passed to
+          dirname() always has forward slashes.
+
 Fri Jul 18 16:03:52 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * clone_build_tree.pl:
