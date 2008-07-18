@@ -85,6 +85,7 @@ sub clean_proj {
       chdir($current_dir);
     }
     else {
+      ## We'll only warn about files that we can't deal with.
       print "WARNING: Unable to postclean $file\n";
     }
   }
@@ -94,6 +95,7 @@ sub clean_sln {
   my($cfg, $file) = @_;
   my $fh = new FileHandle();
 
+  ## For a solution, just read in and clean each project file we find.
   if (open($fh, $file)) {
     while (<$fh>) {
       if (/^Project\([^)]+\) = "[^\"]+", "([^\"]+)"/) {
@@ -114,6 +116,8 @@ if ($#ARGV == -1) {
   exit(0);
 }
 
+## Determine the project or solution configuration (defaulting to the
+## default created by MPC).
 my $cfg = 'Debug|Win32';
 if ($ARGV[0] =~ /^CFG=(.+)/) {
   $cfg = $1;
@@ -121,10 +125,11 @@ if ($ARGV[0] =~ /^CFG=(.+)/) {
 }
 
 foreach my $file (@ARGV) {
-  if (substr($file, -4, 4) eq '.sln') {
+  if ($file =~ /\.sln$/) {
     clean_sln($cfg, $file);
   }
   else {
+    ## It's not a solution file, we'll assume it's a project
     clean_proj($cfg, $file);
   }
 }

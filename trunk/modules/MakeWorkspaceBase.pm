@@ -21,13 +21,13 @@ sub targets {
 }
 
 sub workspace_file_prefix {
-  #my($self) = shift;
+  #my $self = shift;
   return 'Makefile';
 }
 
 
 sub workspace_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '';
 }
 
@@ -47,7 +47,7 @@ sub workspace_file_name {
 
 
 sub workspace_per_project {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
@@ -55,6 +55,7 @@ sub workspace_per_project {
 sub workspace_preamble {
   my($self, $fh, $crlf, $name, $id) = @_;
 
+  ## Optionally print the workspace comment
   $self->print_workspace_comment($fh,
             '#----------------------------------------------------------------------------', $crlf,
             '#       ', $name, $crlf,
@@ -137,6 +138,9 @@ sub post_workspace {
     my $pjt     = $self->get_eclipse_cdtproject();
 
     if (open($fh, ">$outfile")) {
+      ## We want to set the make command to nmake for the nmake project
+      ## type.  As far as stopping on an error, I don't remember why this
+      ## is true only for Borland make.
       my $cmd = ("$self" =~ /^nmake/i ? 'nmake' : 'make');
       my $stop = ("$self" =~ /^bmake/i ? 'true' : 'false');
       print $fh $$pjt[0];
@@ -157,6 +161,8 @@ sub post_workspace {
       $self->warning("Unable to create $outfile");
     }
 
+    ## Create the eclipse project which is unchanging except for the name
+    ## of the starting makefile.
     $pjt = $self->get_eclipse_project();
     $outfile = "$outdir/.project";
     if (open($fh, ">$outfile")) {

@@ -100,13 +100,13 @@ sub create_array {
 
 
 sub crlf {
-  #my($self) = shift;
+  #my $self = shift;
   return "\n";
 }
 
 
 sub windows_crlf {
-  ## Windows, OS/2 and cygwin require a carriage return and line feed. 
+  ## Windows, OS/2 and cygwin require a carriage return and line feed.
   ## However, at some point cygwin changed the way it does output and can
   ## be controled through an environment variable.
   return ($^O eq 'MSWin32' || $^O eq 'os2' ||
@@ -117,8 +117,8 @@ sub windows_crlf {
 
 
 sub resolve_alias {
-  #my($self) = shift;
-  #my($name) = shift;
+  #my $self = shift;
+  #my $name = shift;
   return $_[1];
 }
 

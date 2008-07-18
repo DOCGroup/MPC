@@ -1,3 +1,72 @@
+Fri Jul 18 16:03:52 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * clone_build_tree.pl:
+        * combine_dsw.pl:
+        * create_base.pl:
+        * prj_install.pl:
+        * registry.pl:
+        * vs_postclean.pl:
+        * devtools/document_template.pl:
+        * devtools/highlight_template.pl:
+        * generate_export_header.pl:
+        * modules/AutomakeProjectCreator.pm:
+        * modules/AutomakeWorkspaceCreator.pm:
+        * modules/BCB2007ProjectCreator.pm:
+        * modules/BCB2007WorkspaceCreator.pm:
+        * modules/BDS4ProjectCreator.pm:
+        * modules/BDS4WorkspaceCreator.pm:
+        * modules/BMakeProjectCreator.pm:
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/CCProjectCreator.pm:
+        * modules/CCWorkspaceCreator.pm:
+        * modules/ConfigParser.pm:
+        * modules/Creator.pm:
+        * modules/DirectoryManager.pm:
+        * modules/Driver.pm:
+        * modules/EM3ProjectCreator.pm:
+        * modules/EM3WorkspaceCreator.pm:
+        * modules/FeatureParser.pm:
+        * modules/GHSProjectCreator.pm:
+        * modules/GHSWorkspaceCreator.pm:
+        * modules/HTMLProjectCreator.pm:
+        * modules/HTMLWorkspaceCreator.pm:
+        * modules/MPC.pm:
+        * modules/MWC.pm:
+        * modules/MakeProjectBase.pm:
+        * modules/MakeProjectCreator.pm:
+        * modules/MakeWorkspaceBase.pm:
+        * modules/MakeWorkspaceCreator.pm:
+        * modules/NMakeProjectCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/Options.pm:
+        * modules/OutputMessage.pm:
+        * modules/Parser.pm:
+        * modules/ProjectCreator.pm:
+        * modules/SLEProjectCreator.pm:
+        * modules/SLEWorkspaceCreator.pm:
+        * modules/StringProcessor.pm:
+        * modules/TemplateInputReader.pm:
+        * modules/TemplateParser.pm:
+        * modules/VC6ProjectCreator.pm:
+        * modules/VC6WorkspaceCreator.pm:
+        * modules/VC71ProjectCreator.pm:
+        * modules/VC71WorkspaceCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/VC8ProjectCreator.pm:
+        * modules/VC8WorkspaceCreator.pm:
+        * modules/VCProjectBase.pm:
+        * modules/WB26ProjectCreator.pm:
+        * modules/WB26WorkspaceCreator.pm:
+        * modules/WinProjectBase.pm:
+        * modules/WinWorkspaceBase.pm:
+        * modules/WorkspaceCreator.pm:
+        * modules/WorkspaceHelper.pm:
+        * modules/XMLProjectBase.pm:
+
+          Cleaned up the code and added comments.  There were no functional
+          changes made.
+
 Thu Jul 17 15:10:48 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

@@ -17,31 +17,31 @@ use strict;
 # ************************************************************
 
 sub get_quote_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return '&quot;';
 }
 
 
 sub get_escaped_quote_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return '&quot;';
 }
 
 
 sub get_gt_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return '&gt;';
 }
 
 
 sub get_lt_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return '&lt;';
 }
 
 
 sub get_and_symbol {
-  #my($self) = shift;
+  #my $self = shift;
   return '&amp;&amp;';
 }
 

@@ -22,12 +22,12 @@ sub crlf {
 
 
 sub convert_slashes {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 sub case_insensitive {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 

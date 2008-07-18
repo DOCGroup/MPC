@@ -22,45 +22,43 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my(%directives) = ('I'          => 1,
-                   'L'          => 1,
-                   'D'          => 1,
-                   'l'          => 1,
-                   'G'          => 1,
-                   'non_shared' => 1,
-                   'bsp'        => 1,
-                   'os_dir'     => 1,
-                  );
-my($tgt)        = undef;
-my($integrity)  = '[INTEGRITY Application]';
-my(@integ_bsps) = ();
+my %directives = ('I'          => 1,
+                  'L'          => 1,
+                  'D'          => 1,
+                  'l'          => 1,
+                  'G'          => 1,
+                  'non_shared' => 1,
+                  'bsp'        => 1,
+                  'os_dir'     => 1,
+                 );
+my $tgt;
+my $integrity  = '[INTEGRITY Application]';
+my @integ_bsps;
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub compare_output {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub workspace_file_name {
-  my($self) = shift;
-  return $self->get_modified_workspace_name('default', '.gpj');
+  return $_[0]->get_modified_workspace_name('default', '.gpj');
 }
 
 
 sub pre_workspace {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($crlf) = $self->crlf();
-  my($prjs) = $self->get_projects();
+  my($self, $fh) = @_;
+  my $crlf = $self->crlf();
+  my $prjs = $self->get_projects();
 
   ## Take the primaryTarget from the first project in the list
   if (defined $$prjs[0]) {
-    my($fh)      = new FileHandle();
-    my($outdir)  = $self->get_outdir();
+    my $fh      = new FileHandle();
+    my $outdir  = $self->get_outdir();
     if (open($fh, "$outdir/$$prjs[0]")) {
       while(<$fh>) {
         if (/^#primaryTarget=(.+)$/) {
@@ -86,19 +84,15 @@ sub pre_workspace {
 
 
 sub create_integrity_project {
-  my($self)     = shift;
-  my($int_proj) = shift;
-  my($project)  = shift;
-  my($type)     = shift;
-  my($target)   = shift;
-  my($outdir)   = $self->get_outdir();
-  my($crlf)     = $self->crlf();
-  my($fh)       = new FileHandle();
-  my($int_name) = $int_proj;
-  $int_name =~ s/\.gpj$//;
-  my($int_file) = $int_name . '.int';
+  my($self, $int_proj, $project, $type, $target) = @_;
+  my $outdir   = $self->get_outdir();
+  my $crlf     = $self->crlf();
+  my $fh       = new FileHandle();
+  my $int_file = $int_proj;
+  $int_file =~ s/\.gpj$/.int/;
 
   if (open($fh, ">$outdir/$int_proj")) {
+    ## First print out the project file
     print $fh "#!gbuild$crlf",
               "\t$integrity$crlf",
               "$project\t\t$type$crlf",
@@ -108,6 +102,7 @@ sub create_integrity_project {
     }
     close($fh);
 
+    ## Next create the integration file
     if (open($fh, ">$outdir/$int_file")) {
       print $fh "Kernel$crlf",
                 "\tFilename\t\t\tDynamicDownload$crlf",
@@ -129,23 +124,21 @@ sub create_integrity_project {
 
 
 sub mix_settings {
-  my($self)    = shift;
-  my($project) = shift;
-  my($crlf)    = $self->crlf();
-  my($rh)      = new FileHandle();
-  my($mix)     = $project;
-  my($outdir)  = $self->get_outdir();
+  my($self, $project) = @_;
+  my $rh     = new FileHandle();
+  my $mix    = $project;
+  my $outdir = $self->get_outdir();
 
   ## Things that seem like they should be set in the project
   ## actually have to be set in the controlling project file.
   if (open($rh, "$outdir/$project")) {
-    my($integrity_project) = (index($tgt, 'integrity') >= 0);
-    my($int_proj) = undef;
-    my($int_type) = undef;
-    my($target)   = undef;
+    my $crlf = $self->crlf();
+    my $integrity_project = (index($tgt, 'integrity') >= 0);
+    my($int_proj, $int_type, $target);
+
     while(<$rh>) {
       if (/^\s*(\[(Program|Library|Subproject)\])\s*$/) {
-        my($type) = $1;
+        my $type = $1;
         if ($integrity_project && $type eq '[Program]') {
           $int_proj = $project;
           $int_proj =~ s/(\.gpj)$/_int$1/;
@@ -193,8 +186,7 @@ sub mix_settings {
 
 
 sub write_comps {
-  my($self) = shift;
-  my($fh)   = shift;
+  my($self, $fh) = @_;
 
   ## Print out each projet
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {

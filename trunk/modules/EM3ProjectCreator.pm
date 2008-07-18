@@ -22,31 +22,31 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub project_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '.vcp';
 }
 
 
 sub get_dll_exe_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'em3vcpdllexe';
 }
 
 
 sub get_lib_exe_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'em3vcplibexe';
 }
 
 
 sub get_lib_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'em3vcplib';
 }
 
 
 sub get_dll_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'em3vcpdll';
 }
 

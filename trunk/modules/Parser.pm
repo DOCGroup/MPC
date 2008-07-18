@@ -34,6 +34,7 @@ sub new {
   my($class, $inc) = @_;
   my $self = $class->SUPER::new();
 
+  ## Set up the internal data members.
   $self->{'line_number'} = 0;
   $self->{'include'}     = $inc;
 
@@ -44,7 +45,10 @@ sub new {
 sub strip_line {
   my($self, $line) = @_;
 
+  ## Keep track of our line number
   ++$self->{'line_number'};
+
+  ## Remove comments and leading and trailing white-space.
   $line =~ s/\/\/.*//;
   $line =~ s/^\s+//;
   $line =~ s/\s+$//;
@@ -54,9 +58,9 @@ sub strip_line {
 
 
 sub preprocess_line {
-  #my($self) = shift;
-  #my($fh)   = shift;
-  #my($line) = shift;
+  #my $self = shift;
+  #my $fh   = shift;
+  #my $line = shift;
   return $_[0]->strip_line($_[2]);
 }
 
@@ -75,21 +79,26 @@ sub read_file {
       $filecache{$input} = [] if (!defined $filecache{$input});
 
       while(<$ih>) {
+        ## Preprocess the line
         my $line = $self->preprocess_line($ih, $_);
 
         ## Push the line onto the array for this file
         push(@{$filecache{$input}}, $line);
 
+        ## Parse the line
         ($status, $errorString) = $self->parse_line($ih, $line);
 
+        ## Stop reading the file if we've encountered an error
         last if (!$status);
       }
     }
     else {
+      ## We're not caching, so we just preprocess and parse in one call.
       while(<$ih>) {
         ($status, $errorString) = $self->parse_line(
                                     $ih, $self->preprocess_line($ih, $_));
 
+        ## Stop reading the file if we've encountered an error
         last if (!$status);
       }
     }
@@ -115,13 +124,17 @@ sub cached_file_read {
     $self->{'line_number'} = 0;
     foreach my $line (@$lines) {
       ++$self->{'line_number'};
+      ## Since we're "reading" a cached file, we must pass undef as the
+      ## file handle to parse_line().
       ($status, $error) = $self->parse_line(undef, $line);
 
+      ## Stop "reading" the file if we've encountered an error
       last if (!$status);
     }
     return $status, $error;
   }
 
+  ## We haven't cached this file yet, read it and cache it.
   return $self->read_file($input, 1);
 }
 
@@ -138,6 +151,8 @@ sub set_line_number {
 
 
 sub slash_to_backslash {
+  ## This method is here solely for convenience.  It's used to make the
+  ## calling code look cleaner.
   my($self, $file) = @_;
   $file =~ s/\//\\/g;
   return $file;
@@ -162,7 +177,6 @@ sub search_include_path {
 
 sub escape_regex_special {
   my($self, $name) = @_;
-
   $name =~ s/([\+\-\\\$\[\]\(\)\.])/\\$1/g;
   return $name;
 }
@@ -173,9 +187,9 @@ sub escape_regex_special {
 # ************************************************************
 
 sub parse_line {
-  #my($self) = shift;
-  #my($ih)   = shift;
-  #my($line) = shift;
+  #my $self = shift;
+  #my $ih   = shift;
+  #my $line = shift;
 }
 
 

@@ -59,20 +59,19 @@ sub new {
 
 sub parse_line {
   my($self, $if, $line) = @_;
-  my $status = 1;
   my $error;
 
   if ($line eq '') {
   }
   elsif ($line =~ /^(\w+)\s*=\s*(\d+)$/) {
+    ## This is a valid value, so we can store it.
     $self->{'values'}->{lc($1)} = $2;
   }
   else {
-    $status = 0;
-    $error  = "Unrecognized line: $line";
+    $error = "Unrecognized line: $line";
   }
 
-  return $status, $error;
+  return (defined $error ? 0 : 1), $error;
 }
 
 
@@ -83,6 +82,7 @@ sub get_names {
 
 
 sub get_value {
+  ## All feature names are case-insensitive.
   my($self, $tag) = @_;
   return $self->{'values'}->{lc($tag)};
 }

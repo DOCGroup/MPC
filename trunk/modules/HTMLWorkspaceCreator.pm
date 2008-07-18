@@ -23,22 +23,26 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub workspace_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '_workspace.html';
 }
 
 
 sub pre_workspace {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($crlf) = $self->crlf();
+  my($self, $fh) = @_;
+  my $crlf = $self->crlf();
 
+  ## Print the header
   print $fh '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">', $crlf,
             '<html>', $crlf;
+
+  ## Next, goes the workspace comment
   $self->print_workspace_comment($fh,
             '<!-- $Id$ -->', $crlf,
             '<!-- MPC Command: -->', $crlf,
             '<!-- ', $self->create_command_line_string($0, @ARGV),' -->', $crlf);
+
+  ## Then, comes the title and the CSS settings.
   print $fh '<head>', $crlf,
             '<title>', $self->get_workspace_name(), '</title>', $crlf,
             '  <style type="text/css">', $crlf,
@@ -52,12 +56,10 @@ sub pre_workspace {
 
 
 sub write_comps {
-  my($self)         = shift;
-  my($fh)           = shift;
-  my($creator)      = shift;
-  my($project_info) = $self->get_project_info();
-  my($crlf)         = $self->crlf();
+  my($self, $fh, $creator) = @_;
+  my $crlf = $self->crlf();
 
+  ## Start the table for all of the projects
   print $fh "<table style=\"table-layout:fixed\" width=\"400\" " .
             "summary=\"MPC Projects\">$crlf" .
             "<col style=\"background-color: darkcyan;\">$crlf" .
@@ -67,20 +69,20 @@ sub write_comps {
             "<tbody>$crlf";
 
   ## Sort the projects in build order instead of alphabetical order
+  my $project_info = $self->get_project_info();
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
-    my($name) = $$project_info{$project}->[0];
     print $fh "<tr><td>" .
-              "<a href='$project'>$name</a>" .
+              "<a href='$project'>$$project_info{$project}->[0]</a>" .
               "</td></tr>$crlf";
   }
 
+  ## End the table
   print $fh "</tbody></table>";
 }
 
 
 sub post_workspace {
-  my($self) = shift;
-  my($fh)   = shift;
+  my($self, $fh) = @_;
   print $fh "</body></html>" . $self->crlf();
 }
 

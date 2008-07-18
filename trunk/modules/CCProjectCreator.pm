@@ -23,15 +23,15 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub compare_output {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub override_valid_component_extensions {
-  my($self)  = shift;
-  my($comp)  = shift;
-  my(@array) = @_;
+  my $self  = shift;
+  my $comp  = shift;
+  my @array = @_;
 
   if ($comp eq 'source_files' && $self->get_language() eq 'cplusplus') {
     push(@array, "\\.cdb");
@@ -42,19 +42,19 @@ sub override_valid_component_extensions {
 
 
 sub project_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '.pjt';
 }
 
 
 sub get_dll_exe_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'ccexe';
 }
 
 
 sub get_dll_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'cclib';
 }
 

@@ -875,7 +875,7 @@ sub get_static {
 
 
 sub get_default_component_name {
-  #my($self) = shift;
+  #my $self = shift;
   return 'default';
 }
 
@@ -1089,15 +1089,15 @@ sub relative {
 # ************************************************************
 
 sub restore_state_helper {
-  #my($self) = shift;
-  #my($skey) = shift;
-  #my($old)  = shift;
-  #my($new)  = shift;
+  #my $self = shift;
+  #my $skey = shift;
+  #my $old  = shift;
+  #my $new  = shift;
 }
 
 
 sub get_initial_relative_values {
-  #my($self) = shift;
+  #my $self = shift;
   return {}, 0;
 }
 
@@ -1110,26 +1110,26 @@ sub get_secondary_relative_values {
 
 
 sub convert_all_variables {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
 
 sub expand_variables_from_template_values {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
 
 sub preserve_assignment_order {
-  #my($self) = shift;
-  #my($name) = shift;
+  #my $self = shift;
+  #my $name = shift;
   return 1;
 }
 
 
 sub compare_output {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
@@ -1141,9 +1141,9 @@ sub files_are_different {
 
 
 sub handle_scoped_end {
-  #my($self)  = shift;
-  #my($type)  = shift;
-  #my($flags) = shift;
+  #my $self  = shift;
+  #my $type  = shift;
+  #my $flags = shift;
   return 1, undef;
 }
 
@@ -1168,42 +1168,42 @@ sub remove_duplicate_addition {
 
 
 sub generate_recursive_input_list {
-  #my($self)    = shift;
-  #my($dir)     = shift;
-  #my($exclude) = shift;
+  #my $self    = shift;
+  #my $dir     = shift;
+  #my $exclude = shift;
   return ();
 }
 
 
 sub reset_values {
-  #my($self) = shift;
+  #my $self = shift;
 }
 
 
 sub sort_files {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub file_sorter {
-  #my($self)  = shift;
-  #my($left)  = shift;
-  #my($right) = shift;
+  #my $self  = shift;
+  #my $left  = shift;
+  #my $right = shift;
   return $_[1] cmp $_[2];
 }
 
 
 sub read_global_configuration {
-  #my($self)  = shift;
-  #my($input) = shift;
+  #my $self  = shift;
+  #my $input = shift;
   return 1;
 }
 
 
 sub set_verbose_ordering {
-  #my($self)  = shift;
-  #my($value) = shift;
+  #my $self  = shift;
+  #my $value = shift;
 }
 
 

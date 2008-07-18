@@ -93,9 +93,7 @@ sub copyFiles {
       }
       else {
         $status = copy($file, $dest);
-        if ($status && -x $file) {
-          chmod(0755, $dest);
-        }
+        chmod(0755, $dest) if ($status && -x $file);
       }
       if (!$status) {
         print STDERR "ERROR: Unable to $type $file to $dest\n";
@@ -105,9 +103,7 @@ sub copyFiles {
       }
     }
     else {
-      if ($verbose) {
-        print "Skipping $file\n";
-      }
+      print "Skipping $file\n" if ($verbose);
     }
   }
   return 1;
@@ -263,9 +259,9 @@ sub getInsFiles {
 
 sub usageAndExit {
   my $msg = shift;
-  if (defined $msg) {
-    print STDERR "$msg\n";
-  }
+
+  print STDERR "$msg\n" if (defined $msg);
+
   my $base = basename($0);
   my $spc  = ' ' x (length($base) + 8);
   print STDERR "$base v$version\n",

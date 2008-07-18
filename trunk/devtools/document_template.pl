@@ -18,7 +18,7 @@ use FindBin;
 use File::Spec;
 use File::Basename;
 
-my($basePath) = $FindBin::Bin;
+my $basePath = $FindBin::Bin;
 if ($^O eq 'VMS') {
   $basePath = File::Spec->rel2abs(dirname($0)) if ($basePath eq '');
   $basePath = VMS::Filespec::unixify($basePath);
@@ -35,20 +35,20 @@ require StringProcessor;
 # Data Section
 # ******************************************************************
 
-my(%keywords) = ();
-my(%arrow_op) = ();
-my($doc_ext)  = '.txt';
-my($version)  = '1.2';
+my %keywords;
+my %arrow_op;
+my $doc_ext  = '.txt';
+my $version  = '1.2';
 
 # ******************************************************************
 # Subroutine Section
 # ******************************************************************
 
 sub setup_keywords {
-  my($language) = shift;
+  my $language = shift;
 
   ## Get the main MPC keywords
-  my($keywords) = ProjectCreator::getKeywords();
+  my $keywords = ProjectCreator::getKeywords();
   foreach my $key (keys %$keywords) {
     $keywords{$key} = 1;
   }
@@ -60,7 +60,7 @@ sub setup_keywords {
   }
 
   ## Get the pseudo template variables
-  my($pjc) = new ProjectCreator();
+  my $pjc = new ProjectCreator();
   $keywords = $pjc->get_command_subs();
   foreach my $key (keys %$keywords) {
     $keywords{$key} = 1;
@@ -81,10 +81,7 @@ sub setup_keywords {
 
 
 sub display_template {
-  my($fh)    = shift;
-  my($cp)    = shift;
-  my($input) = shift;
-  my($tkeys) = shift;
+  my($fh, $cp, $input, $tkeys) = @_;
 
   print $fh '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">', "\n",
             "<head>\n",
@@ -107,8 +104,8 @@ sub display_template {
             "      <th>Description</th>\n",
             "    </tr>\n";
   foreach my $key (sort keys %$tkeys) {
-    my($desc) = $cp->get_value($key) || '&nbsp;';
-    my($def)  = undef;
+    my $desc = $cp->get_value($key) || '&nbsp;';
+    my $def;
     if (defined $$tkeys{$key}) {
       foreach my $ikey (sort keys %{$$tkeys{$key}}) {
         if (defined $def) {
@@ -142,15 +139,13 @@ sub usageAndExit {
 # Main Section
 # ******************************************************************
 
-my($status)   = 0;
-my($fh)       = new FileHandle();
-my($input)    = $ARGV[0];
-my($output)   = $ARGV[1];
-my($language) = $ARGV[2];
+my $status   = 0;
+my $fh       = new FileHandle();
+my $input    = $ARGV[0];
+my $output   = $ARGV[1];
+my $language = $ARGV[2];
 
-if (!defined $input || $input =~ /^-/) {
-  usageAndExit();
-}
+usageAndExit() if (!defined $input || $input =~ /^-/);
 
 if (!defined $output) {
   $output = $input;
@@ -171,17 +166,17 @@ if (open($fh, $input)) {
     }
   }
 
-  my(%template_keys) = ();
+  my %template_keys;
   setup_keywords($language);
 
-  my(@foreach) = ();
-  my($findex)  = -1;
+  my @foreach;
+  my $findex  = -1;
   while(<$fh>) {
-    my($len) = length($_);
+    my $len = length($_);
     for(my $start = 0; $start < $len;) {
-      my($sindex) = index($_, '<%', $start);
+      my $sindex = index($_, '<%', $start);
       if ($sindex >= 0) {
-        my($eindex) = index($_, '%>', $sindex);
+        my $eindex = index($_, '%>', $sindex);
         if ($eindex >= $sindex) {
           $eindex += 2;
         }
@@ -189,14 +184,14 @@ if (open($fh, $input)) {
           $eindex = $len;
         }
 
-        my($part)  = substr($_, $sindex, $eindex - $sindex);
-        my($key)   = substr($part, 2, length($part) - 4);
-        my($name)  = lc($key);
-        my($tvar)  = undef;
-        my($def)   = undef;
+        my $part  = substr($_, $sindex, $eindex - $sindex);
+        my $key   = substr($part, 2, length($part) - 4);
+        my $name  = lc($key);
+        my $tvar;
+        my $def;
         if ($key =~ /^([^\(]+)\((.*)\)/) {
           $name = lc($1);
-          my($vname) = $2;
+          my $vname = $2;
 
           if (defined $keywords{$name}) {
             $tvar = 1;
@@ -208,10 +203,10 @@ if (open($fh, $input)) {
                 $vname =~ s/$keyword\(([^\)]+)\)/$1/gi;
               }
 
-              my($remove_s) = 1;
+              my $remove_s = 1;
               if ($vname =~ /([^,]*),(.*)/) {
-                my($n) = $1;
-                my($v) = $2;
+                my $n = $1;
+                my $v = $2;
                 $n =~ s/^\s+//;
                 $n =~ s/\s+$//;
                 $v =~ s/^\s+//;
@@ -267,7 +262,7 @@ if (open($fh, $input)) {
           $key = lc($key);
         }
 
-        my($otvar) = $tvar;
+        my $otvar = $tvar;
         foreach my $k (split(/\s+/, $key)) {
           $tvar = $otvar;
           if (defined $keywords{$k}) {
@@ -315,9 +310,7 @@ if (open($fh, $input)) {
                   }
                   else {
                     $template_keys{$n} = {};
-                    if (defined $def) {
-                      $template_keys{$n}->{$def} = 1;
-                    }
+                    $template_keys{$n}->{$def} = 1 if (defined $def);
                   }
                 }
               }
@@ -333,10 +326,10 @@ if (open($fh, $input)) {
   }
   close($fh);
 
-  my($cp) = new ConfigParser();
+  my $cp = new ConfigParser();
   $cp->read_file("$basePath/docs/templates/common$doc_ext");
 
-  my($doc) = $input;
+  my $doc = $input;
   $doc =~ s/\.[^\.]+$/$doc_ext/;
   $doc =~ s/templates/docs\/templates/;
   if (-r $doc) {
