@@ -1,3 +1,13 @@
+Fri Jul 18 18:22:41 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug with the 'output_basename' template variable.  For
+          Windows based project types, the input file used back-slashes and
+          taking basename() of that sort of text on UNIX will not result in
+          the expected value.  We must ensure that the text passed to
+          basename() always has forward slashes.
+
 Fri Jul 18 17:58:58 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/make.net.mpd:
