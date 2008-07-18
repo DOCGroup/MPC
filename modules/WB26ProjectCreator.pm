@@ -31,7 +31,7 @@ my @tkeys = sort keys %templates;
 # ************************************************************
 
 sub crlf {
-  #my($self) = shift;
+  #my $self = shift;
   return "\n";
 }
 
@@ -45,18 +45,19 @@ sub project_file_name {
   if ($self->{'make_coexistence'}) {
     return $self->get_modified_project_file_name($name,
                                                  '/' . $templates{$template});
-  } else {
-    return ($templates{$template});
+  }
+  else {
+    return $templates{$template};
   }
 }
 
 sub get_template {
-  #my($self) = shift;
+  #my $self = shift;
   return @tkeys;
 }
 
 sub dependency_is_filename {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
@@ -67,17 +68,17 @@ sub requires_forward_slashes {
 sub file_visible {
   ## We only want the project file visible to the workspace creator.
   ## There can only be one and this is the it.
-  my($self, $template) = @_;
-  return $template eq 'wb26';
+  #my($self, $template) = @_;
+  return $_[1] eq 'wb26';
 }
 
 sub get_dll_exe_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'wb26exe';
 }
 
 sub get_dll_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'wb26dll';
 }
 

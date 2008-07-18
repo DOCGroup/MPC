@@ -61,14 +61,17 @@ sub get_dll_template_input_file {
 
 
 sub get_template {
-  my($self) = shift;
-  return $info{$self->get_language()}->{'template'};
+  return $info{$_[0]->get_language()}->{'template'};
 }
 
 sub fill_value {
   my($self, $name) = @_;
 
   if ($name eq 'compilers') {
+    ## The default compilers template variable value is determined by the
+    ## language and directly corresponds to a group of settings in the
+    ## .mpt file (make.net.mpt for csharp and makedll.mpt for all
+    ## others).
     my $language = $self->get_language();
     if ($language eq 'java') {
       return 'java';
@@ -81,9 +84,12 @@ sub fill_value {
     }
   }
   elsif ($name eq 'language') {
+    ## Allow the language to be available to the template.  Certain
+    ## things are not used in make.mpd when the language is java.
     return $self->get_language();
   }
   elsif ($name eq 'main') {
+    ## The main is needed when generating the makefiles for use with gcj.
     my @sources = $self->get_component_list('source_files', 1);
     my $exename = $self->find_main_file(\@sources);
     return $exename if (defined $exename);

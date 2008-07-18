@@ -51,7 +51,6 @@ sub set_levels {
 
 sub split_message {
   my($self, $msg, $spc) = @_;
-
   $msg =~ s/\.\s+/.\n$spc/g;
   return $msg . "\n";
 }
@@ -59,52 +58,48 @@ sub split_message {
 
 sub details {
   if ($details) {
-    my($self, $msg) = @_;
-    print "$msg\n";
+    #my($self, $msg) = @_;
+    print "$_[1]\n";
   }
 }
 
 
 sub diagnostic {
   if ($diagnostic) {
-    my($self, $msg) = @_;
-    print "$msg\n";
+    #my($self, $msg) = @_;
+    print "$_[1]\n";
   }
 }
 
 
 sub debug {
   if ($debug) {
-    my($self, $msg) = @_;
-    print "$debugtag$msg\n";
+    #my($self, $msg) = @_;
+    print "$debugtag$_[1]\n";
   }
 }
 
 
 sub information {
   if ($information) {
-    my($self, $msg) = @_;
-    print $infotag . $self->split_message($msg, ' ' x length($infotag));
+    #my($self, $msg) = @_;
+    print $infotag, $_[0]->split_message($_[1], ' ' x length($infotag));
   }
 }
 
 
 sub warning {
   if ($warnings) {
-    my($self, $msg) = @_;
-    print $warntag . $self->split_message($msg, ' ' x length($warntag));
+    #my($self, $msg) = @_;
+    print $warntag, $_[0]->split_message($_[1], ' ' x length($warntag));
   }
 }
 
 
 sub error {
   my($self, $msg, $pre) = @_;
-
-  if (defined $pre) {
-    print STDERR "$pre\n";
-  }
-  print STDERR $errortag . $self->split_message($msg, ' ' x
-                                                length($errortag));
+  print STDERR '', (defined $pre ? "$pre\n" : ''), $errortag,
+               $self->split_message($msg, ' ' x length($errortag));
 }
 
 

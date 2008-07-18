@@ -54,6 +54,8 @@ sub cd {
     if (index($dir, '..') >= 0) {
       $cwd = Cwd::getcwd();
       if ($^O eq 'cygwin' && $cwd !~ /[A-Za-z]:/) {
+        ## We're using Cygwin perl, use cygpath to get the windows path
+        ## and then fix up the slashes.
         my $cyg = `cygpath -w $cwd`;
         if (defined $cyg) {
           $cyg =~ s/\\/\//g;
@@ -61,15 +63,20 @@ sub cd {
         }
       }
       elsif ($onVMS) {
+        ## On VMS, we nee to get the UNIX style path and remove the
+        ## trailing slash.
         $cwd = VMS::Filespec::unixify($cwd);
         $cwd =~ s!/$!!g;
       }
     }
     else {
       if ($dir =~ /^(\/|[a-z]:)/i) {
+        ## It was a full path, just store it.
         $cwd = $dir;
       }
       else {
+        ## This portion was relative, add it onto the current working
+        ## directory.
         $cwd .= "/$dir";
       }
     }
@@ -79,20 +86,20 @@ sub cd {
 
 
 sub getcwd {
-  #my($self) = shift;
+  #my $self = shift;
   return $cwd;
 }
 
 
 sub getstartdir {
-  #my($self) = shift;
+  #my $self = shift;
   return $start;
 }
 
 
 sub mpc_basename {
-  #my($self) = $_[0];
-  #my($file) = $_[1];
+  #my $self = $_[0];
+  #my $file = $_[1];
   return substr($_[1], rindex($_[1], '/') + 1);
 }
 
@@ -100,13 +107,18 @@ sub mpc_basename {
 sub mpc_dirname {
   my($self, $dir) = @_;
 
+  ## The dirname() on VMS doesn't work as we expect it to.
   if ($onVMS) {
+    ## If the directory contains multiple parts, we need to get the
+    ## dirname in a UNIX style format and then remove the slash from the
+    ## end.
     if (index($dir, '/') >= 0) {
       $dir = VMS::Filespec::unixify(dirname($dir));
       $dir =~ s!/$!!g;
       return $dir;
     }
     else {
+      ## There's no directory portion, so just return '.'
       return '.';
     }
   }
@@ -118,36 +130,23 @@ sub mpc_dirname {
 
 sub mpc_glob {
   my($self, $pattern) = @_;
-  my @files;
 
   ## glob() provided by OpenVMS does not understand [] within
   ## the pattern.  So, we implement our own through recursive calls
   ## to mpc_glob().
   if ($onVMS && $pattern =~ /(.*)\[([^\]]+)\](.*)/) {
-    my $pre  = $1;
-    my $mid  = $2;
-    my $post = $3;
+    my @files;
+    my($pre, $mid, $post) = ($1, $2, $3);
     for(my $i = 0; $i < length($mid); $i++) {
-      my $p = $pre . substr($mid, $i, 1) . $post;
-      foreach my $new (DirectoryManager::mpc_glob($self, $p)) {
-        my $found;
-        foreach my $file (@files) {
-          if ($file eq $new) {
-            $found = 1;
-            last;
-          }
-        }
-        if (!$found) {
-          push(@files, $new);
-        }
+      foreach my $new ($self->mpc_glob($pre . substr($mid, $i, 1) . $post)) {
+        push(@files, $new) if (!StringProcessor::fgrep($new, \@files));
       }
     }
-  }
-  else {
-    push(@files, glob($pattern));
+    return @files;
   }
 
-  return @files;
+  ## Otherwise, we just return the globbed pattern.
+  return glob($pattern);
 }
 
 
@@ -157,8 +156,10 @@ sub onVMS {
 
 
 sub path_is_relative {
-  my($self, $path) = @_;
-  return (index($path, '/') != 0 && $path !~ /^[A-Z]:\//i);
+  ## To determine if the path is relative, we just determine if it is not
+  ## an absolute path.
+  #my($self, $path) = @_;
+  return (index($_[1], '/') != 0 && $_[1] !~ /^[A-Z]:\//i);
 }
 
 # ************************************************************
@@ -191,13 +192,13 @@ sub translate_directory {
 
 
 sub convert_slashes {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
 
 sub case_insensitive {
-  #my($self) = shift;
+  #my $self = shift;
   return $case_insensitive;
 }
 

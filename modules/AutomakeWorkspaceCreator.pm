@@ -24,8 +24,8 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my($acfile)  = 'configure.ac';
-my($acmfile) = 'configure.ac.Makefiles';
+my $acfile  = 'configure.ac';
+my $acmfile = 'configure.ac.Makefiles';
 
 # ************************************************************
 # Subroutine Section
@@ -37,18 +37,16 @@ sub compare_output {
 
 
 sub files_are_different {
-  my($self) = shift;
-  my($old)  = shift;
-  my($new)  = shift;
-  my($diff) = 1;
+  my($self, $old, $new) = @_;
+  my $diff = 1;
   if (-r $old) {
-    my($lh) = new FileHandle();
-    my($rh) = new FileHandle();
+    my $lh = new FileHandle();
+    my $rh = new FileHandle();
     if (open($lh, $old)) {
       if (open($rh, $new)) {
-        my($done)  = 0;
-        my($lline) = undef;
-        my($rline) = undef;
+        my $done  = 0;
+        my $lline;
+        my $rline;
 
         $diff = 0;
         do {
@@ -58,9 +56,7 @@ sub files_are_different {
             if (defined $rline) {
               $lline =~ s/#.*//;
               $rline =~ s/#.*//;
-              if ($lline ne $rline) {
-                $diff = 1;
-              }
+              $diff = 1 if ($lline ne $rline);
             }
             else {
               $done = 1;
@@ -81,21 +77,19 @@ sub files_are_different {
 
 
 sub workspace_file_name {
-  my($self) = shift;
-  return $self->get_modified_workspace_name('Makefile', '.am');
+  return $_[0]->get_modified_workspace_name('Makefile', '.am');
 }
 
 
 sub workspace_per_project {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub pre_workspace {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($crlf) = $self->crlf();
+  my($self, $fh) = @_;
+  my $crlf = $self->crlf();
 
   $self->print_workspace_comment($fh,
             '##  Process this file with automake to create Makefile.in', $crlf,
@@ -111,19 +105,16 @@ sub pre_workspace {
 
 
 sub write_comps {
-  my($self)          = shift;
-  my($fh)            = shift;
-  my($creator)       = shift;
-  my($toplevel)      = shift;
-  my($projects)      = $self->get_projects();
-  my(@list)          = $self->sort_dependencies($projects);
-  my($crlf)          = $self->crlf();
-  my(%unique)        = ();
-  my(@dirs)          = ();
-  my(@locals)        = ();
-  my(%proj_dir_seen) = ();
-  my($have_subdirs)  = 0;
-  my($outdir)        = $self->get_outdir();
+  my($self, $fh, $creator, $toplevel) = @_;
+  my $projects = $self->get_projects();
+  my @list = $self->sort_dependencies($projects);
+  my $crlf = $self->crlf();
+  my %unique;
+  my @dirs;
+  my @locals;
+  my %proj_dir_seen;
+  my $have_subdirs = 0;
+  my $outdir = $self->get_outdir();
 
   ## This step writes a configure.ac.Makefiles list into the starting
   ## directory. The list contains of all the Makefiles generated down
@@ -132,9 +123,9 @@ sub write_comps {
   my $mfh;
   my $makefile;
   if ($toplevel) {
-    my($need_acmfile) = 1;
+    my $need_acmfile = 1;
     if (! -e "$outdir/$acfile") {
-      my($acfh) = new FileHandle();
+      my $acfh = new FileHandle();
       if (open($acfh, ">$outdir/$acfile")) {
         print $acfh "AC_INIT(", $self->get_workspace_name(), ", 1.0)$crlf",
                     "AM_INIT_AUTOMAKE([1.9])$crlf",
@@ -144,8 +135,8 @@ sub write_comps {
                     "AC_PROG_LIBTOOL$crlf",
                     $crlf;
 
-        my($fp) = $creator->get_feature_parser();
-        my($features) = $fp->get_names();
+        my $fp = $creator->get_feature_parser();
+        my $features = $fp->get_names();
         foreach my $feature (sort @$features) {
           print $acfh 'AM_CONDITIONAL(BUILD_', uc($feature),
                       ', ', ($fp->get_value($feature) ? 'true' : 'false'),
@@ -187,7 +178,7 @@ sub write_comps {
       ## Since we're consolidating all the project files into one workspace
       ## Makefile.am per directory level, be sure to add that Makefile.am
       ## entry at each level there's a project dependency.
-      my($dep_dir) = $self->mpc_dirname($dep);
+      my $dep_dir = $self->mpc_dirname($dep);
       if (!defined $proj_dir_seen{$dep_dir}) {
         $proj_dir_seen{$dep_dir} = 1;
         ## If there are directory levels between project-containing
@@ -197,7 +188,7 @@ sub write_comps {
         ## entries for the levels without projects. They won't be listed
         ## in @list but are needed for make to traverse intervening directory
         ## levels down to where the project(s) to build are.
-        my(@dirs) = split /\//, $dep_dir;
+        my @dirs = split /\//, $dep_dir;
         my $inter_dir = "";
         foreach my $dep (@dirs) {
           $inter_dir .= $dep;
@@ -215,7 +206,7 @@ sub write_comps {
     ## To make sure we keep the dependencies correct, insert the '.' for
     ## any local projects in the proper place. Remember if any subdirs
     ## are seen to know if we need a SUBDIRS entry generated.
-    my($dir) = $self->get_first_level_directory($dep);
+    my $dir = $self->get_first_level_directory($dep);
     if (!defined $unique{$dir}) {
       $unique{$dir} = 1;
       unshift(@dirs, $dir);
@@ -231,9 +222,7 @@ sub write_comps {
       $have_subdirs = 1;
     }
   }
-  if ($mfh) {
-    close($mfh);
-  }
+  close($mfh) if ($mfh);
 
   # The Makefile.<project>.am files append values to build target macros
   # for each program/library to build. When using conditionals, however,
@@ -248,19 +237,19 @@ sub write_comps {
   # automake's uniform naming convention.  A true perl wizard probably
   # would be able to do this in a single line of code.
 
-  my(%seen) = ();
-  my(%conditional_targets) = ();
-  my(%unconditional_targets) = ();
-  my(%first_instance_unconditional) = ();
-  my($installable_headers) = undef;
-  my($installable_pkgconfig) = undef;
-  my($includedir) = undef;
-  my($project_name) = undef;
+  my %seen;
+  my %conditional_targets;
+  my %unconditional_targets;
+  my %first_instance_unconditional;
+  my $installable_headers;
+  my $installable_pkgconfig;
+  my $includedir;
+  my $project_name;
 
   ## To avoid unnecessarily emitting blank assignments, rip through the
   ## Makefile.<project>.am files and check for conditions.
   if (@locals) {
-    my($pfh) = new FileHandle();
+    my $pfh = new FileHandle();
     foreach my $local (reverse @locals) {
       if ($local =~ /Makefile\.(.*)\.am/) {
         $project_name = $1;
@@ -270,20 +259,16 @@ sub write_comps {
       }
 
       if (open($pfh, "$outdir/$local")) {
-        my($in_condition) = 0;
-        my($regok)        = $self->escape_regex_special($project_name);
-        my($inc_pattern)  = $regok . '_include_HEADERS';
-        my($pkg_pattern)  = $regok . '_pkginclude_HEADERS';
+        my $in_condition = 0;
+        my $regok        = $self->escape_regex_special($project_name);
+        my $inc_pattern  = $regok . '_include_HEADERS';
+        my $pkg_pattern  = $regok . '_pkginclude_HEADERS';
         while (<$pfh>) {
           # Don't look at comments
           next if (/^#/);
 
-          if (/^if\s*/) {
-            $in_condition++;
-          }
-          if (/^endif\s*/) {
-            $in_condition--;
-          }
+          $in_condition++ if (/^if\s*/);
+          $in_condition-- if (/^endif\s*/);
 
           if (   /(^[a-zA-Z][a-zA-Z0-9_]*_(PROGRAMS|LIBRARIES|LTLIBRARIES|LISP|PYTHON|JAVA|SCRIPTS|DATA|SOURCES|HEADERS|MANS|TEXINFOS|LIBADD|LDADD|DEPENDENCIES))\s*\+=\s*/
               || /(^CLEANFILES)\s*\+=\s*/
@@ -300,13 +285,10 @@ sub write_comps {
             }
             $seen{$1} = 1;
 
-            if (/^pkgconfig_DATA/) {
-               $installable_pkgconfig= 1;
+            $installable_pkgconfig= 1 if (/^pkgconfig_DATA/);
+            $installable_headers = 1
+                  if (/^$inc_pattern\s*\+=\s*/ || /^$pkg_pattern\s*\+=\s*/);
             }
-            if (/^$inc_pattern\s*\+=\s*/ || /^$pkg_pattern\s*\+=\s*/) {
-              $installable_headers = 1;
-            }
-          }
           elsif (/includedir\s*=\s*(.*)/) {
             $includedir = $1;
           }
@@ -327,13 +309,13 @@ sub write_comps {
   %seen = ();
 
   ## Print out the Makefile.am.
-  my($wsHelper) = WorkspaceHelper::get($self);
-  my($convert_header_name) = undef;
+  my $wsHelper = WorkspaceHelper::get($self);
+  my $convert_header_name;
   if ((!defined $includedir && $installable_headers)
       || $installable_pkgconfig) {
     if (!defined $includedir && $installable_headers) {
-      my($incdir) = $wsHelper->modify_value('includedir',
-                                            $self->get_includedir());
+      my $incdir = $wsHelper->modify_value('includedir',
+                                           $self->get_includedir());
       if ($incdir ne '') {
         print $fh "includedir = \@includedir\@$incdir$crlf";
         $convert_header_name = 1;
@@ -356,14 +338,14 @@ sub write_comps {
   ## Create the SUBDIRS setting.  If there are associated projects, then
   ## we will also set up conditionals for it as well.
   if ($have_subdirs == 1) {
-    my($assoc) = $self->get_associated_projects();
-    my(@aorder) = ();
-    my(%afiles) = ();
-    my($cond)   = '--';
-    my($entry)  = " \\$crlf        ";
+    my $assoc = $self->get_associated_projects();
+    my @aorder;
+    my %afiles;
+    my $cond   = '--';
+    my $entry  = " \\$crlf        ";
     print $fh 'SUBDIRS =';
     foreach my $dir (reverse @dirs) {
-      my($found) = undef;
+      my $found;
       foreach my $akey (keys %$assoc) {
         if (defined $$assoc{$akey}->{$dir}) {
           if ($akey eq $cond) {
@@ -389,7 +371,7 @@ sub write_comps {
       print $fh $entry, $dir if (!$found);
     }
     print $fh $crlf;
-    my($second) = 1;
+    my $second = 1;
     foreach my $aorder (@aorder) {
       if (defined $afiles{$aorder}) {
         $second = undef;
@@ -428,18 +410,18 @@ sub write_comps {
   ## Take the local Makefile.<project>.am files and insert each one here,
   ## then delete it.
   if (@locals) {
-    my($pfh) = new FileHandle();
-    my($liblocs) = $self->get_lib_locations();
-    my($here) = $self->getcwd();
-    my($start) = $self->getstartdir();
-    my(%explicit) = ();
+    my $pfh = new FileHandle();
+    my $liblocs = $self->get_lib_locations();
+    my $here = $self->getcwd();
+    my $start = $self->getstartdir();
+    my %explicit;
     foreach my $local (reverse @locals) {
       if (open($pfh, "$outdir/$local")) {
         print $fh "## $local", $crlf;
 
-        my($look_for_libs) = 0;
-        my($prev_line) = undef;
-        my($in_explicit) = undef;
+        my $look_for_libs = 0;
+        my $prev_line;
+        my $in_explicit;
 
         while (<$pfh>) {
           # Don't emit comments
@@ -455,7 +437,7 @@ sub write_comps {
             }
           }
           elsif (/^([\w\/\.\-\s]+):/) {
-            my($target) = $1;
+            my $target = $1;
             $target =~ s/^\s+//;
             $target =~ s/\s+$//;
             if (defined $explicit{$target}) {
@@ -474,9 +456,9 @@ sub write_comps {
             else {
               $project_name = 'nobase';
             }
-            my($regok)       = $self->escape_regex_special($project_name);
-            my($inc_pattern) = $regok . '_include_HEADERS';
-            my($pkg_pattern) = $regok . '_pkginclude_HEADERS';
+            my $regok       = $self->escape_regex_special($project_name);
+            my $inc_pattern = $regok . '_include_HEADERS';
+            my $pkg_pattern = $regok . '_pkginclude_HEADERS';
             if (/^$inc_pattern\s*\+=\s*/ || /^$pkg_pattern\s*\+=\s*/) {
               $_ =~ s/^$regok/nobase/;
             }
@@ -510,7 +492,7 @@ sub write_comps {
               ## library, it may be that it is a decorated library name.
               ## We will search for an approximate match.
               if (!defined $reldir) {
-                my($tmpname) = $libname;
+                my $tmpname = $libname;
                 while($tmpname ne '') {
                   $tmpname = substr($tmpname, 0, length($tmpname) - 1);
                   if (defined $$liblocs{$tmpname}) {
@@ -523,9 +505,9 @@ sub write_comps {
               }
 
               if (defined $reldir) {
-                my($append) = ($reldir eq '' ? '' : "/$reldir");
+                my $append = ($reldir eq '' ? '' : "/$reldir");
                 if ("$start$append" ne $here) {
-                  my($mod) = $wsHelper->modify_libpath($_, $reldir, $libfile);
+                  my $mod = $wsHelper->modify_libpath($_, $reldir, $libfile);
                   if (defined $mod) {
                     $_ = $mod;
                   }
@@ -535,7 +517,7 @@ sub write_comps {
                 }
               }
               else {
-                my($mod) = $wsHelper->modify_libpath($_, $reldir, $libfile);
+                my $mod = $wsHelper->modify_libpath($_, $reldir, $libfile);
                 if (defined $mod) {
                   $_ = $mod;
                 }
@@ -544,13 +526,9 @@ sub write_comps {
                 }
               }
             }
-            if ($libcount == 0) {
-              $look_for_libs = 0;
-            }
+            $look_for_libs = 0 if ($libcount == 0);
           }
-          if (/_LDADD = \\$/ || /_LIBADD = \\$/) {
-            $look_for_libs = 1;
-          }
+          $look_for_libs = 1 if (/_LDADD = \\$/ || /_LIBADD = \\$/);
 
           ## I have introduced a one line delay so that I can simplify
           ## the automake template.  If our current line is empty, then
@@ -585,7 +563,7 @@ sub write_comps {
   ## *** This may be too closely tied to how we have things set up in ACE,
   ## even though it's recommended practice. ***
   if ($toplevel) {
-    my($m4inc) = '-I m4';
+    my $m4inc = '-I m4';
     print $fh $crlf,
               'ACLOCAL = @ACLOCAL@', $crlf,
               'ACLOCAL_AMFLAGS = ',
@@ -627,23 +605,21 @@ sub get_includedir {
 
 
 sub edit_config_ac {
-  my($self)   = shift;
-  my($file)   = shift;
-  my($files)  = shift;
-  my($fh)     = new FileHandle();
-  my($status) = 0;
+  my($self, $file, $files) = @_;
+  my $fh = new FileHandle();
+  my $status = 0;
 
   if (open($fh, $file)) {
-    my($crlf)   = $self->crlf();
-    my(@in)     = ();
-    my(@lines)  = ();
-    my($assoc)  = $self->get_associated_projects();
-    my($indent) = '';
-    my(%proj_dir_seen) = ();
-    my($in_config_files) = 0;
+    my $crlf   = $self->crlf();
+    my @in;
+    my @lines;
+    my $assoc  = $self->get_associated_projects();
+    my $indent = '';
+    my %proj_dir_seen;
+    my $in_config_files = 0;
 
     while(<$fh>) {
-      my($line) = $_;
+      my $line = $_;
       push(@lines, $line);
 
       ## Remove comments and trailing space
@@ -654,14 +630,14 @@ sub edit_config_ac {
       }
       elsif ($line =~ /^\s*if\s+test\s+["]?([^"]+)["]?\s*=\s*\w+;\s*then/) {
         ## Entering an if test, save the name
-        my($name) = $1;
+        my $name = $1;
         $name =~ s/\s+$//;
         $name =~ s/.*_build_//;
         push(@in, $name);
       }
       elsif ($line =~ /^\s*if\s+test\s+-d\s+(.+);\s*then/) {
         ## Entering an if test -d, save the name
-        my($name) = $1;
+        my $name = $1;
         $name =~ s/\s+$//;
         $name =~ s/\$srcdir\///;
         push(@in, $name);
@@ -682,7 +658,7 @@ sub edit_config_ac {
       elsif ($in_config_files) {
         if ($line =~ /(.*)\]\s*\).*/) {
           ## We've reached the end of the AC_CONFIG_FILES section
-          my($olast) = pop(@lines);
+          my $olast = pop(@lines);
           if ($olast =~ /^[^\s]+(\s*\]\s*\).*)/) {
             $olast = $1;
           }
@@ -696,14 +672,14 @@ sub edit_config_ac {
             ## First things first, see if we've already seen this
             ## project's directory.  If we have, then there's nothing
             ## else we need to do with it.
-            my($dep_dir) = $self->mpc_dirname($dep);
+            my $dep_dir = $self->mpc_dirname($dep);
             if (!defined $proj_dir_seen{$dep_dir}) {
-              my($ok)   = 1;
-              my(@dirs) = split(/\//, $dep_dir);
-              my($base) = $dep;
+              my $ok   = 1;
+              my @dirs = split(/\//, $dep_dir);
+              my $base = $dep;
 
               if ($base =~ s/\/.*//) {
-                my($found) = 0;
+                my $found = 0;
                 foreach my $akey (keys %$assoc) {
                   if (defined $$assoc{$akey}->{$base} ||
                       defined $$assoc{$akey}->{uc($base)}) {
@@ -767,16 +743,16 @@ sub edit_config_ac {
           ## Ignore the entry
           pop(@lines);
         }
-      }  
+      }
     }
     close($fh);
 
     ## Make a backup and create the new file
-    my($backup) = $file . '.bak';
+    my $backup = $file . '.bak';
     if (copy($file, $backup)) {
-      my(@buf) = stat($file);
+      my @buf = stat($file);
       if (defined $buf[8] && defined $buf[9]) {
-        utime($buf[8], $buf[9], $backup);      
+        utime($buf[8], $buf[9], $backup);
       }
       if (open($fh, ">$file")) {
         foreach my $line (@lines) {

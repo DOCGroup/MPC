@@ -88,9 +88,8 @@ EOM
 
 sub usageAndExit {
   my $str = shift;
-  if (defined $str) {
-    print STDERR "$str\n";
-  }
+
+  print STDERR "$str\n" if (defined $str);
   print STDERR "Generate Export Header v$version\n",
                "Usage: ", basename($0), " <library name> [output file]\n";
   exit(0);

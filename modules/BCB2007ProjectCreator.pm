@@ -24,25 +24,25 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub crlf {
-  #my($self) = shift;
+  #my $self = shift;
   return "\n";
 }
 
 
 sub project_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '.cbproj';
 }
 
 
 sub get_dll_exe_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'bcb2007exe';
 }
 
 
 sub get_dll_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'bcb2007dll';
 }
 

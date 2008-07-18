@@ -24,11 +24,13 @@ use vars qw(@ISA);
 
 
 sub pre_workspace {
-  my($self) = shift;
-  my($fh)   = shift;
-  my($crlf) = $self->crlf();
+  my($self, $fh) = @_;
+  my $crlf = $self->crlf();
 
+  ## This identifies it as a Visual Studio 2003 file
   print $fh 'Microsoft Visual Studio Solution File, Format Version 8.00', $crlf;
+
+  ## Optionally print the workspace comment
   $self->print_workspace_comment($fh,
             '#', $crlf,
             '# $Id$', $crlf,
@@ -42,22 +44,15 @@ sub pre_workspace {
 
 
 sub print_inner_project {
-  my($self)  = shift;
-  my($fh)    = shift;
-  my($gen)   = shift;
-  my($pguid) = shift;
-  my($deps)  = shift;
-  my($project_name) = shift;
-  my($name_to_guid_map) = shift;
+  my($self, $fh, $gen, $pguid, $deps, $project_name, $name_to_guid_map) = @_;
 
   if ($self->allow_empty_dependencies() || defined $$deps[0]) {
-    my($crlf) = $self->crlf();
+    ## Print out the project dependencies
+    my $crlf = $self->crlf();
     print $fh "\tProjectSection(ProjectDependencies) = postProject$crlf";
     foreach my $dep (@$deps) {
-      my($guid) = $name_to_guid_map->{$dep};
-      if (defined $guid) {
-        print $fh "\t\t{$guid} = {$guid}$crlf";
-      }
+      my $guid = $name_to_guid_map->{$dep};
+      print $fh "\t\t{$guid} = {$guid}$crlf" if (defined $guid);
     }
     print $fh "\tEndProjectSection$crlf";
   }
@@ -65,16 +60,14 @@ sub print_inner_project {
 
 
 sub allow_empty_dependencies {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub print_configs {
-  my($self)    = shift;
-  my($fh)      = shift;
-  my($configs) = shift;
-  my($crlf)    = $self->crlf();
+  my($self, $fh, $configs) = @_;
+  my $crlf = $self->crlf();
   foreach my $key (sort keys %$configs) {
     print $fh "\t\t$key = $key$crlf";
   }

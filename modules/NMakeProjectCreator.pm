@@ -24,19 +24,19 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub project_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '.mak';
 }
 
 
 sub get_dll_exe_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'nmakeexe';
 }
 
 
 sub get_dll_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'nmakedll';
 }
 

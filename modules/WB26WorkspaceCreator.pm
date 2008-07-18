@@ -11,8 +11,6 @@ package WB26WorkspaceCreator;
 # ************************************************************
 
 use strict;
-use FileHandle;
-use File::Basename;
 
 use WB26ProjectCreator;
 use WorkspaceCreator;
@@ -25,7 +23,7 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub supports_make_coexistence {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
@@ -38,6 +36,7 @@ sub pre_workspace {
   my($self, $fh) = @_;
   my $crlf = $self->crlf();
 
+  ## Optionally print the workspace comment
   $self->print_workspace_comment($fh,
             '#----------------------------------------------------------------------------', $crlf,
             '#       WindRiver Workbench generator', $crlf,
@@ -51,6 +50,8 @@ sub pre_workspace {
             '# MPC Command:', $crlf,
             "# $0 @ARGV", $crlf,
             '#----------------------------------------------------------------------------', $crlf);
+
+  ## Unchanging initial settings
   print $fh 'version=1', $crlf,
             'eclipse.preferences.version=1', $crlf,
             'description.defaultbuildorder=false', $crlf;
@@ -60,19 +61,20 @@ sub write_comps {
   my($self, $fh) = @_;
   my $pjs  = $self->get_project_info();
   my @list = $self->sort_dependencies($self->get_projects(), 0);
-  my $all  = 'description.buildorder=';
 
-  ## Construct the target
+  ## Print out the target
+  print $fh 'description.buildorder=';
   foreach my $project (@list) {
-    $all .= "$$pjs{$project}->[0]/";
+    print $fh "$$pjs{$project}->[0]/";
   }
-  print $fh $all, $self->crlf();
+  print $fh $self->crlf();
 }
 
 sub post_workspace {
   my($self, $fh, $creator) = @_;
   my $crlf = $self->crlf();
 
+  ## Print out the project dependencies
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     print $fh "$project$crlf";
     $self->add_dependencies($creator, $project);
@@ -90,6 +92,7 @@ sub list_file_body {
   my($self, $fh) = @_;
   my $crlf = $self->crlf();
 
+  ## Optionally print the workspace comment
   $self->print_workspace_comment($fh,
             '#----------------------------------------------------------------------------', $crlf,
             '#       WindRiver Workbench generator', $crlf,
@@ -104,34 +107,37 @@ sub list_file_body {
 
   ## Print out each target separately
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
-    print $fh Cwd::abs_path($self->mpc_dirname($project)),
-                '/.project', $crlf;
+    print $fh Cwd::abs_path($self->mpc_dirname($project)), '/.project', $crlf;
   }
 }
 
 sub add_dependencies {
   my($self, $creator, $proj) = @_;
-  my $fh      = new FileHandle();
+  my $outdir = $self->mpc_dirname($proj);
+
+  ## These values will be changed after the first time through the for
+  ## loop below.
   my $pre     = "\t\t" . '<project>';
   my $post    = '</project>';
-  my $outdir  = Cwd::abs_path($self->mpc_dirname($proj));
   my $outfile = $outdir . '/.project';
 
   ## Go through twice to edit both the .project and .wrproject files
   for(my $i = 0; $i < 2; $i++) {
-    if (open($fh, "$outfile")) {
+    my $fh = new FileHandle();
+    if (open($fh, $outfile)) {
       my @read = ();
       my $cwd  = $self->getcwd();
       while(<$fh>) {
+        ## This is a comment found in wb26.mpd and wb26wrproject.mpd if
+        ## the project is an executable, contains the 'after' keyword
+        ## setting, and the 'enable_subprojects' template variable.
         if (/MPC\s+ADD\s+DEPENDENCIES/) {
           my $crlf = $self->crlf();
           my $deps = $self->get_validated_ordering($proj);
           foreach my $dep (@$deps) {
             my $relative = $self->get_relative_dep_file($creator,
                                                         "$cwd/$proj", $dep);
-            if (defined $relative) {
-              push(@read, "$pre$dep$post$crlf");
-            }
+            push(@read, "$pre$dep$post$crlf") if (defined $relative);
           }
         }
         else {
@@ -140,6 +146,8 @@ sub add_dependencies {
       }
       close($fh);
 
+      ## We will always rewrite the project file (with or without
+      ## dependencies).
       if (open($fh, ">$outfile")) {
         foreach my $line (@read) {
           print $fh $line;
@@ -153,7 +161,6 @@ sub add_dependencies {
     $outfile = $outdir . '/.wrproject';
     $pre = '        <subproject project="/';
     $post = '"/>';
-
   }
 }
 
