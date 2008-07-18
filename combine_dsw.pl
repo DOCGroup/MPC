@@ -29,9 +29,7 @@ my $version = '1.3';
 
 sub usageAndExit {
   my $str = shift;
-  if (defined $str) {
-    print STDERR "$str\n";
-  }
+  print STDERR "$str\n" if (defined $str);
   print STDERR "Combine DSW v$version\n",
                "Usage: ", basename($0),
                " [-u] <output file> <input files...>\n\n",
@@ -76,25 +74,33 @@ for(my $i = 0; $i <= $#ARGV; $i++) {
   }
 }
 
-if (!defined $output || !defined $input[0]) {
-  usageAndExit();
-}
+## Print the usage if there is no output file provided or there isn't at
+## least two input files.
+usageAndExit() if (!defined $output ||
+                   !defined $input[0] || !defined $input[1]);
 
-my $tmp = "$output.tmp";
+my $tmp = "$output.$$.tmp";
 my $oh  = new FileHandle();
 
 if (open($oh, ">$tmp")) {
-  my $msident = 0;
+  my $msident;
   for(my $i = 0; $i <= $#input; ++$i) {
+    ## We only want to take the global settings from the last input file.
     my $input  = $input[$i];
-    my $fh     = new FileHandle();
     my $global = ($i == $#input);
 
+    ## Read in the input file and write out the parts that are common
+    ## between multiple workspace files (but only on the first input
+    ## file).  After that, write out the project information from each
+    ## input file.
+    my $fh = new FileHandle();
     if (open($fh, $input)) {
       my $in_global = 0;
       while(<$fh>) {
         if (/Microsoft\s+(Developer\s+Studio|eMbedded\s+Visual)/) {
-          if ($msident == 0) {
+          ## We only want to print out the identifier from the first
+          ## input file.
+          if (!$msident) {
             $msident = 1;
             print $oh $_;
           }
@@ -107,9 +113,10 @@ if (open($oh, ">$tmp")) {
             $in_global = 0;
             $_ = '';
           }
-          if (!$in_global || ($global && $in_global)) {
-            print $oh $_;
-          }
+
+          ## Only print out the line if it's not part of the global
+          ## settings (unless this is the last input file).
+          print $oh $_ if (!$in_global || ($global && $in_global));
         }
       }
       close($fh);
@@ -121,12 +128,13 @@ if (open($oh, ">$tmp")) {
   }
   close($oh);
 
-  if ($unlink) {
-    foreach my $input (@input) {
-      unlink($input);
-    }
-  }
+  ## If the user wants us to remove the input files after successfully
+  ## combining them, then do so here.
+  unlink(@input) if ($unlink);
 
+  ## We have written the new workspace to a temporary file to allow an
+  ## input file to be the same as an output file.  Once we're done, we
+  ## need to move it to it's correct output name.
   unlink($output);
   rename($tmp, $output);
 }

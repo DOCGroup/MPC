@@ -2012,7 +2012,7 @@ sub project_creator {
 
 
 sub sort_files {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
@@ -2249,7 +2249,7 @@ sub get_secondary_relative_values {
 
 
 sub convert_all_variables {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
@@ -2273,54 +2273,54 @@ sub relative {
 # ************************************************************
 
 sub supports_make_coexistence {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
 
 sub generate_implicit_project_dependencies {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
 
 sub workspace_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '';
 }
 
 
 sub workspace_per_project {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 
 
 sub pre_workspace {
-  #my($self)    = shift;
-  #my($fh)      = shift;
-  #my($creator) = shift;
-  #my($top)     = shift;
+  #my $self    = shift;
+  #my $fh      = shift;
+  #my $creator = shift;
+  #my $top     = shift;
 }
 
 
 sub write_comps {
-  #my($self)    = shift;
-  #my($fh)      = shift;
-  #my($creator) = shift;
-  #my($top)     = shift;
+  #my $self    = shift;
+  #my $fh      = shift;
+  #my $creator = shift;
+  #my $top     = shift;
 }
 
 
 sub post_workspace {
-  #my($self)    = shift;
-  #my($fh)      = shift;
-  #my($creator) = shift;
-  #my($top)     = shift;
+  #my $self    = shift;
+  #my $fh      = shift;
+  #my $creator = shift;
+  #my $top     = shift;
 }
 
 sub requires_forward_slashes {
-  #my($self) = shift;
+  #my $self = shift;
   return 0;
 }
 

@@ -425,17 +425,15 @@ sub run {
   }
 
   ## Set up default values
-  if (!defined $options->{'input'}->[0]) {
-    push(@{$options->{'input'}}, '');
-  }
-  if (!defined $options->{'feature_file'}) {
-    $options->{'feature_file'} = $self->find_file($options->{'include'},
-                                                  'default.features');
-  }
-  if (!defined $options->{'global'}) {
-    $options->{'global'} = $self->find_file($options->{'include'},
-                                            'global.mpb');
-  }
+  push(@{$options->{'input'}}, '') if (!defined $options->{'input'}->[0]);
+  $options->{'feature_file'} = $self->find_file($options->{'include'},
+                                                'default.features')
+                                 if (!defined $options->{'feature_file'});
+
+  $options->{'global'} = $self->find_file($options->{'include'},
+                                          'global.mpb')
+                                 if (!defined $options->{'global'});
+
   ## Set the relative
   my $relative_file = (defined $options->{'relative_file'} &&
                              -r $options->{'relative_file'} ?
@@ -509,9 +507,7 @@ sub run {
     $cfile =~ s/\\/\//g;
     my $base = ($cfile eq '' ? '' : $self->mpc_basename($cfile));
 
-    if (-d $cfile) {
-      $base = '';
-    }
+    $base = '' if (-d $cfile);
 
     foreach my $name (@{$options->{'creators'}}) {
       ++$loopTimes;
@@ -589,9 +585,7 @@ sub run {
                         ($total % 60) . 's');
       $creator->cd($orig_dir);
     }
-    if ($status) {
-      last;
-    }
+    last if ($status);
   }
 
   ## If we went through the loop more than once, we need to print
@@ -611,9 +605,7 @@ sub progress {
   ## This method will be called before each output file is written.
   print "$progress[$index]\r";
   $index++;
-  if ($index > $#progress) {
-    $index = 0;
-  }
+  $index = 0 if ($index > $#progress);
 }
 
 

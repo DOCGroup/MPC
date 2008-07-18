@@ -21,17 +21,16 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my(%config) = ('vcversion'    => '7.10',
-               'forloopscope' => 'TRUE',
-              );
+my %config = ('vcversion'    => '7.10',
+              'forloopscope' => 'TRUE',
+             );
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub get_configurable {
-  my($self) = shift;
-  my($name) = shift;
+  my($self, $name) = @_;
   return $config{$name};
 }
 

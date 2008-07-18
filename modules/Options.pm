@@ -38,9 +38,8 @@ sub printUsage {
   my $version = shift;
   my @types   = @_;
 
-  if (defined $msg) {
-    print STDERR "ERROR: $msg\n";
-  }
+  print STDERR "ERROR: $msg\n" if (defined $msg);
+
   my $spaces = (' ' x (length($base) + 8));
   print STDERR "$base v$version\n" .
                "Usage: $base [-global <file>] [-include <directory>] [-recurse]\n" .
@@ -175,8 +174,8 @@ sub printUsage {
 
 
 sub optionError {
-  #my($self) = shift;
-  #my($str)  = shift;
+  #my $self = shift;
+  #my $str  = shift;
 }
 
 
@@ -195,18 +194,14 @@ sub completion_command {
   my @keys = sort keys %languages;
   for(my $i = 0; $i <= $#keys; $i++) {
     $str .= $keys[$i];
-    if ($i != $#keys) {
-      $str .= " ";
-    }
+    $str .= " " if ($i != $#keys);
   }
   $str .= ")/' 'n/-type/(";
 
   @keys = sort keys %$types;
   for(my $i = 0; $i <= $#keys; $i++) {
     $str .= $keys[$i];
-    if ($i != $#keys) {
-      $str .= " ";
-    }
+    $str .= " " if ($i != $#keys);
   }
   $str .= ")/'";
   return $str;
@@ -289,9 +284,7 @@ sub options {
               last;
             }
           }
-          if (!$found) {
-            push(@creators, $call);
-          }
+          push(@creators, $call) if (!$found);
         }
         else {
           $self->optionError("Invalid type: $args[$i]");
@@ -591,15 +584,11 @@ sub is_set {
 
   if (defined $options->{$key}) {
     if (UNIVERSAL::isa($options->{$key}, 'ARRAY')) {
-      if (defined $options->{$key}->[0]) {
-        return 'ARRAY';
-      }
+      return 'ARRAY' if (defined $options->{$key}->[0]);
     }
     elsif (UNIVERSAL::isa($options->{$key}, 'HASH')) {
       my @keys = keys %{$options->{$key}};
-      if (defined $keys[0]) {
-        return 'HASH';
-      }
+      return 'HASH' if (defined $keys[0]);
     }
     else {
       return 'SCALAR';

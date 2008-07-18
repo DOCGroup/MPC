@@ -24,22 +24,22 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my($max_line_length) = 32767; ## Borland Make's maximum line length
-my($targets) = 'clean generated realclean $(CUSTOM_TARGETS)';
+## Borland Make's maximum line length
+my $max_line_length = 32767;
+my $targets = 'clean generated realclean $(CUSTOM_TARGETS)';
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub workspace_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '.bmak';
 }
 
 
 sub pre_workspace {
-  my($self) = shift;
-  my($fh)   = shift;
+  my($self, $fh) = @_;
   $self->workspace_preamble($fh, $self->crlf(),
                             'Borland Workspace Makefile',
                             '$Id$');
@@ -47,17 +47,14 @@ sub pre_workspace {
 
 
 sub write_project_targets {
-  my($self)     = shift;
-  my($fh)       = shift;
-  my($crlf)     = shift;
-  my($target)   = shift;
-  my($list)     = shift;
-  my($and)      = shift;
-  my($cwd)      = $self->getcwd();
+  my($self, $fh, $crlf, $target, $list, $and) = @_;
+  my $cwd = $self->getcwd();
 
+  ## Print out a make command for each project
   foreach my $project (@$list) {
-    my($dir)   = $self->slash_to_backslash($self->mpc_dirname($project));
-    my($chdir) = ($dir ne '.');
+    my $dir = $self->mpc_dirname($project);
+    $dir =~ s/\//\\/g;
+    my $chdir = ($dir ne '.');
 
     print $fh "\t", ($chdir ? "\$(COMSPEC) /c \"cd $dir $and " : ''),
               "\$(MAKE) -\$(MAKEFLAGS) -f ",
@@ -68,30 +65,29 @@ sub write_project_targets {
 
 
 sub write_comps {
-  my($self)     = shift;
-  my($fh)       = shift;
-  my($creator)  = shift;
-  my(%targnum)  = ();
-  my($pjs)      = $self->get_project_info();
-  my(@list)     = $self->number_target_deps($self->get_projects(), $pjs,
-                                            \%targnum, 0);
-  my($crlf)     = $self->crlf();
+  my($self, $fh, $creator) = @_;
+  my %targnum;
+  my $pjs  = $self->get_project_info();
+  my @list = $self->number_target_deps($self->get_projects(), $pjs,
+                                       \%targnum, 0);
+  my $crlf = $self->crlf();
 
   ## Set up the custom targets
   print $fh '!ifndef CUSTOM_TARGETS', $crlf,
             'CUSTOM_TARGETS=_EMPTY_TARGET_', $crlf,
             '!endif', $crlf;
 
-  my(%trans) = ();
+  ## Translate each project name
+  my %trans;
   foreach my $project (@list) {
     $trans{$project} = $$pjs{$project}->[0];
   }
 
+  ## Send all the information to our base class method
   $self->write_named_targets($fh, $crlf, \%targnum, \@list,
                              $targets, '', '', \%trans, undef,
                              $creator->get_and_symbol(), $max_line_length);
 }
-
 
 
 1;

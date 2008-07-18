@@ -18,7 +18,7 @@ use FindBin;
 use File::Spec;
 use File::Basename;
 
-my($basePath) = $FindBin::Bin;
+my $basePath = $FindBin::Bin;
 if ($^O eq 'VMS') {
   $basePath = File::Spec->rel2abs(dirname($0)) if ($basePath eq '');
   $basePath = VMS::Filespec::unixify($basePath);
@@ -33,16 +33,16 @@ require TemplateParser;
 # Data Section
 # ******************************************************************
 
-my(%keywords)  = ();
-my(%arrow_op)  = ();
-my($ifmod)     = 0;
-my($formod)    = 0;
-my($cmod)      = 50;
-my(%keycolors) = (0 => [160, 32, 240],
-                  1 => [255, 50, 50],
-                  2 => [50, 50, 255],
-                 );
-my($version)   = '1.3';
+my %keywords;
+my %arrow_op;
+my $ifmod     = 0;
+my $formod    = 0;
+my $cmod      = 50;
+my %keycolors = (0 => [160, 32, 240],
+                 1 => [255, 50, 50],
+                 2 => [50, 50, 255],
+                );
+my $version   = '1.3';
 
 # ******************************************************************
 # Subroutine Section
@@ -50,13 +50,13 @@ my($version)   = '1.3';
 
 sub setup_keywords {
   ## Get the main MPC keywords
-  my($keywords) = ProjectCreator::getKeywords();
+  my $keywords = ProjectCreator::getKeywords();
   foreach my $key (keys %$keywords) {
     $keywords{$key} = 0;
   }
 
   ## Get the pseudo template variables
-  my($pjc) = new ProjectCreator();
+  my $pjc = new ProjectCreator();
   $keywords = $pjc->get_command_subs();
   foreach my $key (keys %$keywords) {
     $keywords{$key} = 0;
@@ -88,7 +88,7 @@ sub setup_keywords {
 
 
 sub convert_to_html {
-  my($line) = shift;
+  my $line = shift;
   $line =~ s/&/&amp;/g;
   $line =~ s/</&lt;/g;
   $line =~ s/>/&gt;/g;
@@ -113,14 +113,12 @@ sub usageAndExit {
 # Main Section
 # ******************************************************************
 
-my($status) = 0;
-my($fh)     = new FileHandle();
-my($input)  = $ARGV[0];
-my($output) = $ARGV[1];
+my $status = 0;
+my $fh     = new FileHandle();
+my $input  = $ARGV[0];
+my $output = $ARGV[1];
 
-if (!defined $input || $input =~ /^-/) {
-  usageAndExit();
-}
+usageAndExit() if (!defined $input || $input =~ /^-/);
 
 if (!defined $output) {
   $output = $input;
@@ -131,18 +129,18 @@ if (!defined $output) {
 if (open($fh, $input)) {
   setup_keywords();
 
-  my($deftxt) = 'black';
-  my(@codes)  = ();
+  my $deftxt = 'black';
+  my @codes;
   while(<$fh>) {
-    my($len) = length($_);
+    my $len = length($_);
     for(my $start = 0; $start < $len;) {
-      my($sindex) = index($_, '<%', $start);
+      my $sindex = index($_, '<%', $start);
       if ($sindex >= 0) {
-        my($left) = substr($_, $start, $sindex - $start);
+        my $left = substr($_, $start, $sindex - $start);
         if ($left ne '') {
           push(@codes, [$deftxt, $left]);
         }
-        my($eindex) = index($_, '%>', $sindex);
+        my $eindex = index($_, '%>', $sindex);
         if ($eindex >= $sindex) {
           $eindex += 2;
         }
@@ -150,11 +148,11 @@ if (open($fh, $input)) {
           $eindex = $len;
         }
 
-        my($part)  = substr($_, $sindex, $eindex - $sindex);
-        my($key)   = substr($part, 2, length($part) - 4);
-        my($name)  = $key;
-        my($color) = 'green';
-        my(@entry) = ();
+        my $part  = substr($_, $sindex, $eindex - $sindex);
+        my $key   = substr($part, 2, length($part) - 4);
+        my $name  = $key;
+        my $color = 'green';
+        my @entry;
         if ($key =~ /^([^\(]+)\(.*\)/) {
           $name = $1;
           if (defined $keywords{$name}) {
@@ -165,10 +163,10 @@ if (open($fh, $input)) {
           @entry = @{$keycolors{$keywords{$key}}};
         }
         else {
-          foreach my $ao (keys %arrow_op) { 
+          foreach my $ao (keys %arrow_op) {
             if ($key =~ /^$ao/) {
               @entry = @{$keycolors{$arrow_op{$ao}}};
-              last;     
+              last;
             }
           }
         }
@@ -208,7 +206,7 @@ if (open($fh, $input)) {
         $start = $eindex;
       }
       else {
-        my($part) = substr($_, $start, $len - $start);
+        my $part = substr($_, $start, $len - $start);
         push(@codes, [$deftxt, $part]);
         $start += ($len - $start);
       }
@@ -222,7 +220,7 @@ if (open($fh, $input)) {
               "<body>\n";
     foreach my $code (@codes) {
       $$code[1] = convert_to_html($$code[1]);
-      my($newline) = ($$code[1] =~ s/<br>//);
+      my $newline = ($$code[1] =~ s/<br>//);
       print $fh ($$code[1] ne '' ?
                    "<font color=\"$$code[0]\">$$code[1]</font>" : ''),
                 ($newline ? "<br>\n" : '');

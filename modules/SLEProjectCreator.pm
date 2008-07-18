@@ -23,19 +23,19 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub project_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '.vpj';
 }
 
 
 sub get_dll_exe_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'sleexe';
 }
 
 
 sub get_dll_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'sledll';
 }
 

@@ -23,58 +23,57 @@ use vars qw(@ISA);
 # ************************************************************
 
 sub project_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '.dsp';
 }
 
 
 sub override_valid_component_extensions {
-  my($self)  = shift;
-  my($comp)  = shift;
-  my($array) = undef;
+  my($self, $comp) = @_;
 
+  ## Visual C++ 6.0 doesn't understand all of the extensions that MPC
+  ## supports.
   if ($comp eq 'source_files' && $self->get_language() eq 'cplusplus') {
-    $array = ["\\.cpp", "\\.cxx", "\\.c"];
+    return ["\\.cpp", "\\.cxx", "\\.c"];
   }
 
-  return $array;
+  return undef;
 }
 
 
 sub override_exclude_component_extensions {
-  my($self)  = shift;
-  my($comp)  = shift;
-  my($array) = undef;
+  my($self, $comp) = @_;
 
-  if ($comp eq 'source_files') {
-    my(@exts) = ("_T\\.cpp", "_T\\.cxx");
-    $array = \@exts;
+  ## Visual C++ 6.0 doesn't understand all of the extensions that MPC
+  ## supports.
+  if ($comp eq 'source_files' && $self->get_language() eq 'cplusplus') {
+    return ["_T\\.cpp", "_T\\.cxx"];
   }
 
-  return $array;
+  return undef;
 }
 
 
 sub get_dll_exe_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'vc6dspdllexe';
 }
 
 
 sub get_lib_exe_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'vc6dsplibexe';
 }
 
 
 sub get_lib_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'vc6dsplib';
 }
 
 
 sub get_dll_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'vc6dspdll';
 }
 

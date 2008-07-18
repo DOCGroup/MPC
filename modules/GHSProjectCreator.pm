@@ -24,8 +24,8 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my($startre) = undef;
-my($ghsunix) = 'MPC_GHS_UNIX';
+my $startre;
+my $ghsunix = 'MPC_GHS_UNIX';
 
 # ************************************************************
 # Subroutine Section
@@ -47,49 +47,53 @@ sub use_win_compatibility_commands {
 
 
 sub post_file_creation {
-  my($self) = shift;
+  my $self = shift;
 
   ## These special files are only used if it is a custom only project or
   ## there are no source files in the project.
   if ((defined $self->get_assignment('custom_only') ||
        !defined $self->get_assignment('source_files')) &&
       defined $self->get_assignment('custom_types')) {
-    my($fh) = new FileHandle();
-    if (open($fh, ">.custom_build_rule")) {
+    my $fh = new FileHandle();
+    if (open($fh, '>.custom_build_rule')) {
       print $fh ".empty_html_file\n";
       close($fh);
     }
-    if (open($fh, ">.empty_html_file")) {
+    if (open($fh, '>.empty_html_file')) {
       close($fh);
     }
   }
 }
 
 sub compare_output {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
 
 sub project_file_extension {
-  #my($self) = shift;
+  #my $self = shift;
   return '.gpj';
 }
 
 
 sub fill_value {
-  my($self)  = shift;
-  my($name)  = shift;
-  my($value) = undef;
+  my($self, $name) = @_;
+  my $value;
 
   if (!defined $startre) {
     $startre = $self->escape_regex_special($self->getstartdir());
   }
 
+  ## The Green Hills project format is strange and needs all paths
+  ## relative to the top directory, no matter where the source files
+  ## reside.  The template uses reltop_ in front of the real project
+  ## settings, so we get the value of the real keyword and then do some
+  ## adjusting to get it relative to the top directory.
   if ($name =~ /^reltop_(\w+)/) {
     $value = $self->relative($self->get_assignment($1));
     if (defined $value) {
-      my($part) = $self->getcwd();
+      my $part = $self->getcwd();
       $part =~ s/^$startre[\/]?//;
       if ($part ne '') {
         if ($value eq '.') {
@@ -104,18 +108,19 @@ sub fill_value {
   elsif ($name eq 'reltop') {
     $value = $self->getcwd();
     $value =~ s/^$startre[\/]?//;
-    if ($value eq '') {
-      $value = '.';
-    }
+    $value = '.' if ($value eq '');
   }
   elsif ($name eq 'slash') {
+    ## We need to override the slash value so that we can give the right
+    ## value for Windows or UNIX.
     $value = (defined $ENV{$ghsunix} ? '/' : '\\');
   }
   else {
     if (!defined $ENV{$ghsunix}) {
-      if ($name eq 'postmkdir') {
-        $value = ' || type nul';
-      }
+      ## If we're on Windows, we need an "or" command that will reset the
+      ## errorlevel so that a mkdir on a directory that already exists
+      ## doesn't cause the build to cease.
+      $value = ' || type nul' if ($name eq 'postmkdir');
     }
   }
 
@@ -123,25 +128,25 @@ sub fill_value {
 }
 
 sub get_dll_exe_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'ghsdllexe';
 }
 
 
 sub get_lib_exe_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'ghslibexe';
 }
 
 
 sub get_lib_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'ghslib';
 }
 
 
 sub get_dll_template_input_file {
-  #my($self) = shift;
+  #my $self = shift;
   return 'ghsdll';
 }
 

@@ -17,45 +17,48 @@ use VC7ProjectCreator;
 use vars qw(@ISA);
 @ISA = qw(VC7ProjectCreator);
 
-my(%info) = ('cplusplus' => {'ext'      => '.vcproj',
-                             'dllexe'   => 'vc8exe',
-                             'libexe'   => 'vc8libexe',
-                             'dll'      => 'vc8dll',
-                             'lib'      => 'vc8lib',
-                             'template' => 'vc8',
-                            },
-             'csharp' => {'ext'      => '.csproj',
-                          'dllexe'   => 'vc8csharp',
-                          'libexe'   => 'vc8csharp',
-                          'dll'      => 'vc8csharp',
-                          'lib'      => 'vc8csharp',
-                          'template' => 'vc8csharp',
-                         },
-             'java'   => {'ext'      => '.vjsproj',
-                          'dllexe'   => 'vc8java',
-                          'libexe'   => 'vc8java',
-                          'dll'      => 'vc8java',
-                          'lib'      => 'vc8java',
-                          'template' => 'vc8java',
-                         },
-             'vb'     => {'ext'      => '.vbproj',
-                          'dllexe'   => 'vc8vb',
-                          'libexe'   => 'vc8vb',
-                          'dll'      => 'vc8vb',
-                          'lib'      => 'vc8vb',
-                          'template' => 'vc8vb',
-                         },
-            );
+# ************************************************************
+# Data Section
+# ************************************************************
 
-my(%config) = ('vcversion' => '8.00',
-              );
+my %info = ('cplusplus' => {'ext'      => '.vcproj',
+                            'dllexe'   => 'vc8exe',
+                            'libexe'   => 'vc8libexe',
+                            'dll'      => 'vc8dll',
+                            'lib'      => 'vc8lib',
+                            'template' => 'vc8',
+                           },
+            'csharp' => {'ext'      => '.csproj',
+                         'dllexe'   => 'vc8csharp',
+                         'libexe'   => 'vc8csharp',
+                         'dll'      => 'vc8csharp',
+                         'lib'      => 'vc8csharp',
+                         'template' => 'vc8csharp',
+                        },
+            'java'   => {'ext'      => '.vjsproj',
+                         'dllexe'   => 'vc8java',
+                         'libexe'   => 'vc8java',
+                         'dll'      => 'vc8java',
+                         'lib'      => 'vc8java',
+                         'template' => 'vc8java',
+                        },
+            'vb'     => {'ext'      => '.vbproj',
+                         'dllexe'   => 'vc8vb',
+                         'libexe'   => 'vc8vb',
+                         'dll'      => 'vc8vb',
+                         'lib'      => 'vc8vb',
+                         'template' => 'vc8vb',
+                        },
+           );
+
+my %config = ('vcversion' => '8.00');
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub webapp_supported {
-  #my($self) = shift;
+  #my $self = shift;
   return 1;
 }
 
@@ -68,8 +71,7 @@ sub require_dependencies {
 }
 
 sub post_file_creation {
-  my($self) = shift;
-  my($file) = shift;
+  my($self, $file) = @_;
 
   ## VC8 stores information in a .user file that may conflict
   ## with information stored in the project file.  If we have
@@ -79,25 +81,22 @@ sub post_file_creation {
 }
 
 sub get_configurable {
-  my($self)   = shift;
-  my($name)   = shift;
-  return $config{$name};
+  #my($self, $name) = @_;
+  return $config{$_[1]};
 }
 
 sub get_info_hash {
-  my($self) = shift;
-  my($key)  = shift;
+  my($self, $key) = @_;
 
-  if (defined $info{$key})  {
-    return $info{$key};
-  }
+  ## If we have the setting in our information map, the use it.
+  return $info{$key} if (defined $info{$key});
+
+  ## Otherwise, see if our parent type can take care of it.
   return $self->SUPER::get_info_hash($key);
 }
 
 sub translate_value {
-  my($self) = shift;
-  my($key)  = shift;
-  my($val)  = shift;
+  my($self, $key, $val) = @_;
 
   if ($key eq 'platform' && $val eq 'AnyCPU') {
     ## Microsoft uses AnyCPU in the project file, but
