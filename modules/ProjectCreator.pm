@@ -3173,8 +3173,10 @@ sub prepend_gendir {
         my $dir = $self->{'flag_overrides'}->{$gentype}->{$key}->{'gendir'};
         if (defined $dir) {
           ## Convert the file to unix style for basename
-          $created =~ s/\\/\//g;
-          $dir =~ s/\\/\//g if ($self->{'convert_slashes'});
+          if ($self->{'convert_slashes'}) {
+            $created =~ s/\\/\//g;
+            $dir =~ s/\\/\//g;
+          }
           return ($dir eq '.' ? '' : "$dir/") . $self->mpc_basename($created);
         }
       }
@@ -3960,13 +3962,13 @@ sub convert_command_parameters {
 
       $valid{'output_ext'}       = $1;
       $valid{'output_noext'}    .= (!$first ? ' ' : '') . $noext;
-      $valid{'output_basename'} .= (!$first ? ' ' : '') .
-                                   $self->mpc_basename($out);
 
-      ## In order to call dirname, we must make sure that the directory
-      ## separators are forward slashes.
+      ## In order to call basename or dirname, we must make sure that the
+      ## directory separators are forward slashes.
       my $file = $out;
       $file =~ s/\\/\//g if ($self->{'convert_slashes'});
+      $valid{'output_basename'} .= (!$first ? ' ' : '') .
+                                   $self->mpc_basename($file);
       $valid{'output_dirname'}  .= (!$first ? ' ' : '') .
                                    $self->mpc_dirname($file);
       $first = 0;
