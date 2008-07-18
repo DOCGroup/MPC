@@ -1,3 +1,13 @@
+Fri Jul 18 19:09:10 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Driver.pm:
+        * modules/FeatureParser.pm:
+        * modules/ProjectCreator.pm:
+        * modules/VC8ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          More non-functional code cleanup changes.
+
 Fri Jul 18 18:22:41 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

@@ -321,12 +321,11 @@ sub run {
                                $self->{'types'},
                                1,
                                @args);
-  if (!defined $options) {
-    ## If options are not defined, that means that calling options
-    ## took care of whatever functionality that was required and
-    ## we can now return with a good status.
-    return 0;
-  }
+
+  ## If options are not defined, that means that calling options
+  ## took care of whatever functionality that was required and
+  ## we can now return with a good status.
+  return 0 if (!defined $options);
 
   ## Set up a hash that we can use to keep track of what
   ## has been 'required'
