@@ -1,7 +1,7 @@
 Wed Jul 30 14:52:28 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
-        * config/lzo.mbp:
-          Base project for lzo compression library
+        * config/lzo2.mbp:
+          Base project for lzo2 compression library
 
 Wed Jul 30 14:43:28 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
