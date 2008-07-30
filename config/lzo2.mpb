@@ -4,5 +4,5 @@
 feature(lzo) {
   includes += $(LZO_ROOT)/include
   libpaths += $(LZO_ROOT)/lib
-  lit_libs += lzo
+  lit_libs += lzo2
 }
