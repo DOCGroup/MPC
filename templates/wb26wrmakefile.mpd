@@ -6,6 +6,10 @@
 WIND_HOME := $(subst \,/,$(WIND_HOME))
 WIND_BASE := $(subst \,/,$(WIND_BASE))
 WIND_USR := $(subst \,/,$(WIND_USR))
+ACE_ROOT := $(subst \,/,$(ACE_ROOT))
+TAO_ROOT := $(subst \,/,$(TAO_ROOT))
+CIAO_ROOT := $(subst \,/,$(CIAO_ROOT))
+HOST_ROOT := $(subst \,/,$(HOST_ROOT))
 
 <%if(exename)%>
 ACE_TARGET_PREFIX :=
