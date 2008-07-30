@@ -2,7 +2,7 @@
 // $Id$
 
 feature(lzo) {
-  includes += $(LZO_ROOT)/include
-  libpaths += $(LZO_ROOT)/lib
+  includes += $(LZO2_ROOT)/include
+  libpaths += $(LZO2_ROOT)/lib
   lit_libs += lzo2
 }
