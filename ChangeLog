@@ -1,3 +1,8 @@
+Wed Jul 30 14:43:28 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          Convert a few environment variables to use / instead of \
+
 Wed Jul 23 10:19:28 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/gsl.mpb:
