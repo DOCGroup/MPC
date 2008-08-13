@@ -1,3 +1,12 @@
+Wed Aug 13 19:31:17 UTC 2008  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * config/gacutil.mpb:
+
+          Bug fix where the path of the assembly to register, i.e.,
+          the sharedname, was incorrect. This was resolved by using the
+          absolute pathname for the assembly instead of the relative
+          pathname.
+
 Wed Jul 30 14:52:28 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/lzo2.mbp:
