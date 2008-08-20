@@ -1,3 +1,17 @@
+Wed Aug 20 08:33:17 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * clone_build_tree.pl:
+        * combine_dsw.pl:
+        * create_base.pl:
+        * depgen.pl:
+        * generate_export_header.pl:
+        * mpc.pl:
+        * mwc.pl:
+        * prj_install.pl:
+        * registry.pl:
+        * vs_postclean.pl:
+          Added missing shebang lines to fix rpm packaging warnings
+
 Wed Aug 13 19:31:17 UTC 2008  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * config/gacutil.mpb:
