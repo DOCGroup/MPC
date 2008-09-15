@@ -93,7 +93,7 @@ sub locate_dynamic_directories {
         }
       }
       else {
-        $self->diagnostic("dynamic_types directory $dir not found.");
+        $self->diagnostic("'dynamic_types' directory $dir not found.");
       }
     }
     return \@directories;
