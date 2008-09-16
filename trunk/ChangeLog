@@ -1,3 +1,18 @@
+Tue Sep 16 21:18:01 UTC 2008  Phil Mesnier  <mesnier_p@ociweb.com>
+
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/VC7WorkspaceCreator.pm:
+
+        * templates/vc8.mpd:
+
+          These changes all improve support for building cross-compiled
+          WinCE projects using Visual Studio. This specifically allows 
+          for the exclusion of native-only apps, such as TAO_IDL from 
+          building and deployment on cross compile targets. Also improves
+          the establishment of the correct WinCE 5 or WinCE 6 entry point
+          and sets the character set flag correctly. 
+        
 Tue Sep 16 08:35:19 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ruby.mpb:
