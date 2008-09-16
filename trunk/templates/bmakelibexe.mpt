@@ -10,7 +10,7 @@ Release {
   defines          = NDEBUG
   output_dir       = Static_Release
   intermediate_dir = Static_Release
-  lib_modifier     = s
+  lib_modifier     = _bsr
   postlinkrmext    = .tds
 }
 
@@ -20,7 +20,7 @@ Debug {
   defines          = _DEBUG
   output_dir       = Static_Debug
   intermediate_dir = Static_Debug
-  lib_modifier     = sd
+  lib_modifier     = _bsd
   postlinkrmext    = .tds
 }
 
