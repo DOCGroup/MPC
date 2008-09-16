@@ -7,7 +7,7 @@ Release {
   optimize         = 1
   defines          = NDEBUG
   intermediate_dir = Static_Release
-  lib_modifier     = s
+  lib_modifier     = _bsr
 }
 
 Debug {
@@ -15,7 +15,7 @@ Debug {
   debug_prj        = 1
   defines          = _DEBUG
   intermediate_dir = Static_Debug
-  lib_modifier     = sd
+  lib_modifier     = _bsd
 }
 
 conditional_include "user_bmakelib"
