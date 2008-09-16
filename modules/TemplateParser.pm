@@ -1746,6 +1746,14 @@ sub collect_data {
   ## of the language associated with each project.
   $prjc->update_project_info($self, 1, ['language']);
 
+  ## For VC7+ to properly work with wince, which is cross compiled,
+  ## a new platform-specific token is added, nocross, which is used
+  ## to determine if a project is even to be built for non-native 
+  ## targets. Additionally, custom-only projects are built but not
+  ## deployed, thus these are added to the project_info mix
+  $prjc->update_project_info($self, 1, ['custom_only']);
+  $prjc->update_project_info($self, 1, ['nocross']);
+
   ## Some Windows based projects can't deal with certain version
   ## values.  So, for those we provide a translated version.
   my $version = $prjc->get_assignment('version');
