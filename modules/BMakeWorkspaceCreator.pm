@@ -38,6 +38,12 @@ sub workspace_file_extension {
 }
 
 
+sub workspace_file_name {
+  my($self) = shift;
+  return $self->get_modified_workspace_name('Makefile', '.bmak');
+}
+
+
 sub pre_workspace {
   my($self, $fh) = @_;
   $self->workspace_preamble($fh, $self->crlf(),
