@@ -39,7 +39,12 @@
 <%if(UseOfMFC)%>
 			UseOfMFC="<%UseOfMFC%>"
 <%endif%>
+<%if(unicode)%>
+			CharacterSet="<%charset("1")%>"
+<%else%>
 			CharacterSet="<%charset("0")%>"
+<%endif%>
+
 <%if(managed)%>
 			ManagedExtensions="<%managed%>"
 <%endif%>
@@ -513,6 +518,14 @@
 			<Tool
 				Name="VCPostCleanEventTool"
 				CommandLine="<%eval(postclean)%>"
+			/>
+<%endif%>
+<%if(deploymenttool)%>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory="<%deployment_directory%>"
+				RegisterOutput="0"
+				AdditionalFiles=""
 			/>
 <%endif%>
 <%endif%>
