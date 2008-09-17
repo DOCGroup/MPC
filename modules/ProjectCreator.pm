@@ -4218,6 +4218,9 @@ sub need_to_write_project {
   my $self  = shift;
   my $count = 0;
 
+  ## We always write a project if the user has provided a verbatim.
+  return 1 if (defined $self->{'verbatim'}->{$self->{'pctype'}});
+
   ## The order here is important, we must check for source or resource
   ## files first and then for custom input files.
   foreach my $key ('source_files', 'resource_files',

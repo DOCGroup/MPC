@@ -77,7 +77,7 @@ sub fill_value {
       return 'java';
     }
     elsif ($language eq 'csharp') {
-      return 'mcs';
+      return 'gmcs';
     }
     else {
       return 'gcc';
