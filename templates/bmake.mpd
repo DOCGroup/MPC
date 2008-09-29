@@ -29,6 +29,8 @@ EXEOUTPUTDIR = <%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug
 UC_CFLAGS    = <%unicode_flags%>
 UNICODE_DIR  = Unicode\\
 UC_MAIN      = w
+ULIBMODIFIER = <%unicode_lib_modifier%>
+UEXEMODIFIER = <%unicode_lib_modifier%>
 !endif
 
 !ifdef CODEGUARD
@@ -64,10 +66,10 @@ INTERMEDIATE = $(CFG_DIR)$(UNICODE_DIR)<%noextension(project_name)%>
 NAME         = <%exename%>$(EXEMODIFIER)
 <%else%>
 <%if(sharedname)%>
-NAME         = <%libname_prefix%><%sharedname%>$(LIBMODIFIER)
+NAME         = <%libname_prefix%><%sharedname%>$(LIBMODIFIER)$(ULIBMODIFIER)
 <%else%>
 <%if(staticname)%>
-NAME         = <%libname_prefix%><%staticname%>$(LIBMODIFIER)
+NAME         = <%libname_prefix%><%staticname%>$(LIBMODIFIER)$(ULIBMODIFIER)
 <%endif%>
 <%endif%>
 <%endif%>
@@ -102,7 +104,7 @@ LFLAGS   = \
 
 LIBFILES = \
 <%foreach(reverse(libs))%>
-           <%libname_prefix%><%lib%>$(LIBMODIFIER)$(LIB_EXT) \
+           <%libname_prefix%><%lib%>$(LIBMODIFIER)$(ULIBMODIFIER)$(LIB_EXT) \
 <%endfor%>
 <%foreach(reverse(lit_libs))%>
            <%lit_lib%>$(LIB_EXT) \
