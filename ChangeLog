@@ -1,3 +1,10 @@
+Mon Sep 29 13:34:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+        * templates/bmakecommon.mpt:
+          Added a unicode modifier so that the libs do get a u in the name
+          when we build with unicode
+
 Wed Sep 17 02:40:00 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
