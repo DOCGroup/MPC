@@ -4,7 +4,7 @@
 project {
   requires += qt
   includes += $(QTDIR)/include
-  libpaths += $(QTDIR)/lib
+  libpaths += $(QTDIR)/lib $(QTDIR)/lib64
   macros   += QT_THREAD_SUPPORT
   lit_libs += qt-mt$(QT_VERSION)
 
