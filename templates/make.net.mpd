@@ -10,7 +10,11 @@ LDFLAGS         =<%if(libpaths)%> <%lib_flag%><%foreach(libpaths)%><%libpath%><%
 CFLAGS          =<%if(compile_flags)%> <%compile_flags%><%endif%><%if(optimize)%> <%opt_flag%><%endif%><%if(macros)%> <%def_flag%><%foreach(macros)%><%macro%><%fornotlast(",")%><%endfor%><%endif%><%if(keyfile)%> <%key_flag%><%keyfile%><%endif%><%if(compares(allowunsafeblocks, true))%> <%unsafe_flag%><%endif%>
 TESTDIRSTART    = <%testdirstart("test -d")%>
 TESTDIREND      = <%testdirend("||")%>
+CAT             = <%type("cat")%>
+MV              = <%move("mv -f")%>
 RM              = <%delete("rm -rf")%>
+CP              = <%copy("cp -p")%>
+NUL             = <%devnull("/dev/null")%>
 MKDIR           = <%makedir("mkdir -p")%>
 <%if(custom_types)%>
 GENERATED_DIRTY =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><%if(custom_type->input_file->output_files)%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%><%endfor%><%endfor%>
