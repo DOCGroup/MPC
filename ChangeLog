@@ -1,3 +1,13 @@
+Tue Oct  7 14:08:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        Revert change below, doesn't work as expected
+
+        Tue Oct  7 13:55:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+          Include vc8platforms so that we can easily generate nmake projects for
+          WinCE platforms
+
 Tue Oct  7 13:55:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/nmakedll.mpt:
