@@ -174,3 +174,5 @@ Static MFC Debug {
 
 conditional_include "vcfullmacros"
 conditional_include "user_nmakedll"
+conditional_include "vc8platforms"
+

@@ -1,3 +1,13 @@
+Tue Oct  7 13:55:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/nmakedll.mpt:
+        * templates/nmakeexe.mpt:
+          Include vc8platforms so that we can easily generate nmake projects for
+          WinCE platforms
+
+        * templates/vc8platforms.mpt:
+          Added new WinCE mobile platform
+
 Sat Oct  4 20:52:22 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/qt.mpb:
