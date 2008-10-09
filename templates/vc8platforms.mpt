@@ -76,6 +76,17 @@ Windows Mobile 6 Standard SDK (ARMV4I) {
   TargetMachine    = "0"
 }
 
+Windows Mobile 6 Professional SDK (ARMV4I) {
+  unicode          = 1
+  output_subdir    = WinMobile60_SDK_ARMV4I
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = _WIN32_WCE=$(CEVER) UNDER_CE WINCE _WINDOWS $(PLATFORMDEFINES)
+  link_options     = /subsystem:windowsce,5.02
+  CharacterSet     = "1"
+  subsystem        = "0"
+  TargetMachine    = "0"
+}
+
 Windows Mobile 6 SuperSonic (ARMV4I) {
   output_subdir    = WinMobile60_SuperSonic_ARMV4I
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
