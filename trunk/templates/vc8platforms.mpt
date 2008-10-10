@@ -71,6 +71,7 @@ Windows Mobile 6 Standard SDK (ARMV4I) {
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
   platform_defines = _WIN32_WCE=$(CEVER) UNDER_CE=$(CEVER) WINCE _WINDOWS $(PLATFORMDEFINES)
   link_options     = /subsystem:windowsce,5.02
+  lit_libs        += iphlpapi
   CharacterSet     = "1"
   subsystem        = "0"
   TargetMachine    = "0"
@@ -82,6 +83,7 @@ Windows Mobile 6 Professional SDK (ARMV4I) {
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
   platform_defines = _WIN32_WCE=$(CEVER) UNDER_CE=$(CEVER) WINCE _WINDOWS $(PLATFORMDEFINES)
   link_options     = /subsystem:windowsce,5.02
+  lit_libs        += iphlpapi
   CharacterSet     = "1"
   subsystem        = "0"
   TargetMachine    = "0"
