@@ -93,7 +93,7 @@ SuperSonic_CE6 (ARMV4I) {
   unicode          = 1
   output_subdir    = SUPERSONIC_CE6_ARMV4I
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
-  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE $(PLATFORMDEFINES)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
   link_options     = /subsystem:windowsce,6.0 /machine:THUMB
   lit_libs        += iphlpapi
   subsystem        = "0"
