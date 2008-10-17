@@ -1,3 +1,15 @@
+Fri Oct 17 19:07:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/BCB2009ProjectCreator.pm
+        * modules/BCB2009WorkspaceCreator.pm
+        * templates/bcb2009.mpd
+        * templates/bcb2009dll.mpt
+        * templates/bcb2009exe.mpt
+          New generator for C++ Builder 2009
+
+        * templates/bcb2007.mpd
+          Fixed bug in resource_file generation
+
 Wed Oct 15 15:03:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc8platforms.mpt:
