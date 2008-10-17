@@ -4,19 +4,20 @@
     <ProjectGuid>{f76f525d-aee9-4af7-a366-e9119e55548d}</ProjectGuid>
     <ProjectType>CppDynamicLibrary</ProjectType>
     <Config Condition="'$(Config)'==''">Debug Build</Config>
+    <ProjectVersion>12.0</ProjectVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
     <Base>true</Base>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Config)'=='Debug Build' or '$(Cfg_1)'!=''">
-    <Base>true</Base>
     <Cfg_1>true</Cfg_1>
     <CfgParent>Base</CfgParent>
+    <Base>true</Base>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Config)'=='Release Build' or '$(Cfg_2)'!=''">
-    <Base>true</Base>
     <Cfg_2>true</Cfg_2>
     <CfgParent>Base</CfgParent>
+    <Base>true</Base>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Base)'!=''">
     <OutputExt>dll</OutputExt>
@@ -134,7 +135,7 @@
     </ProjectProperties>
   </CPlusPlusBuilder.Personality> </BorlandProject></BorlandProject>
   </ProjectExtensions>
-  <Import Project="$(MSBuildBinPath)\Borland.Cpp.Targets" />
+  <Import Project="$(BDS)\Bin\CodeGear.Cpp.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Cpp.Targets')"/>
   <ItemGroup>
 <%if(source_files)%>
 <%foreach(source_files)%>
