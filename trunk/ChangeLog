@@ -1,3 +1,8 @@
+Thu Oct 23 13:01:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+          Don't print all clean commands on the console
+
 Fri Oct 17 19:07:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/BCB2009ProjectCreator.pm
