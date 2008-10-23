@@ -319,7 +319,7 @@ generated: $(GENERATED_DIRTY)
 <%endfor%>
 <%endif%>
 clean:
-	-if exist "$(INTERMEDIATE)" rmdir /s/q $(INTERMEDIATE)
+        @if exist "$(INTERMEDIATE)" rmdir /s/q $(INTERMEDIATE)
 
 realclean: clean
 <%foreach(custom_types)%>
@@ -327,26 +327,26 @@ realclean: clean
 <%if(custom_type->input_file->output_files)%>
 <%foreach(custom_type->input_file->output_files)%>
 <%if(flag_overrides(custom_type->input_file, gendir))%>
-	-if exist "<%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%>" del "<%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%>"
+        @del "<%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%>" 2>NUL
 <%else%>
-	-if exist "<%custom_type->input_file->output_file%>" del "<%custom_type->input_file->output_file%>"
+        @del "<%custom_type->input_file->output_file%>" 2>NUL
 <%endif%>
 <%endfor%>
 <%endif%>
 <%endfor%>
 <%endfor%>
 <%if(exename)%>
-	-if exist "$(OUTPUTDIR)$(NAME)$(EXE_EXT)" del "$(OUTPUTDIR)$(NAME)$(EXE_EXT)"
+        @del "$(OUTPUTDIR)$(NAME)$(EXE_EXT)" del "$(OUTPUTDIR)$(NAME)$(EXE_EXT)" 2>NUL
 <%else%>
 <%if(sharedname)%>
-        -if exist "$(OUTPUTDIR)$(NAME)$(DLL_EXT)" del "$(OUTPUTDIR)$(NAME)$(DLL_EXT)"
+        @del "$(OUTPUTDIR)$(NAME)$(DLL_EXT)" del "$(OUTPUTDIR)$(NAME)$(DLL_EXT)" 2>NUL
 <%endif%>
 <%if(staticname)%>
-	-if exist "$(OUTPUTDIR)$(NAME)$(LIB_EXT)" del "$(OUTPUTDIR)$(NAME)$(LIB_EXT)"
+        @del "$(OUTPUTDIR)$(NAME)$(LIB_EXT)" del "$(OUTPUTDIR)$(NAME)$(LIB_EXT)" 2>NUL
 <%endif%>
 <%endif%>
 <%if(exename || sharedname || staticname)%>
-        -if exist "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" del "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)"
+        @del "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" 2>NUL
 <%endif%>
 <%if(postclean)%>
 	-<%eval(postclean)%>
