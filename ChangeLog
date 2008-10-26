@@ -1,3 +1,11 @@
+Sun Oct 26 17:09:42 UTC 2008  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * config/sqlite3.mpb:
+
+          Base project for using SQLite. For Windows-based projects, you
+          will need to use LIB to generate the import library for the
+          .dll.
+
 Thu Oct 23 13:01:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmake.mpd:
