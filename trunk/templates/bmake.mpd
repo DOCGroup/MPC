@@ -164,7 +164,7 @@ CFLAGS = \
 <%endif%>
 <%endif%>
 <%foreach(includes)%>
-         -I"'<%include%>'" \
+         -I"<%include%>" \
 <%endfor%>
          $(PCH_CFLAGS) \
          $(VCL_CFLAGS)
