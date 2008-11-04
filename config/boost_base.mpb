@@ -3,7 +3,7 @@
 
 project {
   requires += boost
-  includes += $(BOOST_ROOT)/include/$(BOOST_VERSION) $(BOOST_ROOT)/.
+  includes += $(BOOST_ROOT)/include/$(BOOST_VERSION) $(BOOST_ROOT)
 
   // If the libraries for boost are not installed in a location relative to
   // the include files, set the BOOST_ROOT_LIB environment variable
