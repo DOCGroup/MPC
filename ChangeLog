@@ -1,7 +1,15 @@
+Tue Nov  4 10:01:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+          Reverted change of yesterday, breaks other things
+
+        * config/boost.mpd:
+          Use $(BOOST_ROOT) instead of $(BOOST_ROOT)/., it confused CodeGear
+          C++
+
 Mon Nov  3 21:50:41 UTC 2008  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * config/sqlite3.mpb:
-
           Added a 'requires' statement to the base project.
 
 Mon Nov  3 19:51:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
