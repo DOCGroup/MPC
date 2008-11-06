@@ -88,7 +88,14 @@ external_build ::
 
 # main entry point for pre processing prior to the build
 pre_build :: $(PRE_BUILD_STEP)
-	@echo ""
+	@echo "Create object list";\
+	rm -f filelist.txt;\
+	for object in _dummy_ $(OBJECTS_example); do\
+		if [ "$$object" = "_dummy_" ]; then\
+			continue ;\
+		fi;\
+		echo "$$object" >> filelist.txt ;\
+	done
 
 # entry point for generating sources prior to the build
 <%if(standard_build)%>

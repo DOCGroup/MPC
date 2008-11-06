@@ -100,7 +100,7 @@
             <booleanAttribute key="BLD::Info|Tool|C-Compiler|passAble" value="false"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|sigs" value="*.c"/>
 <%foreach(buildspecs)%>
-            <stringAttribute key="BLD::Info|Tool|Librarian|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%archiverprefix% $(TOOL_PATH)<%ar%> %ToolFlags% %OutFile% %Objects% $(ADDED_OBJECTS)"/>
+            <stringAttribute key="BLD::Info|Tool|Librarian|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%archiverprefix% $(TOOL_PATH)<%ar%> %ToolFlags% %OutFile% @filelist.txt $(ADDED_OBJECTS)"/>
             <stringAttribute key="BLD::Info|Tool|Librarian|dbgFlags|<%buildspec%>" value="<%ar_dbgflags%>"/>
             <stringAttribute key="BLD::Info|Tool|Librarian|derivedSigs|<%buildspec%>" value="*<%ar_derivedsigs%>"/>
             <stringAttribute key="BLD::Info|Tool|Librarian|flags|<%buildspec%>" value="<%ar_flags%>"/>
