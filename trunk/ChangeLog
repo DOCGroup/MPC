@@ -1,3 +1,18 @@
+Thu Nov  6 15:42:06 UTC 2008  Jeff Parsons <j.parsons@vanderbilt.edu>
+
+        * config/splice_ts_defaults.mpb:
+        * config/spliceexe.mpb:
+        * config/spliceexe_with_idl.mpb:
+        * config/splicelib.mpb:
+        * config/splicelib_with_idl.mpb:
+        
+          New files, base projects for using PrismTech's OpenSplice
+          C++ DDS implementation. Currently, the files are specialized
+          for using OpenSplice integrated with a CORBA implementation,
+          and assume that OpenSplice's custom library for this purpose
+          (in $OSPL_HOME/custom_lib/ccpp) has been compiled after
+          installation.
+
 Thu Nov  6 10:54:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrmakefile.mpd:
