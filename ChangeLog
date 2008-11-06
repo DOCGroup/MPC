@@ -1,3 +1,10 @@
+Thu Nov  6 18:41:58 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
+
+        * templates/wb26wrmakefile.mpd:
+
+          Fixed pre_build rule by using SUB_OBJECTS instead of OBJECTS_example.
+          Thanks to Laszlo Morocz (laszlo.morocz@lmco.com) for providing the fix.
+
 Thu Nov  6 15:42:06 UTC 2008  Jeff Parsons <j.parsons@vanderbilt.edu>
 
         * config/splice_ts_defaults.mpb:
@@ -5,7 +12,7 @@ Thu Nov  6 15:42:06 UTC 2008  Jeff Parsons <j.parsons@vanderbilt.edu>
         * config/spliceexe_with_idl.mpb:
         * config/splicelib.mpb:
         * config/splicelib_with_idl.mpb:
-        
+
           New files, base projects for using PrismTech's OpenSplice
           C++ DDS implementation. Currently, the files are specialized
           for using OpenSplice integrated with a CORBA implementation,

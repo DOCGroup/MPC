@@ -90,7 +90,7 @@ external_build ::
 pre_build :: $(PRE_BUILD_STEP)
 	@echo "Create object list";\
 	rm -f filelist.txt;\
-	for object in _dummy_ $(OBJECTS_example); do\
+	for object in _dummy_ $(SUB_OBJECTS); do\
 		if [ "$$object" = "_dummy_" ]; then\
 			continue ;\
 		fi;\
