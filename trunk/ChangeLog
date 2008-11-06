@@ -3,7 +3,7 @@ Thu Nov  6 18:41:58 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
         * templates/wb26wrmakefile.mpd:
 
           Fixed pre_build rule by using SUB_OBJECTS instead of OBJECTS_example.
-          Thanks to Laszlo Morocz (laszlo.morocz@lmco.com) for providing the fix.
+          Thanks to Laszlo Morocz <laszlo dot morocz at lmco dot com) for providing the fix.
 
 Thu Nov  6 15:42:06 UTC 2008  Jeff Parsons <j.parsons@vanderbilt.edu>
 
