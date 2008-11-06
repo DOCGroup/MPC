@@ -1,3 +1,10 @@
+Thu Nov  6 10:54:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+        * templates/wb26wrproject.mpd:
+          Put all object names in a file and pass these to the Librarian to
+          prevent a long command when a lot of objects are linked together
+
 Tue Nov  4 10:01:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmake.mpd:
