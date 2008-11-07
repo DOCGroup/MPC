@@ -90,7 +90,11 @@ external_build ::
 pre_build :: $(PRE_BUILD_STEP)
 	@echo "Create object list";\
 	rm -f filelist.txt;\
-	for object in _dummy_ $(SUB_OBJECTS); do\
+<%if(exename)%>
+	for object in _dummy_ $(OBJECTS_<%exename%>); do\
+<%else%>
+	for object in _dummy_ $(OBJECTS_<%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>); do\
+<%endif%>
 		if [ "$$object" = "_dummy_" ]; then\
 			continue ;\
 		fi;\
