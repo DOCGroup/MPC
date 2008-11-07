@@ -1,3 +1,8 @@
+Fri Nov  7 13:00:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          The OBJECTS variable is dependent on the project name
+
 Thu Nov  6 18:41:58 UTC 2008  Abdullah Sowayan  <abdullah.sowayan@lmco.com>
 
         * templates/wb26wrmakefile.mpd:
