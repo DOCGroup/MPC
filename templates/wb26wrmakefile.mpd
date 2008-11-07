@@ -87,9 +87,26 @@ external_build ::
 	@echo ""
 
 # main entry point for pre processing prior to the build
+<%if(standard_build)%>
+ACE_ALL_OBJECTS := $(SUB_OBJECTS) $(OBJECTS)
+ifneq ($(PROJECT_TARGET),)
+pre_build :: $(PRE_BUILD_STEP)
+	@echo "Create object list $(PRJ_ROOT_DIR)/filelist.txt";\
+	rm -f $(PRJ_ROOT_DIR)/filelist.txt;\
+	for object in _dummy_ $(ACE_ALL_OBJECTS); do\
+		if [ "$$object" = "_dummy_" ]; then\
+			continue ;\
+		fi;\
+		echo "$$object" >> $(PRJ_ROOT_DIR)/filelist.txt;\
+	done
+else
+pre_build :: $(PRE_BUILD_STEP)
+	@echo ""
+endif
+<%else%>
 pre_build :: $(PRE_BUILD_STEP)
 	@echo "Create object list";\
-	rm -f filelist.txt;\
+	rm -f $(PRJ_ROOT_DIR)/filelist.txt;\
 <%if(exename)%>
 	for object in _dummy_ $(OBJECTS_<%exename%>); do\
 <%else%>
@@ -98,8 +115,9 @@ pre_build :: $(PRE_BUILD_STEP)
 		if [ "$$object" = "_dummy_" ]; then\
 			continue ;\
 		fi;\
-		echo "$$object" >> filelist.txt ;\
+		echo "$$object" >> $(PRJ_ROOT_DIR)/filelist.txt ;\
 	done
+<%endif%>
 
 # entry point for generating sources prior to the build
 <%if(standard_build)%>
@@ -280,6 +298,7 @@ _clean :
 		echo "make: removing targets and objects of `pwd`";\
 		rm -f $(OBJECTS) $(PROJECT_TARGETS) $(DEP_FILES) $(wildcard $(OBJ_DIR)/*.unstripped) $(wildcard $(OBJ_DIR)/ctdt.*) \
 		rm -rf $(OBJ_DIR);\
+		rm -f $(PRJ_ROOT_DIR)/filelist.txt;\
 	else\
 		echo "make: removing targets and objects of `pwd`, already done";\
 	fi
@@ -327,4 +346,12 @@ clean_enabled_specs :
 		echo "building clean for build-spec '$$spec'";\
 		"$(MAKE)" -f "$(MAKEFILE)" $(MFLAGS) BUILD_SPEC=$$spec DEBUG_MODE=$(DEBUG_MODE) TRACE=$(TRACE) clean || exit;\
 	done
+<%endif%>
+
+<%if(standard_build)%>
+<%if(sharedname || staticname)%>
+ifneq ($(PROJECT_TARGET),)
+$(OBJ_DIR)/<%lib_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%><%lib_ext%> : $(OBJECTS) $(SUB_OBJECTS)
+endif
+<%endif%>
 <%endif%>
