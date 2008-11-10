@@ -1,3 +1,32 @@
+Mon Nov 10 10:45:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/boost_date_time.mpb:
+        * config/boost_filesystem.mpb:
+        * config/boost_iostreams.mpb:
+        * config/boost_prg_exec_monitor.mpb:
+        * config/boost_program_options.mpb:
+        * config/boost_regex.mpb:
+        * config/boost_serialization.mpb:
+        * config/boost_signals.mpb:
+        * config/boost_system.mpb:
+        * config/boost_test_exec_monitor.mpb:
+        * config/boost_thread.mpb:
+        * config/boost_unit_test_framework.mpb:
+        * config/boost_wave.mpb:
+        * config/gacutil.mpb:
+        * config/mpich.mpb:
+        * config/odbc.mpb:
+        * config/openssl.mpb:
+        * config/splicelib.mpb:
+        * config/sqlite3.mpb:
+        * config/swig_perl.mpb:
+        * config/xerces.mpb:
+        * docs/README:
+        * docs/USAGE:
+        * modules/VC10ProjectCreator.pm:
+        * modules/VC10WorkspaceCreator.pm:
+          Added Visual Studio 2010 (vc10) support
+
 Fri Nov  7 18:39:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrmakefile.mpd:
