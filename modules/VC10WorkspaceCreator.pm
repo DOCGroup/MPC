@@ -36,7 +36,7 @@ sub pre_workspace {
   my $crlf = $self->crlf();
 
   print $fh '﻿', $crlf,
-            'Microsoft Visual Studio Solution File, Format Version 10.00', $crlf;
+            'Microsoft Visual Studio Solution File, Format Version 11.00', $crlf;
   $self->print_workspace_comment($fh,
             '# Visual Studio 10', $crlf,
             '# $Id$', $crlf,
