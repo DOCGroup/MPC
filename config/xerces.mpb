@@ -6,7 +6,7 @@ project {
   includes += $(XERCESCROOT)/include
   libpaths += $(XERCESCROOT)/lib
 
-  specific (em3, vc6, vc7, vc71, vc8, vc9, nmake) {
+  specific (em3, vc6, vc7, vc71, vc8, vc9, vc10, nmake) {
     xerceslib = xerces-c_2
 
     // Linking the optimized version of xerces-c_2 into a debug application
