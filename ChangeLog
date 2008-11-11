@@ -1,3 +1,8 @@
+Tue Nov 11 10:40:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/boost_base.mpd:
+          Use $(BOOST_ROOT)/. again
+
 Mon Nov 10 10:45:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/boost_date_time.mpb:
@@ -72,7 +77,7 @@ Tue Nov  4 10:01:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
         * templates/bmake.mpd:
           Reverted change of yesterday, breaks other things
 
-        * config/boost.mpd:
+        * config/boost_base.mpd:
           Use $(BOOST_ROOT) instead of $(BOOST_ROOT)/., it confused CodeGear
           C++
 
