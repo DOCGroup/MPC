@@ -1,3 +1,13 @@
+Mon Nov 17 08:33:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * docs/templates/common.txt:
+        * templates/nmake.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+          Add macro_for_lib_modifier. Whis template variable is set the
+          vc7/vc8/vc9/vc10/nmake templatess add MPC_LIB_MODIFIER to the
+          compiler flags with the current lib_modifier as value
+
 Tue Nov 11 10:40:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/boost_base.mpd:
