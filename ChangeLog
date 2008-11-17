@@ -1,3 +1,10 @@
+Mon Nov 17 10:50:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/nmake.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+          Added escape charachter to MPC_LIB_MODIFIER value
+
 Mon Nov 17 08:33:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * docs/templates/common.txt:
