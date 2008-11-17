@@ -115,7 +115,7 @@
 <%if(AdditionalUsingDirectories)%>
 				AdditionalUsingDirectories="<%AdditionalUsingDirectories%>"
 <%endif%>
-				PreprocessorDefinitions="<%if(unicode)%>UNICODE;_UNICODE;<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%><%dynamicflag%>;<%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%><%staticflag%>;<%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%><%pch_define%>;<%endfor%><%endif%><%foreach(defines common_defines cpu_defines platform_defines macros)%><%define%><%fornotlast(";")%><%endfor%>"
+                                PreprocessorDefinitions="<%if(unicode)%>UNICODE;_UNICODE;<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%><%dynamicflag%>;<%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%><%staticflag%>;<%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%><%pch_define%>;<%endfor%><%endif%><%foreach(defines common_defines cpu_defines platform_defines macros)%><%define%><%fornotlast(";")%><%endfor%><%if(macro_for_lib_modifier)%><%if(use_lib_modifier)%><%if(lib_modifier)%>;MPC_LIB_MODIFIER=&quot;<%lib_modifier%>&quot;<%endif%><%endif%><%endif%>"
 <%if(IgnoreStandardIncludePath)%>
 				IgnoreStandardIncludePath="<%IgnoreStandardIncludePath%>"
 <%endif%>
