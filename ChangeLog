@@ -1,3 +1,9 @@
+Fri Nov 28 10:55:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/wb26wrmakefile.mpd:
+          Don't copy the lib/exe when we need to install them in the current
+          directory
+
 Mon Nov 17 10:50:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/nmake.mpd:
