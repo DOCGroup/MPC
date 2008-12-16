@@ -1,3 +1,22 @@
+Tue Dec 16 02:54:55 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/MPC.sgml:
+        * docs/README:
+        * docs/USAGE:
+
+          Updated documentation.
+
+        * modules/Options.pm:
+
+          Sort project types keeping like types in numerical order.
+
+        * modules/MakeWorkspaceCreator.pm:
+        * templates/make.net.mpd:
+        * templates/make.net.mpt:
+
+          Added a bundle target for C# to bundle an executable into a native
+          application.
+
 Fri Nov 28 10:55:00 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/wb26wrmakefile.mpd:

@@ -16,6 +16,7 @@ mcs {
   shared_flag = -target:library
   ref_flag    = -r:
   pkg_flag    = -pkg:
+  mkbundle    = mkbundle
 }
 
 gmcs {
@@ -31,4 +32,5 @@ gmcs {
   shared_flag = -target:library
   ref_flag    = -r:
   pkg_flag    = -pkg:
+  mkbundle    = mkbundle2
 }

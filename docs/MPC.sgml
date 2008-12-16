@@ -208,8 +208,8 @@
 	  and <parameter>vc71</parameter>  workspaces.  The reason is due to
 	  the fact that each static library that depended upon another would
 	  be combined at the library creation stage, resulting in extremely
-	  large libraries.  Dependencies are handled correctly by vc8.  This
-	  behavior can be modified by setting the
+	  large libraries.  Dependencies are handled correctly by vc8 and
+	  later.  This behavior can be modified by setting the
 	  <envar>MPC_DEPENDENCY_COMBINED_STATIC_LIBRARY</envar> environment
 	  variable.  It will force <command>&mpc;</command> to generate
 	  inter-project dependencies for libraries within a single workspace
@@ -398,7 +398,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><parameter>-type automake | bds4 | bmake | cc | em3 | ghs | html | make | nmake | sle | vc6 | vc7 | vc71 | vc8 | vc9 | wb26</parameter></term>
+        <term><parameter>-type automake | bcb2007 | bcb2009 | bds4 | bmake | cc | em3 | ghs | html | make | nmake | sle | vc6 | vc7 | vc71 | vc8 | vc9 | vc10 | wb26</parameter></term>
         <listitem>
           <para>
 	  specifies the type of project file to generate.  This option can

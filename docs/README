@@ -4,8 +4,8 @@ The Makefile, Project and Workspace Creator.
 Designed by Justin Michel (michel_j@ociweb.com) and Chad Elliott.
 Implemented by Chad Elliott (elliott_c@ociweb.com).
 
-A single tool (MPC) can be used to generate tool specific input (i.e.
-Makefile, dsp, vcproj, etc).  The generator takes platform and building
+A single tool (MPC) can be used to generate tool specific input (i.e.,
+Makefile, dsp, vcproj, etc.)  The generator takes platform and building
 tool generic files (mpc files) as input which describe basic information
 needed to generate a "project" file for various build tools.  These tools
 include Make, NMake, Visual C++ 6, Visual C++ 7, etc.
