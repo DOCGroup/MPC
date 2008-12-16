@@ -22,9 +22,9 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-gfeature_file <file name>] [-nocomments] [-for_eclipse]
               [-relative_file <file name>]
               [-language <cplusplus | csharp | java | vb>]
-              [-type <automake | bcb2007 | bcb2009 | bds4 | bmake | cc |
-                      em3 | ghs |html | make | nmake | sle | vc6 | vc7 |
-                      vc71 | vc8 |vc9 | vc10 | wb26>]
+              [-type <automake | bcb2007 | bcb2009 | bds4 | bmake | cc | em3 |
+                      ghs |html | make | nmake | sle | vc6 | vc7 | vc71 |
+                      vc8 |vc9 | vc10 | wb26>]
               [files]
 
        -base           Add <project> as a base project to each generated
@@ -150,7 +150,7 @@ When generating static projects, inter-project dependencies will not be
 generated for libraries within vc6, em3, vc7 and vc71 workspaces.  The
 reason is due to the fact that each static library that depended upon another
 would be combined at the library creation stage, resulting in extremely large
-libraries.  Dependencies are handled correctly by vc8.
+libraries.  Dependencies are handled correctly by vc8 and later.
 
 This behavior can be modified by setting the
 MPC_DEPENDENCY_COMBINED_STATIC_LIBRARY environment variable.  It will force

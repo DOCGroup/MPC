@@ -78,7 +78,18 @@ sub printUsage {
 
   $olen = length($spaces) + 8;
   $len  = $olen;
-  @keys = sort @types;
+
+  ## Sort the project types, but keep those that are the same with different
+  ## version numbers in the right order (i.e., vc8, vc9, vc10).  The vc71
+  ## type is a special case and needs to stay betwen vc7 and vc8.
+  @keys = sort { if ($a ne 'vc71' && $b ne 'vc71' && $a =~ /^([^\d]+)(\d+)$/) {
+                   my($a1, $a2) = ($1, $2);
+                   if ($b =~ /^([^\d]+)(\d+)$/ && $a1 eq $1) {
+                     return $a2 <=> $2;
+                   }
+                 }
+                 return $a cmp $b;
+               } @types;
   for(my $i = 0; $i <= $#keys; $i++) {
     my $klen = length($keys[$i]);
     $len += $klen;
