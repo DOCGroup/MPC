@@ -19,6 +19,11 @@ MKDIR           = <%makedir("mkdir -p")%>
 <%if(custom_types)%>
 GENERATED_DIRTY =<%foreach(custom_types)%><%foreach(custom_type->input_files)%><%if(custom_type->input_file->output_files)%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%><%endfor%><%endfor%>
 <%endif%>
+<%if(exename)%>
+MONO_ETC        = /etc/mono
+MONO_CONFIG     = $(MONO_ETC)/config
+BIN             = $(TARGETDIR)<%exename%>
+<%endif%>
 <%if(supports_include && make_include)%>
 
 include <%make_include%>
@@ -36,11 +41,18 @@ $(TARGET): <%source_files%>
 	@$(TESTDIRSTART) "$(TARGETDIR)" $(TESTDIREND) $(MKDIR) "$(TARGETDIR)"
 	<%compiler%> <%if(winapp)%><%winexe_flag%><%else%><%exe_flag%><%endif%> <%out_flag%>$(TARGET) $(CFLAGS) $(LDFLAGS) <%source_files%>
 
+$(BIN): $(TARGET)
+	<%mkbundle%> --static --deps -z --config $(MONO_CONFIG) $(TARGET) $(CONFIG_DIR_OPT) -o $(BIN)
+
+bundle: $(BIN)
+
 <%else%>
 <%if(sharedname)%>
 $(TARGET): <%source_files%>
 	@$(TESTDIRSTART) "$(TARGETDIR)" $(TESTDIREND) $(MKDIR) "$(TARGETDIR)"
 	<%compiler%> <%shared_flag%> <%out_flag%>$(TARGET) $(CFLAGS) $(LDFLAGS) <%source_files%>
+
+bundle:
 
 <%endif%>
 <%endif%>
@@ -85,7 +97,7 @@ generated: $(GENERATED_DIRTY)
 	@-:
 
 clean:
-	-$(RM) $(TARGET)<%if(clean)%> <%clean%><%endif%>
+	-$(RM) $(TARGET)<%if(exename)%> $(BIN)<%endif%><%if(clean)%> <%clean%><%endif%>
 
 realclean: clean
 <%if(custom_types)%>
