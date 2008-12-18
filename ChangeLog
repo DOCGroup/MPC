@@ -1,3 +1,14 @@
+Thu Dec 18 21:39:03 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/MakeWorkspaceCreator.pm:
+
+          Fixed a bug with my change yesterday relating to the "bundle"
+          target.
+
+        * templates/make.net.mpd:
+
+          Added a strip command to the bundle commands.
+
 Thu Dec 18 09:29:36 UTC 2008  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * config/xerces3.mpb:

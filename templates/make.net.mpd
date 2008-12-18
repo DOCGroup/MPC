@@ -43,6 +43,7 @@ $(TARGET): <%source_files%>
 
 $(BIN): $(TARGET)
 	<%mkbundle%> --static --deps -z --config $(MONO_CONFIG) $(TARGET) $(CONFIG_DIR_OPT) -o $(BIN)
+	strip $(BIN)
 
 bundle: $(BIN)
 
