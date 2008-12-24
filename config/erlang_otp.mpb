@@ -1,0 +1,12 @@
+//
+// $Id$
+//
+
+project: erlang {
+  
+  Modify_Custom(Erlang) {
+    commandflags         += -o ebin -I include
+    generic_pre_dirname   = ebin/
+    output_follows_input  = 0
+  }
+}
