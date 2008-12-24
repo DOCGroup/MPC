@@ -1,3 +1,13 @@
+Wed Dec 24 22:20:40 UTC 2008  Steven Stallion  <stallions@ociweb.com>
+
+        * config/erlang.mpb:
+        * config/erlang_otp.mpb:
+
+          Added support for Erlang. Two new projects are available:
+          erlang, and erlang_otp. erlang provides basic Erlang support,
+          and erlang_otp provides support for projects which use the otp
+          layout.
+
 Thu Dec 18 21:39:03 UTC 2008  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/MakeWorkspaceCreator.pm:
