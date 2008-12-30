@@ -16,8 +16,8 @@ project {
   }
 
   // The following permits compiled sources to be cleaned
-  // by the 'clean' target (default is 'realclean'):
-  verbatim(gnuace, top) {
+  // by the 'clean' target on gnuace platforms.
+  verbatim(gnuace, macros) {
     CLEANUP_OBJS     += $(GENERATED_DIRTY)
     DO_CLEANUP        = 1
   }
