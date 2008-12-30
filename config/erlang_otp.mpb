@@ -2,7 +2,7 @@
 // $Id$
 //
 
-project: erlang {
+project : erlang {
   
   Modify_Custom(Erlang) {
     commandflags         += -o ebin -I include

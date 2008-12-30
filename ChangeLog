@@ -1,3 +1,11 @@
+Tue Dec 30 23:23:03 UTC 2008  Steven Stallion  <stallions@ociweb.com>
+
+        * config/erlang.mpb:
+        * config/erlang_otp.mpb:
+
+          Updated Erlang support. Output is now propertly cleaned when
+          the clean target is called on gnuace platforms.
+
 Wed Dec 24 22:20:40 UTC 2008  Steven Stallion  <stallions@ociweb.com>
 
         * config/erlang.mpb:

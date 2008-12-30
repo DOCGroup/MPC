@@ -3,15 +3,22 @@
 //
 
 project {
-  requires               += erlang
+  requires           += erlang
 
   Define_Custom(Erlang) {
-    automatic_in          = 1
-    automatic_out         = 1
-    command               = erlc
-    commandflags          =
-    inputext              = .erl, .yrl, .mib, .bin, .rel, .asn1, .idl
-    generic_outputext     = .beam, .jam, .erl, .hrl, .bin, .rel, .boot, .asn1db
-    keyword erlcflags     = commandflags
+    automatic_in      = 1
+    automatic_out     = 1
+    command           = erlc
+    commandflags      =
+    inputext          = .erl, .yrl, .mib, .bin, .rel, .asn1, .idl
+    generic_outputext = .beam, .jam, .erl, .hrl, .bin, .rel, .boot, .asn1db
+    keyword erlcflags = commandflags
+  }
+
+  // The following permits compiled sources to be cleaned
+  // by the 'clean' target (default is 'realclean'):
+  verbatim(gnuace, top) {
+    CLEANUP_OBJS     += $(GENERATED_DIRTY)
+    DO_CLEANUP        = 1
   }
 }
