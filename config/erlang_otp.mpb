@@ -3,7 +3,7 @@
 //
 
 project : erlang {
-  erlcflags              += -o ebin -I include
+  erlcflags              += -o ebin
 
   Modify_Custom(Erlang) {
     generic_pre_dirname   = ebin/
