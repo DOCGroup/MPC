@@ -1,3 +1,9 @@
+Sat Jan  3 22:02:02 UTC 2009  Steven Stallion  <stallions@ociweb.com>
+
+        * config/erlang.mpb:
+
+          Updated base project type for erlang projects.
+
 Wed Dec 31 23:01:33 UTC 2008  Steven Stallion  <stallions@ociweb.com>
 
         * config/erlang_otp.mpb:
