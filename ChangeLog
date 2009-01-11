@@ -1,3 +1,9 @@
+Sun Jan 11 17:21:17 UTC 2009  Abdullah Sowayan  <sowayan@gmail.com>
+
+        * config/nddslib.mpb:
+
+          Added Visual Studio 2010 (vc10) support
+
 Sun Jan 11 17:09:44 UTC 2009  Abdullah Sowayan  <sowayan@gmail.com>
 
         * config/ndds_ts_defaults.mpb:
