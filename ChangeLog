@@ -1,3 +1,14 @@
+Sun Jan 11 17:09:44 UTC 2009  Abdullah Sowayan  <sowayan@gmail.com>
+
+        * config/ndds_ts_defaults.mpb:
+        * config/nddsexe.mpb:
+        * config/nddsexe_with_idl.mpb:
+        * config/nddslib.mpb:
+        * config/nddslib_with_idl.mpb:
+
+          New files, base projects for using RTI's NDDS
+          C++ DDS implementation.
+
 Sat Jan  3 22:02:02 UTC 2009  Steven Stallion  <stallions@ociweb.com>
 
         * config/erlang.mpb:
