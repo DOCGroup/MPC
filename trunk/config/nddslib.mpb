@@ -7,12 +7,10 @@ project {
   includes    += $(NDDSHOME)/include $(NDDSHOME)/include/ndds
 
   specific(nmake, vc71, vc8, vc9) {
-    libpaths    += $(NDDSHOME)/lib/i86Win32VS2005
     macros      += RTI_WIN32 NDDS_DLL_VARIABLE
   }
 
   specific(make, gnuace) {
-    libpaths    += $(NDDSHOME)/lib/i86Linux2.6gcc3.4.3
     macros      += RTI_UNIX
   }
 }
