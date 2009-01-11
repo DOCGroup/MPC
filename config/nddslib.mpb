@@ -1,0 +1,22 @@
+// -*- MPC -*-
+// $Id$
+
+project {
+  libs        += nddscpp nddsc nddscore
+  includes    += $(NDDSHOME)/include $(NDDSHOME)/include/ndds
+
+  specific(vc8) {
+    libpaths    += $(NDDSHOME)/lib/i86Win32VS2005
+    macros      += RTI_WIN32 NDDS_DLL_VARIABLE
+  }
+
+  specific(vc71) {
+    libpaths    += $(NDDSHOME)/lib/i86Win32VS2003
+    macros      += RTI_WIN32 NDDS_DLL_VARIABLE
+  }
+
+  specific(make) {
+    libpaths    += $(NDDSHOME)/lib/i86Linux2.6gcc3.4.3
+    macros      += RTI_UNIX
+  }
+}
