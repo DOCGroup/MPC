@@ -6,7 +6,7 @@ project {
   libpaths    += $(NDDSHOME)/lib/$(NDDSARCHITECTURE)
   includes    += $(NDDSHOME)/include $(NDDSHOME)/include/ndds
 
-  specific(nmake, vc71, vc8, vc9) {
+  specific(nmake, vc71, vc8, vc9, vc10) {
     macros      += RTI_WIN32 NDDS_DLL_VARIABLE
   }
 
