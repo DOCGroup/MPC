@@ -1,3 +1,8 @@
+Mon Jan 12 11:10:09 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/nddslib.mpb:
+          Added vc10
+
 Sun Jan 11 17:26:09 UTC 2009  Abdullah Sowayan  <sowayan@gmail.com>
 
         * config/nddslib.mpb:
