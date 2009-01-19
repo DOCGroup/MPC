@@ -1,3 +1,9 @@
+Mon Jan 19 22:30:47 UTC 2009  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * config/iiopnet.mpb:
+
+          Base project for using IIOP.NET.
+
 Mon Jan 12 11:10:09 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/nddslib.mpb:
