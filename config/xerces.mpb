@@ -1,14 +1,13 @@
 // -*- MPC -*-
 // $Id$
 
-project {
-  requires += xerces
+feature(xerces2) {
   includes += $(XERCESCROOT)/include
   libpaths += $(XERCESCROOT)/lib
-
+  requires += xerces2
   specific (em3, vc6, vc7, vc71, vc8, vc9, vc10, nmake) {
     xerceslib = xerces-c_2
-
+  
     // Linking the optimized version of xerces-c_2 into a debug application
     // has been known to cause run-time issues (as of 4/25/2005), so we
     // will link in the debug version for the "Debug" configuration.
@@ -27,3 +26,29 @@ project {
   // static builds).
   lit_libs += $(XERCESLIB)
 }
+feature(xerces3) {
+  includes += $(XERCESCROOT)/include
+  libpaths += $(XERCESCROOT)/lib
+  requires += xerces3
+  specific (em3, vc6, vc7, vc71, vc8, vc9, vc10, nmake) {
+    xerceslib = xerces-c_3
+  
+    // Linking the optimized version of xerces-c_2 into a debug application
+    // has been known to cause run-time issues (as of 4/25/2005), so we
+    // will link in the debug version for the "Debug" configuration.
+    Debug::xerceslib = xerces-c_3D
+  }
+  specific(bmake, bds4) {
+    xerceslib = XercesLib
+  }
+  specific (gnuace, make, sle, automake, ghs) {
+    macros   += XML_USE_PTHREADS
+    xerceslib = xerces-c
+  }
+
+  // We have to use lit_libs here as the library decorator
+  // does not necessarily match what MPC uses (particularly for
+  // static builds).
+  lit_libs += $(XERCESLIB)
+}
+
