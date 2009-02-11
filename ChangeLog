@@ -1,10 +1,18 @@
+Wed Feb 11 16:21:48 UTC 2009  William R. Otte  <wotte@dre.vanderbilt.edu>
+
+        * config/global.features:
+        * config/xerces.mpb:
+
+          Disabled xerces{2,3} by default and removed the requires lines
+          from the xerces features.  Thanks to Adam Mitz for pointing this out.
+        
 Tue Feb 10 20:36:47 UTC 2009  William R. Otte  <wotte@dre.vanderbilt.edu>
 
         * config/xerces.mpb:
 
           Split this base project into two features - xerces2 and xerces3
-          to allow support for both versions. 
-        
+          to allow support for both versions.
+
 Mon Jan 19 22:30:47 UTC 2009  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * config/iiopnet.mpb:
