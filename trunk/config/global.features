@@ -29,3 +29,5 @@ ziparchive    = 0
 zlib          = 0
 zzip          = 0
 java          = 0
+xerces2       = 0
+xerces3       = 0
