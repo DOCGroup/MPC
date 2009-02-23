@@ -1,3 +1,8 @@
+Mon Feb 23 16:03:15 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/qt4_qt3support.mpb:
+          Added base project for qt4_qt3support
+
 Tue Feb 17 13:17:28 UTC 2009  William R. Otte  <wotte@dre.vanderbilt.edu>
 
         * config/xerces3.mpb:
