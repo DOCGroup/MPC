@@ -1,5 +1,8 @@
 // -*- MPC -*-
 // $Id$
+feature(!xerces2, !xerces3) {
+  requires += xerces
+}
 
 feature(xerces2) {
   includes += $(XERCESCROOT)/include
