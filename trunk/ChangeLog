@@ -1,3 +1,10 @@
+Tue Feb 24 04:23:34 UTC 2009  William R. Otte  <wotte@dre.vanderbilt.edu>
+
+        * config/xerces.mpb:
+
+          Added !xerces2, !xerces3 feature to disable xerces dependent builds
+          if neither feature is present. 
+        
 Mon Feb 23 16:03:15 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/qt4_qt3support.mpb:
