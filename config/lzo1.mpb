@@ -1,0 +1,8 @@
+// -*- MPC -*-
+// $Id$
+
+feature(lzo1) {
+  includes += $(LZO1_ROOT)/include
+  libpaths += $(LZO1_ROOT)/lib
+  lit_libs += lzo1
+}
