@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// $Id$
+
+project {
+  requires += qt4
+  includes += $(QTDIR)/include
+  libpaths += $(QTDIR)/lib
+  lit_libs += QtCore$(QTDEBUG)
+}
