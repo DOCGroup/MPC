@@ -1,0 +1,24 @@
+// -*- MPC -*-
+// $Id$
+
+project: qt4_core {
+  lit_libs += QtGui$(QTDEBUG)
+
+  Define_Custom(UIC) {
+    automatic        = 1
+    command          = $(QTDIR)/bin/uic
+    output_option    = -o
+    inputext         = .ui
+    header_outputext = .h
+  }
+
+  Define_Custom(MOC) {
+    automatic        = 0
+    command          = $(QTDIR)/bin/moc
+    output_option    = -o
+    pch_postrule     = 1
+    inputext         = .h
+    pre_extension    = _moc
+    source_outputext = .cpp
+  }
+}
