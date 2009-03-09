@@ -1,3 +1,11 @@
+Mon Mar  9 07:04:08 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/bzip2.mpb:
+        * config/lzo1.mpb:
+        * config/lzo2.mpb:
+        * config/zlib.mpb:
+          On windows we need some different library names
+
 Sat Mar  7 18:55:08 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/lzo1.mpb:

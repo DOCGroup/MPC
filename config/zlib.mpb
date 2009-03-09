@@ -11,10 +11,7 @@ feature(zlib) {
   specific(gnuace, make, sle, automake, ghs) {
     lit_libs += z
   } else {
-    // For Windows, we need to ensure that the library has a decorator.
-    // Due to compilation flags used to build this library, we may have
-    // linkage conflicts if the release version is used with a debug build.
     zlibname = zlib
-    libs += $(ZLIBNAME)
+    lit_libs += $(ZLIBNAME)
   }
 }
