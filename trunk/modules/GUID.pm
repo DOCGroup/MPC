@@ -37,7 +37,8 @@ sub hash {
   if (defined $str) {
     my $length = length($str);
     for(my $i = 0; $i < $length; $i++) {
-      $value = ($value << 4) ^ ($value >> 28) ^ ord(substr($str, $i, 1));
+      $value = (($value << 4) & 0xffffffff) ^ ($value >> 28)
+        ^ ord(substr($str, $i, 1));
     }
   }
 
