@@ -1,3 +1,10 @@
+Tue Mar 10 13:34:36 UTC 2009  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/GUID.pm:
+
+          Fixed a bug where 64-bit implementations of Perl would generate
+          duplicate GUID values.  (Bugzilla #3614)
+
 Mon Mar  9 07:04:08 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/bzip2.mpb:
