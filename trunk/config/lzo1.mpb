@@ -5,15 +5,12 @@ feature(lzo1) {
   includes += $(LZO1_ROOT)/include
   libpaths += $(LZO1_ROOT)/lib
   specific (em3, vc6, vc7, vc71, vc8, vc9, vc10, nmake) {
-    lzo1lib = liblzo
+    lit_libs += liblzo
   }
   specific(bmake, bds4) {
-    lzo1lib = lzo1
+    lit_libs += lzo1
   }
   specific (gnuace, make, sle, automake, ghs) {
-    lzo1lib = lzo1
+    lit_libs += lzo1
   }
-  lit_libs += $(lzo1lib)
-
-
 }
