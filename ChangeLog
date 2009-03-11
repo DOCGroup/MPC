@@ -1,3 +1,9 @@
+Wed Mar 11 09:15:08 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/bzip2.mpb:
+        * config/lzo1.mpb:
+          Fixed these base projects so that they also work with gnuace
+
 Tue Mar 10 13:34:36 UTC 2009  Adam Mitz  <mitza@ociweb.com>
 
         * modules/GUID.pm:
