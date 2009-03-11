@@ -1,3 +1,14 @@
+Wed Mar 11 13:51:08 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * docs/MakeProjectCreator.pdf:
+          This work is based on the TAO 1.4a TAO Developers Guide chapter
+          on MPC published by OCI. The goal is to improve this
+          document with time to serve as the authoritative reference/documentation
+          for MPC users.
+
+          Thanks to OCI for making this chapter publicly available and allowing
+          us to modify it.
+
 Wed Mar 11 09:15:08 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/bzip2.mpb:
