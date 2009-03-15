@@ -8,9 +8,9 @@ feature(lzo1) {
     lit_libs += liblzo
   }
   specific(bmake, bds4) {
-    lit_libs += lzo1
+    lit_libs += lzo
   }
   specific (gnuace, make, sle, automake, ghs) {
-    lit_libs += lzo1
+    lit_libs += lzo
   }
 }

@@ -1,3 +1,8 @@
+Sun Mar 15 19:36:54 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/lzo1.mpb:
+          Fixed lib names
+
 Wed Mar 11 13:51:08 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * docs/MakeProjectCreator.pdf:
