@@ -12,11 +12,4 @@ feature(erlang) {
     generic_outputext = .beam, .jam, .erl, .hrl, .bin, .rel, .boot, .asn1db
     keyword erlcflags = commandflags
   }
-
-  // The following permits compiled sources to be cleaned
-  // by the 'clean' target on gnuace platforms.
-  verbatim(gnuace, macros) {
-    CLEANUP_OBJS     += $(GENERATED_DIRTY)
-    DO_CLEANUP        = 1
-  }
 }
