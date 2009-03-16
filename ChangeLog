@@ -1,3 +1,10 @@
+Mon Mar 16 21:33:14 UTC 2009  Steven Stallion  <stallions@ociweb.com>
+
+        * config/erlang.mpb:
+
+          Updated erlang base project to default to typical gnuace
+          behavior for generated artifacts.
+
 Sun Mar 15 19:36:54 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/lzo1.mpb:
