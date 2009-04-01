@@ -1,3 +1,8 @@
+Wed Apr  1 16:10:22 UTC 2009  Ciju John  <johnc at ociweb dot com>
+
+        * config/qt4_core.mpb:
+          Wrong include path got checked in. This fixes it.
+
 Wed Apr  1 15:56:35 UTC 2009  Ciju John  <johnc at ociweb dot com>
 
         * config/qt4_core.mpb:
