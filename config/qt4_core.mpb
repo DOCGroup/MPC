@@ -3,7 +3,7 @@
 
 project {
   requires += qt4
-  includes += $(QTDIR)/include
+  includes += $(QTDIR)/include/qt4
   libpaths += $(QTDIR)/lib
-  lit_libs += QtCore$(QTDEBUG)
+  lit_libs += QtCore4$(QTDEBUG)
 }
