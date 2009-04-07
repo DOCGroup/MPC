@@ -2,5 +2,5 @@
 // $Id$
 
 project: qt4_core {
-  lit_libs += QtNetwork$(QTDEBUG)
+  lit_libs += QtNetwork$(QTDEBUG)4
 }

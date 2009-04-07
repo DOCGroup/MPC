@@ -2,5 +2,5 @@
 // $Id$
 
 project: qt4_xml {
-  lit_libs += QtDesigner$(QTDEBUG)
+  lit_libs += QtDesigner$(QTDEBUG)4
 }
