@@ -15,13 +15,15 @@ project : xerces {
     compile_flags += /wd4251
   }
 
-  Define_Custom(UDM) {
-      automatic         = 0
-      dependent         = $(UDM_PATH)/bin/Udm
-      command           = <%quote%>$(UDM_PATH)<%quote%>/bin/Udm
-      inputext          = .xml
-      header_outputext  = .h
-      source_outputext  = .cpp
-      generic_outputext = .xsd
+  Define_Custom (UDM) {
+    automatic         = 0
+    dependent         = $(UDM_PATH)/bin/Udm
+    command           = <%quote%>$(UDM_PATH)<%quote%>/bin/Udm
+    inputext          = .xml
+    header_outputext  = .h
+    source_outputext  = .cpp
+    generic_outputext = .xsd
+
+    keyword udmflags  = commandflags
   }
 }
