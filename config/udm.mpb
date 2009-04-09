@@ -1,7 +1,7 @@
 // -*- MPC -*-
 // $Id $
 
-project : xerces, zlib {
+project : xerces {
   libs     += UdmDll zlib
   includes += $(GME_ROOT)/SDK/BON $(UDM_PATH)/include .
   libpaths += $(UDM_PATH)/lib $(UDM_3RDPARTY_PATH)/zlib

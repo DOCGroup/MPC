@@ -1,3 +1,9 @@
+Thu Apr  9 16:48:31 UTC 2009  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * config/udm.mpb:
+
+          Bug fix in the project specification.
+
 Thu Apr  9 16:42:43 UTC 2009  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * config/udm.mpb:
