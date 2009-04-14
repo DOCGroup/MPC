@@ -1,5 +1,0 @@
-// $Id$
-
-project : pcre {
-  libs += pcreposix
-}
