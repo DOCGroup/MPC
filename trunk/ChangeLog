@@ -1,3 +1,9 @@
+Fri Apr 24 20:37:40 UTC 2009  James H. Hill  <hillj@isis.vanderbilt.edu>
+
+        * config/udm.mpb:
+
+          Changed 'automatic' to 1.
+
 Fri Apr 17 15:20:32 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * docs/fm/*:
