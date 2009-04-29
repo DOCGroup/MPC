@@ -100,3 +100,25 @@ SuperSonic_CE6 (ARMV4I) {
   TargetMachine    = "3"
 }
 
+eBox4300_WINCE600_SDK (x86) {
+  unicode          = 1
+  output_subdir    = eBox4300_WINCE600_SDK
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
+  link_options     = /subsystem:windowsce,6.0
+  lit_libs        += iphlpapi
+  subsystem        = "0"
+  TargetMachine    = "0"
+}
+
+eBox2300_WINCE600_SDK (x86) {
+  unicode          = 1
+  output_subdir    = eBox2300_WINCE600_SDK
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
+  link_options     = /subsystem:windowsce,6.0
+  lit_libs        += iphlpapi
+  subsystem        = "0"
+  TargetMachine    = "0"
+}
+
