@@ -1,3 +1,8 @@
+Wed Apr 29 11:39:32 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc8platforms.mpt:
+          Add eBox 2300 and 4300 Windows CE 6
+
 Fri Apr 24 20:37:40 UTC 2009  James H. Hill  <hillj@isis.vanderbilt.edu>
 
         * config/udm.mpb:
