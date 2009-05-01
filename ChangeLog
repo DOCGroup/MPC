@@ -1,3 +1,10 @@
+Fri May  1 14:09:49 UTC 2009  Adam Mitz  <mitza@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Don't skip directories ending in .d since ACE now contains rc.d
+          and init.d directories.
+
 Wed Apr 29 11:39:32 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc8platforms.mpt:
