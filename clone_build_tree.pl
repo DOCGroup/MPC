@@ -82,7 +82,7 @@ sub findCallback {
                   ! /^.*\.pdb\z/s   &&
                   ! /^.*\.pch\z/s   &&
                   ! /^.*\.log\z/s   &&
-                  ! /^.*\.d\z/s
+                  ! ( -f $_ && /^.*\.d\z/s )
                  );
 
     if ($matches) {
