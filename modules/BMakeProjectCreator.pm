@@ -13,11 +13,11 @@ package BMakeProjectCreator;
 use strict;
 
 use ProjectCreator;
-use WinProjectBase;
+use BorlandProjectBase;
 use MakeProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(MakeProjectBase WinProjectBase ProjectCreator);
+@ISA = qw(MakeProjectBase BorlandProjectBase ProjectCreator);
 
 # ************************************************************
 # Data Section
@@ -86,6 +86,25 @@ sub get_lib_template_input_file {
 sub get_dll_template_input_file {
   #my $self = shift;
   return 'bmakedll';
+}
+
+
+sub get_properties {
+  my $self = shift;
+
+  ## Create the map of properties that we support.
+  my $props = {};
+
+  ## Merge in properties from all base projects
+  foreach my $base (@ISA) {
+    my $func = $base . '::get_properties';
+    my $p = $self->$func();
+    foreach my $key (keys %$p) {
+      $$props{$key} = $$p{$key};
+    }
+  }
+
+  return $props;  
 }
 
 

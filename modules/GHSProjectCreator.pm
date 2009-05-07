@@ -151,4 +151,18 @@ sub get_dll_template_input_file {
 }
 
 
+sub get_properties {
+  my $self = shift;
+
+  ## Get the base class properties and add the properties that we
+  ## support.
+  my $props = $self->ProjectCreator::get_properties();
+
+  ## This project creator can work for UNIX and Windows.  Set the
+  ## property based on the environment variable.
+  $$props{'windows'} = 1 if (!defined $ENV{$ghsunix});
+
+  return $props;
+}
+
 1;

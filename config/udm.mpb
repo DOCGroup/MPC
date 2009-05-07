@@ -11,11 +11,11 @@ project : xerces {
      midl_includes += $(GME_ROOT) $(GME_ROOT)/Interfaces .
   }
 
-  specific (nmake, vc71, vc8, vc9, vc10) {
+  specific(prop:microsoft) {
     compile_flags += /wd4251
   }
 
-  Define_Custom (UDM) {
+  Define_Custom(UDM) {
     automatic         = 1
     dependent         = $(UDM_PATH)/bin/Udm
     command           = <%quote%>$(UDM_PATH)<%quote%>/bin/Udm

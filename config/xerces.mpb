@@ -8,7 +8,7 @@ feature(xerces2) {
   includes += $(XERCESCROOT)/include
   libpaths += $(XERCESCROOT)/lib
 
-  specific (em3, vc6, vc7, vc71, vc8, vc9, vc10, nmake) {
+  specific(prop:microsoft) {
     xerceslib = xerces-c_2
   
     // Linking the optimized version of xerces-c_2 into a debug application
@@ -16,10 +16,10 @@ feature(xerces2) {
     // will link in the debug version for the "Debug" configuration.
     Debug::xerceslib = xerces-c_2D
   }
-  specific(bmake, bds4) {
+  specific(prop:borland) {
     xerceslib = XercesLib
   }
-  specific (gnuace, make, sle, automake, ghs) {
+  specific(!prop:windows) {
     macros   += XML_USE_PTHREADS
     xerceslib = xerces-c
   }
@@ -33,7 +33,7 @@ feature(xerces3) {
   includes += $(XERCESCROOT)/include
   libpaths += $(XERCESCROOT)/lib
 
-  specific (em3, vc6, vc7, vc71, vc8, vc9, vc10, nmake) {
+  specific(prop:microsoft) {
     xerceslib = xerces-c_3
   
     // Linking the optimized version of xerces-c_2 into a debug application
@@ -41,10 +41,10 @@ feature(xerces3) {
     // will link in the debug version for the "Debug" configuration.
     Debug::xerceslib = xerces-c_3D
   }
-  specific(bmake, bds4) {
+  specific(prop:borland) {
     xerceslib = XercesLib
   }
-  specific (gnuace, make, sle, automake, ghs) {
+  specific(!prop:windows) {
     macros   += XML_USE_PTHREADS
     xerceslib = xerces-c
   }
