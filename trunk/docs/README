@@ -264,16 +264,17 @@ verbatim        This allows arbitrary information to be place in a generated
                 inside double quotes.
 
 specific        This scope allows assignments that are specific to a
-                particular project type.  The syntax is as follows:
+                particular project type or property.  The syntax is as
+                follows:
 
-                specific(<project type> [, <project type> ...]) {
+                specific(<proj_type|prop:prop_name> [, <proj_type|prop:prop_name> ...]) {
                   lit_libs += c
                   ...
                 }
 
                 or
 
-                specific(<project type> [, <project type> ...]) {
+                specific(<proj_type|prop:prop_name> [, <proj_type|prop:prop_name> ...]) {
                   lit_libs += c
                   ...
                 } else {
@@ -286,6 +287,32 @@ specific        This scope allows assignments that are specific to a
                 also negate the project type (using '!') which will cause
                 the specific to be evaluated for all types except the type
                 specified.
+
+                The following property names are available: borland, make,
+                microsoft, and windows.  The table below shows which
+                properties apply to which project types.
+
+                         | borland | make | microsoft | windows |
+                ---------+---------+------+-----------+---------|
+                automake |         |  X   |           |         |
+                bcb2007  |    X    |      |           |    X    |
+                bcb2009  |    X    |      |           |    X    |
+                bds4     |    X    |      |           |    X    |
+                bmake    |    X    |  X   |           |    X    |
+                cc       |         |      |           |    X    |
+                em3      |         |      |     X     |    X    |
+                ghs      |         |      |           |    ?    |
+                make     |         |  X   |           |         |
+                nmake    |         |  X   |     X     |    X    |
+                vc6      |         |      |     X     |    X    |
+                vc7      |         |      |     X     |    X    |
+                vc71     |         |      |     X     |    X    | 
+                vc8      |         |      |     X     |    X    |
+                vc9      |         |      |     X     |    X    |
+                vc10     |         |      |     X     |    X    |
+
+                ? - indicates that this is controled by the MPC_GHS_UNIX
+                environment variable.
 
                 If a keyword is not recognized as a valid MPC keyword, it is
                 interpreted as a template value modifier.  In this

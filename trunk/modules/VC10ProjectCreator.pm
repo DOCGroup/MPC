@@ -12,20 +12,9 @@ package VC10ProjectCreator;
 
 use strict;
 
-use VC8ProjectCreator;
+use VC9ProjectCreator;
 
 use vars qw(@ISA);
-@ISA = qw(VC8ProjectCreator);
-
-my %config = ('vcversion' => '9.00');
-
-# ************************************************************
-# Subroutine Section
-# ************************************************************
-
-sub get_configurable {
-  my($self, $name) = @_;
-  return $config{$name};
-}
+@ISA = qw(VC9ProjectCreator);
 
 1;
