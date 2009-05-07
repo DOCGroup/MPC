@@ -13,19 +13,10 @@ package VC10WorkspaceCreator;
 use strict;
 
 use VC10ProjectCreator;
-use VC8WorkspaceCreator;
+use VC9WorkspaceCreator;
 
 use vars qw(@ISA);
-@ISA = qw(VC8WorkspaceCreator);
-
-# ************************************************************
-# Data Section
-# ************************************************************
-
-my %lang_map = ('cplusplus' => 'Visual C#',
-                'csharp'    => 'Visual C#',
-                'vb'        => 'Visual Basic',
-                'java'      => 'Visual J#');
+@ISA = qw(VC9WorkspaceCreator);
 
 # ************************************************************
 # Subroutine Section

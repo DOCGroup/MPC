@@ -1,7 +1,65 @@
+Thu May  7 15:39:17 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * modules/BCB2007ProjectCreator.pm:
+        * modules/BDS4ProjectCreator.pm:
+        * modules/BMakeProjectCreator.pm:
+        * modules/BorlandProjectBase.pm:
+        * modules/GHSProjectCreator.pm:
+        * modules/MakeProjectBase.pm:
+        * modules/NMakeProjectCreator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/VCProjectBase.pm:
+        * modules/WinProjectBase.pm:
+
+          Modified the 'specific' clause to accept "properties" in addition
+          to project types.  Maintaining project type lists within the base
+          projects was getting out of hand.  A simpler approach is to apply
+          properties to groups of project types, such as project types that
+          are only used on Windows.  These properties are referenced within
+          the 'specific' clause instead of project types.  See the README
+          for more details.
+
+        * config/boost_date_time.mpb:
+        * config/boost_filesystem.mpb:
+        * config/boost_iostreams.mpb:
+        * config/boost_prg_exec_monitor.mpb:
+        * config/boost_program_options.mpb:
+        * config/boost_regex.mpb:
+        * config/boost_serialization.mpb:
+        * config/boost_signals.mpb:
+        * config/boost_system.mpb:
+        * config/boost_test_exec_monitor.mpb:
+        * config/boost_thread.mpb:
+        * config/boost_unit_test_framework.mpb:
+        * config/boost_wave.mpb:
+        * config/bzip2.mpb:
+        * config/lzo1.mpb:
+        * config/mpich.mpb:
+        * config/nddslib.mpb:
+        * config/odbc.mpb:
+        * config/openssl.mpb:
+        * config/splicelib.mpb:
+        * config/sqlite3.mpb:
+        * config/swig_perl.mpb:
+        * config/udm.mpb:
+        * config/xerces.mpb:
+        * config/zlib.mpb:
+        * config/zzip.mpb:
+
+          Modified all of these base projects to use properties instead of
+          project types within the 'specific' clauses.
+
+        * modules/VC10ProjectCreator.pm:
+        * modules/VC10WorkspaceCreator.pm:
+        * modules/VC9WorkspaceCreator.pm:
+
+          Removed duplicated code.
+
 Tue May  5 17:37:29 UTC 2009  Jeff Parsons <j.parsons@vanderbilt.edu>
 
         * config/splicelib.mpb:
-        
+
           Added verbatim line for gnuace that turns off visibility
           discrimination. OpenSpliceDDS doesn't yet support versions
           of g++ that handle hidden visibility.

@@ -1,9 +1,9 @@
-package MakeProjectBase;
+package BorlandProjectBase;
 
 # ************************************************************
-# Description   : A Make Project base module
+# Description   : A Borland base module for Borland Project Creators
 # Author        : Chad Elliott
-# Create Date   : 1/4/2005
+# Create Date   : 5/5/2009
 # ************************************************************
 
 # ************************************************************
@@ -11,38 +11,23 @@ package MakeProjectBase;
 # ************************************************************
 
 use strict;
+use WinProjectBase;
+
+our @ISA = qw(WinProjectBase);
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
-
-sub dollar_special {
-  #my $self = shift;
-  return 1;
-}
-
-
-sub sort_files {
-  #my $self = shift;
-  return (defined $ENV{MPC_ALWAYS_SORT});
-}
-
-
-sub project_file_prefix {
-  #my $self = shift;
-  return 'Makefile.';
-}
-
 
 sub get_properties {
   my $self = shift;
 
   ## Get the base class properties and add the properties that we
   ## support.
-  my $props = $self->ProjectCreator::get_properties();
+  my $props = $self->WinProjectBase::get_properties();
 
-  ## All projects that use this base class are 'make' based.
-  $$props{'make'} = 1;
+  ## All projects that use this base class are for Borland compilers.
+  $$props{'borland'} = 1;
 
   return $props;
 }
