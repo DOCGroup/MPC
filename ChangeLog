@@ -1,3 +1,16 @@
+Thu May  7 19:18:24 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ConfigParser.pm:
+        * modules/Driver.pm:
+
+          Modified the locate_dynamic_directories code to only warn the user
+          if the path doesn't contain environment variables or the
+          environment variables that it does contain are set.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a perl warning about an uninitialized variable.
+
 Thu May  7 15:39:17 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
