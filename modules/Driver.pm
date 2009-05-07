@@ -82,19 +82,26 @@ sub locate_default_type {
 
 
 sub locate_dynamic_directories {
-  my($self, $dtypes) = @_;
+  my($self, $cfg, $label) = @_;
+  my $dtypes = $cfg->get_value($label);
 
   if (defined $dtypes) {
+    my $count = 0;
     my @directories;
+    my @unprocessed = split(/\s*,\s*/, $cfg->get_unprocessed($label));
     foreach my $dir (split(/\s*,\s*/, $dtypes)) {
+print "DEBUG: $dir\n";
       if (-d $dir) {
         if (-d "$dir/modules" || -d "$dir/config" || -d "$dir/templates") {
           push(@directories, $dir);
         }
       }
-      else {
-        $self->diagnostic("'dynamic_types' directory $dir not found.");
+      elsif (!(defined $unprocessed[$count] &&
+               $unprocessed[$count] =~ s/\$[\(\w\)]+//g &&
+               $unprocessed[$count] eq $dir)) {
+        $self->diagnostic("'$label' directory $dir not found.");
       }
+      $count++;
     }
     return \@directories;
   }
@@ -271,8 +278,7 @@ sub run {
 
   ## After we read the config file, see if the user has provided
   ## dynamic types
-  my $dynamic = $self->locate_dynamic_directories(
-                         $cfg->get_value('dynamic_types'));
+  my $dynamic = $self->locate_dynamic_directories($cfg, 'dynamic_types');
   if (defined $dynamic) {
     ## If so, add in the creators found in the dynamic directories
     $self->add_dynamic_creators($dynamic);

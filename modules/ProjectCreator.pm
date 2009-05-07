@@ -680,7 +680,7 @@ sub matches_specific_scope {
 
   ## First check for properties that correspond to the current project
   ## type.  Elements that begin with "prop:" indicate a property.
-  my $list;
+  my $list = '';
   my $props = $self->get_properties();
   foreach my $prop (split(/\s*,\s*/, $elements)) {
     my $not = ($prop =~ s/^!\s*//);
