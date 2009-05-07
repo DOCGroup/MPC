@@ -675,6 +675,47 @@ sub get_process_project_type {
 }
 
 
+sub matches_specific_scope {
+  my($self, $elements) = @_;
+
+  ## First check for properties that correspond to the current project
+  ## type.  Elements that begin with "prop:" indicate a property.
+  my $list;
+  my $props = $self->get_properties();
+  foreach my $prop (split(/\s*,\s*/, $elements)) {
+    my $not = ($prop =~ s/^!\s*//);
+    if ($prop =~/(.+):(.+)/) {
+      if ($1 eq 'prop') {
+        $prop = $2;
+        if ($not) {
+          return $self->{'pctype'} if (!$$props{$prop});
+        }
+        else {
+          return $self->{'pctype'} if ($$props{$prop});
+        }
+      }
+      else {
+        $self->warning("$prop is not recognized.");
+      }
+    }
+    else {
+      $list .= ($not ? '!' : '') . $prop . ',';
+    }
+  }
+
+  ## If none of the elements match a property, then check the type
+  ## against the current project type or the default component name
+  ## (which is what it would be set to if a specific clause is used with
+  ## out parenthesis).
+  my $type = $self->get_process_project_type($list);
+  return $self->{'pctype'} if ($type eq $self->{'pctype'} ||
+                               $type eq $self->get_default_component_name());
+
+  ## Nothing matched
+  return undef;
+}
+
+
 sub parse_line {
   my($self, $ih, $line) = @_;
   my($status,
@@ -878,9 +919,8 @@ sub parse_line {
                                                           $loc, $add);
         }
         elsif ($comp eq 'specific') {
-          my $type = $self->get_process_project_type($name);
-          if ($type eq $self->{'pctype'} ||
-              $type eq $self->get_default_component_name()) {
+          my $type = $self->matches_specific_scope($name);
+          if (defined $type) {
             ($status, $errorString) = $self->parse_scope(
                                         $ih, $comp, $type,
                                         $self->{'valid_names'},
@@ -5252,6 +5292,10 @@ sub requires_forward_slashes {
 
 sub warn_useless_project {
   return 1;
+}
+
+sub get_properties {
+  return {};
 }
 
 1;
