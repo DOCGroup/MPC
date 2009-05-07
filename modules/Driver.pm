@@ -90,7 +90,6 @@ sub locate_dynamic_directories {
     my @directories;
     my @unprocessed = split(/\s*,\s*/, $cfg->get_unprocessed($label));
     foreach my $dir (split(/\s*,\s*/, $dtypes)) {
-print "DEBUG: $dir\n";
       if (-d $dir) {
         if (-d "$dir/modules" || -d "$dir/config" || -d "$dir/templates") {
           push(@directories, $dir);
