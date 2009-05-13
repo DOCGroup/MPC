@@ -1,3 +1,11 @@
+Wed May 13 18:03:05 UTC 2009  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/VC9ProjectCreator.pm:
+        * templates/vc8csharp.mpd:
+        * docs/templates/vc8csharp.txt:
+
+          Added support for Visual C# with -type vc9 (Visual Studio 2008).
+
 Thu May  7 21:12:17 UTC 2009  Adam Mitz  <mitza@ociweb.com>
 
         * modules/Driver.pm:
