@@ -17,7 +17,11 @@ use VC8ProjectCreator;
 use vars qw(@ISA);
 @ISA = qw(VC8ProjectCreator);
 
-my %config = ('vcversion' => '9.00');
+my %config = ('vcversion' => '9.00',
+              'prversion' => '9.0.30729',
+              'toolsversion' => '3.5',
+              'xmlheader' => 1,
+              );
 
 # ************************************************************
 # Subroutine Section
