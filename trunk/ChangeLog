@@ -1,3 +1,10 @@
+Sun May 24 18:43:56 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * devtools/document_template.pl:
+
+          Added code to convert less than and greater than signs into html
+          friendly codes.
+
 Fri May 22 07:51:05 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc8platforms.mpt:
