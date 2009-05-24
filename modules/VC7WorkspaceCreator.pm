@@ -197,7 +197,7 @@ sub write_comps {
       if (index($cfg, 'Win32') >= 0 || index($cfg, 'x64') >= 0) {
         $deployable = 0;
         $buildable = 1;
-      } elsif ($custom_only) { 
+      } elsif ($custom_only) {
         $deployable = 0;
       }
       if (defined $anycpu) {

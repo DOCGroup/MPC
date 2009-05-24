@@ -104,7 +104,7 @@ sub get_properties {
     }
   }
 
-  return $props;  
+  return $props;
 }
 
 
