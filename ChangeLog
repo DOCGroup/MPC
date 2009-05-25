@@ -1,3 +1,8 @@
+Mon May 25 11:03:31 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc8platforms.mpt:
+          Added a new target and corrected some wince versions
+
 Sun May 24 18:46:31 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * MPC version 3.7.0 released.
