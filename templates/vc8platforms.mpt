@@ -127,7 +127,18 @@ Beckhoff_HMI_500 (x86) {
   output_subdir    = Beckhoff_HMI_500 (x86)
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
   platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
-  link_options     = /subsystem:windowsce,6.0
+  link_options     = /subsystem:windowsce,5.00
+  lit_libs        += iphlpapi
+  subsystem        = "0"
+  TargetMachine    = "0"
+}
+
+Beckhoff_HMI_500 (ARMV4I) {
+  unicode          = 1
+  output_subdir    = Beckhoff_HMI_500 (ARMV4i)
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
+  link_options     = /subsystem:windowsce,5.00
   lit_libs        += iphlpapi
   subsystem        = "0"
   TargetMachine    = "0"
@@ -138,7 +149,7 @@ BR APC620 PPC700 CE 5.00 V1.2 (x86) {
   output_subdir    = BR APC620 + PPC700 CE 5.00 V1.2 (x86)
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
   platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
-  link_options     = /subsystem:windowsce,6.0
+  link_options     = /subsystem:windowsce,5.00
   lit_libs        += iphlpapi
   subsystem        = "0"
   TargetMachine    = "0"
@@ -149,7 +160,7 @@ STANDARDSDK_500 (x86) {
   output_subdir    = STANDARDSDK_500_x86
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
   platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
-  link_options     = /subsystem:windowsce,5.01
+  link_options     = /subsystem:windowsce,5.00
   lit_libs        += iphlpapi
   subsystem        = "0"
   TargetMachine    = "0"
