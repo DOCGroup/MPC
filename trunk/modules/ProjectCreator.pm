@@ -184,6 +184,8 @@ my %cppma = ('source_files' => ['buildflags',
                                ],
             );
 
+my $cppresource = 'resource_files';
+
 # ************************************************************
 # C# Specific Component Settings
 # ************************************************************
@@ -205,6 +207,8 @@ my %csma = ('source_files' => [ 'dependent_upon',
                                 'subtype',
                               ],
            );
+
+my $csresource = 'resx_files';
 
 # ************************************************************
 # Java Specific Component Settings
@@ -231,6 +235,8 @@ my %vbvc = ('source_files'        => [ "\\.vb" ],
 my %vbma = ('source_files' => [ 'subtype' ],
            );
 
+my $vbresource = 'resx_files';
+
 # ************************************************************
 # Language Specific Component Settings
 # ************************************************************
@@ -242,10 +248,20 @@ my %vbma = ('source_files' => [ 'subtype' ],
 # 2     Assignments available in standard file types
 # 3     The entry point for executables
 # 4     The language uses a C preprocessor
-my %language = ('cplusplus' => [ \%cppvc, \%cppec, \%cppma, 'main', 1 ],
-                'csharp'    => [ \%csvc,  {},      \%csma,  'Main', 0 ],
-                'java'      => [ \%jvc,   {},      {}    ,  'main', 0 ],
-                'vb'        => [ \%vbvc,  {},      \%vbma,  'Main', 0 ],
+# 5     Name of the tag for 'resource_files' for this language
+#        * This is special because it gets treated like source_files in that
+#          a project with only these files is a library/exe not "custom only".
+my %language = ('cplusplus' => [ \%cppvc, \%cppec, \%cppma, 'main', 1,
+                                 $cppresource ],
+
+                'csharp'    => [ \%csvc,  {},      \%csma,  'Main', 0,
+                                 $csresource ],
+
+                'java'      => [ \%jvc,   {},      {},      'main', 0,
+                                 'resource_files' ],
+
+                'vb'        => [ \%vbvc,  {},      \%vbma,  'Main', 0,
+                                 $vbresource ],
                );
 my %mains;
 
@@ -2635,7 +2651,7 @@ sub generate_default_target_names {
       ## default to a library if there are source or resource files
       if (!defined $exename) {
         if (!defined $sources[0]) {
-          @sources = $self->get_component_list('resource_files', 1);
+          @sources = $self->get_component_list($self->get_resource_tag(), 1);
         }
         if (defined $sources[0]) {
           if (!$shared_empty) {
@@ -2765,7 +2781,7 @@ sub remove_extra_pch_listings {
 sub sift_files {
   my($self, $files, $exts, $pchh, $pchc, $tag, $array, $alldir) = @_;
   my @saved;
-  my $saverc = (!$alldir && $tag eq 'resource_files');
+  my $saverc = (!$alldir && $tag eq $self->get_resource_tag());
   my $havec  = (defined $self->{'exclude_components'}->{$tag});
 
   foreach my $ext (@$exts) {
@@ -4263,7 +4279,7 @@ sub need_to_write_project {
 
   ## The order here is important, we must check for source or resource
   ## files first and then for custom input files.
-  foreach my $key ('source_files', 'resource_files',
+  foreach my $key ('source_files', $self->get_resource_tag(),
                    keys %{$self->{'generated_exts'}}) {
     my $names = $self->{$key};
     foreach my $name (keys %$names) {
@@ -5108,6 +5124,15 @@ sub add_main_function {
 
   ## Return no error message.
   return undef;
+}
+
+sub get_resource_tag {
+  my($self) = @_;
+  my $lang = $self->get_language();
+  if (!defined $lang) {
+    return 'resource_files'; # backwards compatibility if no lang.
+  }
+  return $language{$lang}->[5];
 }
 
 # ************************************************************
