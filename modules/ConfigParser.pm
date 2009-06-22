@@ -27,6 +27,7 @@ sub new {
 
   ## Set up the internal data members
   $self->{'values'} = {};
+  $self->{'clean'}  = {};
   $self->{'valid'}  = $valid;
   $self->{'warned'} = {};
 
@@ -44,22 +45,26 @@ sub parse_line {
     ## Save the name, removing any trailing white space, and the value
     ## too.
     my $name  = $1;
-    my $value = $2;
+    my $clean = $2;
     $name =~ s/\s+$//;
 
     ## Pre-process the name and value
     $name = $self->preprocess($name);
-    $value = $self->preprocess($value);
+    my $value = $self->preprocess($clean);
     $name =~ s/\\/\//g;
 
     ## Store the name value pair
     if (!defined $self->{'valid'}) {
       ## There are no valid names, so all names are valid.
-      $self->{'values'}->{$name} = $value if ($name ne '');
+      if ($name ne '') {
+        $self->{'values'}->{$name} = $value;
+        $self->{'clean'}->{$name} = $clean;
+      }
     }
     elsif (defined $self->{'valid'}->{lc($name)}) {
       ## This is a valid value, so we can store it.
       $self->{'values'}->{lc($name)} = $value;
+      $self->{'clean'}->{lc($name)} = $clean;
     }
     else {
       $error = "Invalid keyword: $name";
@@ -83,6 +88,13 @@ sub get_value {
   ## Try the tag first and if that doesn't work make it all lower-case.
   my($self, $tag) = @_;
   return $self->{'values'}->{$tag} || $self->{'values'}->{lc($tag)};
+}
+
+
+sub get_unprocessed {
+  ## Try the tag first and if that doesn't work make it all lower-case.
+  my($self, $tag) = @_;
+  return $self->{'clean'}->{$tag} || $self->{'clean'}->{lc($tag)};
 }
 
 

@@ -13,11 +13,11 @@ package BDS4ProjectCreator;
 use strict;
 
 use ProjectCreator;
-use WinProjectBase;
+use BorlandProjectBase;
 use XMLProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(XMLProjectBase WinProjectBase ProjectCreator);
+@ISA = qw(XMLProjectBase BorlandProjectBase ProjectCreator);
 
 # ************************************************************
 # Subroutine Section

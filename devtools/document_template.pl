@@ -118,6 +118,11 @@ sub display_template {
         $def .= StringProcessor::process_special(undef, $ikey);
       }
     }
+
+    ## Convert < and > to html friendly codes
+    $desc =~ s/</&lt;/g;
+    $desc =~ s/>/&gt;/g;
+
     print $fh "    <tr>\n",
               "      <td>$key</td>\n",
               "      <td>", (defined $def ? $def : '&nbsp'), "</td>\n",

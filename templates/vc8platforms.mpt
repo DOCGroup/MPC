@@ -72,9 +72,9 @@ Windows Mobile 6 Standard SDK (ARMV4I) {
   platform_defines = _WIN32_WCE=$(CEVER) UNDER_CE=$(CEVER) WINCE _WINDOWS $(PLATFORMDEFINES)
   link_options     = /subsystem:windowsce,5.02
   lit_libs        += iphlpapi
-  CharacterSet     = "1"
   subsystem        = "0"
   TargetMachine    = "0"
+  charset          = 1
 }
 
 Windows Mobile 6 Professional SDK (ARMV4I) {
@@ -84,9 +84,9 @@ Windows Mobile 6 Professional SDK (ARMV4I) {
   platform_defines = _WIN32_WCE=$(CEVER) UNDER_CE=$(CEVER) WINCE _WINDOWS $(PLATFORMDEFINES)
   link_options     = /subsystem:windowsce,5.02
   lit_libs        += iphlpapi
-  CharacterSet     = "1"
   subsystem        = "0"
   TargetMachine    = "0"
+  charset          = 1
 }
 
 SuperSonic_CE6 (ARMV4I) {
@@ -98,5 +98,77 @@ SuperSonic_CE6 (ARMV4I) {
   lit_libs        += iphlpapi
   subsystem        = "0"
   TargetMachine    = "3"
+  charset          = 1
 }
 
+eBox4300_WINCE600_SDK (x86) {
+  unicode          = 1
+  output_subdir    = eBox4300_WINCE600_SDK
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
+  link_options     = /subsystem:windowsce,6.0
+  lit_libs        += iphlpapi
+  subsystem        = "0"
+  TargetMachine    = "0"
+  charset          = 1
+}
+
+eBox2300_WINCE600_SDK (x86) {
+  unicode          = 1
+  output_subdir    = eBox2300_WINCE600_SDK
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
+  link_options     = /subsystem:windowsce,6.0
+  lit_libs        += iphlpapi
+  subsystem        = "0"
+  TargetMachine    = "0"
+  charset          = 1
+}
+
+Beckhoff_HMI_500 (x86) {
+  unicode          = 1
+  output_subdir    = Beckhoff_HMI_500 (x86)
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
+  link_options     = /subsystem:windowsce,5.00
+  lit_libs        += iphlpapi
+  subsystem        = "0"
+  TargetMachine    = "0"
+  charset          = 1
+}
+
+Beckhoff_HMI_500 (ARMV4I) {
+  unicode          = 1
+  output_subdir    = Beckhoff_HMI_500 (ARMV4i)
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
+  link_options     = /subsystem:windowsce,5.00
+  lit_libs        += iphlpapi
+  subsystem        = "0"
+  TargetMachine    = "0"
+  charset          = 1
+}
+
+BR APC620 PPC700 CE 5.00 V1.2 (x86) {
+  unicode          = 1
+  output_subdir    = BR APC620 + PPC700 CE 5.00 V1.2 (x86)
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
+  link_options     = /subsystem:windowsce,5.00
+  lit_libs        += iphlpapi
+  subsystem        = "0"
+  TargetMachine    = "0"
+  charset          = 1
+}
+
+STANDARDSDK_500 (x86) {
+  unicode          = 1
+  output_subdir    = STANDARDSDK_500_x86
+  cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)
+  platform_defines = UNDER_CE=$(CEVER) _WIN32_WCE=$(CEVER) WINCE _WINDOWS _UNICODE UNICODE
+  link_options     = /subsystem:windowsce,5.00
+  lit_libs        += iphlpapi
+  subsystem        = "0"
+  TargetMachine    = "0"
+  charset          = 1
+}
