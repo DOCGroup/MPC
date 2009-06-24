@@ -1,3 +1,11 @@
+Wed Jun 24 21:19:36 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * config/wix.mpb:
+        * config/wix_ui.mpb:
+        * config/wix_xml.mpb:
+
+          . Base projects for building Wix files.
+
 Wed Jun 24 21:14:20 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
 
         * modules/WixProjectCreator.pm:
