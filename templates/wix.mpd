@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Include>
+<%marker(top)%>
+  <Fragment Id="<%project_name%>">
+<%if(sharedname || exename)%>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="<%project_name%>.output"<%if(target_directory)%> Name="<%target_directory%>"<%endif%>>
+        <Component Id="<%project_name%>" Guid="<%guid%>">
+          <File Id="<%project_name%>.binary" Name="<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
+                Source="<%source_directory%>/<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
+                DiskId="<%diskid(1)%>" />
+        </Component>
+      </Directory>
+    </DirectoryRef>
+<%endif%>
+  </Fragment>
+<%marker(bottom)%>
+</Include>

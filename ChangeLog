@@ -1,3 +1,19 @@
+Wed Jun 24 21:14:20 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * modules/WixProjectCreator.pm:
+        * modules/WixWorkspaceCreator.pm:
+        * templates/wix.mpd:
+        * templates/wix.mpt:
+
+          . First version of the Wix module that is used in conjuction
+            with the Wix toolset that creates .msi files. This project
+            type will generate the include files (.wxi) that can be included
+            in a .wxs configuration file.
+
+            Right now, the installer only can generate files for
+            shared libraries. The next update will include support for
+            executables.
+
 Wed Jun 17 18:37:31 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc8platforms.mpt:
