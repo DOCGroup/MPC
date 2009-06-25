@@ -2,13 +2,17 @@
 <Include>
 <%marker(top)%>
   <Fragment Id="<%project_name%>">
-<%if(sharedname || exename)%>
+<%if(sharedname || exename || create_directory)%>
     <DirectoryRef Id="INSTALLDIR">
-      <Directory Id="<%project_name%>.output"<%if(target_directory)%> Name="<%target_directory%>"<%endif%>>
+      <Directory Id="dir.<%project_name%>"<%if(target_directory)%> Name="<%target_directory%>"<%endif%>>
         <Component Id="<%project_name%>" Guid="<%guid%>">
-          <File Id="<%project_name%>.binary" Name="<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
+<%marker(component_top)%>
+<%if(sharedname || staticname || exename)%>
+          <File Id="file.<%project_name%>" Name="<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
                 Source="<%source_directory%>/<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
                 DiskId="<%diskid(1)%>" />
+<%endif%>
+<%marker(component_bottom)%>
         </Component>
       </Directory>
     </DirectoryRef>

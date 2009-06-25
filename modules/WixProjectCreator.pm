@@ -33,6 +33,10 @@ sub expand_variables_from_template_values {
   return 1;
 }
 
+sub warn_useless_project {
+  return 0;
+}
+
 sub convert_slashes {
   return 0;
 }
