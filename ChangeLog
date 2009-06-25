@@ -1,3 +1,17 @@
+Thu Jun 25 06:25:12 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * modules/WixProjectCreator.pm:
+        * templates/wix.mpd:
+
+          Added support to creating a directory if there is no output
+          file specified in the project.
+
+          Disabled skipping projects if there are no useful targets
+          defined.
+
+          Added markers to the top and bottom of the component. The
+          name of the markers are: component_top and component_bottom.
+
 Thu Jun 25 00:39:12 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
 
         * modules/WixProjectCreator.pm:
