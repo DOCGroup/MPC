@@ -1,4 +1,4 @@
-package WIXProjectCreator;
+package WixProjectCreator;
 
 # ************************************************************
 # Description   : A Wix Project Creator

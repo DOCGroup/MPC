@@ -1,4 +1,4 @@
-package WIXWorkspaceCreator;
+package WixWorkspaceCreator;
 
 # ************************************************************
 # Description   : A Wix Workspace creator
