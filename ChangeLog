@@ -1,3 +1,22 @@
+Sun Jun 28 08:05:20 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * templates/wix.mpd:
+
+          Added support for installing GME components using Wix. In order
+          to include GME components in the installer, you must define the
+          following properties in a *wix* scope:
+
+            gme_install     = [HKLM | HKCU]
+            gme_progid      = <program id>
+            gme_uuid        = <uuid>
+            gme_paradigms   = <space separated list>
+            gme_has_icon    = [0 | 1]
+            gme_description = <descrption of component>
+            gme_tooltip     = <tooltip for component>
+
+          The values for each of these properties can be found in
+          ComponentConfig.h
+
 Thu Jun 25 06:25:12 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
 
         * modules/WixProjectCreator.pm:
