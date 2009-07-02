@@ -1,3 +1,9 @@
+Thu Jul  2 06:37:36 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * templates/wix.mpd:
+
+          Fixed bugs GME section of generated Wix files for vc8.
+
 Sun Jun 28 08:05:20 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
 
         * templates/wix.mpd:
@@ -6,7 +12,8 @@ Sun Jun 28 08:05:20 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
           to include GME components in the installer, you must define the
           following properties in a *wix* scope:
 
-            gme_install     = [HKLM | HKCU]
+            gme_install     = [0 | 1]; default is 0
+            gme_register    = [HKLM | HKCU]; default is HKLM
             gme_progid      = <program id>
             gme_uuid        = <uuid>
             gme_paradigms   = <space separated list>
