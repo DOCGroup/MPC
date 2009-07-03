@@ -1,3 +1,19 @@
+Fri Jul  3 03:25:31 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * templates/wix.mpd:
+
+          Added support for setting the install location of a set of
+          files for a project using 'install_location'. This takes a
+          comma separated list of directories that represent the location
+          for installing the files. The following is a simple example:
+
+            specific (wix) {
+              install_location = etc models
+            }
+
+          The example above will install files for the given project
+          in etc/models directory under the root install directory.
+
 Thu Jul  2 06:37:36 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
 
         * templates/wix.mpd:
