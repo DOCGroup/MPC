@@ -1,0 +1,116 @@
+Fri Jul  3 03:25:31 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * templates/wix.mpd:
+
+          Added support for setting the install location of a set of
+          files for a project using 'install_location'. This takes a
+          comma separated list of directories that represent the location
+          for installing the files. The following is a simple example:
+
+            specific (wix) {
+              install_location = etc models
+            }
+
+          The example above will install files for the given project
+          in etc/models directory under the root install directory.
+
+Thu Jul  2 06:37:36 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * templates/wix.mpd:
+
+          Fixed bugs GME section of generated Wix files for vc8.
+
+Sun Jun 28 08:05:20 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * templates/wix.mpd:
+
+          Added support for installing GME components using Wix. In order
+          to include GME components in the installer, you must define the
+          following properties in a *wix* scope:
+
+            gme_install     = [0 | 1]; default is 0
+            gme_register    = [HKLM | HKCU]; default is HKLM
+            gme_progid      = <program id>
+            gme_uuid        = <uuid>
+            gme_paradigms   = <space separated list>
+            gme_has_icon    = [0 | 1]
+            gme_description = <descrption of component>
+            gme_tooltip     = <tooltip for component>
+
+          The values for each of these properties can be found in
+          ComponentConfig.h
+
+Thu Jun 25 06:25:12 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * modules/WixProjectCreator.pm:
+        * templates/wix.mpd:
+
+          Added support to creating a directory if there is no output
+          file specified in the project.
+
+          Disabled skipping projects if there are no useful targets
+          defined.
+
+          Added markers to the top and bottom of the component. The
+          name of the markers are: component_top and component_bottom.
+
+Thu Jun 25 00:39:12 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * modules/WixProjectCreator.pm:
+        * modules/WixWorkspaceCreator.pm:
+
+          Forgot to change the case on the pacakge names.
+
+Wed Jun 24 21:19:36 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * config/wix.mpb:
+        * config/wix_ui.mpb:
+        * config/wix_xml.mpb:
+
+          Base projects for building Wix files.
+
+Wed Jun 24 21:14:20 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
+
+        * modules/WixProjectCreator.pm:
+        * modules/WixWorkspaceCreator.pm:
+        * templates/wix.mpd:
+        * templates/wix.mpt:
+
+          . First version of the Wix module that is used in conjuction
+            with the Wix toolset that creates .msi files. This project
+            type will generate the include files (.wxi) that can be included
+            in a .wxs configuration file.
+
+            Right now, the installer only can generate files for
+            shared libraries. The next update will include support for
+            executables.
+
+Wed Jun 17 18:37:31 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc8platforms.mpt:
+          Explicitly set charset to get CharacterSet set when using
+          multiple platforms
+
+Tue May 26 19:01:53 UTC 2009  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Changed hard-coded 'resource_files' to a call to get_resource_files,
+          which is a new method on ProjectCreator.  get_resource_files
+          determines the name of 'resource_files' for the current language
+          based on the %language hash (for C# and VB this is 'resx_files').
+
+Mon May 25 11:03:31 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc8platforms.mpt:
+          Added a new target and corrected some wince versions
+
+Sun May 24 18:46:31 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * MPC version 3.7.0 released.
+
+Local Variables:
+mode: change-log
+add-log-time-format: (lambda () (progn (setq tz (getenv TZ)) (set-time-zone-rule UTC) (setq time (format-time-string %a %b %e %H:%M:%S %Z %Y (current-time))) (set-time-zone-rule tz) time))
+indent-tabs-mode: nil
+End:
