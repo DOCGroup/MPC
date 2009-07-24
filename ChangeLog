@@ -1,3 +1,11 @@
+Fri Jul 24 09:29:31 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/nddslib.mpb:
+          Added requires += ndds. If you want to use RTI DDS you have to
+          add ndds=1 to your default.features file. This way we can add
+          dds4ccm support to CIAO without requiring all users to install
+          RTI DDS
+
 Fri Jul  3 03:25:31 UTC 2009  James H. Hill  <hillj@dre.vanderbilt.edu>
 
         * templates/wix.mpd:
