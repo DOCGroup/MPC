@@ -2,6 +2,7 @@
 // $Id$
 
 project {
+  requires += ndds
   libs     += nddscpp nddsc nddscore
   libpaths += $(NDDSHOME)/lib/$(NDDSARCHITECTURE)
   includes += $(NDDSHOME)/include $(NDDSHOME)/include/ndds
