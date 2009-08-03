@@ -258,7 +258,7 @@ my %language = ('cplusplus' => [ \%cppvc, \%cppec, \%cppma, 'main', 1,
                                  $csresource ],
 
                 'java'      => [ \%jvc,   {},      {},      'main', 0,
-                                 'resource_files' ],
+                                 $cppresource ],
 
                 'vb'        => [ \%vbvc,  {},      \%vbma,  'Main', 0,
                                  $vbresource ],
@@ -5127,12 +5127,11 @@ sub add_main_function {
 }
 
 sub get_resource_tag {
-  my($self) = @_;
+  my $self = shift;
   my $lang = $self->get_language();
-  if (!defined $lang) {
-    return 'resource_files'; # backwards compatibility if no lang.
-  }
-  return $language{$lang}->[5];
+
+  ## For backwards compatibility if on the off chance there is no language.
+  return defined $lang ? $language{$lang}->[5] : $cppresource;
 }
 
 # ************************************************************

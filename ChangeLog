@@ -1,3 +1,16 @@
+Mon Aug  3 16:43:18 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Driver.pm:
+        * mpc.pl:
+        * mwc.pl:
+
+          Added a pair of constants that will be used in determining which
+          type of creators to use (either workspace or project).
+
+        * modules/ProjectCreator.pm:
+
+          Removed the use of a hard-coded string and simplified some code.
+
 Fri Jul 24 09:29:31 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/nddslib.mpb:

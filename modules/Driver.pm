@@ -34,6 +34,7 @@ my %valid_cfg = ('command_line'     => 1,
                  'main_functions'   => 1,
                  'verbose_ordering' => 1,
                 );
+my @intype    = ('mwc.pl', 'mpc.pl');
 
 # ************************************************************
 # Subroutine Section
@@ -49,7 +50,7 @@ sub new {
   $self->{'path'}     = $path;
   $self->{'basepath'} = ::getBasePath();
   $self->{'name'}     = $name;
-  $self->{'type'}     = (lc($self->{'name'}) eq 'mwc.pl' ?
+  $self->{'type'}     = (lc($self->{'name'}) eq $intype[0] ?
                                 'WorkspaceCreator' : 'ProjectCreator');
   $self->{'types'}    = {};
   $self->{'creators'} = \@creators;
@@ -57,6 +58,16 @@ sub new {
   $self->{'relorder'} = [];
 
   return $self;
+}
+
+
+sub workspaces {
+  return $intype[0];
+}
+
+
+sub projects {
+  return $intype[1];
 }
 
 
