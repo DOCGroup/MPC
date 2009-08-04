@@ -74,7 +74,7 @@ sub new {
   $self->{'name_modifier'}   = $nmodifier;
   $self->{'apply_project'}   = $applypj;
   $self->{'into'}            = $into;
-  $self->{'language'}        = $language;
+  $self->{'language'}        = defined $language ? $language : 'cplusplus';
   $self->{'use_env'}         = $use_env;
   $self->{'expand_vars'}     = $expandvars;
   $self->{'convert_slashes'} = $self->convert_slashes();

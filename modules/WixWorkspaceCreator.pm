@@ -11,7 +11,7 @@ package WixWorkspaceCreator;
 # ************************************************************
 
 use strict;
-use WIXProjectCreator;
+use WixProjectCreator;
 use WorkspaceCreator;
 
 use vars qw(@ISA);

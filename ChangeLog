@@ -1,3 +1,37 @@
+Tue Aug  4 16:29:11 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Default the language to 'cplusplus' if it isn't provided during
+          construction.  This ensures that language is always set and we
+          don't have to check it to make sure it's defined elsewhere.
+
+        * modules/ProjectCreator.pm:
+
+          Modified the behavior of dealing with resource files.  The
+          behavior specific to C++ was being applied to all languages.
+
+        * modules/TemplateParser.pm:
+
+          Added implementations of various template functions.  Some were
+          required for the bmake template change below.
+
+        * modules/WixProjectCreator.pm:
+
+          Removed unused code.
+
+        * modules/WixWorkspaceCreator.pm:
+
+          Fixed a the case of the WixProjectCreator name.
+
+        * templates/bmake.mpd:
+        * templates/bmakedll.mpt:
+        * templates/bmakedllexe.mpt:
+
+          Added the ability to build static projects without providing the
+          -static option to MPC.  The static-only projects can still be
+          created with the -static option, but it is no longer necessary.
+
 Tue Aug  4 10:31:40 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/unicode.mpb:
@@ -121,8 +155,8 @@ Tue May 26 19:01:53 UTC 2009  Adam Mitz  <mitza@ociweb.com>
 
         * modules/ProjectCreator.pm:
 
-          Changed hard-coded 'resource_files' to a call to get_resource_files,
-          which is a new method on ProjectCreator.  get_resource_files
+          Changed hard-coded 'resource_files' to a call to get_resource_tag,
+          which is a new method on ProjectCreator.  get_resource_tag
           determines the name of 'resource_files' for the current language
           based on the %language hash (for C# and VB this is 'resx_files').
 

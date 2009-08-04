@@ -163,13 +163,16 @@ my $generic_key = 'generic_files';
 # C++ Specific Component Settings
 # ************************************************************
 
+## Resource files tag for C++
+my $cppresource = 'resource_files';
+
 ## Valid component names within a project along with the valid file extensions
 my %cppvc = ('source_files'        => [ "\\.cpp", "\\.cxx", "\\.cc", "\\.c", "\\.C", ],
              'template_files'      => [ "_T\\.cpp", "_T\\.cxx", "_T\\.cc", "_T\\.c", "_T\\.C", "_t\\.cpp", "_t\\.cxx", "_t\\.cc", "_t\\.c", "_t\\.C" ],
              'header_files'        => [ "\\.h", "\\.hpp", "\\.hxx", "\\.hh", ],
              'inline_files'        => [ "\\.i", "\\.ipp", "\\.inl", ],
              'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
-             'resource_files'      => [ "\\.rc", ],
+             $cppresource          => [ "\\.rc", ],
             );
 
 ## Exclude these extensions when auto generating the component values
@@ -184,16 +187,17 @@ my %cppma = ('source_files' => ['buildflags',
                                ],
             );
 
-my $cppresource = 'resource_files';
-
 # ************************************************************
 # C# Specific Component Settings
 # ************************************************************
 
+## Resource files tag for C#
+my $csresource = 'resx_files';
+
 ## Valid component names within a project along with the valid file extensions
 my %csvc = ('source_files'        => [ "\\.cs" ],
             'config_files'        => [ "\\.config" ],
-            'resx_files'          => [ "\\.resx", "\\.resources" ],
+            $csresource           => [ "\\.resx", "\\.resources" ],
             'aspx_files'          => [ "\\.aspx" ],
             'ico_files'           => [ "\\.ico" ],
             'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
@@ -202,13 +206,11 @@ my %csvc = ('source_files'        => [ "\\.cs" ],
 my %csma = ('source_files' => [ 'dependent_upon',
                                 'subtype',
                               ],
-            'resx_files'   => [ 'dependent_upon',
+            $csresource    => [ 'dependent_upon',
                                 'generates_source',
                                 'subtype',
                               ],
            );
-
-my $csresource = 'resx_files';
 
 # ************************************************************
 # Java Specific Component Settings
@@ -223,10 +225,13 @@ my %jvc = ('source_files'        => [ "\\.java" ],
 # Visual Basic Specific Component Settings
 # ************************************************************
 
+## Resource files tag for VB
+my $vbresource = 'resx_files';
+
 ## Valid component names within a project along with the valid file extensions
 my %vbvc = ('source_files'        => [ "\\.vb" ],
             'config_files'        => [ "\\.config" ],
-            'resx_files'          => [ "\\.resx" ],
+            $vbresource           => [ "\\.resx" ],
             'aspx_files'          => [ "\\.aspx" ],
             'ico_files'           => [ "\\.ico" ],
             'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
@@ -234,8 +239,6 @@ my %vbvc = ('source_files'        => [ "\\.vb" ],
 
 my %vbma = ('source_files' => [ 'subtype' ],
            );
-
-my $vbresource = 'resx_files';
 
 # ************************************************************
 # Language Specific Component Settings
@@ -257,8 +260,7 @@ my %language = ('cplusplus' => [ \%cppvc, \%cppec, \%cppma, 'main', 1,
                 'csharp'    => [ \%csvc,  {},      \%csma,  'Main', 0,
                                  $csresource ],
 
-                'java'      => [ \%jvc,   {},      {},      'main', 0,
-                                 $cppresource ],
+                'java'      => [ \%jvc,   {},      {},      'main', 0 ],
 
                 'vb'        => [ \%vbvc,  {},      \%vbma,  'Main', 0,
                                  $vbresource ],
@@ -2781,8 +2783,12 @@ sub remove_extra_pch_listings {
 sub sift_files {
   my($self, $files, $exts, $pchh, $pchc, $tag, $array, $alldir) = @_;
   my @saved;
-  my $saverc = (!$alldir && $tag eq $self->get_resource_tag());
   my $havec  = (defined $self->{'exclude_components'}->{$tag});
+
+  ## The special actions taken based on $saverc only applies to
+  ## C++ resource files.
+  my $saverc = (!$alldir && $tag eq $self->get_resource_tag() &&
+                $self->get_language() eq 'cplusplus');
 
   foreach my $ext (@$exts) {
     foreach my $file (grep(/$ext$/, @$files)) {
@@ -4644,12 +4650,10 @@ sub add_default_matching_assignments {
   my $self = shift;
   my $lang = $self->get_language();
 
-  if (defined $lang) {
-    foreach my $key (keys %{$language{$lang}->[0]}) {
-      push(@{$language{$lang}->[2]->{$key}}, @default_matching_assignments)
-        if (!StringProcessor::fgrep($default_matching_assignments[0],
-                                    $language{$lang}->[2]->{$key}));
-    }
+  foreach my $key (keys %{$language{$lang}->[0]}) {
+    push(@{$language{$lang}->[2]->{$key}}, @default_matching_assignments)
+      if (!StringProcessor::fgrep($default_matching_assignments[0],
+                                  $language{$lang}->[2]->{$key}));
   }
 }
 
@@ -4657,21 +4661,18 @@ sub add_default_matching_assignments {
 sub reset_generating_types {
   my $self  = shift;
   my $lang = $self->get_language();
+  my %reset = ('valid_components'     => $language{$lang}->[0],
+               'custom_only_removed'  => $language{$lang}->[0],
+               'exclude_components'   => $language{$lang}->[1],
+               'matching_assignments' => $language{$lang}->[2],
+               'generated_exts'       => {},
+               'valid_names'          => \%validNames,
+              );
 
-  if (defined $lang) {
-    my %reset = ('valid_components'     => $language{$lang}->[0],
-                 'custom_only_removed'  => $language{$lang}->[0],
-                 'exclude_components'   => $language{$lang}->[1],
-                 'matching_assignments' => $language{$lang}->[2],
-                 'generated_exts'       => {},
-                 'valid_names'          => \%validNames,
-                );
-
-    foreach my $r (keys %reset) {
-      $self->{$r} = {};
-      foreach my $key (keys %{$reset{$r}}) {
-        $self->{$r}->{$key} = $reset{$r}->{$key};
-      }
+  foreach my $r (keys %reset) {
+    $self->{$r} = {};
+    foreach my $key (keys %{$reset{$r}}) {
+      $self->{$r}->{$key} = $reset{$r}->{$key};
     }
   }
 
@@ -5130,8 +5131,10 @@ sub get_resource_tag {
   my $self = shift;
   my $lang = $self->get_language();
 
-  ## For backwards compatibility if on the off chance there is no language.
-  return defined $lang ? $language{$lang}->[5] : $cppresource;
+  ## Not all entries in the %language map have a resource tag.
+  ## For this, we will just return the tag for C++ since it probably
+  ## doesn't really matter anyway.
+  return defined $language{$lang}->[5] ? $language{$lang}->[5] : $cppresource;
 }
 
 # ************************************************************
