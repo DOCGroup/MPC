@@ -1,8 +1,7 @@
 // -*- MPC -*-
 // $Id$
 
-project {
-  requires += uses_wchar
+feature (uses_wchar) {
   specific {
     unicode = 1
   }
