@@ -3,7 +3,8 @@
 
 conditional_include "bmakecommon"
 
-startup_letter   = x
+configurations = Debug Release "Static Debug" "Static Release"
+startup_letter = x
 
 Release {
   optimize         = 1
@@ -21,6 +22,27 @@ Debug {
   intermediate_dir = Debug
   lib_modifier     = _bd
   postlinkrmext    = .tds
+}
+
+Static Release {
+  optimize         = 1
+  defines          = NDEBUG
+  output_dir       = Static_Release
+  intermediate_dir = Static_Release
+  lib_modifier     = _bsr
+  postlinkrmext    = .tds
+  type_is_static   = 1
+}
+
+Static Debug {
+  optimize         =
+  debug_prj        = 1
+  defines          = _DEBUG
+  output_dir       = Static_Debug
+  intermediate_dir = Static_Debug
+  lib_modifier     = _bsd
+  postlinkrmext    = .tds
+  type_is_static   = 1
 }
 
 conditional_include "user_bmakedllexe"
