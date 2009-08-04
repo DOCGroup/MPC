@@ -88,7 +88,7 @@
 <%endfor%>
             <booleanAttribute key="BLD::Info|Tool|C++-Compiler|object" value="true"/>
             <booleanAttribute key="BLD::Info|Tool|C++-Compiler|passAble" value="false"/>
-            <stringAttribute key="BLD::Info|Tool|C++-Compiler|sigs" value="*.cpp;*.C;*.cxx;*.cc"/>
+            <stringAttribute key="BLD::Info|Tool|C++-Compiler|sigs" value="<%foreach(ext, extensions(source_files))%>*.<%ext%><%fornotlast(";")%><%endfor%>"/>
 <%foreach(buildspecs)%>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%ccompilerprefix% $(TOOL_PATH)<%cxx%> %DebugModeFlags% %ToolFlags% $(ADDED_CFLAGS) %Includes% $(ADDED_INCLUDES) -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL   $(DEFINES) -o %OutFile% -c %InFile%"/>
             <stringAttribute key="BLD::Info|Tool|C-Compiler|dbgFlags|<%buildspec%>" value="<%c_dbgflags%>"/>

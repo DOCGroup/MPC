@@ -548,7 +548,7 @@
 <%if(source_files)%>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;cxx;cc;C;c">
+			Filter="<%foreach(ext, extensions(source_files))%><%ext%><%fornotlast(";")%><%endfor%>">
 <%if(pch_source)%>
 			<File
 				RelativePath="<%pch_source%>">
@@ -750,7 +750,7 @@
 <%if(header_files)%>
 		<Filter
 			Name="Header Files"
-			Filter="h;hpp;hxx;hh">
+			Filter="<%foreach(ext, extensions(header_files))%><%ext%><%fornotlast(";")%><%endfor%>">
 <%if(pch_header)%>
 			<File
 				 RelativePath="<%pch_header%>">
@@ -830,7 +830,7 @@
 <%if(inline_files)%>
 		<Filter
 			Name="Inline Files"
-			Filter="i;inl">
+			Filter="<%foreach(ext, extensions(inline_files))%><%ext%><%fornotlast(";")%><%endfor%>">
 <%if(grouped_inline_files)%>
 <%foreach(sort(grouped_inline_files))%>
 <%if(compares(grouped_inline_file, default_group))%>
