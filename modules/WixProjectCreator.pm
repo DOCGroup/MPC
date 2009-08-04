@@ -19,13 +19,6 @@ use vars qw(@ISA);
 @ISA = qw(ProjectCreator);
 
 # ************************************************************
-# Data Section
-# ************************************************************
-
-my %names = ('cppdir' => 'source_files',
-             'rcdir'  => 'resource_files');
-
-# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -51,7 +44,7 @@ sub fill_value {
                           $self->{'current_input'}, $self->getcwd());
   }
   elsif ($name eq 'source_directory') {
-    my($source);
+    my $source;
 
     if ($self->get_assignment('sharedname')) {
       $source = $self->get_assignment('dllout');
@@ -70,9 +63,9 @@ sub fill_value {
     ## Check for a variable in the source directory. We have to make
     ## sure we transform this correctly for WIX by adding the correct
     ## prefix. Otherwise, WIX will complain.
-    if ($source =~ /.*?\$\((.+?)\).*/) {
-      my($prefix);
-      my($varname) = $1;
+    if (defined $source && $source =~ /.*?\$\((.+?)\).*/) {
+      my $prefix;
+      my $varname = $1;
 
       if ($ENV{$varname}) {
         $prefix = "env";
@@ -82,28 +75,10 @@ sub fill_value {
       }
 
       ## Add the correct prefix to the variable.
-      $_ = $source;
-      s/$1/$prefix.$varname/g;
-      $source = $_;
+      $source =~ s/$varname/$prefix.$varname/g;
     }
 
     return $source;
-  }
-  elsif (defined $names{$name}) {
-    my %dirnames = ('.' => 1);
-    foreach my $file ($self->get_component_list($names{$name}, 1)) {
-      my $dirname = $self->mpc_dirname($file);
-      if ($dirname eq '') {
-        $dirname = '.';
-      }
-      else {
-        $dirname =~ s/\//\\/g;
-      }
-      $dirnames{$dirname} = 1;
-    }
-
-    ## Sort the directories to ensure that '.' comes first
-    return join(';', sort keys %dirnames);
   }
 
   return undef;

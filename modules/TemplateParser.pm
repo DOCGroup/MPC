@@ -29,11 +29,17 @@ use vars qw(@ISA);
 # 1 means there is a perform_ method available (used by foreach and nested)
 # 2 means there is a doif_ method available (used by if)
 # 3 means that parameters to perform_ should not be evaluated
+#
+# Perl Function		Parameter Type		Return Type
+# get_			string			string or array
+# perform_		array reference		array
+# doif_			array reference		boolean
+#
 my %keywords = ('if'              => 0,
                 'else'            => 0,
                 'endif'           => 0,
-                'noextension'     => 2,
-                'dirname'         => 5,
+                'noextension'     => 3,
+                'dirname'         => 7,
                 'basename'        => 0,
                 'basenoextension' => 0,
                 'foreach'         => 0,
@@ -45,10 +51,10 @@ my %keywords = ('if'              => 0,
                 'eval'            => 0,
                 'comment'         => 0,
                 'marker'          => 0,
-                'uc'              => 0,
+                'uc'              => 3,
                 'lc'              => 0,
                 'ucw'             => 0,
-                'normalize'       => 2,
+                'normalize'       => 3,
                 'flag_overrides'  => 1,
                 'reverse'         => 3,
                 'sort'            => 3,
@@ -64,7 +70,7 @@ my %keywords = ('if'              => 0,
                 'has_extension'   => 5,
                 'keyname_used'    => 0,
                 'scope'           => 0,
-                'full_path'       => 2,
+                'full_path'       => 3,
                );
 
 my %target_type_vars = ('type_is_static'   => 1,
@@ -1274,10 +1280,25 @@ sub handle_special {
 }
 
 
+sub get_uc {
+  my($self, $name) = @_;
+  return uc($self->get_value_with_default($name));
+}
+
+
 sub handle_uc {
   my($self, $name) = @_;
+  $self->append_current($self->get_uc($name));
+}
 
-  $self->append_current(uc($self->get_value_with_default($name)));
+
+sub perform_uc {
+  my($self, $value) = @_;
+  my @val;
+  foreach my $val (@$value) {
+    push(@val, uc($val));
+  }
+  return @val;
 }
 
 
@@ -1301,37 +1322,77 @@ sub handle_ucw {
 }
 
 
+sub actual_normalize {
+  $_[1] =~ tr/ \t\/\\\-$()./_/;
+  return $_[1];
+}
+
 sub perform_normalize {
   my($self, $value) = @_;
-  $value =~ tr/\/\\\-$()./_/;
-  return $value;
+  my @val;
+  foreach my $val (@$value) {
+    push(@val, $self->actual_normalize($val));
+  }
+  return @val;
+}
+
+
+sub get_normalize {
+  my($self, $name) = @_;
+  return $self->actual_normalize($self->get_value_with_default($name));
 }
 
 
 sub handle_normalize {
   my($self, $name) = @_;
-  my $val = $self->get_value_with_default($name);
+  $self->append_current($self->get_normalize($name));
+}
 
-  $self->append_current($self->perform_normalize($val));
+
+sub actual_noextension {
+  $_[1] =~ s/\.[^\.]+$//;
+  return $_[1];
 }
 
 
 sub perform_noextension {
   my($self, $value) = @_;
-  $value =~ s/\.[^\.]+$//;
-  return $value;
+  my @val;
+  foreach my $val (@$value) {
+    push(@val, $self->actual_noextension($val));
+  }
+  return @val;
 }
 
 
+sub get_noextension {
+  my($self, $name) = @_;
+  return $self->actual_noextension($self->get_value_with_default($name));
+}
+
 sub handle_noextension {
   my($self, $name) = @_;
-  my $val = $self->get_value_with_default($name);
-
-  $self->append_current($self->perform_noextension($val));
+  $self->append_current($self->get_noextension($name));
 }
 
 
 sub perform_full_path {
+  my($self, $value) = @_;
+  my @val;
+  foreach my $val (@$value) {
+    push(@val, $self->actual_full_path($val));
+  }
+  return @val;
+}
+
+
+sub get_full_path {
+  my($self, $name) = @_;
+  return $self->actual_full_path($self->get_value_with_default($name));
+}
+
+
+sub actual_full_path {
   my($self, $value) = @_;
 
   ## Expand all defined env vars
@@ -1369,7 +1430,7 @@ sub handle_full_path {
   my($self, $name) = @_;
   my $val = $self->get_value_with_default($name);
 
-  $self->append_current($self->perform_full_path($val));
+  $self->append_current($self->actual_full_path($val));
 }
 
 
@@ -1413,6 +1474,17 @@ sub evaluate_nested_functions {
     $self->append_current("@$val");
   }
 }
+
+
+sub perform_dirname {
+  my($self, $value) = @_;
+  my @val;
+  foreach my $val (@$value) {
+    push(@val, $self->validated_dirname($val));
+  }
+  return @val;
+}
+
 
 sub get_dirname {
   my($self, $name) = @_;
