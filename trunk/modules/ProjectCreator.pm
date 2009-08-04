@@ -4627,6 +4627,23 @@ sub set_component_extensions {
 }
 
 
+sub get_component_extensions {
+  my($self, $comp) = @_;
+  my @ext;
+  if (defined $self->{'valid_components'}->{$comp}) {
+    ## Build up an array of extensions.  Since they are stored as regular
+    ## expressions, we need to remove the escaped period to provide the
+    ## minimal amount of text for each extension to provide maximum
+    ## flexibility within the project template.
+    foreach my $re (@{$self->{'valid_components'}->{$comp}}) {
+      push(@ext, $re);
+      $ext[$#ext] =~ s/\\\.//;
+    }
+  }
+  return @ext;
+}
+
+
 sub set_source_listing_callback {
   my($self, $cb) = @_;
   $self->{'source_callback'} = $cb;

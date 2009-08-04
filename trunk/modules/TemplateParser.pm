@@ -71,6 +71,7 @@ my %keywords = ('if'              => 0,
                 'keyname_used'    => 0,
                 'scope'           => 0,
                 'full_path'       => 3,
+                'extensions'      => 0xa,
                );
 
 my %target_type_vars = ('type_is_static'   => 1,
@@ -1431,6 +1432,23 @@ sub handle_full_path {
   my $val = $self->get_value_with_default($name);
 
   $self->append_current($self->actual_full_path($val));
+}
+
+
+sub perform_extensions {
+  my($self, $value) = @_;
+  my @val;
+  foreach my $val (@$value) {
+    push(@val, $self->{'prjc'}->get_component_extensions($val));
+  }
+  return @val;
+}
+
+
+sub handle_extensions {
+  my($self, $name) = @_;
+  my @val = $self->perform_extensions([$name]);
+  $self->append_current("@val");
 }
 
 
