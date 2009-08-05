@@ -109,6 +109,7 @@ profile = Produce an output file that can be used with the Enterprise Developer 
 profileguideddatabase = Specifies the database file to use when using profile guided optimizations.
 programdatabasefilename = Specifies a name for a compiler-generate .PDB file.  This setting is only used if the 'pdbc' template variable is not set.
 registeroutput = Specifies whether to register the primary output of this build if set to true.
+release_link_options = Allows passing arbitrary options to the linker when making a release build
 resourceonlydll = A resource-only DLL will be created if set to true.
 runtime_library = This corresponds to the C/C++ Code Generation property "Runtime Library". If the template variable is set, the numeric value will be used. Otherwise, it will be determined based on the target and debug/optimize configuration. The numeric value specifies the pull-down value in the IDE.
 runtimetypeinfo = If set to false, disables RTTI.
