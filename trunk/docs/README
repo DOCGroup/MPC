@@ -350,17 +350,17 @@ expand          This scope allows the specification for a variable that is
                 }
 
 conditional     This scope allows addition of source files conditionally
-                based on a particular project type.  The syntax is as
-                follows:
+                based on a particular project type or property as describe
+                in the 'specific' section.  The syntax is as follows:
 
-                conditional(<project type> [, <project type> ...]) {
+                conditional(<proj_type|prop:prop_name> [, <proj_type|prop:prop_name> ...]) {
                   source1.cpp
                   ...
                 }
 
                 or
 
-                conditional(<project type> [, <project type> ...]) {
+                conditional(<proj_type|prop:prop_name> [, <proj_type|prop:prop_name> ...]) {
                   source1.cpp
                   ...
                 } else {
