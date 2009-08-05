@@ -17,6 +17,8 @@ mcs {
   ref_flag    = -r:
   pkg_flag    = -pkg:
   mkbundle    = mkbundle
+  resx_flag   = -resource:
+  ico_flag    = -win32icon:
 }
 
 gmcs {
@@ -33,4 +35,6 @@ gmcs {
   ref_flag    = -r:
   pkg_flag    = -pkg:
   mkbundle    = mkbundle2
+  resx_flag   = -resource:
+  ico_flag    = -win32icon:
 }

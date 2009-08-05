@@ -1,3 +1,26 @@
+Wed Aug  5 18:41:55 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * MPC.ico:
+
+          Updated to use the new MPC logo.
+
+        * docs/README:
+        * modules/ProjectCreator.pm:
+
+          Modified 'conditional' to use properties like 'specific'.
+
+        * modules/WixProjectCreator.pm:
+
+          Inherit from XMLProjectBase and WinProjectBase.  The output is xml
+          and this is a Windows specific project creator.
+
+        * docs/templates/make.net.txt
+        * templates/make.net.mpd:
+        * templates/make.net.mpt:
+
+          Updated to support icon files and resx files, the trace template
+          variable and to set the DESIGN and DEBUG constants in debug mode.
+
 Wed Aug  5 06:21:58 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc8.mpd:
