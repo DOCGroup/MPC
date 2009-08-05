@@ -310,10 +310,10 @@
 				UseUnicodeResponseFiles="<%UseUnicodeResponseFiles%>"
 <%endif%>
 <%if(!source_files)%>
-				AdditionalOptions="/noentry<%if(link_options)%> <%link_options%><%endif%>"
+				AdditionalOptions="/noentry<%if(link_options)%> <%link_options%><%endif%><%if(release_link_options && !debug_prj)%> <%release_link_options%><%endif%>"
 <%else%>
-<%if(link_options)%>
-				AdditionalOptions="<%link_options%>"
+<%if(link_options || release_link_options && !debug_prj)%>
+				AdditionalOptions="<%link_options%><%if(release_link_options && !debug_prj)%> <%release_link_options%><%endif%>"
 <%endif%>
 <%endif%>
 <%if(type_is_binary)%>

@@ -1,3 +1,18 @@
+Wed Aug  5 06:21:58 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc8.mpd:
+          Added release_link_options. This fixes bugzilla 3527, thank to
+          Chad Elliot for providing the patch
+
+        * templates/vc8platforms.mpt:
+          Use release_link_options for the SuperSonic SDK
+
+        * templates/vc8platforms.mpt:
+          No need to set charset anymore
+
+        * docs/templates/vc8.txt:
+          Document new release_link_options
+
 Tue Aug  4 18:11:58 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
