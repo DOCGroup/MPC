@@ -1316,10 +1316,8 @@ sub parse_conditional {
      $grname, $current, $exclude, $comps, $count) = @_;
   my $status = 1;
   my $error;
-  my $add = 0;
-  my $type = $self->get_process_project_type($types);
-
-  $add = 1 if ($type eq $self->{'pctype'});
+  my $type = $self->matches_specific_scope($types);
+  my $add = (defined $type ? 1 : 0);
 
   while(<$fh>) {
     my $line = $self->preprocess_line($fh, $_);

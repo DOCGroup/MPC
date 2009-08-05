@@ -12,11 +12,12 @@ package WixProjectCreator;
 
 use strict;
 use ProjectCreator;
+use WinProjectBase;
 use XMLProjectBase;
 use GUID;
 
 use vars qw(@ISA);
-@ISA = qw(ProjectCreator);
+@ISA = qw(XMLProjectBase WinProjectBase ProjectCreator);
 
 # ************************************************************
 # Subroutine Section
