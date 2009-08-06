@@ -67,7 +67,7 @@ sub requires_forward_slashes {
 
 sub file_visible {
   ## We only want the project file visible to the workspace creator.
-  ## There can only be one and this is the it.
+  ## There can only be one and this is it.
   #my($self, $template) = @_;
   return $_[1] eq 'wb26';
 }

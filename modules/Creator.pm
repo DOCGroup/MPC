@@ -23,6 +23,25 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
+## Constants for use throughout the project
+use constant cplusplus => 'cplusplus';
+use constant csharp    => 'csharp';
+use constant java      => 'java';
+use constant vb        => 'vb';
+use constant website   => 'website';
+
+## The default language for MPC
+my $deflang = 'cplusplus';
+
+## A map of all of the allowed languages.  The 'website' value
+## is not here because it isn't really a language.  It is used
+## as a language internally by some project types though.
+my %languages = (cplusplus => 1,
+                 csharp    => 1,
+                 java      => 1,
+                 vb        => 1,
+                );  
+
 my $assign_key  = 'assign';
 my $gassign_key = 'global_assign';
 my %non_convert = ('prebuild'  => 1,
@@ -74,7 +93,7 @@ sub new {
   $self->{'name_modifier'}   = $nmodifier;
   $self->{'apply_project'}   = $applypj;
   $self->{'into'}            = $into;
-  $self->{'language'}        = defined $language ? $language : 'cplusplus';
+  $self->{'language'}        = defined $language ? $language : $deflang;
   $self->{'use_env'}         = $use_env;
   $self->{'expand_vars'}     = $expandvars;
   $self->{'convert_slashes'} = $self->convert_slashes();
@@ -1082,6 +1101,31 @@ sub relative {
   }
 
   return $value;
+}
+
+
+## Static function.  Returns the default language for MPC.
+sub defaultLanguage {
+  return $deflang;
+}
+
+
+## Static function.  Returns an array of valid languages.
+sub validLanguages {
+  return keys %languages;
+}
+
+
+## Static function.  The one and only argument is the language
+## string to check for validity.
+sub isValidLanguage {
+  return defined $languages{$_[0]};
+}
+
+
+sub languageIs {
+  #my($self, $language) = @_;
+  return $_[0]->{'language'} eq $_[1];
 }
 
 # ************************************************************

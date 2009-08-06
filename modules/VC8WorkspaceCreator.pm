@@ -22,10 +22,10 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my %lang_map = ('cplusplus' => 'Visual C#',
-                'csharp'    => 'Visual C#',
-                'vb'        => 'Visual Basic',
-                'java'      => 'Visual J#');
+my %lang_map = (Creator::cplusplus => 'Visual C#',
+                Creator::csharp    => 'Visual C#',
+                Creator::vb        => 'Visual Basic',
+                Creator::java      => 'Visual J#');
 
 # ************************************************************
 # Subroutine Section
@@ -88,7 +88,7 @@ sub post_workspace {
                                                         "$cwd/$project",
                                                         $dep);
             if (defined $relative) {
-              if (defined $lang && $lang eq 'cplusplus') {
+              if (defined $lang && $lang eq Creator::cplusplus) {
                 push(@read, $spc . '<ProjectReference' . $crlf .
                             $spc . "\tReferencedProjectIdentifier=" .
                             "\"\{$gmap{$dep}\}\"$crlf" .
@@ -133,7 +133,7 @@ sub adjust_names {
   ## For websites, the project needs to be the directory of the actual
   ## project file with a trailing slash.  The name needs a trailing slash
   ## too.
-  if ($lang eq 'website') {
+  if ($lang eq Creator::website) {
     $proj = $self->mpc_dirname($proj);
     $proj .= '\\';
     $name .= '\\';
@@ -178,9 +178,8 @@ sub print_inner_project {
   my($self, $fh, $gen, $currguid, $deps, $name, $name_to_guid_map, $proj_language, $cfgs) = @_;
 
   ## We need to perform a lot of work, but only for websites.
-  if ($proj_language eq 'website') {
+  if ($proj_language eq Creator::website) {
     my $crlf      = $self->crlf();
-    my $language  = $self->get_language();
     my $directory = ($name eq '.\\' ?
                        $self->get_workspace_name() . '\\' : $name);
 
@@ -220,7 +219,8 @@ sub print_inner_project {
       }
     }
     print $fh "\t\tVWDPort = \"1573\"", $crlf,
-              "\t\tDefaultWebSiteLanguage = \"", $lang_map{$language}, "\"", $crlf,
+              "\t\tDefaultWebSiteLanguage = \"",
+              $lang_map{$self->get_language()}, "\"", $crlf,
               "\tEndProjectSection", $crlf;
   }
   else {
