@@ -1,3 +1,27 @@
+Thu Aug  6 15:11:07 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * devtools/document_template.pl:
+        * modules/CCProjectCreator.pm:
+        * modules/Creator.pm:
+        * modules/MakeProjectCreator.pm:
+        * modules/MakeWorkspaceCreator.pm:
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/VC6ProjectCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/VC8ProjectCreator.pm:
+        * modules/VC8WorkspaceCreator.pm:
+        * modules/WB26ProjectCreator.pm:
+
+          Replaced all language related strings with constants stored in the
+          Creator base class.
+
+          Also, fixed a bug where a project that contained source files or
+          resource files for a language not supported by the project type
+          would be created.  Now, the project will be skipped if the project
+          type does not support the language setting.
+
 Wed Aug  5 18:41:55 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * MPC.ico:

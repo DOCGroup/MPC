@@ -22,27 +22,32 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my %info = ('cplusplus' => {'dllexe'   => 'makeexe',
-                            'dll'      => 'makedll',
-                            'template' => 'make',
-                           },
-            'csharp'    => {'dllexe'   => 'make.net',
-                            'dll'      => 'make.net',
-                            'template' => 'make.net',
-                           },
-            'java'      => {'dllexe'   => 'makeexe',
-                            'dll'      => 'makedll',
-                            'template' => 'make',
-                           },
-            'vb'        => {'dllexe'   => 'make.net',
-                            'dll'      => 'make.net',
-                            'template' => 'make.net',
-                           },
+my %info = (Creator::cplusplus => {'dllexe'   => 'makeexe',
+                                   'dll'      => 'makedll',
+                                   'template' => 'make',
+                                  },
+            Creator::csharp    => {'dllexe'   => 'make.net',
+                                   'dll'      => 'make.net',
+                                   'template' => 'make.net',
+                                  },
+            Creator::java      => {'dllexe'   => 'makeexe',
+                                   'dll'      => 'makedll',
+                                   'template' => 'make',
+                                  },
+            Creator::vb        => {'dllexe'   => 'make.net',
+                                   'dll'      => 'make.net',
+                                   'template' => 'make.net',
+                                   },
            );
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
+
+sub languageSupported {
+  return defined $info{$_[0]->get_language()};
+}
+
 
 sub escape_spaces {
   #my $self = shift;
@@ -73,10 +78,10 @@ sub fill_value {
     ## .mpt file (make.net.mpt for csharp and makedll.mpt for all
     ## others).
     my $language = $self->get_language();
-    if ($language eq 'java') {
+    if ($language eq Creator::java) {
       return 'java';
     }
-    elsif ($language eq 'csharp') {
+    elsif ($language eq Creator::csharp) {
       return 'gmcs';
     }
     else {

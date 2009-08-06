@@ -33,7 +33,7 @@ sub override_valid_component_extensions {
 
   ## Visual C++ 6.0 doesn't understand all of the extensions that MPC
   ## supports.
-  if ($comp eq 'source_files' && $self->get_language() eq 'cplusplus') {
+  if ($comp eq 'source_files' && $self->languageIs(Creator::cplusplus)) {
     return ["\\.cpp", "\\.cxx", "\\.c"];
   }
 
@@ -46,7 +46,7 @@ sub override_exclude_component_extensions {
 
   ## Visual C++ 6.0 doesn't understand all of the extensions that MPC
   ## supports.
-  if ($comp eq 'source_files' && $self->get_language() eq 'cplusplus') {
+  if ($comp eq 'source_files' && $self->languageIs(Creator::cplusplus)) {
     return ["_T\\.cpp", "_T\\.cxx"];
   }
 

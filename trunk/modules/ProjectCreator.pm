@@ -254,16 +254,16 @@ my %vbma = ('source_files' => [ 'subtype' ],
 # 5     Name of the tag for 'resource_files' for this language
 #        * This is special because it gets treated like source_files in that
 #          a project with only these files is a library/exe not "custom only".
-my %language = ('cplusplus' => [ \%cppvc, \%cppec, \%cppma, 'main', 1,
-                                 $cppresource ],
+my %language = (Creator::cplusplus => [ \%cppvc, \%cppec, \%cppma, 'main',
+                                        1, $cppresource ],
 
-                'csharp'    => [ \%csvc,  {},      \%csma,  'Main', 0,
-                                 $csresource ],
+                Creator::csharp    => [ \%csvc, {}, \%csma, 'Main', 0,
+                                        $csresource ],
 
-                'java'      => [ \%jvc,   {},      {},      'main', 0 ],
+                Creator::java      => [ \%jvc, {}, {}, 'main', 0 ],
 
-                'vb'        => [ \%vbvc,  {},      \%vbma,  'Main', 0,
-                                 $vbresource ],
+                Creator::vb        => [ \%vbvc, {}, \%vbma, 'Main', 0,
+                                        $vbresource ],
                );
 my %mains;
 
@@ -2786,7 +2786,7 @@ sub sift_files {
   ## The special actions taken based on $saverc only applies to
   ## C++ resource files.
   my $saverc = (!$alldir && $tag eq $self->get_resource_tag() &&
-                $self->get_language() eq 'cplusplus');
+                $self->languageIs(Creator::cplusplus));
 
   foreach my $ext (@$exts) {
     foreach my $file (grep(/$ext$/, @$files)) {
@@ -4279,6 +4279,8 @@ sub need_to_write_project {
   my $count = 0;
 
   ## We always write a project if the user has provided a verbatim.
+  ## We have no idea what that verbatim clause does, so we need to just
+  ## do what the user tells us to do.
   return 1 if (defined $self->{'verbatim'}->{$self->{'pctype'}});
 
   ## The order here is important, we must check for source or resource
@@ -4288,10 +4290,22 @@ sub need_to_write_project {
     my $names = $self->{$key};
     foreach my $name (keys %$names) {
       foreach my $key (keys %{$names->{$name}}) {
-        ## Return 1 if we have found a source file or a resource file.
-        ## Return 2 if we have found a custom input file (and thus no
-        ## source or resource files due to the foreach order).
-        return ($count >= 2 ? 2 : 1) if (defined $names->{$name}->{$key}->[0]);
+        ## See if the project contains a file that corresponds to this
+        ## component name.
+        if (defined $names->{$name}->{$key}->[0]) {
+          if ($count >= 2) {
+            ## Return 2 if we have found a custom input file (and thus no
+            ## source or resource files due to the foreach order).
+            return 2;
+          }
+          ## We have either source files or resource files, we need to
+          ## see if this project creator supports the current language.
+          ## If it doesn't then we don't need to create the project.
+          elsif ($self->languageSupported()) {
+            ## Return 1 if we have found a source file or a resource file.
+            return 1;
+          }
+        }
       }
     }
     $count++;
@@ -4675,7 +4689,7 @@ sub add_default_matching_assignments {
 
 sub reset_generating_types {
   my $self  = shift;
-  my $lang = $self->get_language();
+  my $lang  = $self->get_language();
   my %reset = ('valid_components'     => $language{$lang}->[0],
                'custom_only_removed'  => $language{$lang}->[0],
                'exclude_components'   => $language{$lang}->[1],
@@ -4716,9 +4730,8 @@ sub get_template_input {
   if ($self->get_static() == 1) {
     return $self->{'lib_template_input'}->{$lang}->{$tikey};
   }
-  else {
-    return $self->{'dll_template_input'}->{$lang}->{$tikey};
-  }
+
+  return $self->{'dll_template_input'}->{$lang}->{$tikey};
 }
 
 
@@ -5168,6 +5181,11 @@ sub getValidComponents {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub languageSupported {
+  #my $self = shift;
+  return $_[0]->get_language() eq Creator::cplusplus;
+}
 
 sub file_visible {
   #my($self, $template) = @_;
