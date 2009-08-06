@@ -17,17 +17,6 @@ use StringProcessor;
 use ProjectCreator;
 
 # ************************************************************
-# Data Section
-# ************************************************************
-
-my $deflang   = 'cplusplus';
-my %languages = ('cplusplus' => 1,
-                 'csharp'    => 1,
-                 'java'      => 1,
-                 'vb'        => 1,
-                );
-
-# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -59,7 +48,7 @@ sub printUsage {
   my $olen = length($spaces) + 12;
   my $len  = $olen;
   my $mlen = 77;
-  my @keys = sort keys %languages;
+  my @keys = sort Creator::validLanguages();
   for(my $i = 0; $i <= $#keys; $i++) {
     my $klen = length($keys[$i]);
     $len += $klen;
@@ -136,8 +125,8 @@ sub printUsage {
 "                       structure starting at <directory>.  This should be a\n" .
 "                       full path.\n" .
 "       -language       Specify the language preference; possible values are\n",
-"                       [", join(' ', sort keys %languages), "].  The default is\n".
-"                       $deflang.\n",
+"                       [", join(' ', sort(Creator::validLanguages())), "].  The default is\n".
+"                       " . Creator::defaultLanguage() . ".\n",
 "       -make_coexistence If multiple 'make' based project types are\n" .
 "                       generated, they will be named such that they can coexist.\n" .
 "       -name_modifier  Modify output names.  The pattern passed to this\n" .
@@ -202,7 +191,7 @@ sub completion_command {
             "'n/-ti/(dll lib dll_exe lib_exe)/:' ";
 
   $str .= "'n/-language/(";
-  my @keys = sort keys %languages;
+  my @keys = sort Creator::validLanguages();
   for(my $i = 0; $i <= $#keys; $i++) {
     $str .= $keys[$i];
     $str .= " " if ($i != $#keys);
@@ -243,7 +232,7 @@ sub options {
   my $nmodifier;
   my $into;
   my $hierarchy = 0;
-  my $language = ($defaults ? $deflang : undef);
+  my $language = ($defaults ? Creator::defaultLanguage() : undef);
   my $dynamic = ($defaults ? 1 : undef);
   my $comments = ($defaults ? 1 : undef);
   my $reldefs = ($defaults ? 1 : undef);
@@ -401,7 +390,7 @@ sub options {
       if (!defined $language) {
         $self->optionError('-language requires a language argument');
       }
-      elsif (!defined $languages{$language}) {
+      elsif (!Creator::isValidLanguage($language)) {
         $self->optionError("$language is not a valid language");
       }
     }

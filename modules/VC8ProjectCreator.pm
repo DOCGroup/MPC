@@ -21,34 +21,34 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my %info = ('cplusplus' => {'ext'      => '.vcproj',
-                            'dllexe'   => 'vc8exe',
-                            'libexe'   => 'vc8libexe',
-                            'dll'      => 'vc8dll',
-                            'lib'      => 'vc8lib',
-                            'template' => 'vc8',
-                           },
-            'csharp' => {'ext'      => '.csproj',
-                         'dllexe'   => 'vc8csharp',
-                         'libexe'   => 'vc8csharp',
-                         'dll'      => 'vc8csharp',
-                         'lib'      => 'vc8csharp',
-                         'template' => 'vc8csharp',
-                        },
-            'java'   => {'ext'      => '.vjsproj',
-                         'dllexe'   => 'vc8java',
-                         'libexe'   => 'vc8java',
-                         'dll'      => 'vc8java',
-                         'lib'      => 'vc8java',
-                         'template' => 'vc8java',
-                        },
-            'vb'     => {'ext'      => '.vbproj',
-                         'dllexe'   => 'vc8vb',
-                         'libexe'   => 'vc8vb',
-                         'dll'      => 'vc8vb',
-                         'lib'      => 'vc8vb',
-                         'template' => 'vc8vb',
-                        },
+my %info = (Creator::cplusplus => {'ext'      => '.vcproj',
+                                   'dllexe'   => 'vc8exe',
+                                   'libexe'   => 'vc8libexe',
+                                   'dll'      => 'vc8dll',
+                                   'lib'      => 'vc8lib',
+                                   'template' => 'vc8',
+                                  },
+            Creator::csharp => {'ext'      => '.csproj',
+                                'dllexe'   => 'vc8csharp',
+                                'libexe'   => 'vc8csharp',
+                                'dll'      => 'vc8csharp',
+                                'lib'      => 'vc8csharp',
+                                'template' => 'vc8csharp',
+                               },
+            Creator::java   => {'ext'      => '.vjsproj',
+                                'dllexe'   => 'vc8java',
+                                'libexe'   => 'vc8java',
+                                'dll'      => 'vc8java',
+                                'lib'      => 'vc8java',
+                                'template' => 'vc8java',
+                               },
+            Creator::vb     => {'ext'      => '.vbproj',
+                                'dllexe'   => 'vc8vb',
+                                'libexe'   => 'vc8vb',
+                                'dll'      => 'vc8vb',
+                                'lib'      => 'vc8vb',
+                                'template' => 'vc8vb',
+                               },
            );
 
 my %config = ('vcversion' => '8.00');
@@ -56,6 +56,11 @@ my %config = ('vcversion' => '8.00');
 # ************************************************************
 # Subroutine Section
 # ************************************************************
+
+sub languageSupported {
+  return defined $info{$_[0]->get_language()};
+}
+
 
 sub webapp_supported {
   #my $self = shift;

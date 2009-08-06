@@ -24,34 +24,34 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my %info = ('cplusplus' => {'ext'      => '.vcproj',
-                            'dllexe'   => 'vc7exe',
-                            'libexe'   => 'vc7libexe',
-                            'dll'      => 'vc7dll',
-                            'lib'      => 'vc7lib',
-                            'template' => 'vc7',
-                           },
-            'csharp'    => {'ext'      => '.csproj',
-                            'dllexe'   => 'vc7csharp',
-                            'libexe'   => 'vc7csharp',
-                            'dll'      => 'vc7csharp',
-                            'lib'      => 'vc7csharp',
-                            'template' => 'vc7csharp',
-                           },
-            'java'      => {'ext'      => '.vjsproj',
-                            'dllexe'   => 'vc7java',
-                            'libexe'   => 'vc7java',
-                            'dll'      => 'vc7java',
-                            'lib'      => 'vc7java',
-                            'template' => 'vc7java',
-                           },
-            'vb'        => {'ext'      => '.vbproj',
-                            'dllexe'   => 'vc7vb',
-                            'libexe'   => 'vc7vb',
-                            'dll'      => 'vc7vb',
-                            'lib'      => 'vc7vb',
-                            'template' => 'vc7vb',
-                           },
+my %info = (Creator::cplusplus => {'ext'      => '.vcproj',
+                                   'dllexe'   => 'vc7exe',
+                                   'libexe'   => 'vc7libexe',
+                                   'dll'      => 'vc7dll',
+                                   'lib'      => 'vc7lib',
+                                   'template' => 'vc7',
+                                  },
+            Creator::csharp    => {'ext'      => '.csproj',
+                                   'dllexe'   => 'vc7csharp',
+                                   'libexe'   => 'vc7csharp',
+                                   'dll'      => 'vc7csharp',
+                                   'lib'      => 'vc7csharp',
+                                   'template' => 'vc7csharp',
+                                  },
+            Creator::java      => {'ext'      => '.vjsproj',
+                                   'dllexe'   => 'vc7java',
+                                   'libexe'   => 'vc7java',
+                                   'dll'      => 'vc7java',
+                                   'lib'      => 'vc7java',
+                                   'template' => 'vc7java',
+                                  },
+            Creator::vb        => {'ext'      => '.vbproj',
+                                   'dllexe'   => 'vc7vb',
+                                   'libexe'   => 'vc7vb',
+                                   'dll'      => 'vc7vb',
+                                   'lib'      => 'vc7vb',
+                                   'template' => 'vc7vb',
+                                  },
            );
 
 my %config = ('vcversion'    => '7.00',
@@ -61,6 +61,11 @@ my %config = ('vcversion'    => '7.00',
 # ************************************************************
 # Subroutine Section
 # ************************************************************
+
+sub languageSupported {
+  return defined $info{$_[0]->get_language()};
+}
+
 
 sub get_info_hash {
   #my($self, $key) = @_;
@@ -89,7 +94,7 @@ sub fill_value {
     ## Since Visual Studio 2003 doesn't support Web Applications, this
     ## will never happen.  However, this code is shared by the vc8
     ## project type, so it can happen then.
-    return 'website' if ($self->get_assignment('webapp'));
+    return Creator::website if ($self->get_assignment('webapp'));
 
     ## Also for the vc8 project type, the language is stored in the
     ## project file as a comment when external C# references need to be
