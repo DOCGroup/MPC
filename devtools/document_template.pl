@@ -137,7 +137,9 @@ sub display_template {
 sub usageAndExit {
   print "document_template.pl v$version\n",
         "Usage: ", basename($0), " <template> [<html output> [language]]\n\n",
-        "language can be any of the valid language settings for MPC.\n";
+        "language defaults to ", Creator::defaultLanguage(),
+        ".  It can be any of the valid language settings\nfor MPC:\n",
+        join(' ', sort(Creator::validLanguages())), "\n";
   exit(0);
 }
 
@@ -162,13 +164,13 @@ if (!defined $output) {
 if (open($fh, $input)) {
   if (!defined $language) {
     if (index($input, 'vb') != -1) {
-      $language = 'vb';
+      $language = Creator::vb();
     }
-    elsif (index($input, 'csharp') != -1) {
-      $language = 'csharp';
+    elsif (index($input, 'csharp') != -1 || index($input, '.net') != -1) {
+      $language = Creator::csharp();
     }
     else {
-      $language = 'cplusplus';
+      $language = Creator::cplusplus();
     }
   }
 

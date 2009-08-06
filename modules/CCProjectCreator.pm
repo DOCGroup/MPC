@@ -33,7 +33,7 @@ sub override_valid_component_extensions {
   my $comp  = shift;
   my @array = @_;
 
-  if ($comp eq 'source_files' && $self->get_language() eq 'cplusplus') {
+  if ($comp eq 'source_files' && $self->languageIs(Creator::cplusplus)) {
     push(@array, "\\.cdb");
   }
 
