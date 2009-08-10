@@ -27,16 +27,20 @@ use strict;
 # ************************************************************
 
 sub translate {
-  my($version) = shift;
+  my $version = shift;
+
+  ## See if the version contains something other than numbers followed by
+  ## a decimal point and numbers.
   if ($version =~ /^(\d+\.\d+)([^\d].*)$/) {
     $version = $1;
-    my($post) = $2;
-    my($length) = length($post);
+    my $post = $2;
+    my $length = length($post);
 
+    ## Convert the non-conforming value to all numbers
     for(my $i = 0; $i < $length; ++$i) {
-      my($ch) = substr($post, $i, 1);
+      my $ch = substr($post, $i, 1);
       if ($ch =~ /[a-z]/i) {
-        my($digit) = ord(lc($ch)) - ord('a');
+        my $digit = ord(lc($ch)) - ord('a');
         $version .= $digit;
       }
       elsif ($ch =~ /\d/) {
@@ -47,9 +51,11 @@ sub translate {
       }
     }
 
+    ## If we have a good version number we need to make sure that the
+    ## minor version number does not exceed the value of a short unsigned
+    ## integer.
     if ($version =~ /(\d+)\.(\d+)/) {
-      my($major) = $1;
-      my($minor) = $2;
+      my($major, $minor) = ($1, $2);
       $minor =~ s/^\d+\.//;
       while($minor > 65535) {
         $minor = substr($minor, 0, length($minor) - 1);
