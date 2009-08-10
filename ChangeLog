@@ -1,3 +1,15 @@
+Mon Aug 10 21:40:58 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Return immediately from generate_default_target_names() if the
+          project has custom_only set to 1.  We need not waste time setting
+          the sharedname, staticname or exename.
+
+        * modules/WinVersionTranslator.pm:
+
+          Cleaned up and commented the code.
+
 Mon Aug 10 17:55:53 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/global.features:
