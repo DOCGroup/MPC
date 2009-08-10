@@ -2618,6 +2618,11 @@ sub find_main_file {
 sub generate_default_target_names {
   my $self = shift;
 
+  ## If this is a custom_only project, we need not waste time setting the
+  ## sharedname, staticname or exename.  Searching all of the files for a
+  ## main function is very time consuming and unnecessary.
+  return undef if ($self->get_assignment('custom_only'));
+
   if (!$self->exe_target()) {
     my $sharedname = $self->get_assignment('sharedname');
     my $staticname = $self->get_assignment('staticname');
