@@ -146,7 +146,7 @@ sub printUsage {
 "                       This option can be used multiple times to add multiple\n" .
 "                       variables.\n" .
 "       -relative_file  Specifies the relative file to read before processing.\n" .
-"                       The default feature file is default.rel under the\n" .
+"                       The default relative file is default.rel under the\n" .
 "                       config directory.\n" .
 "       -static         Specifies that only static projects will be generated.\n" .
 "                       By default, only dynamic projects are generated.\n" .

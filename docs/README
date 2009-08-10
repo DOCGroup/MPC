@@ -310,6 +310,7 @@ specific        This scope allows assignments that are specific to a
                 vc8      |         |      |     X     |    X    |
                 vc9      |         |      |     X     |    X    |
                 vc10     |         |      |     X     |    X    |
+                wix      |         |      |           |    X    |
 
                 ? - indicates that this is controled by the MPC_GHS_UNIX
                 environment variable.
@@ -450,13 +451,13 @@ automatic_out       If set to 1, then attempt to automatically determine
                     to 0, then no files are automatically added to the
                     various components.  If omitted, automatic_out is
                     assumed to be 1.
+command             The name of the command that should be used to process
+                    the input files for the custom type.
+commandflags        Any options that should be passed to the command go here.
 dependent           If this is given a value, then a dependency upon that
                     value will be given to all of the generated files.
                     The default for this is unset and no dependency will be
                     generated.
-command             The name of the command that should be used to process
-                    the input files for the custom type.
-commandflags        Any options that should be passed to the command go here.
 inputext            This is a comma separated list of input file extensions
                     that belong to the command.
 keyword             This is a special assignment that takes the form of the
@@ -539,23 +540,23 @@ postcommand         Allows a user to execute arbitrary commands after
                     command, commandflags, dependent, postcommand and
                     output_option settings:
 
-                    <%temporary%> - A temporary file name.
-                    <%cat%>       - Platform non-specific command to cat a file.
-                    <%cp%>        - Platform non-specific copy command.
-                    <%mkdir%>     - Platform non-specific mkdir command.
-                    <%mv%>        - Platform non-specific move command.
-                    <%rm%>        - Platform non-specific delete command.
-                    <%nul%>       - Platform non-specific null device.
-                    <%gt%>        - Project non-specific greater than sign.
-                    <%lt%>        - Project non-specific less than sign.
                     <%and%>       - Project non-specific and sign.
-                    <%or%>        - Project non-specific or sign.
-                    <%quote%>     - Project non-specific double quote.
-                    <%gendir%>    - The output directory specified by the
-                                    gendir setting.
+                    <%cat%>       - Platform non-specific command to cat a file.
                     <%cmdsep%>    - Project/platform non-specific command
                                     separator which always runs the right-hand
                                     side command.
+                    <%cp%>        - Platform non-specific copy command.
+                    <%gendir%>    - The output directory specified by the
+                                    gendir setting.
+                    <%gt%>        - Project non-specific greater than sign.
+                    <%lt%>        - Project non-specific less than sign.
+                    <%nul%>       - Platform non-specific null device.
+                    <%mkdir%>     - Platform non-specific mkdir command.
+                    <%mv%>        - Platform non-specific move command.
+                    <%or%>        - Project non-specific or sign.
+                    <%quote%>     - Project non-specific double quote.
+                    <%rm%>        - Platform non-specific delete command.
+                    <%temporary%> - A temporary file name.
 
                     If any referenced pseudo template variable does
                     not contain a value, then the particular setting

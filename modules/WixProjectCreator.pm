@@ -58,7 +58,7 @@ sub fill_value {
       $source = $self->get_assignment('libout');
     }
     else {
-      $source = $self->get_assignment('install');
+      $source = $self->get_assignment('exeout');
     }
 
     ## Check for a variable in the source directory. We have to make
