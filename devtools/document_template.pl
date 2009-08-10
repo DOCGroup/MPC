@@ -39,7 +39,7 @@ require StringProcessor;
 my %keywords;
 my %arrow_op;
 my $doc_ext  = '.txt';
-my $version  = '1.2';
+my $version  = '1.3';
 
 # ******************************************************************
 # Subroutine Section
@@ -137,8 +137,11 @@ sub display_template {
 sub usageAndExit {
   print "document_template.pl v$version\n",
         "Usage: ", basename($0), " <template> [<html output> [language]]\n\n",
-        "language defaults to ", Creator::defaultLanguage(),
-        ".  It can be any of the valid language settings\nfor MPC:\n",
+        "html output - This defaults to the name of the template file ",
+        "with the .mpd\n              extenion replaced with .html.\n",
+        "language    - This defaults to the language for which the ",
+        "template is designed.\n              It can be any of the valid ",
+        "language settings for MPC:\n              ",
         join(' ', sort(Creator::validLanguages())), "\n";
   exit(0);
 }
@@ -168,6 +171,9 @@ if (open($fh, $input)) {
     }
     elsif (index($input, 'csharp') != -1 || index($input, '.net') != -1) {
       $language = Creator::csharp();
+    }
+    elsif (index($input, 'java') != -1) {
+      $language = Creator::java();
     }
     else {
       $language = Creator::cplusplus();

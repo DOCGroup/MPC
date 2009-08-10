@@ -1,7 +1,69 @@
+Mon Aug 10 17:55:53 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/global.features:
+
+          Added disabled features that were missing.
+
+        * devtools/document_template.pl:
+
+          Updated the usage and added automatic language selection for java.
+
+        * docs/README:
+        * docs/USAGE:
+
+          Updated to reflect the current state of MPC.
+
+        * docs/html:
+        * docs/html/MakeProjectCreator.css:
+        * docs/html/MakeProjectCreator.html:
+
+          Converted the Frame Maker source into HTML and updated to reflect
+          the current state of MPC.
+
+        * docs/templates/wix.txt:
+
+          Added incomplete documentation for the WIX template variables.
+
+        * modules/GHSProjectCreator.pm:
+
+          Corrected poorly written code.
+
+        * modules/Options.pm:
+
+          Fixed a bug in the -relative_file portion of the usage output.
+
+        * modules/ProjectCreator.pm:
+
+          Added the ability to use the 'temporary' pseudo template variable
+          outside of a custom_type context.  It will contain a different
+          value than 'temporary' referenced from within the custom_type
+          context.
+
+        * modules/WixProjectCreator.pm:
+
+          Changed to use 'exeout' instead of the deprecated 'install'
+          project variable name.
+
+        * docs/MakeProjectCreator.pdf:
+        * docs/fm:
+        * docs/fm/MakeProjectCreator.fm:
+        * docs/fm/images:
+        * docs/fm/images/OCILOGO_bw_book.eps:
+        * docs/fm/images/mpc.fig:
+        * docs/fm/images/mpc.gif:
+        * docs/fm/images/mpc_mtiff.eps:
+        * docs/fm/images/mwc.fig:
+        * docs/fm/images/mwc.gif:
+        * docs/fm/images/mwc_mtiff.eps:
+        * docs/html/MakeProjectCreator.fm:
+
+          Removed these files.
+
 Fri Aug  7 09:23:58 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc8platforms.mpt:
-          Removed release_link_options for the SuperSonic SDK, the options are not ok
+          Removed release_link_options for the SuperSonic SDK, the options
+          are not ok
 
 Thu Aug  6 15:11:07 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
