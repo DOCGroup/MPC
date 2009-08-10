@@ -115,13 +115,11 @@ sub fill_value {
     ## value for Windows or UNIX.
     $value = (defined $ENV{$ghsunix} ? '/' : '\\');
   }
-  else {
-    if (!defined $ENV{$ghsunix}) {
-      ## If we're on Windows, we need an "or" command that will reset the
-      ## errorlevel so that a mkdir on a directory that already exists
-      ## doesn't cause the build to cease.
-      $value = ' || type nul' if ($name eq 'postmkdir');
-    }
+  elsif ($name eq 'postmkdir') {
+    ## If we're on Windows, we need an "or" command that will reset the
+    ## errorlevel so that a mkdir on a directory that already exists
+    ## doesn't cause the build to cease.
+    $value = ' || type nul' if (!defined $ENV{$ghsunix});
   }
 
   return $value;
