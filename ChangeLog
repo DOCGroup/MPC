@@ -1,3 +1,19 @@
+Tue Aug 11 16:08:20 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/html/MakeProjectCreator.html:
+
+          Added a $Id$ line.
+
+        * modules/ProjectCreator.pm:
+
+          Made minor performance enhancements.
+
+        * modules/WB26WorkspaceCreator.pm:
+
+          Added code to only put top-level dependencies in the project
+          files.  This build tool doesn't handle indirectly duplicated
+          project dependencies very well.
+
 Mon Aug 10 21:40:58 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

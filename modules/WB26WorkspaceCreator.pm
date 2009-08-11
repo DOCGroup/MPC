@@ -74,6 +74,10 @@ sub post_workspace {
   my($self, $fh, $creator) = @_;
   my $crlf = $self->crlf();
 
+  ## Clear out the seen dependency hash for use within the
+  ## add_dependencies method.
+  $self->{'seen_deps'} = {};
+
   ## Print out the project dependencies
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     print $fh "$project$crlf";
@@ -125,6 +129,15 @@ sub add_dependencies {
   for(my $i = 0; $i < 2; $i++) {
     my $fh = new FileHandle();
     if (open($fh, $outfile)) {
+      ## Get the dependencies and store them based on the directory of
+      ## the project file.  We will check them later.
+      my $deps = $self->get_validated_ordering($proj);
+      my $key = $self->mpc_basename($self->mpc_dirname($proj));
+      $self->{'seen_deps'}->{$key} = {};
+      foreach my $dep (@$deps) {
+        $self->{'seen_deps'}->{$key}->{$dep} = 1;
+      }
+
       my @read = ();
       my $cwd  = $self->getcwd();
       while(<$fh>) {
@@ -133,12 +146,30 @@ sub add_dependencies {
         ## setting, and the 'enable_subprojects' template variable.
         if (/MPC\s+ADD\s+DEPENDENCIES/) {
           my $crlf = $self->crlf();
-          my $deps = $self->get_validated_ordering($proj);
-          foreach my $dep (@$deps) {
-            my $relative = $self->get_relative_dep_file($creator,
-                                                        "$cwd/$proj", $dep);
-            push(@read, "$pre$dep$post$crlf") if (defined $relative);
+          my %seen = ();
+          my @lines;
+          foreach my $dep (reverse @$deps) {
+            ## If we've seen this dependency, we don't need to add it
+            ## again.  The build tool will handle it correctly.
+            if (!$seen{$dep}) {
+              my $relative = $self->get_relative_dep_file($creator,
+                                                          "$cwd/$proj", $dep);
+              ## Since we're looking at the dependencies in reverse order
+              ## now, we need to unshift them into another array to keep
+              ## the correct order.
+              unshift(@lines, "$pre$dep$post$crlf") if (defined $relative);
+
+              ## We've now seen this dependency and all of the
+              ## projects upon which this one depends.
+              $seen{$dep} = 1;
+              foreach my $key (keys %{$self->{'seen_deps'}->{$dep}}) {
+                $seen{$key} = 1;
+              }
+            }
           }
+
+          ## Add the dependency lines to the project file
+          push(@read, @lines);
         }
         else {
           push(@read, $_);

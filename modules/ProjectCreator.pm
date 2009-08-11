@@ -2206,7 +2206,9 @@ sub add_optional_filename_portion {
         my %values;
         @values{split(/\s+/, $value)} = () if (defined $value);
 
-        ## See if the option or options are contained in the value
+        ## See if the option or options are contained in the value.  We
+        ## need to call this even if $value is not defined due to the
+        ## ability to negate optional parameters.
         if ($self->process_optional_option($opt, \%values)) {
           ## Add the optional portion
           push(@$array, @{$self->{'generated_exts'}->{$gentype}->{'optional'}->{$tag}->{$name}->{$opt}});
@@ -2220,10 +2222,11 @@ sub add_optional_filename_portion {
 sub get_pre_keyword_array {
   my($self, $keyword, $gentype, $tag, $file) = @_;
 
-  ## There's nothing to return if this is not defined
-  return () if (!defined $self->{'generated_exts'}->{$gentype}->{$keyword});
-
-  ## Get the general pre extension array
+  ## Get the general pre extension array.
+  ## $self->{'generated_exts'}->{$gentype}->{$keyword} is guaranteed to
+  ## be defined due to the defaulting that is done in
+  ## parse_define_custom() and the only three calls to this method use
+  ## valid $keyword values.
   my @array = @{$self->{'generated_exts'}->{$gentype}->{$keyword}};
 
   ## Add the component specific pre extension array
@@ -2325,10 +2328,8 @@ sub generated_filenames {
     my $good;
     if (defined $inputexts) {
       foreach my $inputext (@$inputexts) {
-        my $ext = $inputext;
-        $ext =~ s/\\//g;
         foreach my $extreg (@{$self->{'valid_components'}->{$tag}}) {
-          if ($ext =~ /$extreg$/) {
+          if ($inputext eq $extreg) {
             $tag = $generic_key;
             $good = 1;
             last;
