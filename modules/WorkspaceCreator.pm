@@ -85,7 +85,7 @@ sub new {
   $self->{'scoped_basedir'}      = undef;
 
   ## These are static throughout processing
-  $self->{'coexistence'}         = $makeco;
+  $self->{'coexistence'}         = $self->requires_make_coexistence() ? 1 : $makeco;
   $self->{'for_eclipse'}         = $foreclipse;
   $self->{'generate_dot'}        = $gendot;
   $self->{'generate_ins'}        = $genins;
@@ -116,7 +116,7 @@ sub new {
     $self->warning("The -hierarchy option is unnecessary " .
                    "for the " . $self->{'wctype'} . " type.");
   }
-  if ($self->make_coexistence() && !$self->supports_make_coexistence()) {
+  if ($self->{'coexistence'} && !$self->supports_make_coexistence()) {
     $self->warning("Using the -make_coexistence option has " .
                    "no effect on the " . $self->{'wctype'} . " type.");
   }
@@ -2267,6 +2267,12 @@ sub relative {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub requires_make_coexistence {
+  #my $self = shift;
+  return 0;
+}
+
 
 sub supports_make_coexistence {
   #my $self = shift;
