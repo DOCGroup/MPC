@@ -1,3 +1,22 @@
+Wed Aug 12 22:29:21 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/WixWorkspaceCreator.pm:
+
+          Cleaned up code.
+
+        * modules/ProjectCreator.pm:
+
+          Reverted one of the performance enhancements from yesterday.  It
+          made a faulty assumption that caused issue with the DDS builds.
+
+        * modules/WB26WorkspaceCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Added a 'requires_make_coexistence' method to always use
+          -make_coexistence without having to pass the option on the command
+          line.
+
 Wed Aug 12 17:56:20 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/gacutil.mpb:

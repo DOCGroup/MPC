@@ -22,6 +22,11 @@ use vars qw(@ISA);
 # Subroutine Section
 # ************************************************************
 
+sub requires_make_coexistence {
+  #my $self = shift;
+  return 1;
+}
+
 sub supports_make_coexistence {
   #my $self = shift;
   return 1;

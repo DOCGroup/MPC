@@ -2328,8 +2328,10 @@ sub generated_filenames {
     my $good;
     if (defined $inputexts) {
       foreach my $inputext (@$inputexts) {
+        my $ext = $inputext;
+        $ext =~ s/\\//g;
         foreach my $extreg (@{$self->{'valid_components'}->{$tag}}) {
-          if ($inputext eq $extreg) {
+          if ($ext =~ /$extreg$/) {
             $tag = $generic_key;
             $good = 1;
             last;
