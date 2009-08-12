@@ -1,3 +1,8 @@
+Wed Aug 12 17:56:20 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/gacutil.mpb:
+          Use prop:microsoft
+
 Wed Aug 12 12:48:20 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * docs/html/MakeProjectCreator.html:
