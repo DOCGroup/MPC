@@ -31,16 +31,15 @@ sub workspace_file_extension {
 }
 
 sub workspace_file_name {
-  my($self) = shift;
-  my($name) = $self->get_workspace_name();
-
-  return $self->get_modified_workspace_name($name, '.wxi');
+  my $self = shift;
+  return $self->get_modified_workspace_name($self->get_workspace_name(),
+                                            '.wxi');
 }
 
 sub pre_workspace {
   my($self, $fh) = @_;
-  my($crlf) = $self->crlf();
-  my($name) = $self->get_workspace_name();
+  my $crlf = $self->crlf();
+  my $name = $self->get_workspace_name();
 
   ## Begin the project definition for the workspace
   print $fh '<?xml version="1.0" encoding="utf-8" standalone="yes"?>', $crlf,
@@ -48,48 +47,35 @@ sub pre_workspace {
 }
 
 sub write_comps {
-  my($self)     = shift;
-  my($fh)       = shift;
-  my($projects) = $self->get_projects();
-  my(@list)     = $self->sort_dependencies($projects);
-  my($crlf)     = $self->crlf();
+  my($self, $fh) = @_;
+  my $crlf = $self->crlf();
 
 
   # print the target for clean
-  foreach my $project (@list) {
+  foreach my $project ($self->sort_dependencies($self->get_projects())) {
     print $fh "  <?include $project ?>", $crlf;
   }
 }
 
 sub post_workspace {
   my($self, $fh) = @_;
-  my($projects)  = $self->get_projects();
-  my($info)      = $self->get_project_info();
-  my(@list)      = $self->sort_dependencies($projects);
-  my($crlf)      = $self->crlf();
-  my($wname)      = $self->get_workspace_name();
+  my $info = $self->get_project_info();
+  my $crlf = $self->crlf();
 
   # Create a component group consisting of all the projects.
   print $fh $crlf,
             '  <Fragment>', $crlf,
-            '    <ComponentGroup Id="', $wname, '">', $crlf;
+            '    <ComponentGroup Id="',
+            $self->get_workspace_name(), '">', $crlf;
 
-  foreach my $project (@list) {
-    my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, @cfgs) = @{$$info{$project}};
-    my($name, $proj) = $self->adjust_names($pname, $project, $language);
-
-    print $fh '      <ComponentRef Id="', $name, '" />', $crlf;
+  foreach my $project ($self->sort_dependencies($self->get_projects())) {
+    print $fh '      <ComponentRef Id="',
+              $$info{$project}->[0], '" />', $crlf;
   }
 
   print $fh '    </ComponentGroup>', $crlf,
             '  </Fragment>', $crlf,
             '</Include>', $crlf;
-}
-
-sub adjust_names {
-  my($self, $name, $proj, $lang) = @_;
-  $proj =~ s/\//\\/g;
-  return $name, $proj;
 }
 
 1;

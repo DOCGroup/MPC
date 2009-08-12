@@ -39,7 +39,7 @@ sub workspace_file_extension {
 
 
 sub workspace_file_name {
-  my($self) = shift;
+  my $self = shift;
   return $self->get_modified_workspace_name('Makefile', '.bmak');
 }
 
