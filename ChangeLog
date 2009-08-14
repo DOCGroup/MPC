@@ -1,3 +1,8 @@
+Fri Aug 14 12:43:22 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/udm.mpb
+          Use DisableSpecificWarnings
+
 Fri Aug 14 12:17:36 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/em3.mpd:
