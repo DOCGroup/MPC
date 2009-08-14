@@ -1,3 +1,15 @@
+Fri Aug 14 12:17:36 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/em3.mpd:
+        * templates/nmake.mpd:
+        * templates/vc6.mpd:
+        * templates/vc7.mpd:
+
+          Support the DisableSpecificWarnings template variable as it is in
+          vc8 and higher.  Since support isn't built directly into the
+          project format, we use the /wd command line option for each
+          warning number supplied.
+
 Fri Aug 14 02:20:11 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * rpm:
