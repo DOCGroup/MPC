@@ -11,8 +11,8 @@ project : xerces {
      midl_includes += $(GME_ROOT) $(GME_ROOT)/Interfaces .
   }
 
-  specific(prop:microsoft) {
-    compile_flags += /wd4251
+  specific(promp:microsoft) {
+    DisableSpecificWarnings += 4251
   }
 
   Define_Custom(UDM) {
