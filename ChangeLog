@@ -1,3 +1,28 @@
+Fri Aug 14 18:46:11 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/pcre.mpb:
+        * config/pcreposix.mpb:
+
+          Added the ability to specify a version for the pcre libraries.
+
+        * config/udm.mpb:
+
+          Fixed a typo.
+
+        * devtools/document_template.pl:
+
+          Fixed a bug where mixed case template variables used in a foreach
+          would not be handled correctly.
+
+        * docs/templates/vc7.txt:
+
+          Documented the DisableSpecificWarnings template variable.
+
+        * rpm/MPC.spec:
+        * rpm/buildrpm.sh:
+
+          Made packager dynamic based on who's actually creating the RPM.
+
 Fri Aug 14 12:43:22 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/udm.mpb
