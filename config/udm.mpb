@@ -11,7 +11,7 @@ project : xerces {
      midl_includes += $(GME_ROOT) $(GME_ROOT)/Interfaces .
   }
 
-  specific(promp:microsoft) {
+  specific(prop:microsoft) {
     DisableSpecificWarnings += 4251
   }
 

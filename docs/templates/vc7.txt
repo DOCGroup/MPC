@@ -1,4 +1,4 @@
-// Current as of 4/04/2008
+// Current as of 8/14/2009
 // This defines the role of all the template variables specific to the
 // 'vc7' and 'vc71' project types.
 //
@@ -14,6 +14,7 @@ debug_format = This setting specifies the "Debug Information Format" found in th
 debug_prj = This is an internally used template variable to determine if the configuration originated as "Debug". In the event that the 'optimize' template variable is overridden, debug_prj allows the correct run-time library to be chosen.
 defines = Macros that are specific to a particular configuration.
 detect64bitportabilityproblems = This corresponds to the C/C++ Code Generation property "Detect 64-bit Portability Issues". The boolean value specifies the pull-down value in the IDE.
+disablespecificwarnings = A space separated list of warning numbers to be disabled.
 enablefunctionlevellinking = This corresponds to the C/C++ Code Generation property "Enable Function-Level Linking". The boolean value specifies the pull-down value in the IDE.
 encoding = Specifies the XML encoding for the generated .vcproj file.
 exceptions = This setting corresponds to the C/C++ Code Generation property "Enable C++ Exceptions". The boolean value specifies the pull-down value in the IDE.
