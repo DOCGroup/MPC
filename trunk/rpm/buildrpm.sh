@@ -30,6 +30,24 @@ while [ ! -x $loc/mpc.pl ]; do
   loc=`dirname $loc`
 done
 
+## Build up the packager name and email address
+if [ -z "REPLYTO" ]; then
+  DOMAIN=`hostname | sed 's/[^\.][^\.]*\.//'`
+  if [ -z "$DOMAIN" ]; then
+    DOMAIN=`grep '^search' /etc/resolv.conf | sed 's/.* //'`
+  fi
+  REPLYTO="$LOGNAME@$DOMAIN"
+fi
+PACKAGER=`grep $LOGNAME /etc/passwd | cut -d: -f5`
+if [ -z "$PACKAGER" ]; then
+  PACKAGER=$CL_USERNAME
+fi
+if [ -z "$PACKAGER" ]; then
+  PACKAGER="<$REPLYTO>"
+else
+  PACKAGER="$PACKAGER <$REPLYTO>"
+fi
+
 ## Save the MPC version
 VERSION=`$loc/mpc.pl --version | sed 's/.*v//'`
 
@@ -42,7 +60,11 @@ MDIR=MPC-$VERSION
 ## This corresponds to BuildRoot in MPC.spec
 BDIR=/tmp/mpc
 
-## The directory where RPM
+## This is the final install directory and corresponds to the %files section
+## of MPC.spec
+FDIR=/usr/lib/MPC
+
+## The directory where RPM will place the resulting file
 if [ -x /usr/src/redhat ]; then
   RPMLOC=/usr/src/redhat
 else
@@ -52,12 +74,12 @@ fi
 ## Create our working directory and make the spec file
 mkdir -p $WDIR
 cd $WDIR
-sed "s/VERSION/$VERSION/" $loc/rpm/MPC.spec > MPC.spec
+sed "s/VERSION/$VERSION/; s/PACKAGER/$PACKAGER/; s!FINALDIR!$FDIR!" $loc/rpm/MPC.spec > MPC.spec
 
 ## Make a copy of the original MPC source to the new directory
-mkdir -p $MDIR/usr/lib/MPC
+mkdir -p $MDIR/$FDIR
 cd $loc
-tar --exclude=.svn -cf - . | (cd $WDIR/$MDIR/usr/lib/MPC; tar -xf -)
+tar --exclude=.svn -cf - . | (cd $WDIR/$MDIR/$FDIR; tar -xf -)
 
 ## Create the build source tar.bz2
 cd $WDIR

@@ -241,7 +241,7 @@ if (open($fh, $input)) {
               $vname =~ s/\s.*//;
               $vname =~ s/s$// if ($remove_s);
 
-              $foreach[$findex] = $vname;
+              $foreach[$findex] = lc($vname);
               $tvar = undef;
             }
             elsif ($name eq 'if') {
@@ -260,6 +260,7 @@ if (open($fh, $input)) {
                 }
               } while($retry);
               $vname =~ s/\s*,.*//;
+              $vname =~ s/\)//g;
 
               if ($vname !~ /^\s*$/) {
                 $name = lc($vname);

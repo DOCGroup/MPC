@@ -8,7 +8,7 @@ BuildRoot: /tmp/mpc
 Source: %{name}-%{version}.tar.bz2
 URL: http://www.ociweb.com/products/mpc
 Vendor: Object Computing, Inc.
-Packager: Chad Elliott <elliott_c@ociweb.com>
+Packager: PACKAGER
 buildarch: noarch
 %description
 MPC (Make, Project and workspace Creator) is an open source tool, developed
@@ -22,9 +22,9 @@ specific project files from a common baseline.
 %install
 tar cf - * | (cd $RPM_BUILD_ROOT && tar xf -)
 %post
-ln -sf /usr/lib/MPC/mwc.pl /usr/bin
-ln -sf /usr/lib/MPC/mpc.pl /usr/bin
+ln -sf FINALDIR/mwc.pl /usr/bin
+ln -sf FINALDIR/mpc.pl /usr/bin
 %postun
 rm -f /usr/bin/mwc.pl /usr/bin/mpc.pl
 %files
-/usr/lib/MPC
+FINALDIR
