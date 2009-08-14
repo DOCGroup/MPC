@@ -1,3 +1,11 @@
+Fri Aug 14 02:20:11 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * rpm:
+        * rpm/MPC.spec:
+        * rpm/buildrpm.sh:
+
+          Added the ability to create an RPM file out of the MPC source.
+
 Wed Aug 12 22:29:21 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/BMakeWorkspaceCreator.pm:
