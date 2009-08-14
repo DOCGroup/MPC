@@ -37,8 +37,8 @@
 <%if(!custom_only)%>
 			<Tool
 				Name="VCCLCompilerTool"
-<%if(compile_flags)%>
-				AdditionalOptions="<%compile_flags%>"
+<%if(compile_flags || DisableSpecificWarnings)%>
+				AdditionalOptions="<%compile_flags%><%foreach(DisableSpecificWarnings)%> /wd<%DisableSpecificWarning%><%endfor%>"
 <%endif%>
 <%if(optimize)%>
 				Optimization="<%optimize%>"
