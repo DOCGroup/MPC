@@ -5367,7 +5367,8 @@ sub warn_useless_project {
 }
 
 sub get_properties {
-  return {};
+  my $self = shift;
+  return {'static' => $self->get_static()};
 }
 
 1;
