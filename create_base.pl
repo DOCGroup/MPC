@@ -148,8 +148,10 @@ sub usageAndExit {
   print STDERR "$str\n" if (defined $str);
   print STDERR "Create Base Project v$version\n",
                "Usage: ", basename($0), " <mpc files> <output file or ",
-               "directory>\n\nThis is only useful if the project ",
-               "explictly sets sharedname or staticname.\n";
+               "directory>\n\nThis script will create a base project ",
+               "based on the contents of the\nsupplied MPC file.  ",
+               "This is only useful if the project ",
+               "explictly sets\nsharedname or staticname.\n";
   exit(0);
 }
 
@@ -181,8 +183,8 @@ else {
 
   ## Print the usage and exit if there is no input, output or the input
   ## file looks like an option.
-  usageAndExit() if (!defined output ||
-                     !defined $input || index($input, '-') == 0);
+  usageAndExit() if (!defined $output ||
+                     !defined $input  || index($input, '-') == 0);
 
   ## If the output file is a directory, we will create the output file
   ## name based on the input file.

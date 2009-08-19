@@ -1844,6 +1844,11 @@ sub collect_data {
   $prjc->update_project_info($self, 1, ['custom_only']);
   $prjc->update_project_info($self, 1, ['nocross']);
 
+  ## For VC8 to be able to add references to managed DLL's to the current
+  ## managed DLL project (if it is one), we need to keep track of whether
+  ## the project is 'managed' or not.
+  $prjc->update_project_info($self, 1, ['managed']);
+
   ## Some Windows based projects can't deal with certain version
   ## values.  So, for those we provide a translated version.
   my $version = $prjc->get_assignment('version');

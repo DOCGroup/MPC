@@ -252,7 +252,7 @@ Wed Apr 23 14:31:32 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
           Renamed wb26wrproject to wb26
 
         * modules/ProjectCreator.pm:
-          Changed from Chad Elliot to make the make_coexistence
+          Changed from Chad Elliott to make the make_coexistence
           commandline flag available in the template
 
         * modules/WB26ProjectCreator.pm:
@@ -629,7 +629,7 @@ Fri Mar  7 14:51:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
           because on OpenVMS all filenames are returned lower case by perl
           and the after specified by the user is mixed case which
           resulted in the fact that the after just didn't work
-          on OpenVMS. Thanks to Chad Elliot for reviewing the patches
+          on OpenVMS. Thanks to Chad Elliott for reviewing the patches
           and point out the possible performance problems of my
           original changes
 
@@ -670,7 +670,7 @@ Wed Feb 27 14:09:25 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
           On OpenVMS all filenames are returned lower case. The dynamic loading
           of creators then fails. Addressed this by opening the creator file
           and read the first line, it normally starts with package and after
-          that the package name. Thanks to Chad Elliot for this idea and
+          that the package name. Thanks to Chad Elliott for this idea and
           reviewing the proposed change.
 
 Fri Feb 22 14:49:25 UTC 2008  Adam Mitz  <mitza@ociweb.com>
@@ -800,7 +800,7 @@ Thu Jan 24 16:01:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/WB26ProjectCreator.pm:
         * modules/WorkspaceCreator.pm:
-          Committed fix of Chad Elliot so that the generation of the build
+          Committed fix of Chad Elliott so that the generation of the build
           order for the wb26 project type does work.
 
         * modules/WB26WorkspaceCreator.pm:
@@ -867,7 +867,7 @@ Tue Jan 22 08:48:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
           The WindRiver workbench requires all paths to have forward slashes,
           also on Windows. Added a requires_forward_slashes method so that
           the project creator can indicate that forward slashes has to be
-          used. Thanks to Chad Elliot for helping with this, this fixes
+          used. Thanks to Chad Elliott for helping with this, this fixes
           bugzilla 3201
 
 Tue Jan 22 08:27:12 UTC 2008  Johnny Willemsen  <jwillemsen@remedy.nl>
