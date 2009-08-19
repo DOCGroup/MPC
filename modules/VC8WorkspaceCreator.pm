@@ -57,10 +57,14 @@ sub post_workspace {
   my @projects = $self->sort_dependencies($self->get_projects(), 0);
   my %gmap;
 
-  ## Store a map of the project name to project guid
+  ## Store a map of the project name to project guid and whether or not
+  ## it is suitable to be referenced.  Adding a reference to a
+  ## non-managed c++ library or a "utility" project causes a warning in
+  ## Visual Studio 2008 and higher.
   foreach my $project (@projects) {
     my($name, $deps, $guid, $lang, $custom_only, $nocross, $managed) = @{$$pjs{$project}};
-    $gmap{$name} = [$guid, $managed || $lang ne Creator::cplusplus];
+    $gmap{$name} = [$guid, !$custom_only && ($managed ||
+                                             $lang ne Creator::cplusplus)];
   }
 
   ## Now go through the projects and check for the need to add external
