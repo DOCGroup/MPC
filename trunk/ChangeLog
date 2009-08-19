@@ -1,3 +1,13 @@
+Wed Aug 19 14:28:52 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * docs/html/MakeProjectCreator.html:
+        * modules/ProjectCreator.pm:
+
+          Added a 'static' property that can be used within the 'specifc'
+          and 'conditional' clauses.  The 'static' property will only be set
+          if the -static option was used on the command line.
+
 Wed Aug 19 13:49:34 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/VC8WorkspaceCreator.pm:
