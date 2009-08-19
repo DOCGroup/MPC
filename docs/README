@@ -289,8 +289,9 @@ specific        This scope allows assignments that are specific to a
                 specified.
 
                 The following property names are available: borland, make,
-                microsoft, and windows.  The table below shows which
-                properties apply to which project types.
+                microsoft, windows, and static.  The table below shows which
+                properties apply to which project types.  The static
+                property will be set if the -static option was supplied.
 
                          | borland | make | microsoft | windows |
                 ---------+---------+------+-----------+---------|
