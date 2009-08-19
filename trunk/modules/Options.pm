@@ -168,8 +168,6 @@ sub printUsage {
 "                       name value pair.  Use += to add VAL to the NAME's\n" .
 "                       value.  Use -= to subtract and = to override the value.\n" .
 "       -version        Print the MPC version and exit.\n";
-
-  exit(0);
 }
 
 

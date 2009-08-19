@@ -26,13 +26,15 @@ my $Registry;
 my $MPC_ROOT = $FindBin::Bin;
 $MPC_ROOT =~ s!/!\\!g;
 
-my $version = '1.3';
+my $version = '1.4';
 my %types   = ('nmake' => ['NMAKE', 'NMAKE'],
                'bmake' => ['Borland Make', 'Borland Make'],
                'vc6'   => ['DSW', 'DSP'],
                'vc71'  => ['SLN 7.1', 'VCPROJ 7.1'],
                'vc8'   => ['SLN 8.0', 'VCPROJ 8.0'],
                'vc9'   => ['SLN 9.0', 'VCPROJ 9.0'],
+               'vc10'  => ['SLN 10.0', 'VCPROJ 10.0'],
+               'wix'   => ['WiX', 'WiX Project'],
               );
 
 # ******************************************************************

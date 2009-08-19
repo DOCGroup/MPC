@@ -99,7 +99,7 @@ sub clean_sln {
   ## For a solution, just read in and clean each project file we find.
   if (open($fh, $file)) {
     while (<$fh>) {
-      if (/^Project\([^)]+\) = "[^\"]+", "([^\"]+)"/) {
+      if (/^Project\([^)]+\)\s*=\s*"[^\"]+",\s*"([^\"]+)"/) {
         clean_proj($cfg, $1);
       }
     }

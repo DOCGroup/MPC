@@ -1,3 +1,50 @@
+Wed Aug 19 02:11:03 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * create_base.pl:
+
+          Added a description of what the script does to the usage.
+
+        * modules/Driver.pm:
+
+          Use DirectoryManager::onVMS() instead of comparing $^O to 'VMS'.
+
+        * modules/Options.pm:
+
+          Removed a redundant exit() call.
+
+        * modules/ProjectCreator.pm:
+
+          Added comments to the get_special_value method.
+
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/VC7WorkspaceCreator.pm:
+
+          Added the 'managed' setting to the saved project info structure.
+
+        * modules/VC8WorkspaceCreator.pm:
+
+          Used the new 'managed' setting in the saved project info structure
+          to avoid adding a reference to a non-managed c++ library.
+
+        * templates/vc8.mpd:
+
+          Removed the use of <%language%> in the MPC ADD DEPENDENCIES
+          comment.  It was not necessary since we have that information
+          available from the saved project info structure.
+
+        * modules/WorkspaceCreator.pm:
+
+          Removed the redundant setting of the 'info' data member.
+
+        * registry.pl:
+
+          Added vc10 and wix types.
+
+        * vs_postclean.pl:
+
+          Changed spaces in a regular expression to \s*.
+
 Fri Aug 14 18:46:11 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/pcre.mpb:

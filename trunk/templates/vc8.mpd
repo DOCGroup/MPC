@@ -535,7 +535,7 @@
 	</Configurations>
 	<References>
 <%if(after && add_references)%>
-		<!-- MPC ADD DEPENDENCIES <%language%> -->
+		<!-- MPC ADD DEPENDENCIES -->
 <%endif%>
 <%foreach(AssemblyReferences)%>
 		<AssemblyReference

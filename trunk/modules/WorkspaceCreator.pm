@@ -89,7 +89,6 @@ sub new {
   $self->{'for_eclipse'}         = $foreclipse;
   $self->{'generate_dot'}        = $gendot;
   $self->{'generate_ins'}        = $genins;
-  $self->{'into'}                = $into;
   $self->{'verbose_ordering'}    = undef;
   $self->{'wctype'}              = $self->extractType("$self");
   $self->{'workspace_comments'}  = $comments;
@@ -1997,7 +1996,7 @@ sub project_creator {
                    $parameters{'name_modifier'},
                    $parameters{'apply_project'},
                    $self->{'generate_ins'} || $parameters{'genins'},
-                   $self->{'into'},
+                   $self->get_into(),
                    $parameters{'language'},
                    $parameters{'use_env'},
                    $parameters{'expand_vars'},
