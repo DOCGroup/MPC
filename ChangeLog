@@ -1,3 +1,10 @@
+Wed Aug 19 13:49:34 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/VC8WorkspaceCreator.pm:
+
+          We should also avoid adding references to 'custom_only' projects.
+          These also cause warnings in Visual Studio.
+
 Wed Aug 19 02:11:03 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * create_base.pl:
