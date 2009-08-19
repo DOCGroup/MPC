@@ -130,7 +130,7 @@ sub add_dynamic_creators {
       foreach my $file (readdir($fh)) {
         if ($file =~ /(.+$type)\.pm$/i) {
           my $name = $1;
-          if ($^O eq 'VMS') {
+          if (DirectoryManager::onVMS()) {
             my $fh = new FileHandle();
             if (open($fh, $dir . "/modules/" . $file)) {
               my $line = <$fh>;

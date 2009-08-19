@@ -59,8 +59,8 @@ sub post_workspace {
 
   ## Store a map of the project name to project guid
   foreach my $project (@projects) {
-    my($name, $deps, $guid) = @{$$pjs{$project}};
-    $gmap{$name} = $guid;
+    my($name, $deps, $guid, $lang, $custom_only, $nocross, $managed) = @{$$pjs{$project}};
+    $gmap{$name} = [$guid, $managed || $lang ne Creator::cplusplus];
   }
 
   ## Now go through the projects and check for the need to add external
@@ -74,31 +74,41 @@ sub post_workspace {
       my @read;
       my $crlf = $self->crlf();
       my $cwd  = $self->getcwd();
+      my $lang = $$pjs{$project}->[3];
+      my $managed = $$pjs{$project}->[6];
 
       while(<$ph>) {
         ## This is a comment found in vc8.mpd if the project contains the
         ## 'after' keyword setting and the 'add_references' template
         ## variable setting.
-        if (/^(\s*)<!\-\-\s+MPC\s+ADD\s+DEPENDENCIES\s+([^\s]+)?/) {
+        if (/^(\s*)<!\-\-\s+MPC\s+ADD\s+DEPENDENCIES/) {
           my $spc  = $1;
-          my $lang = $2;
           my $deps = $self->get_validated_ordering($project);
           foreach my $dep (@$deps) {
             my $relative = $self->get_relative_dep_file($creator,
                                                         "$cwd/$project",
                                                         $dep);
             if (defined $relative) {
-              if (defined $lang && $lang eq Creator::cplusplus) {
-                push(@read, $spc . '<ProjectReference' . $crlf .
-                            $spc . "\tReferencedProjectIdentifier=" .
-                            "\"\{$gmap{$dep}\}\"$crlf" .
-                            $spc . "\tRelativePathToProject=\"$relative\"$crlf" .
-                            $spc . '/>' . $crlf);
+              if ($lang eq Creator::cplusplus) {
+                ## If the current project is not managed, then we will
+                ## add references (although I doubt that will be useful). 
+                ## If the current project is managed, then the reference
+                ## project must be managed or a non-c++ project.
+                if (!$managed || ($managed && $gmap{$dep}->[1])) {
+                  push(@read, $spc . '<ProjectReference' . $crlf .
+                              $spc . "\tReferencedProjectIdentifier=" .
+                              "\"\{$gmap{$dep}->[0]\}\"$crlf" .
+                              $spc . "\tRelativePathToProject=\"$relative\"$crlf" .
+                              $spc . '/>' . $crlf);
+                }
               }
-              else {
+              ## This is a non-c++ language.  So, it should not reference
+              ## unmanaged c++ libraries.  If it's a managed project or
+              ## it's not a c++ project, it's ok to add a reference.
+              elsif ($gmap{$dep}->[1]) {
                 push(@read, $spc . '<ProjectReference Include="' .
                             $relative . '">' . $crlf,
-                            $spc . '  <Project>{' . $gmap{$dep} .
+                            $spc . '  <Project>{' . $gmap{$dep}->[0] .
                             '}</Project>' . $crlf,
                             $spc . '  <Name>' . $dep . '</Name>' . $crlf,
                             $spc . '</ProjectReference>' . $crlf);

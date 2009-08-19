@@ -3779,6 +3779,9 @@ sub get_special_value {
   my $based  = shift;
   my @params = @_;
 
+  ## These names (held in $type) are variables that contain various
+  ## commands that will be used in templates within the context of a
+  ## foreach (e.g., <%custom_type->input_files%> or <%feature->value%>).
   if ($type eq 'feature') {
     return $self->get_feature_value($cmd, $based);
   }
