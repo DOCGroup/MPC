@@ -53,8 +53,8 @@
         is simple and easy to use and maintain. These and other features will
         be discussed in detail in the following sections. A complete example
         of the use of MPC is shown in the <a href=
-        "MakeProjectCreator.html#ExampleMPCFile" class="XRef">Example
-        MPC File</a> section.</li>
+        "MakeProjectCreator.html#ExampleMPCFile" class="XRef">Example MPC
+        File</a> section.</li>
       </ul>
     </div>
 
@@ -476,9 +476,8 @@
                   override feature values specified in the <em class=
                   "Code">global.features</em> file located in the <em class=
                   "Code">config</em> directory. Feature files are described
-                  in the <a href=
-                  "MakeProjectCreator.html#The%20Feature%20File" class=
-                  "XRef">Feature File</a> section.</p>
+                  in the <a href="MakeProjectCreator.html#TheFeatureFile"
+                  class="XRef">Feature File</a> section.</p>
                 </td>
               </tr>
 
@@ -873,11 +872,12 @@
 
           <ul>
             <li class="BodyNoLead">Some of the options in <a href=
-            "MakeProjectCreator.html#84033" class="XRef">Command Line
-            Options</a> require an expanded explanation. You will find more
-            information on the <em class="Code">-relative</em>, <em class=
-            "Code">-ti</em>, <em class="Code">-value_project</em> and
-            <em class="Code">-value_template</em> options below.</li>
+            "MakeProjectCreator.html#Command%20Line%20Options" class=
+            "XRef">Command Line Options</a> require an expanded explanation.
+            You will find more information on the <em class=
+            "Code">-relative</em>, <em class="Code">-ti</em>, <em class=
+            "Code">-value_project</em> and <em class=
+            "Code">-value_template</em> options below.</li>
           </ul>
 
           <div>
@@ -943,6 +943,8 @@
           </div>
 
           <div>
+            <a name="Additional -ti information"></a>
+
             <h6 class="Head5">The -ti Option.</h6>
 
             <ul>
@@ -988,6 +990,8 @@
           </div>
 
           <div>
+            <a name="Additional -value_project information"></a>
+
             <h6 class="Head5">The -value_project Option.</h6>
 
             <ul>
@@ -1014,6 +1018,8 @@
           </div>
 
           <div>
+            <a name="Additional -value_template information"></a>
+
             <h6 class="Head5">The -value_template Option.</h6>
 
             <ul>
@@ -1059,9 +1065,9 @@
           <li class="BodyNoLead">This configuration file can be used to
           specify alternate locations for the MPC Configuration File
           (discussed below). If a <em class="Code">base.cfg</em> is found
-          underneath the <em class="Code">config</em> directory where MPC is
-          executed, it will be read to determine the location of MPC.cfg
-          based on the directory in which MPC was started.</li>
+          underneath the <em class="Code">config</em> directory in the MPC
+          root directory, it will be read to determine the location of
+          MPC.cfg based on the directory in which MPC was started.</li>
 
           <li class="Body">For example, if <em class=
           "Code">$MPC_ROOT/mwc.pl</em> is run under <em class=
@@ -2109,6 +2115,8 @@
           </div>
 
           <div>
+            <a name="16907"></a>
+
             <h6 class="Head5">Components</h6>
 
             <ul>
@@ -2249,6 +2257,8 @@
               within named blocks.</li>
 
               <li style="list-style: none">
+                <a name="MPC grouping example"></a>
+
                 <p class="Code">&nbsp;</p>
 
                 <p class="Code">Source_Files(MACRO_NAME) {</p>
@@ -2416,10 +2426,9 @@
               class="XRef">Command Line Options</a>).</li>
 
               <li class="Body">The following table shows which properties
-              apply to which project types.  The <em
-              class="Code">static</em> property (not represented in the
-              table) is set if the -static option is supplied when
-              processing the project files.</li>
+              apply to which project types. The <em class="Code">static</em>
+              property (not represented in the table) is set if the -static
+              option is supplied when processing the project files.</li>
 
               <li class="Body">
                 <h6 class="NumberedTableTitle"><a name=
@@ -2886,6 +2895,8 @@
           </div>
 
           <div>
+            <a name="Custom Types and Build Rules"></a>
+
             <h6 class="Head5">Custom Types and Build Rules</h6>
 
             <ul>
@@ -2956,6 +2967,8 @@
               "Code">Define_Custom</em>.</li>
 
               <li style="list-style: none">
+                <a name="32899"></a>
+
                 <h6 class="NumberedTableTitle">Define_Custom Keywords</h6>
 
                 <table border="1" summary="Define_Custom Keywords">
@@ -4525,6 +4538,8 @@
         </div>
 
         <div>
+          <a name="TheFeatureFile" id="TheFeatureFile"></a>
+
           <h5 class="Head4">The Feature File</h5>
 
           <ul>
@@ -4868,7 +4883,9 @@
         </div>
 
         <div>
-          <h5 class="Head4"><a name="ExampleMPCFile">Example MPC File</h5>
+          <a name="ExampleMPCFile" id="ExampleMPCFile"></a>
+
+          <h5 class="Head4">Example MPC File</h5>
 
           <ul>
             <li class="BodyNoLead">The example below uses the directory
@@ -5187,11 +5204,11 @@
               <p class="Code">&nbsp;</p>
             </li>
 
-            <li class="Body">A <em class="Code">foreach</em> statement can
-            also appear on a single line or can span multiple lines. As
-            described below in the keywords section, the <em class=
-            "Code">foreach</em> statement evaluates the variable in a
-            space-separated list context.</li>
+            <li class="Body"><a name="foreach syntax"></a> A <em class=
+            "Code">foreach</em> statement can also appear on a single line or
+            can span multiple lines. As described below in the keywords
+            section, the <em class="Code">foreach</em> statement evaluates
+            the variable in a space-separated list context.</li>
 
             <li class="Body">There are a couple of ways to write a <em class=
             "Code">foreach</em> loop. The first and preferred way is to name
@@ -5245,6 +5262,8 @@
             appear in template files.</li>
 
             <li style="list-style: none">
+              <a name="38037"></a>
+
               <h6 class="NumberedTableTitle">Template File Keywords</h6>
 
               <table border="1" summary="Template File Keywords">
@@ -6054,6 +6073,8 @@
           </ul>
 
           <div>
+            <a name="Custom Types"></a>
+
             <h6 class="Head5">Custom Types</h6>
 
             <ul>
@@ -6299,9 +6320,9 @@
               variable cannot be named as stated <a href=
               "MakeProjectCreator.html#foreach%20syntax" class=
               "XRef">previously</a>. The following example involves source
-              files, but any of the components listed in <a href=
-              "MakeProjectCreator.html#16907" class="XRef">the mpc and mpb
-              section</a> can be used.</li>
+              files, but any of the <a href="MakeProjectCreator.html#16907"
+              class="XRef">components</a> listed in the mpc and mpb section
+              can be used.</li>
 
               <li style="list-style: none">
                 <p class="Code">&nbsp;</p>

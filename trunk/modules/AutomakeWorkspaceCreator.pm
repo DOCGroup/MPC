@@ -137,10 +137,15 @@ sub write_comps {
 
         my $fp = $creator->get_feature_parser();
         my $features = $fp->get_names();
+        my %assoc = %{$self->get_associated_projects()};
         foreach my $feature (sort @$features) {
           print $acfh 'AM_CONDITIONAL(BUILD_', uc($feature),
                       ', ', ($fp->get_value($feature) ? 'true' : 'false'),
                       ')', $crlf;
+          delete $assoc{$feature};
+        }
+        foreach my $akey (keys %assoc) {
+          print $acfh 'AM_CONDITIONAL(BUILD_', uc($akey), ', true)', $crlf;
         }
 
         print $acfh $crlf,

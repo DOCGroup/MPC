@@ -1,3 +1,29 @@
+Mon Aug 24 13:10:16 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/USAGE:
+        * modules/Options.pm:
+
+          Changed VAR to VAL.
+
+        * docs/html/MakeProjectCreator.html:
+
+          Added missing <a name>'s.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Added associated names to the list of AM_CONDITIONAL.
+
+        * modules/Creator.pm:
+
+          Fixed a bug where $(...) used in an exclude block would cause ./
+          to be prepended to the value.  Also, only remove unmatched $(...)
+          variables after attempting with the secondary relative values.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where $PWD used in a 'cmdline' setting within an
+          exclude block would not be evaluated correctly.
+
 Wed Aug 19 14:28:52 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
