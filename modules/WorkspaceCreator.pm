@@ -576,17 +576,17 @@ sub handle_scoped_end {
   my $status = 1;
   my $error;
 
-  if ($type eq $aggregated &&
-      !defined $self->{'handled_scopes'}->{$type}) {
-    ## Replace instances of $PWD with the current directory plus the
-    ## scoped_basedir.  We have to do it now otherwise, $PWD will be the
-    ## wrong directory if it's done later.
-    if (defined $$flags{'cmdline'}) {
-      my $dir = $self->getcwd() . '/' . $self->{'scoped_basedir'};
-      $$flags{'cmdline'} =~ s/\$PWD(\W)/$dir$1/g;
-      $$flags{'cmdline'} =~ s/\$PWD$/$dir/;
-    }
+  ## Replace instances of $PWD with the current directory plus the
+  ## scoped_basedir.  We have to do it now otherwise, $PWD will be the
+  ## wrong directory if it's done later.
+  if (defined $$flags{'cmdline'} && defined $self->{'scoped_basedir'} &&
+      index($$flags{'cmdline'}, '$PWD') >= 0) {
+    my $dir = $self->getcwd() . '/' . $self->{'scoped_basedir'};
+    $$flags{'cmdline'} =~ s/\$PWD(\W)/$dir$1/g;
+    $$flags{'cmdline'} =~ s/\$PWD$/$dir/;
+  }
 
+  if ($type eq $aggregated && !defined $self->{'handled_scopes'}->{$type}) {
     ## Go back to the previous directory and add the directory contents
     ($status, $error) = $self->handle_scoped_unknown(undef, $type, $flags, '.');
   }

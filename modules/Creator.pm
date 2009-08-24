@@ -995,14 +995,23 @@ sub expand_variables {
             $ival =~ s/\/$//;
           }
           $ival .= $append if (defined $append);
+
+          ## We have to remove the leading ./ if there is one. 
+          ## Otherwise, if this value is used as an exclude value it will
+          ## not match up correctly.
+          $ival =~ s!^\./!!;
+
+          ## Convert the slashes if necessary
           $ival =~ s/\//\\/g if ($self->{'convert_slashes'});
           substr($value, $start) =~ s/\$\([^)]+\)/$ival/;
           $whole = $ival;
         }
-        elsif ($self->convert_all_variables()) {
+        elsif ($self->convert_all_variables() && $warn) {
           ## The user did not choose to expand $() variables directly,
           ## but we could not convert it into a relative path.  So,
-          ## instead of leaving it we will expand it.
+          ## instead of leaving it we will expand it.  But, we will only
+          ## get into this section if this is the secondary attempt to
+          ## replace the variable (indicated by the $warn boolean).
           $val =~ s/\//\\/g if ($self->{'convert_slashes'});
           substr($value, $start) =~ s/\$\([^)]+\)/$val/;
           $whole = $val;
@@ -1040,7 +1049,11 @@ sub expand_variables {
         $start += $loc if ($loc > 0);
       }
     }
-    elsif ($self->convert_all_variables()) {
+    elsif ($self->convert_all_variables() && $warn) {
+      ## We could not find a value to correspond to the variable name.
+      ## Instead of leaving it we will expand it.  But, we will only
+      ## get into this section if this is the secondary attempt to
+      ## replace the variable (indicated by the $warn boolean).
       substr($value, $start) =~ s/\$\([^)]+\)//;
       $whole = '';
     }
@@ -1094,8 +1107,8 @@ sub relative {
     }
   }
 
-  ## Values that have strings enclosed in double quotes are to
-  ## be interpreted as elements of an array
+  ## Values that have two or more strings enclosed in double quotes are
+  ## to be interpreted as elements of an array
   if (defined $value && $value =~ /^"[^"]+"(\s+"[^"]+")+$/) {
     $value = $self->create_array($value);
   }

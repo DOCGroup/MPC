@@ -33,7 +33,7 @@ sub printUsage {
   print STDERR "$base v$version\n" .
                "Usage: $base [-global <file>] [-include <directory>] [-recurse]\n" .
                $spaces . "[-ti <dll | lib | dll_exe | lib_exe>:<file>] [-hierarchy]\n" .
-               $spaces . "[-template <file>] [-relative NAME=VAR] [-base <project>]\n" .
+               $spaces . "[-template <file>] [-relative NAME=VAL] [-base <project>]\n" .
                $spaces . "[-noreldefs] [-notoplevel] [-static] [-genins] [-use_env]\n" .
                $spaces . "[-value_template <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
                $spaces . "[-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]\n" .
@@ -141,7 +141,7 @@ sub printUsage {
 "       -recurse        Recurse from the current directory and generate from\n" .
 "                       all found input files.\n" .
 "       -relative       Any \$() variable in an mpc file that is matched to NAME\n" .
-"                       is replaced by VAR only if VAR can be made into a\n" .
+"                       is replaced by VAL only if VAL can be made into a\n" .
 "                       relative path based on the current working directory.\n" .
 "                       This option can be used multiple times to add multiple\n" .
 "                       variables.\n" .
