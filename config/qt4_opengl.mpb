@@ -2,5 +2,5 @@
 // $Id$
 
 project: qt4_gui {
-  lit_libs += QtOpenGL$(QTDEBUG)4
+  lit_libs += QtOpenGL$(QT_CFG)
 }

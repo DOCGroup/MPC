@@ -2,6 +2,6 @@
 // $Id$
 
 project: qt4_gui {
-  lit_libs += Qt3Support$(QTDEBUG)4
+  lit_libs += Qt3Support$(QT_CFG)
   macros += QT3_SUPPORT
 }
