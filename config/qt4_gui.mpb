@@ -2,7 +2,7 @@
 // $Id$
 
 project: qt4_core {
-  lit_libs += QtGui$(QTDEBUG)4
+  lit_libs += QtGui$(QT_CFG)
 
   Define_Custom(UIC) {
     automatic        = 1
