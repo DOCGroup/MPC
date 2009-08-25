@@ -5,5 +5,5 @@ project {
   requires += qt4
   includes += $(QTDIR)/include
   libpaths += $(QTDIR)/lib
-  lit_libs += QtCore$(QTDEBUG)4
+  lit_libs += QtCore$(QT_CFG)
 }

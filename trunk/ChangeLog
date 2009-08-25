@@ -1,3 +1,20 @@
+Tue Aug 25 12:22:59 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/qt4_core.mpb:
+        * config/qt4_designer.mpb:
+        * config/qt4_designercomponents.mpb:
+        * config/qt4_gui.mpb:
+        * config/qt4_network.mpb:
+        * config/qt4_opengl.mpb:
+        * config/qt4_qt3support.mpb:
+        * config/qt4_sql.mpb:
+        * config/qt4_svg.mpb:
+        * config/qt4_test.mpb:
+        * config/qt4_xml.mpb:
+
+          Committing changes from Ciju John.  Removed the hard-coded 4 in
+          the library names and switch from using $(QTDEBUG) to $(QT_CFG).
+
 Mon Aug 24 13:10:16 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/USAGE:

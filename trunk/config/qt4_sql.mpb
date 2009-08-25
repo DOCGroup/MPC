@@ -2,5 +2,5 @@
 // $Id$
 
 project: qt4_core {
-  lit_libs += QtSql$(QTDEBUG)4
+  lit_libs += QtSql$(QT_CFG)
 }
