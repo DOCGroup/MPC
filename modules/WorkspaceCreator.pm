@@ -625,8 +625,15 @@ sub handle_scoped_unknown {
     if ($self->path_is_relative($line)) {
       $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
     }
+
+    ## We must build up the list of project files and use them as the
+    ## keys in the duplicate hash check.  We need to call
+    ## search_for_files() because the user may have just listed
+    ## directories in the workspace and we need to deal with mpc files.
+    my @files;
+    $self->search_for_files($self->{'project_files'}, \@files);
     my %dup;
-    @dup{@{$self->{'project_files'}}} = ();
+    @dup{@files} = ();
     $dupchk = \%dup;
 
     ## If the aggregated workspace contains a scope (other than exclude)
@@ -725,15 +732,13 @@ sub search_for_files {
         unshift(@$array, $file);
       }
     }
-    else {
-      if ($file =~ /\.mpc$/) {
-        $file =~ s/^\.\///;
+    elsif ($file =~ /\.mpc$/) {
+      $file =~ s/^\.\///;
 
-        # Strip out ^ symbols
-        $file =~ s/\^//g if ($onVMS);
+      # Strip out ^ symbols
+      $file =~ s/\^//g if ($onVMS);
 
-        unshift(@$array, $file);
-      }
+      unshift(@$array, $file);
     }
   }
 
