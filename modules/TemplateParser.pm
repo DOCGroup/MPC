@@ -496,7 +496,11 @@ sub process_foreach {
           $name = $n;
           $name =~ s/s$//;
         }
-        if (!$check_for_mixed && !$self->{'prjc'}->is_keyword($n)) {
+        ## We only want to check for the mixing of scalar and hash
+        ## variables if the variable name is not a keyword (or the
+        ## special 'features' template variable).
+        if (!$check_for_mixed &&
+            !$self->{'prjc'}->is_keyword($n) && $n ne 'features') {
           $check_for_mixed = 1;
         }
       }

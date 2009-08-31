@@ -42,36 +42,36 @@ my $static_libs_feature = 'static_libs_only';
 ## 0   Preserve the order for additions (1) or invert it (0)
 ## 1   Add this value to template input value (if there is one)
 ## 2   Preserve <% %> settings for evaluation within the template
-my %validNames = ('exename'            => 1,
-                  'sharedname'         => 1,
-                  'staticname'         => 1,
-                  'libpaths'           => 3,
-                  'recursive_libpaths' => 3,
+my %validNames = ('after'              => 1,
+                  'avoids'             => 3,
+                  'custom_only'        => 1,
+                  'dllout'             => 1,
+                  'dynamicflags'       => 3,
+                  'exename'            => 1,
                   'exeout'             => 1,
                   'includes'           => 3,
-                  'recursive_includes' => 3,
-                  'after'              => 1,
-                  'custom_only'        => 1,
+                  'libout'             => 1,
+                  'libpaths'           => 3,
                   'libs'               => 2,
                   'lit_libs'           => 2,
+                  'macros'             => 3,
                   'managed'            => 1,
-                  'pure_libs'          => 2,
                   'pch_header'         => 1,
                   'pch_source'         => 1,
-                  'prebuild'           => 5,
                   'postbuild'          => 5,
                   'postclean'          => 5,
-                  'dllout'             => 1,
-                  'libout'             => 1,
-                  'dynamicflags'       => 3,
-                  'staticflags'        => 3,
-                  'version'            => 1,
+                  'prebuild'           => 5,
+                  'pure_libs'          => 2,
                   'recurse'            => 1,
+                  'recursive_includes' => 3,
+                  'recursive_libpaths' => 3,
                   'requires'           => 3,
-                  'avoids'             => 3,
-                  'tagname'            => 1,
+                  'sharedname'         => 1,
+                  'staticflags'        => 3,
+                  'staticname'         => 1,
                   'tagchecks'          => 1,
-                  'macros'             => 3,
+                  'tagname'            => 1,
+                  'version'            => 1,
                   'webapp'             => 1,
                  );
 
@@ -1194,10 +1194,13 @@ sub process_component_line {
     $line = $self->relative($line);
     $line =~ s/\\/\//g if ($self->{'convert_slashes'});
 
-    ## Now look for specially listed files
+    ## Now look for specially listed files.
+    ## Regular expressions are very slow.  Searching the line twice with
+    ## index() is 328 times faster than searching with just the regular
+    ## expression when it doesn't match (which is likely to be the case).
     if ((index($line, '>>') >= 0 || index($line, '<<') >= 0) &&
         $line =~ /(.*)\s+(>>|<<)\s+(.*)/) {
-      $line    = $1;
+      $line   = $1;
       my $oop = $2;
       my $iop = ($oop eq '>>' ? '<<' : '>>');
       my $out = ($oop eq '>>' ? $3 : undef);
@@ -3110,14 +3113,18 @@ sub generate_default_components {
 
 sub remove_duplicated_files {
   my($self, $dest, $source) = @_;
-  my $names = $self->{$dest};
   my @slist = $self->get_component_list($source, 1);
-  my %shash;
 
+  ## There's no point in going on if there's nothing in this component
+  ## list.
+  return undef if ($#slist == -1);
+  
   ## Convert the array into keys for a hash table
+  my %shash;
   @shash{@slist} = ();
 
   ## Find out which source files are listed
+  my $names = $self->{$dest};
   foreach my $name (keys %$names) {
     foreach my $key (keys %{$$names{$name}}) {
       my $array = $$names{$name}->{$key};
