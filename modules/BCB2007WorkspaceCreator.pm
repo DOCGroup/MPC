@@ -1,7 +1,7 @@
 package BCB2007WorkspaceCreator;
 
 # ************************************************************
-# Description   : A BDS 4 Workspace Creator
+# Description   : A BCB2007 Workspace Creator
 # Author        : Johnny Willemsen
 # Create Date   : 14/12/2005
 # ************************************************************
