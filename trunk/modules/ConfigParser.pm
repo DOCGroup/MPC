@@ -49,13 +49,14 @@ sub parse_line {
     $name =~ s/\s+$//;
 
     ## Pre-process the name and value
-    $name = $self->preprocess($name);
     my $value = $self->preprocess($clean);
+    $name = $self->preprocess($name);
     $name =~ s/\\/\//g;
 
     ## Store the name value pair
     if (!defined $self->{'valid'}) {
-      ## There are no valid names, so all names are valid.
+      ## There are no valid names, so all names are valid, except an
+      ## empty name.
       if ($name ne '') {
         $self->{'values'}->{$name} = $value;
         $self->{'clean'}->{$name} = $clean;

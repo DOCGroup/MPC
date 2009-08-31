@@ -1,3 +1,36 @@
+Mon Aug 31 16:41:00 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * PROBLEM-REPORT-FORM:
+
+          Updated URLs.
+
+        * modules/BCB2007ProjectCreator.pm:
+        * modules/BCB2007WorkspaceCreator.pm:
+        * modules/ConfigParser.pm:
+
+          Corrected comments.
+
+        * modules/ProjectCreator.pm:
+
+          Alphabetized the keywords (which makes it easier when updating
+          documentation).  Updated comments and added a minor performance
+          enhancment.
+
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where 'features' used in a template would get confused
+          with template scopes.
+
+        * modules/WB26ProjectCreator.pm:
+
+          If the user overrides the template, still provide a valid project
+          file name in the project_file_name() method.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where duplicate mpc files added by aggregated
+          workspaces would not be correctly ignored.
+
 Tue Aug 25 12:22:59 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/qt4_core.mpb:
@@ -188,7 +221,7 @@ Tue Aug 11 16:08:20 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/html/MakeProjectCreator.html:
 
-          Added a Id tag
+          Added an Id tag.
 
         * modules/ProjectCreator.pm:
 
