@@ -1,3 +1,13 @@
+Tue Sep  1 12:58:30 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Removed code that added output files (added via the '>>'
+          construct) when accessing output files from the template.  The
+          code was redundant and when gendir was something other than '.',
+          it would cause duplicate files to be added when the template was
+          generating the output file.
+ 
 Mon Aug 31 16:41:00 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * PROBLEM-REPORT-FORM:
