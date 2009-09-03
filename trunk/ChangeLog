@@ -1,3 +1,34 @@
+Thu Sep  3 12:57:41 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/default.rel:
+
+          Added a comment about comma separating the columns.
+
+        * docs/html/MakeProjectCreator.html:
+
+          Added more info about the 'scope' template function.
+
+        * modules/Options.pm:
+
+          Fixed a bug where the valid languages wouldn't be printed in the
+          usage.
+
+        * modules/TemplateParser.pm:
+
+          Added a comment about what we're checking and why after
+          successfully parsing the template.
+
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Changed to pass an array reference to the source listing callback
+          instead of passing an array.
+
+        * templates/make.mpd:
+
+          Added slightly better support for multiple platforms.  It's still
+          not fully functional though.
+
 Tue Sep  1 12:58:30 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
@@ -7,7 +38,7 @@ Tue Sep  1 12:58:30 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
           code was redundant and when gendir was something other than '.',
           it would cause duplicate files to be added when the template was
           generating the output file.
- 
+
 Mon Aug 31 16:41:00 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * PROBLEM-REPORT-FORM:

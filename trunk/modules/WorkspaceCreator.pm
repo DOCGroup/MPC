@@ -2135,12 +2135,9 @@ sub get_validated_ordering {
 
 
 sub source_listing_callback {
-  my $self         = shift;
-  my $project_file = shift;
-  my $project_name = shift;
-  my $cwd = $self->getcwd();
+  my($self, $project_file, $project_name, $list) = @_;
   $self->{'project_file_list'}->{$project_name} = [ $project_file,
-                                                    $cwd, \@_ ];
+                                                    $self->getcwd(), $list ];
 }
 
 
