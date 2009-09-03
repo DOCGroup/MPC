@@ -5657,15 +5657,21 @@
 
                   <td rowspan="1" colspan="1">
                     <p class="Tbl-Body">This function will remove a file in a
-                    component list. It requires two parameters. The first
-                    parameter is a component name(e.g., Source_Files) and the
-                    second parameter is a project or template variable name.
-                    The third and fourth optional parameters allow you to
-                    alter the project or template variable value in order to
-                    remove files that do not match the value exactly. The
-                    third parameter is a regular expression and the fourth
-                    parameter is the value with which to replace the regular
-                    expression match.</p>
+                    component list. It requires three parameters. The first
+                    parameter is a component name (e.g., Source_Files), the
+                    second parameter is a regular expression pattern and
+                    the third parameter is a project or template variable
+                    name. The fourth and optional parameter allows you to
+                    alter the project or template variable value by
+                    removing the end matching portion.  If the value of
+                    the project or template variable (i.e., parameter
+                    three) after being modified by parameter four and
+                    having the regular expression pattern (i.e.,
+                    parameter two) appended to it matches any value
+                    within the compent list (named by parameter one), it
+                    will be removed from that component list and passed
+                    back.
+                    any </p>
                   </td>
                 </tr>
 
