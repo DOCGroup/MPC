@@ -48,7 +48,7 @@ sub printUsage {
   my $olen = length($spaces) + 12;
   my $len  = $olen;
   my $mlen = 77;
-  my @keys = sort Creator::validLanguages();
+  my @keys = sort(Creator::validLanguages());
   for(my $i = 0; $i <= $#keys; $i++) {
     my $klen = length($keys[$i]);
     $len += $klen;
@@ -189,7 +189,7 @@ sub completion_command {
             "'n/-ti/(dll lib dll_exe lib_exe)/:' ";
 
   $str .= "'n/-language/(";
-  my @keys = sort Creator::validLanguages();
+  my @keys = sort(Creator::validLanguages());
   for(my $i = 0; $i <= $#keys; $i++) {
     $str .= $keys[$i];
     $str .= " " if ($i != $#keys);
