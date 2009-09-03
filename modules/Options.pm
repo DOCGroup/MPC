@@ -444,9 +444,12 @@ sub options {
             $val = DirectoryManager::getcwd() . '/' . $val;
           }
 
-          ## Clean up the path as much as possible
+          ## Clean up the path as much as possible.  For some reason,
+          ## File::Spec->canonpath() on Windows doesn't remove trailing
+          ## /. from the path.
           $relative{$name} = File::Spec->canonpath($val);
           $relative{$name} =~ s/\\/\//g;
+          $relative{$name} =~ s!/\.$!!;
         }
         else {
           $self->optionError('Invalid argument to -relative');

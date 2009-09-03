@@ -74,7 +74,7 @@ sub parse_line {
 
 
 sub get_names {
-  my @names = keys %{$_[0]->{'values'}};
+  my @names = sort keys %{$_[0]->{'values'}};
   return \@names;
 }
 

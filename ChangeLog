@@ -1,3 +1,23 @@
+Thu Sep  3 19:15:49 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/html/MakeProjectCreator.html:
+
+          Corrected the documentation for the 'remove_from' template
+          function.
+
+        * modules/FeatureParser.pm:
+
+          Sort the feature names as they come out for reproducibility.
+
+        * modules/Options.pm:
+
+          Fixed a bug where an ending /. would not be removed from a
+          relative path on Windows.
+
+        * modules/TemplateParser.pm:
+
+          Added missing 'lc' related functions to have a symmetry with 'uc'.
+
 Thu Sep  3 12:57:41 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/default.rel:
