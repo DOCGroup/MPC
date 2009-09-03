@@ -52,7 +52,7 @@ my %keywords = ('if'              => 0,
                 'comment'         => 0,
                 'marker'          => 0,
                 'uc'              => 3,
-                'lc'              => 0,
+                'lc'              => 3,
                 'ucw'             => 0,
                 'normalize'       => 3,
                 'flag_overrides'  => 1,
@@ -281,7 +281,7 @@ sub get_value {
   my($self, $name) = @_;
   my $value;
   my $counter = $self->{'foreach'}->{'count'};
-  my $fromprj = 0;
+  my $fromprj;
   my $scope;
   my $sname;
   my $adjust = 1;
@@ -1307,10 +1307,25 @@ sub perform_uc {
 }
 
 
+sub get_lc {
+  my($self, $name) = @_;
+  return lc($self->get_value_with_default($name));
+}
+
+
 sub handle_lc {
   my($self, $name) = @_;
+  $self->append_current($self->get_lc($name));
+}
 
-  $self->append_current(lc($self->get_value_with_default($name)));
+
+sub perform_lc {
+  my($self, $value) = @_;
+  my @val;
+  foreach my $val (@$value) {
+    push(@val, lc($val));
+  }
+  return @val;
 }
 
 
