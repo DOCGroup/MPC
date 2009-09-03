@@ -2,10 +2,18 @@
 #       Macros
 #----------------------------------------------------------------------------
 <%marker(top)%>
-<%if(multiple(configurations))%>
+<%if(multiple(configurations) || multiple(platforms))%>
 <%foreach(configurations)%>
 <%if(forfirst)%>
+<%if(multiple(platforms))%>
+<%foreach(platforms)%>
+<%if(forfirst)%>
+CFG = <%platform%> <%configuration%>
+<%endif%>
+<%endfor%>
+<%else%>
 CFG = <%configuration%>
+<%endif%>
 
 <%endif%>
 <%endfor%>
@@ -13,8 +21,12 @@ CFG = <%configuration%>
 <%foreach(compilers)%>
 <%foreach(platforms)%>
 <%foreach(configurations)%>
+<%if(multiple(platforms))%>
+ifeq ($(CFG), <%platform%> <%configuration%>)
+<%else%>
 <%if(multiple(configurations))%>
 ifeq ($(CFG), <%configuration%>)
+<%endif%>
 <%endif%>
 CXX           = <%cxx%>
 <%if(ld)%>
@@ -112,7 +124,7 @@ STATICFLAGS   =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
 <%endif%>
 EXPORTFLAGS   = <%if(exename)%><%if(need_staticflags)%>$(STATICFLAGS)<%endif%><%else%><%if(dll_ext && sharedname)%>$(DYNAMICFLAGS)<%else%>$(STATICFLAGS)<%endif%><%endif%>
 <%endif%>
-<%if(multiple(configurations))%>
+<%if(multiple(configurations) || multiple(platforms))%>
 endif
 <%endif%>
 <%endfor%>
@@ -329,10 +341,12 @@ depend:
 	@-:
 <%endif%>
 
+<%if(forlast)%>
 <%if(supports_include)%>
 include $(DEPENDENCIES)
 <%else%>
 # DO NOT DELETE THIS LINE
+<%endif%>
 <%endif%>
 <%endfor%>
 <%endfor%>

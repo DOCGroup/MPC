@@ -1914,7 +1914,7 @@ sub back_to_variable {
         ## of the value is greater than or equal to the length of our
         ## replacement value.
         my $vlen = length($val);
-        if ($vlen <= $valuelen) {
+        if ($valuelen >= $vlen) {
           ## Cut the string down by the length of the replacement value
           my $lval = substr($value, 0, $vlen);
 
@@ -4390,10 +4390,10 @@ sub write_output_file {
         if (UNIVERSAL::isa($cb, 'ARRAY')) {
           my @copy = @$cb;
           my $s = shift(@copy);
-          &$s(@copy, $name, $pjname, @list);
+          &$s(@copy, $name, $pjname, \@list);
         }
         elsif (UNIVERSAL::isa($cb, 'CODE')) {
-          &$cb($name, $pjname, @list);
+          &$cb($name, $pjname, \@list);
         }
         else {
           $self->warning("Ignoring callback: $cb.");

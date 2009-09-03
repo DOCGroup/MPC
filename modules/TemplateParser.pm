@@ -1973,7 +1973,7 @@ sub parse_line {
     push(@{$self->{'lines'}}, $self->{'built'});
   }
 
-  return (!defined $errorString), $errorString;
+  return !defined $errorString, $errorString;
 }
 
 
@@ -1983,12 +1983,12 @@ sub parse_file {
   $self->collect_data();
   my($status, $errorString) = $self->cached_file_read($input);
 
-  if ($status) {
-    if (defined $self->{'sstack'}->[0]) {
-      $status = 0;
-      $errorString = "Missing an '$self->{'sstack'}->[0]' starting at " .
-                     $self->{'lstack'}->[0];
-    }
+  ## If there was no error, check the stack to make sure that we aren't
+  ## missing an <%endif%> or an <%endfor%>.
+  if ($status && defined $self->{'sstack'}->[0]) {
+    $status = 0;
+    $errorString = "Missing an '$self->{'sstack'}->[0]' starting at " .
+                   $self->{'lstack'}->[0];
   }
 
   ## Add in the line number if there is an error
