@@ -1,0 +1,8 @@
+// $Id$
+
+project {
+  requires += pcre
+  lit_libs += pcre$(PCRE_VERSION)
+  includes += $(PCRE_ROOT)/include
+  libpaths += $(PCRE_ROOT)/lib
+}
