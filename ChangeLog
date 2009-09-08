@@ -1,3 +1,18 @@
+Tue Sep  8 00:48:45 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Driver.pm:
+
+          When the -gfeature_file option is used, turn the file path into a
+          full path if it is relative.  This is necessary for when the
+          -recurse option is used and a full path isn't provided to the
+          feature file.
+
+        * modules/ProjectCreator.pm:
+
+          When setting up the 'input_ext' and 'output_ext' pseudo template
+          variables, set them to an empty string if the input and output
+          files do not contain an extension.
+
 Thu Sep  3 19:15:49 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/html/MakeProjectCreator.html:
