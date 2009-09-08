@@ -1,3 +1,10 @@
+Tue Sep  8 04:16:19 UTC 2009  Sumant Tambe  <sutambe@nospam>
+
+        * config/udm.mpb:
+        * config/wix.mpb:
+		
+		  Added support for VC9 and UDM version 3.2.1.
+
 Tue Sep  8 00:48:45 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Driver.pm:
