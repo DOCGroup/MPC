@@ -30,4 +30,8 @@ project {
   specific(vc8) {
     wix_flags += -dtype=vc8
   }
+
+  specific(vc9) {
+    wix_flags += -dtype=vc9
+  }
 }
