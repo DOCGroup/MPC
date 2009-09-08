@@ -431,7 +431,16 @@ sub run {
   my $global_feature_file = (defined $options->{'gfeature_file'} &&
                              -r $options->{'gfeature_file'} ?
                                 $options->{'gfeature_file'} : undef);
-  if (!defined $global_feature_file) {
+  if (defined $global_feature_file) {
+    ## If the specified path is relative, expand it based on
+    ## the current working directory.
+    if ($global_feature_file !~ /^[\/\\]/ &&
+        $global_feature_file !~ /^[A-Za-z]:[\/\\]?/) {
+      $global_feature_file = DirectoryManager::getcwd() . '/' .
+                             $global_feature_file;
+    }
+  }
+  else {
     my $gf = 'global.features';
     $global_feature_file = $self->find_file($options->{'include'}, $gf);
     if (!defined $global_feature_file) {

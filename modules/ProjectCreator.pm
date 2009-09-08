@@ -998,8 +998,6 @@ sub parse_line {
 
 sub parse_scoped_assignment {
   my($self, $tag, $type, $name, $value, $flags) = @_;
-  my $over   = {};
-  my $status = 0;
 
   ## Map the assignment name on a scoped assignment
   my $mapped = $self->{'valid_names'}->{$name};
@@ -1007,12 +1005,9 @@ sub parse_scoped_assignment {
     $name = $$mapped[1];
   }
 
-  if (defined $self->{'matching_assignments'}->{$tag}) {
-    $status = 1 if (StringProcessor::fgrep($name,
-                                           $self->{'matching_assignments'}->{$tag}));
-  }
-
-  if ($status) {
+  if (defined $self->{'matching_assignments'}->{$tag} &&
+      StringProcessor::fgrep($name, $self->{'matching_assignments'}->{$tag})) {
+    my $over = {};
     if (defined $self->{'flag_overrides'}->{$tag}) {
       $over = $self->{'flag_overrides'}->{$tag};
     }
@@ -1041,8 +1036,10 @@ sub parse_scoped_assignment {
       }
       $self->process_assignment_sub($name, $value, $flags);
     }
+    return 1;
   }
-  return $status;
+
+  return 0;
 }
 
 
@@ -3927,7 +3924,7 @@ sub replace_parameters {
     }
 
     ## Support both pseudo variables and project settings
-    if (exists $$valid{$name} || $self->is_keyword($name)) {
+    if (defined $$valid{$name} || $self->is_keyword($name)) {
       ## If the pseudo variable is defined or the project setting has a
       ## value, then we'll need to do the replacement.  However, if it's
       ## a project keyword and it's not defined, we will need to delay
@@ -3939,9 +3936,6 @@ sub replace_parameters {
       }
       elsif ($self->is_keyword($name)) {
         $replace = $self->get_assignment($name);
-      }
-      else {
-        $clear = 1;
       }
 
       ## Perform the modification and replacement here
@@ -4011,8 +4005,16 @@ sub convert_command_parameters {
     $valid{'input_basename'} = $self->mpc_basename($input);
     $valid{'input_dirname'}  = $self->mpc_dirname($input);
     $valid{'input_noext'}    = $input;
-    $valid{'input_noext'}    =~ s/(\.[^\.]+)$//;
-    $valid{'input_ext'}      = $1;
+
+    ## An input file doesn't always have an extension.  If there isn't
+    ## one, then we need to set the 'input_ext' field to an empty string
+    ## ($1 will not necessarily have a valid value).
+    if ($valid{'input_noext'} =~ s/(\.[^\.]+)$//) {
+      $valid{'input_ext'} = $1;
+    }
+    else {
+      $valid{'input_ext'} = '';
+    }
 
     ## Check for the gendir setting associated with this input file.  We
     ## have to check at so many levels so we don't inadvertantly create
@@ -4031,11 +4033,17 @@ sub convert_command_parameters {
     my $first = 1;
     $valid{'output'} = "@$output";
     foreach my $out (@$output) {
+      ## An output file doesn't always have an extension.  If there isn't
+      ## one, then we need to set the 'output_ext' field to an empty
+      ## string ($1 will not necessarily have a valid value).
       my $noext = $out;
-      $noext =~ s/(\.[^\.]+)$//;
-
-      $valid{'output_ext'}       = $1;
-      $valid{'output_noext'}    .= (!$first ? ' ' : '') . $noext;
+      if ($noext =~ s/(\.[^\.]+)$//) {
+        $valid{'output_ext'} = $1;
+      }
+      else {
+        $valid{'output_ext'} = '';
+      }
+      $valid{'output_noext'} .= (!$first ? ' ' : '') . $noext;
 
       ## In order to call basename or dirname, we must make sure that the
       ## directory separators are forward slashes.
@@ -4061,7 +4069,7 @@ sub convert_command_parameters {
           if ($out =~ /$ext$/) {
             $valid{$key} = $out;
             $valid{$key . '_noext'} = $out;
-            $valid{$key . '_noext'} =~ s/\.[^\.]+$//;
+            $valid{$key . '_noext'} =~ s/$ext$//;
             last;
           }
         }
@@ -4354,7 +4362,7 @@ sub write_output_file {
     ## If the template files does not end in the template extension
     ## then we will add it on.
     if ($template !~ /$TemplateExtension$/) {
-      $template = $template . ".$TemplateExtension";
+      $template .= '.' . $TemplateExtension;
     }
 
     ## If the template file does not contain a path, then we
