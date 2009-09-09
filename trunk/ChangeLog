@@ -1,9 +1,27 @@
+Wed Sep  9 21:48:19 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * docs/html/MakeProjectCreator.html:
+        * modules/ProjectCreator.pm:
+
+          Added a new psuedo variable, 'prj_type', which holds the project
+          type as specified by the -type command line option.
+
+        * config/wix.mpb:
+
+          Modified to use the new 'prj_type' pseudo variable.
+
+        * modules/WorkspaceCreator.pm:
+
+          Changed the duplicate project through workspace aggregation from a
+          warning to information.
+
 Tue Sep  8 04:16:19 UTC 2009  Sumant Tambe  <sutambe@nospam>
 
         * config/udm.mpb:
         * config/wix.mpb:
-		
-		  Added support for VC9 and UDM version 3.2.1.
+
+          Added support for VC9 and UDM version 3.2.1.
 
 Tue Sep  8 00:48:45 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 

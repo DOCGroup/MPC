@@ -558,6 +558,8 @@ postcommand         Allows a user to execute arbitrary commands after
                     <%quote%>     - Project non-specific double quote.
                     <%rm%>        - Platform non-specific delete command.
                     <%temporary%> - A temporary file name.
+                    <%prj_type%>  - The project type supplied by the -type
+                                    option.
 
                     If any referenced pseudo template variable does
                     not contain a value, then the particular setting

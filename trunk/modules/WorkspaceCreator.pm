@@ -674,8 +674,8 @@ sub handle_scoped_unknown {
     foreach my $file (@files) {
       if (!$self->excluded($file)) {
         if (defined $dupchk && exists $$dupchk{$file}) {
-          $self->warning("Duplicate mpc file ($file) added by an " .
-                         'aggregate workspace.  It will be ignored.');
+          $self->information("Duplicate mpc file ($file) added by an " .
+                             'aggregate workspace.  It will be ignored.');
         }
         else {
           $self->{'scoped_assign'}->{$file} = $flags;
@@ -695,8 +695,8 @@ sub handle_scoped_unknown {
       else {
         if (!$self->excluded($expfile)) {
           if (defined $dupchk && exists $$dupchk{$expfile}) {
-            $self->warning("Duplicate mpc file ($expfile) added by an " .
-                           'aggregate workspace.  It will be ignored.');
+            $self->information("Duplicate mpc file ($expfile) added by an " .
+                               'aggregate workspace.  It will be ignored.');
           }
           else {
             $self->{'scoped_assign'}->{$expfile} = $flags;
