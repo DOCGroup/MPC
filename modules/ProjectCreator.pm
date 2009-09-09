@@ -3903,6 +3903,7 @@ sub get_command_subs {
   $valid{'crlf'}      = $self->crlf();
   $valid{'cmdsep'}    = $self->get_cmdsep_symbol();
   $valid{'temporary'} = 'temp.$$$$.' . int(rand(0xffffffff));
+  $valid{'prj_type'}  = $self->{'pctype'};
 
   return \%valid;
 }
