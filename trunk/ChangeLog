@@ -1,3 +1,12 @@
+Thu Sep 17 13:52:10 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/pcre.mpb:
+
+          Only add the $(PCRE_VERSION) variable to the library name when not
+          using Microsoft products.  Since the windows version of pcre
+          doesn't have a version number, the variable is always empty and
+          Visual Studio complains.
+
 Wed Sep  9 21:48:19 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
