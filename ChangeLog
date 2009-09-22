@@ -1,3 +1,9 @@
+Tue Sep 22 21:12:20 UTC 2009  Sumant Tambe  <sutambe@nospam>
+
+        * config/udm.mpb:
+		
+          . Added paths for GME 7 and GME 9.
+
 Thu Sep 17 13:52:10 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/pcre.mpb:
