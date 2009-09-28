@@ -113,6 +113,18 @@ gcc {
   visopt    = -fvisibility=hidden -fvisibility-inlines-hidden
 }
 
+arm_elf_gcc {
+  cxx           = arm-elf-g++
+  ar            = arm-elf-ar
+  arflags       = rcs
+  compilerflags = -isystem /usr/local/arm-elf/include
+  shflags       = -shared
+  platforms     = nucleus
+  pchcreate     = "-o "
+  pchnobj       = 1
+  visopt        = -fvisibility=hidden -fvisibility-inlines-hidden
+}
+
 Intel {
   cxx       = icpc
   pic       = -fPIC
@@ -235,6 +247,10 @@ openvms {
 linux {
   ldlibs        = -ldl $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so))))) -lpthread
   extracppflags = -D_REENTRANT
+}
+
+nucleus {
+  extracppflags = -mcpu=arm7tdmi -msoft-float -mthumb-interwork
 }
 
 solaris {

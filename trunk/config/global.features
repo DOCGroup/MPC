@@ -18,6 +18,7 @@ boost         = 0
 bzip2         = 0
 java          = 0
 mfc           = 0
+libpng        = 0
 python        = 0
 qt            = 0
 rpc           = 0
