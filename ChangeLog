@@ -1,3 +1,14 @@
+Mon Sep 28 15:18:36 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/global.features:
+        * config/libpng.mpb:
+
+          Added support for libpng.
+
+        * templates/makedll.mpt:
+
+          Added support for gcc on Nucleus OS.
+
 Thu Sep 24 12:38:20 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc8platforms.mpt:
@@ -7,7 +18,7 @@ Tue Sep 22 21:12:20 UTC 2009  Sumant Tambe  <sutambe@nospam>
 
         * config/udm.mpb:
 
-          . Added paths for GME 7 and GME 9.
+          Added paths for GME 7 and GME 9.
 
 Thu Sep 17 13:52:10 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
