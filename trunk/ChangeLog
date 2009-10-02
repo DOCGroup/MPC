@@ -1,3 +1,9 @@
+Fri Oct  2 20:31:03 UTC 2009  Steven Stallion  <stallions@ociweb.com>
+
+        * config/global.features:
+
+          Updated support for erlang.
+
 Mon Sep 28 15:18:36 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/global.features:

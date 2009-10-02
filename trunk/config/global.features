@@ -16,6 +16,7 @@
 // By default we disable these.
 boost         = 0
 bzip2         = 0
+erlang        = 0
 java          = 0
 mfc           = 0
 libpng        = 0
