@@ -1,3 +1,10 @@
+Mon Oct  5 11:38:03 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+          Generate quotes around a custom command, the tool we execute could
+          be in a path with a space in it
+
 Fri Oct  2 20:31:03 UTC 2009  Steven Stallion  <stallions@ociweb.com>
 
         * config/global.features:
