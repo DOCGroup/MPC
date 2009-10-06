@@ -1,3 +1,8 @@
+Tue Oct  6 09:04:03 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_ts_defaults.mpb:
+          This base project requires ndds
+
 Mon Oct  5 11:38:03 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc7.mpd:
