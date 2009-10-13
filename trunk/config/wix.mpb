@@ -5,7 +5,7 @@ project {
 
   Define_Custom (WXS) {
     automatic             = 1
-    command               = <%quote%>$(WIX_ROOT)/bin/candle.exe<%quote%>
+    command               = $(WIX_ROOT)/bin/candle.exe
 
     inputext              = .wxs
     output_option         = -out

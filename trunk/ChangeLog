@@ -1,3 +1,11 @@
+Tue Oct 13 13:38:48 UTC 2009  Sumant Tambe  <sutambe@nospam>
+
+        * config/udm.mpb:
+        * config/wix.mpb:
+
+          . Removed quotes because they are no longer necessary. Quotes are
+            generated automatically as per Johnny's changes on Oct 5th.
+
 Tue Oct  6 09:04:03 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_ts_defaults.mpb:
