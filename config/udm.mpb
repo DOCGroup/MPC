@@ -18,7 +18,7 @@ project : xerces {
   Define_Custom(UDM) {
     automatic         = 1
     dependent         = $(UDM_PATH)/bin/Udm
-    command           = <%quote%>$(UDM_PATH)<%quote%>/bin/Udm
+    command           = $(UDM_PATH)/bin/Udm
     inputext          = .xml
     header_outputext  = .h
     source_outputext  = .cpp
