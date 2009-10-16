@@ -3,7 +3,7 @@ Fri Oct 16 17:42:30 UTC 2009  Steven Stallion  <stallions@ociweb.com>
         * templates/vc7.mpd:
         * templates/vc8.mpd:
 
-          Reverted changes (r1646) 
+          Reverted changes (r1646):
           Mon Oct  5 11:38:03 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
           Commit broke OpenDDS builds on Windows platforms. Custom commands
