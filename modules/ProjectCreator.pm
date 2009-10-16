@@ -4149,14 +4149,23 @@ sub get_custom_value {
           push(@outputs, $file) if (!StringProcessor::fgrep($file, \@outputs));
         }
       }
-      ## There is no need to specifically add files from
-      ## $self->{'custom_special_output'} since this foreach already adds
-      ## those files (accounting for gendir).  Not adding them avoids
-      ## duplicates when gendir is something other than '.'.
       foreach my $file ($self->check_custom_output($based, $cinput,
                                                    $ainput, $generic_key,
                                                    $vcomps{$generic_key})) {
         push(@outputs, $file) if (!StringProcessor::fgrep($file, \@outputs));
+      }
+
+      ## Add specially listed files avoiding duplicates.  We don't want
+      ## to add these files if gendir is set to something besides .
+      if (defined $self->{'custom_special_output'}->{$based} &&
+          defined $self->{'custom_special_output'}->{$based}->{$ainput} &&
+          (!defined $self->{'flag_overrides'}->{$based} ||
+           !defined $self->{'flag_overrides'}->{$based}->{$ainput} ||
+           !defined $self->{'flag_overrides'}->{$based}->{$ainput}->{'gendir'} ||
+           $self->{'flag_overrides'}->{$based}->{$ainput}->{'gendir'} eq '.')) {
+        foreach my $file (@{$self->{'custom_special_output'}->{$based}->{$ainput}}) {
+          push(@outputs, $file) if (!StringProcessor::fgrep($file, \@outputs));
+        }
       }
 
       if ($self->{'convert_slashes'}) {

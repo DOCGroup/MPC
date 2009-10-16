@@ -1,3 +1,12 @@
+Fri Oct 16 02:25:30 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Reverted my change from Tue Sep  1 12:58:30 UTC 2009 and modified
+          the get_custom_value() method to not add >> files when gendir is
+          set to something other than '.'.  Thanks to Steve Stallion for
+          tracking this down.
+
 Tue Oct 13 13:38:48 UTC 2009  Sumant Tambe  <sutambe@nospam>
 
         * config/udm.mpb:
