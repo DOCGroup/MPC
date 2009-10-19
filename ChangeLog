@@ -1,3 +1,8 @@
+Mon Oct 19 12:05:30 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_ts_defaults.mpb:
+          Wrap the command with quotes
+
 Fri Oct 16 17:42:30 UTC 2009  Steven Stallion  <stallions@ociweb.com>
 
         * templates/vc7.mpd:
@@ -9,11 +14,11 @@ Fri Oct 16 17:42:30 UTC 2009  Steven Stallion  <stallions@ociweb.com>
           Commit broke OpenDDS builds on Windows platforms. Custom commands
           should not be wrapped in double quotes; some custom commands use
           compound commands (i.e. dcps_ts.pl).
-        
+
         * config/udm.mpb:
         * config/wix.mpb:
-          
-          Reverted changes (r1649): 
+
+          Reverted changes (r1649):
           Tue Oct 13 13:38:48 UTC 2009  Sumant Tambe  <sutambe@nospam>
 
           No longer neccessary.
