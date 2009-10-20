@@ -1,3 +1,8 @@
+Tue Oct 20 06:31:30 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_ts_defaults.mpb:
+          Don't wrap the command with quotes, that breaks on linux
+
 Mon Oct 19 12:05:30 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_ts_defaults.mpb:
