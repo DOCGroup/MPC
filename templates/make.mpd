@@ -85,6 +85,7 @@ NUL           = <%devnull("/dev/null")%>
 MKDIR         = <%makedir("mkdir -p")%>
 TESTDIRSTART  = <%testdirstart("test -d")%>
 TESTDIREND    = <%testdirend("||")%>
+TOUCH         = <%touch("touch")%>
 EXEEXT        = <%exe_ext%>
 LIBPREFIX     = <%lib_prefix%><%libname_prefix%>
 <%if(use_lib_modifier)%>
@@ -332,7 +333,7 @@ __postbuild__:
 #----------------------------------------------------------------------------
 
 $(DEPENDENCIES):
-	@touch $(DEPENDENCIES)
+	@$(TOUCH) $(DEPENDENCIES)
 
 depend:
 <%if(source_files || pch_source)%>
