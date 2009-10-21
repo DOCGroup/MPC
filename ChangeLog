@@ -1,3 +1,18 @@
+Wed Oct 21 19:29:58 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/make.txt:
+        * templates/make.mpd:
+
+          Modified to allow the user to override the 'touch' command via
+          -value_template.  For example, if you're using GNU make on Windows
+          you may want to replace 'touch' with 'copy nul' (e.g, mwc.pl
+          -value_template "touch=copy nul").
+
+        * templates/vc8.mpd:
+
+          Replaced spaces with tabs so that the generated project is more
+          like ones created by Visual Studio.
+
 Tue Oct 20 06:31:30 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_ts_defaults.mpb:
