@@ -66,6 +66,7 @@ tempinc = A compiler specific setting that can be used to dermine a temporary lo
 tempincopt = A compiler specific option to indicate the temporary directory specified by 'tempinc'.
 testdirend = Used in creating intermediate directories.
 testdirstart = Used in creating intermediate directories.
+touch = The utility used to create the initial dependency file.
 type = A utility to display a file on the terminal.
 versupport = A platform specific setting that inidicates if shared library versioning is supported.
 visibility = A boolean setting to determine if visibility options are passed to the compiler.
