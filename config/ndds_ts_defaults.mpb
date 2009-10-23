@@ -4,8 +4,8 @@
 project {
   Define_Custom(NDDSTypeSupport) {
     automatic             = 1
-    command               = $(NDDSHOME)/scripts/rtiddsgen
-    dependent             = $(NDDSHOME)/scripts/rtiddsgen
+    command               = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%quote%>
+    dependent             = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%quote%>
     source_pre_extension  = , Support, Plugin
     source_outputext      = .cxx
     header_pre_extension  = , Support, Plugin
