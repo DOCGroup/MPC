@@ -1,3 +1,8 @@
+Fri Oct 23 09:49:30 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_ts_defaults.mpb:
+          Wrap the command with quotes because NDDSHOME could contain spaces
+
 Wed Oct 21 19:29:58 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/make.txt:
