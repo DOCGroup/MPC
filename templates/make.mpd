@@ -217,6 +217,9 @@ LIBPATH           := $(LIBPATH):<%custom_type->libpath%>
 PATH              := $(PATH):<%custom_type->libpath%>
 
 <%endif%>
+<%if(contains(custom_type->dependent, "))%><%custom_type->dependent%>:
+
+<%endif%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
 <%if(multiple(custom_type->input_file->output_files))%>
