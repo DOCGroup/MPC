@@ -56,7 +56,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        structure starting at <directory>.  This should be a
                        full path.
        -language       Specify the language preference; possible values are
-                       [cplusplus csharp java vb].  The default is
+                       [cplusplus, csharp, java, vb].  The default is
                        cplusplus.
        -make_coexistence If multiple 'make' based project types are
                        generated, they will be named such that they can coexist.
