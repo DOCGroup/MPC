@@ -1,3 +1,17 @@
+Thu Oct 29 22:55:05 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * docs/html/MakeProjectCreator.html:
+        * modules/ProjectCreator.pm:
+
+          Added the current language as a property.  So, prop:cplusplus, for
+          example, can be used within a 'specific' scope.
+
+        * docs/USAGE:
+        * modules/Options.pm:
+
+          Minor change.  Separated languages using commas in usage.
+
 Wed Oct 28 16:00:03 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/make.mpd:
