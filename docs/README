@@ -292,6 +292,8 @@ specific        This scope allows assignments that are specific to a
                 microsoft, windows, and static.  The table below shows which
                 properties apply to which project types.  The static
                 property will be set if the -static option was supplied.
+                Additionally, a property that corresponds to the  language
+                will be set (e.g., cplusplus, csharp, java, vb).
 
                          | borland | make | microsoft | windows |
                 ---------+---------+------+-----------+---------|

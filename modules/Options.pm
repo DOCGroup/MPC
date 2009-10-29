@@ -125,7 +125,7 @@ sub printUsage {
 "                       structure starting at <directory>.  This should be a\n" .
 "                       full path.\n" .
 "       -language       Specify the language preference; possible values are\n",
-"                       [", join(' ', sort(Creator::validLanguages())), "].  The default is\n".
+"                       [", join(', ', sort(Creator::validLanguages())), "].  The default is\n".
 "                       " . Creator::defaultLanguage() . ".\n",
 "       -make_coexistence If multiple 'make' based project types are\n" .
 "                       generated, they will be named such that they can coexist.\n" .

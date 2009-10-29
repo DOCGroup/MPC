@@ -5389,7 +5389,8 @@ sub warn_useless_project {
 
 sub get_properties {
   my $self = shift;
-  return {'static' => $self->get_static()};
+  return {'static' => $self->get_static(),
+          $self->get_language() => 1};
 }
 
 1;
