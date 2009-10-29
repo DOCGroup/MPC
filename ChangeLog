@@ -1,7 +1,6 @@
 Thu Oct 29 18:28:33 UTC 2009  Steven Stallion  <stallions@ociweb.com>
 
         * config/assert.mpb:
-        * config/global.features:
 
           Added feature for runtime assertions; enabled by default.
           NOTE: enabling assertions is essentially a no-op which preserves
