@@ -301,6 +301,11 @@ sub aggregated_workspace {
     $self->{$self->{'type_check'}} = 0;
     $self->{'scoped_basedir'} = $self->mpc_dirname($file);
 
+    ## If the directory name for the file is the current directory, we
+    ## need to empty it out.  If we don't, it will cause the file name to
+    ## not match up with itself later on where scoped_basedir is used.
+    $self->{'scoped_basedir'} = undef if ($self->{'scoped_basedir'} eq '.');
+
     while(<$fh>) {
       my $line = $self->preprocess_line($fh, $_);
       ($status, $error, @values) = $self->parse_known($line);
@@ -625,24 +630,24 @@ sub handle_scoped_unknown {
     if ($self->path_is_relative($line)) {
       $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
     }
-
-    ## We must build up the list of project files and use them as the
-    ## keys in the duplicate hash check.  We need to call
-    ## search_for_files() because the user may have just listed
-    ## directories in the workspace and we need to deal with mpc files.
-    my @files;
-    $self->search_for_files($self->{'project_files'}, \@files);
-    my %dup;
-    @dup{@files} = ();
-    $dupchk = \%dup;
-
-    ## If the aggregated workspace contains a scope (other than exclude)
-    ## it will be processed in the block above and we will eventually get
-    ## here, but by that time $type will no longer be $aggregated.  So,
-    ## we just need to set it here to ensure that we don't add everything
-    ## in the scoped_basedir directory in handle_scoped_end()
-    $self->{'handled_scopes'}->{$aggregated} = 1;
   }
+
+  ## We must build up the list of project files and use them as the
+  ## keys in the duplicate hash check.  We need to call
+  ## search_for_files() because the user may have just listed
+  ## directories in the workspace and we need to deal with mpc files.
+  my @files;
+  $self->search_for_files($self->{'project_files'}, \@files);
+  my %dup;
+  @dup{@files} = ();
+  $dupchk = \%dup;
+
+  ## If the aggregated workspace contains a scope (other than exclude)
+  ## it will be processed in the block above and we will eventually get
+  ## here, but by that time $type will no longer be $aggregated.  So,
+  ## we just need to set it here to ensure that we don't add everything
+  ## in the scoped_basedir directory in handle_scoped_end()
+  $self->{'handled_scopes'}->{$aggregated} = 1;
 
   if (-d $line) {
     my @files;
