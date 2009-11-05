@@ -1,3 +1,11 @@
+Thu Nov  5 19:39:35 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+        * modules/XMLProjectBase.pm:
+
+          Fixed the 'equote' pseudo template variable.  It wasn't actually
+          escaped before.  Now it is.
+
 Mon Nov  2 13:35:00 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WorkspaceCreator.pm:
