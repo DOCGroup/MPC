@@ -24,7 +24,7 @@ sub get_quote_symbol {
 
 sub get_escaped_quote_symbol {
   #my $self = shift;
-  return '&quot;';
+  return '\\&quot;';
 }
 
 
