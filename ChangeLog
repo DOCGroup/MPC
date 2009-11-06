@@ -1,3 +1,10 @@
+Fri Nov  6 03:39:51 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/mpich.mpb:
+
+          Added an include path and remove an unnecessary library (for
+          non-windows project types).
+
 Thu Nov  5 19:39:35 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
