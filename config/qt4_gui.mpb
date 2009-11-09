@@ -9,6 +9,7 @@ project: qt4_core {
     command          = $(QTDIR)/bin/uic
     output_option    = -o
     inputext         = .ui
+    pre_filename     = ui_
     header_outputext = .h
   }
 
@@ -19,6 +20,17 @@ project: qt4_core {
     pch_postrule     = 1
     inputext         = .h
     pre_extension    = _moc
+    source_outputext = .cpp
+  }
+
+  Define_Custom(QRC) {
+    automatic        = 1
+    command          = $(QTDIR)/bin/rcc
+    output_option    =  -o
+    commandflags     = -name <%input_noext%>
+    pch_postrule     = 1
+    inputext         = .qrc
+    pre_extension    = _qrc
     source_outputext = .cpp
   }
 }
