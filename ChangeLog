@@ -1,3 +1,17 @@
+Mon Nov  9 15:22:20 UTC 2009  Mike Martinez  <martinez_m@ociweb.com>
+
+        * config/qt4_core.mpb:
+
+          Added QT4_INCDIR to allow user to specify include directory
+          which is not relative to QTDIR (such as distributions that
+          place qt in /usr/include/qt4).
+
+        * config/qt4_gui.mpb:
+
+          Added QRC resource compiler command handling.
+          Added 'ui_' prefix to output filename of UI compiler to match
+          the behavior of 'qmake'.
+
 Fri Nov  6 03:39:51 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/mpich.mpb:
