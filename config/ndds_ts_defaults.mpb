@@ -15,4 +15,8 @@ project {
 
   ndds_ts_flags += -language C++ -replace -namespace
   requires += ndds
+
+  verbatim(gnuace, macros) {
+    override no_hidden_visibility = 1
+  }
 }
