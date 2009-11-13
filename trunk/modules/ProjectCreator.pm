@@ -1079,6 +1079,12 @@ sub update_template_variable {
     }
   }
 
+  ## Ensure that any real quote character read in is treated as the
+  ## pseudo quote variable; and then subsitute all pseudo variables
+  ## for the project specific characters.
+  $values[2] =~ s/\"/<%quote%>/g;
+  $values[2] = $self->replace_parameters($values[2], $self->{'command_subs'});
+
   if (defined $atemp->{$values[1]}) {
     ## If there are template variable settings, then we need to add
     ## this new one to the end of the settings that did not come from
@@ -1097,6 +1103,7 @@ sub update_template_variable {
   else {
     $atemp->{$values[1]} = [];
   }
+
   push(@{$atemp->{$values[1]}}, [$values[0], $values[2], undef, $name]);
 }
 
@@ -4077,6 +4084,10 @@ sub convert_command_parameters {
       }
     }
   }
+
+  ## Ensure that any real quote character read in is treated as the pseudo quote
+  ## variable; so they can be subsituted for the project specific characters.
+  $str =~ s/\"/<%quote%>/g;
 
   return $self->replace_parameters($str, \%valid, \%nowarn, $input, $output, 1);
 }
