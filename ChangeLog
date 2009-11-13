@@ -1,6 +1,21 @@
+Fri Nov 13 15:30:00 UTC 2009  Simon Massey  <sma@prismtech.com>
+
+        * modules/ProjectCreator.pm:
+
+          update_template_variable() now processes values through
+          replace_parameters() and treats double-quote characters
+          in a project specific way. This allows the "tao_idlflags"
+          template variable to contain quoted roots, to allow for
+          spaces within the directory names.
+          Also convert_command_parameters() now also treats
+          double-quote characters in a project specific way for the
+          same reason, to allow " to be used within "idlflags" inside
+          project mpc files.
+
 Wed Nov 11 07:00:20 UTC 2009  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_ts_defaults.mpb:
+
           Don't use visibility with ndds
 
 Mon Nov  9 15:22:20 UTC 2009  Mike Martinez  <martinez_m@ociweb.com>
