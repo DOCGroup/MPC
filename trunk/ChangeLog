@@ -1,3 +1,14 @@
+Mon Nov 16 02:52:53 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/msgfmt.mpb:
+
+          Added a base project to utilize the msgfmt executable.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where adding to a scoped template variable nullified
+          the setting of the non-scoped template variable.
+
 Fri Nov 13 15:30:00 UTC 2009  Simon Massey  <sma@prismtech.com>
 
         * modules/ProjectCreator.pm:
