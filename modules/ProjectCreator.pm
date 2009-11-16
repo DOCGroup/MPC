@@ -1075,7 +1075,17 @@ sub update_template_variable {
     $name = $values[1] if (!defined $name);
     if ($name =~ s/.*:://) {
       my $value = $self->get_assignment($name);
-      $atemp->{$values[1]} = [[0, $value, undef, $name]] if (defined $value);
+      ## Regardless of whether there was and assignment value, we need to
+      ## look at the template value of the base so that modification of a
+      ## scoped variable includes the base values.
+      if (defined $atemp->{$name}) {
+        foreach my $arr (@{$atemp->{$name}}) {
+          my @copy = @$arr;
+          push(@{$atemp->{$values[1]}}, \@copy);
+        }
+      }
+      unshift(@{$atemp->{$values[1]}},
+              [0, $value, undef, $name]) if (defined $value);
     }
   }
 
@@ -1083,7 +1093,8 @@ sub update_template_variable {
   ## pseudo quote variable; and then subsitute all pseudo variables
   ## for the project specific characters.
   $values[2] =~ s/\"/<%quote%>/g;
-  $values[2] = $self->replace_parameters($values[2], $self->{'command_subs'});
+  $values[2] = $self->replace_parameters($values[2], $self->{'command_subs'})
+                 if (index($values[2], '<%') >= 0);
 
   if (defined $atemp->{$values[1]}) {
     ## If there are template variable settings, then we need to add
@@ -1104,6 +1115,26 @@ sub update_template_variable {
     $atemp->{$values[1]} = [];
   }
 
+  ## If the variable name is not scoped, we need to look through existing
+  ## scoped variables that match the base.  If we find one, we need to
+  ## propagate this value into the scoped settings.
+  if (index($values[1], '::') == -1) {
+    foreach my $key (keys %$atemp) {
+      if ($key ne $name) {
+        foreach my $entry (@{$atemp->{$key}}) {
+          if ($$entry[3] eq $name) {
+            push(@{$atemp->{$key}}, [$values[0], $values[2], undef, $name]);
+            last;
+          }
+        }
+      }
+    }
+  }
+
+  ## 0: (0 set, 1 add, -1 subtract)
+  ## 1: The text value
+  ## 2: (true set on command line, false set in project)
+  ## 3: The original variable name if it's scoped or mapped
   push(@{$atemp->{$values[1]}}, [$values[0], $values[2], undef, $name]);
 }
 
