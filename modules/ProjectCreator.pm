@@ -1119,6 +1119,7 @@ sub update_template_variable {
   ## scoped variables that match the base.  If we find one, we need to
   ## propagate this value into the scoped settings.
   if (index($values[1], '::') == -1) {
+    $name = $values[1] if (!defined $name);
     foreach my $key (keys %$atemp) {
       if ($key ne $name) {
         foreach my $entry (@{$atemp->{$key}}) {
