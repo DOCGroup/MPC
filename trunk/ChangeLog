@@ -1,3 +1,10 @@
+Tue Nov 17 15:05:06 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a problem with my last change.  In some cases, a perl
+          variable wasn't set causing strange template variable results.
+
 Mon Nov 16 02:52:53 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/msgfmt.mpb:
