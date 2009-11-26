@@ -1089,10 +1089,7 @@ sub update_template_variable {
     }
   }
 
-  ## Ensure that any real quote character read in is treated as the
-  ## pseudo quote variable; and then subsitute all pseudo variables
-  ## for the project specific characters.
-  $values[2] =~ s/\"/<%quote%>/g;
+  ## Subsitute all pseudo variables for the project specific characters.
   $values[2] = $self->replace_parameters($values[2], $self->{'command_subs'})
                  if (index($values[2], '<%') >= 0);
 
@@ -4116,10 +4113,6 @@ sub convert_command_parameters {
       }
     }
   }
-
-  ## Ensure that any real quote character read in is treated as the pseudo quote
-  ## variable; so they can be subsituted for the project specific characters.
-  $str =~ s/\"/<%quote%>/g;
 
   return $self->replace_parameters($str, \%valid, \%nowarn, $input, $output, 1);
 }
