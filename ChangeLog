@@ -1,3 +1,13 @@
+Thu Nov 26 08:57:00 UTC 2009  Simon Massey  <sma@prismtech.com>
+
+        * modules/ProjectCreator.pm:
+
+          Reverted allowing double-quote characters to be treated
+          in a project specific way for the. If quotes are to be
+          preserved within "idlflags" inside project mpc files, then
+          explicit <%quote%> must be used. Swapping natual quotes
+          broke other parts of MPC parsing.
+
 Tue Nov 17 15:05:06 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
