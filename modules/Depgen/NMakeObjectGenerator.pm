@@ -1,3 +1,9 @@
+# ************************************************************
+# Description   : Generates object files for NMake Makefiles.
+# Author        : Chad Elliott
+# Create Date   : 5/23/2003
+# ************************************************************
+
 package WinProjectBaseEx;
 
 use WinProjectBase;
@@ -14,12 +20,6 @@ sub new {
 
 
 package NMakeObjectGenerator;
-
-# ************************************************************
-# Description   : Generates object files for NMake Makefiles.
-# Author        : Chad Elliott
-# Create Date   : 5/23/2003
-# ************************************************************
 
 # ************************************************************
 # Pragmas

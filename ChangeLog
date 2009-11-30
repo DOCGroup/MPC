@@ -1,3 +1,15 @@
+Mon Nov 30 17:17:30 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Depgen/NMakeObjectGenerator.pm:
+
+          Moved a comment.
+
+        * templates/make.mpd:
+
+          If the 'targetoutdir' or 'obj_dir' template variables are set, we
+          need to set the VDIR environment variable when calling depgen.pl
+          so that the generated dependencies have the right directory.
+
 Thu Nov 26 08:57:00 UTC 2009  Simon Massey  <sma@prismtech.com>
 
         * modules/ProjectCreator.pm:
