@@ -21,7 +21,7 @@
                 DefaultClientScript = "JScript"
                 DefaultHTMLPageLayout = "Grid"
                 DefaultTargetSchema = "IE50"
-                DelaySign = "false"
+                DelaySign = "<%DelaySign("false")%>"
 <%if(exename || sharedname || staticname)%>
                 OutputType = "<%if(exename)%><%if(winapp)%>Win<%endif%>Exe<%else%>Library<%endif%>"
 <%endif%>

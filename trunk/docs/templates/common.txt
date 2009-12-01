@@ -5,6 +5,7 @@
 compile_flags = This holds flags passed to the compiler for source files.
 configurations = This determines build configurations (ex. Debug, Release, etc.)
 cwd = The current working directory of the project.
+delaysign = Set this to true or false to enable delay signing.
 dll_ext = The dynamic library extension.  The value for this depends on the project type.
 exe_ext = The executable extension.  The value for this depends on the project type.
 forcount = The count of the number of times iteration has occurred within the current foreach loop.  The base value is determined by the foreach declaration.
