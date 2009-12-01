@@ -1,3 +1,16 @@
+Tue Dec  1 15:05:46 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/common.txt:
+        * templates/vc7csharp.mpd:
+        * templates/vc7java.mpd:
+        * templates/vc7vb.mpd:
+        * templates/vc8csharp.mpd:
+        * templates/vc8java.mpd:
+        * templates/vc8vb.mpd:
+
+          Allow the setting to the "DelaySign" setting through a template
+          variable.
+
 Mon Nov 30 17:17:30 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Depgen/NMakeObjectGenerator.pm:
