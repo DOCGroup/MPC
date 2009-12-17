@@ -2004,7 +2004,9 @@ sub remove_duplicate_addition {
       $value = $self->modify_assignment_value($name, $value);
       foreach my $val (@{$self->create_array($value)}) {
         if (!exists $parts{$val}) {
-          my $qt = ($val =~ /\s/ ? '"' : '');
+          ## We need to supply quotes if there is a space in the value or
+          ## a variable.  The variable may contain spaces.
+          my $qt = ($val =~ /\s/ || $val =~ /\$\(.+\)/ ? '"' : '');
           $allowed .= $qt . $val . $qt . ' ';
         }
       }

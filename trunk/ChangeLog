@@ -1,3 +1,16 @@
+Thu Dec 17 20:45:21 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where adding a string containing $(...) would not have
+          double quotes which, when used with -expand_vars, could cause
+          invalid values if the variable value had a space in it.
+
+        * templates/makedll.mpt:
+
+          Changed the hard-coded /usr/local to use $(SYSTEM) in the
+          arm_elf_gcc compiler configuration.
+
 Tue Dec  1 15:05:46 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/common.txt:
