@@ -117,7 +117,7 @@ arm_elf_gcc {
   cxx           = arm-elf-g++
   ar            = arm-elf-ar
   arflags       = rcs
-  compilerflags = -isystem "$(SYSTEM)/arm-elf/include"
+  compilerflags = -isystem "$(SYSTEMDIR)/arm-elf/include"
   shflags       = -shared
   platforms     = nucleus
   pchcreate     = "-o "
