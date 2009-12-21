@@ -1,3 +1,15 @@
+Mon Dec 21 18:55:57 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Fixed a bug where the conditional 'associate' tag (--) would be
+          used as an AM_CONDITIONAL in the generated configure.ac.
+
+        * templates/makedll.mpt:
+
+          The system directory variable for arm_elf_gcc should have been
+          $(SYSTEMDIR) not $(SYSTEM).
+
 Thu Dec 17 20:45:21 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
@@ -21,7 +33,7 @@ Tue Dec  1 15:05:46 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
         * templates/vc8java.mpd:
         * templates/vc8vb.mpd:
 
-          Allow the setting to the "DelaySign" setting through a template
+          Allow the setting of the "DelaySign" value through a template
           variable.
 
 Mon Nov 30 17:17:30 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>

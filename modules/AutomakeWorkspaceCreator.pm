@@ -115,6 +115,7 @@ sub write_comps {
   my %proj_dir_seen;
   my $have_subdirs = 0;
   my $outdir = $self->get_outdir();
+  my $cond   = '--';
 
   ## This step writes a configure.ac.Makefiles list into the starting
   ## directory. The list contains of all the Makefiles generated down
@@ -145,7 +146,8 @@ sub write_comps {
           delete $assoc{$feature};
         }
         foreach my $akey (keys %assoc) {
-          print $acfh 'AM_CONDITIONAL(BUILD_', uc($akey), ', true)', $crlf;
+          print $acfh 'AM_CONDITIONAL(BUILD_', uc($akey), ', true)', $crlf
+            if ($akey ne $cond);
         }
 
         print $acfh $crlf,
@@ -346,7 +348,6 @@ sub write_comps {
     my $assoc = $self->get_associated_projects();
     my @aorder;
     my %afiles;
-    my $cond   = '--';
     my $entry  = " \\$crlf        ";
     print $fh 'SUBDIRS =';
     foreach my $dir (reverse @dirs) {
