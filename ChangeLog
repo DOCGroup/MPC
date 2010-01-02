@@ -1,3 +1,9 @@
+Sat Jan  2 16:37:15 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/odbc.mpb:
+
+          Fixed comment in iODBC section.
+
 Mon Dec 21 18:55:57 UTC 2009  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeWorkspaceCreator.pm:

@@ -10,10 +10,18 @@
 
         <Component Id="<%project_name%>" Guid="<%guid%>">
 <%marker(component_top)%>
-<%if(sharedname || staticname || exename)%>
+<%if(install_binary(1))%>
           <File Id="file.<%project_name%>" Name="<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
                 Source="<%source_directory%>/<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
                 DiskId="<%diskid(1)%>" />
+<%endif%>
+<%if(install_resources)%>
+<%foreach(resource_files)%>
+          <File Id="file.resource.<%resource_file%>" Name="<%resource_file%>"
+                Source="<%full_path(resource_file)%>"
+                DiskId="<%diskid(1)%>" />
+
+<%endfor%>
 <%endif%>
 <%if(gme_install)%>
 
