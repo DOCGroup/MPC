@@ -26,7 +26,7 @@ feature(unixodbc) {
 }
 
 feature(iodbc) {
-  // Support for UnixODBC (http://www.iodbc.org). This is one
+  // Support for iODBC (http://www.iodbc.org). This is one
   // variant of porting ODBC to non-Windows systems.
   avoids += unixodbc
 
