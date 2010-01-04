@@ -8,6 +8,11 @@ project {
   macros   += QT_THREAD_SUPPORT
   lit_libs += qt-mt$(QT_VERSION)
 
+  // Some Linux installations have the includes here.
+  specific(!prop:windows) {
+    includes += /usr/include/qt3
+  }
+
   Define_Custom(UIC) {
     automatic        = 1
     command          = $(QTDIR)/bin/uic
