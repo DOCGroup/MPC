@@ -1,3 +1,28 @@
+Mon Jan  4 15:25:54 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/qt.mpb:
+
+          Added an include path for non-Windows project types.
+
+        * modules/Creator.pm:
+
+          Added a method to replace environment variables within a string.
+          This isn't new code, it's just removal of duplicated code.
+
+        * modules/Depgen/DependencyEditor.pm:
+
+          Don't process directories as if they were files.
+
+        * modules/ProjectCreator.pm:
+
+          Use environment variable replacement method from Creator.
+
+        * modules/WorkspaceCreator.pm:
+
+          Replace environment variables in non-scoped assignments as they
+          are encountered.  This avoids errors in 'cmdline' assignments
+          within aggregated workspaces.
+
 Sat Jan  2 16:37:15 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/odbc.mpb:

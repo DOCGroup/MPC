@@ -130,10 +130,8 @@ sub set_verbose_ordering {
 
 
 sub modify_assignment_value {
-  my($self, $name, $value) = @_;
-
   ## Workspace assignments do not need modification.
-  return $value;
+  return $_[2];
 }
 
 
@@ -233,6 +231,11 @@ sub parse_line {
     }
     elsif ($values[0] eq '1') {
       if (defined $validNames{$values[1]}) {
+        ## This code only runs when there is a non-scoped assignment.  As
+        ## such, we can safely replace all environment variables here so
+        ## that they are not incorrectly handled in aggregated
+        ## workspaces.
+        $self->replace_env_vars(\$values[2]) if ($values[2] =~ /\$/);
         $self->process_assignment_add($values[1], $values[2], $flags);
       }
       else {
@@ -1881,17 +1884,7 @@ sub process_cmdline {
 
     ## Look for environment variables
     foreach my $arg (@$args) {
-      while($arg =~ /\$(\w+)/) {
-        my $name = $1;
-        my $val  = '';
-        if ($name eq 'PWD') {
-          $val = $self->getcwd();
-        }
-        elsif (defined $ENV{$name}) {
-          $val = $ENV{$name};
-        }
-        $arg =~ s/\$\w+/$val/;
-      }
+      $self->replace_env_vars(\$arg) if ($arg =~ /\$/);
     }
 
     my $options = $self->options('MWC', {}, 0, @$args);

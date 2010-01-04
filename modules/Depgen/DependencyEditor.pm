@@ -56,7 +56,10 @@ sub process {
                                       $type, $noinline, $exclude);
     ## Sort the files so the dependencies are reproducible
     foreach my $file (sort @$files) {
-      print $fh $dep->process($file), "\n";
+      ## In some situations we may be passed a directory as part of an
+      ## option.  If it is an unknown option, we may think the directory
+      ## needs to be part of the dependencies when it should not.
+      print $fh $dep->process($file), "\n" if (!-d $file);
     }
 
     ## Write out the end of the block warning
