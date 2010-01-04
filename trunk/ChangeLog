@@ -1,3 +1,12 @@
+Mon Jan  4 15:48:32 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/iodbc.mpb:
+        * config/odbc.mpb:
+        * config/unixodbc.mpb:
+
+          Rewrote the odbc.mpb project in terms of feature specifications
+          for UnixODBC and iODBC.
+
 Mon Jan  4 15:25:54 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/qt.mpb:
