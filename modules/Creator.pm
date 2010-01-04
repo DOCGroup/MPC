@@ -40,7 +40,7 @@ my %languages = (cplusplus => 1,
                  csharp    => 1,
                  java      => 1,
                  vb        => 1,
-                );  
+                );
 
 my $assign_key  = 'assign';
 my $gassign_key = 'global_assign';
@@ -996,7 +996,7 @@ sub expand_variables {
           }
           $ival .= $append if (defined $append);
 
-          ## We have to remove the leading ./ if there is one. 
+          ## We have to remove the leading ./ if there is one.
           ## Otherwise, if this value is used as an exclude value it will
           ## not match up correctly.
           $ival =~ s!^\./!!;
@@ -1067,6 +1067,33 @@ sub expand_variables {
   $value =~ s/\\/\//g if ($self->{'requires_forward_slashes'});
 
   return $value;
+}
+
+
+sub replace_env_vars {
+  my($self, $lref) = @_;
+  my $one_empty = undef;
+
+  ## Loop through the string until we find no more environment variables.
+  while($$lref =~ /\$(\w+)/) {
+    my $name = $1;
+    my $val  = '';
+
+    ## PWD is a special variable.  It isn't set on Windows, but in MPC we
+    ## must guarantee that it is always there.
+    if ($name eq 'PWD') {
+      $val = $self->getcwd();
+    }
+    elsif (defined $ENV{$name}) {
+      $val = $ENV{$name};
+    }
+    else {
+      ## Keep track of an environment variable not being set.
+      $one_empty = 1;
+    }
+    $$lref =~ s/\$\w+/$val/;
+  }
+  return $one_empty;
 }
 
 

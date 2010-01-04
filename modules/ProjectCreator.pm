@@ -1162,23 +1162,8 @@ sub handle_scoped_unknown {
     }
     else {
       if (!defined $self->{'expanded'}->{$type}) {
-        my $ok = 1;
-        while($line =~ /\$(\w+)/) {
-          my $name = $1;
-          my $val  = '';
-          if ($name eq 'PWD') {
-            $val = $self->getcwd();
-          }
-          elsif (defined $ENV{$name}) {
-            $val = $ENV{$name};
-          }
-          else {
-            $ok = undef;
-            last;
-          }
-          $line =~ s/\$\w+/$val/;
-        }
-        if ($ok) {
+        my $undef = $self->replace_env_vars(\$line);
+        if (!$undef) {
           ## This is a special concession for Windows.  It will not allow
           ## you to set an empty environment variable.  If an empty
           ## double quoted string is found, we will assume that the user
@@ -3153,7 +3138,7 @@ sub remove_duplicated_files {
   ## There's no point in going on if there's nothing in this component
   ## list.
   return undef if ($#slist == -1);
-  
+
   ## Convert the array into keys for a hash table
   my %shash;
   @shash{@slist} = ();
