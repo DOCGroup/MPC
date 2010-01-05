@@ -2,8 +2,8 @@
 // $Id$
 
 feature(zlib) {
-  includes += $(ZLIB_ROOT)/include
-  libpaths += $(ZLIB_ROOT)/lib
+  includes += "$(ZLIB_ROOT)/include"
+  libpaths += "$(ZLIB_ROOT)/lib"
   macros   += ZLIB
 
   // @@ Notice: If you are building with Cygwin, you may need to manually
