@@ -1,3 +1,15 @@
+Tue Jan  5 14:33:11 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/libpng.mpb:
+        * config/zlib.mpb:
+
+          Put double quotes around settings that contain $(...) so that when
+          it is filled in with something that contains spaces, the value is
+          retained correctly.
+
+          There are probably other base projects that could benefit from
+          this, but I only need these at the moment.
+
 Mon Jan  4 15:48:32 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/iodbc.mpb:

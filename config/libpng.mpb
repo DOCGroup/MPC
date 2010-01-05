@@ -3,8 +3,8 @@
 
 feature(libpng): zlib {
   requires += zlib
-  includes += $(PNG_ROOT)/include/libpng
-  libpaths += $(PNG_ROOT)/lib
+  includes += "$(PNG_ROOT)/include/libpng"
+  libpaths += "$(PNG_ROOT)/lib"
   lit_libs += png
   macros   += PNG
 }
