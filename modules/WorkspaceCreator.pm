@@ -2208,7 +2208,18 @@ sub create_command_line_string {
 
   foreach my $arg (@args) {
     $arg =~ s/^\-\-/-/;
-    $arg = "\"$arg\"" if ($arg =~ /[\s\*]/);
+    if ($arg =~ /\$/ && $^O ne 'MSWin32') {
+      ## If we're not running on Windows and the command line argument
+      ## contains a dollar sign, we need to wrap the argument in single
+      ## quotes so that the UNIX shell does not interpret it. 
+      $arg = "'$arg'";
+    }
+    else {
+      ## Unfortunately, the Windows command line shell does not
+      ## understand single quotes correctly.  So, we have the distinction
+      ## above and handle dollar signs here too.
+      $arg = "\"$arg\"" if ($arg =~ /[\s\*\$]/);
+    }
     if (defined $str) {
       $str .= " $arg";
     }

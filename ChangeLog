@@ -1,3 +1,17 @@
+Thu Jan  7 16:29:06 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Fixed a bug where template variable modifications made one project
+          would accidentally be retained for future projects.
+
+        * modules/WorkspaceCreator.pm:
+
+          Added a work-around in the create_command_line_string() method for
+          dollar signs in the command line arguments.  On non-Windows
+          platforms, the argument with dollar signs will be wrapped in
+          single quotes.
+
 Tue Jan  5 14:33:11 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/libpng.mpb:
