@@ -742,6 +742,31 @@ sub fill_type_name {
 }
 
 
+sub clone {
+  my($self, $obj) = @_;
+
+  ## Check for various types of data.  Those that are not found to be
+  ## types that we need to deep copy are just assigned to new values.
+  ## All others are copied by recursively calling this method.
+  if (UNIVERSAL::isa($obj, 'HASH')) {
+    my $new = {};
+    foreach my $key (keys %$obj) {
+      $$new{$key} = $self->clone($$obj{$key});
+    }
+    return $new;
+  }  
+  elsif (UNIVERSAL::isa($obj, 'ARRAY')) {
+    my $new = [];
+    foreach my $o (@$obj) {
+      push(@$new, $self->clone($o));
+    }
+    return $new;
+  }  
+
+  return $obj;
+}                              
+
+
 sub save_state {
   my($self, $selected) = @_;
   my %state;
@@ -750,21 +775,9 @@ sub save_state {
   ## references and hash references do not get accidentally modified.
   foreach my $skey (defined $selected ? $selected : @statekeys) {
     if (defined $self->{$skey}) {
-      if (UNIVERSAL::isa($self->{$skey}, 'ARRAY')) {
-        $state{$skey} = [];
-        foreach my $element (@{$self->{$skey}}) {
-          push(@{$state{$skey}}, $element);
-        }
-      }
-      elsif (UNIVERSAL::isa($self->{$skey}, 'HASH')) {
-        $state{$skey} = {};
-        foreach my $key (keys %{$self->{$skey}}) {
-          $state{$skey}->{$key} = $self->{$skey}->{$key};
-        }
-      }
-      else {
-        $state{$skey} = $self->{$skey};
-      }
+      ## It is necessary to clone each value so that nested complex data
+      ## types do not get unknowingly modified.
+      $state{$skey} = $self->clone($self->{$skey});
     }
   }
 
@@ -777,6 +790,9 @@ sub restore_state {
 
   ## Make a deep copy of each state value.  That way our array
   ## references and hash references do not get accidentally modified.
+  ## It's not necessary to do a recursive deep copy (i.e., use the
+  ## clone() method) because the value coming in will now be owned by
+  ## this object and will not be modified unknowingly.
   foreach my $skey (defined $selected ? $selected : @statekeys) {
     my $old = $self->{$skey};
     if (defined $state->{$skey} &&
