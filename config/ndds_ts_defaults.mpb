@@ -5,6 +5,8 @@ project {
   Define_Custom(NDDSTypeSupport) {
     automatic             = 1
     command               = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%quote%>
+    commandflags          = -language C++ -replace -namespace -corba <%input_noext%>C.h -orb ACE_TAO1.7
+
     dependent             = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%quote%>
     source_pre_extension  = , Support, Plugin
     source_outputext      = .cxx
@@ -13,7 +15,6 @@ project {
     keyword ndds_ts_flags = commandflags
   }
 
-  ndds_ts_flags += -language C++ -replace -namespace
   requires += ndds
 
   verbatim(gnuace, macros) {
