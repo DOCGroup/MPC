@@ -10,6 +10,7 @@ dll_ext = The dynamic library extension.  The value for this depends on the proj
 exe_ext = The executable extension.  The value for this depends on the project type.
 forcount = The count of the number of times iteration has occurred within the current foreach loop.  The base value is determined by the foreach declaration.
 intermediate_dir = A configuration specific location where object files are placed.
+language = The MPC language setting at the time of project generation.
 lib_ext = The static or impl library extension.  The value for this depends on the project type.
 lib_modifier = Used to modifier a library name.  The value of this is appendend to the library name before the extension is added.
 lib_prefix = The dynamic and static library prefix.  The value for this depends on the project type.

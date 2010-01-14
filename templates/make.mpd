@@ -125,6 +125,9 @@ STATICFLAGS   =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
 <%endif%>
 EXPORTFLAGS   = <%if(exename)%><%if(need_staticflags)%>$(STATICFLAGS)<%endif%><%else%><%if(dll_ext && sharedname)%>$(DYNAMICFLAGS)<%else%>$(STATICFLAGS)<%endif%><%endif%>
 <%endif%>
+<%if(gnumake && exename && libpaths && need_staticflags)%>
+DEPLIBS       = $(foreach lib,<%foreach(libs)%> <%libname_prefix%><%lib%><%endfor%> <%lit_libs%>, $(foreach libpath,<%foreach(libpaths)%><%if(targetoutdir)%> <%libpath%>/<%targetoutdir%><%endif%> <%libpath%><%endfor%>, $(wildcard $(libpath)/lib$(lib).a)))
+<%endif%>
 <%if(multiple(configurations) || multiple(platforms))%>
 endif
 <%endif%>
@@ -160,7 +163,7 @@ specialscript:
 
 <%endif%>
 <%endif%>
-$(BIN):<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelinktargetobj)%> <%targetoutdir%><%obj_dir%><%prelinktargetobj%><%else%><%if(prelinktarget)%> <%prelinktarget%><%endif%><%endif%> $(OBJS)
+$(BIN):<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelinktargetobj)%> <%targetoutdir%><%obj_dir%><%prelinktargetobj%><%else%><%if(prelinktarget)%> <%prelinktarget%><%endif%><%endif%> $(OBJS)<%if(gnumake && exename && libpaths && need_staticflags)%> $(DEPLIBS)<%endif%>
 	@$(TESTDIRSTART) "$(BTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(BTARGETDIR)"
 <%if(prelink)%>
 	<%eval(prelink)%>
