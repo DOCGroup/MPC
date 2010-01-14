@@ -1,3 +1,27 @@
+Thu Jan 14 17:23:14 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/common.txt:
+
+          Documented the language template variable.
+
+        * modules/Depgen/MakeDependencyWriter.pm:
+
+          Correctly deal with whtespace in file paths.  Also, convert
+          <drive letter>: to a cygwin path on Windows (even if the user
+          isn't using cygwin).  Otherwise, make will fail.
+
+        * docs/templates/make.txt:
+        * templates/make.mpd:
+
+          Use DEPLIBS to cause an executable to be relinked when a static
+          library on which the executable depends is updated.  This will
+          only be used if the 'gnumake' template variable is set.
+
+        * templates/makedll.mpt:
+
+          Set the 'gnumake' template variable for the linux, nucleus and
+          cygwin platforms.
+
 Wed Jan 13 13:07:57 UTC 2010  Abdul Sowayan  <sowayan@gmail.com>
 
         * config/ndds_ts_defaults.mpb:
