@@ -245,11 +245,13 @@ openvms {
 }
 
 linux {
+  gnumake       = 1
   ldlibs        = -ldl $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so))))) -lpthread
   extracppflags = -D_REENTRANT
 }
 
 nucleus {
+  gnumake       = 1
   extracppflags = -mcpu=arm7tdmi -msoft-float -mthumb-interwork
 }
 
@@ -323,6 +325,7 @@ vxworks_rtp {
 }
 
 cygwin {
+  gnumake    = 1
   versupport =
   dll_ext    = .dll
   exe_ext    = .exe

@@ -1,4 +1,4 @@
-// Current as of 6/17/2008
+// Current as of 1/14/2010
 // This defines the role of all the template variables specific to the
 // 'make' project type.
 //
@@ -30,6 +30,7 @@ expanded_variable_assignment = Used to enable the setting of custom library path
 extraarflags = Additional, platform specific, flags to be passed to the static library creation tool.
 extracppflags = Additional, platform specific, flags to be passed to the source file compiler.
 genflags = Used to determine the default compile mode (either debug or optimized).
+gnumake = Indicates that GNU Make extensions can be used in the generated Makefile.
 ld = Used to override the default linker and flags for executables.
 ldlibs = Platform specific libraries to be linked into dynamic libraries and executables.
 libgenopt = This is used to pass an option, if necessary, to the static library creation tool to specify the library name.
