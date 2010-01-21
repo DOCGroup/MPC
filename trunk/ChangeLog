@@ -1,3 +1,30 @@
+Thu Jan 21 12:52:48 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Depgen/MakeDependencyWriter.pm:
+
+          Move checks to the file level status.
+
+        * modules/TemplateParser.pm:
+
+          Fixed bugs with using a scope inside of a foreach.  Also, fixed
+          bugs where 'flag_overrides' would sometimes end up as an array
+          and would be printed to the project as if it were a string. 
+          Finally, a filename ending in a '.' will be considered to have an
+          extension of '.'.
+
+        * templates/automake.mpd:
+          Modified to best handle dependencies with a space or $(...) in
+          them.  Dependencies with spaces in them will be handled at the
+          template level and $(...) dependencies will be dropped.
+
+        * templates/make.mpd:
+
+          Modified to best handle dependencies with a space or $(...) in
+          them.  If the 'gnumake' template variable is set, a GNU make
+          substitute function will be used.  Otherwise, it will be done at
+          the template level for spaces and $(...) dependencies will be
+          dropped.
+
 Mon Jan 18 09:24:14 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_ts_defaults.mpb:
