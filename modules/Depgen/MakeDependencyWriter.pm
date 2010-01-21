@@ -17,6 +17,12 @@ use vars qw(@ISA);
 @ISA = qw(DependencyWriter);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my $cygwin = (defined $ENV{OS} && $ENV{OS} =~ /windows/i);
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -27,8 +33,7 @@ sub process {
   ## Replace <drive letter>: with /cygdrive/<drive letter>.  The user may
   ## or may not be using Cygwin, but leaving the colon in there will
   ## cause make to fail catastrophically on the next invocation.
-  map(s/([A-Z]):/\/cygdrive\/$1/gi, @{$_[2]}) if (defined $ENV{OS} &&
-                                                  $ENV{OS} =~ /windows/i);
+  map(s/([A-Z]):/\/cygdrive\/$1/gi, @{$_[2]}) if ($cygwin);
 
   ## Sort the dependencies to make them reproducible.
   return "@{$_[1]}: \\\n  " . join(" \\\n  ", sort @{$_[2]}) . "\n";
