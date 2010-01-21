@@ -185,36 +185,43 @@ sub strip_line {
 ## built.  This line may be a foreach line or a general
 ## line without a foreach.
 sub append_current {
-  #my $self  = shift;
-  #my $value = shift;
-
-  if ($_[0]->{'foreach'}->{'count'} >= 0) {
-    $_[0]->{'foreach'}->{'text'}->[$_[0]->{'foreach'}->{'count'}] .= $_[1];
-  }
-  elsif ($_[0]->{'eval'}) {
-    $_[0]->{'eval_str'} .= $_[1];
-  }
-  else {
-    my $value = $_[1];
-    my $scope = $_[0]->{'scopes'};
-    while(defined $$scope{'scope'}) {
-      $scope = $$scope{'scope'};
-      if (defined $$scope{'escape'}) {
-        my $key = $$scope{'escape'};
+  my $value = $_[1];
+  my $scope = $_[0]->{'scopes'};
+  while(defined $$scope{'scope'}) {
+    $scope = $$scope{'scope'};
+    if (defined $$scope{'escape'}) {
+      if ($$scope{'escape'}->[1] < 0 && $_[0]->{'foreach'}->{'count'} >= 0) {
+        ## This scope was created outside of a foreach.  If we are
+        ## processing a foreach, we need to skip this at this point as it
+        ## will be handled once the foreach has been completed and is
+        ## appended to the main project body.
+        last;
+      }
+      else {
+        my $key = $$scope{'escape'}->[0];
         if ($key eq '\\') {
           $value =~ s/\\/\\\\/g;
         }
         else {
-          $value =~ s/$key/\\$key/g;
-        }
-      }
-      else {
-        foreach my $key (keys %$scope) {
-          $_[0]->warning("Unrecognized scope function: $key.");
+          $value =~ s/($key)/\\$1/g;
         }
       }
     }
+    else {
+      foreach my $key (keys %$scope) {
+        $_[0]->warning("Unrecognized scope function: $key.");
+      }
+    }
+  }
 
+
+  if ($_[0]->{'foreach'}->{'count'} >= 0) {
+    $_[0]->{'foreach'}->{'text'}->[$_[0]->{'foreach'}->{'count'}] .= $value;
+  }
+  elsif ($_[0]->{'eval'}) {
+    $_[0]->{'eval_str'} .= $value;
+  }
+  else {
     $_[0]->{'built'} .= $value;
   }
 }
@@ -451,13 +458,18 @@ sub process_foreach {
   my $check_for_mixed;
 
   if ($val =~ /^((\w+),\s*)?flag_overrides\((.*)\)$/) {
-    my $over = $self->get_flag_overrides($3);
-    $name = $2;
-    if (defined $over) {
-      $val = $self->create_array($over);
+    ## If the user did not provide a name we have to pick one otherwise
+    ## there would be no way to access the foreach values.
+    $name = (defined $2 ? $2 : '__unnamed__');
+
+    ## Now check to see if there were overrides for this value.  If there
+    ## were, convert them into an array (if necessary) and continue
+    ## processing.
+    $val = $self->get_flag_overrides($3);
+    if (defined $val) {
+      $val = $self->create_array($val) if (!UNIVERSAL::isa($val, 'ARRAY'));
       @values = @$val;
     }
-    $name = '__unnamed__' if (!defined $name);
   }
   else {
     ## Pull out modifying commands first
@@ -829,7 +841,8 @@ sub handle_scope {
       if ($state eq 'enter') {
         if (defined $func) {
           $param = '' if (!defined $param);
-          $$scope{'scope'} = {$func => $self->process_special($param)};
+          $$scope{'scope'}->{$func} = [$self->process_special($param),
+                                       $_[0]->{'foreach'}->{'count'}];
         }
         else {
           $self->warning("The enter scope function requires a parameter.");
@@ -864,7 +877,7 @@ sub doif_has_extension {
 
   if (defined $val) {
     return ($self->tp_basename(
-                $self->get_value_with_default("@$val")) =~ /\.[^\.]+$/);
+                $self->get_value_with_default("@$val")) =~ /\.[^\.]*$/);
   }
   return undef;
 }
@@ -1370,7 +1383,7 @@ sub handle_normalize {
 
 
 sub actual_noextension {
-  $_[1] =~ s/\.[^\.]+$//;
+  $_[1] =~ s/\.[^\.]*$//;
   return $_[1];
 }
 
@@ -1560,7 +1573,7 @@ sub handle_basenoextension {
   my($self, $name) = @_;
   my $val = $self->tp_basename($self->get_value_with_default($name));
 
-  $val =~ s/\.[^\.]+$//;
+  $val =~ s/\.[^\.]*$//;
   $self->append_current($val);
 }
 
@@ -1568,7 +1581,8 @@ sub handle_basenoextension {
 sub handle_flag_overrides {
   my($self, $name) = @_;
   my $value = $self->get_flag_overrides($name);
-  $self->append_current($value) if (defined $value);
+  $self->append_current(UNIVERSAL::isa($value, 'ARRAY') ?
+                          "@$value" : $value) if (defined $value);
 }
 
 
