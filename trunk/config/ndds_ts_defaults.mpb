@@ -7,7 +7,8 @@ project {
     command               = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%quote%>
     commandflags          = -language C++ -replace -namespace -corba <%input_noext%>C.h -orb ACE_TAO1.7 -I$(TAO_ROOT) -I$(TAO_ROOT)/tao
 
-    dependent             = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%quote%>
+//    dependent             = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%quote%>
+
     source_pre_extension  = , Support, Plugin
     source_outputext      = .cxx
     header_pre_extension  = , Support, Plugin
