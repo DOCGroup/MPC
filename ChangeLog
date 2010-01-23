@@ -1,3 +1,11 @@
+Sat Jan 23 18:32:14 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_ts_defaults.mpb:
+          Commented out the dependent setting, with the vc and nmake
+          project types, MPC adds .exe as default extension, but this
+          script is a .bat file on windows. See bugzilla 3816 for some
+          more details.
+
 Thu Jan 21 12:52:48 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Depgen/MakeDependencyWriter.pm:
@@ -8,7 +16,7 @@ Thu Jan 21 12:52:48 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
           Fixed bugs with using a scope inside of a foreach.  Also, fixed
           bugs where 'flag_overrides' would sometimes end up as an array
-          and would be printed to the project as if it were a string. 
+          and would be printed to the project as if it were a string.
           Finally, a filename ending in a '.' will be considered to have an
           extension of '.'.
 
