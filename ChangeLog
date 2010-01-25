@@ -1,3 +1,9 @@
+Mon Jan 25 18:55:14 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_ts_defaults.mpb:
+          Use the new <%bat%>, on windows this is a batch file, not an
+          executable
+
 Mon Jan 25 18:46:30 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
