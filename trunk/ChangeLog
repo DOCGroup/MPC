@@ -1,3 +1,22 @@
+Mon Jan 25 18:46:30 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * docs/USAGE:
+        * docs/html/MakeProjectCreator.html:
+        * modules/ProjectCreator.pm:
+
+          Added additional psuedo template variables (bat, cmd and exe) and
+          an optional environment variable to force Windows compatible
+          commands to be used in psuedo template variables.  See the
+          documentation for more on this.
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Modified this template and template input file to use a C compiler
+          on files that have a .c extension instead of always using the C++
+          compiler.
+
 Sat Jan 23 18:32:14 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_ts_defaults.mpb:
