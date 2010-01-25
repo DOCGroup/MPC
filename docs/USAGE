@@ -300,3 +300,7 @@ MPC_GHS_UNIX - This environment variable is only meaningful when generating
 the ghs project files.  By default, the ghs type assumes that it is for
 Windows.  If this is not the case, set this environment variable prior to
 running MPC.
+
+MPC_USE_WIN_COMMANDS - Setting this causes the Windows related pseudo
+template variables to be used regardless of the type of project being
+generated.

@@ -3902,6 +3902,9 @@ sub get_command_subs {
     $valid{'rmdir'} = 'rmdir /s/q';
     $valid{'nul'}   = 'nul';
     $valid{'slash'} = '\\';
+    $valid{'bat'}   = '.bat';
+    $valid{'cmd'}   = '.cmd';
+    $valid{'exe'}   = '.exe';
   }
   else {
     $valid{'cat'}   = 'cat';
@@ -3914,6 +3917,9 @@ sub get_command_subs {
     $valid{'rmdir'} = 'rm -rf';
     $valid{'nul'}   = '/dev/null';
     $valid{'slash'} = '/';
+    $valid{'bat'}   = '';
+    $valid{'cmd'}   = '';
+    $valid{'exe'}   = '';
   }
 
   ## Add the project specific compatibility commands
@@ -5256,7 +5262,7 @@ sub webapp_supported {
 
 sub use_win_compatibility_commands {
   #my $self = shift;
-  return 0;
+  return $ENV{MPC_USE_WIN_COMMANDS};
 }
 
 
