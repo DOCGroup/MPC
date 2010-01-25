@@ -1261,6 +1261,11 @@
           By default, the ghs type assumes that it is for Windows. Set this
           environment variable prior to running MPC if this is not the
           case.</li>
+
+          <li class="Body">The <em class="Code">MPC_USE_WIN_COMMANDS</em>
+          environment variable causes the Windows related pseudo template
+          variables to be used regardless of the type of project being
+          generated.</li>
         </ul>
       </div>
     </div>
@@ -4542,6 +4547,51 @@
                         generated temporary file name contains no directory
                         portion and is the same for each use within the same
                         variable setting.</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td rowspan="1" colspan="2">
+                        <p class="TblCode">The following variables will
+                        be set to the known extension for Windows based
+                        project types and empty on non-Windows based
+                        project types.</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td rowspan="1" colspan="1">
+                        <p class="TblCode"><em class=
+                        "TableCode">&lt;%bat%&gt;</em></p>
+                      </td>
+
+                      <td rowspan="1" colspan="1">
+                        <p class="Tbl-Body">The extension for batch
+                        files.</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td rowspan="1" colspan="1">
+                        <p class="TblCode"><em class=
+                        "TableCode">&lt;%cmd%&gt;</em></p>
+                      </td>
+
+                      <td rowspan="1" colspan="1">
+                        <p class="Tbl-Body">The extension for command
+                        files.</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td rowspan="1" colspan="1">
+                        <p class="TblCode"><em class=
+                        "TableCode">&lt;%exe%&gt;</em></p>
+                      </td>
+
+                      <td rowspan="1" colspan="1">
+                        <p class="Tbl-Body">The extension for executable
+                        files.</p>
                       </td>
                     </tr>
                   </table>
