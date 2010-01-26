@@ -1,3 +1,8 @@
+Tue Jan 26 12:00:14 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_ts_defaults.mpb:
+          Added -enableEscapeChar as default argument
+
 Mon Jan 25 18:55:14 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_ts_defaults.mpb:
