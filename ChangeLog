@@ -1,3 +1,10 @@
+Tue Feb  9 14:05:11 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/vc8vb.mpd:
+
+          Corrected VB support for vc9 and vc10 by adding the ToolVersion
+          setting.
+
 Wed Jan 27 11:11:14 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_ts_defaults.mpb:
