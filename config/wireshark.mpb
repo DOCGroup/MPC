@@ -2,7 +2,7 @@
 // $Id$
 //
 
-project {
+project : glib {
   requires      += wireshark
 
   // Unfortunately wireshark does not install headers for plugin
