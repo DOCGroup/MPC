@@ -1,0 +1,14 @@
+//
+// $Id$
+//
+
+project {
+  requires      += wireshark
+
+  // Unfortunately wireshark does not install headers for plugin
+  // development; instead we rely on the source distribution:
+  includes      += $(WIRESHARK_SRC)
+  libpaths      += $(WIRESHARK_ROOT)/lib
+
+  lit_libs      += wiretap wireshark
+}
