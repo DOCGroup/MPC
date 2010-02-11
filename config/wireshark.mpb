@@ -10,5 +10,5 @@ project : glib {
   includes      += $(WIRESHARK_SRC)
   libpaths      += $(WIRESHARK_ROOT)/lib
 
-  lit_libs      += wiretap wireshark
+  lit_libs      += wireshark wiretap
 }
