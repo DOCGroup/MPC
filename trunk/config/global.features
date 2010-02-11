@@ -30,6 +30,7 @@ swig_python   = 0
 swig_ruby     = 0
 swig_tcl      = 0
 uses_wchar    = 0 // i.e., unicode
+wireshark     = 0
 xalanc        = 0
 xerces        = 0
 xerces2       = 0
