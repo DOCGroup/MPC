@@ -1,8 +1,15 @@
+Mon Feb 15 04:59:26 UTC 2010  Steven Stallion  <stallions@ociweb.com>
+
+        * config/wireshark.mpb:
+
+          Updated supported environment variables; Windows installations
+          do not honor the traditional lib subdirectory.
+
 Thu Feb 11 22:25:16 UTC 2010  Abdul Sowayan  <sowayan@gmail.com>
 
         * config/ndds_ts_defaults.mpb:
 
-          Minor changes to address the limitation described in 
+          Minor changes to address the limitation described in
           Bug 3811. Changes need to be reverted once Bug 3811 is
           fixed. Thanks to Trent Nadeau <Trent dot Nadeau at ngc dot com>
           for contributing this change and testing it.
