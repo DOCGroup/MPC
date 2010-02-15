@@ -5,10 +5,13 @@
 project : glib {
   requires      += wireshark
 
-  // Unfortunately wireshark does not install headers for plugin
+  // Unfortunately Wireshark does not install headers for plugin
   // development; instead we rely on the source distribution:
-  includes      += $(WIRESHARK_SRC)
-  libpaths      += $(WIRESHARK_ROOT)/lib
+  includes      += $(WIRESHARK_SRCDIR)
+  
+  // Library paths vary across platforms as well; Windows hosts
+  // should use installation directory: 
+  libpaths      += $(WIRESHARK_LIBDIR)
 
   lit_libs      += wireshark wiretap
 }
