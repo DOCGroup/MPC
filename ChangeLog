@@ -1,3 +1,9 @@
+Mon Feb 15 19:23:45 UTC 2010  Steven Stallion  <stallions@ociweb.com>
+
+        * config/wireshark.mpb:
+
+	  Final round of updates for Wireshark support on Windows.
+
 Mon Feb 15 04:59:26 UTC 2010  Steven Stallion  <stallions@ociweb.com>
 
         * config/wireshark.mpb:
