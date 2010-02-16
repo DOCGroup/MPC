@@ -1,3 +1,9 @@
+Tue Feb 16 04:36:04 UTC 2010  Steven Stallion  <stallions@ociweb.com>
+
+        * config/wireshark.mpb:
+
+	  Fixed whitespace problems introduced in previous commit.
+
 Tue Feb 16 00:56:18 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/make.mpd:
@@ -15,7 +21,7 @@ Mon Feb 15 19:23:45 UTC 2010  Steven Stallion  <stallions@ociweb.com>
 
         * config/wireshark.mpb:
 
-	  Final round of updates for Wireshark support on Windows.
+          Final round of updates for Wireshark support on Windows.
 
 Mon Feb 15 04:59:26 UTC 2010  Steven Stallion  <stallions@ociweb.com>
 
