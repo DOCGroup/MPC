@@ -1,3 +1,16 @@
+Tue Feb 16 00:56:18 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/make.mpd:
+
+          Fixed a bug in the template where the 'dld' template variable was
+          not honored.
+
+        * templates/makedll.mpt:
+
+          Added a 'macosx' platform similar to the 'macos' platform except
+          that the linker is g++ and there are no additional libraries
+          linked in.
+
 Mon Feb 15 19:23:45 UTC 2010  Steven Stallion  <stallions@ociweb.com>
 
         * config/wireshark.mpb:
