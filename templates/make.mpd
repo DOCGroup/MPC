@@ -117,7 +117,7 @@ SHFLAGS       = <%shflags%>
 <%endif%>
 <%endif%>
 SRC           =<%if(pch_source && pchsupport)%> <%pch_source%><%endif%> <%source_files%>
-LINK.cc       = $(LD) $(LDFLAGS)
+LINK.cc       = <%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LD) $(LDFLAGS)<%endif%>
 <%if(!contains(language, java))%>
 <%if(dynamicflags)%>
 DYNAMICFLAGS  =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
@@ -192,7 +192,7 @@ $(SHLIB)<%if(version && versupport)%>.<%version%><%endif%>: <%if(tempinc)%>$(TEM
 <%if(dmclink)%>
 	link /impl <%if(pch_source && pchsupport)%><%targetoutdir%><%obj_dir%><%noextension(pch_source)%>$(OBJEXT)+<%endif%><%foreach(source_files)%><%targetoutdir%><%obj_dir%><%noextension(source_file)%>$(OBJEXT)<%fornotlast("+")%><%endfor%>,$@,<%ldlibs%><%if(rc)%><%foreach(resource_files)%><%forfirst(",,")%><%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT)<%fornotlast("+")%><%endfor%><%endif%>
 <%else%>
-	<%if(dld)%><%dld%> $(LDFLAGS)<%else%>$(LINK.cc)<%endif%> $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+	$(LINK.cc) $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
 <%endif%>
 
 <%else%>
