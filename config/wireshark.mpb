@@ -9,9 +9,6 @@ project : glib {
   // development; instead we rely on the source distribution:
   includes      += $(WIRESHARK_SRC)
 
-  verbatim(nmake, top) {
-    include $(WIRESHARK_SRC)/config.nmake
-  }
   specific(vc71) {
     macros      += MSC_VER_REQUIRED=1310
   }
@@ -20,6 +17,9 @@ project : glib {
   }
   specific(vc9) {
     macros      += MSC_VER_REQUIRED=1500
+  }
+  verbatim(nmake, top) {
+    include $(WIRESHARK_SRC)/config.nmake
   }
 
   specific(vc71,vc8,vc9,nmake) {
