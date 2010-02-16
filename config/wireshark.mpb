@@ -12,29 +12,21 @@ project : glib {
   verbatim(nmake, top) {
     include $(WIRESHARK_SRC)/config.nmake
   }
-
   specific(vc71) {
     macros      += MSC_VER_REQUIRED=1310
   }
-
   specific(vc8) {
     macros      += MSC_VER_REQUIRED=1400
   }
-
   specific(vc9) {
     macros      += MSC_VER_REQUIRED=1500
   }
 
-  specific(vc10) {
-    macros      += MSC_VER_REQUIRED=1600
-  }
-
-  specific(vc71, vc8, vc9, vc10, nmake) {
-	libpaths    += $(WIRESHARK_SRC)/wiretap $(WIRESHARK_SRC)/epan
-	lit_libs    += wiretap-$(WIRETAP_VERSION) libwireshark
-
+  specific(vc71,vc8,vc9,nmake) {
+    libpaths    += $(WIRESHARK_SRC)/wiretap $(WIRESHARK_SRC)/epan
+    lit_libs    += wiretap-$(WIRETAP_VERSION) libwireshark
   } else {
     libpaths    += $(WIRESHARK_SRC)/wiretap/.libs $(WIRESHARK_SRC)/epan/.libs
-	lit_libs    += wiretap wireshark
+    lit_libs    += wiretap wireshark
   }
 }
