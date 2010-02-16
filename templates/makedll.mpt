@@ -293,6 +293,13 @@ lynxos {
   extracppflags = -D__NO_INCLUDE_WARN__ -mthreads -mminimal-toc
 }
 
+macosx {
+  ranlib  = 1
+  dll_ext = .dylib
+  shflags = -dynamic
+}
+
+// I'm not sure if this is even useful anymore.
 macos {
   dld     = libtool
   ranlib  = 1
