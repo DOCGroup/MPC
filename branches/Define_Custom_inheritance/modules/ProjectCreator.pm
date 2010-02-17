@@ -13,6 +13,7 @@ package ProjectCreator;
 use strict;
 use FileHandle;
 use File::Path;
+use Storable qw(dclone);
 
 use Creator;
 use TemplateInputReader;
@@ -742,7 +743,7 @@ sub parse_line {
 
   ## parse_known() passes back an array of values
   ## that make up the contents of the line parsed.
-  ## The array can have 0 to 3 items.  The first,
+  ## The array can have 0 to 4 items.  The first,
   ## if defined, is always an identifier of some
   ## sort.
 
@@ -925,7 +926,12 @@ sub parse_line {
     elsif ($values[0] eq 'component') {
       my $comp = $values[1];
       my $name = $values[2];
+      my @inhr = defined $values[3] ? @{$values[3]} : ();
       my $vc   = $self->{'valid_components'};
+
+      if ($comp ne 'define_custom' && @inhr != 0) {
+        return 0, "$comp does not allow an inheritance list";
+      }
 
       if (defined $$vc{$comp}) {
         ($status, $errorString) = $self->parse_components($ih, $comp, $name);
@@ -957,7 +963,8 @@ sub parse_line {
           }
         }
         elsif ($comp eq 'define_custom') {
-          ($status, $errorString) = $self->parse_define_custom($ih, $name);
+          ($status, $errorString) = $self->parse_define_custom($ih, $name, 0,
+                                                               \@inhr);
         }
         elsif ($comp eq 'modify_custom') {
           ($status, $errorString) = $self->parse_define_custom($ih, $name, 1);
@@ -1638,7 +1645,7 @@ sub process_array_assignment {
 
 
 sub parse_define_custom {
-  my($self, $fh, $tag, $modify) = @_;
+  my($self, $fh, $tag, $modify, $parentsRef) = @_;
 
   ## Make the tag something _files
   $tag = lc($tag) . '_files';
@@ -1653,6 +1660,19 @@ sub parse_define_custom {
   }
   elsif ($modify) {
     return 0, "$tag has not yet been defined and can not be modified";
+  }
+
+  if (defined $parentsRef && @$parentsRef > 0) {
+    if (@$parentsRef > 1) {
+      return 0, "$tag: multiple inheritance is not allowed";
+    }
+    my $parent = lc($$parentsRef[0]) . '_files';
+    if (!defined $self->{'valid_components'}->{$parent}) {
+      return 0, "$parent is not a valid custom file type";
+    }
+    for my $k ('matching_assignments', 'generated_exts', 'valid_components') {
+      $self->{$k}->{$tag} = dclone($self->{$k}->{$parent});
+    }
   }
 
   my $status      = 0;
