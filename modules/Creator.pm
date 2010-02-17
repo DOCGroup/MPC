@@ -194,6 +194,24 @@ sub generate {
 }
 
 
+# split an inheritance list like ": a,b, c" into components
+sub parse_parents {
+  my($parents, $errorStringRef, $statusRef) = @_;
+  if (defined $parents) {
+    $parents =~ s/^:\s*//;
+    $parents =~ s/\s+$//;
+    my @parents = split(/\s*,\s*/, $parents);
+    if (!defined $parents[0]) {
+      ## The : was used, but no parents followed.  This
+      ## is an error.
+      $$errorStringRef = 'No parents listed';
+      $$statusRef = 0;
+    }
+    return @parents;
+  }
+}
+
+
 sub parse_known {
   my($self, $line) = @_;
   my $status = 1;
@@ -218,19 +236,8 @@ sub parse_known {
       $status = 0;
     }
     else {
-      if (defined $parents) {
-        $parents =~ s/^:\s*//;
-        $parents =~ s/\s+$//;
-        my @parents = split(/\s*,\s*/, $parents);
-        if (!defined $parents[0]) {
-          ## The : was used, but no parents followed.  This
-          ## is an error.
-          $errorString = 'No parents listed';
-          $status = 0;
-        }
-        $parents = \@parents;
-      }
-      push(@values, $type, $name, $parents);
+      my @parents = parse_parents($parents, \$errorString, \$status);
+      push(@values, $type, $name, defined $parents ? \@parents : undef);
     }
   }
   elsif ($line =~ /^}$/) {
@@ -247,20 +254,8 @@ sub parse_known {
     my $name    = $2;
     my $parents = $3;
     my @names   = split(/\s*,\s*/, $name);
-
-    if (defined $parents) {
-      $parents =~ s/^:\s*//;
-      $parents =~ s/\s+$//;
-      my @parents = split(/\s*,\s*/, $parents);
-      if (!defined $parents[0]) {
-        ## The : was used, but no parents followed.  This
-        ## is an error.
-        $errorString = 'No parents listed';
-        $status = 0;
-      }
-      $parents = \@parents;
-    }
-    push(@values, $type, \@names, $parents);
+    my @parents = parse_parents($parents, \$errorString, \$status);
+    push(@values, $type, \@names, defined $parents ? \@parents : undef);
   }
   elsif (!$self->{$self->{'type_check'}}) {
     $errorString = "No $type was defined";
@@ -269,9 +264,10 @@ sub parse_known {
   elsif ($self->parse_assignment($line, \@values)) {
     ## If this returns true, then we've found an assignment
   }
-  elsif ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
+  elsif ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*(:.*)?\s*{$/) {
     my $comp = lc($1);
     my $name = $2;
+    my $parents = $3;
 
     if (defined $name) {
       $name =~ s/^\(\s*//;
@@ -280,7 +276,9 @@ sub parse_known {
     else {
       $name = $self->get_default_component_name();
     }
-    push(@values, 'component', $comp, $name);
+    my @parents = parse_parents($parents, \$errorString, \$status);
+    push(@values, 'component', $comp, $name,
+         defined $parents ? \@parents : undef);
   }
   else {
     $errorString = "Unrecognized line: $line";
