@@ -207,8 +207,9 @@ sub parse_parents {
       $$errorStringRef = 'No parents listed';
       $$statusRef = 0;
     }
-    return @parents;
+    return \@parents;
   }
+  return undef;
 }
 
 
@@ -236,8 +237,8 @@ sub parse_known {
       $status = 0;
     }
     else {
-      my @parents = parse_parents($parents, \$errorString, \$status);
-      push(@values, $type, $name, defined $parents ? \@parents : undef);
+      $parents = parse_parents($parents, \$errorString, \$status);
+      push(@values, $type, $name, $parents);
     }
   }
   elsif ($line =~ /^}$/) {
@@ -254,8 +255,8 @@ sub parse_known {
     my $name    = $2;
     my $parents = $3;
     my @names   = split(/\s*,\s*/, $name);
-    my @parents = parse_parents($parents, \$errorString, \$status);
-    push(@values, $type, \@names, defined $parents ? \@parents : undef);
+    $parents = parse_parents($parents, \$errorString, \$status);
+    push(@values, $type, \@names, $parents);
   }
   elsif (!$self->{$self->{'type_check'}}) {
     $errorString = "No $type was defined";
@@ -276,9 +277,8 @@ sub parse_known {
     else {
       $name = $self->get_default_component_name();
     }
-    my @parents = parse_parents($parents, \$errorString, \$status);
-    push(@values, 'component', $comp, $name,
-         defined $parents ? \@parents : undef);
+    $parents = parse_parents($parents, \$errorString, \$status);
+    push(@values, 'component', $comp, $name, $parents);
   }
   else {
     $errorString = "Unrecognized line: $line";
