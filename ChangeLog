@@ -1,8 +1,16 @@
+Thu Feb 18 18:31:55 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Check a string for definition before comparing.  Some versions of
+          perl report a warning coming from the update_template_variable
+          method.
+
 Tue Feb 16 04:36:04 UTC 2010  Steven Stallion  <stallions@ociweb.com>
 
         * config/wireshark.mpb:
 
-	  Fixed whitespace problems introduced in previous commit.
+          Fixed whitespace problems introduced in previous commit.
 
 Tue Feb 16 00:56:18 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
