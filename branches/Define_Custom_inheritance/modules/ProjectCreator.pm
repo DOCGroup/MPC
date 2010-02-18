@@ -13,7 +13,6 @@ package ProjectCreator;
 use strict;
 use FileHandle;
 use File::Path;
-use Storable qw(dclone);
 
 use Creator;
 use TemplateInputReader;
@@ -1274,7 +1273,7 @@ sub process_component_line {
     ## If there is a command helper, we need to add the output files
     ## here.  It is possible that helper determined output files are
     ## the only files added by this component type.
-    my $cmdHelper = CommandHelper::get($tag);
+    my $cmdHelper = $self->find_command_helper($tag);
     if (defined $cmdHelper) {
       my $key = $line;
       $key =~ s/\\/\//g if ($self->{'convert_slashes'});
@@ -1671,8 +1670,9 @@ sub parse_define_custom {
       return 0, "$parent is not a valid custom file type";
     }
     for my $k ('matching_assignments', 'generated_exts', 'valid_components') {
-      $self->{$k}->{$tag} = dclone($self->{$k}->{$parent});
+      $self->{$k}->{$tag} = $self->clone($self->{$k}->{$parent});
     }
+    $self->{'define_custom_parent'}->{$tag} = $parent;
   }
 
   my $status      = 0;
@@ -2361,7 +2361,7 @@ sub generated_filenames {
     ## this type and see what sort of output it knows about.
     my $inputexts = $self->{'generated_exts'}->{$type}->{$generic_key};
     if (!defined $inputexts) {
-      my $cmdHelper = CommandHelper::get($type);
+      my $cmdHelper = $self->find_command_helper($type);
       $inputexts = $cmdHelper->get_outputexts() if (defined $cmdHelper);
     }
 
@@ -3126,7 +3126,7 @@ sub generate_default_components {
           ## locate a command helper for the custom command and see if it
           ## knows about any additional output files based on the file
           ## name.
-          my $cmdHelper = CommandHelper::get($tag);
+          my $cmdHelper = $self->find_command_helper($tag);
           if (defined $cmdHelper) {
             my $names = $self->{$tag};
             foreach my $name (keys %$names) {
@@ -3664,7 +3664,7 @@ sub generate_defaults {
   ## sort of thing manually.
   my $dep = 'dependent';
   foreach my $gentype (@gvc) {
-    my $cmdHelper = CommandHelper::get($gentype);
+    my $cmdHelper = $self->find_command_helper($gentype);
     if (defined $cmdHelper) {
       ## There has to be at least two files files in order for
       ## something to be tied together.
@@ -5245,6 +5245,18 @@ sub get_resource_tag {
   ## For this, we will just return the tag for C++ since it probably
   ## doesn't really matter anyway.
   return defined $language{$lang}->[5] ? $language{$lang}->[5] : $cppresource;
+}
+
+sub find_command_helper {
+  my($self, $tag) = @_;
+  if (!defined $tag) {
+    return undef;
+  }
+  my $ch = CommandHelper::get($tag);
+  if (defined $ch) {
+    return $ch;
+  }
+  return $self->find_command_helper($self->{'define_custom_parent'}->{$tag});
 }
 
 # ************************************************************
