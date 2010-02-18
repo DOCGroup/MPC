@@ -4788,6 +4788,7 @@ sub reset_generating_types {
   }
 
   $self->{'custom_types'} = {};
+  $self->{'define_custom_parent'} = {};
 
   ## Allow subclasses to override the default extensions
   $self->set_component_extensions();
