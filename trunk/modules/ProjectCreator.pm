@@ -1120,7 +1120,7 @@ sub update_template_variable {
     foreach my $key (keys %$atemp) {
       if ($key ne $name) {
         foreach my $entry (@{$atemp->{$key}}) {
-          if ($$entry[3] eq $name) {
+          if (defined $$entry[3] && $$entry[3] eq $name) {
             push(@{$atemp->{$key}}, [$values[0], $values[2], undef, $name]);
             last;
           }
