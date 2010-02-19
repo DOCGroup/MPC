@@ -437,6 +437,11 @@ information about how to process the input files and what output files are
 created.  Once the custom file type is defined, MOC_Files can be defined in
 order to specify the input files for this new file type.
 
+Define_Custom definitions may use single inheritance.  This is useful for
+creating aliased names:
+  Define_Custom(QtMOC) : MOC {
+  }
+
 Here is a list of keywords that can be used within the scope of
 Define_Custom or Modify_Custom:
 
