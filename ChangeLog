@@ -1,3 +1,21 @@
+Tue Feb 23 15:08:32 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/wireshark.mpb:
+
+          Switched from using windows project types to the windows property.
+
+        * devtools/document_template.pl:
+
+          Account for arrow operator usage.
+
+        * modules/MakeProjectBase.pm:
+        * modules/ProjectCreator.pm:
+        * templates/make.mpd:
+
+          Added a very limited ability to modify builtin component types
+          (e.g., Source_Files, Header_Files, etc.).  Currently, only the
+          postcommand is useful and only for the 'make' project type.
+
 Fri Feb 19 15:25:47 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * docs/README:

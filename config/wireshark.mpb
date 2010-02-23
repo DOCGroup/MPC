@@ -22,7 +22,7 @@ project : glib {
     include $(WIRESHARK_SRC)/config.nmake
   }
 
-  specific(vc71,vc8,vc9,nmake) {
+  specific(prop:windows) {
     libpaths    += $(WIRESHARK_SRC)/wiretap $(WIRESHARK_SRC)/epan
     lit_libs    += wiretap-$(WIRETAP_VERSION) libwireshark
   } else {

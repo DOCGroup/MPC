@@ -288,10 +288,15 @@ if (open($fh, $input)) {
             }
           }
           else {
-            foreach my $ao (keys %arrow_op) {
-              if ($k =~ /^$ao/) {
-                $tvar = 1;
-                last;
+            if ($k =~ /^\w+\->/) {
+              $tvar = 1;
+            }
+            else {
+              foreach my $ao (keys %arrow_op) {
+                if ($k =~ /^$ao/) {
+                  $tvar = 1;
+                  last;
+                }
               }
             }
           }
@@ -311,10 +316,15 @@ if (open($fh, $input)) {
               if (defined $keywords{$n}) {
               }
               else {
-                foreach my $ao (keys %arrow_op) {
-                  if ($n =~ /^$ao/) {
-                    $tvar = 1;
-                    last;
+                if ($n =~ /^\w+\->/) {
+                  $tvar = 1;
+                }
+                else {
+                  foreach my $ao (keys %arrow_op) {
+                    if ($n =~ /^$ao/) {
+                      $tvar = 1;
+                      last;
+                    }
                   }
                 }
                 if (!$tvar) {
