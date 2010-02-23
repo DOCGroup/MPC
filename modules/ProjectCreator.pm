@@ -3838,6 +3838,12 @@ sub get_special_value {
   elsif (index($type, $grouped_key) == 0) {
     return $self->get_grouped_value($type, $cmd, $based);
   }
+  elsif (index($type, 'source_file') == 0) {
+    ## This is a hack for dealing with the fact that built-in types
+    ## (e.g., Source_Files, Header_Files, etc.) are not real custom
+    ## definitions.  However, we can "modify" them to some extent.
+    return $self->get_builtin_value($type, $cmd, $based);
+  }
 
   return undef;
 }
@@ -3904,6 +3910,26 @@ sub get_grouped_value {
   return $value;
 }
 
+
+sub get_builtin_value {
+  my($self, $type, $cmd, $based) = @_;
+
+  ## If the passed in type does not have a generated_exts definition,
+  ## then try the type with an 's' on the end.
+  $type .= 's' if (!defined $self->{'generated_exts'}->{$type});
+
+  ## If we have a builtin type that has the variable ($cmd) that we are
+  ## looking for, process the value through command parameter conversion.
+  if (defined $self->{'generated_exts'}->{$type} &&
+      defined $self->{'generated_exts'}->{$type}->{$cmd}) {
+    return $self->convert_command_parameters(
+                    $type, $self->{'generated_exts'}->{$type}->{$cmd},
+                    $based, $self->get_builtin_output($based));
+  }
+
+  ## Otherwise, there's nothing here.
+  return undef;
+}
 
 sub get_command_subs {
   my $self = shift;
@@ -5276,6 +5302,11 @@ sub getValidComponents {
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************
+
+sub get_builtin_output {
+  #my($self, $input) = @_;
+  return [];
+}
 
 sub languageSupported {
   #my $self = shift;

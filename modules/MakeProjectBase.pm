@@ -16,6 +16,11 @@ use strict;
 # Subroutine Section
 # ************************************************************
 
+sub get_builtin_output {
+  #my($self, $input) = @_;
+  return ['$@'];   
+}
+
 sub dollar_special {
   #my $self = shift;
   return 1;
