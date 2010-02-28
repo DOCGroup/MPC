@@ -306,6 +306,7 @@ sub new {
   $self->{'inheritance_tree'}      = {};
   $self->{'remove_files'}          = {};
   $self->{'expanded'}              = {};
+  $self->{'dependency_attributes'} = {};
   $self->{'gfeature_file'}         = $gfeature;
   $self->{'relative_file'}         = $relative_f;
   $self->{'feature_parser'}        = $self->create_feature_parser($features,
@@ -426,13 +427,25 @@ sub process_assignment {
   ## fix up the value and change the name.
   ($name, $value) = $self->create_recursive_settings($name, $value, $assign);
 
-  ## Support the '*' mechanism as in the project name, to allow
-  ## the user to correctly depend on another project within the same
-  ## directory.
   if (defined $value) {
-    if ($name eq 'after' && index($value, '*') >= 0) {
-      $value = $self->fill_type_name($value,
-                                     $self->get_default_project_name());
+    if ($name eq 'after') {
+      ## Support dependency attributes.  They may or may not be used by
+      ## the project or workspace creator implementation.  They are
+      ## stored separately from the dependencies themselves.  Also, note
+      ## that a value to be added may contain more than one element to be
+      ## added.  This function will be called for each one, so we only
+      ## need to handle one at a time.
+      if ($value =~ s/\s*([^:]+):([^\s]+)//) {
+        $self->{'dependency_attributes'}->{$1} = $2;
+      }
+
+      ## Support the '*' mechanism as in the project name, to allow
+      ## the user to correctly depend on another project within the same
+      ## directory.
+      if (index($value, '*') >= 0) {
+        $value = $self->fill_type_name($value,
+                                       $self->get_default_project_name());
+      }
     }
 
     ## If this particular project type does not consider the dollar sign
@@ -826,7 +839,11 @@ sub parse_line {
               }
             }
 
-            ## Reset all of the project specific data
+            ## Reset all of the project specific data.  I am explicitly
+            ## not resetting dependency_attributes.  It is necessary that
+            ## this information stay for the life of the ProjectCreator
+            ## object so that the WorkspaceCreator can have access to the
+            ## information.
             foreach my $key (keys %{$self->{'valid_components'}}) {
               delete $self->{$key};
               $self->{'defaulted'}->{$key} = 0;
@@ -3838,11 +3855,18 @@ sub get_special_value {
   elsif (index($type, $grouped_key) == 0) {
     return $self->get_grouped_value($type, $cmd, $based);
   }
-  elsif (index($type, 'source_file') == 0) {
+  else {
+    my $language = $self->get_language();
+
+    ## If the passed in type is not a builtin type, try the type with an
+    ## 's' on the end.
+    $type .= 's' if (!defined $language{$language}->[0]->{$type});
+
     ## This is a hack for dealing with the fact that built-in types
     ## (e.g., Source_Files, Header_Files, etc.) are not real custom
     ## definitions.  However, we can "modify" them to some extent.
-    return $self->get_builtin_value($type, $cmd, $based);
+    return $self->get_builtin_value($type, $cmd, $based)
+                      if (defined $language{$language}->[0]->{$type});
   }
 
   return undef;
@@ -5284,6 +5308,12 @@ sub find_command_helper {
     return $ch;
   }
   return $self->find_command_helper($self->{'define_custom_parent'}->{$tag});
+}
+
+sub get_dependency_attribute {
+  ## Return the dependency attribute specified as the first parameter to
+  ## this method (not counting the ProjectCreator object).
+  return $_[0]->{'dependency_attributes'}->{$_[1]};
 }
 
 # ************************************************************

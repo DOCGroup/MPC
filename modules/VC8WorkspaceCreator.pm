@@ -99,9 +99,24 @@ sub post_workspace {
                 ## If the current project is managed, then the reference
                 ## project must be managed or a non-c++ project.
                 if (!$managed || ($managed && $gmap{$dep}->[1])) {
+                  ## See if the dependency has an associated attribute.
+                  ## If it does, split it into name value pairs for use in
+                  ## the resulting generated XML.
+                  my %attr;
+                  my $attr = $creator->get_dependency_attribute($dep);
+                  if (defined $attr) {
+                    foreach my $a (split(',', $attr)) {
+                      my @nvp = split('=', $a);
+                      $attr{lc($nvp[0])} = $nvp[1]if (defined $nvp[0] &&
+                                                      defined $nvp[1]);
+                    }
+                  }
+
                   push(@read, $spc . '<ProjectReference' . $crlf .
                               $spc . "\tReferencedProjectIdentifier=" .
                               "\"\{$gmap{$dep}->[0]\}\"$crlf" .
+                              (defined $attr{'copylocal'} ? $spc .
+                                "\tCopyLocal=\"" . $attr{'copylocal'} . "\"$crlf" : '') .
                               $spc . "\tRelativePathToProject=\"$relative\"$crlf" .
                               $spc . '/>' . $crlf);
                 }
