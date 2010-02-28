@@ -1,3 +1,14 @@
+Sun Feb 28 15:08:56 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * docs/html/MakeProjectCreator.html:
+        * modules/ProjectCreator.pm:
+        * modules/VC8WorkspaceCreator.pm:
+
+          Added an extended syntax for associating name-value pairs with
+          project dependencies (i.e., values added to the 'after' keyword).
+          See the documentation for more details.
+
 Tue Feb 23 15:08:32 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/wireshark.mpb:
