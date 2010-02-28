@@ -237,7 +237,11 @@ pure_libs       Specifies 1 or more libraries to link into the exe or library.
                 The values specified for this variable are passed to the
                 linker unmodified.
 after           Specifies that this project must be built after 1 or more
-                project names listed.
+                project names listed.  An extended syntax is available in
+                order to associate name-value pairs with a dependency:
+                <project name[:name=value]>
+                These name-value pairs may be used in the creation of the
+                dependencies of the project.
 custom_only     Create a project that contains only custom generation
                 targets (any file type described by a Define_Custom section).
                 This will automatically be set to 1 when a project contains
