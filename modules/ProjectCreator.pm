@@ -435,8 +435,8 @@ sub process_assignment {
       ## that a value to be added may contain more than one element to be
       ## added.  This function will be called for each one, so we only
       ## need to handle one at a time.
-      if ($value =~ s/\s*([^:]+):([^\s]+)//) {
-        $self->{'dependency_attributes'}->{$1} = $2;
+      if ($value =~ s/(\s*([^:]+)):([^\s]+)/$1/) {
+        $self->{'dependency_attributes'}->{$2} = $3;
       }
 
       ## Support the '*' mechanism as in the project name, to allow
