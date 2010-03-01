@@ -1,3 +1,11 @@
+Mon Mar  1 18:33:04 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where if the user associated an attribute to a
+          dependency, the dependency would be removed.  If no attribute was
+          associated, then the dependency was not adversely affected.
+
 Sun Feb 28 15:50:03 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/make.mpd:
