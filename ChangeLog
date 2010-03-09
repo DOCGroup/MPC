@@ -1,3 +1,12 @@
+Tue Mar  9 11:23:55 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl.
+
+        * config/ndds_ts_defaults.mpb:
+          Added no_strict_aliasing=1
+
+        * config/nddslib.mpb:
+          Wen compiling for 64bit, add RTI_64BIT as define. When compiling
+          for linux, add RTI_LINUX as define
+
 Mon Mar  1 18:33:04 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:

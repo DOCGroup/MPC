@@ -20,5 +20,6 @@ project {
 
   verbatim(gnuace, macros) {
     override no_hidden_visibility = 1
+    override no_strict_aliasing = 1
   }
 }
