@@ -20,12 +20,13 @@ use FindBin;
 use File::Spec;
 use File::Basename;
 
-my $basePath = $FindBin::RealBin;
-my $baseName = $FindBin::RealScript;
-if ($^O eq 'VMS') {
-  $basePath = File::Spec->rel2abs(dirname($0)) if ($basePath eq '');
-  $basePath = VMS::Filespec::unixify($basePath);
-}
+## Sometimes $FindBin::RealBin will end up undefined.  If it is, we need
+## to use the directory of the built-in script name.  And, for VMS, we
+## have to convert that into a UNIX path so that Perl can use it
+## internally.
+my $basePath = (defined $FindBin::RealBin && $FindBin::RealBin ne '' ?
+                  $FindBin::RealBin : File::Spec->rel2abs(dirname($0)));
+$basePath = VMS::Filespec::unixify($basePath) if ($^O eq 'VMS');
 unshift(@INC, $basePath . '/modules');
 
 require Driver;
