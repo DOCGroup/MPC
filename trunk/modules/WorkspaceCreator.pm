@@ -627,9 +627,10 @@ sub handle_scoped_unknown {
 
   ## If the line contains a variable, try to replace it with an actual
   ## value.
-  $line = $self->relative($line) if (index($line, '$') >= 0);
-
-  if (defined $self->{'scoped_basedir'}) {
+  if (index($line, '$') >= 0) {
+    $line = $self->relative($line);
+  }
+  elsif (defined $self->{'scoped_basedir'}) {
     if ($self->path_is_relative($line)) {
       $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
     }
