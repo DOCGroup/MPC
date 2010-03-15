@@ -4,7 +4,7 @@ Mon Mar 15 19:50:23 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
           Fixed a bug, reported by Johnny Willemsen, where aggregated
           workspaces that were referenced by environment variables ended up
-          with the wrong relative paths (only occured with multiple levels of
+          with the wrong relative paths (only occurred with multiple levels of
           aggregation).
 
 Mon Mar 15 12:53:26 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
