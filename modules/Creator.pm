@@ -689,7 +689,12 @@ sub process_assignment_sub {
   ## Remove double quotes if there are any
   $value =~ s/^\"(.*)\"$/$1/;
 
-  $self->subtraction_core($name, $value, $nval, $assign);
+  ## Call to the core function to perform the subtraction.  We must also
+  ## pass the value through the assignment modifier to ensure that
+  ## slashes are in the project native format.
+  $self->subtraction_core($name,
+                          $self->modify_assignment_value($name, $value),
+                          $nval, $assign);
 }
 
 

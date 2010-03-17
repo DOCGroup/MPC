@@ -1,3 +1,12 @@
+Wed Mar 17 11:55:26 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Fixed a bug where subtraction of a string with a path separator in
+          it would not work if the resulting project uses the backslash as
+          the path separator.  Thanks to Hubert Talbot for reporting this
+          and supplying a patch.
+
 Tue Mar 16 23:05:44 UTC 2010  Steven Stallion  <stallions@ociweb.com>
 
         * config/erlang.mpb:
