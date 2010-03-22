@@ -15,9 +15,10 @@ use strict;
 use VC7ProjectCreator;
 use WinWorkspaceBase;
 use WorkspaceCreator;
+use VCPropertyBase;
 
 use vars qw(@ISA);
-@ISA = qw(WinWorkspaceBase WorkspaceCreator);
+@ISA = qw(VCPropertyBase WinWorkspaceBase WorkspaceCreator);
 
 # ************************************************************
 # Data Section

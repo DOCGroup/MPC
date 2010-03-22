@@ -11,6 +11,10 @@ package MakeWorkspaceBase;
 # ************************************************************
 
 use strict;
+use MakePropertyBase;
+
+use vars qw(@ISA);
+@ISA = qw(MakePropertyBase);
 
 # ************************************************************
 # Subroutine Section

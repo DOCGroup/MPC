@@ -15,9 +15,10 @@ use strict;
 use BDS4ProjectCreator;
 use WinWorkspaceBase;
 use WorkspaceCreator;
+use BorlandPropertyBase;
 
 use vars qw(@ISA);
-@ISA = qw(WinWorkspaceBase WorkspaceCreator);
+@ISA = qw(BorlandPropertyBase WinWorkspaceBase WorkspaceCreator);
 
 # ************************************************************
 # Subroutine Section

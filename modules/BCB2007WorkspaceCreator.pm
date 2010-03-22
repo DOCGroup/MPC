@@ -13,11 +13,12 @@ package BCB2007WorkspaceCreator;
 use strict;
 
 use BCB2007ProjectCreator;
+use BorlandPropertyBase;
 use WinWorkspaceBase;
 use WorkspaceCreator;
 
 use vars qw(@ISA);
-@ISA = qw(WinWorkspaceBase WorkspaceCreator);
+@ISA = qw(BorlandPropertyBase WinWorkspaceBase WorkspaceCreator);
 
 # ************************************************************
 # Subroutine Section

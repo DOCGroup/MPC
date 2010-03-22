@@ -16,9 +16,11 @@ use BMakeProjectCreator;
 use MakeWorkspaceBase;
 use WinWorkspaceBase;
 use WorkspaceCreator;
+use BorlandPropertyBase;
 
 use vars qw(@ISA);
-@ISA = qw(MakeWorkspaceBase WinWorkspaceBase WorkspaceCreator);
+@ISA = qw(MakeWorkspaceBase WinWorkspaceBase WorkspaceCreator
+          BorlandPropertyBase);
 
 # ************************************************************
 # Data Section
@@ -93,6 +95,25 @@ sub write_comps {
   $self->write_named_targets($fh, $crlf, \%targnum, \@list,
                              $targets, '', '', \%trans, undef,
                              $creator->get_and_symbol(), $max_line_length);
+}
+
+
+sub get_properties {
+  my $self = shift;
+
+  ## Create the map of properties that we support.
+  my $props = {};
+
+  ## Merge in properties from all base projects
+  foreach my $base (@ISA) {
+    my $func = $base . '::get_properties';
+    my $p = $self->$func();
+    foreach my $key (keys %$p) {
+      $$props{$key} = $$p{$key};
+    }
+  }
+
+  return $props;
 }
 
 

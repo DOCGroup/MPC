@@ -13,11 +13,11 @@ package BCB2007ProjectCreator;
 use strict;
 
 use ProjectCreator;
-use BorlandProjectBase;
+use BorlandPropertyBase;
 use XMLProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(XMLProjectBase BorlandProjectBase ProjectCreator);
+@ISA = qw(XMLProjectBase BorlandPropertyBase ProjectCreator);
 
 # ************************************************************
 # Subroutine Section

@@ -11,6 +11,10 @@ package WinProjectBase;
 # ************************************************************
 
 use strict;
+use WinPropertyBase;
+
+use vars qw(@ISA);
+@ISA = qw(WinPropertyBase);
 
 # ************************************************************
 # Data Section
@@ -99,20 +103,6 @@ sub file_sorter {
   #my $left  = shift;
   #my $right = shift;
   return lc($_[1]) cmp lc($_[2]);
-}
-
-
-sub get_properties {
-  my $self = shift;
-
-  ## Get the base class properties and add the properties that we
-  ## support.
-  my $props = $self->ProjectCreator::get_properties();
-
-  ## All projects that use this base class are for Windows.
-  $$props{'windows'} = 1;
-
-  return $props;
 }
 
 

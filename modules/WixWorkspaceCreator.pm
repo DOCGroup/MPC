@@ -13,9 +13,10 @@ package WixWorkspaceCreator;
 use strict;
 use WixProjectCreator;
 use WorkspaceCreator;
+use WinPropertyBase;
 
 use vars qw(@ISA);
-@ISA = qw(WorkspaceCreator);
+@ISA = qw(WinPropertyBase WorkspaceCreator);
 
 # ************************************************************
 # Data Section

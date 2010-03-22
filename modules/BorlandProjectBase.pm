@@ -12,25 +12,12 @@ package BorlandProjectBase;
 
 use strict;
 use WinProjectBase;
+use BorlandPropertyBase;
 
-our @ISA = qw(WinProjectBase);
+our @ISA = qw(BorlandPropertyBase WinProjectBase);
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
-
-sub get_properties {
-  my $self = shift;
-
-  ## Get the base class properties and add the properties that we
-  ## support.
-  my $props = $self->WinProjectBase::get_properties();
-
-  ## All projects that use this base class are for Borland compilers.
-  $$props{'borland'} = 1;
-
-  return $props;
-}
-
 
 1;
