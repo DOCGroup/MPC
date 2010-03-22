@@ -14,11 +14,12 @@ use strict;
 use File::Copy;
 
 use AutomakeProjectCreator;
+use MakePropertyBase;
 use WorkspaceCreator;
 use WorkspaceHelper;
 
 use vars qw(@ISA);
-@ISA = qw(WorkspaceCreator);
+@ISA = qw(MakePropertyBase WorkspaceCreator);
 
 # ************************************************************
 # Data Section

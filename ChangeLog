@@ -1,3 +1,43 @@
+Mon Mar 22 00:47:56 UTC 2010  Chad Elliott  <elliott_c@gateway.2wire.net>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+        * modules/BCB2007ProjectCreator.pm:
+        * modules/BCB2007WorkspaceCreator.pm:
+        * modules/BDS4ProjectCreator.pm:
+        * modules/BDS4WorkspaceCreator.pm:
+        * modules/BMakeProjectCreator.pm:
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/BorlandPropertyBase.pm:
+        * modules/BorlandProjectBase.pm:
+        * modules/Creator.pm:
+        * modules/GHSProjectCreator.pm:
+        * modules/GHSPropertyBase.pm:
+        * modules/GHSWorkspaceCreator.pm:
+        * modules/MakeProjectBase.pm:
+        * modules/MakePropertyBase.pm:
+        * modules/MakeWorkspaceBase.pm:
+        * modules/NMakeProjectCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/VC6WorkspaceCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/VCProjectBase.pm:
+        * modules/VCPropertyBase.pm:
+        * modules/WinProjectBase.pm:
+        * modules/WinPropertyBase.pm:
+        * modules/WinWorkspaceBase.pm:
+        * modules/WixWorkspaceCreator.pm:
+
+          Modified properties to extend to workspaces instead of just
+          projects to allow use of properties within exclude() statements in
+          workspaces.
+
+        * templates/wix.mpd:
+        * templates/wix.mpt:
+
+          Removed improper defaulting within an if statement and moved it
+          into the template input file.
+
 Wed Mar 17 11:55:26 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
@@ -41,7 +81,7 @@ Tue Mar  9 11:23:55 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl.
           Added no_strict_aliasing=1
 
         * config/nddslib.mpb:
-          Wen compiling for 64bit, add RTI_64BIT as define. When compiling
+          When compiling for 64bit, add RTI_64BIT as define. When compiling
           for linux, add RTI_LINUX as define
 
 Mon Mar  1 18:33:04 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
