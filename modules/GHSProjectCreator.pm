@@ -16,33 +16,33 @@ package GHSProjectCreator;
 use strict;
 
 use ProjectCreator;
+use GHSPropertyBase;
 
 use vars qw(@ISA);
-@ISA = qw(ProjectCreator);
+@ISA = qw(GHSPropertyBase ProjectCreator);
 
 # ************************************************************
 # Data Section
 # ************************************************************
 
 my $startre;
-my $ghsunix = 'MPC_GHS_UNIX';
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub convert_slashes {
-  return (defined $ENV{$ghsunix} ? 0 : 1);
+  return (defined $ENV{$GHSPropertyBase::ghsunix} ? 0 : 1);
 }
 
 
 sub case_insensitive {
-  return (defined $ENV{$ghsunix} ? 0 : 1);
+  return (defined $ENV{$GHSPropertyBase::ghsunix} ? 0 : 1);
 }
 
 
 sub use_win_compatibility_commands {
-  return (defined $ENV{$ghsunix} ? 0 : 1);
+  return (defined $ENV{$GHSPropertyBase::ghsunix} ? 0 : 1);
 }
 
 
@@ -113,13 +113,13 @@ sub fill_value {
   elsif ($name eq 'slash') {
     ## We need to override the slash value so that we can give the right
     ## value for Windows or UNIX.
-    $value = (defined $ENV{$ghsunix} ? '/' : '\\');
+    $value = (defined $ENV{$GHSPropertyBase::ghsunix} ? '/' : '\\');
   }
   elsif ($name eq 'postmkdir') {
     ## If we're on Windows, we need an "or" command that will reset the
     ## errorlevel so that a mkdir on a directory that already exists
     ## doesn't cause the build to cease.
-    $value = ' || type nul' if (!defined $ENV{$ghsunix});
+    $value = ' || type nul' if (!defined $ENV{$GHSPropertyBase::ghsunix});
   }
 
   return $value;
@@ -148,19 +148,5 @@ sub get_dll_template_input_file {
   return 'ghsdll';
 }
 
-
-sub get_properties {
-  my $self = shift;
-
-  ## Get the base class properties and add the properties that we
-  ## support.
-  my $props = $self->ProjectCreator::get_properties();
-
-  ## This project creator can work for UNIX and Windows.  Set the
-  ## property based on the environment variable.
-  $$props{'windows'} = 1 if (!defined $ENV{$ghsunix});
-
-  return $props;
-}
 
 1;

@@ -11,6 +11,10 @@ package WinWorkspaceBase;
 # ************************************************************
 
 use strict;
+use WinPropertyBase;
+
+use vars qw(@ISA);
+@ISA = qw(WinPropertyBase);
 
 # ************************************************************
 # Subroutine Section

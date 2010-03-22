@@ -12,10 +12,11 @@ package VCProjectBase;
 
 use strict;
 
+use VCPropertyBase;
 use WinProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(WinProjectBase);
+@ISA = qw(VCPropertyBase WinProjectBase);
 
 # ************************************************************
 # Subroutine Section
@@ -41,20 +42,6 @@ sub require_dependencies {
 sub dependency_is_filename {
   #my $self = shift;
   return 0;
-}
-
-
-sub get_properties {
-  my $self = shift;
-
-  ## Get the base class properties and add the properties that we
-  ## support.
-  my $props = $self->WinProjectBase::get_properties();
-
-  ## All projects that use this base class are for Microsoft compilers.
-  $$props{'microsoft'} = 1;
-
-  return $props;
 }
 
 
