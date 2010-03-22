@@ -10,7 +10,7 @@
 
         <Component Id="<%project_name%>" Guid="<%guid%>">
 <%marker(component_top)%>
-<%if(install_binary(1))%>
+<%if(install_binary)%>
           <File Id="file.<%project_name%>" Name="<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
                 Source="<%source_directory%>/<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
                 DiskId="<%diskid(1)%>" />

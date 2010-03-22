@@ -14,9 +14,10 @@ use strict;
 
 use GHSProjectCreator;
 use WorkspaceCreator;
+use GHSPropertyBase;
 
 use vars qw(@ISA);
-@ISA = qw(WorkspaceCreator);
+@ISA = qw(GHSPropertyBase WorkspaceCreator);
 
 # ************************************************************
 # Data Section

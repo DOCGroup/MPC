@@ -1310,4 +1310,16 @@ sub set_verbose_ordering {
 }
 
 
+sub get_properties {
+  my $self = shift;
+
+  ## Create the property hash map with the language property
+  my %props = ($self->get_language() => 1);
+
+  ## Set the 'static' property only if the project is static
+  $props{'static'} = 1 if ($self->get_static());
+
+  return \%props;
+}
+
 1;
