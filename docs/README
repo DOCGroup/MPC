@@ -109,7 +109,7 @@ built conditionally based on the association name.
 
 Finally, prop:value are properties in MPC. They are used to group
 together common workspace/project types. More details on properties
-in MPC can be found in the section on the 'specific' keywork in the
+in MPC can be found in the section on the 'specific' keyword in the
 Project Declarations section below.
 
 Project Declarations
