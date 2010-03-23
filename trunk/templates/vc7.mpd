@@ -101,6 +101,9 @@
 <%if(staticname)%>
 				OutputFile="<%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
+<%if(lib_options)%>
+				AdditionalOptions="<%lib_options%>"
+<%endif%>
 <%else%>
 				Name="VCLinkerTool"
 <%if(!source_files || link_options)%>

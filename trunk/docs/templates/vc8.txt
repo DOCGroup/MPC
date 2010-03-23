@@ -79,6 +79,7 @@ keycontainer = Specifies the named container of the key for strongly naming the 
 keyfile = Specifies the file that contains the key for strongly naming the output assembly.
 language = This template variable is based on the language setting of MPC, except if the 'webapp' project variable is set.  In that case, it is 'website'.
 largeaddressaware = Enables handling address larger than 2 Gb.  0 is "Default", 1 is "Do Not Support Addresses Larger Than 2 Gigabytes", and 2 is "Support Addresses Larger Than 2 Gigabytes".
+lib_options = Allows passing arbitrary options to the librarian tool.
 link_options = Allows passing arbitrary options to the linker.
 linkincremental = This setting corresponds to the Linker General property "Enable Incremental Linking". The values 1 and 2 correspond to NO and YES respectively.
 linklibrarydependencies = Disables automatically linking in libraries from project dependencies if set to false.

@@ -1,3 +1,25 @@
+Tue Mar 23 13:44:29 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+
+          Fixed a typo.
+
+        * docs/html/MakeProjectCreator.html:
+
+          Updated to reflect the Workspace 'exclude' change.
+
+        * modules/WixWorkspaceCreator.pm:
+
+          Changed to inherit from WinWorkspaceBase.
+
+        * docs/templates/vc7.txt:
+        * docs/templates/vc8.txt:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Added a new template keyword, lib_options, that can be used to
+          pass arbitrary options to the VCLibrarianTool.
+
 Tue Mar 23 12:16:11 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * docs/README:
