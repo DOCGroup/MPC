@@ -79,6 +79,16 @@ workspace {
     dir2/unix_only
   }
 
+  // exclude non_window for every windows project type
+  exclude(prop:windows) {
+    dir2/non_windows
+  }
+
+  // exclude microsoft_only for all non-microsoft project types
+  exclude(!prop:microsoft) {
+    dir2/microsoft_only
+  }
+
   dir3
 
   // Associate the name "other" with dir3
@@ -87,14 +97,20 @@ workspace {
   }
 }
 
-The associate scope associates a name with one or more directories.  This
-does not add directories to a workspace, it only makes an association.  This
-may or may not have an effect on the generated workspace; it depends solely
-upon whether the project type supports associations.
+The associate scope associates a name with one or more directories.
+This does not add directories to a workspace, it only makes an
+association.  This may or may not have an effect on the generated
+workspace; it depends solely upon whether the project type supports
+associations.
 
 Currently automake is the only project type that supports associations.
-Each directory listed under an association is grouped together and built
-conditionally based on the association name.
+Each directory listed under an association is grouped together and
+built conditionally based on the association name.
+
+Finally, prop:value are properties in MPC. They are used to group
+together common workspace/project types. More details on properties
+in MPC can be found in the section on the 'specific' keywork in the
+Project Declarations section below.
 
 Project Declarations
 --------------------
