@@ -378,36 +378,75 @@ sub parse_scope {
 
 sub process_types {
   my($self, $typestr) = @_;
+  my $wcprops         = $self->get_properties();
   my %types;
+  my %props;
   @types{split(/\s*,\s*/, $typestr)} = ();
 
-  ## If there is a negation at all, add our
-  ## current type, it may be removed below
-  if (index($typestr, '!') >= 0) {
-    $types{$self->{wctype}} = 1;
-
-    ## Process negated exclusions
+  ## If there is a property in the typestr, i.e., prop:, then
+  ## we need to extract it into its own collection while removing
+  ## it from the types collection.
+  if (index($typestr, 'prop:') >= 0) {
     foreach my $key (keys %types) {
-      if ($key =~ /^!\s*(\w+)/) {
+      if ($key =~ /^prop:\s*(\w+)/) {
+        ## Add the property to the prop hash.
+        $props{$1} = 1;
+
+        ## Remove the original property from the types.
+        delete $types{$key};
+      }
+      elsif ($key =~ /^!prop:\s*(\w+)/) {
+        ## Negate the property.
+        $props{$1} = 0;
+
+        ## Remove the original property from the types.
+        delete $types{$key};
+      }
+    }
+  }
+
+  ## Now, process the properties and determine if this project
+  ## type should be excluded. This will be the case if the property
+  ## is valid and there exists a match between the listed properties
+  ## and the workspace properties.
+  while (my ($key, $val) = each %props) {
+    if (exists $$wcprops{$key}) {
+      if ($$wcprops{$key} == 1 and $$wcprops{$key} == $val) {
+        $types{$self->{wctype}} = 1;
+      }
+      else {
+        delete $types{$self->{wctype}};
+      }
+    }
+    elsif ($val == 0) {
+      $types{$self->{wctype}} = 1;
+    }
+  }
+
+  ## Remove all negated types from the collection.
+  foreach my $key (keys %types) {
+    if ($key =~ /^!\s*(\w+)/) {
+      if ($1 == $self->{wctype}) {
         ## Remove the negated key
         delete $types{$key};
 
-        ## Then delete the key that was negated in the exclusion.
+        ## Then delete the key that was negated in the exclusion
         delete $types{$1};
       }
     }
   }
+
   return \%types;
 }
 
 sub parse_exclude {
   my($self, $fh, $typestr, $flags) = @_;
-  my $status      = 0;
-  my $errorString = 'Unable to process exclude';
-  my $negated     = (index($typestr, '!') >= 0);
+  my $status          = 0;
+  my $errorString     = 'Unable to process exclude';
+  my $negated         = (index($typestr, '!') >= 0);
+  my $types           = $self->process_types($typestr);
+  my $count           = 1;
   my @exclude;
-  my $types       = $self->process_types($typestr);
-  my $count       = 1;
 
   if (exists $$types{$self->{wctype}}) {
     while(<$fh>) {
@@ -2212,7 +2251,7 @@ sub create_command_line_string {
     if ($arg =~ /\$/ && $^O ne 'MSWin32') {
       ## If we're not running on Windows and the command line argument
       ## contains a dollar sign, we need to wrap the argument in single
-      ## quotes so that the UNIX shell does not interpret it. 
+      ## quotes so that the UNIX shell does not interpret it.
       $arg = "'$arg'";
     }
     else {
