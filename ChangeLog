@@ -1,3 +1,12 @@
+Tue Mar 23 12:16:11 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * docs/README:
+        * modules/WorkspaceCreator.pm:
+
+          Added support for properties in the exclude section of
+          a workspace definition. Also, updated the README to reflect
+          the changes.
+
 Mon Mar 22 00:47:56 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/AutomakeWorkspaceCreator.pm:
