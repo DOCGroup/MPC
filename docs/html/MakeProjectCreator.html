@@ -1387,6 +1387,14 @@
 
               <p class="Code">&nbsp;&nbsp;}</p>
 
+              <p class="Code">&nbsp;</p>
+
+              <p class="Code">&nbsp;&nbsp;exclude(prop:microsoft) {</p>
+
+              <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;non_microsoft</p>
+
+              <p class="Code">&nbsp;&nbsp;}</p>
+
               <p class="Code">}</p>
 
               <p class="Code">&nbsp;</p>
@@ -1500,10 +1508,12 @@
             directories and mpc files from being processed. These excluded
             directories and mpc files will be skipped when generating project
             files and workspaces. The <em class="Code">exclude</em> keyword
-            accepts project types within the parentheses (as above), which
-            will cause the workspace creator to only exclude the listing for
-            particular types. If no types are provided, exclusion will take
-            place for all project types.</li>
+            accepts project types as well as properties (see <a href=
+            "MakeProjectCreator.html#properties" class="XRef">Properties</a>)
+            within the parentheses (as above), which will cause the workspace
+            creator to only exclude the listing for particular types. If no
+            types are provided, exclusion will take place for all project
+            types.</li>
 
             <li class="Body">The <em class="Code">associate</em> scope
             associates a name with one or more directories. This does not add
@@ -2436,6 +2446,7 @@
               (see <a href="MakeProjectCreator.html#Command%20Line%20Options"
               class="XRef">Command Line Options</a>).</li>
 
+              <a name="properties">
               <li class="Body">The following table shows which properties
               apply to which project types. The <em class="Code">static</em>
               property (not represented in the table) is set if the -static

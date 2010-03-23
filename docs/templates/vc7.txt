@@ -1,4 +1,4 @@
-// Current as of 8/14/2009
+// Current as of 3/23/2010
 // This defines the role of all the template variables specific to the
 // 'vc7' and 'vc71' project types.
 //
@@ -25,6 +25,7 @@ guid = The value for this variable is generated during project generation.
 ignore_default_library_names = The value for this is evaluated as a space separated list of default library names to ignore. It corresponds to the Linker Input property "Ignore Specific Library".
 ignorealldefaultlibraries = Ignore all default libraries during linking.
 inlinefunctionexpansion = This corresponds to the C/C++ Optimization property "Inline Function Expansion". A value of 1 indicates /Ob1 (inline only those designated to be inlined). A value of 2 indicates /Ob2 (inline any suitable function).
+lib_options = Allows passing arbitrary options to the librarian tool.
 link_options = Allows passing arbitrary options to the linker.
 linkincremental = This setting corresponds to the Linker General property "Enable Incremental Linking". The values 1 and 2 correspond to NO and YES respectively.
 machine = This corresponds to the Linker Advanced property "Target Machine". The numeric value corresponds to the pull-down values in the IDE.
@@ -47,7 +48,7 @@ subsystem = This corresponds to the Linker System property "SubSystem".  This va
 unicode = If this boolean template variable is set, the UNICODE and _UNICODE macros are added to the C/C++ Preprocessor property "Preprocessor Definitions".
 unicode_mfc_entry = This corresponds to the Linker Advanced property "Entry Point".  This variable should not be set directly by the user; instead the project should inherit from 'mfc'.
 use_mfc = This corresponds to the General property "Use of MFC".  This variable should not be set directly by the user; instead the project should inherit from 'mfc'.
-UseOfATL = This corresponds to the General property "Use of ATL".
+useofatl = This corresponds to the General property "Use of ATL".
 vcprojecttype = Specifies the ProjectType setting within the generated .vcproj file.
 vcversion = Specifies the version of the generated .vcproj file.  This value is determined by the VC7ProjectCreator or the VC71ProjectCreator.
 warning_level = This setting corresponds to the C/C++ General property "Warning Level". Valid values are 0 through 4.
