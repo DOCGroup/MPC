@@ -113,7 +113,10 @@ sub clean_sln {
 
 if ($#ARGV == -1) {
   print "PostClean v$version\n",
-        "Usage: ", basename($0), " [CFG=<configuration>] <project or solution files>\n";
+        "Usage: ", basename($0), " [CFG=<configuration>] <project or solution files>\n\n",
+        "Executes the MPC generated VCPostCleanEventTool commands in a project.\n",
+        "These events are ignored by VisualStudio and must be handled by an outside\n",
+        "tool (i.e., this script).\n";
   exit(0);
 }
 
