@@ -18,6 +18,7 @@ Release {
   defines          = NDEBUG
   output_dir       = Release
   intermediate_dir = Release
+  GenerateDebugInformation = false
 }
 
 Debug {
@@ -57,6 +58,7 @@ MFC Release {
   intermediate_dir = MFC_Release
   lib_modifier     = mfc
   UseOfMFC         = 2
+  GenerateDebugInformation = false
 }
 
 MFC Debug {

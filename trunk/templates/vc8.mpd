@@ -423,6 +423,10 @@
 <%if(optimize)%>
 				OptimizeReferences="<%OptimizeReferences("2")%>"
 				EnableCOMDATFolding="<%EnableCOMDATFolding("2")%>"
+<%else%>
+<%if(OptimizeReferences)%>
+				OptimizeReferences="<%OptimizeReferences%>"
+<%endif%>
 <%endif%>
 <%if(OptimizeForWindows98)%>
 				OptimizeForWindows98="<%OptimizeForWindows98%>"
