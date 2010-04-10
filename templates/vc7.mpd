@@ -130,8 +130,8 @@
 <%if(ModuleDefinitionFile)%>
                                 ModuleDefinitionFile="<%ModuleDefinitionFile%>"
 <%endif%>
-				GenerateDebugInformation="TRUE"
 <%if(pdbl)%>
+				GenerateDebugInformation="TRUE"
 <%if(sharedname)%>
 				ProgramDatabaseFile="$(OutDir)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
 <%else%>
@@ -153,6 +153,10 @@
 <%if(optimize)%>
 				OptimizeReferences="<%optref("2")%>"
 				EnableCOMDATFolding="<%opticf("2")%>"
+<%else%>
+<%if(optref)%>
+				OptimizeReferences="<%optref%>"
+<%endif%>
 <%endif%>
 <%if(unicode && unicode_mfc_entry && exename && source_files)%>
 				EntryPointSymbol="<%unicode_mfc_entry%>"

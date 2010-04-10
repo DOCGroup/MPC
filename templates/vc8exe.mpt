@@ -19,6 +19,7 @@ Release {
   defines          = NDEBUG
   output_dir       = Release
   intermediate_dir = Release
+  GenerateDebugInformation = false
 }
 
 Debug {
@@ -59,6 +60,7 @@ MFC Release {
   lib_modifier      = mfc
   UseOfMFC          = 2
   unicode_mfc_entry = wWinMainCRTStartup
+  GenerateDebugInformation = false
 }
 
 MFC Debug {
