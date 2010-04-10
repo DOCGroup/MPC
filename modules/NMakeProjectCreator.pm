@@ -15,6 +15,7 @@ use strict;
 use ProjectCreator;
 use WinProjectBase;
 use MakeProjectBase;
+use VCPropertyBase;
 
 use vars qw(@ISA);
 @ISA = qw(MakeProjectBase WinProjectBase ProjectCreator VCPropertyBase);

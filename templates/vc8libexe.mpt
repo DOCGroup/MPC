@@ -20,6 +20,7 @@ Release {
   output_dir       = Static_Release
   intermediate_dir = Static_Release
   lib_modifier     = s
+  GenerateDebugInformation = false
 }
 
 Debug {
@@ -61,6 +62,7 @@ MFC Release {
   lib_modifier      = mfcs
   UseOfMFC          = 2
   unicode_mfc_entry = wWinMainCRTStartup
+  GenerateDebugInformation = false
 }
 
 MFC Debug {
