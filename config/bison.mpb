@@ -2,7 +2,6 @@
 project {
   requires += bison
   Define_Custom(BISON) {
-    automatic        = 1
     command          = bison
     commandflags     = -d
     pch_postrule     = 1

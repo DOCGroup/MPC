@@ -4,19 +4,16 @@ project {
   custom_only = 1
 
   Define_Custom (WXS) {
-    automatic             = 1
-    command               = <%quote%>$(WIX_ROOT)/bin/candle.exe<%quote%>
-
-    inputext              = .wxs
-    output_option         = -out
-    commandflags          = -nologo
-    generic_outputext     = .wixobj
-    keyword wix_flags     = commandflags
+    command           = <%quote%>$(WIX_ROOT)/bin/candle.exe<%quote%>
+    inputext          = .wxs
+    output_option     = -out
+    commandflags      = -nologo
+    generic_outputext = .wixobj
+    keyword wix_flags = commandflags
   }
 
   Define_Custom (WXI) {
-    automatic             = 1
-    inputext              = .wxi
+    inputext = .wxi
   }
 
   postbuild = \
