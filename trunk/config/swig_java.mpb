@@ -3,7 +3,6 @@
 
 project {
   Define_Custom(SWIG) {
-    automatic             = 1
     command               = swig
     commandflags          = -java -c++
     inputext              = .swg, .swig, .i

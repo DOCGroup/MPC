@@ -3262,12 +3262,18 @@ sub list_default_generated {
       }
 
       foreach my $type (@$tags) {
-        ## Do not add generated files if they are "special"
-        ## unless they haven't been explicitly supplied.
+        ## Only add generated files if the following is true:
+        ## 1) The generating type is not the same as the receiving type.
+        ## 2) The receivng type is not "special" (unless it hasn't been
+        ##    supplied by the user).
+        ## 3) The receiving type is not user defined or it is user
+        ##    defined and has 'automatic_in' set to true.
         if ($gentype ne $type &&
             (!$specialComponents{$type} ||
              (!$self->{'special_supplied'}->{$type} ||
-              UNIVERSAL::isa($self->{'special_supplied'}->{$type}, 'ARRAY')))) {
+              UNIVERSAL::isa($self->{'special_supplied'}->{$type}, 'ARRAY'))) &&
+            (!defined $self->{'generated_exts'}->{$type} ||
+             $self->{'generated_exts'}->{$type}->{'automatic_in'})) {
           if (!$self->generated_source_listed(
                                 $gentype, $type, \%arr,
                                 $self->{'valid_components'}->{$gentype})) {
