@@ -3,7 +3,6 @@
 
 project : taoidldefaults {
   Define_Custom(SpliceTypeSupport) {
-    automatic             = 1
     command               = <%quote%>$(OSPL_HOME)/bin/idlpp<%quote%>
     dependent             = <%quote%>$(OSPL_HOME)/bin/idlpp<%quote%>
     source_pre_extension  = SplDcps, Dcps_impl
