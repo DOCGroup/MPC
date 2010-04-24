@@ -2,7 +2,6 @@
 project {
   requires += flex
   Define_Custom(FLEX) {
-    automatic        = 1
     command          = flex
     commandflags     = -t
     output_option    = >

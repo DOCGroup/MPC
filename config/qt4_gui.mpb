@@ -5,7 +5,6 @@ project: qt4_core {
   lit_libs += QtGui$(QT_CFG)
 
   Define_Custom(UIC) {
-    automatic        = 1
     command          = $(QTDIR)/bin/uic
     output_option    = -o
     inputext         = .ui
@@ -14,7 +13,8 @@ project: qt4_core {
   }
 
   Define_Custom(MOC) {
-    automatic        = 0
+    automatic_in     = 0
+    automatic_out    = 0
     command          = $(QTDIR)/bin/moc
     output_option    = -o
     pch_postrule     = 1
@@ -24,7 +24,6 @@ project: qt4_core {
   }
 
   Define_Custom(QRC) {
-    automatic        = 1
     command          = $(QTDIR)/bin/rcc
     output_option    =  -o
     commandflags     = -name <%input_noext%>

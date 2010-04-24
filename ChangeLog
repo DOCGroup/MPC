@@ -1,3 +1,36 @@
+Sat Apr 24 23:40:57 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/bison.mpb:
+        * config/erlang.mpb:
+        * config/flex.mpb:
+        * config/iiopnet.mpb:
+        * config/lex.mpb:
+        * config/mpb.mpb:
+        * config/ndds_ts_defaults.mpb:
+        * config/qt.mpb:
+        * config/qt4_gui.mpb:
+        * config/splice_ts_defaults.mpb:
+        * config/swig_java.mpb:
+        * config/swig_perl.mpb:
+        * config/swig_php.mpb:
+        * config/swig_python.mpb:
+        * config/swig_ruby.mpb:
+        * config/swig_tcl.mpb:
+        * config/udm.mpb:
+        * config/wix.mpb:
+        * config/yacc.mpb:
+
+          Removed use of automatic.  If it was set to 1, I removed it
+          completely since automatic_in and automatic_out defaults to 1.  If
+          it was set to 0, I replaced it with automatic_in and
+          automatic_out.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where files generated via a user defined custom rule
+          would be added as input to another user generated custom rule even
+          if it has automatic_in set to 0.
+
 Sat Apr 10 19:37:34 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/opalorb.mpb:
