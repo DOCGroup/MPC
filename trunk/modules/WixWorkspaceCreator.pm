@@ -70,7 +70,7 @@ sub post_workspace {
             $self->get_workspace_name(), '">', $crlf;
 
   foreach my $project ($self->sort_dependencies($self->get_projects())) {
-    print $fh '      <ComponentRef Id="',
+    print $fh '      <ComponentGroupRef Id="ComponentGroup.',
               $$info{$project}->[0], '" />', $crlf;
   }
 
