@@ -18,13 +18,14 @@ use Cwd;
 use FileHandle;
 use File::Copy;
 use File::Basename;
+use File::Find;
 
 # ******************************************************************
 # Data Section
 # ******************************************************************
 
 my $insext   = 'ins';
-my $version  = '1.9';
+my $version  = '2.0';
 my %defaults = ('header_files'   => 1,
                 'idl_files'      => 1,
                 'inline_files'   => 1,
@@ -36,11 +37,12 @@ my %defaults = ('header_files'   => 1,
 my %special  = ('exe_output' => 1,
                 'lib_output' => 1,
                );
-
+my %extended;
 my %actual;
 my %base;
 my %override;
 my $keepgoing = 0;
+my $binarydir = '';
 
 eval 'symlink("", "");';
 my $hasSymlink = ($@ eq '');
@@ -64,16 +66,45 @@ sub rm_updirs {
   return join('/', @parts);
 }
 
+sub get_dest {
+  my($file, $insdir) = @_;
+  return rm_updirs($insdir . '/' .
+                   (defined $actual{$file}
+                    ? "$actual{$file}/" . basename($file)
+                    : $file));
+}
+
 sub copyFiles {
   my($files, $insdir, $symlink, $verbose) = @_;
   my $type = ($symlink ? 'link' : 'copy');
   my $cwd = getcwd();
 
+  # If > 1 file in @$files is a symlink to the same target, create one of the
+  # files (the shorter-named one) as a symlink in the destination tree.
+  my %localLink; # keys: files to create as symlinks in the destination
+                 # values: symlink target (used in the main loop, below)
+  my %linkTargets; # keys: link targets in the source tree
+                   # values: name of the symlink in the source tree
   foreach my $file (@$files) {
-    my $dest = rm_updirs($insdir . '/' .
-                         (defined $actual{$file} ?
-                                 "$actual{$file}/" .
-                                 basename($file) : $file));
+    if (-l $file) {
+      my $dest = readlink($file);
+      if (exists $linkTargets{$dest}) {
+        if (length $file <= length $linkTargets{$dest}) {
+          $localLink{$file} = $linkTargets{$dest};
+        }
+        else {
+          $localLink{$linkTargets{$dest}} = $file;
+          $linkTargets{$dest} = $file;
+        }
+      }
+      else {
+        $linkTargets{$dest} = $file;
+      }
+    }
+  }
+
+  foreach my $file (@$files) {
+    my $dest = get_dest($file, $insdir);
     my $fulldir = dirname($dest);
     if (! -d $fulldir) {
       my $tmp = '';
@@ -91,6 +122,17 @@ sub copyFiles {
       if ($symlink) {
         unlink($dest);
         $status = symlink("$cwd/$file", $dest);
+      }
+      elsif (exists $localLink{$file}) {
+        my $target = get_dest($localLink{$file}, $insdir);
+        if ($fulldir eq dirname($target)) {
+          $target = basename($target);
+        }
+        if ($verbose) {
+          print "\tCreating local symlink to $target\n";
+        }
+        unlink($dest);
+        $status = symlink($target, $dest);
       }
       else {
         $status = copy($file, $dest);
@@ -123,7 +165,7 @@ sub determineSpecialName {
     $insdir = '';
   }
 
-  my $odir = ($dir eq '' ? '.' : $dir) . '/' . $insdir;
+  my $odir = ($insdir =~ /^\// ? $insdir : ($dir . $insdir)) . $binarydir;
   if ($tag eq 'exe_output') {
     my @exes;
     my $fh   = new FileHandle();
@@ -131,7 +173,7 @@ sub determineSpecialName {
       foreach my $file (grep(!/^\.\.?$/, readdir($fh))) {
         if ($file =~ /^$name$/ ||
             $file =~ /^$name.*\.exe$/i) {
-          push(@exes, "$dir$insdir$file");
+          push(@exes, "$dir$insdir$binarydir$file");
         }
       }
       closedir($fh);
@@ -145,7 +187,7 @@ sub determineSpecialName {
       foreach my $file (grep(!/^\.\.?$/, readdir($fh))) {
         if ($file =~ /^lib$name\.(a|so|sl)/ ||
             $file =~ /^(lib)?$name.*\.(dll|lib)$/i) {
-          push(@libs, "$dir$insdir$file");
+          push(@libs, "$dir$insdir$binarydir$file");
         }
       }
       closedir($fh);
@@ -205,14 +247,45 @@ sub loadInsFiles {
           }
           elsif (defined $current) {
             $line = replaceVariables($line);
+            my $perFileOverride = undef;
             my $start = $#copy + 1;
             if (defined $special{$current}) {
               push(@copy, determineSpecialName($current, $base, $line));
             }
             else {
-              push(@copy, "$base$line");
+              my($src, $dst);
+              if ($line =~ /^\"([^"]+)\" (.*)/ || $line =~ /^(\S+) (\S+)/) {
+                ($src, $dst) = ($1, $2);
+              }
+              else {
+                ($src, $dst) = ($line, '');
+              }
+              if (defined $extended{$current}) {
+                push(@copy, "$base$src");
+                $perFileOverride = $dst;
+              }
+              else {
+                push(@copy, "$base$src");
+              }
             }
-            if (defined $override{$current}) {
+            if (-d $copy[-1]) {
+              my $dir = pop @copy;
+              my $replace = $perFileOverride
+                  ? ($perFileOverride . '/' . basename($dir)) : '';
+              find({no_chdir => 1,
+                    wanted => sub {
+                      if (!(-d || /\.svn\// || /~$/)) {
+                        push @copy, $_;
+                        my $rel = $_;
+                        $rel =~ s/^$dir/$replace/;
+                        $actual{$_} =
+                            (defined $override{$current} ? $override{$current}
+                             : $base{$current}) . '/' . dirname($rel);
+                      }
+                    }
+                   }, $dir);
+            }
+            elsif (defined $override{$current}) {
               for(my $i = $start; $i <= $#copy; ++$i) {
                 $actual{$copy[$i]} = $override{$current};
               }
@@ -220,7 +293,7 @@ sub loadInsFiles {
             elsif (defined $base{$current}) {
               for(my $i = $start; $i <= $#copy; ++$i) {
                 $actual{$copy[$i]} = $base{$current} . '/' .
-                                     dirname($copy[$i]);
+                  ($perFileOverride ? $perFileOverride : dirname($copy[$i]));
               }
             }
           }
@@ -266,19 +339,24 @@ sub usageAndExit {
   my $base = basename($0);
   my $spc  = ' ' x (length($base) + 8);
   print STDERR "$base v$version\n",
-               "Usage: $base [-a tag1[,tagN]] [-b tag=dir] ",
+               "Usage: $base [-a tag1[,tagN]] [-b tag=dir] [-d dir]",
                ($hasSymlink ? '[-l] ' : ''), "[-o tag=dir]\n",
-               $spc, "[-s tag1[,tagN]] [-v] [-k] [install directory]\n",
-               $spc, "[$insext files or directories]\n\n",
+               $spc, "[-s tag1[,tagN]] [-x tag1[,tagN]] [-v] [-k] [-i]\n",
+               $spc, "[install directory] [$insext files or directories]\n\n",
                "Install files matching the tag specifications found ",
                "in $insext files.\n\n",
                "-a  Adds to the default set of tags that get copied.\n",
                "-b  Install tag into dir underneath the install directory.\n",
+               "-d  Libs/executables are copied from this sub-directory.\n",
+               "-i  Read standard input in place of the $insext file.\n",
                "-k  Keep going if a file to be copied is missing.\n",
                ($hasSymlink ? "-l  Use symbolic links instead of copying.\n" : ''),
                "-o  Install tag into dir.\n",
                "-s  Sets the tags that get copied.\n",
                "-v  Enables verbose mode.\n",
+               "-x  Enable extended behavior for the given tags:\n",
+               "      These tags will use the 'gendir' setting from the\n",
+               "      project as a relative target directory.\n",
                "\n",
                "The default set of tags are:\n";
   my $first = 1;
@@ -330,6 +408,20 @@ for(my $i = 0; $i <= $#ARGV; ++$i) {
         usageAndExit('-b requires a parameter.');
       }
     }
+    elsif ($arg eq '-d') {
+      ++$i;
+      if (defined $ARGV[$i]) {
+        $binarydir = $ARGV[$i];
+        $binarydir =~ s/\\/\//g;
+        $binarydir .= '/' unless $binarydir =~ /\/$/;
+      }
+      else {
+        usageAndExit('-d requires a parameter.');
+      }
+    }
+    elsif ($arg eq '-i') {
+      push(@insfiles, '-');
+    }
     elsif ($arg eq '-k') {
       $keepgoing = 1;
     }
@@ -364,6 +456,17 @@ for(my $i = 0; $i <= $#ARGV; ++$i) {
     }
     elsif ($arg eq '-v') {
       $verbose = 1;
+    }
+    elsif ($arg eq '-x') {
+      ++$i;
+      if (defined $ARGV[$i]) {
+        foreach my $tag (split(',', $ARGV[$i])) {
+          $extended{$tag} = 1;
+        }
+      }
+      else {
+        usageAndExit('-x requires a parameter.');
+      }
     }
     else {
       usageAndExit('Unkown option: ' . $arg);

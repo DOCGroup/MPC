@@ -4620,50 +4620,63 @@ sub write_install_file {
 
   unlink($insfile);
   if (open($fh, ">$insfile")) {
-    foreach my $vc (keys %{$self->{'valid_components'}}) {
-      my $names = $self->{$vc};
-      foreach my $name (keys %$names) {
-        foreach my $key (keys %{$$names{$name}}) {
-          my $array = $$names{$name}->{$key};
-          if (defined $$array[0]) {
-            print $fh "$vc:\n";
-            foreach my $file (@$array) {
-              print $fh "$file\n";
+    $self->get_install_info(sub {print $fh $_[0]});
+    close $fh;
+    return 1, undef;
+  }
+  return 0, 'Unable write to ' . $insfile;
+}
+
+
+sub get_install_info {
+  my $self = shift;
+  my $callback = shift;
+  foreach my $vc (keys %{$self->{'valid_components'}}) {
+    my $names = $self->{$vc};
+    foreach my $name (keys %$names) {
+      foreach my $key (keys %{$$names{$name}}) {
+        my $array = $$names{$name}->{$key};
+        if (defined $$array[0]) {
+          &$callback("$vc:\n");
+          foreach my $file (@$array) {
+            if (defined $self->{'flag_overrides'}->{$vc} && 
+                defined $self->{'flag_overrides'}->{$vc}->{$file} &&
+                defined $self->{'flag_overrides'}->{$vc}->{$file}->{'gendir'}) {
+              &$callback(join(' ', map {/ / ? "\"$_\"" : $_} ($file,
+                $self->{'flag_overrides'}->{$vc}->{$file}->{'gendir'})) . "\n");
             }
-            print $fh "\n";
+            else {
+              &$callback("$file\n");
+            }
           }
+          &$callback("\n");
         }
       }
     }
-    if ($self->exe_target()) {
-      my $exeout = $self->get_assignment('exeout');
-      print $fh "exe_output:\n",
-                (defined $exeout ? $self->relative($exeout) : ''),
-                ' ', $self->get_assignment('exename'), "\n";
-    }
-    elsif ($self->lib_target()) {
-      my $shared = $self->get_assignment('sharedname');
-      my $static = $self->get_assignment('staticname');
-      my $dllout = $self->relative($self->get_assignment('dllout'));
-      my $libout = $self->relative($self->get_assignment('libout'));
-
-      print $fh "lib_output:\n";
-
-      if (defined $shared && $shared ne '') {
-        print $fh (defined $dllout ? $dllout : $libout), " $shared\n";
-      }
-      if ((defined $static && $static ne '') &&
-          (defined $dllout || !defined $shared ||
-               (defined $shared && $shared ne $static))) {
-        print $fh "$libout $static\n";
-      }
-    }
-
-    close($fh);
-    return 1, undef;
   }
+  if ($self->exe_target()) {
+    my $exeout = $self->get_assignment('exeout');
+    &$callback("exe_output:\n");
+    &$callback((defined $exeout ? $self->relative($exeout) : '') .
+               ' ' . $self->get_assignment('exename') . "\n");
+  }
+  elsif ($self->lib_target()) {
+    my $shared = $self->get_assignment('sharedname');
+    my $static = $self->get_assignment('staticname');
+    my $dllout = $self->relative($self->get_assignment('dllout'));
+    my $libout = $self->relative($self->get_assignment('libout'));
 
-  return 0, 'Unable write to ' . $insfile;
+    &$callback("lib_output:\n");
+
+    if (defined $shared && $shared ne '') {
+      &$callback((defined $dllout ? $dllout : $libout) . " $shared\n");
+    }
+    if ((defined $static && $static ne '') &&
+        (defined $dllout || !defined $shared ||
+             (defined $shared && $shared ne $static))) {
+      &$callback("$libout $static\n");
+    }
+  }
 }
 
 
