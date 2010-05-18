@@ -490,7 +490,11 @@
                 <td rowspan="1" colspan="1">
                   <p class="Tbl-Body">Specifies the feature list to set
                   before processing. This is a comma separated list and
-                  should contain no spaces.</p>
+                  should contain no spaces. The -features option can be
+                  used multiple times on the same command line, the
+                  effect is the same as if the parameters had been
+                  specified with a single -features options, with the
+                  parameters joined by commas.</p>
                 </td>
               </tr>
 
@@ -1090,7 +1094,16 @@
 
           <li class="Body">You may reference environment variables, accessed
           via the dollar sign (e.g., <em class="Code">$NAME</em>), on either
-          side of the equals sign.</li>
+          side of the equals sign. In either this file or the MPC
+          Configuration File (see below), an alternate form of environment
+          variable reference may be used for variables which are not expected
+          to be defined in all scenarios.  These variables use the syntax
+          <em class="Code">$?NAME</em> instead of <em class="Code">$NAME</em>.
+          With this syntax, if the environment variable
+          <em class="Code">NAME</em> is not defined, no error or warning is
+          printed by MPC, and the substring starting with
+          <em class="Code">$?NAME</em> until the next whitespace is expanded
+          to the empty string.</li>
         </ul>
 
         <ul>
