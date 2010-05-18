@@ -198,6 +198,9 @@ The -features specifies additional list of features values. Values
 specified by this option overwrite values from features files.
 Example:
 mwc.pl -features "qos=1,ssl=0" ace.mwc
+The -features option can be used multiple times on the same command line, the
+effect is the same as if the parameters had been specified with a single
+-features options, with the parameters joined by commas.
 
 The -value_template option can be used to set various template variables.
 If a template variable value will contain spaces, it is best to enclose the
@@ -234,7 +237,13 @@ MPC Configuration File.  If the base configuration file is not present,
 MPC will try to use $MPC_ROOT/config/MPC.cfg as the MPC Configuration File.
 
 You may reference environment variables, accessed by $NAME, on either side of
-the equals sign.
+the equals sign.  In either this file or the MPC Configuration File
+(see below), an alternate form of environment variable reference may be used
+for variables which are not expected to be defined in all scenarios.  These
+variables use the syntax $?NAME instead of $NAME.  With this syntax, if the
+environment variable NAME is not defined, no error or warning is printed by
+MPC, and the entire substring starting with $?NAME until the next whitespace is
+expanded to the empty string.
 
 
 MPC Configuration File

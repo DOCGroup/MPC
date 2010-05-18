@@ -1,12 +1,46 @@
+Tue May 18 15:13:21 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/Options.pm:
+
+          Allow multiple -feature arguments, the effects are cumulative.
+
+        * modules/ConfigParser.pm:
+
+          Allow an alternate syntax for optional variable references with $?.
+
+        * docs/USAGE:
+        * docs/html/MakeProjectCreator.html:
+
+          Documented the above changes.
+
+        * modules/ProjectCreator.pm:
+
+          Split-out core functionality of write_install_file() into a new
+          function, get_install_info() which can be called by the individual
+          type's project creator module.  Also included 'gendir' settings in
+          the ins file.
+
+        * prj_install.pl:
+
+          New switches:
+          -d <dir>   specifies a lib/bin subdirectory
+          -i         to read standard input instead of an ins file
+          -x <tags>  to enable certain tags to use 'gendir' from the mpc file
+                     in order to specify an alternate relative install path
+          New functionality:
+          - Create symlinks in the installed tree if there are two source files
+            such that one is a symlink to the other
+          - Allow entire directories to be installed (recursive)
+
 Mon May 17 06:43:59 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * modules/WixWorkspaceCreator.pm:
         * templates/wix.mpd:
         * templates/wix.mpt:
-        
+
           Updated Wix workspace/project generator to support installation
-          of the following: 
-                 
+          of the following:
+
             . files in subdirectories
             . gme paradigms
 
