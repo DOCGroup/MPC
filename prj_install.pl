@@ -166,6 +166,7 @@ sub determineSpecialName {
   }
 
   my $odir = ($insdir =~ /^\// ? $insdir : ($dir . $insdir)) . $binarydir;
+  $odir = '.' if $odir eq '';
   if ($tag eq 'exe_output') {
     my @exes;
     my $fh   = new FileHandle();
