@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?fileVersion 4.0.0?>
+
+<cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+  <!--
+  "storageModule" appears to be a do-all wrapper for aggregating any kind of
+  subelement.  Look in org.eclipse.cdt.core.settings.model.ICSettingStorage.java
+  -->
+
+<!--
+Going to need some sort of set of loops in here as well as some
+platform-specific junk.  The junk will have to come from settings in
+the mpt file, and some of the "junk" will be things like the
+"extensions" as well as the toolchain, etc.  A good example of how to handle
+this is vc8platforms.mpt which, according to Chad, does much the same sort
+of thing as eclipse with regard to having a lot of target-specific cruft
+in the project files, 
+-->
+
+
+  <storageModule moduleId="what.do.I.put.in.here.123456">
+    <cconfiguration id="does.it.matter.what.this.id.is?">
+      <!--
+      There appears to be one configuration per "style" where "style" is "debug"
+      or "release" or whatever.
+      -->
+
+      <!--
+      Much of the stuff inside here seems pretty platform-specific!
+      I'm not sure how to deal with that since one of the primary
+      goals is to generate platform-neutral builds.
+
+      I'm wondering if it makes more sense to generate for the
+      external make-based builder?
+      -->
+
+      <storageModule buildSystemId="what are valid values?"
+
+
+    </cconfiguration>
+  </storageModule>
+
+
+</cproject>

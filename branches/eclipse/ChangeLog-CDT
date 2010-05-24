@@ -1,0 +1,19 @@
+Mon May 24 18:38:29 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+
+        * modules/CDT6ProjectCreator.pm:
+        * modules/CDT6WorkspaceCreator.pm:
+
+          Added beginning of a new project type for generating files
+          compatible with Eclipse's CDT version 6.  Definitely a work in
+          progress.
+
+        * templates/cdt6project.mpd:
+        * templates/cdt6cproject.mpd:
+
+          Templates for CDT6.
+
+Local Variables:
+mode: change-log
+add-log-time-format: (lambda () (progn (setq tz (getenv "TZ")) (set-time-zone-rule "UTC") (setq time (format-time-string "%a %b %e %H:%M:%S %Z %Y" (current-time))) (set-time-zone-rule tz) time))
+indent-tabs-mode: nil
+End:
