@@ -35,8 +35,11 @@ in the project files,
       -->
 
       <storageModule buildSystemId="what are valid values?"
-
-
+<%foreach(platforms)%>
+<extensions>
+<%extensions%>
+</extensions>
+<%endfor%>
     </cconfiguration>
   </storageModule>
 
