@@ -51,6 +51,24 @@ sub project_file_name {
   }
 }
 
+sub fill_value {
+  my($self, $name) = @_;
+
+  if ($name eq 'platforms') {
+    if ($^O eq 'darwin') {
+      return 'macosx';
+    }
+    elsif ($^O eq 'MSWin32') {
+      return 'win32';
+    }
+    else {
+      return $^O; # cygwin, solaris, linux match what we expect
+    }
+  }
+
+  return undef;
+}
+
 sub get_template {
   #my $self = shift;
   return @tkeys;

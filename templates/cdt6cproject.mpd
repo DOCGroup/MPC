@@ -19,6 +19,7 @@ in the project files,
 
   <storageModule moduleId="what.do.I.put.in.here.123456">
 <%foreach(platforms)%>
+<%foreach(host_platform)%><%comment(there won't be more than one host_platform, but a foreach is used in orded or access scoped assignments from the mpt)%> 
 <%foreach(configurations)%>
     <cconfiguration id="mpc.generated.config.<%platform%>.<%configuration%>">
       <!--
@@ -40,6 +41,8 @@ in the project files,
 <%extension%>
 </extensions>
 
+<!-- Using host platform: <%host_platform%> with libenv <%libenv%> -->
+
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <fileInfo id="mpc.generated.custfile.<%platform%>.<%configuration%>.<%normalize(custom_type)%>.<%normalize(custom_type->input_file)%>"
@@ -48,7 +51,7 @@ in the project files,
           resourcePath="<%custom_type->input_file%>"
           toolsToInvoke="org.eclipse.cdt.managedbuilder.ui.rcbs.467489715">
   <tool announcement="Invoking <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> on <%custom_type->input_file%>"
-        command="<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%if(custom_type->output_option)%>&quot;<%custom_type->input_file%>&quot; <%custom_type->output_option%><%foreach(custom_type->input_file->output_files)%> &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>&quot;<%endfor%><%else%>&quot;<%custom_type->input_file%>&quot;<%endif%>"
+        command="<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%if(custom_type->output_option)%>&quot;<%if(starts_with(custom_type->input_file,[$/\\]))%><%custom_type->input_file%><%else%>../../<%custom_type->input_file%><%endif%>&quot; <%custom_type->output_option%><%foreach(custom_type->input_file->output_files)%> &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>&quot;<%endfor%><%else%>&quot;<%if(starts_with(custom_type->input_file,[$/\\]))%><%custom_type->input_file%><%else%>../../<%custom_type->input_file%><%endif%>&quot;<%endif%>"
         customBuildStep="true"
         id="mpc.generated.rcbs.<%platform%>.<%configuration%>.<%normalize(custom_type)%>.<%normalize(custom_type->input_file)%>"
         name="Resource Custom Build Step">
@@ -80,6 +83,7 @@ in the project files,
 
     </cconfiguration>
 <%endfor%><!-- configurations -->
+<%endfor%><%comment(host_platform)%>
 <%endfor%><!-- platforms -->
   </storageModule>
 

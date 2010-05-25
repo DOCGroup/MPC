@@ -5,31 +5,65 @@
 // when generating a CDT project/workspace combo.
 //
 
-// What's the difference btw. 'platforms' and 'default_platform' ?
-platforms = macosx
-default_platform = macosx 
-
-
 //
 // Platforms
 //
 
 linux {
+  binary_parsers = org.eclipse.cdt.core.ELF
+  error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
+  host_platform = host_linux
 }
 
 macosx {
   binary_parsers = org.eclipse.cdt.core.MachO64
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
+  host_platform = host_macosx
 }
 
 win32 {
+  binary_parsers = org.eclipse.cdt.core.PE
+  error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
+  host_platform = host_win32
 }
 
-//
-// Compilers
-//
-gcc {
+cygwin {
+  binary_parsers = org.eclipse.cdt.core.PE
+  error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
+  host_platform = host_win32
 }
 
-//
-// 
+solaris {
+  binary_parsers = org.eclipse.cdt.core.ELF
+  error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
+  host_platform = host_solaris
+}
+
+// default values for the host-specific variables, overridden below
+shell = sh -c
+pathsep = :
+slash = /
+setenv = export
+pre_mkdir =
+mkdir = mkdir -p
+move_file = mv
+file_to_stdout = cat
+temp_dir = /tmp
+libenv = LD_LIBRARY_PATH
+
+host_macosx {
+  libenv = DYLD_LIBRARY_PATH
+}
+
+host_win32 {
+  shell = cmd /c
+  pathsep = ;
+  slash = \
+  setenv = set
+  pre_mkdir = if not exist
+  mkdir = mkdir
+  move_file = move /y
+  file_to_stdout = type
+  temp_dir = %TEMP%
+  libenv = PATH
+}
