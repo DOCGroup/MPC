@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?fileVersion 4.0.0?>
-
 <cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
   <!--
   "storageModule" appears to be a do-all wrapper for aggregating any kind of
@@ -19,7 +18,9 @@ in the project files,
 
 
   <storageModule moduleId="what.do.I.put.in.here.123456">
-    <cconfiguration id="does.it.matter.what.this.id.is?">
+<%foreach(platforms)%>
+<%foreach(configurations)%>
+    <cconfiguration id="mpc.generated.config.<%platform%>.<%configuration%>">
       <!--
       There appears to be one configuration per "style" where "style" is "debug"
       or "release" or whatever.
@@ -35,13 +36,53 @@ in the project files,
       -->
 
       <storageModule buildSystemId="what are valid values?"
-<%foreach(platforms)%>
 <extensions>
-<%extensions%>
+<%extension%>
 </extensions>
-<%endfor%>
+
+<%foreach(custom_types)%>
+<%foreach(custom_type->input_files)%>
+<fileInfo id="mpc.generated.custfile.<%platform%>.<%configuration%>.<%normalize(custom_type)%>.<%normalize(custom_type->input_file)%>"
+          name="<%custom_type->input_file%>"
+          rcbsApplicability="override" 
+          resourcePath="<%custom_type->input_file%>"
+          toolsToInvoke="org.eclipse.cdt.managedbuilder.ui.rcbs.467489715">
+  <tool announcement="Invoking <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> on <%custom_type->input_file%>"
+        command="<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%if(custom_type->output_option)%>&quot;<%custom_type->input_file%>&quot; <%custom_type->output_option%><%foreach(custom_type->input_file->output_files)%> &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>&quot;<%endfor%><%else%>&quot;<%custom_type->input_file%>&quot;<%endif%>"
+        customBuildStep="true"
+        id="mpc.generated.rcbs.<%platform%>.<%configuration%>.<%normalize(custom_type)%>.<%normalize(custom_type->input_file)%>"
+        name="Resource Custom Build Step">
+<!-- TODO in command: (pre) libpath, mkdir for gendir
+                      (post) postcommand, pch_postrule -->
+    <inputType id="mpc.generated.rcbsinput.<%platform%>.<%configuration%>.<%normalize(custom_type)%>.<%normalize(custom_type->input_file)%>"
+               name="Resource Custom Build Step Input Type">
+      <additionalInput kind="additionalinputdependency"
+<%if(flag_overrides(custom_type->input_file, dependent))%>
+                       paths="<%foreach(dep, flag_overrides(custom_type->input_file, dependent))%><%dep%><%if(!has_extension(dep))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%foreach(custom_type->input_file->dependencies)%>;<%custom_type->input_file->dependencie%><%endfor%>"/>
+<%else%>
+<%if(custom_type->dependent)%>
+                       paths="<%foreach(custom_type->dependent)%><%custom_type->dependent%><%if(!has_extension(custom_type->dependent))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%foreach(custom_type->input_file->dependencies)%>;<%custom_type->input_file->dependencie%><%endfor%>"/>
+<%else%>
+                       paths="<%foreach(custom_type->input_file->dependencies)%><%custom_type->input_file->dependencie%><%fornotlast(";")%><%endfor%>"/>
+<%endif%>
+<%endif%>
+    </inputType>
+    <outputType
+      id="mpc.generated.rcbsoutput.<%platform%>.<%configuration%>.<%normalize(custom_type)%>.<%normalize(custom_type->input_file)%>"
+      name="Resource Custom Build Step Output Type"
+      outputNames="<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(";")%><%endfor%>"/>
+  </tool>
+</fileInfo>
+<%endfor%><!-- input file -->
+<%endfor%><!-- custom type -->
+
+
+
     </cconfiguration>
+<%endfor%><!-- configurations -->
+<%endfor%><!-- platforms -->
   </storageModule>
 
 
 </cproject>
+
