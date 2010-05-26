@@ -1,3 +1,9 @@
+Tue May 25 22:55:48 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/gdiplus.mpb:
+        
+          Base class for building C++ application that support GDI+.
+
 Tue May 18 20:48:12 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * prj_install.pl:
