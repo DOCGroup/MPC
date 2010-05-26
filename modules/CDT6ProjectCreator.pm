@@ -100,4 +100,9 @@ sub get_dll_template_input_file {
   return 'cdt6dll';
 }
 
+sub use_win_compatibility_commands() {
+  return (defined $ENV{'MPC_CDT_HOST_WIN32'})
+      ? $ENV{'MPC_CDT_HOST_WIN32'} : ($^O eq 'MSWin32' || $^O eq 'cygwin');
+}
+
 1;

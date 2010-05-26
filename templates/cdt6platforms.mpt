@@ -1,8 +1,10 @@
-// -* MPC -*-
+// -*- MPC -*-
 //
 // Any of these platforms can be set using
 //   -value_template platforms="blah blah blah"
-// when generating a CDT project/workspace combo.
+// when generating a CDT project/workspace combo.  The default is to use the
+// platform that matches the host that's running MPC (see fill_value() in
+// CDT6ProjectCreator.pm).
 //
 
 //
@@ -12,7 +14,19 @@
 linux {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
-  host_platform = host_linux
+}
+
+// This scope serves as an example of a custom platform.  On 64-bit linux,
+// you can compile a 32-bit binary by passing -m32 to gcc.  Using this custom
+// platform, MPC can generate CDT projects that have "Build Configurations"
+// for both 64-bit and 32-bit.  This would be enabled by running mwc.pl with
+// -value_template platforms="linux linux_m32"
+linux_m32 {
+  binary_parsers = org.eclipse.cdt.core.ELF
+  error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
+  platform_ccflags = -m32
+  platform_cxxflags = -m32
+  platform_ldflags = -m32
 }
 
 macosx {
@@ -36,34 +50,19 @@ cygwin {
 solaris {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
-  host_platform = host_solaris
 }
 
 // default values for the host-specific variables, overridden below
-shell = sh -c
-pathsep = :
-slash = /
-setenv = export
-pre_mkdir =
-mkdir = mkdir -p
-move_file = mv
-file_to_stdout = cat
-temp_dir = /tmp
+// TODO: remove the need for libenv (and even host_platform) once the template
+// implements libpath, mkdir gendir, and pch_postrule
 libenv = LD_LIBRARY_PATH
+shell = sh -c // move to ProjectCreator::get_command_subs?
 
 host_macosx {
   libenv = DYLD_LIBRARY_PATH
 }
 
 host_win32 {
-  shell = cmd /c
-  pathsep = ;
-  slash = \
-  setenv = set
-  pre_mkdir = if not exist
-  mkdir = mkdir
-  move_file = move /y
-  file_to_stdout = type
-  temp_dir = %TEMP%
   libenv = PATH
+  shell = cmd /c
 }
