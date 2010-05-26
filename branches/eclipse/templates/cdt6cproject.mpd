@@ -51,12 +51,12 @@ in the project files,
           resourcePath="<%custom_type->input_file%>"
           toolsToInvoke="org.eclipse.cdt.managedbuilder.ui.rcbs.467489715">
   <tool announcement="Invoking <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> on <%custom_type->input_file%>"
-        command="<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%if(custom_type->output_option)%>&quot;<%if(starts_with(custom_type->input_file,[$/\\]))%><%custom_type->input_file%><%else%>../../<%custom_type->input_file%><%endif%>&quot; <%custom_type->output_option%><%foreach(custom_type->input_file->output_files)%> &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>&quot;<%endfor%><%else%>&quot;<%if(starts_with(custom_type->input_file,[$/\\]))%><%custom_type->input_file%><%else%>../../<%custom_type->input_file%><%endif%>&quot;<%endif%>"
+        command="<%shell%> &quot;<%comment(COMMAND)%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%comment(COMMANDFLAGS)%><%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%if(custom_type->output_option)%><%comment(with OUTPUT_OPTION)%><%if(starts_with(custom_type->input_file,[$/\\]))%><%custom_type->input_file%><%else%>..<%slash%>..<%slash%><%custom_type->input_file%><%endif%> <%custom_type->output_option%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%else%><%comment(without OUTPUT_OPTION)%><%if(starts_with(custom_type->input_file,[$/\\]))%><%custom_type->input_file%><%else%>..<%slash%>..<%slash%><%custom_type->input_file%><%endif%><%endif%><%comment(POSTCOMMAND)%><%if(flag_overrides(custom_type->input_file, postcommand))%> &amp;&amp; <%flag_overrides(custom_type->input_file, postcommand)%><%else%><%if(custom_type->postcommand)%> &amp;&amp; <%custom_type->postcommand%><%endif%><%endif%>&quot;"
         customBuildStep="true"
         id="mpc.generated.rcbs.<%platform%>.<%configuration%>.<%normalize(custom_type)%>.<%normalize(custom_type->input_file)%>"
         name="Resource Custom Build Step">
 <!-- TODO in command: (pre) libpath, mkdir for gendir
-                      (post) postcommand, pch_postrule -->
+                      (post) pch_postrule -->
     <inputType id="mpc.generated.rcbsinput.<%platform%>.<%configuration%>.<%normalize(custom_type)%>.<%normalize(custom_type->input_file)%>"
                name="Resource Custom Build Step Input Type">
       <additionalInput kind="additionalinputdependency"
@@ -73,18 +73,18 @@ in the project files,
     <outputType
       id="mpc.generated.rcbsoutput.<%platform%>.<%configuration%>.<%normalize(custom_type)%>.<%normalize(custom_type->input_file)%>"
       name="Resource Custom Build Step Output Type"
-      outputNames="<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(";")%><%endfor%>"/>
+      outputNames="<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(";")%><%endfor%>"/>
   </tool>
 </fileInfo>
-<%endfor%><!-- input file -->
-<%endfor%><!-- custom type -->
+<%endfor%><%comment(input file)%>
+<%endfor%><%comment(custom type)%>
 
 
 
     </cconfiguration>
-<%endfor%><!-- configurations -->
+<%endfor%><%comment(configurations)%>
 <%endfor%><%comment(host_platform)%>
-<%endfor%><!-- platforms -->
+<%endfor%><%comment(platforms)%>
   </storageModule>
 
 
