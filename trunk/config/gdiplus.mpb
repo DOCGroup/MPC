@@ -2,7 +2,7 @@
 // $Id$
 
 project {
-  specific (prop:windows)
+  specific (prop:windows) {
     lit_libs += gdiplus
   }
 }
