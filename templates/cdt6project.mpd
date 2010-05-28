@@ -83,4 +83,34 @@
     <nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
     <nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
   </natures>
+  <linkedResources>
+<%foreach(source_files)%>
+    <link>
+      <name><%source_file%></name>
+      <type>1</type>
+      <location><%full_path(source_file)%></location>
+    </link>
+<%endfor%>
+<%foreach(header_files)%>
+    <link>
+      <name><%header_file%></name>
+      <type>1</type>
+      <location><%full_path(header_file)%></location>
+    </link>
+<%endfor%>
+<%foreach(inline_files)%>
+    <link>
+      <name><%inline_file%></name>
+      <type>1</type>
+      <location><%full_path(inline_file)%></location>
+    </link>
+<%endfor%>
+<%foreach(template_files)%>
+    <link>
+      <name><%template_file%></name>
+      <type>1</type>
+      <location><%full_path(template_file)%></location>
+    </link>
+<%endfor%>
+  </linkedResources>
 </projectDescription>
