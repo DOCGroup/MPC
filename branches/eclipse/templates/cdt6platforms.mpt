@@ -55,6 +55,7 @@ solaris {
 // default values for the host-specific variables, overridden below
 // TODO: remove the need for libenv (and even host_platform) once the template
 // implements libpath, mkdir gendir, and pch_postrule
+host_platform = linux
 libenv = LD_LIBRARY_PATH
 shell = sh -c // move to ProjectCreator::get_command_subs?
 
