@@ -11,9 +11,16 @@
 // Platforms
 //
 
+// These will have platform_specializer appended if it's defined
+configuration_parent_root = cdt.managedbuild.config.gnu
+toolchain_superclass_root = cdt.managedbuild.toolchain.gnu
+toolchain_internal_builder_root = cdt.managedbuild.target.gnu.builder
+targetplatform_superclass = cdt.managedbuild.target.gnu.platform
+
 linux {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
+  project_element_type_id = cdt.managedbuild.target.gnu
 }
 
 // This scope serves as an example of a custom platform.  On 64-bit linux,
@@ -33,6 +40,9 @@ macosx {
   binary_parsers = org.eclipse.cdt.core.MachO64
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
   host_platform = host_macosx
+  project_element_type_id = cdt.managedbuild.target.macosx
+  // platform_specializer gets added on to various things like configuration_parent_root, etc.
+  platform_specializer = macosx
 }
 
 win32 {
@@ -45,11 +55,13 @@ cygwin {
   binary_parsers = org.eclipse.cdt.core.PE
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
   host_platform = host_win32
+  platform_specializer = cygwin
 }
 
 solaris {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
+  platform_specializer = solaris
 }
 
 // default values for the host-specific variables, overridden below

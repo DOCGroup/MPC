@@ -64,18 +64,32 @@ in the project files,
    <%if(build_artifact_extension)%>artifactExtension="<%build_artifact_extension%>"<%endif%>
    artifactName="<%project_name%>"
    buildArtefactType="<%build_artefact_type%>"
-     buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug"
+     buildProperties="org.eclipse.cdt.build.core.buildArtefactType=<%build_artefact_type%>,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.<%configuration%>"
      cleanCommand="rm -rf"
      description=""
      id="mpc.generated.config.<%platform%>.<%configuration%>"
      name="<%platform%>-<%configuration%>"
-     parent="mpc.generated.config.<%platform%>.<%configuration%>" <%comment(this value may not be right; may have to change the id value to have the integer)%>
+     parent="<%configuration_parent_root%>.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>" <%comment()%>
 >
 <folderInfo id="mpc.generated.config.<%platform%>.<%configuration%>" <%comment(same id as configuration element id)%> name="/" resourcePath="">
-<toolChain id="mpc.generated.toolchain.<%platform%>.<%configuration%>" name="<%platform%> Default" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.<%platform%>.<%project_type%>.<%configuration%>" superClass="cdt.managedbuild.toolchain.gnu.<%platform%>.<%project_type%>.<%configuration%>">
+<toolChain
+   id="mpc.generated.toolchain.<%platform%>.<%configuration%>"
+   name="<%platform%> Default"
+   nonInternalBuilderId="<%toolchain_internal_builder_root%>.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>"
+   superClass="<%toolchain_superclass_root%>.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>"
+>
 <!-- CDT's targetPlatform is like MPC's configuration -->
-<targetPlatform id="mpc.generated.target.platform.<%platform%>.<%project_type%>.<%configuration%>" name="<%configuration%> Platform" superClass="cdt.managedbuild.target.gnu.platform.<%platform%>.<%project_type%>.<%configuration%>"/>
-<builder autoBuildTarget="all" buildPath="${workspace_loc:/<%project_name%>/<%configuration%>}" cleanBuildTarget="clean" id="org.eclipse.cdt.internal.builder.<%project_name%>" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder" />
+<targetPlatform
+  id="mpc.generated.target.platform.<%platform%>.<%project_type%>.<%configuration%>"
+  name="<%configuration%> Platform"
+  superClass="<%targetplatform_superclass%>.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>"/>
+<builder
+  autoBuildTarget="all"
+  buildPath="${workspace_loc:/<%project_name%>/<%configuration%>}"
+  cleanBuildTarget="clean"
+  id="org.eclipse.cdt.internal.builder.<%project_name%>"
+  incrementalBuildTarget="all"
+  keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder" />
 <!--
   It's not clear how we'll pass options from the MPC file down to this level.
   CDT has abstracted the options and given them long, CDT-specific names that are
@@ -154,10 +168,15 @@ in the project files,
 
 </storageModule>
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<%foreach(platforms)%>
 <!-- ORIGINAL EXAMPLE
 <project id="hw3.cdt.managedbuild.target.macosx.exe.282025223" name="Executable" projectType="cdt.managedbuild.target.macosx.exe"/>
 -->
-<project id="<%project_name%>.cdt.managedbuild.target.<%platform%>" name="<%project_type_name%>" projectType="cdt.managedbuild.target.<%platform%>.<%project_type%>"/>
+<project
+  id="<%project_name%>.<%project_element_type_id%>.1"
+  name="<%project_type_name%>"
+  projectType="<%project_element_type_id%>.<%project_type%>"/>
+<%endfor%>
 </storageModule>
 </cproject>
 
