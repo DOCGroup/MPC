@@ -17,9 +17,9 @@ in the project files,
 -->
 
 
-  <storageModule moduleId="what.do.I.put.in.here.123456">
+  <storageModule moduleId="org.eclipse.cdt.core.settings">
 <%foreach(platforms)%>
-<%foreach(host_platform)%><%comment(there won't be more than one host_platform, but a foreach is used in orded or access scoped assignments from the mpt)%> 
+<%foreach(host_platform)%><%comment(there won't be more than one host_platform, but a foreach is used in order to access scoped assignments from the mpt)%> 
 <%foreach(configurations)%>
     <cconfiguration id="mpc.generated.config.<%platform%>.<%configuration%>">
       <!--
@@ -36,11 +36,76 @@ in the project files,
       external make-based builder?
       -->
 
-      <storageModule buildSystemId="what are valid values?"
+      <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="mpc.generated.config.<%platform%>.<%configuration%>" moduleId="org.eclipse.cdt.core.settings" name="<%configuration%>">
+<externalSettings/>
 <extensions>
-<%extension%>
+<%foreach(binary_parsers)%>
+<extension id="<%binary_parser%>" point="org.eclipse.cdt.core.BinaryParser"/>
+<%endfor%>
+<%foreach(error_parsers)%>
+<extension id="<%error_parser%>" point="org.eclipse.cdt.core.ErrorParser"/>
+<%endfor%>
 </extensions>
+</storageModule>
 
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<!--
+   <configuration
+     artifactName="hw3"
+     buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe"
+     buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug"
+     cleanCommand="rm -rf"
+     description=""
+     id="cdt.managedbuild.config.gnu.macosx.exe.debug.350512523"
+     name="Debug"
+     parent="cdt.managedbuild.config.gnu.macosx.exe.debug"
+  >
+-->
+<configuration
+   <%if(build_artifact_extension)%>artifactExtension="<%build_artifact_extension%>"<%endif%>
+   artifactName="<%project_name%>"
+   buildArtefactType="<%build_artefact_type%>"
+     buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug"
+     cleanCommand="rm -rf"
+     description=""
+     id="mpc.generated.config.<%platform%>.<%configuration%>"
+     name="<%platform%>-<%configuration%>"
+     parent="mpc.generated.config.<%platform%>.<%configuration%>" <%comment(this value may not be right; may have to change the id value to have the integer)%>
+>
+<folderInfo id="mpc.generated.config.<%platform%>.<%configuration%>" <%comment(same id as configuration element id)%> name="/" resourcePath="">
+<toolChain id="mpc.generated.toolchain.<%platform%>.<%configuration%>" name="<%platform%> Default" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.<%platform%>.exe.<%configuration%>" superClass="cdt.managedbuild.toolchain.gnu.<%platform%>.exe.<%configuration%>">
+<!-- CDT's targetPlatform is like MPC's configuration -->
+<targetPlatform id="mpc.generated.target.platform.<%platform%>.exe.<%configuration%>" name="<%configuration%> Platform" superClass="cdt.managedbuild.target.gnu.platform.<%platform%>.exe.<%configuration%>"/>
+<builder autoBuildTarget="all" buildPath="${workspace_loc:/<%project_name%>/<%configuration%>}" cleanBuildTarget="clean" id="org.eclipse.cdt.internal.builder.<%project_name%>" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder" />
+<!--
+  It's not clear how we'll pass options from the MPC file down to this level.
+  CDT has abstracted the options and given them long, CDT-specific names that are
+  still tool-specific.  For now, all of the tool elements are just copied
+  verbatim from a CDT-generated .cproject file.
+-->
+<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1311461244" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug"/>
+<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.335515345" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug">
+<inputType id="cdt.managedbuild.tool.macosx.cpp.linker.input.415890365" superClass="cdt.managedbuild.tool.macosx.cpp.linker.input">
+<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+</inputType>
+</tool>
+<tool id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.897965604" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug">
+<inputType id="cdt.managedbuild.tool.gnu.assembler.input.706221217" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+</tool>
+<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.134329701" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base"/>
+<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.1373363011" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug">
+<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.886842330" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.63360527" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1095450641" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+</tool>
+<tool id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.1634417374" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug">
+<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.1822406061" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
+<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.1766929" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1596535093" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+</tool>
+</toolChain>
+</folderInfo>
 <!-- Using host platform: <%host_platform%> with libenv <%libenv%> -->
 
 <%foreach(custom_types)%>
@@ -78,15 +143,22 @@ in the project files,
 </fileInfo>
 <%endfor%><%comment(input file)%>
 <%endfor%><%comment(custom type)%>
-
-
-
+</configuration>
+</storageModule>
+<storageModule moduleId="scannerConfiguration">
+</storageModule>
+<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
     </cconfiguration>
 <%endfor%><%comment(configurations)%>
 <%endfor%><%comment(host_platform)%>
 <%endfor%><%comment(platforms)%>
-  </storageModule>
 
-
+</storageModule>
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<!-- ORIGINAL EXAMPLE
+<project id="hw3.cdt.managedbuild.target.macosx.exe.282025223" name="Executable" projectType="cdt.managedbuild.target.macosx.exe"/>
+-->
+<project id="<%project_name%>" name="<%project_type_name%>" projectType="<%project_type%>"/>
+</storageModule>
 </cproject>
 
