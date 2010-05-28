@@ -31,6 +31,7 @@ linux {
 linux_m32 {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
+  project_element_type_id = cdt.managedbuild.target.gnu
   platform_ccflags = -m32
   platform_cxxflags = -m32
   platform_ldflags = -m32
@@ -49,6 +50,8 @@ win32 {
   binary_parsers = org.eclipse.cdt.core.PE
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
   host_platform = host_win32
+  project_element_type_id = cdt.managedbuild.target.gnu.mingw
+  platform_specializer = mingw
 }
 
 cygwin {
@@ -67,7 +70,7 @@ solaris {
 // default values for the host-specific variables, overridden below
 host_platform = linux
 libenv = LD_LIBRARY_PATH
-shell = sh -c // move to ProjectCreator::get_command_subs?
+shell = sh
 script_ext = .sh
 script_hdr = #!/bin/sh
 script_tmpfile = temporary$$.src
