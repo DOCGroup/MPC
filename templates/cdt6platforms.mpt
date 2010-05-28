@@ -53,11 +53,15 @@ solaris {
 }
 
 // default values for the host-specific variables, overridden below
-// TODO: remove the need for libenv (and even host_platform) once the template
-// implements libpath, mkdir gendir, and pch_postrule
 host_platform = linux
 libenv = LD_LIBRARY_PATH
 shell = sh -c // move to ProjectCreator::get_command_subs?
+script_ext = .sh
+script_hdr = #!/bin/sh
+script_tmpfile = temporary$$.src
+setenv = export
+envvar_pre = $
+pathsep = :
 
 host_macosx {
   libenv = DYLD_LIBRARY_PATH
@@ -66,4 +70,12 @@ host_macosx {
 host_win32 {
   libenv = PATH
   shell = cmd /c
+  script_ext = .cmd
+  script_hdr = "@echo off & set TMPFILE=temporary%RANDOM%.src"
+  script_tmpfile = %TMPFILE%
+  setenv = set
+  envvar_pre = %
+  envvar_post = %
+  pathsep = ;
+  mkdir_pre = if not exist
 }
