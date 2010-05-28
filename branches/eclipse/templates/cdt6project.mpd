@@ -34,7 +34,6 @@
         </dictionary>
         <dictionary>
           <key>org.eclipse.cdt.make.core.buildLocation</key>
-<!--          <value>${workspace_loc:/hw3/Debug}</value> -->
           <value>${workspace_loc:/<%project_name%>/<%exeout%>}</value>
         </dictionary>
         <dictionary>
@@ -111,6 +110,15 @@
       <type>1</type>
       <location><%full_path(template_file)%></location>
     </link>
+<%endfor%>
+<%foreach(custom_types)%>
+<%foreach(custom_type->input_files)%>
+    <link>
+      <name><%custom_type->input_file%></name>
+      <type>1</type>
+      <location><%full_path(custom_type->input_file)%></location>
+    </link>
+<%endfor%>
 <%endfor%>
   </linkedResources>
 </projectDescription>
