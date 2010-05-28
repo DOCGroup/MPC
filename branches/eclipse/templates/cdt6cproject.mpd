@@ -73,9 +73,9 @@ in the project files,
      parent="mpc.generated.config.<%platform%>.<%configuration%>" <%comment(this value may not be right; may have to change the id value to have the integer)%>
 >
 <folderInfo id="mpc.generated.config.<%platform%>.<%configuration%>" <%comment(same id as configuration element id)%> name="/" resourcePath="">
-<toolChain id="mpc.generated.toolchain.<%platform%>.<%configuration%>" name="<%platform%> Default" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.<%platform%>.exe.<%configuration%>" superClass="cdt.managedbuild.toolchain.gnu.<%platform%>.exe.<%configuration%>">
+<toolChain id="mpc.generated.toolchain.<%platform%>.<%configuration%>" name="<%platform%> Default" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.<%platform%>.<%project_type%>.<%configuration%>" superClass="cdt.managedbuild.toolchain.gnu.<%platform%>.<%project_type%>.<%configuration%>">
 <!-- CDT's targetPlatform is like MPC's configuration -->
-<targetPlatform id="mpc.generated.target.platform.<%platform%>.exe.<%configuration%>" name="<%configuration%> Platform" superClass="cdt.managedbuild.target.gnu.platform.<%platform%>.exe.<%configuration%>"/>
+<targetPlatform id="mpc.generated.target.platform.<%platform%>.<%project_type%>.<%configuration%>" name="<%configuration%> Platform" superClass="cdt.managedbuild.target.gnu.platform.<%platform%>.<%project_type%>.<%configuration%>"/>
 <builder autoBuildTarget="all" buildPath="${workspace_loc:/<%project_name%>/<%configuration%>}" cleanBuildTarget="clean" id="org.eclipse.cdt.internal.builder.<%project_name%>" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder" />
 <!--
   It's not clear how we'll pass options from the MPC file down to this level.
@@ -83,25 +83,25 @@ in the project files,
   still tool-specific.  For now, all of the tool elements are just copied
   verbatim from a CDT-generated .cproject file.
 -->
-<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1311461244" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug"/>
-<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.335515345" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug">
-<inputType id="cdt.managedbuild.tool.macosx.cpp.linker.input.415890365" superClass="cdt.managedbuild.tool.macosx.cpp.linker.input">
+<tool id="cdt.managedbuild.tool.<%platform%>.c.linker.<%platform%>.<%project_type%>.<%configuration%>.1311461244" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.<%platform%>.c.linker.<%platform%>.<%project_type%>.<%configuration%>"/>
+<tool id="cdt.managedbuild.tool.<%platform%>.cpp.linker.<%platform%>.<%project_type%>.<%configuration%>.335515345" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.<%platform%>.cpp.linker.<%platform%>.<%project_type%>.<%configuration%>">
+<inputType id="cdt.managedbuild.tool.<%platform%>.cpp.linker.input.415890365" superClass="cdt.managedbuild.tool.<%platform%>.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 <additionalInput kind="additionalinput" paths="$(LIBS)"/>
 </inputType>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.897965604" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug">
+<tool id="cdt.managedbuild.tool.gnu.assembler.<%platform%>.<%project_type%>.<%configuration%>.897965604" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.<%platform%>.<%project_type%>.<%configuration%>">
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.706221217" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.134329701" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base"/>
-<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.1373363011" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug">
-<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.886842330" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.63360527" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+<tool id="cdt.managedbuild.tool.gnu.archiver.<%platform%>.base.134329701" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.<%platform%>.base"/>
+<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.<%platform%>.<%project_type%>.<%configuration%>.1373363011" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.<%platform%>.<%project_type%>.<%configuration%>">
+<option id="gnu.cpp.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.optimization.level.886842330" name="Optimization Level" superClass="gnu.cpp.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.debugging.level.63360527" name="Debug Level" superClass="gnu.cpp.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1095450641" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.1634417374" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug">
-<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.1822406061" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
-<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.1766929" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<tool id="cdt.managedbuild.tool.gnu.c.compiler.<%platform%>.<%project_type%>.<%configuration%>.1634417374" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.<%platform%>.<%project_type%>.<%configuration%>">
+<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.optimization.level.1822406061" name="Optimization Level" superClass="gnu.c.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.optimization.level" valueType="enumerated"/>
+<option id="gnu.c.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.debugging.level.1766929" name="Debug Level" superClass="gnu.c.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1596535093" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 </toolChain>
@@ -158,7 +158,7 @@ in the project files,
 <!-- ORIGINAL EXAMPLE
 <project id="hw3.cdt.managedbuild.target.macosx.exe.282025223" name="Executable" projectType="cdt.managedbuild.target.macosx.exe"/>
 -->
-<project id="<%project_name%>" name="<%project_type_name%>" projectType="<%project_type%>"/>
+<project id="<%project_name%>.cdt.managedbuild.target.<%platform%>" name="<%project_type_name%>" projectType="cdt.managedbuild.target.<%platform%>.<%project_type%>"/>
 </storageModule>
 </cproject>
 
