@@ -3,5 +3,4 @@ conditional_include "cdt6platforms"
 configurations = debug release
 project_type_name = "Shared Library"
 project_type = so
-project_type_ext = so
-build_artefact_type = org.eclipse.cdt.build.core.buildArtefactType.so
+build_artefact_type = org.eclipse.cdt.build.core.buildArtefactType.sharedLib

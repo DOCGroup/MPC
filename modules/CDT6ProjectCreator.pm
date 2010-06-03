@@ -97,7 +97,14 @@ sub get_dll_exe_template_input_file {
 
 sub get_dll_template_input_file {
   #my $self = shift;
+  #print "in get_dll_template_input_file\n";
   return 'cdt6dll';
+}
+
+sub get_lib_template_input_file {
+  #my $self = shift;
+  #print "in get_lib_template_input_file\n";
+  return 'cdt6lib';
 }
 
 sub use_win_compatibility_commands() {
