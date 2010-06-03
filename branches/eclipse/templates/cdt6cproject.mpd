@@ -61,11 +61,13 @@ in the project files,
   >
 -->
 <configuration
-   <%if(build_artifact_extension)%>artifactExtension="<%build_artifact_extension%>"<%endif%>
+   <%if(exename && exe_ext)%>artifactExtension="<%exe_ext%>"<%endif%>
+   <%if(type_is_dynamic && dll_ext)%>artifactExtension="<%dll_ext%>"<%endif%>
+   <%if(type_is_static && lib_ext)%>artifactExtension="<%lib_ext%>"<%endif%>
    artifactName="<%project_name%>"
    buildArtefactType="<%build_artefact_type%>"
      buildProperties="org.eclipse.cdt.build.core.buildArtefactType=<%build_artefact_type%>,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.<%configuration%>"
-     cleanCommand="rm -rf"
+     cleanCommand="<%delete("rm -rf")%>"
      description=""
      id="mpc.generated.config.<%platform%>.<%configuration%>"
      name="<%platform%>-<%configuration%>"
@@ -85,7 +87,7 @@ in the project files,
   superClass="<%targetplatform_superclass%>.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>"/>
 <builder
   autoBuildTarget="all"
-  buildPath="${workspace_loc:/<%project_name%>/<%configuration%>}"
+  buildPath="${workspace_loc:/<%project_name%>/<%configuration%>}"<%comment(buildpath may need to include platform as well in the case of cross-compiles)%>
   cleanBuildTarget="clean"
   id="org.eclipse.cdt.internal.builder.<%project_name%>"
   incrementalBuildTarget="all"
@@ -96,23 +98,61 @@ in the project files,
   still tool-specific.  For now, all of the tool elements are just copied
   verbatim from a CDT-generated .cproject file.
 -->
-<tool id="cdt.managedbuild.tool.<%platform%>.c.linker.<%platform%>.<%project_type%>.<%configuration%>.1311461244" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.<%platform%>.c.linker.<%platform%>.<%project_type%>.<%configuration%>"/>
-<tool id="cdt.managedbuild.tool.<%platform%>.cpp.linker.<%platform%>.<%project_type%>.<%configuration%>.335515345" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.<%platform%>.cpp.linker.<%platform%>.<%project_type%>.<%configuration%>">
+<tool id="cdt.managedbuild.tool.<%platform%>.c.linker.<%platform%>.<%project_type%>.<%configuration%>.1311461244" name="<%tool_name_prefix%> C Linker" superClass="cdt.managedbuild.tool.<%platform%>.c.linker.<%platform%>.<%project_type%>.<%configuration%>">
+<%if(type_is_dynamic)%>
+<option defaultValue="true" id="<%c_linker_dynamiclib_superclass%>.1" name="Shared/Dynamic" superClass="<%c_linker_dynamiclib_superclass%>" valueType="boolean"/>
+<%endif%>
+</tool>
+<tool id="cdt.managedbuild.tool.<%platform%>.cpp.linker.<%platform%>.<%project_type%>.<%configuration%>.335515345" name="<%tool_name_prefix%> C++ Linker" superClass="cdt.managedbuild.tool.<%platform%>.cpp.linker.<%platform%>.<%project_type%>.<%configuration%>">
+<option id="mpc.generated.link.libpaths.1" superClass="<%linker_option_superclass%>.paths" valueType="libPaths">
+<%foreach(libpaths)%>
+<listOptionValue builtIn="false" value="<%libpath%>"/>
+<%endfor%>
+</option>
+<option id="mpc.generated.link.option.libs.1" name="Libraries (-l)" superClass="<%linker_option_superclass%>.libs" valueType="libs">
+<%foreach(libs)%>
+<listOptionValue builtIn="false" value="<%libname_prefix%><%lib%>"/>
+<%endfor%>
+<%foreach(lit_libs)%>
+<listOptionValue builtIn="false" value="<%lit_lib%>"/>
+<%endfor%>
+<%foreach(pure_libs)%>
+<listOptionValue builtIn="false" value="<%pure_lib%>"/>
+<%endfor%>
+</option>
+<option id="mpc.generated.linkflags.1" superClass="<%linker_option_superclass%>.flags" value="<%if(linkflags)%> <%linkflags%><%endif%><%if(build64bit && linkflags64)%> <%linkflags64%><%endif%>" valueType="string"/>
+<%if(type_is_dynamic)%>
+<option defaultValue="true" id="<%cpp_linker_dynamiclib_superclass%>.1" name="Shared/Dynamic" superClass="<%cpp_linker_dynamiclib_superclass%>" valueType="boolean"/>
+<%endif%>
 <inputType id="cdt.managedbuild.tool.<%platform%>.cpp.linker.input.415890365" superClass="cdt.managedbuild.tool.<%platform%>.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 <additionalInput kind="additionalinput" paths="$(LIBS)"/>
 </inputType>
+<%if(libname_prefix)%>
+<outputType id="mpc.generated.cpp.linker.output.so.1" outputPrefix="<%libname_prefix%>" superClass="<%outputtype_superclass%>"/>
+<%endif%>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.assembler.<%platform%>.<%project_type%>.<%configuration%>.897965604" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.<%platform%>.<%project_type%>.<%configuration%>">
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.706221217" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.archiver.<%platform%>.base.134329701" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.<%platform%>.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.<%platform%>.<%project_type%>.<%configuration%>.1373363011" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.<%platform%>.<%project_type%>.<%configuration%>">
+<option id="mpc.generated.cc.include.paths.1" superClass="<%cpp_compiler_superclass%>.include.paths" valueType="includePath">
+<%foreach(includes)%>
+<listOptionValue builtIn="false" value="<%include%>"/>
+<%endfor%>
+</option>
+<option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -Xfoo=bar" valueType="string"/>
 <option id="gnu.cpp.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.optimization.level.886842330" name="Optimization Level" superClass="gnu.cpp.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.debugging.level.63360527" name="Debug Level" superClass="gnu.cpp.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1095450641" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.<%platform%>.<%project_type%>.<%configuration%>.1634417374" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.<%platform%>.<%project_type%>.<%configuration%>">
+<option id="mpc.generated.c.compiler.option.include.paths.1" superClass="<%c_compiler_superclass%>.include.paths" valueType="includePath">
+<%foreach(includes)%>
+<listOptionValue builtIn="false" value="<%include%>"/>
+<%endfor%>
+</option>
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.optimization.level.1822406061" name="Optimization Level" superClass="gnu.c.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.debugging.level.1766929" name="Debug Level" superClass="gnu.c.compiler.<%platform%>.<%project_type%>.<%configuration%>.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1596535093" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -159,6 +199,7 @@ in the project files,
 </configuration>
 </storageModule>
 <storageModule moduleId="scannerConfiguration">
+<!-- It's not clear what this section does, so it's not clear if it's necessary. -->
 </storageModule>
 <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
     </cconfiguration>

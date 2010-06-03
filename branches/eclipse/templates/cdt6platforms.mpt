@@ -11,16 +11,30 @@
 // Platforms
 //
 
+conditional_include "common"
+conditional_include "unixcommon" // We include this at the global b/c most
+                                 // platforms are unix-ish.  windowscommon
+                                 // overrides these in the relevant scopes.
+
 // These will have platform_specializer appended if it's defined
 configuration_parent_root = cdt.managedbuild.config.gnu
 toolchain_superclass_root = cdt.managedbuild.toolchain.gnu
 toolchain_internal_builder_root = cdt.managedbuild.target.gnu.builder
 targetplatform_superclass = cdt.managedbuild.target.gnu.platform
+outputtype_superclass = cdt.managedbuild.tool.gnu.cpp.linker.so.debug.output
+
+// These are just defaults
+linker_option_superclass = gnu.cpp.link.option // must have .XXX appended
+cpp_compiler_option_superclass = gnu.cpp.compiler.option
+c_compiler_option_superclass = gnu.c.compiler.option
+project_element_type_id = cdt.managedbuild.target.gnu
+c_linker_dynamiclib_superclass = gnu.c.link.so.debug.option.shared
+cpp_linker_dynamiclib_superclass = gnu.cpp.link.so.debug.option.shared
 
 linux {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
-  project_element_type_id = cdt.managedbuild.target.gnu
+  tool_name_prefix = GNU
 }
 
 // This scope serves as an example of a custom platform.  On 64-bit linux,
@@ -31,22 +45,31 @@ linux {
 linux_m32 {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
-  project_element_type_id = cdt.managedbuild.target.gnu
+  tool_name_prefix = GNU
   platform_ccflags = -m32
   platform_cxxflags = -m32
   platform_ldflags = -m32
 }
 
 macosx {
+  dll_ext = dylib
+
   binary_parsers = org.eclipse.cdt.core.MachO64
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
   host_platform = host_macosx
   project_element_type_id = cdt.managedbuild.target.macosx
   // platform_specializer gets added on to various things like configuration_parent_root, etc.
   platform_specializer = macosx
+  tool_name_prefix = "MacOS X"
+  linker_option_superclass = macosx.cpp.link.option
+  c_linker_dynamiclib_superclass = macosx.c.link.macosx.so.debug.option.shared
+  cpp_linker_dynamiclib_superclass = macosx.cpp.link.macosx.so.debug.option.shared
+  outputtype_superclass = cdt.managedbuild.tool.macosx.cpp.linker.output.so
 }
 
 win32 {
+  conditional_include "windowscommon"
+
   binary_parsers = org.eclipse.cdt.core.PE
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
   host_platform = host_win32
@@ -65,6 +88,7 @@ solaris {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
   platform_specializer = solaris
+  tool_name_prefix = GNU
 }
 
 // default values for the host-specific variables, overridden below
