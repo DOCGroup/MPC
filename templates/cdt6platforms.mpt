@@ -24,10 +24,12 @@ targetplatform_superclass = cdt.managedbuild.target.gnu.platform
 outputtype_superclass = cdt.managedbuild.tool.gnu.cpp.linker.so.debug.output
 
 // These are just defaults
+tool_name_prefix = GNU
 c_linker_tool_superclass_root = cdt.managedbuild.tool.gnu.c.linker // must have .so.debug appended
 cpp_linker_tool_superclass_root = cdt.managedbuild.tool.gnu.cpp.linker // must have .so.debug appended
 linker_option_superclass = gnu.cpp.link.option // must have .XXX appended
 cpp_compiler_option_superclass = gnu.cpp.compiler.option
+c_compiler_superclass = ???
 c_compiler_option_superclass = gnu.c.compiler.option
 project_element_type_id = cdt.managedbuild.target.gnu
 c_linker_dynamiclib_superclass = gnu.c.link.so.debug.option.shared
@@ -36,7 +38,6 @@ cpp_linker_dynamiclib_superclass = gnu.cpp.link.so.debug.option.shared
 linux {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
-  tool_name_prefix = GNU
 }
 
 // This scope serves as an example of a custom platform.  On 64-bit linux,
@@ -47,7 +48,6 @@ linux {
 linux_m32 {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
-  tool_name_prefix = GNU
   platform_ccflags = -m32
   platform_cxxflags = -m32
   platform_ldflags = -m32
@@ -79,6 +79,15 @@ win32 {
   host_platform = host_win32
   project_element_type_id = cdt.managedbuild.target.gnu.mingw
   platform_specializer = mingw
+  tool_name_prefix = MinGW
+linker_option_superclass = gnu.cpp.link.option // must have .XXX appended
+cpp_compiler_option_superclass = gnu.cpp.compiler.mingw.option
+c_compiler_superclass = cdt.managedbuild.tool.gnu.c.compiler.mingw
+c_compiler_option_superclass = gnu.c.compiler.mingw.option
+c_linker_dynamiclib_superclass = gnu.c.link.mingw.so.debug.option.shared
+cpp_linker_dynamiclib_superclass = gnu.cpp.link.mingw.so.debug.option.shared
+  c_linker_tool_superclass_root = cdt.managedbuild.tool.gnu.c.linker.mingw // must have .so.debug appended
+  cpp_linker_tool_superclass_root = cdt.managedbuild.tool.gnu.cpp.linker.mingw // must have .so.debug appended
 }
 
 cygwin {
@@ -92,7 +101,6 @@ solaris {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
   platform_specializer = solaris
-  tool_name_prefix = GNU
 }
 
 // default values for the host-specific variables, overridden below
