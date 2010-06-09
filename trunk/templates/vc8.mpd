@@ -420,12 +420,18 @@
 <%if(Driver)%>
 				Driver="<%Driver%>"
 <%endif%>
-<%if(optimize)%>
-				OptimizeReferences="<%OptimizeReferences("2")%>"
-				EnableCOMDATFolding="<%EnableCOMDATFolding("2")%>"
-<%else%>
 <%if(OptimizeReferences)%>
 				OptimizeReferences="<%OptimizeReferences%>"
+<%else%>
+<%if(optimize)%>
+				OptimizeReferences="<%OptimizeReferences("2")%>"
+<%endif%>
+<%endif%>
+<%if(EnableCOMDATFolding)%>
+				EnableCOMDATFolding="<%EnableCOMDATFolding%>"
+<%else%>
+<%if(optimize)%>
+				EnableCOMDATFolding="<%EnableCOMDATFolding("2")%>"
 <%endif%>
 <%endif%>
 <%if(OptimizeForWindows98)%>
