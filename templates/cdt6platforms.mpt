@@ -123,6 +123,7 @@ script_tmpfile = temporary$$.src
 setenv = export
 envvar_pre = $
 pathsep = :
+ln = ln -sf
 
 host_macosx {
   libenv = DYLD_LIBRARY_PATH
@@ -139,6 +140,7 @@ host_win32 {
   envvar_post = %
   pathsep = ;
   mkdir_pre = if not exist
+  ln = copy /y
 }
 
 // Abstractions for different configurations
