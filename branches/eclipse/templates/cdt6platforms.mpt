@@ -24,6 +24,9 @@ targetplatform_superclass = cdt.managedbuild.target.gnu.platform
 outputtype_superclass = cdt.managedbuild.tool.gnu.cpp.linker.so.debug.output
 
 // These are just defaults
+exe_ext_nodot = 
+dll_ext_nodot = so
+lib_ext_nodot = a
 tool_name_prefix = GNU
 c_linker_tool_superclass_root = cdt.managedbuild.tool.gnu.c.linker // must have .so.debug appended
 cpp_linker_tool_superclass_root = cdt.managedbuild.tool.gnu.cpp.linker // must have .so.debug appended
@@ -54,7 +57,10 @@ linux_m32 {
 }
 
 macosx {
-  dll_ext = dylib
+  dll_ext = .dylib
+  exe_ext_nodot = 
+  dll_ext_nodot = dylib
+  lib_ext_nodot = a
 
   binary_parsers = org.eclipse.cdt.core.MachO64
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
@@ -73,6 +79,10 @@ macosx {
 
 win32 {
   conditional_include "windowscommon"
+
+  exe_ext_nodot = exe
+  dll_ext_nodot = dll
+  lib_ext_nodot = lib
 
   binary_parsers = org.eclipse.cdt.core.PE
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
@@ -129,4 +139,15 @@ host_win32 {
   envvar_post = %
   pathsep = ;
   mkdir_pre = if not exist
+}
+
+// Abstractions for different configurations
+release {
+  optimization_level = max
+  debugging_level = none
+}
+
+debug {
+  optimization_level = none
+  debugging_level = max
 }

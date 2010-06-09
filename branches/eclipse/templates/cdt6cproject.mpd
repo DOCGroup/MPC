@@ -20,9 +20,9 @@
 
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
 <configuration
-   <%if(exename && exe_ext)%>artifactExtension="<%exe_ext%>"<%endif%>
-   <%if(type_is_dynamic && dll_ext)%>artifactExtension="<%dll_ext%>"<%endif%>
-   <%if(type_is_static && lib_ext)%>artifactExtension="<%lib_ext%>"<%endif%>
+   <%if(exename && exe_ext_nodot)%>artifactExtension="<%exe_ext_nodot%>"<%endif%>
+   <%if(type_is_dynamic && dll_ext_nodot)%>artifactExtension="<%dll_ext_nodot%>"<%endif%>
+   <%if(type_is_static && lib_ext_nodot)%>artifactExtension="<%lib_ext_nodot%>"<%endif%>
    artifactName="<%project_name%>"
    buildArtefactType="<%build_artefact_type%>"
      buildProperties="org.eclipse.cdt.build.core.buildArtefactType=<%build_artefact_type%>,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.<%configuration%>"
@@ -95,9 +95,9 @@
 <listOptionValue builtIn="false" value="<%include%>"/>
 <%endfor%>
 </option>
-<option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -Xfoo=bar" valueType="string"/>
-<option id="gnu.cpp.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.optimization.level.886842330" name="Optimization Level" superClass="gnu.cpp.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.debugging.level.63360527" name="Debug Level" superClass="gnu.cpp.compiler.<%platform_speializer%>.<%project_type%>.<%configuration%>.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 <%comment(here's where we can put in all the extra compiler flags)%>" valueType="string"/>
+<option id="gnu.cpp.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.optimization.level.886842330" name="Optimization Level" superClass="gnu.cpp.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.optimization.level" value="gnu.cpp.compiler.optimization.level.<%optimization_level%>" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.debugging.level.63360527" name="Debug Level" superClass="gnu.cpp.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.debugging.level" value="gnu.cpp.compiler.debugging.level.<%debugging_level%>" valueType="enumerated"/>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1095450641" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.1634417374" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>">
@@ -106,8 +106,8 @@
 <listOptionValue builtIn="false" value="<%include%>"/>
 <%endfor%>
 </option>
-<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.optimization.level.1822406061" name="Optimization Level" superClass="gnu.c.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.optimization.level" valueType="enumerated"/>
-<option id="gnu.c.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.debugging.level.1766929" name="Debug Level" superClass="gnu.c.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.optimization.level.1822406061" name="Optimization Level" superClass="gnu.c.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.optimization.level" value="gnu.c.optimization.level.<%debugging_level%>" valueType="enumerated"/>
+<option id="gnu.c.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.debugging.level.1766929" name="Debug Level" superClass="gnu.c.compiler.<%platform_specializer%>.<%project_type%>.<%configuration%>.option.debugging.level" value="gnu.c.debugging.level.<%debugging_level%>" valueType="enumerated"/>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1596535093" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 </toolChain>
@@ -152,7 +152,7 @@
 </configuration>
 </storageModule>
 <storageModule moduleId="scannerConfiguration">
-<!-- It's not clear what this section does, so it's not clear if it's necessary. -->
+<!-- It's not clear what this section does, so it's not clear if it's necessary. In fact, experience suggests that CDT seems to fill in the blanks properly for the platform if it's empty. -->
 </storageModule>
 <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
     </cconfiguration>
