@@ -107,7 +107,7 @@ sub get_lib_template_input_file {
   return 'cdt6lib';
 }
 
-sub use_win_compatibility_commands() {
+sub use_win_compatibility_commands {
   return (defined $ENV{'MPC_CDT_HOST_WIN32'})
       ? $ENV{'MPC_CDT_HOST_WIN32'} : ($^O eq 'MSWin32' || $^O eq 'cygwin');
 }
