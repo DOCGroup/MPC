@@ -97,6 +97,13 @@
       <location><%full_path(header_file)%></location>
     </link>
 <%endfor%>
+<%if(pch_header)%>
+    <link>
+      <name><%pch_header%></name>
+      <type>1</type>
+      <location><%full_path(pch_header)%></location>
+    </link>
+<%endif%>
 <%foreach(inline_files)%>
     <link>
       <name><%inline_file%></name>
