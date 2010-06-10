@@ -142,9 +142,9 @@ sub add_dependencies {
       my @read = ();
       my $cwd  = $self->getcwd();
       while(<$fh>) {
-        ## This is a comment found in wb26.mpd and wb26wrproject.mpd if
+        ## This is a comment found in cdt6project.mpd if
         ## the project is an executable, contains the 'after' keyword
-        ## setting, and the 'enable_subprojects' template variable.
+        ## setting, and the 'enabl template variable.
         if (/MPC\s+ADD\s+DEPENDENCIES/) {
           my $crlf = $self->crlf();
           my %seen = ();

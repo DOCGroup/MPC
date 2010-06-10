@@ -77,7 +77,7 @@
 <%if(type_is_dynamic)%>
 <option defaultValue="true" id="<%cpp_linker_dynamiclib_superclass%>.1" name="Shared/Dynamic" superClass="<%cpp_linker_dynamiclib_superclass%>" valueType="boolean"/>
 <%endif%>
-<inputType id="cdt.managedbuild.tool.<%platform_specializer%>.cpp.linker.input.415890365" superClass="cdt.managedbuild.tool.<%platform_specializer%>.cpp.linker.input">
+<inputType id="cdt.managedbuild.tool.<%platform_specializer%>.cpp.linker.input.415890365" superClass="<%cpp_linker_tool_input_superclass%>">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 <additionalInput kind="additionalinput" paths="$(LIBS)"/>
 </inputType>
