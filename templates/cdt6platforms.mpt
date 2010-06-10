@@ -37,6 +37,7 @@ c_compiler_option_superclass = gnu.c.compiler.option
 project_element_type_id = cdt.managedbuild.target.gnu
 c_linker_dynamiclib_superclass = gnu.c.link.so.debug.option.shared
 cpp_linker_dynamiclib_superclass = gnu.cpp.link.so.debug.option.shared
+cpp_linker_tool_input_superclass = cdt.managedbuild.tool.gnu.cpp.linker.input
 
 linux {
   binary_parsers = org.eclipse.cdt.core.ELF
@@ -74,6 +75,7 @@ macosx {
   cpp_linker_dynamiclib_superclass = macosx.cpp.link.macosx.so.debug.option.shared
   c_linker_tool_superclass_root = cdt.managedbuild.tool.macosx.c.linker.macosx // must have .so.debug appended
   cpp_linker_tool_superclass_root = cdt.managedbuild.tool.macosx.cpp.linker.macosx // must have .so.debug appended
+cpp_linker_tool_input_superclass = cdt.managedbuild.tool.macosx.cpp.linker.input
   outputtype_superclass = cdt.managedbuild.tool.macosx.cpp.linker.output.so
 }
 
@@ -98,6 +100,7 @@ c_linker_dynamiclib_superclass = gnu.c.link.mingw.so.debug.option.shared
 cpp_linker_dynamiclib_superclass = gnu.cpp.link.mingw.so.debug.option.shared
   c_linker_tool_superclass_root = cdt.managedbuild.tool.gnu.c.linker.mingw // must have .so.debug appended
   cpp_linker_tool_superclass_root = cdt.managedbuild.tool.gnu.cpp.linker.mingw // must have .so.debug appended
+cpp_linker_tool_input_superclass = cdt.managedbuild.tool.mingw.cpp.linker.input
 }
 
 cygwin {
