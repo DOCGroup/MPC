@@ -20,6 +20,7 @@ use vars qw(@ISA);
 my %config = ('vcversion' => '9.00',
               'prversion' => '9.0.30729',
               'toolsversion' => '3.5',
+              'targetframeworkversion' => '3.5',
               'xmlheader' => 1,
               );
 

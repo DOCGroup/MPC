@@ -6,7 +6,8 @@ project {
   // opportunity to see them in IDE's and to install them using
   // prj_install.pl.
   Define_Custom(MPB) {
-    automatic = 0
-    inputext = .mpb
+    automatic_in  = 0
+    automatic_out = 0
+    inputext      = .mpb
   }
 }

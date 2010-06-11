@@ -2,5 +2,3 @@
 // $Id$
 
 conditional_include "common"
-
-install_binary = 1
