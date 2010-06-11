@@ -43,7 +43,7 @@ sub project_file_name {
   $template = 'cdt6' if (!defined $template || !defined $templates{$template});
 
   if ($self->{'make_coexistence'}) {
-    return $self->get_modified_project_file_name("cdt_$name",
+    return $self->get_modified_project_file_name($name,
                                                  '/' . $templates{$template});
   }
   else {
