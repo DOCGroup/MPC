@@ -116,6 +116,7 @@
 </folderInfo>
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
+<%if(custom_type->input_file->output_files)%>
 <fileInfo id="mpc.generated.custfile.<%platform%>.<%configuration%>.<%custom_type%>.<%normalize(custom_type->input_file)%>"
           name="<%custom_type->input_file%>"
           rcbsApplicability="override"
@@ -149,7 +150,7 @@
       name="Resource Custom Build Step Output Type"
       outputNames="<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(";")%><%endfor%>"/>
   </tool>
-</fileInfo><%endfor%><%comment(input file)%><%endfor%><%comment(custom type)%>
+</fileInfo><%endif%><%comment(generates any output)%><%endfor%><%comment(input file)%><%endfor%><%comment(custom type)%>
 <sourceEntries><%foreach(custom_types)%><%foreach(custom_type->input_files)%><%foreach(custom_type->input_file->source_output_files)%><entry excluding="<%custom_type->input_file->source_output_file%>" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 <%endfor%><%endfor%><%endfor%></sourceEntries>
 </configuration>
