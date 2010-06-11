@@ -314,7 +314,7 @@ sub options {
     elsif ($arg eq '-features') {
       $i++;
       if (defined $args[$i]) {
-        @features = split(',', $args[$i]);
+        push(@features, split(',', $args[$i]));
       }
       else {
         $self->optionError('-features requires a comma separated list argument');

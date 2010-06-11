@@ -104,14 +104,19 @@ sub preprocess {
 
   ## We need to replace $(...) with the equivalent environment variable
   ## value.
-  while($str =~ /\$([\(\w\)]+)/) {
-    my $name = $1;
+  while ($str =~ /\$(\?)?([\(\w\)]+)/) {
+    my $optional = $1;
+    my $name = $2;
     $name =~ s/[\(\)]//g;
     my $val = $ENV{$name};
 
-    ## If the environment variable is not set, we will end up removing
-    ## the reference, but we need to warn the user that we're doing so.
     if (!defined $val) {
+      if (defined $optional) {
+        $str =~ s/\$\?\S+//;
+        next;
+      }
+      ## If the environment variable is not set, we will end up removing
+      ## the reference, but we need to warn the user that we're doing so.
       $val = '';
       if (!defined $self->{'warned'}->{$name}) {
         $self->diagnostic("$name was used in the configuration file, " .
@@ -121,7 +126,7 @@ sub preprocess {
     }
 
     ## Do the replacement
-    $str =~ s/\$([\(\w\)]+)/$val/;
+    $str =~ s/\$\??([\(\w\)]+)/$val/;
   }
   return $str;
 }

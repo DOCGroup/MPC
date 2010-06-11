@@ -9,7 +9,8 @@ project {
   }
 
   Define_Custom (IDL) {
-    automatic             = 0
+    automatic_in          = 0
+    automatic_out         = 0
     command               = <%quote%>$(IIOPNET_BIN)<%quote%>
     dependent             = <%quote%>$(IIOPNET_DEP)<%quote%>
     inputext              = .idl

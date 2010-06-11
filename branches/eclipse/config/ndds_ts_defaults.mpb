@@ -3,7 +3,6 @@
 
 project {
   Define_Custom(NDDSTypeSupport) {
-    automatic             = 1
     command               = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%quote%> -corba <%input_noext%>C.h -orb ACE_TAO1.7
     commandflags          = -language C++ -replace -namespace -I$(TAO_ROOT) -I$(TAO_ROOT)/tao
 

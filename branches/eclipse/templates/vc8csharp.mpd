@@ -47,6 +47,9 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+<%if(TargetFrameworkVersion)%>
+    <TargetFrameworkVersion>v<%TargetFrameworkVersion%></TargetFrameworkVersion>
+<%endif%>
   </PropertyGroup>
 <%foreach(platforms)%>
 <%foreach(configurations)%>
@@ -80,6 +83,11 @@
   <ItemGroup>
 <%if(after)%>
     <!-- MPC ADD DEPENDENCIES -->
+<%endif%>
+<%if(TargetFrameworkVersion)%>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework><%TargetFrameworkVersion%></RequiredTargetFramework>
+    </Reference>
 <%endif%>
 <%foreach(libs)%>
     <Reference Include="<%libname_prefix%><%lib%>">
