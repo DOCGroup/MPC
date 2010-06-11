@@ -87,7 +87,7 @@ sub file_visible {
   ## We only want the project file visible to the workspace creator.
   ## There can only be one and this is it.
   #my($self, $template) = @_;
-  return $_[1] eq 'cdt6';
+  return $_[1] eq 'cdt6project';
 }
 
 sub get_dll_exe_template_input_file {
