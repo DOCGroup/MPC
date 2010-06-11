@@ -59,7 +59,7 @@
 <tool id="<%cpp_linker_tool_superclass_root%>.<%project_type%>.<%configuration%>.335515345" name="<%tool_name_prefix%> C++ Linker" superClass="<%cpp_linker_tool_superclass_root%>.<%project_type%>.<%configuration%>">
 <option id="mpc.generated.link.libpaths.1" superClass="<%linker_option_superclass%>.paths" valueType="libPaths">
 <%foreach(libpaths)%>
-<listOptionValue builtIn="false" value="<%libpath%>"/>
+<listOptionValue builtIn="false" value="<%if(!starts_with(libpath, [/\\\$]))%>../../<%endif%><%libpath%>"/>
 <%endfor%>
 </option>
 <option id="mpc.generated.link.option.libs.1" name="Libraries (-l)" superClass="<%linker_option_superclass%>.libs" valueType="libs">
@@ -93,16 +93,32 @@
 <option id="mpc.generated.cc.include.paths.1" superClass="<%cpp_compiler_option_superclass%>.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="../.."/>
 <%foreach(includes)%>
-<listOptionValue builtIn="false" value="<%include%>"/>
+<listOptionValue builtIn="false" value="<%if(!starts_with(include, [/\\\$]))%>../../<%endif%><%include%>"/>
 <%endfor%>
 </option>
 <option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 <%comment(here's where we can put in all the extra compiler flags)%>" valueType="string"/>
 <option id="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level.886842330" name="Optimization Level" superClass="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level" value="gnu.cpp.compiler.optimization.level.<%optimization_level%>" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.debugging.level.63360527" name="Debug Level" superClass="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.debugging.level" value="gnu.cpp.compiler.debugging.level.<%debugging_level%>" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.option.preprocessor.def.1310953196" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+<%foreach(defines common_defines cpu_defines platform_defines macros)%>
+<listOptionValue builtIn="false" value="<%define%>"/>
+<%endfor%>
+<%if(type_is_dynamic)%><%foreach(dynamicflags)%>
+<listOptionValue builtIn="false" value="<%dynamicflag%>"/>
+<%endfor%><%endif%>
+<%if(need_static_flags)%><%foreach(staticflags)%>
+<listOptionValue builtIn="false" value="<%staticflag%>"/>
+<%endfor%><%endif%>
+</option>
+<!--
+<option id="gnu.cpp.compiler.option.preprocessor.undef.1618336754" superClass="gnu.cpp.compiler.option.preprocessor.undef" valueType="undefDefinedSymbols">
+<listOptionValue builtIn="false" value="blah"/>
+</option>
+-->
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1095450641" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.1634417374" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>">
-<option id="mpc.generated.c.compiler.option.include.paths.1" superClass="<%c_compiler_superclass%>.include.paths" valueType="includePath">
+<option id="mpc.generated.c.compiler.option.include.paths.1" superClass="<%c_compiler_option_superclass%>.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="../.."/>
 <%foreach(includes)%>
 <listOptionValue builtIn="false" value="<%include%>"/>
@@ -152,7 +168,11 @@
   </tool>
 </fileInfo><%endif%><%comment(generates any output)%><%endfor%><%comment(input file)%><%endfor%><%comment(custom type)%>
 <sourceEntries><%foreach(custom_types)%><%foreach(custom_type->input_files)%><%foreach(custom_type->input_file->source_output_files)%><entry excluding="<%custom_type->input_file->source_output_file%>" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-<%endfor%><%endfor%><%endfor%></sourceEntries>
+<%endfor%><%endfor%><%endfor%>
+<%foreach(template_files)%>
+<entry excluding="<%template_file%>" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<%endfor%>
+</sourceEntries>
 </configuration>
 </storageModule>
 <storageModule moduleId="scannerConfiguration">

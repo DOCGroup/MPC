@@ -68,6 +68,7 @@ macosx {
   host_platform = host_macosx
   project_element_type_id = cdt.managedbuild.target.macosx
   // platform_specializer gets added on to various things like configuration_parent_root, etc.
+  configuration_parent_root = cdt.managedbuild.config
   platform_specializer = macosx
   tool_name_prefix = "MacOS X"
   linker_option_superclass = macosx.cpp.link.option
