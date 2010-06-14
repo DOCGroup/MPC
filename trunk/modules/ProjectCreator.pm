@@ -456,10 +456,11 @@ sub process_assignment {
     }
 
     ## If the assignment name is valid and requires parameter (<%...%>)
-    ## replacement, then do so.
-    if (defined $self->{'valid_names'}->{$name} &&
-        ($self->{'valid_names'}->{$name} & 0x04) == 0 &&
-        index($value, '<%') >= 0) {
+    ## replacement, then do so.  But, only do so on actual keywords. 
+    ## User defined keywords must not have the parameters replaced in
+    ## order for them to get the correct replacement values later on.
+    if (defined $validNames{$name} &&
+        ($validNames{$name} & 0x04) == 0 && index($value, '<%') >= 0) {
       $value = $self->replace_parameters($value, $self->{'command_subs'});
     }
   }
