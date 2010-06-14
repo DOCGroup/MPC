@@ -4,9 +4,9 @@
   <Fragment Id="<%project_name%>">
     <ComponentGroup Id="ComponentGroup.<%project_name%>">
 <%if(!no_binary)%>
-      <ComponentRef Id="<%project_name%><%foreach(name, install_location)%>.<%name%><%endfor%>.<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>" />
+      <ComponentRef Id="<%project_name%><%foreach(name, install_location)%>.<%name%><%endfor%>.<%if(type_is_dynamic)%><%normalize(sharedname)%>.dll<%else%><%normalize(exename)%>.exe<%endif%>" />
 <%endif%>
-<%if(gme_install)%>
+<%if(gme_install || gme_decorator)%>
       <ComponentRef Id="gme.component.<%gme_progid%>" />
 <%endif%>
 <%if(gme_paradigm)%>
@@ -28,7 +28,7 @@
 <%foreach(name, install_location)%>
       <Directory Id="<%project_name%>.binary.<%forcount%>.<%name%>" Name="<%name%>">
 <%endfor%>
-        <Component Id="<%project_name%><%foreach(name, install_location)%>.<%name%><%endfor%>.<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>" Guid="*">
+        <Component Id="<%project_name%><%foreach(name, install_location)%>.<%name%><%endfor%>.<%if(type_is_dynamic)%><%normalize(sharedname)%>.dll<%else%><%normalize(exename)%>.exe<%endif%>" Guid="*">
           <File Name="<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
                 Source="<%source_directory%>/<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
                 DiskId="<%diskid(1)%>" />
@@ -52,8 +52,9 @@
 <%endfor%>
 <%endfor%>
 <%endif%>
-<%if(gme_install)%>
+<%if(gme_install || gme_decorator)%>
       <Component Id="gme.component.<%gme_progid%>" Guid="<%gme_uuid%>">
+<%if(gme_install)%>
         <RegistryKey Root="<%gme_register(HKLM)%>" Key="SOFTWARE\GME\Components\<%gme_progid%>" Action="createAndRemoveOnUninstall">
           <RegistryValue Name="Description" Type="string" Value="<%gme_description%>" Action="write" />
 <%if(gme_has_icon)%>
@@ -69,7 +70,7 @@
           <RegistryValue Name="<%gme_paradigm%>" Type="string" Action="write" Value="" />
 <%endfor%>
         </RegistryKey>
-
+<%endif%>
         <RegistryKey Root="<%gme_register(HKLM)%>" Key="SOFTWARE\Classes\<%gme_progid%>" Action="createAndRemoveOnUninstall">
           <RegistryValue Type="string" Value="<%gme_description%>" />
         </RegistryKey>
@@ -79,7 +80,7 @@
         </RegistryKey>
 
         <RegistryKey Root="<%gme_register(HKLM)%>" Key="SOFTWARE\Classes\CLSID\{<%gme_uuid%>}" Action="createAndRemoveOnUninstall">
-          <RegistryValue Type="string" Value="<%gme_description%>" />
+          <RegistryValue Type="string" Value="<%if(gme_description)%><%gme_description%><%else%><%gme_progid%><%endif%>" />
         </RegistryKey>
 
         <RegistryKey Root="<%gme_register(HKLM)%>" Key="SOFTWARE\Classes\CLSID\{<%gme_uuid%>}\InProcServer32" Action="create">
