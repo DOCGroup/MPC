@@ -123,6 +123,7 @@ shell = sh
 script_ext = .sh
 script_hdr = #!/bin/sh
 script_tmpfile = temporary$$.src
+makefile_tmpfile = temporary$$$$.src
 setenv = export
 envvar_pre = $
 pathsep = :
@@ -139,6 +140,7 @@ host_win32 {
   script_ext = .cmd
   script_hdr = "@echo off & set TMPFILE=temporary%RANDOM%.src"
   script_tmpfile = %TMPFILE%
+  makefile_tmpfile = temporary_mpc.src
   setenv = set
   envvar_pre = %
   envvar_post = %
