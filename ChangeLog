@@ -1,3 +1,12 @@
+Mon Jun 14 23:52:33 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * templates/wix.mpd:
+        
+          Bug fix where invalid Id is generated if the binary's 
+          name contained a dash.
+          
+          Added support for installing GME decorators.
+
 Mon Jun 14 22:06:56 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
