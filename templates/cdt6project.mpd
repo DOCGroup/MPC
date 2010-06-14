@@ -127,5 +127,12 @@
     </link>
 <%endfor%>
 <%endfor%>
+<%if(custom_only)%>
+    <link>
+      <name>makefile.<%project_name%></name>
+      <type>1</type>
+      <location><%full_path(..)%>/makefile.<%project_name%></location>
+    </link>
+<%endif%>
   </linkedResources>
 </projectDescription>
