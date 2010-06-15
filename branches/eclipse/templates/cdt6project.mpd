@@ -131,9 +131,9 @@
 <%endfor%>
 <%if(custom_only)%>
     <link>
-      <name>makefile.<%project_name%></name>
+      <name><%project_name%>.mk</name>
       <type>1</type>
-      <location><%full_path(..)%>/makefile.<%project_name%></location>
+      <location><%full_path(..)%>/<%project_name%>.mk</location>
     </link>
 <%endif%>
   </linkedResources>
