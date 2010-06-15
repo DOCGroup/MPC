@@ -78,7 +78,7 @@
 <tool id="<%cpp_linker_tool_superclass_root%>.<%project_type%>.<%configuration%>.335515345" name="<%tool_name_prefix%> C++ Linker" superClass="<%cpp_linker_tool_superclass_root%>.<%project_type%>.<%configuration%>">
 <option id="mpc.generated.link.libpaths.1" superClass="<%linker_option_superclass%>.paths" valueType="libPaths">
 <%foreach(libpaths)%>
-<listOptionValue builtIn="false" value="<%if(!starts_with(libpath, [/\\\$]))%>../../<%endif%><%libpath%>"/>
+<listOptionValue builtIn="false" value="<%if(!starts_with(libpath, [/\\\$]))%>../../<%endif%><%translate_vars(libpath, 1)%>"/>
 <%endfor%>
 </option>
 <option id="mpc.generated.link.option.libs.1" name="Libraries (-l)" superClass="<%linker_option_superclass%>.libs" valueType="libs">
@@ -112,7 +112,7 @@
 <option id="mpc.generated.cc.include.paths.1" superClass="<%cpp_compiler_option_superclass%>.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="../.."/>
 <%foreach(includes)%>
-<listOptionValue builtIn="false" value="<%if(!starts_with(include, [/\\\$]))%>../../<%endif%><%include%>"/>
+<listOptionValue builtIn="false" value="<%if(!starts_with(include, [/\\\$]))%>../../<%endif%><%translate_vars(include, 1)%>"/>
 <%endfor%>
 </option>
 <option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 <%comment(here's where we can put in all the extra compiler flags)%>" valueType="string"/>
@@ -140,7 +140,7 @@
 <option id="mpc.generated.c.compiler.option.include.paths.1" superClass="<%c_compiler_option_superclass%>.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="../.."/>
 <%foreach(includes)%>
-<listOptionValue builtIn="false" value="<%include%>"/>
+<listOptionValue builtIn="false" value="<%if(!starts_with(include, [/\\\$]))%>../../<%endif%><%translate_vars(include, 1)%>"/>
 <%endfor%>
 </option>
 <option id="gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level.1822406061" name="Optimization Level" superClass="gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level" value="gnu.c.optimization.level.<%debugging_level%>" valueType="enumerated"/>
