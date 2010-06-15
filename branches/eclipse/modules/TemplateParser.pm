@@ -1782,7 +1782,8 @@ sub handle_end_aux_file {
 sub handle_translate_vars {
   my $self = shift;
   my $arg = shift;
-  $self->append_current($self->perform_translate_vars([$arg]));
+  my @params = $self->split_parameters($arg);
+  $self->append_current($self->perform_translate_vars([@params]));
 }
 
 
@@ -1791,9 +1792,10 @@ sub perform_translate_vars {
   my $arg = shift;
   my $val = $self->get_value($arg->[0]);
   $val = $arg->[0] unless defined $val;
-  my $os = $self->{'prjc'}->{'command_subs'}->{'os'};
+  my $os = (defined $arg->[1] && $arg->[1] ne '')
+      ? $arg->[1] : $self->{'prjc'}->{'command_subs'}->{'os'};
   my ($pre, $post) = ($os eq 'win32') ? ('%', '%') : ('${', '}');
-  $val =~ s[\$\(([^)]+)\)(\S+)][my ($var, $rest) = ($1, $2);
+  $val =~ s[\$\(([^)]+)\)(\S*)][my ($var, $rest) = ($1, $2);
                                 $rest =~ s!\/!\\!g if $os eq 'win32';
                                 "$pre$var$post$rest"]ge;
   return $val;
