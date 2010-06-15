@@ -35,6 +35,8 @@
    cleanCommand="<%delete("rm -rf")%>"
    parent="<%configuration_parent_root%>.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>"
    <%endif%>
+   prebuildStep="<%prebuild%>"
+   postbuildStep="<%if(libout)%><%ln%> <%libname_prefix("lib")%><%if(type_is_static)%><%staticname%><%lib_ext%><%else%><%sharedname%><%dll_ext%><%endif%> <%libout%><%endif%><%if(postbuild)%>&& <%postbuild%><%endif%>"
 >
 <folderInfo id="mpc.generated.config.<%platform%>.<%configuration%>" <%comment(same id as configuration element id)%> name="/" resourcePath="">
 <toolChain
@@ -225,9 +227,7 @@ all: $(GENERATED)
 </fileInfo><%endif%><%comment(generates any output)%><%endfor%><%comment(input file)%><%endfor%><%comment(custom type)%>
 <sourceEntries><%foreach(custom_types)%><%foreach(custom_type->input_files)%><%foreach(custom_type->input_file->source_output_files)%><entry excluding="<%custom_type->input_file->source_output_file%>" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 <%endfor%><%endfor%><%endfor%>
-<%foreach(template_files)%>
-<entry excluding="<%template_file%>" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-<%endfor%>
+<entry excluding="<%foreach(template_files)%><%template_file%><%fornotlast("|")%><%endfor%>" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 <%endif%><%comment(!custom_only)%>
 </configuration>
