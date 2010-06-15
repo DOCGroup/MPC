@@ -60,7 +60,7 @@
   superClass="org.eclipse.cdt.build.core.settings.default.builder"
   name="Gnu Make Builder.<%platform%>.<%configuration%>"
   buildPath="${workspace_loc:/<%project_name%>}/.."
-  arguments="-f makefile.<%project_name%>"
+  arguments="-f <%project_name%>.mk"
   <%else%>
   buildPath="${workspace_loc:/<%project_name%>/<%configuration%>}"<%comment(buildpath may need to include platform as well in the case of cross-compiles)%>
   managedBuildOn="true" name="CDT Internal Builder"
@@ -151,7 +151,7 @@
 </toolChain>
 </folderInfo>
 <%if(custom_only)%>
-<%create_aux_file(../makefile, ., project_name)%>.PHONY: all clean
+<%create_aux_file(../, project_name, .mk)%>.PHONY: all clean
 all:
 
 clean:
