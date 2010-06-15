@@ -23,7 +23,7 @@
    <%if(exename && exe_ext_nodot)%>artifactExtension="<%exe_ext_nodot%>"<%endif%>
    <%if(type_is_dynamic && dll_ext_nodot)%>artifactExtension="<%dll_ext_nodot%>"<%endif%>
    <%if(type_is_static && lib_ext_nodot)%>artifactExtension="<%lib_ext_nodot%>"<%endif%>
-   artifactName="<%project_name%>"
+   artifactName="<%if(type_is_dynamic)%><%sharedname%><%else%><%if(type_is_static)%><%staticname%><%else%><%exename%><%endif%><%endif%>"
    description=""
    id="mpc.generated.config.<%platform%>.<%configuration%>"
    name="<%platform%>-<%configuration%>"
