@@ -122,7 +122,7 @@
 <!-- begin files for <%custom_type%> -->
 <%foreach(custom_type->input_files)%>
     <link>
-      <name><%custom_type->input_file%></name>
+      <name><%if(starts_with(custom_type->input_file, \.\.))%><%basename(custom_type->input_file)%><%else%><%custom_type->input_file%><%endif%></name>
       <type>1</type>
       <location><%full_path(custom_type->input_file)%></location>
     </link>
