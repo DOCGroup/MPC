@@ -225,9 +225,8 @@ all: $(GENERATED)
       outputNames="<%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(";")%><%endfor%>"/>
   </tool>
 </fileInfo><%endif%><%comment(generates any output)%><%endfor%><%comment(input file)%><%endfor%><%comment(custom type)%>
-<sourceEntries><%foreach(custom_types)%><%foreach(custom_type->input_files)%><%foreach(custom_type->input_file->source_output_files)%><entry excluding="<%custom_type->input_file->source_output_file%>" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-<%endfor%><%endfor%><%endfor%>
-<entry excluding="<%foreach(template_files)%><%template_file%><%fornotlast("|")%><%endfor%>" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<sourceEntries>
+<entry excluding="<%foreach(template_files)%><%template_file%><%fornotlast("|")%><%endfor%><%foreach(custom_types)%><%foreach(custom_type->input_files)%><%foreach(custom_type->input_file->source_output_files)%><%if(template_files)%><%forfirst("|")%><%endif%><%custom_type->input_file->source_output_file%><%fornotlast("|")%><%endfor%><%endfor%><%endfor%>" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 <%endif%><%comment(!custom_only)%>
 </configuration>
