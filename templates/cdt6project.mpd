@@ -119,6 +119,7 @@
     </link>
 <%endfor%>
 <%foreach(custom_types)%>
+<!-- begin files for <%custom_type%> -->
 <%foreach(custom_type->input_files)%>
     <link>
       <name><%custom_type->input_file%></name>
@@ -126,6 +127,7 @@
       <location><%full_path(custom_type->input_file)%></location>
     </link>
 <%endfor%>
+<!-- end files for <%custom_type%> -->
 <%endfor%>
 <%if(custom_only)%>
     <link>
