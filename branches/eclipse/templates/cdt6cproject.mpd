@@ -83,7 +83,7 @@
 </option>
 <option id="mpc.generated.link.option.libs.1" name="Libraries (-l)" superClass="<%linker_option_superclass%>.libs" valueType="libs">
 <%foreach(libs)%>
-<listOptionValue builtIn="false" value="<%libname_prefix%><%lib%>"/>
+<listOptionValue builtIn="false" value="<%lib%>"/>
 <%endfor%>
 <%foreach(lit_libs)%>
 <listOptionValue builtIn="false" value="<%lit_lib%>"/>
