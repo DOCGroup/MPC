@@ -23,7 +23,7 @@
    <%if(exename && exe_ext_nodot)%>artifactExtension="<%exe_ext_nodot%>"<%endif%>
    <%if(type_is_dynamic && dll_ext_nodot)%>artifactExtension="<%dll_ext_nodot%>"<%endif%>
    <%if(type_is_static && lib_ext_nodot)%>artifactExtension="<%lib_ext_nodot%>"<%endif%>
-   artifactName="<%if(type_is_dynamic)%><%sharedname%><%else%><%if(type_is_static)%><%staticname%><%else%><%exename%><%endif%><%endif%>"
+   artifactName="<%if(exename)%><%exename%><%else%><%if(type_is_dynamic)%><%sharedname%><%else%><%if(type_is_static)%><%staticname%><%endif%><%endif%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%endif%>"
    description=""
    id="mpc.generated.config.<%platform%>.<%configuration%>"
    name="<%platform%>-<%configuration%>"
@@ -35,9 +35,30 @@
    cleanCommand="<%delete("rm -rf")%>"
    parent="<%configuration_parent_root%>.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>"
    <%endif%>
-   prebuildStep="<%prebuild%>"
-   postbuildStep="<%if(libout)%><%ln%> <%libname_prefix("lib")%><%if(type_is_static)%><%staticname%><%lib_ext%><%else%><%sharedname%><%dll_ext%><%endif%> <%libout%><%endif%><%if(postbuild)%>&& <%postbuild%><%endif%>"
+   prebuildStep="<%eval(prebuild)%>"
+   postbuildStep="<%shell%> ..<%slash%><%create_aux_file(postbuild_, platform, _, configuration, script_ext)%><%script_hdr%>
+<%if(type_is_dynamic)%>cd <%cwd%><%slash%><%if(dllout)%><%dllout%><%else%><%libout("../..")%><%endif%> && <%ln%> <%cwd%><%slash%><%project_name%><%slash%><%platform%>-<%configuration%><%slash%><%lib_prefix%><%sharedname%><%lib_modifier%><%dll_ext%> .<%else%>
+<%if(type_is_static)%>cd <%libout("../..")%> && <%ln%> <%project_name%><%slash%><%platform%>-<%configuration%><%slash%><%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%> .<%else%>
+<%if(exename)%>cd <%exeout("../..")%> && <%ln%> <%project_name%><%slash%><%platform%>-<%configuration%><%slash%><%exename%> .<%endif%>
+<%endif%><%endif%>
+<%if(postbuild)%><%eval(postbuild)%><%endif%>
+<%end_aux_file%>"
 >
+<!--  This is the logic for the postbuildStep above.
+if(type_is_dynamic)
+  src = <%lib_prefix%><%sharedname%><%lib_modifier%><%dll_ext%>
+  dst = <%if(dllout)%><%dllout%><%else%><%libout("../..")%><%endif%>
+
+if (type_is_static)
+  src = <%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%>
+  dst = <%libout("../..")%>
+
+if (exename)
+  src = <%exename%>
+  dst = <%exeout("../..")%>
+
+  cd dst && <%ln%> <%project_name%><%slash%><%platform%>-<%configuration%><%slash%>src .
+-->
 <folderInfo id="mpc.generated.config.<%platform%>.<%configuration%>" <%comment(same id as configuration element id)%> name="/" resourcePath="">
 <toolChain
    id="mpc.generated.toolchain.<%platform%>.<%configuration%>"
