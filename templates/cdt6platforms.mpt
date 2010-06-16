@@ -83,6 +83,8 @@ cpp_linker_tool_input_superclass = cdt.managedbuild.tool.macosx.cpp.linker.input
 win32 {
   conditional_include "windowscommon"
 
+  lib_prefix = lib // this is different from VC++ b/c we're using mingw
+
   exe_ext_nodot = exe
   dll_ext_nodot = dll
   lib_ext_nodot = lib
