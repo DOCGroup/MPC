@@ -52,9 +52,9 @@ linux {
 linux_m32 {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
-  platform_ccflags = -m32
-  platform_cxxflags = -m32
-  platform_ldflags = -m32
+  ccflags += -m32
+  cxxflags += -m32
+  linkflags += -m32
 }
 
 macosx {
@@ -87,20 +87,21 @@ win32 {
   dll_ext_nodot = dll
   lib_ext_nodot = lib
 
+  platform_libs =
+
   binary_parsers = org.eclipse.cdt.core.PE
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
   host_platform = host_win32
   project_element_type_id = cdt.managedbuild.target.gnu.mingw
   platform_specializer = mingw
   tool_name_prefix = MinGW
-linker_option_superclass = gnu.cpp.link.option // must have .XXX appended
-c_compiler_superclass = cdt.managedbuild.tool.gnu.c.compiler.mingw
-c_compiler_option_superclass = gnu.c.compiler.mingw.option
-c_linker_dynamiclib_superclass = gnu.c.link.mingw.so.debug.option.shared
-cpp_linker_dynamiclib_superclass = gnu.cpp.link.mingw.so.debug.option.shared
+  linker_option_superclass = gnu.cpp.link.option // must have .XXX appended
+  c_compiler_superclass = cdt.managedbuild.tool.gnu.c.compiler.mingw
+  c_linker_dynamiclib_superclass = gnu.c.link.mingw.so.debug.option.shared
+  cpp_linker_dynamiclib_superclass = gnu.cpp.link.mingw.so.debug.option.shared
   c_linker_tool_superclass_root = cdt.managedbuild.tool.gnu.c.linker.mingw // must have .so.debug appended
   cpp_linker_tool_superclass_root = cdt.managedbuild.tool.gnu.cpp.linker.mingw // must have .so.debug appended
-cpp_linker_tool_input_superclass = cdt.managedbuild.tool.mingw.cpp.linker.input
+  cpp_linker_tool_input_superclass = cdt.managedbuild.tool.mingw.cpp.linker.input
 }
 
 cygwin {
