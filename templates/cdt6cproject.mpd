@@ -38,8 +38,8 @@
    prebuildStep="<%eval(prebuild)%>"
    postbuildStep="<%shell%> ..<%slash%><%create_aux_file(postbuild_, platform, _, configuration, script_ext)%><%script_hdr%>
 <%if(type_is_dynamic)%>cd <%cwd%><%slash%><%if(dllout)%><%dllout%><%else%><%libout("../..")%><%endif%> && <%ln%> <%cwd%><%slash%><%project_name%><%slash%><%platform%>-<%configuration%><%slash%><%lib_prefix%><%sharedname%><%lib_modifier%><%dll_ext%> .<%else%>
-<%if(type_is_static)%>cd <%libout("../..")%> && <%ln%> <%project_name%><%slash%><%platform%>-<%configuration%><%slash%><%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%> .<%else%>
-<%if(exename)%>cd <%exeout("../..")%> && <%ln%> <%project_name%><%slash%><%platform%>-<%configuration%><%slash%><%exename%> .<%endif%>
+<%if(type_is_static)%>cd <%cwd%><%libout("../..")%> && <%ln%> <%cwd%><%project_name%><%slash%><%platform%>-<%configuration%><%slash%><%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%> .<%else%>
+<%if(exename)%>cd <%cwd%><%exeout("../..")%> && <%ln%> <%cwd%><%project_name%><%slash%><%platform%>-<%configuration%><%slash%><%exename%> .<%endif%>
 <%endif%><%endif%>
 <%if(postbuild)%><%eval(postbuild)%><%endif%>
 <%end_aux_file%>"
@@ -115,8 +115,8 @@ if (exename)
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 <additionalInput kind="additionalinput" paths="$(LIBS)"/>
 </inputType>
-<%if(libname_prefix)%>
-<outputType id="mpc.generated.cpp.linker.output.so.1" outputPrefix="<%libname_prefix%>" superClass="<%outputtype_superclass%>"/>
+<%if(!exename)%>
+<outputType id="mpc.generated.cpp.linker.output.so.1" outputPrefix="<%lib_prefix%>" superClass="<%outputtype_superclass%>"/>
 <%endif%>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.assembler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.897965604" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>">
