@@ -6,7 +6,7 @@
 <%foreach(host_platform)%><%comment(there won't be more than one host_platform, but a foreach is used in order to access scoped assignments from the mpt)%> 
 <%foreach(configurations)%>
     <cconfiguration id="mpc.generated.config.<%platform%>.<%configuration%>">
-      <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="mpc.generated.config.<%platform%>.<%configuration%>" moduleId="org.eclipse.cdt.core.settings" name="<%configuration%>">
+      <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="mpc.generated.config.<%platform%>.<%configuration%>" moduleId="org.eclipse.cdt.core.settings" name="<%platform%>-<%configuration%>">
 <externalSettings/><%comment(looks like for libraries there are externalsettings)%>
 <extensions>
 <%foreach(binary_parsers)%>
