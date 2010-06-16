@@ -34,15 +34,15 @@
    buildProperties="org.eclipse.cdt.build.core.buildArtefactType=<%build_artefact_type%>,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.<%configuration%>"
    cleanCommand="<%delete("rm -rf")%>"
    parent="<%configuration_parent_root%>.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>"
-   <%endif%>
    prebuildStep="<%eval(prebuild)%>"
    postbuildStep="<%shell%> ..<%slash%><%create_aux_file(postbuild_, platform, _, configuration, script_ext)%><%script_hdr%>
-<%if(type_is_dynamic)%>cd <%cwd%><%slash%><%if(dllout)%><%dllout%><%else%><%libout("../..")%><%endif%> && <%ln%> <%cwd%><%slash%><%project_name%><%slash%><%platform%>-<%configuration%><%slash%><%lib_prefix%><%sharedname%><%lib_modifier%><%dll_ext%> .<%else%>
-<%if(type_is_static)%>cd <%cwd%><%libout("../..")%> && <%ln%> <%cwd%><%project_name%><%slash%><%platform%>-<%configuration%><%slash%><%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%> .<%else%>
-<%if(exename)%>cd <%cwd%><%exeout("../..")%> && <%ln%> <%cwd%><%project_name%><%slash%><%platform%>-<%configuration%><%slash%><%exename%> .<%endif%>
+<%if(type_is_dynamic)%><%cp%> <%lib_prefix%><%sharedname%><%lib_modifier%><%dll_ext%> <%if(dllout)%><%if(!starts_with(dllout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%dllout%><%else%><%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%libout%><%else%>.<%endif%><%endif%><%else%>
+<%if(type_is_static)%><%cp%> <%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%> <%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%endif%><%libout%><%else%>.<%endif%><%else%>
+<%if(exename)%><%cp%> <%exename%><%exe_ext%> <%if(exeout)%><%if(!starts_with(exeout, [/\\\$]))%>..<%slash%>..<%endif%><%else%>.<%endif%><%endif%>
 <%endif%><%endif%>
 <%if(postbuild)%><%eval(postbuild)%><%endif%>
 <%end_aux_file%>"
+   <%endif%><%comment(!custom_only)%>
 >
 <!--  This is the logic for the postbuildStep above.
 if(type_is_dynamic)
