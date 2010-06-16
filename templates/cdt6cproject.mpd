@@ -82,14 +82,8 @@
 <%endfor%>
 </option>
 <option id="mpc.generated.link.option.libs.1" name="Libraries (-l)" superClass="<%linker_option_superclass%>.libs" valueType="libs">
-<%foreach(libs)%>
+<%foreach(libs lit_libs pure_libs platform_libs)%>
 <listOptionValue builtIn="false" value="<%lib%>"/>
-<%endfor%>
-<%foreach(lit_libs)%>
-<listOptionValue builtIn="false" value="<%lit_lib%>"/>
-<%endfor%>
-<%foreach(pure_libs)%>
-<listOptionValue builtIn="false" value="<%pure_lib%>"/>
 <%endfor%>
 </option>
 <option id="mpc.generated.linkflags.1" superClass="<%linker_option_superclass%>.flags" value="<%if(linkflags)%> <%linkflags%><%endif%><%if(build64bit && linkflags64)%> <%linkflags64%><%endif%>" valueType="string"/>
@@ -110,12 +104,11 @@
 <tool id="cdt.managedbuild.tool.gnu.archiver.<%if(platform_specializer)%><%platform_specializer%>.<%endif%>base.134329701" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.<%if(platform_specializer)%><%platform_specializer%>.<%endif%>base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.1373363011" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>">
 <option id="mpc.generated.cc.include.paths.1" superClass="<%cpp_compiler_option_superclass%>.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="../.."/>
 <%foreach(includes)%>
 <listOptionValue builtIn="false" value="<%if(!starts_with(include, [/\\\$]))%>../../<%endif%><%translate_vars(include, 1)%>"/>
 <%endfor%>
 </option>
-<option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 <%comment(here's where we can put in all the extra compiler flags)%>" valueType="string"/>
+<option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 <%comment(here's where we can put in all the extra compiler flags)%><%cxxflags%>" valueType="string"/>
 <option id="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level.886842330" name="Optimization Level" superClass="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level" value="gnu.cpp.compiler.optimization.level.<%optimization_level%>" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.debugging.level.63360527" name="Debug Level" superClass="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.debugging.level" value="gnu.cpp.compiler.debugging.level.<%debugging_level%>" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.preprocessor.def.1310953196" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
@@ -138,13 +131,24 @@
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.1634417374" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>">
 <option id="mpc.generated.c.compiler.option.include.paths.1" superClass="<%c_compiler_option_superclass%>.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="../.."/>
 <%foreach(includes)%>
 <listOptionValue builtIn="false" value="<%if(!starts_with(include, [/\\\$]))%>../../<%endif%><%translate_vars(include, 1)%>"/>
 <%endfor%>
 </option>
-<option id="gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level.1822406061" name="Optimization Level" superClass="gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level" value="gnu.c.optimization.level.<%debugging_level%>" valueType="enumerated"/>
+<option id="gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level.1822406061" name="Optimization Level" superClass="gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level" value="gnu.c.optimization.level.<%optimization_level%>" valueType="enumerated"/>
 <option id="gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.debugging.level.1766929" name="Debug Level" superClass="gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.debugging.level" value="gnu.c.debugging.level.<%debugging_level%>" valueType="enumerated"/>
+<option id="gnu.c.compiler.miscoptions.<%platform%>.<%configuration%>" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 <%ccflags%>" valueType="string"/>
+<option id="gnu.c.compiler.option.preprocessor.def.<%platform%>.<%configuration%>" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+<%foreach(defines common_defines cpu_defines platform_defines macros)%>
+<listOptionValue builtIn="false" value="<%define%>"/>
+<%endfor%>
+<%if(type_is_dynamic)%><%foreach(dynamicflags)%>
+<listOptionValue builtIn="false" value="<%dynamicflag%>"/>
+<%endfor%><%endif%>
+<%if(need_static_flags)%><%foreach(staticflags)%>
+<listOptionValue builtIn="false" value="<%staticflag%>"/>
+<%endfor%><%endif%>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1596535093" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <%endif%><%comment(custom_only)%>
