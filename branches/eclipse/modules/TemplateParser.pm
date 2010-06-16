@@ -78,6 +78,7 @@ my %keywords = ('if'              => 0,
                 'create_aux_file' => 0x12,
                 'end_aux_file'    => 0,
                 'translate_vars'  => 2,
+                'convert_slashes' => 2,
                );
 
 my %target_type_vars = ('type_is_static'   => 1,
@@ -1796,8 +1797,28 @@ sub perform_translate_vars {
       ? $arg->[1] : $self->{'prjc'}->{'command_subs'}->{'os'};
   my ($pre, $post) = ($os eq 'win32') ? ('%', '%') : ('${', '}');
   $val =~ s[\$\(([^)]+)\)(\S*)][my ($var, $rest) = ($1, $2);
-                                $rest =~ s!\/!\\!g if $os eq 'win32';
+                                $rest =~ s!/!\\!g if $os eq 'win32';
                                 "$pre$var$post$rest"]ge;
+  return $val;
+}
+
+
+sub handle_convert_slashes {
+  my $self = shift;
+  my $arg = shift;
+  my @params = $self->split_parameters($arg);
+  $self->append_current($self->perform_convert_slashes([@params]));
+}
+
+
+sub perform_convert_slashes {
+  my $self = shift;
+  my $arg = shift;
+  my $val = $self->get_value($arg->[0]);
+  $val = $arg->[0] unless defined $val;
+  my $os = (defined $arg->[1] && $arg->[1] ne '')
+      ? $arg->[1] : $self->{'prjc'}->{'command_subs'}->{'os'};
+  $val =~ s!/!\\!g if $os eq 'win32';
   return $val;
 }
 

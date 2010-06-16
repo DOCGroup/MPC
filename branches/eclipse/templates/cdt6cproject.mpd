@@ -36,9 +36,9 @@
    parent="<%configuration_parent_root%>.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>"
    prebuildStep="<%eval(prebuild)%>"
    postbuildStep="<%shell%> ..<%slash%><%create_aux_file(postbuild_, platform, _, configuration, script_ext)%><%script_hdr%>
-<%if(type_is_dynamic)%><%cp%> <%lib_prefix%><%sharedname%><%lib_modifier%><%dll_ext%> <%if(dllout)%><%if(!starts_with(dllout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%dllout%><%else%><%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%libout%><%else%>.<%endif%><%endif%><%else%>
-<%if(type_is_static)%><%cp%> <%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%> <%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%endif%><%libout%><%else%>.<%endif%><%else%>
-<%if(exename)%><%cp%> <%exename%><%exe_ext%> <%if(exeout)%><%if(!starts_with(exeout, [/\\\$]))%>..<%slash%>..<%endif%><%else%>.<%endif%><%endif%>
+<%if(type_is_dynamic)%><%cp%> <%lib_prefix%><%sharedname%><%lib_modifier%><%dll_ext%> <%if(dllout)%><%if(!starts_with(dllout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%convert_slashes(dllout)%><%else%><%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%convert_slashes(libout)%><%else%>.<%endif%><%endif%><%else%>
+<%if(type_is_static)%><%cp%> <%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%> <%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%endif%><%convert_slashes(libout)%><%else%>.<%endif%><%else%>
+<%if(exename)%><%cp%> <%exename%><%exe_ext%> <%if(exeout)%><%if(!starts_with(exeout, [/\\\$]))%>..<%slash%>..<%endif%><%convert_slashes(exeout)%><%else%>.<%endif%><%endif%>
 <%endif%><%endif%>
 <%if(postbuild)%><%eval(postbuild)%><%endif%>
 <%end_aux_file%>"
