@@ -4,7 +4,7 @@ project {
   custom_only = 1
 
   Define_Custom (WXS) {
-    command           = <%quote%>$(WIX_ROOT)/bin/candle.exe<%quote%>
+    command           = <%quote%>$(WIX_ROOT)<%quote%>/bin/candle.exe
     inputext          = .wxs
     output_option     = -out
     commandflags      = -nologo
@@ -17,10 +17,10 @@ project {
   }
 
   postbuild = \
-    <%quote%>$(WIX_ROOT)/bin/light.exe<%quote%> -out <%project_name%>.msi \
+    <%quote%>$(WIX_ROOT)<%quote%>/bin/light.exe -out <%project_name%>.msi \
     <%light_flags%> <%foreach(wxs_files)%><%noextension(wxs_file)%>.wixobj <%endfor%>
 
-  specific(vc7, vc71, vc8, vc9, vc10) {
+  specific(prop:microsoft) {
     wix_flags += -dtype=<%prj_type%>
   }
 }
