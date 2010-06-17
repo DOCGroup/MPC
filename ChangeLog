@@ -1,7 +1,13 @@
-Thu Jun 17 03:27:06 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+Thu Jun 17 03:32:07 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/wix.mpb:
         
+          Reverted change below.
+
+Thu Jun 17 03:27:06 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/wix.mpb:
+
           Moved the quote tags to a different location.
 
 Mon Jun 14 23:52:33 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
