@@ -42,6 +42,8 @@ cpp_linker_tool_input_superclass = cdt.managedbuild.tool.gnu.cpp.linker.input
 linux {
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
+  threadflags = -pthread
+  platform_libs += rt dl
 }
 
 // This scope serves as an example of a custom platform.  On 64-bit linux,
@@ -55,6 +57,8 @@ linux_m32 {
   ccflags += -m32
   cxxflags += -m32
   linkflags += -m32
+  threadflags = -pthread
+  platform_libs += rt dl
 }
 
 macosx {
@@ -90,6 +94,7 @@ win32 {
   lib_ext_nodot = lib
 
   platform_libs =
+  threadflags = -mthreads
 
   binary_parsers = org.eclipse.cdt.core.PE
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser

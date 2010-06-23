@@ -9,4 +9,11 @@ project {
   specific(!automake) {
     libpaths = .
   }
+
+}
+
+feature(threads) {
+  specific(cdt6) {
+    use_threads = 1
+  }
 }

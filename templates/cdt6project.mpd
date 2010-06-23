@@ -83,6 +83,7 @@
     <nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
   </natures>
   <linkedResources>
+<!-- source files -->
 <%foreach(source_files)%>
     <link>
       <name><%source_file%></name>
@@ -90,6 +91,7 @@
       <location><%full_path(source_file)%></location>
     </link>
 <%endfor%>
+<!-- header files -->
 <%foreach(header_files)%>
     <link>
       <name><%header_file%></name>
@@ -98,12 +100,14 @@
     </link>
 <%endfor%>
 <%if(pch_header)%>
+<!-- pch header -->
     <link>
       <name><%pch_header%></name>
       <type>1</type>
       <location><%full_path(pch_header)%></location>
     </link>
 <%endif%>
+<!-- inline files -->
 <%foreach(inline_files)%>
     <link>
       <name><%inline_file%></name>
@@ -111,6 +115,7 @@
       <location><%full_path(inline_file)%></location>
     </link>
 <%endfor%>
+<!-- template files -->
 <%foreach(template_files)%>
     <link>
       <name><%template_file%></name>
@@ -118,6 +123,7 @@
       <location><%full_path(template_file)%></location>
     </link>
 <%endfor%>
+<!-- custom type files -->
 <%foreach(custom_types)%>
 <!-- begin files for <%custom_type%> -->
 <%foreach(custom_type->input_files)%>
