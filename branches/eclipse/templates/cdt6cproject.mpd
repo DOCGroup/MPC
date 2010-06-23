@@ -35,30 +35,17 @@
    cleanCommand="<%delete("rm -rf")%>"
    parent="<%configuration_parent_root%>.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>"
    prebuildStep="<%eval(prebuild)%>"
+   <%endif%><%comment(!custom_only)%>
    postbuildStep="<%shell%> ..<%slash%><%create_aux_file(postbuild_, platform, _, configuration, script_ext)%><%script_hdr%>
-<%if(type_is_dynamic)%><%cp%> <%lib_prefix%><%sharedname%><%lib_modifier%><%dll_ext%> <%if(dllout)%><%if(!starts_with(dllout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%convert_slashes(dllout)%><%else%><%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%convert_slashes(libout)%><%else%>.<%endif%><%endif%><%else%>
-<%if(type_is_static)%><%cp%> <%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%> <%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%endif%><%convert_slashes(libout)%><%else%>.<%endif%><%else%>
-<%if(exename)%><%cp%> <%exename%><%exe_ext%> <%if(exeout)%><%if(!starts_with(exeout, [/\\\$]))%>..<%slash%>..<%endif%><%convert_slashes(exeout)%><%else%>.<%endif%><%endif%>
+<%if(!custom_only)%>
+<%if(type_is_dynamic)%><%cp%> <%lib_prefix%><%sharedname%><%lib_modifier%><%dll_ext%> <%if(dllout)%><%if(!starts_with(dllout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%convert_slashes(translate_vars(dllout))%><%else%><%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%convert_slashes(translate_vars(libout))%><%else%>..<%slash%>..<%endif%><%endif%><%else%>
+<%if(type_is_static)%><%cp%> <%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%> <%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%endif%><%convert_slashes(translate_vars(libout))%><%else%>..<%slash%>..<%endif%><%else%>
+<%if(exename)%><%cp%> <%exename%><%exe_ext%> <%if(exeout)%><%if(!starts_with(exeout, [/\\\$]))%>..<%slash%>..<%endif%><%convert_slashes(translate_vars(exeout))%><%else%>..<%slash%>..<%endif%><%endif%>
 <%endif%><%endif%>
+<%endif%>
 <%if(postbuild)%><%eval(postbuild)%><%endif%>
 <%end_aux_file%>"
-   <%endif%><%comment(!custom_only)%>
 >
-<!--  This is the logic for the postbuildStep above.
-if(type_is_dynamic)
-  src = <%lib_prefix%><%sharedname%><%lib_modifier%><%dll_ext%>
-  dst = <%if(dllout)%><%dllout%><%else%><%libout("../..")%><%endif%>
-
-if (type_is_static)
-  src = <%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%>
-  dst = <%libout("../..")%>
-
-if (exename)
-  src = <%exename%>
-  dst = <%exeout("../..")%>
-
-  cd dst && <%ln%> <%project_name%><%slash%><%platform%>-<%configuration%><%slash%>src .
--->
 <folderInfo id="mpc.generated.config.<%platform%>.<%configuration%>" <%comment(same id as configuration element id)%> name="/" resourcePath="">
 <toolChain
    id="mpc.generated.toolchain.<%platform%>.<%configuration%>"
@@ -107,7 +94,7 @@ if (exename)
 <listOptionValue builtIn="false" value="<%lib%>"/>
 <%endfor%>
 </option>
-<option id="mpc.generated.linkflags.1" superClass="<%linker_option_superclass%>.flags" value="<%if(linkflags)%> <%linkflags%><%endif%><%if(build64bit && linkflags64)%> <%linkflags64%><%endif%>" valueType="string"/>
+<option id="mpc.generated.linkflags.1" superClass="<%linker_option_superclass%>.flags" value="<%if(use_threads)%> <%threadflags%><%endif%><%if(linkflags)%> <%linkflags%><%endif%><%if(build64bit && linkflags64)%> <%linkflags64%><%endif%>" valueType="string"/>
 <%if(type_is_dynamic)%>
 <option defaultValue="true" id="<%cpp_linker_dynamiclib_superclass%>.1" name="Shared/Dynamic" superClass="<%cpp_linker_dynamiclib_superclass%>" valueType="boolean"/>
 <%endif%>
@@ -129,7 +116,7 @@ if (exename)
 <listOptionValue builtIn="false" value="<%if(!starts_with(include, [/\\\$]))%>../../<%endif%><%translate_vars(include, 1)%>"/>
 <%endfor%>
 </option>
-<option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 <%comment(here's where we can put in all the extra compiler flags)%><%cxxflags%>" valueType="string"/>
+<option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c <%comment(here's where we can put in all the extra compiler flags)%><%cxxflags%><%if(use_threads)%> <%threadflags%><%endif%>" valueType="string"/>
 <option id="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level.886842330" name="Optimization Level" superClass="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level" value="gnu.cpp.compiler.optimization.level.<%optimization_level%>" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.debugging.level.63360527" name="Debug Level" superClass="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.debugging.level" value="gnu.cpp.compiler.debugging.level.<%debugging_level%>" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.preprocessor.def.1310953196" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
@@ -221,12 +208,12 @@ all: $(GENERATED)
           rcbsApplicability="override"
           resourcePath="<%custom_type->input_file%>"
           toolsToInvoke="org.eclipse.cdt.managedbuilder.ui.rcbs.467489715">
-  <tool announcement="Invoking <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> on <%custom_type->input_file%>"
+  <tool announcement="Invoking <%if(flag_overrides(custom_type->input_file, command))%><%translate_vars(flag_overrides(custom_type->input_file, command), 1)%><%else%><%translate_vars(custom_type->command, 1)%><%endif%> on <%custom_type->input_file%>"
         command="<%shell%> ..<%slash%><%create_aux_file(platform, _, configuration, _, custom_type, _, normalize(custom_type->input_file), script_ext)%><%script_hdr%>
 <%comment(LIBPATH)%><%if(custom_type->libpath)%><%setenv%> <%libenv%>=<%envvar_pre%><%libenv%><%envvar_post%><%pathsep%><%translate_vars(custom_type->libpath)%>
 <%endif%>cd ..<%slash%>..
 <%comment(GENDIR)%><%if(flag_overrides(custom_type->input_file, gendir))%><%if(mkdir_pre)%><%mkdir_pre%> <%flag_overrides(custom_type->input_file, gendir)%> <%endif%><%mkdir%> <%flag_overrides(custom_type->input_file, gendir)%>
-<%endif%><%comment(COMMAND)%><%if(flag_overrides(custom_type->input_file, command))%><%translate_vars(flag_overrides(custom_type->input_file, command))%><%else%><%translate_vars(custom_type->command)%><%endif%> <%comment(COMMANDFLAGS)%><%if(flag_overrides(custom_type->input_file, commandflags))%><%translate_vars(flag_overrides(custom_type->input_file, commandflags))%><%else%><%if(custom_type->commandflags)%><%translate_vars(custom_type->commandflags)%><%endif%><%endif%> <%if(custom_type->output_option)%><%comment(with OUTPUT_OPTION)%>"<%custom_type->input_file%>" <%custom_type->output_option%><%foreach(custom_type->input_file->output_files)%> "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>"<%endfor%><%else%><%comment(without OUTPUT_OPTION)%>"<%custom_type->input_file%>"<%endif%><%comment(POSTCOMMAND)%><%if(flag_overrides(custom_type->input_file, postcommand))%> && <%flag_overrides(custom_type->input_file, postcommand)%><%else%><%if(custom_type->postcommand)%> && <%custom_type->postcommand%><%endif%><%endif%><%comment(PCH_POSTRULE)%><%if(pch_header)%><%if(custom_type->pch_postrule)%><%foreach(custom_type->input_file->source_output_files)%> && echo <%quote_echo%>#include "<%pch_header%>"<%quote_echo%> > <%script_tmpfile%> && <%cat%> "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>" >> <%script_tmpfile%> && <%mv%> <%script_tmpfile%> "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>"<%endfor%><%endif%><%endif%><%comment(LINK_SRCDIR_TO_OUTDIR)%><%if(custom_type->input_file->source_output_files)%> && cd <%project_name%><%slash%><%platform%>-<%configuration%><%endif%><%foreach(custom_type->input_file->source_output_files)%> && <%ln%> ..<%slash%>..<%slash%><%dirname(custom_type->input_file->source_output_file)%><%slash%><%basename(custom_type->input_file->source_output_file)%> .<%endfor%>
+<%endif%><%comment(COMMAND)%><%if(flag_overrides(custom_type->input_file, command))%><%translate_vars(flag_overrides(custom_type->input_file, command))%><%else%><%translate_vars(custom_type->command)%><%endif%> <%comment(COMMANDFLAGS)%><%if(flag_overrides(custom_type->input_file, commandflags))%><%translate_vars(flag_overrides(custom_type->input_file, commandflags))%><%else%><%if(custom_type->commandflags)%><%translate_vars(custom_type->commandflags)%><%endif%><%endif%> <%if(custom_type->output_option)%><%comment(with OUTPUT_OPTION)%>"<%custom_type->input_file%>" <%custom_type->output_option%><%foreach(custom_type->input_file->output_files)%> "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>"<%endfor%><%else%><%comment(without OUTPUT_OPTION)%>"<%custom_type->input_file%>"<%endif%><%comment(POSTCOMMAND)%><%if(flag_overrides(custom_type->input_file, postcommand))%> && <%flag_overrides(custom_type->input_file, postcommand)%><%else%><%if(custom_type->postcommand)%> && <%custom_type->postcommand%><%endif%><%endif%><%comment(PCH_POSTRULE)%><%if(pch_header)%><%if(custom_type->pch_postrule)%><%foreach(custom_type->input_file->source_output_files)%> && echo <%quote_echo%>#include "<%pch_header%>"<%quote_echo%> > <%script_tmpfile%> && <%cat%> "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>" >> <%script_tmpfile%> && <%mv%> <%script_tmpfile%> "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>"<%endfor%><%endif%><%endif%><%comment(LINK_SRCDIR_TO_OUTDIR)%><%if(custom_type->input_file->source_output_files)%> && cd cdt_<%project_name%><%slash%><%platform%>-<%configuration%><%endif%><%foreach(custom_type->input_file->output_files)%> && <%ln%> ..<%slash%>..<%slash%><%dirname(custom_type->input_file->output_file)%><%slash%><%basename(custom_type->input_file->output_file)%> .<%endfor%>
 <%end_aux_file%>"
         customBuildStep="true"
         id="mpc.generated.rcbs.<%platform%>.<%configuration%>.<%custom_type%>.<%normalize(custom_type->input_file)%>"
@@ -234,13 +221,14 @@ all: $(GENERATED)
     <inputType id="mpc.generated.rcbsinput.<%platform%>.<%configuration%>.<%custom_type%>.<%normalize(custom_type->input_file)%>"
                name="Resource Custom Build Step Input Type">
       <additionalInput kind="additionalinputdependency"
+<%comment(Need to apply translate_vars() on these three branches)%>
 <%if(flag_overrides(custom_type->input_file, dependent))%>
-                       paths="<%foreach(dep, flag_overrides(custom_type->input_file, dependent))%><%dep%><%if(!has_extension(dep))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%foreach(custom_type->input_file->dependencies)%>;<%custom_type->input_file->dependencie%><%endfor%>"/>
+                       paths="<%foreach(dep, flag_overrides(custom_type->input_file, dependent))%><%translate_vars(dep, 1)%><%if(!has_extension(dep))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%foreach(custom_type->input_file->dependencies)%>;<%translate_vars(custom_type->input_file->dependencie, 1)%><%endfor%>"/>
 <%else%>
 <%if(custom_type->dependent)%>
-                       paths="<%foreach(custom_type->dependent)%><%custom_type->dependent%><%if(!has_extension(custom_type->dependent))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%foreach(custom_type->input_file->dependencies)%>;<%custom_type->input_file->dependencie%><%endfor%>"/>
+                       paths="<%foreach(custom_type->dependent)%><%translate_vars(custom_type->dependent, 1)%><%if(!has_extension(custom_type->dependent))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%foreach(custom_type->input_file->dependencies)%>;<%translate_vars(custom_type->input_file->dependencie, 1)%><%endfor%>"/>
 <%else%>
-                       paths="<%foreach(custom_type->input_file->dependencies)%><%custom_type->input_file->dependencie%><%fornotlast(";")%><%endfor%>"/>
+                       paths="<%foreach(custom_type->input_file->dependencies)%><%translate_vars(custom_type->input_file->dependencie, 1)%><%fornotlast(";")%><%endfor%>"/>
 <%endif%>
 <%endif%>
     </inputType>
@@ -251,7 +239,8 @@ all: $(GENERATED)
   </tool>
 </fileInfo><%endif%><%comment(generates any output)%><%endfor%><%comment(input file)%><%endfor%><%comment(custom type)%>
 <sourceEntries>
-<entry excluding="<%foreach(template_files)%><%template_file%><%fornotlast("|")%><%endfor%><%foreach(custom_types)%><%foreach(custom_type->input_files)%><%foreach(custom_type->input_file->source_output_files)%><%if(template_files)%><%forfirst("|")%><%endif%><%custom_type->input_file->source_output_file%><%fornotlast("|")%><%endfor%><%endfor%><%endfor%>" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<%comment(we may need to change the source_output_files to just output_files below to align it with what's used above)%>
+<entry excluding="<%foreach(template_files)%><%template_file%>|<%endfor%><%foreach(custom_types)%><%foreach(custom_type->input_files)%><%foreach(custom_type->input_file->source_output_files)%><%custom_type->input_file->source_output_file%>|<%endfor%><%endfor%><%endfor%>" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 <%endif%><%comment(!custom_only)%>
 </configuration>

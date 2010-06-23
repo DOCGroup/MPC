@@ -77,7 +77,7 @@ my %keywords = ('if'              => 0,
                 'extensions'      => 0xa,
                 'create_aux_file' => 0x12,
                 'end_aux_file'    => 0,
-                'translate_vars'  => 2,
+                'translate_vars'  => 2 | 1,
                 'convert_slashes' => 2,
                );
 
@@ -1787,6 +1787,11 @@ sub handle_translate_vars {
   $self->append_current($self->perform_translate_vars([@params]));
 }
 
+sub get_translate_vars {
+  my ($self, $str) = @_;
+  my @params = $self->split_parameters($str);
+  return $self->perform_translate_vars([@params]);
+}
 
 sub perform_translate_vars {
   my $self = shift;
