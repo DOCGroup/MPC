@@ -86,7 +86,7 @@
 <!-- source files -->
 <%foreach(source_files)%>
     <link>
-      <name><%source_file%></name>
+      <name><%if(starts_with(source_file, \.\.))%><%basename(source_file)%><%else%><%source_file%><%endif%></name>
       <type>1</type>
       <location><%full_path(source_file)%></location>
     </link>
@@ -94,7 +94,7 @@
 <!-- header files -->
 <%foreach(header_files)%>
     <link>
-      <name><%header_file%></name>
+      <name><%if(starts_with(header_file, \.\.))%><%basename(header_file)%><%else%><%header_file%><%endif%></name>
       <type>1</type>
       <location><%full_path(header_file)%></location>
     </link>
@@ -102,7 +102,7 @@
 <%if(pch_header)%>
 <!-- pch header -->
     <link>
-      <name><%pch_header%></name>
+      <name><%if(starts_with(pch_header, \.\.))%><%basename(pch_header)%><%else%><%pch_header%><%endif%></name>
       <type>1</type>
       <location><%full_path(pch_header)%></location>
     </link>
@@ -110,7 +110,7 @@
 <!-- inline files -->
 <%foreach(inline_files)%>
     <link>
-      <name><%inline_file%></name>
+      <name><%if(starts_with(inline_file, \.\.))%><%basename(inline_file)%><%else%><%inline_file%><%endif%></name>
       <type>1</type>
       <location><%full_path(inline_file)%></location>
     </link>
@@ -118,7 +118,7 @@
 <!-- template files -->
 <%foreach(template_files)%>
     <link>
-      <name><%template_file%></name>
+      <name><%if(starts_with(template_file, \.\.))%><%basename(template_file)%><%else%><%template_file%><%endif%></name>
       <type>1</type>
       <location><%full_path(template_file)%></location>
     </link>
