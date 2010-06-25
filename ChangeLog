@@ -1,3 +1,10 @@
+Fri Jun 25 21:56:03 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          When parsing the .am file, a line with a : is not an explicit target
+          if it's a continuation of the previous line (ending with \).
+
 Wed Jun 23 18:08:17 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_ts_defaults.mpb:
