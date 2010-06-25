@@ -443,7 +443,7 @@ sub write_comps {
               $in_explicit = undef;
             }
           }
-          elsif (/^([\w\/\.\-\s]+):/) {
+          elsif ($prev_line !~ /\\$/ && /^([\w\/\.\-\s]+):/) {
             my $target = $1;
             $target =~ s/^\s+//;
             $target =~ s/\s+$//;
