@@ -80,11 +80,13 @@ sub setup_keywords {
   }
 }
 
-
 sub display_template {
-  my($fh, $cp, $input, $tkeys) = @_;
+  my($fh, $common_cp, $template_cp, $input, $tkeys, $oformat) = @_;
 
-  print $fh '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">', "\n",
+  my $html = ($oformat eq 'html') ? 1 : 0;
+
+  if ($html) {
+    print $fh '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">', "\n",
             "<head>\n",
             "  <title>$input</title>\n",
             "  <style type=\"text/css\">\n",
@@ -104,13 +106,33 @@ sub display_template {
             "      <th>Default Value</th>\n",
             "      <th>Description</th>\n",
             "    </tr>\n";
+  }
+  else {
+    print $fh "//\n// Document template variables for templates $input.\n// Please try to keep this alphabetically sorted.\n//\n";
+  }
+
   foreach my $key (sort keys %$tkeys) {
-    my $desc = $cp->get_value($key) || '&nbsp;';
+    # For text output, we only want to dump out the variables that are only
+    # specific to the template being documented and not the common variables.
+    # So, we check to see if the key has a value in the common config and, if
+    # it does, skip.  We can't check to see if it has a value in the template
+    # config because this script may be the thing that's creating the stub
+    # for that template.
+    next if (!$html && $common_cp->get_value($key));
+
+    my $desc = '';
+    if ($html) {
+      $desc = $template_cp->get_value($key) || $common_cp->get_value($key) || '&nbsp;';
+    }
+    else {
+      $desc = $common_cp->get_value($key) || '<none>';
+    }
+
     my $def;
     if (defined $$tkeys{$key}) {
       foreach my $ikey (sort keys %{$$tkeys{$key}}) {
         if (defined $def) {
-          $def .= ' <b>or</b> ';
+          $def .= $html ? ' <b>or</b> ' : ' OR ';
         }
         else {
           $def = '';
@@ -120,29 +142,41 @@ sub display_template {
     }
 
     ## Convert < and > to html friendly codes
-    $desc =~ s/</&lt;/g;
-    $desc =~ s/>/&gt;/g;
+    if ($html) {
+      $desc =~ s/</&lt;/g;
+      $desc =~ s/>/&gt;/g;
+    }
 
-    print $fh "    <tr>\n",
+    if ($html) {
+      print $fh "    <tr>\n",
               "      <td>$key</td>\n",
               "      <td>", (defined $def ? $def : '&nbsp'), "</td>\n",
               "      <td>$desc</td>\n",
               "    </tr>\n";
+    }
+    else {
+      print $fh "$key = $desc\n";
+    }
   }
-  print $fh "  </table>\n",
-            "</body>\n";
+  print $fh "  </table>\n</body>\n" if ($html);
 }
 
 
 sub usageAndExit {
-  print "document_template.pl v$version\n",
-        "Usage: ", basename($0), " <template> [<html output> [language]]\n\n",
-        "html output - This defaults to the name of the template file ",
-        "with the .mpd\n              extenion replaced with .html.\n",
-        "language    - This defaults to the language for which the ",
-        "template is designed.\n              It can be any of the valid ",
-        "language settings for MPC:\n              ",
-        join(' ', sort(Creator::validLanguages())), "\n";
+  my $b = basename($0);
+  my $langs = join(' ', sort(Creator::validLanguages()));
+  print <<'EOF';
+document_template.pl v$version
+Usage: $b <template> [<outputfile> [language]]
+
+outputfile  - This defaults to the name of the template file with the .mpd
+              extension replaced with '.html'  If <outputfile> ends in '.txt',
+              the output is in text format similar to what is found in
+              .../docs/templates.
+language    - This defaults to the language for which the template is designed.
+              It can be any of the valid language settings for MPC:
+              $langs
+EOF
   exit(0);
 }
 
@@ -155,6 +189,7 @@ my $fh       = new FileHandle();
 my $input    = $ARGV[0];
 my $output   = $ARGV[1];
 my $language = $ARGV[2];
+my $oformat  = 'html'; # dump out html by default
 
 usageAndExit() if (!defined $input || $input =~ /^-/);
 
@@ -162,6 +197,9 @@ if (!defined $output) {
   $output = $input;
   $output =~ s/\.mpd$//;
   $output .= '.html';
+}
+elsif ($output =~ /\.txt$/) {
+  $oformat = 'txt';
 }
 
 if (open($fh, $input)) {
@@ -351,21 +389,22 @@ if (open($fh, $input)) {
   }
   close($fh);
 
-  my $cp = new ConfigParser();
-  $cp->read_file("$basePath/docs/templates/common$doc_ext");
+  my $common_cp = new ConfigParser();
+  my $template_cp = new ConfigParser();
+  $common_cp->read_file("$basePath/docs/templates/common$doc_ext");
 
   my $doc = $input;
   $doc =~ s/\.[^\.]+$/$doc_ext/;
   $doc =~ s/templates/docs\/templates/;
   if (-r $doc) {
-    $cp->read_file($doc);
+    $template_cp->read_file($doc);
   }
   else {
-    $cp->read_file("$basePath/docs/templates/" . basename($doc));
+    $template_cp->read_file("$basePath/docs/templates/" . basename($doc));
   }
 
   if (open($fh, ">$output")) {
-    display_template($fh, $cp, $input, \%template_keys);
+    display_template($fh, $common_cp, $template_cp, $input, \%template_keys, $oformat);
     close($fh);
   }
   else {

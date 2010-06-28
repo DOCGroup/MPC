@@ -11,6 +11,7 @@ package TemplateParser;
 # ************************************************************
 
 use strict;
+use File::Path;
 
 use Parser;
 use WinVersionTranslator;
@@ -29,6 +30,8 @@ use vars qw(@ISA);
 # 1 means there is a perform_ method available (used by foreach and nested)
 # 2 means there is a doif_ method available (used by if)
 # 3 means that parameters to perform_ should not be evaluated
+# 4 means there is a post_ method available (called after the results of
+#   calling perform_ for a nested function are written to the output)
 #
 # Perl Function		Parameter Type		Return Type
 # get_			string			string or array
@@ -72,6 +75,10 @@ my %keywords = ('if'              => 0,
                 'scope'           => 0,
                 'full_path'       => 3,
                 'extensions'      => 0xa,
+                'create_aux_file' => 0x12,
+                'end_aux_file'    => 0,
+                'translate_vars'  => 2 | 1,
+                'convert_slashes' => 2,
                );
 
 my %target_type_vars = ('type_is_static'   => 1,
@@ -112,6 +119,7 @@ sub new {
   $self->{'override_target_type'} = undef;
   $self->{'keyname_used'}         = {};
   $self->{'scopes'}               = {};
+  $self->{'aux_file'}             = undef;
 
   $self->{'foreach'}  = {};
   $self->{'foreach'}->{'count'}      = -1;
@@ -214,9 +222,13 @@ sub append_current {
     }
   }
 
-
-  if ($_[0]->{'foreach'}->{'count'} >= 0) {
-    $_[0]->{'foreach'}->{'text'}->[$_[0]->{'foreach'}->{'count'}] .= $value;
+  my $foreach_count = $_[0]->{'foreach'}->{'count'};
+  if ($_[0]->{'aux_file'}
+      && $foreach_count == $_[0]->{'aux_file'}->{'foreach_baseline'}) {
+    $_[0]->{'aux_file'}->{'text'} .= $value;
+  }
+  elsif ($foreach_count >= 0) {
+    $_[0]->{'foreach'}->{'text'}->[$foreach_count] .= $value;
   }
   elsif ($_[0]->{'eval'}) {
     $_[0]->{'eval_str'} .= $value;
@@ -231,13 +243,10 @@ sub split_parameters {
   my($self, $str) = @_;
   my @params;
 
-  while($str =~ /^(\w+\([^\)]+\))\s*,\s*(.*)/) {
+  while ($str =~ /^(\w+\([^\)]+\))(.*)/ || $str =~ /^([^,]+)(.*)/) {
     push(@params, $1);
     $str = $2;
-  }
-  while($str =~ /^([^,]+)\s*,\s*(.*)/) {
-    push(@params, $1);
-    $str = $2;
+    $str =~ s/^\s*,\s*//;
   }
 
   ## Return the parameters (which includes whatever is left in the
@@ -1485,43 +1494,61 @@ sub handle_extensions {
 
 
 sub evaluate_nested_functions {
-  my($self, $name, $val) = @_;
+  my($self, $funcname, $args) = @_;
+  my @params = $self->split_parameters($args);
+  my @results;
+  foreach my $param (@params) {
+    my @cmds;
+    my $val = $param;
 
-  ## Get the value based on the string
-  my @cmds = ($name);
-  while ($val =~ /(\w+)\((.+)\)/) {
-    push(@cmds, $1);
-    $val = $2;
-  }
+    while ($val =~ /(\w+)\((.+)\)/) {
+      push(@cmds, $1);
+      $val = $2;
+    }
 
-  ## Start out calling get_xxx on the string
-  my $type = 0x01;
-  my $prefix = 'get_';
+    if (scalar @cmds == 0) {
+      push @results, $val;
+      next;
+    }
 
-  foreach my $cmd (reverse @cmds) {
-    if (defined $keywords{$cmd} && ($keywords{$cmd} & $type) != 0) {
-      my $func = "$prefix$cmd";
-      if ($type == 0x01) {
-        $val = $self->$func($val);
-        $val = [ $val ] if (!UNIVERSAL::isa($val, 'ARRAY'));
+    my $type = 0x01;
+    my $prefix = 'get_';
+    foreach my $cmd (reverse @cmds) {
+      if (defined $keywords{$cmd} && ($keywords{$cmd} & $type) != 0) {
+        my $func = "$prefix$cmd";
+        if ($type == 0x01) {
+          $val = $self->$func($val);
+          $val = [ $val ] if (!UNIVERSAL::isa($val, 'ARRAY'));
+          ## Now that we have a value, we need to switch over
+          ## to calling perform_xxx
+          $type = 0x02;
+          $prefix = 'perform_';
+        }
+        else {
+          my @array = $self->$func($val);
+          $val = \@array;
+        }
       }
       else {
-        my @array = $self->$func($val);
-        $val = \@array;
+        $self->warning("Unable to use $cmd in nested " .
+                       "functions (no $prefix method).");
       }
-
-      ## Now that we have a value, we need to switch over
-      ## to calling perform_xxx
-      $type = 0x02;
-      $prefix = 'perform_';
     }
-    else {
-      $self->warning("Unable to use $cmd in nested " .
-                     "functions (no $prefix method).");
+    push @results, "@$val";
+  }
+
+  if (defined $keywords{$funcname} && ($keywords{$funcname} & 0x02)) {
+    my $func = 'perform_' . $funcname;
+    my @array = $self->$func(\@results);
+    $self->append_current("@array");
+    if ($keywords{$funcname} & 0x10) {
+      $func = 'post_' . $funcname;
+      $self->$func();
     }
   }
-  if (defined $val && UNIVERSAL::isa($val, 'ARRAY')) {
-    $self->append_current("@$val");
+  else {
+    $self->warning("Unable to use $funcname in nested " .
+                   "functions (no perform_ method).");
   }
 }
 
@@ -1690,6 +1717,114 @@ sub handle_transdir {
   my($self, $name) = @_;
   my $value = $self->doif_transdir($self->get_value_with_default($name));
   $self->append_current($value) if (defined $value);
+}
+
+
+sub handle_create_aux_file {
+  my $self = shift;
+  my @fname = $self->perform_create_aux_file([$self->split_parameters(shift)]);
+  $self->append_current($fname[0]);
+  $self->post_create_aux_file();
+}
+
+
+sub post_create_aux_file {
+  my $self = shift;
+  $self->{'aux_file'} = $self->{'aux_temp'};
+  $self->{'aux_temp'} = undef;
+}
+
+
+sub perform_create_aux_file {
+  my $self = shift;
+  my $argsref = shift;
+
+  if (defined $self->{'aux_file'}) {
+    die "Can't nest create_aux_file commands.";
+  }
+
+  my $fname = '';
+  foreach my $arg (@$argsref) {
+    my $val = $self->get_value($arg);
+    $fname .= defined $val ?
+        (UNIVERSAL::isa($val, 'ARRAY') ? join('_', @$val) : $val) : $arg;
+  }
+
+  my $dir = $self->mpc_dirname($self->{'prjc'}->get_outdir() . '/' .
+                               $self->{'prjc'}->{'assign'}->{'project_file'});
+  $dir .= '/' . $self->mpc_dirname($fname) if ($fname =~ /[\/\\]/);
+
+  $self->{'aux_temp'} = {'dir' => $dir,
+                         'filename' => $self->mpc_basename($fname),
+                         'foreach_baseline' => $self->{'foreach'}->{'count'}};
+  return $fname;
+}
+
+
+sub handle_end_aux_file {
+  my $self = shift;
+  if (!defined $self->{'aux_file'}) {
+    return 'end_aux_file seen before create_aux_file';
+  }
+  else {
+    my $af = $self->{'aux_file'};
+    mkpath($af->{'dir'}, 0, 0777) if ($af->{'dir'} ne '.');
+    my $fh = new FileHandle('> ' . $af->{'dir'} . '/' . $af->{'filename'});
+    if (!defined $fh) {
+      die "Couldn't open: " . $af->{'dir'} . '/' . $af->{'filename'};
+    }
+    print $fh $af->{'text'};
+    close $fh;
+    $self->{'aux_file'} = undef;
+  }
+}
+
+
+sub handle_translate_vars {
+  my $self = shift;
+  my $arg = shift;
+  my @params = $self->split_parameters($arg);
+  $self->append_current($self->perform_translate_vars([@params]));
+}
+
+sub get_translate_vars {
+  my ($self, $str) = @_;
+  my @params = $self->split_parameters($str);
+  return $self->perform_translate_vars([@params]);
+}
+
+sub perform_translate_vars {
+  my $self = shift;
+  my $arg = shift;
+  my $val = $self->get_value($arg->[0]);
+  $val = $arg->[0] unless defined $val;
+  my $os = (defined $arg->[1] && $arg->[1] ne '')
+      ? $arg->[1] : $self->{'prjc'}->{'command_subs'}->{'os'};
+  my ($pre, $post) = ($os eq 'win32') ? ('%', '%') : ('${', '}');
+  $val =~ s[\$\(([^)]+)\)(\S*)][my ($var, $rest) = ($1, $2);
+                                $rest =~ s!/!\\!g if $os eq 'win32';
+                                "$pre$var$post$rest"]ge;
+  return $val;
+}
+
+
+sub handle_convert_slashes {
+  my $self = shift;
+  my $arg = shift;
+  my @params = $self->split_parameters($arg);
+  $self->append_current($self->perform_convert_slashes([@params]));
+}
+
+
+sub perform_convert_slashes {
+  my $self = shift;
+  my $arg = shift;
+  my $val = $self->get_value($arg->[0]);
+  $val = $arg->[0] unless defined $val;
+  my $os = (defined $arg->[1] && $arg->[1] ne '')
+      ? $arg->[1] : $self->{'prjc'}->{'command_subs'}->{'os'};
+  $val =~ s!/!\\!g if $os eq 'win32';
+  return $val;
 }
 
 
