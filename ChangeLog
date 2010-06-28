@@ -1,10 +1,16 @@
+Mon Jun 28 18:01:08 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * modules/WorkspaceCreator.pm:
+        
+          Reverted change below.
+
 Mon Jun 28 16:26:00 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * modules/WorkspaceCreator.pm:
 
           Bug fix where the negated types in excludes () were not
           handled correctly.
-          
+
 Mon Jun 28 05:55:54 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * templates/wix.mpd:
