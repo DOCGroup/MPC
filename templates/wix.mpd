@@ -44,7 +44,7 @@
       <Directory Id="<%project_name%>.<%normalize(resource_file)%>.<%forcount%>.<%name%>" Name="<%name%>">
 <%endfor%>
         <Component Id="<%project_name%><%foreach(name, install_location)%>.<%name%><%endfor%>.<%normalize(resource_file)%>" Guid="*">
-          <File Id="<%project_name%>_<%basename(resource_file)%>" 
+          <File Id="<%project_name%>_<%normalize(resource_file)%>" 
                 Name="<%basename(resource_file)%>"
                 Source="<%full_path(resource_file)%>"
                 DiskId="<%diskid(1)%>" />
