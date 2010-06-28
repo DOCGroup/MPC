@@ -29,7 +29,8 @@
       <Directory Id="<%project_name%>.binary.<%forcount%>.<%name%>" Name="<%name%>">
 <%endfor%>
         <Component Id="<%project_name%><%foreach(name, install_location)%>.<%name%><%endfor%>.<%if(type_is_dynamic)%><%normalize(sharedname)%>.dll<%else%><%normalize(exename)%>.exe<%endif%>" Guid="*">
-          <File Name="<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
+          <File Id="<%project_name%>_<%if(type_is_dynamic)%><%sharedname%>_dll<%else%><%exename%>_exe<%endif%>"
+                Name="<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
                 Source="<%source_directory%>/<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
                 DiskId="<%diskid(1)%>" />
         </Component>
@@ -43,7 +44,8 @@
       <Directory Id="<%project_name%>.<%normalize(resource_file)%>.<%forcount%>.<%name%>" Name="<%name%>">
 <%endfor%>
         <Component Id="<%project_name%><%foreach(name, install_location)%>.<%name%><%endfor%>.<%normalize(resource_file)%>" Guid="*">
-          <File Name="<%basename(resource_file)%>"
+          <File Id="<%project_name%>_<%basename(resource_file)%>" 
+                Name="<%basename(resource_file)%>"
                 Source="<%full_path(resource_file)%>"
                 DiskId="<%diskid(1)%>" />
         </Component>
