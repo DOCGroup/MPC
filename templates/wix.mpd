@@ -29,7 +29,7 @@
       <Directory Id="<%project_name%>.binary.<%forcount%>.<%name%>" Name="<%name%>">
 <%endfor%>
         <Component Id="<%project_name%><%foreach(name, install_location)%>.<%name%><%endfor%>.<%if(type_is_dynamic)%><%normalize(sharedname)%>.dll<%else%><%normalize(exename)%>.exe<%endif%>" Guid="*">
-          <File Id="<%project_name%>_<%if(type_is_dynamic)%><%sharedname%>_dll<%else%><%exename%>_exe<%endif%>"
+          <File Id="<%project_name%>_<%if(type_is_dynamic)%><%normalize(sharedname)%>_dll<%else%><%normalize(exename)%>_exe<%endif%>"
                 Name="<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
                 Source="<%source_directory%>/<%if(type_is_dynamic)%><%sharedname%>.dll<%else%><%exename%>.exe<%endif%>"
                 DiskId="<%diskid(1)%>" />
