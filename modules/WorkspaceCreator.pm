@@ -379,10 +379,8 @@ sub parse_scope {
 sub process_types {
   my($self, $typestr) = @_;
   my $wcprops         = $self->get_properties();
-  my $negated         = (index($typestr, '!') >= 0);
   my %types;
   my %props;
-
   @types{split(/\s*,\s*/, $typestr)} = ();
 
   ## If there is a property in the typestr, i.e., prop:, then
@@ -405,15 +403,6 @@ sub process_types {
         delete $types{$key};
       }
     }
-  }
-
-  ## If there is at least one negated type or property in this exclude
-  ## section, then we need to include our project type in the list. This
-  ## is because we are now part of the 'excludes' by default becuase of
-  ## the negated bahvior. If we should not be apart of this list, then
-  ## our type will appear as a negated type as well.
-  if ($negated) {
-    $types{$self->{wctype}} = 1;
   }
 
   ## Now, process the properties and determine if this project
@@ -454,14 +443,12 @@ sub parse_exclude {
   my($self, $fh, $typestr, $flags) = @_;
   my $status          = 0;
   my $errorString     = 'Unable to process exclude';
+  my $negated         = (index($typestr, '!') >= 0);
   my $types           = $self->process_types($typestr);
   my $count           = 1;
   my @exclude;
 
   if (exists $$types{$self->{wctype}}) {
-    ## Since we found our project type in the excludes listing, we need
-    ## to remove this scope from the workspace.
-
     while(<$fh>) {
       my $line = $self->preprocess_line($fh, $_);
 
@@ -517,13 +504,37 @@ sub parse_exclude {
     }
   }
   else {
-    ## Since the project type was not found in the excludes listing,
-    ## we can parse this scope and add it to the current workspace.
-    ($status, $errorString) = $self->SUPER::parse_scope($fh,
-                                                        'exclude',
-                                                        $typestr,
-                                                        \%validNames,
-                                                        $flags);
+    if ($negated) {
+      ($status, $errorString) = $self->SUPER::parse_scope($fh,
+                                                          'exclude',
+                                                          $typestr,
+                                                          \%validNames,
+                                                          $flags);
+    }
+    else {
+      ## If this exclude block didn't match the current type and the
+      ## exclude wasn't negated, we need to eat the exclude block so that
+      ## these lines don't get included into the workspace.
+      while(<$fh>) {
+        my $line = $self->preprocess_line($fh, $_);
+
+        if ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
+          ++$count;
+        }
+        elsif ($line =~ /^}(.*)$/) {
+          --$count;
+          if (defined $1 && $1 ne '') {
+            $status = 0;
+            $errorString = "Trailing characters found: '$1'";
+          }
+          else {
+            $status = 1;
+            $errorString = undef;
+          }
+          last if ($count == 0);
+        }
+      }
+    }
   }
 
   return $status, $errorString;
