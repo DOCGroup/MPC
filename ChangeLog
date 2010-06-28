@@ -1,3 +1,37 @@
+Mon Jun 28 20:16:54 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+
+        * modules/CDT6ProjectCreator.pm:
+        * modules/CDT6WorkspaceCreator.pm:
+        * templates/cdt6platforms.mpt:
+        * templates/cdt6cproject.mpd:
+        * templates/cdt6dll.mpt:
+        * templates/cdt6lib.mpt:
+        * templates/cdt6exe.mpt:
+        * templates/cdt6project.mpd:
+
+          Merged in initial EXPERIMENTAL release of CDT6 project
+          type generation from the "eclipse" branch.
+
+        * docs/html/CDT6.html:
+        * docs/templates/cdt6project.txt:
+        * docs/templates/cdt6cproject.txt:
+
+          Draft documentation on the project type.
+
+        * config/global.mpb:
+
+          Modification to allow specification of threads.
+
+        * devtools/document_template.pl:
+
+          Modified to allow use for generating a stubbed out template
+          variable document.
+        
+        * modules/TemplateParser.pm:
+        
+          Added functions create_aux_file/end_aux_file, translate_vars,
+          and convert_slashes.
+
 Mon Jun 28 18:01:08 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * modules/WorkspaceCreator.pm:
@@ -86,6 +120,6 @@ Tue Jun  8 16:06:10 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
 Local Variables:
 mode: change-log
-add-log-time-format: (lambda () (progn (setq tz (getenv TZ)) (set-time-zone-rule UTC) (setq time (format-time-string %a %b %e %H:%M:%S %Z %Y (current-time))) (set-time-zone-rule tz) time))
+add-log-time-format: (lambda () (progn (setq tz (getenv "TZ")) (set-time-zone-rule "UTC") (setq time (format-time-string "%a %b %e %H:%M:%S %Z %Y" (current-time))) (set-time-zone-rule tz) time))
 indent-tabs-mode: nil
 End:
