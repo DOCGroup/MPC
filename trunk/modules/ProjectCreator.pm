@@ -3037,7 +3037,6 @@ sub correct_generated_files {
   }
 }
 
-
 sub generate_default_components {
   my($self, $files, $passed) = @_;
   my $genext   = $self->{'generated_exts'};

@@ -1563,7 +1563,7 @@ sub sort_within_group {
   my $movepjs = [];
 
   ## Put the projects in the order specified
-  ## by the project dpendencies.
+  ## by the project dependencies.
   for(my $i = $start; $i <= $end; ++$i) {
     ## If our moved project equals our previously moved project then
     ## we count this as a possible circular dependency.
