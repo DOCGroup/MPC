@@ -1,7 +1,13 @@
-Mon Jun 28 05:42:48 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+Mon Jun 28 05:55:54 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * templates/wix.mpd:
         
+          The Id attribute for the exename/sharedname was not normalized.
+
+Mon Jun 28 05:42:48 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * templates/wix.mpd:
+
           Bug fix where the generated Id for the File element contained
           invalid characters.
 
