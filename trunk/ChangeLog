@@ -1,3 +1,11 @@
+Mon Jun 28 04:46:49 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * templates/wix.mpd:
+         
+          Bug fix where the File element used the auto-generated Id
+          attribute, which resulted in duplicate keys in the installer
+          when different project had files with the same name.
+
 Fri Jun 25 21:56:03 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * modules/AutomakeWorkspaceCreator.pm:
