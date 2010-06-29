@@ -1,3 +1,9 @@
+Tue Jun 29 13:41:39 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * devtools/document_template.pl:
+
+          Fixed the usage message.
+
 Mon Jun 28 20:16:54 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
 
         * modules/CDT6ProjectCreator.pm:
@@ -26,16 +32,16 @@ Mon Jun 28 20:16:54 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
 
           Modified to allow use for generating a stubbed out template
           variable document.
-        
+
         * modules/TemplateParser.pm:
-        
+
           Added functions create_aux_file/end_aux_file, translate_vars,
           and convert_slashes.
 
 Mon Jun 28 18:01:08 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * modules/WorkspaceCreator.pm:
-        
+
           Reverted change below.
 
 Mon Jun 28 16:26:00 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>

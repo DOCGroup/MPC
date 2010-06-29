@@ -163,20 +163,15 @@ sub display_template {
 
 
 sub usageAndExit {
-  my $b = basename($0);
-  my $langs = join(' ', sort(Creator::validLanguages()));
-  print <<'EOF';
-document_template.pl v$version
-Usage: $b <template> [<outputfile> [language]]
-
-outputfile  - This defaults to the name of the template file with the .mpd
-              extension replaced with '.html'  If <outputfile> ends in '.txt',
-              the output is in text format similar to what is found in
-              .../docs/templates.
-language    - This defaults to the language for which the template is designed.
-              It can be any of the valid language settings for MPC:
-              $langs
-EOF
+  print "document_template.pl v$version\n",
+        "Usage: ", basename($0), " <template> [<outputfile> [language]]\n\n",
+        "outputfile  - This defaults to the name of the template file with the .mpd\n",
+        "              extension replaced with '.html'  If <outputfile> ends in '.txt',\n",
+        "              the output is in text format similar to what is found in\n",
+        "              .../docs/templates.\n",
+        "language    - This defaults to the language for which the template is designed.\n",
+        "              It can be any of the valid language settings for MPC:\n",
+        join(' ', sort(Creator::validLanguages())), "\n";
   exit(0);
 }
 
