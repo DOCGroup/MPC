@@ -251,7 +251,7 @@ sub split_parameters {
 
   ## Return the parameters (which includes whatever is left in the
   ## string).  Just return it instead of pushing it onto @params.
-  return @params, $str;
+  return ($str eq '') ? @params : (@params, $str);
 }
 
 
