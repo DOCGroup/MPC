@@ -1,4 +1,10 @@
-Tue Jun 29 14:45:21 UTC 2010  Chris Cleeland  <cleeland@bobke2.local>
+Tue Jun 29 18:18:56 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+
+        * modules/TemplateParser.pm: split_parameters() was returning an
+        empty parameter.  This should fix errant extra whitespace
+        generated in bmake test output.
+
+Tue Jun 29 14:45:21 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
 
         * templates/cdt6platforms.mpt:
         * templates/cdt6dll.mpt:
