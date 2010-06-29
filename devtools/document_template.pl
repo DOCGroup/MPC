@@ -171,7 +171,7 @@ sub usageAndExit {
         "              .../docs/templates.\n",
         "language    - This defaults to the language for which the template is designed.\n",
         "              It can be any of the valid language settings for MPC:\n",
-        join(' ', sort(Creator::validLanguages())), "\n";
+        "              ", join(' ', sort(Creator::validLanguages())), "\n";
   exit(0);
 }
 
