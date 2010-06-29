@@ -5,7 +5,7 @@ Tue Jun 29 14:45:21 UTC 2010  Chris Cleeland  <cleeland@bobke2.local>
         * templates/cdt6lib.mpt:
         * templates/cdt6exe.mpt:
 
-          Added missing $Id$ to correct fuzz errors.
+          Added missing dollar-Id-dollar to correct fuzz errors.
 
 Tue Jun 29 13:41:39 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
