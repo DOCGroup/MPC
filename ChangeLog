@@ -1,3 +1,11 @@
+Fri Jul  9 21:16:23 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/CDT6WorkspaceCreator.pm:
+        * modules/WB26WorkspaceCreator.pm:
+
+          Account for the -into directory when listing the full path to
+          the project file inside the workspace file.
+
 Tue Jun 29 18:18:56 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
 
         * modules/TemplateParser.pm: split_parameters() was returning an
