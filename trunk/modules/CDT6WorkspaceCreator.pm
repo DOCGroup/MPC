@@ -66,9 +66,10 @@ sub write_comps {
   my $crlf = $self->crlf();
   $self->{'seen_deps'} = {};
 
+  my $prefix = ($self->{'into'} ne '') ? $self->{'into'} . '/' : '';
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     print $fh "$$info{$project}->[0] ",
-      Cwd::abs_path($self->mpc_dirname($project)), '/.project', $crlf;
+      Cwd::abs_path($prefix . $self->mpc_dirname($project)), '/.project', $crlf;
     $self->add_dependencies($creator, $project);
   }
 }
