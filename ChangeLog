@@ -1,3 +1,8 @@
+Tue Jul 13 11:33:37 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/VC10ProjectCreator.pm:
+          Updated for msvc10, thanks to Max Zhou <earthdog at 126.com>
+
 Tue Jul 13 11:20:59 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc10.mpd:
