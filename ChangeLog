@@ -1,3 +1,9 @@
+Tue Jul 13 14:37:32 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/TemplateParser.pm:
+          Added more support for msvc10 by adding new_guid, thanks to Max Zhou
+          <earthdog at 126.com>
+
 Tue Jul 13 14:14:47 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/VC10ProjectCreator.pm:
