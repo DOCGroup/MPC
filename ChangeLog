@@ -1,3 +1,14 @@
+Tue Jul 13 14:14:47 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/VC10ProjectCreator.pm:
+        * templates/vc10dll.mpt:
+        * templates/vc10exe.mpt:
+        * templates/vc10lib.mpt:
+        * templates/vc10libexe.mpt:
+        * templates/vc10platforms.mpt:
+          Added more support for msvc10, thanks to Max Zhou
+          <earthdog at 126.com>
+
 Tue Jul 13 11:33:37 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/VC10ProjectCreator.pm:

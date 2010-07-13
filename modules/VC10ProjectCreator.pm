@@ -18,10 +18,10 @@ use vars qw(@ISA);
 @ISA = qw(VC9ProjectCreator);
 
 my %info = (Creator::cplusplus => {'ext'      => '.vcxproj',
-                                   'dllexe'   => 'vc8exe',
-                                   'libexe'   => 'vc8libexe',
-                                   'dll'      => 'vc8dll',
-                                   'lib'      => 'vc8lib',
+                                   'dllexe'   => 'vc10exe',
+                                   'libexe'   => 'vc10libexe',
+                                   'dll'      => 'vc10dll',
+                                   'lib'      => 'vc10lib',
                                    'template' => [ 'vc10', 'vc10filters' ],
                                   },
            );
