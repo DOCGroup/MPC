@@ -53,17 +53,21 @@ sub get_configurable {
 ## with .filters extension. So we need to return two
 ## templates.
 sub get_template {
-	my $self = shift;
-	my $templates = $self->SUPER::get_template;
+  my $self = shift;
+  my $templates = $self->SUPER::get_template();
 
-	return @$templates;
+  return (UNIVERSAL::isa($templates, 'ARRAY') ? @$templates : $templates);
 }
 
 sub file_visible {
   my($self, $template) = @_;
-  my $templates = $self->SUPER::get_template;
+  my $templates = $self->SUPER::get_template();
 
-  return ($template eq $$templates[0]);
+  if (UNIVERSAL::isa($templates, 'ARRAY')) {
+    return ($template eq $$templates[0]);
+  }
+
+  return 1;
 }
 
 ## If the template is one of the additional templates,
@@ -73,7 +77,7 @@ sub project_file_name {
 
   my $project_file_name = $self->SUPER::project_file_name($name, $template);
   if (!$self->file_visible($template)) {
-	  $project_file_name .= '.filters';
+    $project_file_name .= '.filters';
   }
 
   return $project_file_name;

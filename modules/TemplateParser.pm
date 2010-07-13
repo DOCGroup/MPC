@@ -79,7 +79,7 @@ my %keywords = ('if'              => 0,
                 'end_aux_file'    => 0,
                 'translate_vars'  => 2 | 1,
                 'convert_slashes' => 2,
-				'new_guid'        => 0,
+                'new_guid'        => 0,
                );
 
 my %target_type_vars = ('type_is_static'   => 1,
