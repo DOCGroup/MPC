@@ -1,3 +1,14 @@
+Tue Jul 13 16:38:44 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/TemplateParser.pm:
+
+          Removed tabs.
+
+        * modules/VC10ProjectCreator.pm:
+
+          Fixed a bug relating to the get_template() implementation that
+          arose when the language is not C++.
+
 Tue Jul 13 14:37:32 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/TemplateParser.pm:
@@ -25,18 +36,6 @@ Tue Jul 13 11:20:59 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
         * templates/vc10.mpd:
         * templates/vc10filters.mpd:
           New files for vc10
-
-Tue Jul 13 11:12:49 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * modules/TemplateParser.pm:
-        * modules/VC10ProjectCreator.pm:
-
-        * templates/vc10.mpd:
-        * templates/vc10dll.mpt:
-        * templates/vc10exe.mpt:
-        * templates/vc10filters.mpd:
-        * templates/vc10lib.mpt:
-        * templates/vc10libexe.mpt:
 
 Fri Jul  9 21:16:23 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
