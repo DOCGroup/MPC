@@ -1,3 +1,10 @@
+Wed Jul 14 05:00:11 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/wix.mpb:
+
+          Added a prebuild command to delete the old installer before
+          building the new installer.
+
 Tue Jul 13 16:38:44 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/TemplateParser.pm:
