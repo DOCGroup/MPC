@@ -106,17 +106,17 @@
 <outputType id="mpc.generated.cpp.linker.output.so.1" outputPrefix="<%lib_prefix%>" superClass="<%outputtype_superclass%>"/>
 <%endif%>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.assembler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.897965604" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>">
+<tool <%if(as)%>command="<%as%>"<%endif%> id="cdt.managedbuild.tool.gnu.assembler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.897965604" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>">
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.706221217" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.archiver.<%if(platform_specializer)%><%platform_specializer%>.<%endif%>base.134329701" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.<%if(platform_specializer)%><%platform_specializer%>.<%endif%>base"/>
-<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.1373363011" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>">
+<tool <%if(ar)%>command="<%ar%>"<%endif%> id="cdt.managedbuild.tool.gnu.archiver.<%if(platform_specializer)%><%platform_specializer%>.<%endif%>base.134329701" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.<%if(platform_specializer)%><%platform_specializer%>.<%endif%>base"/>
+<tool <%if(cxx)%>command="<%cxx%>"<%endif%> id="cdt.managedbuild.tool.gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.1373363011" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>">
 <option id="mpc.generated.cc.include.paths.1" superClass="<%cpp_compiler_option_superclass%>.include.paths" valueType="includePath">
 <%foreach(includes)%>
 <listOptionValue builtIn="false" value="<%if(!starts_with(include, [/\\\$]))%>../../<%endif%><%translate_vars(include, 1)%>"/>
 <%endfor%>
 </option>
-<option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c <%comment(here's where we can put in all the extra compiler flags)%><%cxxflags%><%if(use_threads)%> <%threadflags%><%endif%>" valueType="string"/>
+<option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c <%comment(here's where we can put in all the extra compiler flags)%><%cxxflags%><%if(use_threads)%> <%threadflags%><%endif%><%if(dll_ext && pic)%><%pic%><%endif%>" valueType="string"/>
 <option id="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level.886842330" name="Optimization Level" superClass="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level" value="gnu.cpp.compiler.optimization.level.<%optimization_level%>" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.debugging.level.63360527" name="Debug Level" superClass="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.debugging.level" value="gnu.cpp.compiler.debugging.level.<%debugging_level%>" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.preprocessor.def.1310953196" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
@@ -137,7 +137,7 @@
 -->
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1095450641" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.1634417374" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>">
+<tool <%if(cc)%>command="<%cc%>"<%endif%> id="cdt.managedbuild.tool.gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.1634417374" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>">
 <option id="mpc.generated.c.compiler.option.include.paths.1" superClass="<%c_compiler_option_superclass%>.include.paths" valueType="includePath">
 <%foreach(includes)%>
 <listOptionValue builtIn="false" value="<%if(!starts_with(include, [/\\\$]))%>../../<%endif%><%translate_vars(include, 1)%>"/>
