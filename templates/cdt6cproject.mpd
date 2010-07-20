@@ -78,12 +78,12 @@
 <%if(custom_only)%>
 <tool id="org.eclipse.cdt.build.core.settings.holder.libs.<%platform%>.<%configuration%>" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs" />
 <%else%>
-<tool id="<%c_linker_tool_superclass_root%>.<%project_type%>.<%configuration%>.1311461244" name="<%tool_name_prefix%> C Linker" superClass="<%c_linker_tool_superclass_root%>.<%project_type%>.<%configuration%>">
+<tool <%if(ccld)%>command="<%ccld%>"<%else%><%if(cc)%>command="<%cc%>"<%endif%><%endif%> id="<%c_linker_tool_superclass_root%>.<%project_type%>.<%configuration%>.1311461244" name="<%tool_name_prefix%> C Linker" superClass="<%c_linker_tool_superclass_root%>.<%project_type%>.<%configuration%>">
 <%if(type_is_dynamic)%>
 <option defaultValue="true" id="<%c_linker_dynamiclib_superclass%>.1" name="Shared/Dynamic" superClass="<%c_linker_dynamiclib_superclass%>" valueType="boolean"/>
 <%endif%>
 </tool>
-<tool id="<%cpp_linker_tool_superclass_root%>.<%project_type%>.<%configuration%>.335515345" name="<%tool_name_prefix%> C++ Linker" superClass="<%cpp_linker_tool_superclass_root%>.<%project_type%>.<%configuration%>">
+<tool <%if(cxxld)%>command="<%cxxld%>"<%else%><%if(cxx)%>command="<%cxx%>"<%endif%><%endif%> id="<%cpp_linker_tool_superclass_root%>.<%project_type%>.<%configuration%>.335515345" name="<%tool_name_prefix%> C++ Linker" superClass="<%cpp_linker_tool_superclass_root%>.<%project_type%>.<%configuration%>">
 <option id="mpc.generated.link.libpaths.1" superClass="<%linker_option_superclass%>.paths" valueType="libPaths">
 <%foreach(libpaths)%>
 <listOptionValue builtIn="false" value="<%if(!starts_with(libpath, [/\\\$]))%>../../<%endif%><%translate_vars(libpath, 1)%>"/>
