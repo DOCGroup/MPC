@@ -52,7 +52,9 @@ cellppu {
   as = ppu-as
   ar = ppu-ar
   cc = ppu-gcc
+  // can set ccld to name of C Linker if different from cc
   cxx = ppu-g++
+  // can set cxxld to name of C++ Linker if different from cxx
 
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
