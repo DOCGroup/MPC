@@ -115,8 +115,10 @@ sub list_file_body {
             '#----------------------------------------------------------------------------', $crlf);
 
   ## Print out each target separately
+  my $prefix = ($self->{'into'} ne '') ? $self->{'into'} . '/' : '';
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
-    print $fh Cwd::abs_path($self->mpc_dirname($project)), '/.project', $crlf;
+    print $fh Cwd::abs_path($prefix . $self->mpc_dirname($project)),
+      '/.project', $crlf;
   }
 }
 

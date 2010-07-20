@@ -1,3 +1,6 @@
+// -*- MPC -*-
+// $Id$
+
 conditional_include "cdt6platforms"
 
 configurations = debug release

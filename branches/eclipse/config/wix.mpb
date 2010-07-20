@@ -16,11 +16,13 @@ project {
     inputext = .wxi
   }
 
-  postbuild = \
-    <%quote%>$(WIX_ROOT)/bin/light.exe<%quote%> -out <%project_name%>.msi \
-    <%light_flags%> <%foreach(wxs_files)%><%noextension(wxs_file)%>.wixobj <%endfor%>
 
-  specific(prop:microsoft) {
+  specific {
     wix_flags += -dtype=<%prj_type%>
+
+    prebuild  += <%rm%> <%project_name%>.msi
+    postbuild += \
+      <%quote%>$(WIX_ROOT)/bin/light.exe<%quote%> -out <%project_name%>.msi \
+      <%light_flags%> <%foreach(wxs_files)%><%noextension(wxs_file)%>.wixobj <%endfor%>
   }
 }
