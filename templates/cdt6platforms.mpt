@@ -1,5 +1,7 @@
 // -*- MPC -*-
 //
+// $Id$
+//
 // Any of these platforms can be set using
 //   -value_template platforms="blah blah blah"
 // when generating a CDT project/workspace combo.  The default is to use the
