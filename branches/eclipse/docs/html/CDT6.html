@@ -158,18 +158,78 @@ $ mwc.pl -type cdt6 TAO_ACE.mwc
      projects.  If you didn't uncheck <strong>Build
      Automatically</strong>, then builds will start.  Regardless, the
      C++ indexer will run in the background across the source of all projects.</li>
+   </ol>
+   
+   <h4>Building A Project</h4>
+   To build a project or set of projects, select the project (or
+   projects) in the <em>Project</em> pane, then select
+   <strong>Project->Build Project</strong>. Eclipse will evaluate
+   <em>ALL</em> dependencies automatically, though not necessarily
+   quickly.
+   <p>
+   <em>Hint:</em> a good choice to get all of ACE/TAO built is to
+   choose the <em>Naming Service</em> project.
 
-     <h4>Building A Project</h4>
-     To build a project or set of projects, select the project (or
-     projects) in the <em>Project</em> pane, then select
-     <strong>Project->Build Project</strong>. Eclipse will evaluate
-     <em>ALL</em> dependencies automatically, though not necessarily
-     quickly.
-     <p>
-     <em>Hint:</em> a good choice to get all of ACE/TAO built is to
-     choose the <em>Naming Service</em> project.
- </div>
+</div>
 
+<div>
+  <h3 class="Head2">Multiple Platforms</h3>
+  Just as a project created within CDT can be set up to support
+  multiple platforms, so too can projects generated via MPC. To the
+  extent possible, the platforms are represented in generated projects
+  in the same way as they are in "native" projects (though there will
+  be some differences).
+
+  <h4>Generating Projects with Multiple Platform Support</h4>
+  <p>
+  Platforms are named in a list called <samp>platforms</samp> in the
+  CDT6 template (much like other MPC templates). The list defaults to
+  the platform on which <samp>mwc.pl</samp> is run.  To generate for
+  another platforms, or for additional platforms, you must provide
+  <samp>platforms</samp> with the list of platforms to generate.
+  </p>
+  <p>
+  Generate projects using a similar incantation to the default (from
+  above) using <samp>-type cdt6</samp> and <samp>-value_template
+  platform="&lt;platform_list&gt;"</samp>, insuring the
+     use of <samp>mwc.pl</samp> from within ACE, e.g.,
+     <blockquote><pre>
+$ cd $TAO_ROOT
+$ mwc.pl -type cdt6 -value_template platforms="linux cellppu" TAO_ACE.mwc
+</pre></blockquote>
+  </p>
+  <p>
+  Platforms are defined as scopes in <tt>templates/cdt6platforms.mpt</tt>.
+  </p>
+
+  <h4>Cross-Compilation</h4>
+  <p>
+  Cross-compilation is handled the same as a platform; the target is
+  the platform.  If you want to generate for cross-compilation, the
+  cross-compiler information must be defined in a scope (typically
+  named for the target type) in
+  <tt>templates/cdt6platforms.mpt</tt>. If a scope does not exist for
+  the target, follow <a href="#addplatform">the instructions for adding
+  a new platform.</a>
+  </p>
+  <p>
+  In the example given above, <samp>cellppu</samp> is the name of the
+  platform for cross-compilation.
+  </p>
+  
+  <h4>Adding a New Platform<a name="addplatform"></a></h4>
+  To add a new platform, particularly one for cross-compilation, it's
+  probably easiest to start from an existing scope, e.g.,
+  <samp>cellppu</samp>. For cross-compilation where the cross-compiler
+  toolchain is GNU Compiler-based, you will need to provide the names
+  of the various executables in the toolchain in the values
+  <samp>as</samp>, <samp>ar</samp>, <samp>cc</samp>, and
+  <samp>cxx</samp>.  And, optionally, <samp>ccld</samp> and/or
+  <samp>cxxld</samp> if the linker used for linking C and C++
+  executables, respectively, is different from the respective
+  compiler. CDT expects these to be in the path.
+
+</div>
   <div>
     <h3 class="Head2">Notes</h3>
     <ol>
@@ -224,5 +284,5 @@ $ mwc.pl -type cdt6 TAO_ACE.mwc
 
 <hr>
 <address></address>
-<!-- hhmts start --> Last modified: Sun Jun 27 21:00:32 CDT 2010 <!-- hhmts end -->
+<!-- hhmts start --> Last modified: Thu Jul 22 11:14:15 CDT 2010 <!-- hhmts end -->
 </body> </html>
