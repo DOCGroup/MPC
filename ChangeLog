@@ -1,3 +1,22 @@
+Wed Jul 21 20:34:03 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+
+        Merge out the following changes from the eclipse branch:
+
+	* templates/cdt6cproject.mpd:
+        * templates/cdt6dll.mpt:
+	* templates/cdt6platforms.mpt:
+
+	  Initial work for supporting a cross-compile platform. Fix for RT
+	  14228 related to the lack of -fPIC option.
+
+	* templates/cdt6cproject.mpd, templates/cdt6platforms.mpt:
+
+	  Fixed issue where linker exe names could not be overridden.
+
+        * docs/html/CDT6.html:
+
+          Update documentation.
+
 Wed Jul 14 05:00:11 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/wix.mpb:
