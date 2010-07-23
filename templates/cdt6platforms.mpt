@@ -48,6 +48,22 @@ linux {
   platform_libs += rt dl
 }
 
+// cellppu is an example for how to do a cross-compile (or, really, any compile using
+// tools with non-standard names).
+cellppu {
+  as = ppu-as
+  ar = ppu-ar
+  cc = ppu-gcc
+  // can set ccld to name of C Linker if different from cc
+  cxx = ppu-g++
+  // can set cxxld to name of C++ Linker if different from cxx
+
+  binary_parsers = org.eclipse.cdt.core.ELF
+  error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
+  threadflags = -pthread
+  platform_libs += rt dl
+}
+
 // This scope serves as an example of a custom platform.  On 64-bit linux,
 // you can compile a 32-bit binary by passing -m32 to gcc.  Using this custom
 // platform, MPC can generate CDT projects that have "Build Configurations"
