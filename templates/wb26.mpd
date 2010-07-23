@@ -17,6 +17,9 @@
 	<natures>
 		<nature>com.windriver.ide.core.wrnature</nature>
 		<nature>com.windriver.ide.core.wrcorenature</nature>
+<%foreach(additional_natures)%>
+                <nature><%additional_nature%></nature>
+<%endfor%>
 	</natures>
 <%if(!standard_build && make_coexistence)%>
 	<linkedResources>
