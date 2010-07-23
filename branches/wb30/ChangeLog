@@ -1,0 +1,200 @@
+Wed Jul 14 05:00:11 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/wix.mpb:
+
+          Added a prebuild command to delete the old installer before
+          building the new installer.
+
+Tue Jul 13 16:38:44 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/TemplateParser.pm:
+
+          Removed tabs.
+
+        * modules/VC10ProjectCreator.pm:
+
+          Fixed a bug relating to the get_template() implementation that
+          arose when the language is not C++.
+
+Tue Jul 13 14:37:32 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/TemplateParser.pm:
+          Added more support for msvc10 by adding new_guid, thanks to Max Zhou
+          <earthdog at 126.com>
+
+Tue Jul 13 14:14:47 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/VC10ProjectCreator.pm:
+        * templates/vc10dll.mpt:
+        * templates/vc10exe.mpt:
+        * templates/vc10lib.mpt:
+        * templates/vc10libexe.mpt:
+        * templates/vc10platforms.mpt:
+          Added more support for msvc10, thanks to Max Zhou
+          <earthdog at 126.com>
+
+Tue Jul 13 11:33:37 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/VC10ProjectCreator.pm:
+          Updated for msvc10, thanks to Max Zhou <earthdog at 126.com>
+
+Tue Jul 13 11:20:59 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc10.mpd:
+        * templates/vc10filters.mpd:
+          New files for vc10
+
+Fri Jul  9 21:16:23 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/CDT6WorkspaceCreator.pm:
+        * modules/WB26WorkspaceCreator.pm:
+
+          Account for the -into directory when listing the full path to
+          the project file inside the workspace file.
+
+Tue Jun 29 18:18:56 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+
+        * modules/TemplateParser.pm: split_parameters() was returning an
+        empty parameter.  This should fix errant extra whitespace
+        generated in bmake test output.
+
+Tue Jun 29 14:45:21 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+
+        * templates/cdt6platforms.mpt:
+        * templates/cdt6dll.mpt:
+        * templates/cdt6lib.mpt:
+        * templates/cdt6exe.mpt:
+
+          Added missing dollar-Id-dollar to correct fuzz errors.
+
+Tue Jun 29 13:41:39 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * devtools/document_template.pl:
+
+          Fixed the usage message.
+
+Mon Jun 28 20:16:54 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+
+        * modules/CDT6ProjectCreator.pm:
+        * modules/CDT6WorkspaceCreator.pm:
+        * templates/cdt6platforms.mpt:
+        * templates/cdt6cproject.mpd:
+        * templates/cdt6dll.mpt:
+        * templates/cdt6lib.mpt:
+        * templates/cdt6exe.mpt:
+        * templates/cdt6project.mpd:
+
+          Merged in initial EXPERIMENTAL release of CDT6 project
+          type generation from the "eclipse" branch.
+
+        * docs/html/CDT6.html:
+        * docs/templates/cdt6project.txt:
+        * docs/templates/cdt6cproject.txt:
+
+          Draft documentation on the project type.
+
+        * config/global.mpb:
+
+          Modification to allow specification of threads.
+
+        * devtools/document_template.pl:
+
+          Modified to allow use for generating a stubbed out template
+          variable document.
+
+        * modules/TemplateParser.pm:
+
+          Added functions create_aux_file/end_aux_file, translate_vars,
+          and convert_slashes.
+
+Mon Jun 28 18:01:08 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * modules/WorkspaceCreator.pm:
+
+          Reverted change below.
+
+Mon Jun 28 16:26:00 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * modules/WorkspaceCreator.pm:
+
+          Bug fix where the negated types in excludes () were not
+          handled correctly.
+
+Mon Jun 28 05:55:54 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * templates/wix.mpd:
+
+          The Id attribute for the exename/sharedname was not normalized.
+
+Mon Jun 28 05:42:48 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * templates/wix.mpd:
+
+          Bug fix where the generated Id for the File element contained
+          invalid characters.
+
+Mon Jun 28 04:46:49 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * templates/wix.mpd:
+
+          Bug fix where the File element used the auto-generated Id
+          attribute, which resulted in duplicate keys in the installer
+          when different project had files with the same name.
+
+Fri Jun 25 21:56:03 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          When parsing the .am file, a line with a : is not an explicit target
+          if it's a continuation of the previous line (ending with \).
+
+Wed Jun 23 18:08:17 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_ts_defaults.mpb:
+          Upgraded TAO version in preparation of the upcoming release
+
+Thu Jun 17 03:32:07 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/wix.mpb:
+
+          Reverted change below.
+
+Thu Jun 17 03:27:06 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/wix.mpb:
+
+          Moved the quote tags to a different location.
+
+Mon Jun 14 23:52:33 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * templates/wix.mpd:
+
+          Bug fix where invalid Id is generated if the binary's
+          name contained a dash.
+
+          Added support for installing GME decorators.
+
+Mon Jun 14 22:06:56 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Only replace psuedo variables on actual keywords during variable
+          modification.  User defined keywords must not have the parameters
+          replaced in order for them to get the correct replacement values
+          later on.
+
+Wed Jun  9 07:35:19 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc8.mpd:
+          Added OptimizeReferences and EnableCOMDATFolding to be setting
+          without setting optimize as global flag
+
+Tue Jun  8 16:06:10 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * MPC version 3.8.0 released.
+
+Local Variables:
+mode: change-log
+add-log-time-format: (lambda () (progn (setq tz (getenv "TZ")) (set-time-zone-rule "UTC") (setq time (format-time-string "%a %b %e %H:%M:%S %Z %Y" (current-time))) (set-time-zone-rule tz) time))
+indent-tabs-mode: nil
+End:

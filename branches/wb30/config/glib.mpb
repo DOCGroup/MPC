@@ -1,0 +1,17 @@
+//
+// $Id$
+//
+
+project {
+  // Support alternate versions of glib:
+  expand(GLIB_VERSION) {
+    $GLIB_VERSION
+    2.0
+  }
+
+  includes      += $(GLIB_ROOT)/include/glib-$(GLIB_VERSION) \
+                   $(GLIB_ROOT)/lib/glib-$(GLIB_VERSION)/include
+  libpaths      += $(GLIB_ROOT)/lib
+  
+  lit_libs      += glib-$(GLIB_VERSION)
+}
