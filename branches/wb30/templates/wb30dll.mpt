@@ -1,0 +1,33 @@
+conditional_include "wb26dll"
+
+additional_natures = org.eclipse.cdt.core.cnature org.eclipse.cdt.core.ccnature
+
+platform = Linux
+
+// platforms
+
+Linux {
+  no_platform_in_wrproject = 1
+  platform_name =
+  exe_ext =
+  dll_ext = .so
+
+  buildspecs = Linux_gnu_native_3.x_4.x
+  // not currently supported: Linux_gnu_native_2.9x
+  default_buildspec = Linux_gnu_native_3.x_4.x
+
+  wrprj_macros = TOOL_PATH LIBPATH LIBS ADAPT_DEPS
+}
+
+
+// buildspecs
+
+Linux_gnu_native_3.x_4.x {
+  adapt_deps = my_adapt_deps_setting
+  wb_libpath =
+  wb_libs =
+  tool_path =
+  cxx = g++
+}
+
+conditional_include "user_wb30dll"

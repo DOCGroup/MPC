@@ -1,11 +1,12 @@
-# The file ".wrmakefile" is the template used by the Wind River Workbench to
+<%foreach(platform)%><%comment(there can't be more than one active platform but using a foreach allows platform settings to be grouped in scopes in the mpt files)%># The file ".wrmakefile" is the template used by the Wind River Workbench to
 # generate the makefiles of this project. Add user-specific build targets and
 # make rules only(!) in this project's ".wrmakefile" file. These will then be
 # automatically dumped into the makefiles.
 
 WIND_HOME := $(subst \,/,$(WIND_HOME))
-WIND_BASE := $(subst \,/,$(WIND_BASE))
-WIND_USR := $(subst \,/,$(WIND_USR))
+<%foreach(platform_makefilevars)%>
+<%platform_makefilevar%> := $(subst \,/,$(<%platform_makefilevar%>))
+<%endfor%>
 ACE_ROOT := $(subst \,/,$(ACE_ROOT))
 TAO_ROOT := $(subst \,/,$(TAO_ROOT))
 CIAO_ROOT := $(subst \,/,$(CIAO_ROOT))
@@ -25,7 +26,7 @@ ACE_EXEOUT := <%exeout%>
 ACE_TARGET_PREFIX :=
 ACE_TARGET_NAME := <%exename%>
 ACE_TARGET_EXT := <%exe_ext%>
-PROJECT_TARGET=$(filter %<%exe_ext%>,$(PROJECT_TARGETS))
+PROJECT_TARGET=<%if(exe_ext)%>$(filter %<%exe_ext%>,$(PROJECT_TARGETS))<%else%>$(PROJECT_TARGETS)<%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
 ACE_TARGET_PREFIX := <%lib_prefix%>
@@ -74,7 +75,7 @@ main_all : check_objectdir external_build $(PROJECT_TARGETS)
 <%else%>
 main_all : external_build $(PROJECT_TARGETS)
 <%endif%>
-        @echo "make: built targets of `pwd`"
+	@echo "make: built targets of `pwd`"
 <%endif%>
 
 <%if(standard_build)%>
@@ -373,3 +374,4 @@ $(OBJ_DIR)/<%lib_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><
 endif
 <%endif%>
 <%endif%>
+<%endfor%>

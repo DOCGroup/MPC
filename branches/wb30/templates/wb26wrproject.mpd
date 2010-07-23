@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wrxml>
-    <properties platform="<%platform%>" platform_name="<%platform_name%>" root="1" type="<%project_type%>"/>
+<%foreach(platform)%><%comment(there can't be more than one active platform but using a foreach allows platform settings to be grouped in scopes in the mpt files)%><wrxml>
+    <properties platform="<%if(!no_platform_in_wrproject)%><%platform%><%endif%>" <%if(platform_name)%>platform_name="<%platform_name%>" <%endif%>root="1" type="<%project_type%>"/>
 <%if(after && enable_subprojects && exename)%>
     <subprojects>
         <!-- MPC ADD DEPENDENCIES -->
@@ -32,40 +32,33 @@
 <%endif%>
 <%foreach(buildspecs)%>
             <listAttribute key="BLD::Info|Incl|<%buildspec%>">
-                <stringAttribute value="-I$(WIND_BASE)/target/h"/>
-                <stringAttribute value="-I$(WIND_BASE)/target/h/wrn/coreip"/>
-<%foreach(includes)%>
+<%foreach(includes platform_includes)%>
                 <stringAttribute value="-I<%include%>"/>
 <%endfor%>
             </listAttribute>
 <%endfor%>
             <listAttribute key="BLD::Info|Macros">
-                <stringAttribute value="VX_CPU_FAMILY"/>
-                <stringAttribute value="CPU"/>
-                <stringAttribute value="TOOL_FAMILY"/>
-                <stringAttribute value="TOOL"/>
-                <stringAttribute value="TOOL_PATH"/>
-                <stringAttribute value="CC_ARCH_SPEC"/>
+<%foreach(wrprj_macros)%>
+                <stringAttribute value="<%wrprj_macro%>"/>
+<%endfor%>
             </listAttribute>
 <%foreach(buildspecs)%>
-            <stringAttribute key="BLD::Info|Macro|CC_ARCH_SPEC|value|<%buildspec%>" value="<%cc_arch_spec%>"/>
-            <stringAttribute key="BLD::Info|Macro|CPU|value|<%buildspec%>" value="<%cpu%>"/>
-            <stringAttribute key="BLD::Info|Macro|TOOL_FAMILY|value|<%buildspec%>" value="<%tool_family%>"/>
-            <stringAttribute key="BLD::Info|Macro|TOOL_PATH|value|<%buildspec%>" value=""/>
-            <stringAttribute key="BLD::Info|Macro|TOOL|value|<%buildspec%>" value="<%tool%>"/>
-            <stringAttribute key="BLD::Info|Macro|VX_CPU_FAMILY|value|<%buildspec%>" value="<%vx_cpu_family%>"/>
+<%foreach(wrprj_macros)%>
+            <stringAttribute key="BLD::Info|Macro|<%wrprj_macro%>|value|<%buildspec%>" value="<%deref(wrprj_macro)%>"/>
+<%endfor%>
 <%endfor%>
             <listAttribute key="BLD::Info|Tools">
                 <stringAttribute value="C-Compiler"/>
                 <stringAttribute value="C++-Compiler"/>
+<%if(compares(platform, VxWorks))%>
 <%if(sharedname || staticname)%>
                 <stringAttribute value="Linker"/>
                 <stringAttribute value="Partial Image Linker"/>
+<%endif%>
                 <stringAttribute value="Librarian"/>
 <%else%>
-                <stringAttribute value="Linker"/>
-                <stringAttribute value="Partial Image Linker"/>
-                <stringAttribute value="Librarian"/>
+                <stringAttribute value="C-Linker"/>
+                <stringAttribute value="C++-Linker"/>
 <%endif%>
                 <stringAttribute value="Assembler"/>
             </listAttribute>
@@ -215,3 +208,4 @@
 <%endif%>
 </wrxml>
 
+<%endfor%>

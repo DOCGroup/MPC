@@ -80,6 +80,7 @@ my %keywords = ('if'              => 0,
                 'translate_vars'  => 2 | 1,
                 'convert_slashes' => 2,
                 'new_guid'        => 0,
+                'deref'           => 0,
                );
 
 my %target_type_vars = ('type_is_static'   => 1,
@@ -1835,6 +1836,13 @@ sub handle_new_guid {
   my $prjc = $self->{'prjc'};
   my $guid = GUID::generate($val ? $val : $name, $prjc->{'current_input'}, $prjc->getcwd());
   $self->append_current($guid);
+}
+
+
+sub handle_deref {
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($self->get_value_with_default($name));
+  $self->append_current($val);
 }
 
 
