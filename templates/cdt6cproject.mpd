@@ -116,7 +116,7 @@
 <listOptionValue builtIn="false" value="<%if(!starts_with(include, [/\\\$]))%>../../<%endif%><%translate_vars(include, 1)%>"/>
 <%endfor%>
 </option>
-<option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c <%comment(here's where we can put in all the extra compiler flags)%><%cxxflags%><%if(use_threads)%> <%threadflags%><%endif%><%if(dll_ext && pic)%><%pic%><%endif%>" valueType="string"/>
+<option id="gnu.cpp.compiler.option.other.other.375481234" superClass="gnu.cpp.compiler.option.other.other" value="-c <%comment(here's where we can put in all the extra compiler flags)%><%cxxflags%><%if(use_threads)%> <%threadflags%><%endif%><%if(dll_ext && pic)%> <%pic%><%endif%>" valueType="string"/>
 <option id="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level.886842330" name="Optimization Level" superClass="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.optimization.level" value="gnu.cpp.compiler.optimization.level.<%optimization_level%>" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.debugging.level.63360527" name="Debug Level" superClass="gnu.cpp.compiler.<%if(platform_specializer)%><%platform_specializer%>.<%endif%><%project_type%>.<%configuration%>.option.debugging.level" value="gnu.cpp.compiler.debugging.level.<%debugging_level%>" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.preprocessor.def.1310953196" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">

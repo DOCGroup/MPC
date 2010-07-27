@@ -1,3 +1,8 @@
+Tue Jul 27 15:40:16 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+
+        * templates/cdt6cproject.mpd: Added missing space between thread
+        flags and pic flags.
+
 Wed Jul 21 20:34:03 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
 
         Merge out the following changes from the eclipse branch:
