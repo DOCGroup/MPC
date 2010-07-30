@@ -24,6 +24,12 @@ VxWorks {
   wrprj_macros = VX_CPU_FAMILY CPU TOOL_FAMILY TOOL TOOL_PATH CC_ARCH_SPEC
   buildspecs = PPC604gnu PPC603gnu PENTIUM4gnu PPC85XXgnu
   default_buildspec = PPC604gnu
+  platform_asflags = -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL
+  platform_cxxflags = -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL
+  platform_ccflags = -DCPU=$(CPU) -DTOOL_FAMILY=$(TOOL_FAMILY) -DTOOL=$(TOOL) -D_WRS_KERNEL
+  librarian_objects = @$(PRJ_ROOT_DIR)/filelist.txt
+  exe_buildtool = Linker
+  project_type_macro = DKM
 }
 
 linkflags =
