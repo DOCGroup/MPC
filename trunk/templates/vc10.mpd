@@ -768,7 +768,7 @@
   <ItemGroup>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
-    <CustomBuildStep Include="<%custom_type->input_file%>">
+    <CustomBuild Include="<%custom_type->input_file%>">
 <%foreach(configurations)%>
 <%foreach(platforms)%>
       <Command Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(custom_type->libpath)%>PATH=%PATH%;<%custom_type->libpath%>&#x0D;&#x0A;<%endif%><%if(flag_overrides(custom_type->input_file, gendir))%>if not exist <%flag_overrides(custom_type->input_file, gendir)%> mkdir <%flag_overrides(custom_type->input_file, gendir)%>&#x0D;&#x0A;<%endif%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%if(custom_type->output_option)%>&quot;<%custom_type->input_file%>&quot; <%custom_type->output_option%><%foreach(custom_type->input_file->output_files)%> &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>&quot;<%endfor%><%else%>&quot;<%custom_type->input_file%>&quot;<%endif%><%if(flag_overrides(custom_type->input_file, postcommand))%><%foreach(custom_type->input_file)%> &amp;&amp; <%flag_overrides(custom_type->input_file, postcommand)%><%endfor%><%else%><%if(custom_type->postcommand)%><%foreach(custom_type->input_file)%> &amp;&amp; <%custom_type->postcommand%><%endfor%><%endif%><%endif%><%if(pch_header)%><%if(custom_type->pch_postrule)%><%foreach(custom_type->input_file->source_output_files)%> &amp;&amp; echo #include &quot;<%pch_header%>&quot; &gt; temporary.src &amp;&amp; type &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>&quot; &gt;&gt; temporary.src &amp;&amp; move /y temporary.src &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>&quot;<%endfor%><%endif%><%endif%></Command>
@@ -787,7 +787,7 @@
 <%endif%>
 <%endfor%>
 <%endfor%>
-    </CustomBuildStep>
+    </CustomBuild>
 <%else%>
     <None Include="<%custom_type->input_file%>">
 <%foreach(configurations)%>
@@ -811,14 +811,14 @@
 <%if(documentation_files)%>
   <ItemGroup>
 <%foreach(documentation_files)%>
-    <CustomBuildStep Include="<%documentation_file%>">
+    <CustomBuild Include="<%documentation_file%>">
       <FileType>Document</FileType>
 <%foreach(configurations)%>
 <%foreach(platforms)%>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">true</ExcludedFromBuild>
 <%endfor%>
 <%endfor%>
-    </CustomBuildStep>
+    </CustomBuild>
 <%endfor%>
   </ItemGroup>
 <%endif%>
