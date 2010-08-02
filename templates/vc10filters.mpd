@@ -149,9 +149,9 @@
   <ItemGroup>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
-    <CustomBuildStep Include="<%custom_type->input_file%>">
+    <CustomBuild Include="<%custom_type->input_file%>">
       <Filter><%ucw(custom_type)%></Filter>
-    </CustomBuildStep>
+    </CustomBuild>
 <%else%>
     <None Include="<%custom_type->input_file%>">
       <Filter><%ucw(custom_type)%></Filter>
@@ -204,16 +204,16 @@
 <%if(grouped_documentation_files)%>
 <%foreach(sort(grouped_documentation_files))%>
 <%foreach(grouped_documentation_file->files)%>
-    <CustomBuildStep Include="<%grouped_documentation_file->file%>">
+    <CustomBuild Include="<%grouped_documentation_file->file%>">
       <Filter><%grouped_documentation_file%></Filter>
-    </CustomBuildStep>
+    </CustomBuild>
 <%endfor%>
 <%endfor%>
 <%else%>
 <%foreach(documentation_files)%>
-    <CustomBuildStep Include="<%documentation_file%>">
+    <CustomBuild Include="<%documentation_file%>">
       <Filter>Documentation</Filter>
-    </CustomBuildStep>
+    </CustomBuild>
 <%endfor%>
 <%endif%>
   </ItemGroup>

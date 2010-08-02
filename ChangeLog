@@ -1,3 +1,12 @@
+Mon Aug  2 15:24:10 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc10.mpd:
+        * templates/vc10filters.mpd:
+
+          Use <CustomBuild> instead of <CustomBuildStep> for custom actions
+          that apply to individual input files (as opposed to the custom
+          actions that apply to the project).
+
 Tue Jul 27 15:40:16 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
 
         * templates/cdt6cproject.mpd: Added missing space between thread
@@ -7,16 +16,16 @@ Wed Jul 21 20:34:03 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
 
         Merge out the following changes from the eclipse branch:
 
-	* templates/cdt6cproject.mpd:
+        * templates/cdt6cproject.mpd:
         * templates/cdt6dll.mpt:
-	* templates/cdt6platforms.mpt:
+        * templates/cdt6platforms.mpt:
 
-	  Initial work for supporting a cross-compile platform. Fix for RT
-	  14228 related to the lack of -fPIC option.
+          Initial work for supporting a cross-compile platform. Fix for RT
+          14228 related to the lack of -fPIC option.
 
-	* templates/cdt6cproject.mpd, templates/cdt6platforms.mpt:
+        * templates/cdt6cproject.mpd, templates/cdt6platforms.mpt:
 
-	  Fixed issue where linker exe names could not be overridden.
+          Fixed issue where linker exe names could not be overridden.
 
         * docs/html/CDT6.html:
 
