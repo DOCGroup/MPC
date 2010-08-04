@@ -15,10 +15,12 @@ Native {
 
   exe_ext =
   dll_ext = .so
+  dll_prefix = lib
   ar = ar
   ar_flags = crus
   librarian_objects = %Objects%
   exe_buildtool = C++-Linker
+  dll_buildtool = C++-Linker
 
   buildspecs = Linux_gnu_native_3.x_4.x  Windows_gnu_native_3.x_4.x
   default_buildspec = Linux_gnu_native_3.x_4.x
@@ -41,12 +43,15 @@ Linux_gnu_native_3.x_4.x {
   ass_dbgflags = -g
   cxx_dbgflags = -g
   c_dbgflags = -g
+  pic = -fPIC
+  shflags = -shared
 }
 
 Windows_gnu_native_3.x_4.x {
   exe_ext = .exe
   cxxlnk_derivedsigs = *.exe
   clnk_derivedsigs = *.exe
+  dll_prefix =
   dll_ext = .dll
   cxx = g++
   cc = gcc
@@ -59,6 +64,7 @@ Windows_gnu_native_3.x_4.x {
   ass_dbgflags = -g
   cxx_dbgflags = -g
   c_dbgflags = -g
+  shflags = -shared
 }
 
 conditional_include "user_wb30dll"
