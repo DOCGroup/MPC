@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <%foreach(platform)%><%comment(there can't be more than one active platform but using a foreach allows platform settings to be grouped in scopes in the mpt files)%><wrxml>
     <properties platform="<%if(!no_platform_in_wrproject)%><%platform%><%endif%>" <%if(platform_name)%>platform_name="<%platform_name%>" <%endif%>root="1" type="<%project_type%>"/>
-<%if(after && enable_subprojects && exename)%>
+<%if(after && !disable_subprojects)%>
     <subprojects>
         <!-- MPC ADD DEPENDENCIES -->
     </subprojects>
@@ -22,7 +22,7 @@
                 <stringAttribute value="PARTIAL_LIBS"/>
 <%endif%>
             </listAttribute>
-            <stringAttribute key="BLD::Info|GlobalMacro|DEFINES" value="<%foreach(defines common_defines macros staticflags)%>-D<%define%> <%endfor%>"/>
+            <stringAttribute key="BLD::Info|GlobalMacro|DEFINES" value="<%foreach(defines common_defines macros)%>-D<%define%> <%endfor%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>-D<%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>-D<%staticflag%> <%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%>-D<%pch_define%> <%endfor%><%endif%>"/>
             <stringAttribute key="BLD::Info|GlobalMacro|PROJECT_TYPE" value="<%if(project_type_macro)%><%project_type_macro%><%else%><%if(exename)%>APP<%endif%><%endif%>"/>
 <%if(compares(platform, VxWorks))%>
             <stringAttribute key="BLD::Info|GlobalMacro|EXPAND_DBG" value="0"/>
@@ -37,7 +37,7 @@
 <%foreach(buildspecs)%>
             <listAttribute key="BLD::Info|Incl|<%buildspec%>">
 <%foreach(includes platform_includes)%>
-                <stringAttribute value="-I<%include%>"/>
+                <stringAttribute value="-I<%if(!standard_build && !starts_with(include, [/\\\$]))%><%if(make_coexistence)%>../<%endif%>../<%endif%><%include%>"/>
 <%endfor%>
             </listAttribute>
 <%endfor%>
@@ -49,7 +49,7 @@
 <%foreach(buildspecs)%>
 <%foreach(sort(wrprj_macros))%>
 <%if(compares(wrprj_macro, LIBPATH))%>
-            <stringAttribute key="BLD::Info|Macro|LIBPATH|value|<%buildspec%>" value="<%foreach(libpaths)%><%fornotfirst(" ")%>-L<%libpath%><%endfor%>"/>
+            <stringAttribute key="BLD::Info|Macro|LIBPATH|value|<%buildspec%>" value="<%foreach(libpaths)%><%fornotfirst(" ")%>-L<%if(!standard_build && !starts_with(libpath, [/\\\$]))%><%if(make_coexistence)%>../<%endif%>../<%endif%><%translate_vars(libpath, 1)%><%endfor%>"/>
 <%else%>
 <%if(compares(wrprj_macro, LIBS))%>
             <stringAttribute key="BLD::Info|Macro|LIBS|value|<%buildspec%>" value="<%foreach(libs)%><%fornotfirst(" ")%>-l<%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%endfor%><%foreach(lit_libs)%> <%lit_lib%>.lib<%endfor%><%foreach(pure_libs)%> <%pure_lib%><%endfor%>"/>
@@ -99,7 +99,7 @@
 <%foreach(buildspecs)%>
             <stringAttribute key="BLD::Info|Tool|C++-Linker|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%cpplinkerprefix% $(TOOL_PATH)<%cxx%> %DebugModeFlags% %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) %Libraries% $(LIBPATH) $(LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS)"/>
             <stringAttribute key="BLD::Info|Tool|C++-Linker|dbgFlags|<%buildspec%>" value=""/>
-            <stringAttribute key="BLD::Info|Tool|C++-Linker|derivedSigs|<%buildspec%>" value="*"/>
+            <stringAttribute key="BLD::Info|Tool|C++-Linker|derivedSigs|<%buildspec%>" value="<%cxxlnk_derivedsigs("*")%>"/>
             <stringAttribute key="BLD::Info|Tool|C++-Linker|flags|<%buildspec%>" value=""/>
             <stringAttribute key="BLD::Info|Tool|C++-Linker|nonDbgFlags|<%buildspec%>" value=""/>
 <%endfor%>
@@ -121,7 +121,7 @@
 <%foreach(buildspecs)%>
             <stringAttribute key="BLD::Info|Tool|C-Linker|cmd|<%buildspec%>" value="echo &quot;building $@&quot;;%clinkerprefix% $(TOOL_PATH)<%if(cc)%><%cc%><%else%><%cxx%><%endif%> %DebugModeFlags% %ToolFlags% -o %OutFile% %Objects% $(ADDED_OBJECTS) %Libraries% $(LIBPATH) $(LIBS) $(ADDED_LIBPATH) $(ADDED_LIBS)"/>
             <stringAttribute key="BLD::Info|Tool|C-Linker|dbgFlags|<%buildspec%>" value=""/>
-            <stringAttribute key="BLD::Info|Tool|C-Linker|derivedSigs|<%buildspec%>" value="*"/>
+            <stringAttribute key="BLD::Info|Tool|C-Linker|derivedSigs|<%buildspec%>" value="<%clnk_derivedsigs("*")%>"/>
             <stringAttribute key="BLD::Info|Tool|C-Linker|flags|<%buildspec%>" value=""/>
             <stringAttribute key="BLD::Info|Tool|C-Linker|nonDbgFlags|<%buildspec%>" value=""/>
 <%endfor%>
@@ -213,10 +213,10 @@
 <%endif%>
             <contents>
 <%if(exename && compares(platform, VxWorks))%>
-                <buildtargetreference name="/<%project_name%>/PartialImage"/>
+                <buildtargetreference name="/<%project_prefix%><%project_name%>/PartialImage"/>
 <%else%>
 <%foreach(source_files)%>
-                <file name="/<%project_name%>/<%source_file%>"/>
+                <file name="/<%project_prefix%><%project_name%>/<%source_file%>"/>
 <%endfor%>
 <%foreach(source_dirs)%>
                 <folder name="/<%source_dir%>" recursive="false"/>
@@ -234,8 +234,11 @@
                 </mapAttribute>
             </attributes>
             <contents>
+<%if(pch_source)%>
+                <file name="/<%project_prefix%><%project_name%>/<%pch_source%>"/>
+<%endif%>
 <%foreach(source_files)%>
-                <file name="/<%project_name%>/<%source_file%>"/>
+                <file name="/<%project_prefix%><%project_name%>/<%source_file%>"/>
 <%endfor%>
 <%foreach(source_dirs)%>
                 <folder name="/<%source_dir%>" recursive="false"/>
@@ -246,5 +249,4 @@
     </buildtargets>
 <%endif%>
 </wrxml>
-
 <%endfor%>
