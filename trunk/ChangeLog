@@ -1,3 +1,30 @@
+Wed Aug  4 20:32:14 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+        
+        Merged out changes from the Eclipse CDT branch to support
+        side-by-side builds from different platforms and configurations
+        and to more fully support cross-platform builds.
+
+        * templates/cdt6cproject.mpd:
+
+          Changed postbuild "installation" scripts so that they put
+          libraries into platform-config specific subdirectories in order to
+          support multiple builds concurrently.
+        
+          Added platform-specific lib directory to library paths.
+
+          Omit generation of build information for platforms when a
+          project inherits from crosscompile.mpb.
+
+        * modules/CDT6ProjectCreator.pm: Propagated "nocross" template
+          variable into CDT6 projects via fill_value.
+
+        * modules/CDT6WorkspaceCreator.pm: Minor changes.
+        
+        * modules/TemplateParser.pm:
+        
+          Added new keyword/function "vars_equal", to compare the values
+          of two template variables for equality.
+
 Wed Aug  4 15:03:50 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * templates/vc10.mpd:
