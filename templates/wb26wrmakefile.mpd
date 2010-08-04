@@ -48,7 +48,7 @@ PROJECT_TARGET = CUSTOM_ONLY
 <%endif%>
 
 <%if(libs && libpaths && exename && need_staticflags)%>
-DEPLIBS = $(foreach lib,<%foreach(libs)%> <%libname_prefix%><%lib%><%endfor%> <%lit_libs%>, $(foreach libpath,<%foreach(libpaths)%><%if(targetoutdir)%> <%libpath%>/<%targetoutdir%><%endif%><%if(!standard_build)%> <%if(make_coexistence)%>../../<%else%>../<%endif%><%libpath%><%endif%> <%libpath%><%endfor%>, $(wildcard $(libpath)/lib$(lib).a)))
+DEPLIBS = $(foreach lib,<%foreach(libs)%> <%libname_prefix%><%lib%><%endfor%> <%lit_libs%>, $(foreach libpath,<%foreach(libpaths)%><%if(!standard_build)%> <%if(make_coexistence)%>../../<%else%>../<%endif%><%libpath%><%endif%> <%libpath%><%endfor%>, $(wildcard $(libpath)/lib$(lib).a)))
 <%endif%>
 
 <%if(standard_build)%>
