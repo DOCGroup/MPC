@@ -68,7 +68,8 @@ sub write_comps {
 
   my $prefix = ($self->{'into'} ne '') ? $self->{'into'} . '/' : '';
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
-    print $fh "$$info{$project}->[0] ",
+    my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, $managed, @cfgs) = @{$$info{$project}};
+    print $fh "$pname ",
       Cwd::abs_path($prefix . $self->mpc_dirname($project)), '/.project', $crlf;
     $self->add_dependencies($creator, $project);
   }

@@ -65,6 +65,10 @@ sub fill_value {
       return $^O; # cygwin, solaris, linux match what we expect
     }
   }
+  elsif ($name eq 'nocross') {
+    # return the value of the 'nocross' element from the project_info array
+    return $self->get_project_info()->[5];
+  }
 
   return undef;
 }
