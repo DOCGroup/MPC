@@ -5,6 +5,8 @@
 <%foreach(platforms)%>
 <%foreach(host_platform)%><%comment(there won't be more than one host_platform, but a foreach is used in order to access scoped assignments from the mpt)%> 
 <%foreach(configurations)%>
+<!-- platform = <%platform%>, nocross = <%nocross%>, host_platform = <%host_platform%>, vars_equal = <%vars_equal(platform, host_platform)%> -->
+<%if(!nocross || vars_equal(platform, host_platform))%>
     <cconfiguration id="mpc.generated.config.<%platform%>.<%configuration%>">
       <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="mpc.generated.config.<%platform%>.<%configuration%>" moduleId="org.eclipse.cdt.core.settings" name="<%platform%>-<%configuration%>">
 <externalSettings/><%comment(looks like for libraries there are externalsettings)%>
@@ -38,9 +40,17 @@
    <%endif%><%comment(!custom_only)%>
    postbuildStep="<%shell%> ..<%slash%><%create_aux_file(postbuild_, platform, _, configuration, script_ext)%><%script_hdr%>
 <%if(!custom_only)%>
-<%if(type_is_dynamic)%><%cp%> <%lib_prefix%><%sharedname%><%lib_modifier%><%dll_ext%> <%if(dllout)%><%if(!starts_with(dllout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%convert_slashes(translate_vars(dllout))%><%else%><%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%convert_slashes(translate_vars(libout))%><%else%>..<%slash%>..<%endif%><%endif%><%else%>
-<%if(type_is_static)%><%cp%> <%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%> <%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%endif%><%convert_slashes(translate_vars(libout))%><%else%>..<%slash%>..<%endif%><%else%>
-<%if(exename)%><%cp%> <%exename%><%exe_ext%> <%if(exeout)%><%if(!starts_with(exeout, [/\\\$]))%>..<%slash%>..<%endif%><%convert_slashes(translate_vars(exeout))%><%else%>..<%slash%>..<%endif%><%endif%>
+<%if(type_is_dynamic)%>
+<%setenv%> DESTDIR=<%if(dllout)%><%if(!starts_with(dllout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%convert_slashes(translate_vars(dllout))%><%else%><%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%convert_slashes(translate_vars(libout))%><%else%>..<%slash%>..<%endif%><%endif%><%slash%><%platform%>-<%configuration%>
+<%if(mkdir_pre)%><%mkdir_pre%> <%envvar_pre%>DESTDIR<%envvar_post%><%endif%><%mkdir%> <%envvar_pre%>DESTDIR<%envvar_post%>
+<%cp%> <%lib_prefix%><%sharedname%><%lib_modifier%><%dll_ext%> <%envvar_pre%>DESTDIR<%envvar_post%><%else%>
+<%if(type_is_static)%>
+<%setenv%> DESTDIR=<%if(libout)%><%if(!starts_with(libout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%convert_slashes(translate_vars(libout))%><%else%>..<%slash%>..<%endif%><%slash%><%platform%>-<%configuration%>
+<%if(mkdir_pre)%><%mkdir_pre%> <%envvar_pre%>DESTDIR<%envvar_post%><%endif%><%mkdir%> <%envvar_pre%>DESTDIR<%envvar_post%>
+<%cp%> <%lib_prefix%><%staticname%><%lib_modifier%><%lib_ext%> <%envvar_pre%>DESTDIR<%envvar_post%><%else%>
+<%if(exename)%>
+<%setenv%> DESTDIR=<%if(exeout)%><%if(!starts_with(exeout, [/\\\$]))%>..<%slash%>..<%slash%><%endif%><%convert_slashes(translate_vars(exeout))%><%else%>..<%slash%>..<%endif%><%endif%>
+<%cp%> <%exename%><%exe_ext%> <%envvar_pre%>DESTDIR<%envvar_post%>
 <%endif%><%endif%>
 <%endif%>
 <%if(postbuild)%><%eval(postbuild)%><%endif%>
@@ -87,6 +97,7 @@
 <option id="mpc.generated.link.libpaths.1" superClass="<%linker_option_superclass%>.paths" valueType="libPaths">
 <%foreach(libpaths)%>
 <listOptionValue builtIn="false" value="<%if(!starts_with(libpath, [/\\\$]))%>../../<%endif%><%translate_vars(libpath, 1)%>"/>
+<listOptionValue builtIn="false" value="<%if(!starts_with(libpath, [/\\\$]))%>../../<%endif%><%translate_vars(libpath, 1)%>/<%platform%>-<%configuration%>"/>
 <%endfor%>
 </option>
 <option id="mpc.generated.link.option.libs.1" name="Libraries (-l)" superClass="<%linker_option_superclass%>.libs" valueType="libs">
@@ -250,6 +261,7 @@ all: $(GENERATED)
 </storageModule>
 <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
     </cconfiguration>
+<%endif%>
 <%endfor%><%comment(configurations)%>
 <%endfor%><%comment(host_platform)%>
 <%endfor%><%comment(platforms)%>
