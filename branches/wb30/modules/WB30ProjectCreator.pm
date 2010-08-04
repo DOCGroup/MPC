@@ -13,9 +13,10 @@ package WB30ProjectCreator;
 use strict;
 
 use WB26ProjectCreator;
+use XMLProjectBase;
 
 use vars qw(@ISA);
-@ISA = qw(WB26ProjectCreator);
+@ISA = qw(XMLProjectBase WB26ProjectCreator);
 
 # ************************************************************
 # Data Section
@@ -40,11 +41,31 @@ sub project_file_name {
   $template = 'wb26' if (!defined $template || !defined $templates{$template});
 
   if ($self->{'make_coexistence'}) {
-    return $self->get_modified_project_file_name($name,
+    return $self->get_modified_project_file_name("wb_$name",
                                                  '/' . $templates{$template});
   }
   else {
     return $templates{$template};
+  }
+}
+
+sub post_file_creation {
+  my($self, $file) = @_;
+  if ($file =~ /$templates{'wb26wrmakefile'}$/) {
+    open IN, $file or die "Can't open $file for post-processing input.";
+    my @lines;
+    while (<IN>) {
+      s/\\&quot;/\\"/g;
+      s/&quot;/"/g;
+      s/&gt;/>/g;
+      s/&lt;/</g;
+      s/&amp;/&/g;
+      push @lines, $_;
+    }
+    close IN;
+    open OUT, ">$file" or die "Can't open $file for post-processing output.";
+    print OUT @lines;
+    close OUT;
   }
 }
 

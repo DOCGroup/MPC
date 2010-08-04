@@ -12,8 +12,8 @@ package WB30WorkspaceCreator;
 
 use strict;
 
-use WB30ProjectCreator;
 use WB26WorkspaceCreator;
+use WB30ProjectCreator;
 
 use vars qw(@ISA);
 @ISA = qw(WB26WorkspaceCreator);
@@ -24,6 +24,10 @@ use vars qw(@ISA);
 
 sub get_id_for_comment {
   return '$Id$';
+}
+
+sub get_project_prefix {
+  return 'wb_';
 }
 
 sub get_additional_output {
