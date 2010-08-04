@@ -25,17 +25,26 @@ ACE_EXE_EXT = <%foreach(buildspecs)%>$(if $(filter <%buildspec%>,$(BUILD_SPEC)),
 ACE_TARGET_PREFIX :=
 ACE_TARGET_NAME := <%exename%>
 ACE_TARGET_EXT = $(ACE_EXE_EXT)
-PROJECT_TARGET=$(if $(ACE_TARGET_EXT),$(filter %<%exe_ext%>,$(PROJECT_TARGETS)),$(PROJECT_TARGETS))
+PROJECT_TARGET = $(if $(ACE_TARGET_EXT),$(filter %$(ACE_TARGET_EXT),$(PROJECT_TARGETS)),$(PROJECT_TARGETS))
 <%else%>
-<%if(sharedname || staticname)%>
-ACE_TARGET_PREFIX := <%lib_prefix%>
-ACE_TARGET_NAME := <%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>
-ACE_TARGET_EXT := <%lib_ext%>
-PROJECT_TARGET=$(filter %<%lib_ext%>,$(PROJECT_TARGETS))
+<%if(sharedname)%>
+ACE_TARGET_DIR = $(ACE_TARGET_NAME)_$(BUILD_SPEC)
+ACE_TARGET_PREFIX = <%foreach(buildspecs)%>$(if $(filter <%buildspec%>,$(BUILD_SPEC)),<%dll_prefix%>)<%endfor%>
+ACE_TARGET_NAME := <%sharedname%>
+ACE_TARGET_EXT = <%foreach(buildspecs)%>$(if $(filter <%buildspec%>,$(BUILD_SPEC)),<%dll_ext%>)<%endfor%>
+PROJECT_TARGET = $(filter %$(ACE_TARGET_EXT),$(PROJECT_TARGETS))
+<%else%>
+<%if(staticname)%>
+ACE_TARGET_PREFIX = <%foreach(buildspecs)%>$(if $(filter <%buildspec%>,$(BUILD_SPEC)),<%lib_prefix%>)<%endfor%>
+ACE_TARGET_NAME := <%staticname%>
+ACE_TARGET_EXT = <%foreach(buildspecs)%>$(if $(filter <%buildspec%>,$(BUILD_SPEC)),<%lib_ext%>)<%endfor%>
+PROJECT_TARGET = $(filter %$(ACE_TARGET_EXT),$(PROJECT_TARGETS))
 <%endif%>
 <%endif%>
+<%endif%>
+ACE_TARGET_DIR ?= $(ACE_TARGET_NAME)
 <%if(custom_only)%>
-PROJECT_TARGET=CUSTOM_ONLY
+PROJECT_TARGET = CUSTOM_ONLY
 <%endif%>
 
 <%if(libs && libpaths && exename && need_staticflags)%>
@@ -59,7 +68,7 @@ _clean ::
 $(OBJ_DIR)/<%exename%>_partialImage.o : $(OBJECTS) $(SUB_OBJECTS) $(DEPLIBS)
 <%else%>
 <%if(!standard_build && libs && libpaths && exename && need_staticflags)%>
-$(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT): $(DEPLIBS)
+$(ACE_TARGET_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT): $(DEPLIBS)
 <%endif%>
 <%endif%>
 
@@ -221,13 +230,13 @@ ifneq ($(PROJECT_TARGET),)
 <%if(!standard_build)%>
 deploy_output :: <%if(exename)%>$(call CUST_PRE,$(ACE_EXEOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT))<%else%><%if(sharedname || staticname)%><%if(libout || dllout)%>$(call CUST_PRE,$(ACE_LIBOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT))<%endif%><%endif%><%endif%>
 <%if(exename)%>
-$(call CUST_PRE,$(ACE_EXEOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)): $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
-	$(TRACE_FLAG)<%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%>test -d $(ACE_EXEOUT) || mkdir -p $(ACE_EXEOUT); cp $(DIR_PREFIX)/$(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) $(ACE_EXEOUT)
+$(call CUST_PRE,$(ACE_EXEOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)): $(ACE_TARGET_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
+	$(TRACE_FLAG)<%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%>test -d $(ACE_EXEOUT) || mkdir -p $(ACE_EXEOUT); cp $(DIR_PREFIX)/$(ACE_TARGET_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) $(ACE_EXEOUT)
 <%else%>
 <%if(sharedname || staticname)%>
 <%if(libout || dllout)%>
-$(call CUST_PRE,$(ACE_LIBOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)): $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
-	$(TRACE_FLAG)<%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%>test -d $(ACE_LIBOUT) || mkdir -p $(ACE_LIBOUT); cp $(DIR_PREFIX)/$(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) $(ACE_LIBOUT)
+$(call CUST_PRE,$(ACE_LIBOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)): $(ACE_TARGET_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
+	$(TRACE_FLAG)<%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%>test -d $(ACE_LIBOUT) || mkdir -p $(ACE_LIBOUT); cp $(DIR_PREFIX)/$(ACE_TARGET_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) $(ACE_LIBOUT)
 <%endif%>
 <%endif%>
 <%endif%>
