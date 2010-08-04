@@ -68,6 +68,7 @@ my %keywords = ('if'              => 0,
                 'contains'        => 5,
                 'remove_from'     => 0xf,
                 'compares'        => 5,
+		'vars_equal'    => 1 | 2,
                 'duplicate_index' => 5,
                 'transdir'        => 5,
                 'has_extension'   => 5,
@@ -1006,6 +1007,30 @@ sub doif_compares {
 sub handle_compares {
   my($self, $str) = @_;
   $self->generic_handle('doif_compares', $str);
+}
+
+sub get_vars_equal {
+  my($self, $str) = @_;
+  return $self->doif_vars_equal([$str]);
+}
+
+
+sub doif_vars_equal {
+  my($self, $val) = @_;
+
+  if (defined $val) {
+    my($var1, $var2) = $self->split_parameters("@$val");
+    if (defined $var1 && defined $var2) {
+      return ($self->get_value_with_default($var1) eq $self->get_value_with_default($var2));
+    }
+  }
+  return undef;
+}
+
+
+sub handle_vars_equal {
+  my($self, $str) = @_;
+  $self->generic_handle('doif_vars_equal', $str);
 }
 
 
