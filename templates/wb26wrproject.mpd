@@ -205,7 +205,7 @@
 <%if(exename)%>
         <buildtarget buildtool="<%exe_buildtool%>" name="<%exename%>" passed="true" targetname="<%exename%>">
 <%else%>
-<%if(sharedname)%>
+<%if(sharedname && !compares(platform, VxWorks))%>
 <%foreach(buildspecs)%>
         <buildtarget buildtool="<%dll_buildtool%>" name="<%dll_prefix%><%sharedname%>" passed="true" targetname="<%sharedname%>_<%buildspec%>">
             <attributes>
@@ -226,14 +226,14 @@
         </buildtarget>
 <%endfor%>
 <%else%>
-<%if(staticname)%>
+<%if(staticname || sharedname)%>
         <buildtarget buildtool="Librarian" name="<%lib_prefix%><%staticname%>" passed="true" targetname="<%staticname%>">
 <%else%>
         <buildtarget buildtool="CustomOnly" name="" passed="false" targetname="">
 <%endif%>
 <%endif%>
 <%endif%>
-<%if(!sharedname)%>
+<%if(!sharedname || compares(platform, VxWorks))%>
             <contents>
 <%if(exename && compares(platform, VxWorks))%>
                 <buildtargetreference name="/<%project_prefix%><%project_name%>/PartialImage"/>
