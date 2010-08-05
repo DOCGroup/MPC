@@ -134,16 +134,16 @@ sub list_file_body {
             '#----------------------------------------------------------------------------', $crlf);
 
   ## Print out each target separately
-  my $prefix = ($self->{'into'} ne '') ? $self->{'into'} . '/' : '';
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
-    print $fh Cwd::abs_path($prefix . $self->mpc_dirname($project)),
-      '/.project', $crlf;
+    print $fh Cwd::abs_path($self->mpc_dirname($project)), '/.project', $crlf;
   }
 }
 
 sub add_dependencies {
   my($self, $creator, $proj) = @_;
   my $outdir = $self->mpc_dirname($proj);
+  my $into = $self->get_outdir();
+  $outdir = "$into/$outdir" if $into ne '.';
   my $proj_pre = $self->get_project_prefix();
 
   ## These values will be changed after the first time through the for
