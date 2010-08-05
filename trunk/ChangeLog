@@ -1,3 +1,31 @@
+Thu Aug  5 17:00:23 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * docs/html/MakeProjectCreator.html:
+        * docs/html/WB30.html:
+        * docs/templates/wb26.txt:
+        * docs/templates/wb26wrmakefile.txt:
+        * docs/templates/wb26wrproject.txt:
+        * modules/CDT6WorkspaceCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/WB26WorkspaceCreator.pm:
+        * modules/WB30ProjectCreator.pm:
+        * modules/WB30WorkspaceCreator.pm:
+        * templates/wb26.mpd:
+        * templates/wb26dll.mpt:
+        * templates/wb26wrmakefile.mpd:
+        * templates/wb26wrproject.mpd:
+        * templates/wb30cproject.mpd:
+        * templates/wb30dll.mpt:
+        * templates/wb30exe.mpt:
+
+          Merged (reintegrated) the "wb30" branch, which adds -type wb30
+          for Wind River Workbench 3.0.  See WB30.html for details.
+
+          This also effectively reverts the commit in
+          Fri Jul  9 21:16:23 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+          because that change was incorrect (-into shouldn't affect the
+          file's contents).
+
 Thu Aug  5 03:49:19 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/glib.mpb:

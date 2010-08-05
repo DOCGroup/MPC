@@ -1,11 +1,12 @@
-# The file ".wrmakefile" is the template used by the Wind River Workbench to
+<%foreach(platform)%><%comment(there can't be more than one active platform but using a foreach allows platform settings to be grouped in scopes in the mpt files)%># The file ".wrmakefile" is the template used by the Wind River Workbench to
 # generate the makefiles of this project. Add user-specific build targets and
 # make rules only(!) in this project's ".wrmakefile" file. These will then be
 # automatically dumped into the makefiles.
 
 WIND_HOME := $(subst \,/,$(WIND_HOME))
-WIND_BASE := $(subst \,/,$(WIND_BASE))
-WIND_USR := $(subst \,/,$(WIND_USR))
+<%foreach(platform_makefilevars)%>
+<%platform_makefilevar%> := $(subst \,/,$(<%platform_makefilevar%>))
+<%endfor%>
 ACE_ROOT := $(subst \,/,$(ACE_ROOT))
 TAO_ROOT := $(subst \,/,$(TAO_ROOT))
 CIAO_ROOT := $(subst \,/,$(CIAO_ROOT))
@@ -16,30 +17,38 @@ ACE_LIBOUT := <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>
 <%endif%>
 <%endif%>
 <%if(exename)%>
-<%if(exeout)%>
-ACE_EXEOUT := <%exeout%>
-<%endif%>
+ACE_EXEOUT := <%exeout(".")%>
 <%endif%>
 
+ACE_EXE_EXT = <%foreach(buildspecs)%>$(if $(filter <%buildspec%>,$(BUILD_SPEC)),<%exe_ext%>)<%endfor%>
 <%if(exename)%>
 ACE_TARGET_PREFIX :=
 ACE_TARGET_NAME := <%exename%>
-ACE_TARGET_EXT := <%exe_ext%>
-PROJECT_TARGET=$(filter %<%exe_ext%>,$(PROJECT_TARGETS))
+ACE_TARGET_EXT = $(ACE_EXE_EXT)
+PROJECT_TARGET = $(if $(ACE_TARGET_EXT),$(filter %$(ACE_TARGET_EXT),$(PROJECT_TARGETS)),$(PROJECT_TARGETS))
 <%else%>
-<%if(sharedname || staticname)%>
-ACE_TARGET_PREFIX := <%lib_prefix%>
-ACE_TARGET_NAME := <%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%>
-ACE_TARGET_EXT := <%lib_ext%>
-PROJECT_TARGET=$(filter %<%lib_ext%>,$(PROJECT_TARGETS))
+<%if(sharedname && !compares(platform, VxWorks))%>
+ACE_TARGET_DIR = $(ACE_TARGET_NAME)_$(BUILD_SPEC)
+ACE_TARGET_PREFIX = <%foreach(buildspecs)%>$(if $(filter <%buildspec%>,$(BUILD_SPEC)),<%dll_prefix%>)<%endfor%>
+ACE_TARGET_NAME := <%sharedname%>
+ACE_TARGET_EXT = <%foreach(buildspecs)%>$(if $(filter <%buildspec%>,$(BUILD_SPEC)),<%dll_ext%>)<%endfor%>
+PROJECT_TARGET = $(filter %$(ACE_TARGET_EXT),$(PROJECT_TARGETS))
+<%else%>
+<%if(staticname || sharedname)%>
+ACE_TARGET_PREFIX = <%foreach(buildspecs)%>$(if $(filter <%buildspec%>,$(BUILD_SPEC)),<%lib_prefix%>)<%endfor%>
+ACE_TARGET_NAME := <%staticname%>
+ACE_TARGET_EXT = <%foreach(buildspecs)%>$(if $(filter <%buildspec%>,$(BUILD_SPEC)),<%lib_ext%>)<%endfor%>
+PROJECT_TARGET = $(filter %$(ACE_TARGET_EXT),$(PROJECT_TARGETS))
 <%endif%>
 <%endif%>
+<%endif%>
+ACE_TARGET_DIR ?= $(ACE_TARGET_NAME)
 <%if(custom_only)%>
-PROJECT_TARGET=CUSTOM_ONLY
+PROJECT_TARGET = CUSTOM_ONLY
 <%endif%>
 
-<%if(standard_build && exename)%>
-DEPLIBS = $(foreach lib,<%foreach(libs)%> <%libname_prefix%><%lib%><%endfor%> <%lit_libs%>, $(foreach libpath,<%foreach(libpaths)%><%if(targetoutdir)%> <%libpath%>/<%targetoutdir%><%endif%> <%libpath%><%endfor%>, $(wildcard $(libpath)/lib$(lib).a)))
+<%if(libs && libpaths && exename && need_staticflags)%>
+DEPLIBS = $(foreach lib,<%foreach(libs)%> <%libname_prefix%><%lib%><%endfor%> <%lit_libs%>, $(foreach libpath,<%foreach(libpaths)%><%if(!standard_build)%> <%if(make_coexistence)%>../../<%else%>../<%endif%><%libpath%><%endif%> <%libpath%><%endfor%>, $(wildcard $(libpath)/lib$(lib).a)))
 <%endif%>
 
 <%if(standard_build)%>
@@ -57,6 +66,10 @@ _clean ::
 
 <%if(standard_build && exename)%>
 $(OBJ_DIR)/<%exename%>_partialImage.o : $(OBJECTS) $(SUB_OBJECTS) $(DEPLIBS)
+<%else%>
+<%if(!standard_build && libs && libpaths && exename && need_staticflags)%>
+$(ACE_TARGET_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT): $(DEPLIBS)
+<%endif%>
 <%endif%>
 
 <%if(!standard_build)%>
@@ -74,7 +87,7 @@ main_all : check_objectdir external_build $(PROJECT_TARGETS)
 <%else%>
 main_all : external_build $(PROJECT_TARGETS)
 <%endif%>
-        @echo "make: built targets of `pwd`"
+	@echo "make: built targets of `pwd`"
 <%endif%>
 
 <%if(standard_build)%>
@@ -97,6 +110,10 @@ external_build ::
 	@echo ""
 
 # main entry point for pre processing prior to the build
+<%if(prebuild)%>
+pre_build ::
+	@<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%><%endif%><%eval(prebuild)%>
+<%endif%>
 <%if(standard_build)%>
 ACE_ALL_OBJECTS := $(SUB_OBJECTS) $(OBJECTS)
 ifneq ($(PROJECT_TARGET),)
@@ -129,15 +146,63 @@ pre_build :: $(PRE_BUILD_STEP)
 	done
 <%endif%>
 
+
+# function for generating the correct Custom type Prerequisite (input or dep)
+# using a ../ or ../../ prefix unless it's already an absolute path
+CUST_PRE = <%if(!standard_build)%>$(if $(patsubst $%,,$(1:/%=)),<%if(make_coexistence)%>../../<%else%>../<%endif%>)$(1)<%else%>$(1)<%endif%>
+
+# function for adding an exe_ext, if needed and the file exists
+ADD_EXT = $(if $(ACE_EXE_EXT),$(if $(suffix $(1)),$(1),$(wildcard $(1) $(1)$(ACE_EXE_EXT))),$(1))
+
+<%if(custom_types)%>
+SPACE = $(should_be_unset) $(should_be_unset)
+GENERATED_DIRTY =<%if(!standard_build)%> $(addprefix <%if(make_coexistence)%>../../<%else%>../<%endif%>,<%endif%><%foreach(custom_types)%><%foreach(custom_type->input_files)%><%if(custom_type->input_file->output_files)%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%><%endfor%><%endfor%><%if(!standard_build)%>)<%endif%>
+<%else%>
+GENERATED_DIRTY =
+<%endif%>
+
 # entry point for generating sources prior to the build
 <%if(standard_build)%>
 ifneq ($(PROJECT_TARGET),)
 <%endif%>
-generate_sources ::
+generate_sources :: $(GENERATED_DIRTY)
+
 <%foreach(custom_types)%>
+<%if(custom_type->libpath)%>
+LD_LIBRARY_PATH   := $(LD_LIBRARY_PATH):<%custom_type->libpath%>
+PATH              := $(PATH):<%custom_type->libpath%>
+<%endif%>
+
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
-		<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ;<%endif%><%endif%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%> <%if(custom_type->output_option)%><%custom_type->output_option%> $@<%endif%>
+<%if(multiple(custom_type->input_file->output_files))%>
+.NOTPARALLEL:
+<%endif%>
+<%if(!standard_build)%>$(addprefix <%if(make_coexistence)%>../../<%else%>../<%endif%>,<%endif%><%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%><%if(!standard_build)%>)<%endif%>: $(foreach pre,<%custom_type->input_file%><%if(custom_type->input_file->dependencies)%><%foreach(custom_type->input_file->dependencies)%><%if(contains(custom_type->input_file->dependencie, \$))%> $(subst $(SPACE),\$(SPACE),<%custom_type->input_file->dependencie%>)<%else%> <%scope(enter, escape, \\s)%><%custom_type->input_file->dependencie%><%scope(leave)%><%endif%><%endfor%><%endif%><%if(flag_overrides(custom_type->input_file, dependent))%><%foreach(dep, flag_overrides(custom_type->input_file, dependent))%><%if(contains(dep, \$))%> $(subst $(SPACE),\$(SPACE),<%dep%>)<%else%> <%scope(enter, escape, \\s)%><%dep%><%scope(leave)%><%endif%><%endfor%><%else%><%if(custom_type->dependent)%><%foreach(custom_type->dependent)%><%if(contains(custom_type->dependent, \$))%> $(subst $(SPACE),\$(SPACE),<%custom_type->dependent%>)<%else%> <%scope(enter, escape, \\s)%><%custom_type->dependent%><%scope(leave)%><%endif%><%endfor%><%endif%><%endif%>,$(call ADD_EXT,$(call CUST_PRE,$(pre))))
+<%if(flag_overrides(custom_type->input_file, gendir))%>
+<%if(!compares(flag_overrides(custom_type->input_file, gendir),.))%>
+	@<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%><%endif%>test -d "<%flag_overrides(custom_type->input_file, gendir)%>" || mkdir -p "<%flag_overrides(custom_type->input_file, gendir)%>"
+<%endif%>
+<%endif%>
+	$(TRACE_FLAG)<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%><%endif%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%if(custom_type->output_option)%><%custom_type->input_file%> <%custom_type->output_option%><%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%else%><%custom_type->input_file%><%endif%>
+<%if(flag_overrides(custom_type->input_file, postcommand))%>
+<%foreach(custom_type->input_file)%>
+	$(TRACE_FLAG)<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%><%endif%><%flag_overrides(custom_type->input_file, postcommand)%>
+<%endfor%>
+<%else%>
+<%if(custom_type->postcommand)%>
+<%foreach(custom_type->input_file)%>
+	$(TRACE_FLAG)<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%><%endif%><%custom_type->postcommand%>
+<%endfor%>
+<%endif%>
+<%endif%>
+<%if(pch_header)%>
+<%if(custom_type->pch_postrule)%>
+<%foreach(custom_type->input_file->source_output_files)%>
+	@<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%><%endif%>echo '#include "<%pch_header%>"' > temp.$$$$ && cat <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temp.$$$$ && mv temp.$$$$ <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
+<%endfor%>
+<%endif%>
+<%endif%>
 <%endif%>
 <%endfor%>
 <%endfor%>
@@ -148,7 +213,13 @@ generate_sources ::
 endif
 <%endif%>
 
+DIR_PREFIX = <%if(make_coexistence)%><%dirname(project_file)%>/<%endif%>$(BUILD_SPEC)
+
 # main entry point for post processing after the build
+<%if(postbuild)%>
+post_build ::
+	@<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%><%endif%><%eval(postbuild)%>
+<%endif%>
 post_build :: $(POST_BUILD_STEP) deploy_output
 	@echo ""
 
@@ -156,45 +227,24 @@ post_build :: $(POST_BUILD_STEP) deploy_output
 <%if(standard_build)%>
 ifneq ($(PROJECT_TARGET),)
 <%endif%>
-deploy_output ::
 <%if(!standard_build)%>
+deploy_output :: <%if(exename)%>$(call CUST_PRE,$(ACE_EXEOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT))<%else%><%if(sharedname || staticname)%><%if(libout || dllout)%>$(call CUST_PRE,$(ACE_LIBOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT))<%endif%><%endif%><%endif%>
 <%if(exename)%>
-<%if(exeout)%>
-	if [ $(ACE_EXEOUT) != . ]; then\	
-		if [ ! -d $(ACE_EXEOUT) ]; then\
-			mkdir -p $(ACE_EXEOUT);\
-		fi;\
-		if test -e $(ACE_EXEOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); then \
-			if test $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) -nt $(ACE_EXEOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); then \
-				cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) $(ACE_EXEOUT);\
-			fi \
-		else \
-			cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) $(ACE_EXEOUT);\
-		fi\
-	fi
-<%endif%>
+$(call CUST_PRE,$(ACE_EXEOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)): $(ACE_TARGET_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
+	$(TRACE_FLAG)<%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%>test -d $(ACE_EXEOUT) || mkdir -p $(ACE_EXEOUT); cp $(DIR_PREFIX)/$(ACE_TARGET_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) $(ACE_EXEOUT)
 <%else%>
 <%if(sharedname || staticname)%>
 <%if(libout || dllout)%>
-	if [ $(ACE_LIBOUT) != . ]; then\	
-		if [ ! -d $(ACE_LIBOUT) ]; then\
-			mkdir -p $(ACE_LIBOUT);\
-		fi;\
-		if test -e $(ACE_LIBOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); then \
-			if test $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) -nt $(ACE_LIBOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT); then \
-				cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) $(ACE_LIBOUT);\
-			fi \
-		else \
-			cp $(ACE_TARGET_NAME)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) $(ACE_LIBOUT);\
-		fi\
-	fi
+$(call CUST_PRE,$(ACE_LIBOUT)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)): $(ACE_TARGET_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
+	$(TRACE_FLAG)<%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%>test -d $(ACE_LIBOUT) || mkdir -p $(ACE_LIBOUT); cp $(DIR_PREFIX)/$(ACE_TARGET_DIR)/$(MODE_DIR)/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT) $(ACE_LIBOUT)
 <%endif%>
 <%endif%>
 <%endif%>
 <%else%>
+deploy_output ::
 <%if(exename)%>
 <%if(exeout)%>
-	if $(ACE_EXEOUT) != . ]; then\	
+	if [ $(ACE_EXEOUT) != . ]; then\
 		if [ ! -d $(ACE_EXEOUT) ]; then\
 			mkdir -p $(ACE_EXEOUT);\
 		fi;\
@@ -210,7 +260,7 @@ deploy_output ::
 <%else%>
 <%if(sharedname || staticname)%>
 <%if(libout || dllout)%>
-	if [ $(ACE_LIBOUT) != . ]; then\	
+	if [ $(ACE_LIBOUT) != . ]; then\
 		if [ ! -d $(ACE_LIBOUT) ]; then\
 			mkdir -p $(ACE_LIBOUT);\
 		fi;\
@@ -288,18 +338,21 @@ external_clean ::
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
-	<%if(make_coexistence)%>cd ../.. ; <%endif%>rm -f <%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%>
+	$(TRACE_FLAG)<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%><%endif%>rm -f <%foreach(custom_type->input_file->output_files)%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%>
 <%endif%>
 <%endfor%>
 <%endfor%>
 <%if(exename)%>
-<%if(exeout)%>
-	rm -f <%exeout%>/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
+<%if(exeout || !standard_build)%>
+	$(TRACE_FLAG)<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%><%endif%>rm -f <%exeout(".")%>/$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
 <%endif%>
 <%else%>
 <%if(sharedname || staticname)%>
-	rm -f <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
+	$(TRACE_FLAG)<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%><%endif%>rm -f <%if(dllout)%><%dllout%>/<%else%><%libout%>/<%endif%>$(ACE_TARGET_PREFIX)$(ACE_TARGET_NAME)$(ACE_TARGET_EXT)
 <%endif%>
+<%endif%>
+<%if(postclean)%>
+	$(TRACE_FLAG)<%if(!standard_build)%><%if(make_coexistence)%>cd ../.. ; <%else%>cd .. ; <%endif%><%endif%><%eval(postclean)%>
 <%endif%>
 	@echo ""
 <%if(standard_build)%>
@@ -373,3 +426,4 @@ $(OBJ_DIR)/<%lib_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><
 endif
 <%endif%>
 <%endif%>
+<%endfor%>

@@ -66,11 +66,10 @@ sub write_comps {
   my $crlf = $self->crlf();
   $self->{'seen_deps'} = {};
 
-  my $prefix = ($self->{'into'} ne '') ? $self->{'into'} . '/' : '';
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, $managed, @cfgs) = @{$$info{$project}};
     print $fh "$pname ",
-      Cwd::abs_path($prefix . $self->mpc_dirname($project)), '/.project', $crlf;
+      Cwd::abs_path($self->mpc_dirname($project)), '/.project', $crlf;
     $self->add_dependencies($creator, $project);
   }
 }
@@ -78,6 +77,8 @@ sub write_comps {
 sub add_dependencies {
   my($self, $creator, $proj) = @_;
   my $outdir = $self->mpc_dirname($proj);
+  my $into = $self->get_outdir();
+  $outdir = "$into/$outdir" if $into ne '.';
 
   my $pre     = '    <project>';
   my $post    = '</project>';
