@@ -196,7 +196,7 @@
       <ForceConformanceInForLoopScope><%ForceConformanceInForLoopScope%></ForceConformanceInForLoopScope>
 <%endif%>
       <RuntimeTypeInfo><%RuntimeTypeInfo("true")%></RuntimeTypeInfo>
-<%if(OpenMPSupport)%>
+<%if(OpenMP || OpenMPSupport)%>
       <OpenMPSupport>true</OpenMPSupport>
 <%endif%>
 <%if(pch_header)%>
@@ -352,8 +352,8 @@
 <%endif%>
 <%if(TargetMachine)%>
 <!--
-  Though we can set TargetMachine explicitly, VC++ 
-  can figure it out by project type. We don't need 
+  Though we can set TargetMachine explicitly, VC++
+  can figure it out by project type. We don't need
   to set it by ourselves.
 -->
 <!--      <TargetMachine><%TargetMachine%></TargetMachine>-->
@@ -598,8 +598,8 @@
 <%endif%>
 <%if(TargetMachine)%>
 <!--
-  Though we can set TargetMachine explicitly, VC++ 
-  can figure it out by project type. We don't need 
+  Though we can set TargetMachine explicitly, VC++
+  can figure it out by project type. We don't need
   to set it by ourselves.
 -->
 <!--      <TargetMachine><%TargetMachine%></TargetMachine>-->

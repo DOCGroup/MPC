@@ -1,5 +1,50 @@
+Thu Aug  5 03:49:19 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/glib.mpb:
+        * config/splice_ts_defaults.mpb:
+        * config/splicelib.mpb:
+        * config/xerces.mpb:
+        * docs/html/CDT6.html:
+        * history/ChangeLog-3_7:
+        * modules/Creator.pm:
+        * modules/MakeProjectBase.pm:
+        * modules/MakeProjectCreator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/VC8WorkspaceCreator.pm:
+        * templates/cdt6cproject.mpd:
+        * templates/cdt6platforms.mpt:
+        * templates/wix.mpd:
+
+          Removed trailing whitespace.
+
+        * docs/html/MakeProjectCreator.html:
+
+          Better explained the TemplateParser 'eval' function and documented
+          the new TemplateParser 'set' and 'translate_vars' functions.
+
+        * docs/templates/vc10.txt:
+
+          Started the vc10 template variable documentation.
+
+        * modules/CDT6WorkspaceCreator.pm:
+
+          Use the WorkspaceCreator::create_command_line_string() function
+          instead of printing the "$0 @ARGV" string.
+
+        * modules/TemplateParser.pm:
+
+          Replaced the use of die with setting the 'error_in_handle' data
+          member to bring errors to the users attention and added the 'set'
+          template function.
+
+        * templates/vc10.mpd:
+
+          The OpenMP template variable is interchangable with the
+          OpenMPSupport template variable.  Older versions of Visual Studio
+          used OpenMP.
+
 Wed Aug  4 20:32:14 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
-        
+
         Merged out changes from the Eclipse CDT branch to support
         side-by-side builds from different platforms and configurations
         and to more fully support cross-platform builds.
@@ -9,7 +54,7 @@ Wed Aug  4 20:32:14 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
           Changed postbuild "installation" scripts so that they put
           libraries into platform-config specific subdirectories in order to
           support multiple builds concurrently.
-        
+
           Added platform-specific lib directory to library paths.
 
           Omit generation of build information for platforms when a
@@ -19,9 +64,9 @@ Wed Aug  4 20:32:14 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
           variable into CDT6 projects via fill_value.
 
         * modules/CDT6WorkspaceCreator.pm: Minor changes.
-        
+
         * modules/TemplateParser.pm:
-        
+
           Added new keyword/function "vars_equal", to compare the values
           of two template variables for equality.
 

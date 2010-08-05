@@ -95,7 +95,7 @@ sub post_workspace {
             if (defined $relative) {
               if ($lang eq Creator::cplusplus) {
                 ## If the current project is not managed, then we will
-                ## add references (although I doubt that will be useful). 
+                ## add references (although I doubt that will be useful).
                 ## If the current project is managed, then the reference
                 ## project must be managed or a non-c++ project.
                 if (!$managed || ($managed && $gmap{$dep}->[1])) {

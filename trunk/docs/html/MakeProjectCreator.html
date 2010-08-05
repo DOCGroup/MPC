@@ -5527,8 +5527,8 @@
 
                   <td rowspan="1" colspan="1">
                     <p class="Tbl-Body">This is similar to eval in perl. The
-                    template code passed to this function will be evaluated
-                    within the context of the current template.</p>
+                    template variable passed to this function will be
+                    evaluated within the context of the current template.</p>
                   </td>
                 </tr>
 
@@ -5808,6 +5808,19 @@
 
                 <tr>
                   <td rowspan="1" colspan="1">
+                    <p class="Tbl-Body"><em class="TableCode">set</em></p>
+                  </td>
+
+                  <td rowspan="1" colspan="1">
+                    <p class="Tbl-Body">This function is used to set or
+                    create a template variable.  This function takes two
+                    parameters; the first is the template variable name
+                    and the second is the variable value.</p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td rowspan="1" colspan="1">
                     <p class="Tbl-Body"><em class="TableCode">sort</em></p>
                   </td>
 
@@ -5841,6 +5854,22 @@
                     portion of a variable value with something that can be
                     used as a relative path. The current working directory is
                     removed and ".." is replaced with "dotdot".</p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <p class="Tbl-Body"><em class="TableCode">translate_vars</em></p>
+                  </td>
+
+                  <td rowspan="1" colspan="1">
+                    <p class="Tbl-Body">The first parameter to this function
+                    is the name of a variable.  The second, optional,
+                    parameter is the operating system for which the
+                    project is being generated (e.g., linux, solaris,
+                    win32, etc.)  It replaces $(...) found within the
+                    value of the variable with the equivalent environment
+                    variable reference based on the operating system.</p>
                   </td>
                 </tr>
 

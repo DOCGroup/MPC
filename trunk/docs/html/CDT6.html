@@ -24,7 +24,7 @@
     The project type generates eclipse projects from generic mpc
     files.  These Eclipse/CDT projects can then be imported into a user's
     workspace and built using CDT's internal builder.</li>
-    
+
     <li class="body">MPC's CDT6 Project Type currently supports Linux
     and Windows as both host and target platforms.</li>
  </div>
@@ -62,7 +62,7 @@
     ACE/TAO/CIAO. A minimum of 768Mb or more is suggested. This can be
     done on the command line launch of eclipse, or in the
     <code>eclipse.ini</code> file.</li>
-    
+
     </ul>
  </div>
 
@@ -75,7 +75,7 @@
     Eclipse's usual requirement that source files reside inside the Eclipse project
     directory.  However, the linked resource feature also comes with
     restrictions; see <a href="#fullpath">the note</a> for details.
-    
+
     <h4>Generic workflow</h4>
     Presuming .mpc files already exist:
     <ol>
@@ -86,11 +86,11 @@
    <h4>Workflow for building ACE/TAO</h4>
    <ol>
      <li>Check out a copy of ACE/TAO.</li>
-     
+
      <li>Configure ACE/TAO for your target(s) by setting up
    <samp>config.h</samp>.
      </li>
-   
+
      <li>Set up environment variables (<var>ACE_ROOT</var>,
      <var>TAO_ROOT</var>, etc.), <var>PATH</var>,
      <var>LD_LIBRARY_PATH</var> (or similar), etc.
@@ -100,7 +100,7 @@
      are necessary, make appropriate changes in
      <samp>default.features</samp>.
      </li>
-   
+
      <li>Generate projects using <samp>-type cdt6</samp> insuring the
      use of <samp>mwc.pl</samp> from within ACE, e.g.,
      <blockquote><pre>
@@ -159,7 +159,7 @@ $ mwc.pl -type cdt6 TAO_ACE.mwc
      Automatically</strong>, then builds will start.  Regardless, the
      C++ indexer will run in the background across the source of all projects.</li>
    </ol>
-   
+
    <h4>Building A Project</h4>
    To build a project or set of projects, select the project (or
    projects) in the <em>Project</em> pane, then select
@@ -216,7 +216,7 @@ $ mwc.pl -type cdt6 -value_template platforms="linux cellppu" TAO_ACE.mwc
   In the example given above, <samp>cellppu</samp> is the name of the
   platform for cross-compilation.
   </p>
-  
+
   <h4>Adding a New Platform<a name="addplatform"></a></h4>
   To add a new platform, particularly one for cross-compilation, it's
   probably easiest to start from an existing scope, e.g.,
@@ -278,7 +278,7 @@ $ mwc.pl -type cdt6 -value_template platforms="linux cellppu" TAO_ACE.mwc
     IDL compiler works but does not generate perfect hash lookups.</li>
     </ol>
   </div>
- 
+
 </div>
 
 

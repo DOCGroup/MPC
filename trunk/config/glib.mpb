@@ -12,6 +12,6 @@ project {
   includes      += $(GLIB_ROOT)/include/glib-$(GLIB_VERSION) \
                    $(GLIB_ROOT)/lib/glib-$(GLIB_VERSION)/include
   libpaths      += $(GLIB_ROOT)/lib
-  
+
   lit_libs      += glib-$(GLIB_VERSION)
 }
