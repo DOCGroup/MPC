@@ -22,7 +22,7 @@ use vars qw(@ISA);
 
 sub get_builtin_output {
   #my($self, $input) = @_;
-  return ['$@'];   
+  return ['$@'];
 }
 
 sub dollar_special {

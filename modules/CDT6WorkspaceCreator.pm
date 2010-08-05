@@ -56,7 +56,7 @@ sub pre_workspace {
     '# The projects are listed in dependency order.', $crlf,
     '#', $crlf,
     '# MPC Command:', $crlf,
-    "# $0 @ARGV", $crlf,
+    '# ', $self->create_command_line_string($0, @ARGV), $crlf,
     '#----------------------------------------------------------------------------', $crlf);
 }
 
@@ -67,7 +67,8 @@ sub write_comps {
   $self->{'seen_deps'} = {};
 
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
-    print $fh "$$info{$project}->[0] ",
+    my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, $managed, @cfgs) = @{$$info{$project}};
+    print $fh "$pname ",
       Cwd::abs_path($self->mpc_dirname($project)), '/.project', $crlf;
     $self->add_dependencies($creator, $project);
   }

@@ -1,3 +1,120 @@
+Thu Aug  5 03:49:19 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/glib.mpb:
+        * config/splice_ts_defaults.mpb:
+        * config/splicelib.mpb:
+        * config/xerces.mpb:
+        * docs/html/CDT6.html:
+        * history/ChangeLog-3_7:
+        * modules/Creator.pm:
+        * modules/MakeProjectBase.pm:
+        * modules/MakeProjectCreator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/VC8WorkspaceCreator.pm:
+        * templates/cdt6cproject.mpd:
+        * templates/cdt6platforms.mpt:
+        * templates/wix.mpd:
+
+          Removed trailing whitespace.
+
+        * docs/html/MakeProjectCreator.html:
+
+          Better explained the TemplateParser 'eval' function and documented
+          the new TemplateParser 'set' and 'translate_vars' functions.
+
+        * docs/templates/vc10.txt:
+
+          Started the vc10 template variable documentation.
+
+        * modules/CDT6WorkspaceCreator.pm:
+
+          Use the WorkspaceCreator::create_command_line_string() function
+          instead of printing the "$0 @ARGV" string.
+
+        * modules/TemplateParser.pm:
+
+          Replaced the use of die with setting the 'error_in_handle' data
+          member to bring errors to the users attention and added the 'set'
+          template function.
+
+        * templates/vc10.mpd:
+
+          The OpenMP template variable is interchangable with the
+          OpenMPSupport template variable.  Older versions of Visual Studio
+          used OpenMP.
+
+Wed Aug  4 20:32:14 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+
+        Merged out changes from the Eclipse CDT branch to support
+        side-by-side builds from different platforms and configurations
+        and to more fully support cross-platform builds.
+
+        * templates/cdt6cproject.mpd:
+
+          Changed postbuild "installation" scripts so that they put
+          libraries into platform-config specific subdirectories in order to
+          support multiple builds concurrently.
+
+          Added platform-specific lib directory to library paths.
+
+          Omit generation of build information for platforms when a
+          project inherits from crosscompile.mpb.
+
+        * modules/CDT6ProjectCreator.pm: Propagated "nocross" template
+          variable into CDT6 projects via fill_value.
+
+        * modules/CDT6WorkspaceCreator.pm: Minor changes.
+
+        * modules/TemplateParser.pm:
+
+          Added new keyword/function "vars_equal", to compare the values
+          of two template variables for equality.
+
+Wed Aug  4 15:03:50 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc10.mpd:
+        * templates/vc10dll.mpt:
+        * templates/vc10exe.mpt:
+        * templates/vc10lib.mpt:
+        * templates/vc10libexe.mpt:
+
+          Default GenerateDebugInformation to "true", Release configurations
+          will override it to "false".  Use the value of the
+          GenerateDebugInformation variable in the template.
+
+Mon Aug  2 15:24:10 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc10.mpd:
+        * templates/vc10filters.mpd:
+
+          Use <CustomBuild> instead of <CustomBuildStep> for custom actions
+          that apply to individual input files (as opposed to the custom
+          actions that apply to the project).
+
+Tue Jul 27 15:40:16 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+
+        * templates/cdt6cproject.mpd: Added missing space between thread
+        flags and pic flags.
+
+Wed Jul 21 20:34:03 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+
+        Merge out the following changes from the eclipse branch:
+
+        * templates/cdt6cproject.mpd:
+        * templates/cdt6dll.mpt:
+        * templates/cdt6platforms.mpt:
+
+          Initial work for supporting a cross-compile platform. Fix for RT
+          14228 related to the lack of -fPIC option.
+
+        * templates/cdt6cproject.mpd, templates/cdt6platforms.mpt:
+
+          Fixed issue where linker exe names could not be overridden.
+
+        * docs/html/CDT6.html:
+
+          Update documentation.
+
 Wed Jul 14 05:00:11 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/wix.mpb:

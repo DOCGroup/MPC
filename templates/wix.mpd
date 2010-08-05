@@ -21,7 +21,7 @@
       <ComponentRef Id="<%component%>" />
 <%endfor%>
     </ComponentGroup>
-    
+
     <DirectoryRef Id="INSTALLDIR">
 <%marker(component_top)%>
 <%if(!no_binary)%>
@@ -44,7 +44,7 @@
       <Directory Id="<%project_name%>.<%normalize(resource_file)%>.<%forcount%>.<%name%>" Name="<%name%>">
 <%endfor%>
         <Component Id="<%project_name%><%foreach(name, install_location)%>.<%name%><%endfor%>.<%normalize(resource_file)%>" Guid="*">
-          <File Id="<%project_name%>_<%normalize(resource_file)%>" 
+          <File Id="<%project_name%>_<%normalize(resource_file)%>"
                 Name="<%basename(resource_file)%>"
                 Source="<%full_path(resource_file)%>"
                 DiskId="<%diskid(1)%>" />
@@ -104,7 +104,7 @@
               DiskId="<%diskid(1)%>" />
 
         <RegistryKey Root="<%gme_register(HKLM)%>" Key="SOFTWARE\GME\Paradigms\<%paradigm_name%>" Action="createAndRemoveOnUninstall">
-          <RegistryValue Name="CurrentVersion" Type="string" Value="{<%paradigm_guid%>}" Action="write" />            
+          <RegistryValue Name="CurrentVersion" Type="string" Value="{<%paradigm_guid%>}" Action="write" />
         </RegistryKey>
 
         <RegistryKey Root="<%gme_register(HKLM)%>" Key="SOFTWARE\GME\Paradigms\<%paradigm_name%>\{<%paradigm_guid%>}" Action="createAndRemoveOnUninstall">

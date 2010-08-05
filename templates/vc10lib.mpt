@@ -8,6 +8,7 @@ configurations     = Debug Release
 common_defines     = WIN32 _WINDOWS _CRT_NONSTDC_NO_WARNINGS
 ConfigurationType  = 4
 MinimalRebuild     = false
+GenerateDebugInformation = true
 
 conditional_include "vc10platforms"
 
