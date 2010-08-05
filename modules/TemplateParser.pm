@@ -81,6 +81,7 @@ my %keywords = ('if'              => 0,
                 'translate_vars'  => 2 | 1,
                 'convert_slashes' => 2,
                 'new_guid'        => 0,
+                'set'             => 0,
                );
 
 my %target_type_vars = ('type_is_static'   => 1,
@@ -245,7 +246,7 @@ sub split_parameters {
   my($self, $str) = @_;
   my @params;
 
-  while ($str =~ /^(\w+\([^\)]+\))(.*)/ || $str =~ /^([^,]+)(.*)/) {
+  while($str =~ /^(\w+\([^\)]+\))(.*)/ || $str =~ /^([^,]+)(.*)/) {
     push(@params, $1);
     $str = $2;
     $str =~ s/^\s*,\s*//;
@@ -253,7 +254,7 @@ sub split_parameters {
 
   ## Return the parameters (which includes whatever is left in the
   ## string).  Just return it instead of pushing it onto @params.
-  return ($str eq '') ? @params : (@params, $str);
+  return $str eq '' ? @params : (@params, $str);
 }
 
 
@@ -484,7 +485,7 @@ sub process_foreach {
   }
   else {
     ## Pull out modifying commands first
-    while ($val =~ /(\w+)\((.+)\)/) {
+    while($val =~ /(\w+)\((.+)\)/) {
       my $cmd = $1;
       $val = $2;
       if (($keywords{$cmd} & 0x02) != 0) {
@@ -1156,7 +1157,7 @@ sub process_compound_if {
     ## Get the value based on the string
     my @cmds;
     my $val;
-    while ($str =~ /(\w+)\((.+)\)(.*)/) {
+    while($str =~ /(\w+)\((.+)\)(.*)/) {
       if ($3 eq '') {
         push(@cmds, $1);
         $str = $2;
@@ -1527,7 +1528,7 @@ sub evaluate_nested_functions {
     my @cmds;
     my $val = $param;
 
-    while ($val =~ /(\w+)\((.+)\)/) {
+    while($val =~ /(\w+)\((.+)\)/) {
       push(@cmds, $1);
       $val = $2;
     }
@@ -1762,11 +1763,11 @@ sub post_create_aux_file {
 
 
 sub perform_create_aux_file {
-  my $self = shift;
-  my $argsref = shift;
+  my($self, $argsref) = @_;
 
   if (defined $self->{'aux_file'}) {
-    die "Can't nest create_aux_file commands.";
+    $self->{'error_in_handle'} = "Can't nest create_aux_file commands.";
+    return undef;
   }
 
   my $fname = '';
@@ -1790,25 +1791,27 @@ sub perform_create_aux_file {
 sub handle_end_aux_file {
   my $self = shift;
   if (!defined $self->{'aux_file'}) {
-    return 'end_aux_file seen before create_aux_file';
+    $self->{'error_in_handle'} = 'end_aux_file seen before create_aux_file';
   }
   else {
     my $af = $self->{'aux_file'};
     mkpath($af->{'dir'}, 0, 0777) if ($af->{'dir'} ne '.');
     my $fh = new FileHandle('> ' . $af->{'dir'} . '/' . $af->{'filename'});
-    if (!defined $fh) {
-      die "Couldn't open: " . $af->{'dir'} . '/' . $af->{'filename'};
+    if (defined $fh) {
+      print $fh $af->{'text'};
+      close($fh);
     }
-    print $fh $af->{'text'};
-    close $fh;
+    else {
+      $self->{'error_in_handle'} = "Couldn't open: " . $af->{'dir'} . '/' .
+                                   $af->{'filename'};
+    }
     $self->{'aux_file'} = undef;
   }
 }
 
 
 sub handle_translate_vars {
-  my $self = shift;
-  my $arg = shift;
+  my($self, $arg) = @_;
   my @params = $self->split_parameters($arg);
   $self->append_current($self->perform_translate_vars([@params]));
 }
@@ -1820,13 +1823,23 @@ sub get_translate_vars {
 }
 
 sub perform_translate_vars {
-  my $self = shift;
-  my $arg = shift;
+  my($self, $arg) = @_;
+
+  ## If the first parameter is a template variable with a value, use it.
+  ## Otherwise, use the parameter as the value.
   my $val = $self->get_value($arg->[0]);
   $val = $arg->[0] unless defined $val;
-  my $os = (defined $arg->[1] && $arg->[1] ne '')
-      ? $arg->[1] : $self->{'prjc'}->{'command_subs'}->{'os'};
+
+  ## If the second optional parameter is provided, use it.  Otherwise,
+  ## use the operating system found in the command substitution map.
+  my $os = (defined $arg->[1] && $arg->[1] ne '') ?
+           $arg->[1] : $self->{'prjc'}->{'command_subs'}->{'os'};
+
+  ## Get the variable reference characters based on the operating system
+  ## for which we are generating this project.
   my ($pre, $post) = ($os eq 'win32') ? ('%', '%') : ('${', '}');
+
+  ## Replace $() with the environment variable reference characters.
   $val =~ s[\$\(([^)]+)\)(\S*)][my ($var, $rest) = ($1, $2);
                                 $rest =~ s!/!\\!g if $os eq 'win32';
                                 "$pre$var$post$rest"]ge;
@@ -1835,21 +1848,29 @@ sub perform_translate_vars {
 
 
 sub handle_convert_slashes {
-  my $self = shift;
-  my $arg = shift;
+  my($self, $arg) = @_;
   my @params = $self->split_parameters($arg);
   $self->append_current($self->perform_convert_slashes([@params]));
 }
 
 
 sub perform_convert_slashes {
-  my $self = shift;
-  my $arg = shift;
+  my($self, $arg) = @_;
+
+  ## If the first parameter is a template variable with a value, use it.
+  ## Otherwise, use the parameter as the value.
   my $val = $self->get_value($arg->[0]);
   $val = $arg->[0] unless defined $val;
-  my $os = (defined $arg->[1] && $arg->[1] ne '')
-      ? $arg->[1] : $self->{'prjc'}->{'command_subs'}->{'os'};
+
+  ## If the second optional parameter is provided, use it.  Otherwise,
+  ## use the operating system found in the command substitution map.
+  my $os = (defined $arg->[1] && $arg->[1] ne '') ?
+           $arg->[1] : $self->{'prjc'}->{'command_subs'}->{'os'};
+
+  ## Replace forward slashes with backslashes if we're generating this
+  ## project specific to Windows.
   $val =~ s!/!\\!g if $os eq 'win32';
+
   return $val;
 }
 
@@ -1858,10 +1879,22 @@ sub handle_new_guid {
   my($self, $name) = @_;
   my $val = $self->get_value_with_default($name);
   my $prjc = $self->{'prjc'};
-  my $guid = GUID::generate($val ? $val : $name, $prjc->{'current_input'}, $prjc->getcwd());
+  my $guid = GUID::generate($val ? $val : $name,
+                            $prjc->{'current_input'}, $prjc->getcwd());
   $self->append_current($guid);
 }
 
+
+sub handle_set {
+  my($self, $val) = @_;
+  my @params = $self->split_parameters($val);
+  if ($#params == 1) {
+    $self->{'values'}->{lc($params[0])} = $params[1];
+  }
+  else {
+    $self->{'error_in_handle'} = 'set() requires a name and a value';
+  }
+}
 
 sub prepare_parameters {
   my($self, $prefix) = @_;

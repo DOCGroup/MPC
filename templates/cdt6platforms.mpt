@@ -26,7 +26,7 @@ targetplatform_superclass = cdt.managedbuild.target.gnu.platform
 outputtype_superclass = cdt.managedbuild.tool.gnu.cpp.linker.so.debug.output
 
 // These are just defaults
-exe_ext_nodot = 
+exe_ext_nodot =
 dll_ext_nodot = so
 lib_ext_nodot = a
 tool_name_prefix = GNU
@@ -81,7 +81,7 @@ linux_m32 {
 
 macosx {
   dll_ext = .dylib
-  exe_ext_nodot = 
+  exe_ext_nodot =
   dll_ext_nodot = dylib
   lib_ext_nodot = a
 
