@@ -1,3 +1,12 @@
+Thu Aug  5 19:57:19 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          If pchsupport is disabled, don't generate the pch_postrule.
+          Also added some Windows native (non-cygwin, non-msys) compatibility
+          with -value_template platforms=mingw.
+
 Thu Aug  5 17:00:23 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * docs/html/MakeProjectCreator.html:
