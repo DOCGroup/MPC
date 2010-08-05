@@ -757,17 +757,17 @@ sub clone {
       $$new{$key} = $self->clone($$obj{$key});
     }
     return $new;
-  }  
+  }
   elsif (UNIVERSAL::isa($obj, 'ARRAY')) {
     my $new = [];
     foreach my $o (@$obj) {
       push(@$new, $self->clone($o));
     }
     return $new;
-  }  
+  }
 
   return $obj;
-}                              
+}
 
 
 sub save_state {

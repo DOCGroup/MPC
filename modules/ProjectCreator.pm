@@ -456,7 +456,7 @@ sub process_assignment {
     }
 
     ## If the assignment name is valid and requires parameter (<%...%>)
-    ## replacement, then do so.  But, only do so on actual keywords. 
+    ## replacement, then do so.  But, only do so on actual keywords.
     ## User defined keywords must not have the parameters replaced in
     ## order for them to get the correct replacement values later on.
     if (defined $validNames{$name} &&
@@ -4639,7 +4639,7 @@ sub get_install_info {
         if (defined $$array[0]) {
           &$callback("$vc:\n");
           foreach my $file (@$array) {
-            if (defined $self->{'flag_overrides'}->{$vc} && 
+            if (defined $self->{'flag_overrides'}->{$vc} &&
                 defined $self->{'flag_overrides'}->{$vc}->{$file} &&
                 defined $self->{'flag_overrides'}->{$vc}->{$file}->{'gendir'}) {
               &$callback(join(' ', map {/ / ? "\"$_\"" : $_} ($file,
