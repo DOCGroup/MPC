@@ -26,7 +26,7 @@ targetplatform_superclass = cdt.managedbuild.target.gnu.platform
 outputtype_superclass = cdt.managedbuild.tool.gnu.cpp.linker.so.debug.output
 
 // These are just defaults
-exe_ext_nodot = 
+exe_ext_nodot =
 dll_ext_nodot = so
 lib_ext_nodot = a
 tool_name_prefix = GNU
@@ -42,6 +42,22 @@ cpp_linker_dynamiclib_superclass = gnu.cpp.link.so.debug.option.shared
 cpp_linker_tool_input_superclass = cdt.managedbuild.tool.gnu.cpp.linker.input
 
 linux {
+  binary_parsers = org.eclipse.cdt.core.ELF
+  error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
+  threadflags = -pthread
+  platform_libs += rt dl
+}
+
+// cellppu is an example for how to do a cross-compile (or, really, any compile using
+// tools with non-standard names).
+cellppu {
+  as = ppu-as
+  ar = ppu-ar
+  cc = ppu-gcc
+  // can set ccld to name of C Linker if different from cc
+  cxx = ppu-g++
+  // can set cxxld to name of C++ Linker if different from cxx
+
   binary_parsers = org.eclipse.cdt.core.ELF
   error_parsers = org.eclipse.cdt.core.GASErrorParser org.eclipse.cdt.core.GLDErrorParser org.eclipse.cdt.core.GCCErrorParser
   threadflags = -pthread
@@ -65,7 +81,7 @@ linux_m32 {
 
 macosx {
   dll_ext = .dylib
-  exe_ext_nodot = 
+  exe_ext_nodot =
   dll_ext_nodot = dylib
   lib_ext_nodot = a
 

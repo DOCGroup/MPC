@@ -9,6 +9,7 @@ common_defines     = WIN32 _CONSOLE _CRT_NONSTDC_NO_WARNINGS
 ConfigurationType  = 1
 SubSystem          = Console
 MinimalRebuild     = false
+GenerateDebugInformation = true
 
 conditional_include "vc10platforms"
 
