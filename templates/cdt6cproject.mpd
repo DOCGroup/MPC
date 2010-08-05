@@ -3,7 +3,7 @@
 <cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
   <storageModule moduleId="org.eclipse.cdt.core.settings">
 <%foreach(platforms)%>
-<%foreach(host_platform)%><%comment(there won't be more than one host_platform, but a foreach is used in order to access scoped assignments from the mpt)%> 
+<%foreach(host_platform)%><%comment(there won't be more than one host_platform, but a foreach is used in order to access scoped assignments from the mpt)%>
 <%foreach(configurations)%>
 <!-- platform = <%platform%>, nocross = <%nocross%>, host_platform = <%host_platform%>, vars_equal = <%vars_equal(platform, host_platform)%> -->
 <%if(!nocross || vars_equal(platform, host_platform))%>

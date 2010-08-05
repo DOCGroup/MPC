@@ -56,7 +56,7 @@ sub pre_workspace {
     '# The projects are listed in dependency order.', $crlf,
     '#', $crlf,
     '# MPC Command:', $crlf,
-    "# $0 @ARGV", $crlf,
+    '# ', $self->create_command_line_string($0, @ARGV), $crlf,
     '#----------------------------------------------------------------------------', $crlf);
 }
 
