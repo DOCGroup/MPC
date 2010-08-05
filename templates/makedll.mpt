@@ -364,9 +364,11 @@ mingw_msys {
   depgen_flags = -t make
 }
 
-// MinGW compiler with either:
-// a) a native Windows shell and make, or
-// b) MSYS's make passing --win32 (which will use cmd.exe as its subshell)
+// MinGW compiler with the built-in Windows shell and native make
+// (not cygwin or MSYS; GNUWin32 is recommended)
+// This also needs core utils (cat, cp, rm) from GNUWin32
+//       http://gnuwin32.sourceforge.net/packages/coreutils.htm
+// because the makefiles use forward slashes in their arguments.
 mingw {
   versupport   =
   lib_prefix   =
@@ -374,11 +376,9 @@ mingw {
   lib_ext      = .lib
   exe_ext      = .exe
   ldlibs       = -lwsock32 -lnetapi32
-  rc           = rc
+  rc           = windres
+  res_ext      = .o
   devnull      = nul
-  delete       = del /f/s/q
-  type         = type
-  copy         = copy /y
   makedir      = mkdir
   move         = move /y
   testdirstart = if not exist
@@ -386,6 +386,8 @@ mingw {
   pic          =
   slash        = \\
   depgen_flags = -t make
+  echo_outer_quote =
+  expanded_variable_assignment = 1
 }
 
 dmc_win {

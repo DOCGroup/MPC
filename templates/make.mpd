@@ -246,10 +246,10 @@ PATH              := $(PATH):<%custom_type->libpath%>
 <%endfor%>
 <%endif%>
 <%endif%>
-<%if(pch_header)%>
+<%if(pchsupport && pch_header)%>
 <%if(custom_type->pch_postrule)%>
 <%foreach(custom_type->input_file->source_output_files)%>
-	@echo '#include "<%pch_header%>"' > temp.$$$$ && $(CAT) <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temp.$$$$ && $(MV) temp.$$$$ <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
+	@echo <%echo_outer_quote("'")%>#include "<%pch_header%>"<%echo_outer_quote("'")%> > temp.$$$$ && $(CAT) <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temp.$$$$ && $(MV) temp.$$$$ <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
 <%endfor%>
 <%endif%>
 <%endif%>
