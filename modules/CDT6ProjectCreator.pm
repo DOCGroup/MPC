@@ -40,7 +40,8 @@ sub project_file_name {
 
   ## Fill in the name and template if they weren't provided
   $name = $self->project_name() if (!defined $name);
-  $template = 'cdt6' if (!defined $template || !defined $templates{$template});
+  $template = 'cdt6project' if (!defined $template ||
+                                !defined $templates{$template});
 
   if ($self->{'make_coexistence'}) {
     return $self->get_modified_project_file_name("cdt_$name",
