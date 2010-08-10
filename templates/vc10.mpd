@@ -1,8 +1,8 @@
 <?xml version="<%xml_version("1.0")%>" encoding="<%encoding("Windows-1252")%>"?>
 <Project DefaultTargets="Build" ToolsVersion="<%toolsversion%>" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-<%foreach(configurations)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
     <ProjectConfiguration Include="<%configuration%>|<%platform%>">
       <Configuration><%configuration%></Configuration>
       <Platform><%platform%></Platform>
@@ -22,8 +22,8 @@
 <%endif%>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-<%foreach(configurations)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'" Label="Configuration">
     <ConfigurationType><%if(type_is_dynamic)%>DynamicLibrary<%else%><%if(type_is_static && staticname)%>StaticLibrary<%else%><%if(custom_only)%>Utility<%else%><%if(makeoutput)%>Makefile<%else%>Application<%endif%><%endif%><%endif%><%endif%></ConfigurationType>
 <%if(UseOfMFC)%>
@@ -38,7 +38,7 @@
 <%else%>
     <CharacterSet>NotSet</CharacterSet>
 <%endif%>
-<%if(CLRSupport)%>
+<%if(CLRSupport || managed)%>
     <CLRSupport>true</CLRSupport>
 <%endif%>
 <%if(WholeProgramOptimization)%>
@@ -50,8 +50,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-<%foreach(configurations)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -60,8 +60,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion><%prversion%></_ProjectFileVersion>
-<%foreach(configurations)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
 <%if(makeoutput)%>
     <LinkIncremental><%if(debug_prj)%>true<%else%>false<%endif%></LinkIncremental>
     <NMakePreprocessorDefinitions><%if(unicode)%>UNICODE;_UNICODE;<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%><%dynamicflag%>;<%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%><%staticflag%>;<%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%><%pch_define%>;<%endfor%><%endif%><%foreach(defines common_defines cpu_defines platform_defines macros)%><%define%><%fornotlast(";")%><%endfor%><%if(macro_for_lib_modifier)%><%if(use_lib_modifier)%><%if(lib_modifier)%>;MPC_LIB_MODIFIER=&quot;<%lib_modifier%>&quot;<%endif%><%endif%><%endif%>;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
@@ -99,8 +99,8 @@
 <%endfor%>
 <%endfor%>
   </PropertyGroup>
-<%foreach(configurations)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">
 <%if(prebuild)%>
     <PreBuildEvent>
@@ -248,8 +248,10 @@
       <BrowseInformationFile><%BrowseInformationFile%></BrowseInformationFile>
 <%endif%>
       <WarningLevel>Level<%warning_level("3")%></WarningLevel>
+<%if(!managed && !CLRSupport)%>
 <%if(!optimize || debug_format)%>
       <DebugInformationFormat><%debug_format("EditAndContinue")%></DebugInformationFormat>
+<%endif%>
 <%endif%>
 <%if(CallingConvention)%>
       <CallingConvention><%CallingConvention%></CallingConvention>
@@ -571,7 +573,7 @@
 <%if(RandomizedBaseAddress)%>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
 <%endif%>
-<%if(FixedBaseAddress || managed)%>
+<%if(FixedBaseAddress)%>
       <FixedBaseAddress>true</FixedBaseAddress>
 <%endif%>
 <%if(DataExecutionPrevention)%>
@@ -686,8 +688,8 @@
   <ItemGroup>
 <%if(pch_source)%>
     <ClCompile Include="<%pch_source%>">
-<%foreach(configurations)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">Create</PrecompiledHeader>
 <%endfor%>
 <%endfor%>
@@ -696,8 +698,8 @@
 <%foreach(source_files)%>
     <ClCompile Include="<%source_file%>">
 <%if(duplicate_index(source_file))%>
-<%foreach(configurations)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
 <%if(flag_overrides(source_file, no_pch))%>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">NotUsing</PrecompiledHeader>
 <%endif%>
@@ -716,8 +718,8 @@
 <%endfor%>
 <%else%>
 <%if(flag_overrides(grouped_source_file->file, buildflags) || flag_overrides(grouped_source_file->file, no_pch) || flag_overrides(grouped_source_file->file, managed))%>
-<%foreach(configurations)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
 <%if(flag_overrides(grouped_source_file->file, no_pch))%>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">NotUsing</PrecompiledHeader>
 <%endif%>
@@ -744,8 +746,8 @@
   <ItemGroup>
 <%foreach(template_files)%>
     <ClCompile Include="<%template_file%>">
-<%foreach(configurations)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">true</ExcludedFromBuild>
 <%endfor%>
 <%endfor%>
@@ -769,8 +771,8 @@
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
     <CustomBuild Include="<%custom_type->input_file%>">
-<%foreach(configurations)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
       <Command Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(custom_type->libpath)%>PATH=%PATH%;<%custom_type->libpath%>&#x0D;&#x0A;<%endif%><%if(flag_overrides(custom_type->input_file, gendir))%>if not exist <%flag_overrides(custom_type->input_file, gendir)%> mkdir <%flag_overrides(custom_type->input_file, gendir)%>&#x0D;&#x0A;<%endif%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%if(custom_type->output_option)%>&quot;<%custom_type->input_file%>&quot; <%custom_type->output_option%><%foreach(custom_type->input_file->output_files)%> &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>&quot;<%endfor%><%else%>&quot;<%custom_type->input_file%>&quot;<%endif%><%if(flag_overrides(custom_type->input_file, postcommand))%><%foreach(custom_type->input_file)%> &amp;&amp; <%flag_overrides(custom_type->input_file, postcommand)%><%endfor%><%else%><%if(custom_type->postcommand)%><%foreach(custom_type->input_file)%> &amp;&amp; <%custom_type->postcommand%><%endfor%><%endif%><%endif%><%if(pch_header)%><%if(custom_type->pch_postrule)%><%foreach(custom_type->input_file->source_output_files)%> &amp;&amp; echo #include &quot;<%pch_header%>&quot; &gt; temporary.src &amp;&amp; type &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>&quot; &gt;&gt; temporary.src &amp;&amp; move /y temporary.src &quot;<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>&quot;<%endfor%><%endif%><%endif%></Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">Invoking <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> on <%custom_type->input_file%></Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(";")%><%endfor%></Outputs>
@@ -790,8 +792,8 @@
     </CustomBuild>
 <%else%>
     <None Include="<%custom_type->input_file%>">
-<%foreach(configurations)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">true</ExcludedFromBuild>
 <%endfor%>
 <%endfor%>
@@ -813,8 +815,8 @@
 <%foreach(documentation_files)%>
     <CustomBuild Include="<%documentation_file%>">
       <FileType>Document</FileType>
-<%foreach(configurations)%>
 <%foreach(platforms)%>
+<%foreach(configurations)%>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">true</ExcludedFromBuild>
 <%endfor%>
 <%endfor%>
@@ -825,7 +827,9 @@
 <%if(resource_files && !type_is_static)%>
   <ItemGroup>
 <%foreach(resource_files)%>
+<%if(ends_with(resource_file,\.rc2?))%>
     <ResourceCompile Include="<%resource_file%>" />
+<%endif%>
 <%endfor%>
   </ItemGroup>
 <%endif%>
