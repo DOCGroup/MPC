@@ -1,3 +1,28 @@
+Tue Aug 10 21:40:07 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * docs/templates/vc10.txt:
+
+          Added the "managed" variable.
+
+        * modules/VC8WorkspaceCreator.pm:
+
+          Projects reference were picking up the .filters file for vc10 instead
+          of the normal output file (.vcxproj).  For now this is just a
+          work-around to remove ".filters" from the relative path to the
+          referenced project.
+
+        * templates/vc10.mpd:
+
+          Allow the use of "managed" as a backwards-compatibility synonym for
+          "CLRSupport".
+          Re-order the nested <%foreach%> loops so that 'platforms' appears
+          before 'configurations' (as it does in vc8.mpd).
+          DebugInformationFormat is not supported with CLR/managed.
+          FixedBaseAddress is not supported with CLR/managed.
+          The list of resource files may contain files that are not actually
+          passed to the resource compiler (like icons: .ico).  Exclude those
+          from <ResourceCompile> but they will still be listed in the project.
+
 Fri Aug  6 14:12:30 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * docs/html/WB26.html:
