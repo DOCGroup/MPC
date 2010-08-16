@@ -4421,10 +4421,9 @@ sub need_to_write_project {
   ## do what the user tells us to do.
   return 1 if (defined $self->{'verbatim'}->{$self->{'pctype'}});
 
-  ## The order here is important, we must check for source or resource
+  ## The order here is important, we must check for source
   ## files first and then for custom input files.
-  foreach my $key ('source_files', $self->get_resource_tag(),
-                   keys %{$self->{'generated_exts'}}) {
+  foreach my $key ('source_files', keys %{$self->{'generated_exts'}}) {
     my $names = $self->{$key};
     foreach my $name (keys %$names) {
       foreach my $key (keys %{$names->{$name}}) {
@@ -4433,10 +4432,10 @@ sub need_to_write_project {
         if (defined $names->{$name}->{$key}->[0]) {
           if ($count >= 2) {
             ## Return 2 if we have found a custom input file (and thus no
-            ## source or resource files due to the foreach order).
+            ## source files due to the foreach order).
             return 2;
           }
-          ## We have either source files or resource files, we need to
+          ## We source files, we need to
           ## see if this project creator supports the current language.
           ## If it doesn't then we don't need to create the project.
           elsif ($self->languageSupported()) {
