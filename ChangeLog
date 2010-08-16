@@ -1,3 +1,12 @@
+Mon Aug 16 19:45:17 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/ProjectCreator.pm (need_to_write_project):
+
+          Do not consider a resource file alone enough to create a project,
+          it must have a source or custom-input file.  vc10 requires this
+          because it creates resouce files in the intermediate directories,
+          which would subsequently be found in an -implicit project search.
+
 Tue Aug 10 21:40:07 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * docs/templates/vc10.txt:
@@ -6,7 +15,7 @@ Tue Aug 10 21:40:07 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * modules/VC8WorkspaceCreator.pm:
 
-          Projects reference were picking up the .filters file for vc10 instead
+          Projects references were picking up the .filters file for vc10 instead
           of the normal output file (.vcxproj).  For now this is just a
           work-around to remove ".filters" from the relative path to the
           referenced project.
