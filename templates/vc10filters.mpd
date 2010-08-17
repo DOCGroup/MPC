@@ -1,4 +1,4 @@
-<?xml version="<%xml_version("1.0")%>" encoding="<%encoding("Windows-1252")%>"?>
+<?xml version="<%xml_version("1.0")%>" encoding="<%encoding("utf-8")%>"?>
 <Project ToolsVersion="<%toolsversion%>" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
 <%if(source_files)%>

@@ -10,14 +10,15 @@ ConfigurationType  = 2
 MinimalRebuild     = false
 GenerateDebugInformation = true
 
-conditional_include "vc8platforms"
+conditional_include "vc10platforms"
 
 Release {
   optimize         = MaxSpeed
   defines          = NDEBUG
   output_dir       = Release
   intermediate_dir = Release
-  GenerateDebugInformation = false
+  EnableIntrinsicFunctions = true
+  WholeProgramOptimization = true
 }
 
 Debug {
@@ -35,6 +36,8 @@ Memcheck Release {
   intermediate_dir   = Release
   BasicRuntimeChecks = 0
   FixedBaseAddress   = 1
+  EnableIntrinsicFunctions = true
+  WholeProgramOptimization = true
 }
 
 Memcheck Debug {
@@ -55,7 +58,8 @@ MFC Release {
   intermediate_dir = MFC_Release
   lib_modifier     = mfc
   UseOfMFC         = Dynamic
-  GenerateDebugInformation = false
+  EnableIntrinsicFunctions = true
+  WholeProgramOptimization = true
 }
 
 MFC Debug {
