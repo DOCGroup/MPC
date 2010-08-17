@@ -23,6 +23,10 @@ x64 {
   link_options     = /machine:AMD64
 }
 
+
+// The "embedded" platforms below were copied from vc8platforms.mpt and may
+// need to be changed before they will work with vc10.
+
 Pocket PC 2003 (ARMV4) {
   output_subdir    = PocketPC2003_ARMV4
   cpu_defines      = $(ARCHFAM) $(_ARCHFAM_)

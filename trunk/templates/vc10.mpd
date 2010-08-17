@@ -1,4 +1,4 @@
-<?xml version="<%xml_version("1.0")%>" encoding="<%encoding("Windows-1252")%>"?>
+<?xml version="<%xml_version("1.0")%>" encoding="<%encoding("utf-8")%>"?>
 <Project DefaultTargets="Build" ToolsVersion="<%toolsversion%>" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
 <%foreach(platforms)%>
@@ -85,8 +85,8 @@
     <NMakeCleanCommandLine><%makeclean%> CONF=<%configuration%></NMakeOutput>
     <NMakeOutput><%makeoutput%></NMakeOutput>
 <%else%>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(type_is_dynamic)%><%if(dllout)%><%dllout%>/<%else%><%libout%>/<%endif%><%else%><%if(type_is_static)%><%libout%>/<%else%><%if(exeout)%><%exeout%>/<%if(windows_style)%>/<%output_dir("Debug")%>/<%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%>/<%else%><%output_dir(".")%>/<%endif%><%endif%><%endif%><%endif%></OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%intermediate_dir%>/<%noextension(project_file)%>/<%if(output_subdir)%><%output_subdir%>/<%endif%></IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(type_is_dynamic)%><%if(dllout)%><%dllout%>\<%else%><%libout%>\<%endif%><%else%><%if(type_is_static)%><%libout%>\<%else%><%if(exeout)%><%exeout%>\<%if(windows_style)%>\<%output_dir("Debug")%>\<%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%>\<%else%><%output_dir(".")%>\<%endif%><%endif%><%endif%><%endif%></OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%intermediate_dir%>\<%noextension(project_file)%>\<%if(output_subdir)%><%output_subdir%>\<%endif%></IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(debug_prj)%>true<%else%>false<%endif%></LinkIncremental>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%endif%></TargetName>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">AllRules.ruleset</CodeAnalysisRuleSet>
@@ -120,7 +120,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <ClCompile>
-      <Optimization><%optimize%></Optimization>
+      <Optimization><%optimize("Disabled")%></Optimization>
 <%if(InlineFunctionExpansion)%>
       <InlineFunctionExpansion><%InlineFunctionExpansion%></InlineFunctionExpansion>
 <%endif%>
@@ -135,9 +135,6 @@
 <%endif%>
 <%if(EnableFiberSafeOptimizations)%>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-<%endif%>
-<%if(WholeProgramOptimization)%>
-      <WholeProgramOptimization>true</WholeProgramOptimization>
 <%endif%>
 <%if(includes)%>
       <AdditionalIncludeDirectories><%foreach(includes)%><%include%>;<%endfor%>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -229,7 +226,7 @@
       <ObjectFileName><%ObjectFileName%></ObjectFileName>
 <%endif%>
 <%if(pdbc)%>
-      <ProgramDataBaseFileName><%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%><%if(output_subdir)%>\<%output_subdir%><%endif%>/<%endif%></ProgramDataBaseFileName>
+      <ProgramDataBaseFileName><%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%><%if(output_subdir)%>\<%output_subdir%><%endif%>\<%endif%></ProgramDataBaseFileName>
 <%else%>
 <%if(ProgramDataBaseFileName)%>
       <ProgramDataBaseFileName><%ProgramDataBaseFileName%></ProgramDataBaseFileName>
@@ -248,10 +245,8 @@
       <BrowseInformationFile><%BrowseInformationFile%></BrowseInformationFile>
 <%endif%>
       <WarningLevel>Level<%warning_level("3")%></WarningLevel>
-<%if(!managed && !CLRSupport)%>
-<%if(!optimize || debug_format)%>
-      <DebugInformationFormat><%debug_format("EditAndContinue")%></DebugInformationFormat>
-<%endif%>
+<%if(!managed && !CLRSupport && debug_format)%>
+      <DebugInformationFormat><%debug_format%></DebugInformationFormat>
 <%endif%>
 <%if(CallingConvention)%>
       <CallingConvention><%CallingConvention%></CallingConvention>
@@ -389,7 +384,7 @@
 <%endif%>
       <AdditionalDependencies><%foreach(reverse(libs))%><%libname_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>;<%endfor%><%foreach(reverse(lit_libs))%><%lit_lib%>.lib;<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%>;<%endfor%>%(AdditionalDependencies)</AdditionalDependencies>
 <%if(exename || sharedname || staticname)%>
-      <OutputFile>$(OutDir)/<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%></OutputFile>
+      <OutputFile>$(OutDir)\<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%></OutputFile>
 <%endif%>
 <%if(ShowProgress)%>
       <ShowProgress><%ShowProgress%></ShowProgress>
@@ -472,10 +467,10 @@
 <%endif%>
 <%if(pdbl)%>
 <%if(sharedname)%>
-      <ProgramDatabaseFile>$(OutDir)/<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb</ProgramDatabaseFile>
 <%else%>
 <%if(exename)%>
-      <ProgramDatabaseFile>$(OutDir)/<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.pdb</ProgramDatabaseFile>
 <%endif%>
 <%endif%>
 <%endif%>
@@ -653,21 +648,22 @@
       <Command><%eval(postbuild)%></Command>
     </PostBuildEvent>
 <%endif%>
-<!--
-	TODO: I don't know how to convert these too steps.
+<!-- "postclean" was made-up by MPC for use by vs_postclean.pl.
+     Check if msbuild has any support for a custom post-cleaning step
 <%if(postclean)%>
-			<Tool
-				Name="VCPostCleanEventTool"
-				CommandLine="<%eval(postclean)%>"
-			/>
-<%endif%>
+                        <Tool
+                                Name="VCPostCleanEventTool"
+                                CommandLine="<%eval(postclean)%>"
+                        />
+<%endif%> -->
+<!-- No known equivalent for DeploymentTool in vc10:
 <%if(deploymenttool)%>
-			<DeploymentTool
-				ForceDirty="-1"
-				RemoteDirectory="<%deployment_directory%>"
-				RegisterOutput="0"
-				AdditionalFiles=""
-			/>
+                        <DeploymentTool
+                                ForceDirty="-1"
+                                RemoteDirectory="<%deployment_directory%>"
+                                RegisterOutput="0"
+                                AdditionalFiles=""
+                        />
 <%endif%>
 -->
   </ItemDefinitionGroup>
