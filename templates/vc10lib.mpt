@@ -18,7 +18,8 @@ Release {
   output_dir       = Static_Release
   intermediate_dir = Static_Release
   lib_modifier     = s
-  GenerateDebugInformation = false
+  EnableIntrinsicFunctions = true
+  WholeProgramOptimization = true
 }
 
 Debug {
@@ -37,6 +38,8 @@ Memcheck Release {
   lib_modifier       = s
   BasicRuntimeChecks = 0
   FixedBaseAddress   = 1
+  EnableIntrinsicFunctions = true
+  WholeProgramOptimization = true
 }
 
 Memcheck Debug {
@@ -57,7 +60,8 @@ MFC Release {
   intermediate_dir = Static_MFC_Release
   lib_modifier     = mfcs
   UseOfMFC         = Dynamic
-  GenerateDebugInformation = false
+  EnableIntrinsicFunctions = true
+  WholeProgramOptimization = true
 }
 
 MFC Debug {

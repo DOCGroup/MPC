@@ -1,3 +1,21 @@
+Tue Aug 17 21:59:04 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc10.mpd:
+        * templates/vc10filters.mpd:
+
+          Updated with general cleanup and to better match the settings that
+          VS2010 generates when creating a C++ project from the GUI.
+
+        * templates/vc10dll.mpt:
+        * templates/vc10exe.mpt:
+        * templates/vc10lib.mpt:
+        * templates/vc10libexe.mpt:
+        * templates/vc10platforms.mpt:
+
+          Use EnableIntrinsicFucntions and WholeProgramOptimization for
+          Release configurations.  Also, don't disable GenerateDebugInformation
+          as this is still used in Release configurations.
+
 Mon Aug 16 19:45:17 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * modules/ProjectCreator.pm (need_to_write_project):
