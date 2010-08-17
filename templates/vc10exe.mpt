@@ -11,7 +11,7 @@ SubSystem          = Console
 MinimalRebuild     = false
 GenerateDebugInformation = true
 
-conditional_include "vc8platforms"
+conditional_include "vc10platforms"
 
 Release {
   LinkIncremental  = 1
@@ -19,7 +19,8 @@ Release {
   defines          = NDEBUG
   output_dir       = Release
   intermediate_dir = Release
-  GenerateDebugInformation = false
+  EnableIntrinsicFunctions = true
+  WholeProgramOptimization = true
 }
 
 Debug {
@@ -37,6 +38,8 @@ Memcheck Release {
   BasicRuntimeChecks = 0
   LinkIncremental    = 1
   FixedBaseAddress   = 1
+  EnableIntrinsicFunctions = true
+  WholeProgramOptimization = true
 }
 
 Memcheck Debug {
@@ -59,7 +62,8 @@ MFC Release {
   lib_modifier      = mfc
   UseOfMFC          = Dynamic
   unicode_mfc_entry = wWinMainCRTStartup
-  GenerateDebugInformation = false
+  EnableIntrinsicFunctions = true
+  WholeProgramOptimization = true
 }
 
 MFC Debug {

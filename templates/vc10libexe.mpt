@@ -20,7 +20,8 @@ Release {
   output_dir       = Static_Release
   intermediate_dir = Static_Release
   lib_modifier     = s
-  GenerateDebugInformation = false
+  EnableIntrinsicFunctions = true
+  WholeProgramOptimization = true
 }
 
 Debug {
@@ -40,6 +41,8 @@ Memcheck Release {
   BasicRuntimeChecks = 0
   LinkIncremental    = 1
   FixedBaseAddress   = 1
+  EnableIntrinsicFunctions = true
+  WholeProgramOptimization = true
 }
 
 Memcheck Debug {
@@ -63,7 +66,8 @@ MFC Release {
   lib_modifier      = mfcs
   UseOfMFC          = Dynamic
   unicode_mfc_entry = wWinMainCRTStartup
-  GenerateDebugInformation = false
+  EnableIntrinsicFunctions = true
+  WholeProgramOptimization = true
 }
 
 MFC Debug {
