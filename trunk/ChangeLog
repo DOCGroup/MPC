@@ -1,3 +1,12 @@
+Wed Aug 18 16:10:32 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/ProjectCreator.pm (need_to_write_project):
+
+          Refining the change from Monday
+          Mon Aug 16 19:45:17 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+          so that the exclusion of resource files from the list of files to
+          check only applies to implicitly-created projects.
+
 Tue Aug 17 21:59:04 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * templates/vc10.mpd:
