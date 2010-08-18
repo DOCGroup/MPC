@@ -1,3 +1,15 @@
+Wed Aug 18 21:39:36 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * config/mfc.mpb:
+
+          The "subsystem" template variable is a string for vc10 (not an int).
+
+        * templates/vc10.mpd:
+
+          The pch_header can't be listed separately from the other headers
+          because unlike earlier versions the same file can't appear twice.
+          Added the midl_flags template variable to work like vc8/vc9.
+
 Wed Aug 18 16:10:32 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * modules/ProjectCreator.pm (need_to_write_project):
