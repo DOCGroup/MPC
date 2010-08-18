@@ -118,6 +118,9 @@
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+<%if(midl_flags)%>
+      <AdditionalOptions><%midl_flags%></AdditionalOptions>
+<%endif%>
     </Midl>
     <ClCompile>
       <Optimization><%optimize("Disabled")%></Optimization>
@@ -753,9 +756,6 @@
 <%endif%>
 <%if(header_files)%>
   <ItemGroup>
-<%if(pch_header)%>
-    <ClInclude Include="<%pch_header%>" />
-<%endif%>
 <%foreach(header_files)%>
     <ClInclude Include="<%header_file%>" />
 <%endfor%>
