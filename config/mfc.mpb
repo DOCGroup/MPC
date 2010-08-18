@@ -9,6 +9,9 @@ project {
   } else {
     subsystem = 2
   }
+  specific(vc10) {
+    subsystem = Windows
+  }
   specific {
     use_mfc = 2
     unicode_mfc_entry = wWinMainCRTStartup
