@@ -38,8 +38,8 @@
 <%else%>
     <CharacterSet>NotSet</CharacterSet>
 <%endif%>
-<%if(CLRSupport || managed)%>
-    <CLRSupport>true</CLRSupport>
+<%if(managed)%>
+    <CLRSupport><%if(compares(managed,0))%>false<%else%><%if(compares(managed,1))%>true<%else%><%if(compares(managed,2))%>Pure<%else%><%if(compares(managed,3))%>Safe<%else%><%managed%><%endif%><%endif%><%endif%><%endif%></CLRSupport>
 <%endif%>
 <%if(WholeProgramOptimization)%>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -94,6 +94,9 @@
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'" />
 <%if(ReferencePath)%>
     <ReferencePath><%ReferencePath%>;$(ReferencePath)</ReferencePath>
+<%endif%>
+<%if(EmbedManifest || keyfile)%>
+    <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(EmbedManifest)%><%EmbedManifest%><%else%><%if(keyfile)%>false<%endif%><%endif%></EmbedManifest>
 <%endif%>
 <%endif%>
 <%endfor%>
@@ -248,7 +251,7 @@
       <BrowseInformationFile><%BrowseInformationFile%></BrowseInformationFile>
 <%endif%>
       <WarningLevel>Level<%warning_level("3")%></WarningLevel>
-<%if(!managed && !CLRSupport && debug_format)%>
+<%if(!managed && debug_format)%>
       <DebugInformationFormat><%debug_format%></DebugInformationFormat>
 <%endif%>
 <%if(CallingConvention)%>
@@ -431,6 +434,12 @@
 <%endif%>
 <%if(ModuleDefinitionFile)%>
       <ModuleDefinitionFile><%ModuleDefinitionFile%></ModuleDefinitionFile>
+<%else%>
+<%foreach(source_files)%>
+<%if(ends_with(source_file,\.def))%>
+      <ModuleDefinitionFile><%source_file%></ModuleDefinitionFile>
+<%endif%>
+<%endfor%>
 <%endif%>
 <%if(AddModuleNamesToAssembly)%>
       <AddModuleNamesToAssembly><%AddModuleNamesToAssembly%>;%(AddModuleNamesToAssembly)</AddModuleNamesToAssembly>
@@ -674,9 +683,7 @@
 <%endfor%>
   <ItemGroup>
 <%if(after && add_references)%>
-<%foreach(add_references)%>
-    <Reference Include="<%add_reference%>" />
-<%endfor%>
+    <!-- MPC ADD DEPENDENCIES -->
 <%endif%>
 <%foreach(AssemblyReferences)%>
     <Reference Include="<%AssemblyReference%>" />
@@ -695,48 +702,35 @@
     </ClCompile>
 <%endif%>
 <%foreach(source_files)%>
+<%if(ends_with(source_file,\.def))%>
+    <None Include="<%source_file%>" />
+<%else%>
+<%if(ends_with(source_file,\.[io]dl))%>
+    <Midl Include="<%source_File%>" />
+<%else%>
     <ClCompile Include="<%source_file%>">
-<%if(duplicate_index(source_file))%>
+<%if(flag_overrides(source_file, buildflags) || flag_overrides(source_file, no_pch) || flag_overrides(source_file, managed))%>
 <%foreach(platforms)%>
 <%foreach(configurations)%>
 <%if(flag_overrides(source_file, no_pch))%>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">NotUsing</PrecompiledHeader>
 <%endif%>
 <%if(flag_overrides(source_file, buildflags))%>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%flag_overrides(grouped_source_file->file, buildflags)%> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%flag_overrides(source_file, buildflags)%> %(AdditionalOptions)</AdditionalOptions>
 <%endif%>
 <%if(flag_overrides(source_file, managed))%>
       <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">Default</BasicRuntimeChecks>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%flag_overrides(source_file, managed)%></CompileAsManaged>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(compares(flag_overrides(source_file, managed),0))%>false<%else%><%if(compares(flag_overrides(source_file, managed),1))%>true<%else%><%if(compares(flag_overrides(source_file, managed),2))%>Pure<%else%><%if(compares(flag_overrides(source_file, managed),3))%>Safe<%else%><%flag_overrides(source_file, managed)%><%endif%><%endif%><%endif%><%endif%></CompileAsManaged>
 <%if(!ExceptionHandling || compares(ExceptionHandling, 'Sync'))%>
-    <ExceptionHandling>Async</ExceptionHandling>
-<%endif%>
-<%endif%>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">$(IntDir)\$(InputName)<%duplicate_index(source_file)%>.obj</ObjectFileName>
-<%endfor%>
-<%endfor%>
-<%else%>
-<%if(flag_overrides(grouped_source_file->file, buildflags) || flag_overrides(grouped_source_file->file, no_pch) || flag_overrides(grouped_source_file->file, managed))%>
-<%foreach(platforms)%>
-<%foreach(configurations)%>
-<%if(flag_overrides(grouped_source_file->file, no_pch))%>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">NotUsing</PrecompiledHeader>
-<%endif%>
-<%if(flag_overrides(grouped_source_file->file, buildflags))%>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%flag_overrides(grouped_source_file->file, buildflags)%> %(AdditionalOptions)</AdditionalOptions>
-<%endif%>
-<%if(flag_overrides(grouped_source_file->file, managed))%>
-      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">Default</BasicRuntimeChecks>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%flag_overrides(grouped_source_file->file, managed)%></CompileAsManaged>
-<%if(!ExceptionHandling || compares(ExceptionHandling, 'Sync'))%>
-    <ExceptionHandling>Async</ExceptionHandling>
+      <ExceptionHandling>Async</ExceptionHandling>
 <%endif%>
 <%endif%>
 <%endfor%>
 <%endfor%>
-<%endif%>
 <%endif%>
     </ClCompile>
+<%endif%>
+<%endif%>
 <%endfor%>
   </ItemGroup>
 <%endif%>
@@ -823,9 +817,7 @@
 <%if(resource_files && !type_is_static)%>
   <ItemGroup>
 <%foreach(resource_files)%>
-<%if(ends_with(resource_file,\.rc2?))%>
-    <ResourceCompile Include="<%resource_file%>" />
-<%endif%>
+    <<%if(ends_with(resource_file,\.rc))%>ResourceCompile<%else%>None<%endif%> Include="<%resource_file%>" />
 <%endfor%>
   </ItemGroup>
 <%endif%>
