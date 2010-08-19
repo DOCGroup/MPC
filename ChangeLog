@@ -1,3 +1,28 @@
+Thu Aug 19 21:51:35 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/VC10WorkspaceCreator.pm:
+        * modules/VC8WorkspaceCreator.pm:
+
+          Factored-out the C++ project references from vc8 into a separate
+          method that's overriden in vc10 to get the new syntax.
+
+        * templates/vc10.mpd:
+        * templates/vc10filters.mpd:
+
+          Support for .def, .idl, and .odl files as Source_Files.
+
+          "CLRSupport" removed as a template variable, instead use "managed"
+          which is an MPC keyword and gets special treatment from MPC.
+
+          Added an "EmbedManifest" template variable, if it's not set and there
+          is a "keyfile", default it to false because signed assemblies can't
+          have manifest embedded without invalidating the signature.
+
+          Added project references (filled-in by the WorkspaceCreator).
+
+          Cleaned up the Source_Files section a bit, it was using the
+          grouped_source_file outside of any groups.
+
 Wed Aug 18 21:39:36 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * config/mfc.mpb:

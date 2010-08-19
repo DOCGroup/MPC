@@ -116,13 +116,8 @@ sub post_workspace {
                     }
                   }
 
-                  push(@read, $spc . '<ProjectReference' . $crlf .
-                              $spc . "\tReferencedProjectIdentifier=" .
-                              "\"\{$gmap{$dep}->[0]\}\"$crlf" .
-                              (defined $attr{'copylocal'} ? $spc .
-                                "\tCopyLocal=\"" . $attr{'copylocal'} . "\"$crlf" : '') .
-                              $spc . "\tRelativePathToProject=\"$relative\"$crlf" .
-                              $spc . '/>' . $crlf);
+                  push(@read, $self->cpp_proj_ref($spc, $gmap{$dep}->[0],
+                                                  \%attr, $relative));
                 }
               }
               ## This is a non-c++ language.  So, it should not reference
@@ -158,6 +153,19 @@ sub post_workspace {
       }
     }
   }
+}
+
+sub cpp_proj_ref {
+  my ($self, $spc, $refguid, $attr, $relative) = @_;
+  my $crlf = $self->crlf();
+  return $spc . '<ProjectReference' . $crlf .
+      $spc . "\tReferencedProjectIdentifier=\"\{$refguid\}\"$crlf" .
+      (defined $$attr{'copylocal'}
+       ? $spc . "\tCopyLocal=\"" . $$attr{'copylocal'} . "\"$crlf"
+       : ''
+      ) .
+      $spc . "\tRelativePathToProject=\"$relative\"$crlf" .
+      $spc . '/>' . $crlf;
 }
 
 sub adjust_names {
