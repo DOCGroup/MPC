@@ -117,9 +117,21 @@
 <%endfor%>
 <%else%>
 <%foreach(source_files)%>
+<%if(ends_with(source_file,\.def))%>
+    <None Include="<%source_File%>">
+      <Filter>Source Files</Filter>
+    </None>
+<%else%>
+<%if(ends_with(source_file,\.[io]dl))%>
+    <Midl Include="<%source_File%>">
+      <Filter>Source Files</Filter>
+    </Midl>
+<%else%>
     <ClCompile Include="<%source_file%>">
       <Filter>Source Files</Filter>
     </ClCompile>
+<%endif%>
+<%endif%>
 <%endfor%>
 <%endif%>
   </ItemGroup>
