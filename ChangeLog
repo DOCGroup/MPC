@@ -1,3 +1,41 @@
+Fri Aug 20 21:40:40 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Allow template variables to use an "extended attributes" notation,
+          which borrows syntax from what "after" already supports:
+            variables += value:attrname1=attrval1[,attrname2=attrval2]...
+          The "value" part is referenced in the template as
+          <%variable->_default%> and the "attrval" parts are referenced as
+          <%variable->attrname1%>.
+
+        * modules/TemplateParser.pm:
+        * modules/VC7ProjectCreator.pm:
+
+          Changed the GUID generation algorithm for <%guid%> and <%new_guid%>
+          to not use the absoulte path to the workspace.  This allows stable
+          GUID generation among different developers and/or moving the
+          workspace to a different filesystem location.
+
+        * modules/VC8WorkspaceCreator.pm:
+
+          Use Windows slashes for relative paths in project references.
+
+        * templates/vc10.mpd:
+
+          Support TargetExt when setting a non-standard {lib,dll,exe}_ext.
+          OutputFile should not add a \ after $(OutDir) since it already ends
+          in a \.  The double-\ confuses .NET project references.
+          Added comreferences as a template variable to generate the
+          <COMReference> XML element in the vcxproj.  This uses the extended
+          attributes support in ProjectCreator.
+
+        * templates/vc8csharp.mpd:
+
+          RootNamespace is set to the project name.
+          TargetFrameworkProfile supported as a template variable.
+          Added comreference support (similar to vc10.mpd).
+
 Thu Aug 19 21:51:35 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * modules/VC10WorkspaceCreator.pm:

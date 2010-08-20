@@ -44,7 +44,7 @@
 <%if(WholeProgramOptimization)%>
     <WholeProgramOptimization>true</WholeProgramOptimization>
 <%endif%>
-</PropertyGroup>
+  </PropertyGroup>
 <%endfor%>
 <%endfor%>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -89,6 +89,21 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%intermediate_dir%>\<%noextension(project_file)%>\<%if(output_subdir)%><%output_subdir%>\<%endif%></IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(debug_prj)%>true<%else%>false<%endif%></LinkIncremental>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%endif%></TargetName>
+<%if(type_is_static && staticname && !compares(lib_ext, .lib))%>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%lib_ext%></TargetExt>
+<%else%>
+<%if(!type_is_static)%>
+<%if(exename || sharedname || staticname)%>
+<%if(type_is_dynamic && !compares(dll_ext, .dll))%>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%dll_ext%></TargetExt>
+<%else%>
+<%if(!type_is_dynamic && !compares(exe_ext, .exe))%>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%exe_ext%></TargetExt>
+<%endif%>
+<%endif%>
+<%endif%>
+<%endif%>
+<%endif%>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'" />
@@ -390,7 +405,7 @@
 <%endif%>
       <AdditionalDependencies><%foreach(reverse(libs))%><%libname_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>;<%endfor%><%foreach(reverse(lit_libs))%><%lit_lib%>.lib;<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%>;<%endfor%>%(AdditionalDependencies)</AdditionalDependencies>
 <%if(exename || sharedname || staticname)%>
-      <OutputFile>$(OutDir)\<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%></OutputFile>
+      <OutputFile>$(OutDir)<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%></OutputFile>
 <%endif%>
 <%if(ShowProgress)%>
       <ShowProgress><%ShowProgress%></ShowProgress>
@@ -687,6 +702,25 @@
 <%endif%>
 <%foreach(AssemblyReferences)%>
     <Reference Include="<%AssemblyReference%>" />
+<%endfor%>
+<%foreach(comreferences)%>
+  <COMReference Include="<%comreference->_default%>">
+    <Guid><%lc(comreference->guid)%></Guid>
+    <VersionMajor><%comreference->majorver("1")%></VersionMajor>
+    <VersionMinor><%comreference->minorver("0")%></VersionMinor>
+    <Lcid><%comreference->lcid("0")%></Lcid>
+    <WrapperTool><%comreference->wrapper("tlbimp")%></WrapperTool>
+    <Isolated><%comreference->isolated("false")%></Isolated>
+<%if(comreference->copylocal)%>
+    <Private><%comreference->copylocal%></Private>
+<%endif%>
+<%if(comreference->refout)%>
+    <ReferenceOutputAssembly><%comreference->refout%></ReferenceOutputAssembly>
+<%endif%>
+<%if(comreference->clsa)%>
+    <CopyLocalSatelliteAssemblies><%comreference->clsa%></CopyLocalSatelliteAssemblies>
+<%endif%>
+  </COMReference>
 <%endfor%>
   </ItemGroup>
 <%if(exename || sharedname || staticname)%>
