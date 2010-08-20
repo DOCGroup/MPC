@@ -94,6 +94,8 @@ sub post_workspace {
                                                         $dep);
             if (defined $relative) {
 
+              $relative =~ s!/!\\!g;
+
               ## Temporary hack for vc10, this probably needs to change.
               $relative =~ s/\.filters$//;
 
