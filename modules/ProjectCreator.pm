@@ -3861,6 +3861,18 @@ sub get_special_value {
   elsif (index($type, $grouped_key) == 0) {
     return $self->get_grouped_value($type, $cmd, $based);
   }
+  elsif (defined $self->get_addtemp()->{$type . 's'}) {
+    if ($cmd eq '_default') {
+      $based =~ /^([^:]+):/;
+      return defined $1 ? $1 : $based;
+    }
+    else {
+      $based =~ /:(.*)/;
+      my $attribs = $1;
+      my %attr = map {split '='} split(',', $attribs);
+      return $attr{$cmd};
+    }
+  }
   else {
     my $language = $self->get_language();
 
