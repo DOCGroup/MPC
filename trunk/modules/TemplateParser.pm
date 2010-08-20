@@ -1881,7 +1881,9 @@ sub handle_new_guid {
   my $val = $self->get_value_with_default($name);
   my $prjc = $self->{'prjc'};
   my $guid = GUID::generate($val ? $val : $name,
-                            $prjc->{'current_input'}, $prjc->getcwd());
+                            $prjc->{'current_input'},
+                            File::Spec->abs2rel($prjc->getcwd(),
+                                                $prjc->getstartdir()));
   $self->append_current($guid);
 }
 
