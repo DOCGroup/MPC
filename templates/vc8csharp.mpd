@@ -82,6 +82,15 @@
   </PropertyGroup>
 <%endfor%>
 <%endfor%>
+<%if(!compares(vcversion, 8.00))%>
+<%foreach(source_files)%>
+<%if(ends_with(source_file, \.manifest))%>
+  <PropertyGroup>
+    <ApplicationManifest><%source_file%></ApplicationManifest>
+  </PropertyGroup>
+<%endif%>
+<%endfor%>
+<%endif%>
   <ItemGroup>
 <%if(after)%>
     <!-- MPC ADD DEPENDENCIES -->
@@ -146,11 +155,15 @@
 <%endfor%>
 <%foreach(source_files)%>
 <%if(!contains(flag_overrides(source_file, subtype), ^(Form|Component)$))%>
+<%if(!compares(vcversion, 8.00) && ends_with(source_file, \.manifest))%>
+    <None Include="<%source_file%>" />
+<%else%>
     <Compile Include="<%source_file%>">
 <%if(flag_overrides(source_file, dependent_upon))%>
       <DependentUpon><%flag_overrides(source_file, dependent_upon)%></DependentUpon>
 <%endif%>
     </Compile>
+<%endif%>
 <%endif%>
 <%endfor%>
 <%foreach(custom_types)%>
