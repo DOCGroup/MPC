@@ -1,3 +1,10 @@
+Mon Aug 23 22:29:24 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc8csharp.mpd:
+
+          Support adding a single .manifest file per project in Source_Files
+          in C# from Visual Studio 2008 and up (vc9+).
+
 Fri Aug 20 21:40:40 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * modules/ProjectCreator.pm:
