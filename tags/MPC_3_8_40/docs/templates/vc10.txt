@@ -1,0 +1,9 @@
+// Currently incomplete.
+// This defines the role of all the template variables specific to the
+// 'vc10' project type.
+//
+// Please try to keep this alphabetically sorted.
+//
+managed = A backwards compatibility variable that is equivalent to CLRSupport.
+openmp = A backwards compatibility variable that is equivalent to openmpsupport.
+openmpsupport = If set to true, enables OpenMP 2.0 language extensions.
