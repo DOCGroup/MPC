@@ -39,4 +39,13 @@ sub pre_workspace {
             '# ', $self->create_command_line_string($0, @ARGV), $crlf);
 }
 
+sub website_trailing_slash {
+  return 0;
+}
+
+sub website_extra_props {
+  my($self, $fh) = @_;
+  print $fh "\t\t" . 'TargetFramework = "3.5"' . $self->crlf();
+}
+
 1;
