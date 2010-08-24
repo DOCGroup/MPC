@@ -125,7 +125,7 @@ sub list_file_body {
 
   ## Print out each target separately
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
-    print $fh Cwd::abs_path($self->mpc_dirname($project)), '/.project', $crlf;
+    print $fh $self->mpc_dirname($project), '/.project', $crlf;
   }
 }
 
