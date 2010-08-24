@@ -113,8 +113,8 @@ sub post_workspace {
                   if (defined $attr) {
                     foreach my $a (split(',', $attr)) {
                       my @nvp = split('=', $a);
-                      $attr{lc($nvp[0])} = $nvp[1]if (defined $nvp[0] &&
-                                                      defined $nvp[1]);
+                      $attr{lc($nvp[0])} = $nvp[1] if (defined $nvp[0] &&
+                                                       defined $nvp[1]);
                     }
                   }
 
@@ -179,13 +179,20 @@ sub adjust_names {
   if ($lang eq Creator::website) {
     $proj = $self->mpc_dirname($proj);
     $proj .= '\\';
-    $name .= '\\';
+    $name .= '\\' if $self->website_trailing_slash();
   }
 
   ## This always needs to be a path with the Windows style directory
   ## separator.
   $proj =~ s/\//\\/g;
   return $name, $proj;
+}
+
+sub website_trailing_slash {
+  return 1;
+}
+
+sub website_extra_props {
 }
 
 sub get_short_config_name {
@@ -233,6 +240,8 @@ sub print_inner_project {
 
     # Print the website project.
     print $fh "\tProjectSection(WebsiteProperties) = preProject", $crlf;
+
+    $self->website_extra_props($fh);
 
     ## Print out the references
     my $references;
