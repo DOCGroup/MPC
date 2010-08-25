@@ -1,3 +1,19 @@
+Wed Aug 25 18:36:32 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * docs/templates/vc10.txt:
+
+          Completed all template documenatation for vc10.
+
+        * templates/vc10.mpd:
+
+          Whitespace changes, removed a duplicated section, and changed some
+          values that were <%if(x)%>true<%endif%> because the user may
+          reasonably want to set them to "false" (since they default to true).
+
+        * templates/vc8csharp.mpd:
+
+          Whitespace changes only.
+
 Tue Aug 24 19:45:29 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * docs/templates/vc10.txt:
