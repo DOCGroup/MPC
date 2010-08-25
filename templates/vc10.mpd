@@ -190,7 +190,7 @@
       <StructMemberAlignment><%StructMemberAlignment%></StructMemberAlignment>
 <%endif%>
 <%if(BufferSecurityCheck)%>
-      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <BufferSecurityCheck><%BufferSecurityCheck%></BufferSecurityCheck>
 <%endif%>
 <%if(FunctionLevelLinking)%>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -208,7 +208,7 @@
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
 <%endif%>
 <%if(TreatWChar_tAsBuiltInType)%>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <TreatWChar_tAsBuiltInType><%TreatWChar_tAsBuiltInType%></TreatWChar_tAsBuiltInType>
 <%endif%>
 <%if(ForceConformanceInForLoopScope)%>
       <ForceConformanceInForLoopScope><%ForceConformanceInForLoopScope%></ForceConformanceInForLoopScope>
@@ -286,9 +286,6 @@
 <%endif%>
 <%if(ShowIncludes)%>
       <ShowIncludes>true</ShowIncludes>
-<%endif%>
-<%if(UseFullPaths)%>
-      <UseFullPaths>true</UseFullPaths>
 <%endif%>
 <%if(UndefinePreprocessorDefinitions)%>
       <UndefinePreprocessorDefinitions><%UndefinePreprocessorDefinitions%>;%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -704,23 +701,23 @@
     <Reference Include="<%AssemblyReference%>" />
 <%endfor%>
 <%foreach(comreferences)%>
-  <COMReference Include="<%comreference->_default%>">
-    <Guid><%lc(comreference->guid)%></Guid>
-    <VersionMajor><%comreference->majorver("1")%></VersionMajor>
-    <VersionMinor><%comreference->minorver("0")%></VersionMinor>
-    <Lcid><%comreference->lcid("0")%></Lcid>
-    <WrapperTool><%comreference->wrapper("tlbimp")%></WrapperTool>
-    <Isolated><%comreference->isolated("false")%></Isolated>
+    <COMReference Include="<%comreference->_default%>">
+      <Guid><%lc(comreference->guid)%></Guid>
+      <VersionMajor><%comreference->majorver("1")%></VersionMajor>
+      <VersionMinor><%comreference->minorver("0")%></VersionMinor>
+      <Lcid><%comreference->lcid("0")%></Lcid>
+      <WrapperTool><%comreference->wrapper("tlbimp")%></WrapperTool>
+      <Isolated><%comreference->isolated("false")%></Isolated>
 <%if(comreference->copylocal)%>
-    <Private><%comreference->copylocal%></Private>
+      <Private><%comreference->copylocal%></Private>
 <%endif%>
 <%if(comreference->refout)%>
-    <ReferenceOutputAssembly><%comreference->refout%></ReferenceOutputAssembly>
+      <ReferenceOutputAssembly><%comreference->refout%></ReferenceOutputAssembly>
 <%endif%>
 <%if(comreference->clsa)%>
-    <CopyLocalSatelliteAssemblies><%comreference->clsa%></CopyLocalSatelliteAssemblies>
+      <CopyLocalSatelliteAssemblies><%comreference->clsa%></CopyLocalSatelliteAssemblies>
 <%endif%>
-  </COMReference>
+    </COMReference>
 <%endfor%>
   </ItemGroup>
 <%if(exename || sharedname || staticname)%>

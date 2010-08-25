@@ -111,18 +111,18 @@
     </Reference>
 <%endfor%>
 <%foreach(comreferences)%>
-  <COMReference Include="<%comreference->_default%>">
-    <Guid>{<%uc(comreference->guid)%>}</Guid>
-    <VersionMajor><%comreference->majorver("1")%></VersionMajor>
-    <VersionMinor><%comreference->minorver("0")%></VersionMinor>
-    <Lcid><%comreference->lcid("0")%></Lcid>
-    <WrapperTool><%comreference->wrapper("tlbimp")%></WrapperTool>
-    <Isolated><%comreference->isolated("False")%></Isolated>
-    <Private><%comreference->copylocal("False")%></Private>
+    <COMReference Include="<%comreference->_default%>">
+      <Guid>{<%uc(comreference->guid)%>}</Guid>
+      <VersionMajor><%comreference->majorver("1")%></VersionMajor>
+      <VersionMinor><%comreference->minorver("0")%></VersionMinor>
+      <Lcid><%comreference->lcid("0")%></Lcid>
+      <WrapperTool><%comreference->wrapper("tlbimp")%></WrapperTool>
+      <Isolated><%comreference->isolated("False")%></Isolated>
+      <Private><%comreference->copylocal("False")%></Private>
 <%if(comreference->embed)%>
-    <EmbedInteropTypes><%comreference->embed%></EmbedInteropTypes>
+      <EmbedInteropTypes><%comreference->embed%></EmbedInteropTypes>
 <%endif%>
-  </COMReference>
+    </COMReference>
 <%endfor%>
   </ItemGroup>
   <ItemGroup>
