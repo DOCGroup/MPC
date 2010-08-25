@@ -3103,6 +3103,25 @@
                   <tr>
                     <td rowspan="1" colspan="1">
                       <p class="Tbl-Body"><em class=
+                      "TableCode">dependent_libs</em></p>
+                    </td>
+
+                    <td rowspan="1" colspan="1">
+                      <p class="Tbl-Body">If this is given a value, then a dependency upon that
+                      library value will be given to all of the generated files.
+                      The format for this entry should be the basename for the
+                      library (no library prefix, postfix, or extension) 
+                      preceded by any relative or absolute path to the library.
+                      The typical use for this would be so that a project is 
+                      rebuilt when a library needs to be rebuilt for its 
+                      dependent executable. The default for this is unset and no 
+                      dependency will be generated.</p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td rowspan="1" colspan="1">
+                      <p class="Tbl-Body"><em class=
                       "TableCode">inputext</em></p>
                     </td>
 
@@ -3819,9 +3838,9 @@
               <li class="Body">For custom file types, there are a few
               keywords that can be used within the custom file type component
               lists: <em class="Code">command</em>, <em class=
-              "Code">commandflags</em>, <em class="Code">dependent</em>,
-              <em class="Code">gendir</em>, <em class=
-              "Code">postcommand</em>, and <em class=
+              "Code">commandflags</em>, <em class="Code">dependent</em>, 
+              <em class="Code">dependent_libs</em>, <em class="Code">gendir</em>,
+              <em class="Code">postcommand</em>, and <em class=
               "Code">recurse</em>.</li>
 
               <li class="Body">The <em class="Code">recurse</em> keyword
@@ -3829,7 +3848,8 @@
               class="XRef">Assignment Keywords</a>.</li>
 
               <li class="Body">The <em class="Code">command</em>, <em class=
-              "Code">commandflags</em>, <em class="Code">dependent</em> and
+              "Code">commandflags</em>, <em class="Code">dependent</em>, 
+              <em class="Code">dependent_libs</em> and
               <em class="Code">postcommand</em> keywords can be used to
               augment or override the value defined in the <em class=
               "Code">Define_Custom</em> section.</li>
