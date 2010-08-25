@@ -1,3 +1,59 @@
+Wed Aug 25 20:56:36 UTC 2010  Brian Johnson  <johnsonb@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+        
+          Added dependent_libs keyword to indicate dependency on a 
+          library.  It is similar to the dependent keyword, but should
+          be used to make sure to rebuild the project when a library 
+          needs to be rebuilt for its dependent executable.
+          
+        * modules/TemplateParser.pm:
+        
+          - keywords was changed to use flag parameters to identify 
+          which flags were set for each keyword.  These parameters were
+          also used throughout the module instead of hard-coded values.
+
+          - A new flag was added called get_combined_type which indicates 
+          that the types get_xxx function doesn't have an intermediate 
+          return value that could be passed back into a doif_xxx function.
+
+          - process_compound_if had functionality added that if there is a
+          single cmd (not nested), there is a doif function for the type, 
+          and if the type doesn't have a combined get function, then the 
+          cmd is added in a second time into the cmd array, so that the 
+          first pass the get_xxx function is called and its returned value
+          is passed to the doif_xxx function.
+
+          - basename keyword was changed to have bits 1-3 set and the 
+          appropriate functions were added.
+
+          - dirname was changed to use tp_dirname instead of validated_dirname, 
+          so that $(...) and ../ are not removed and so that get_dirname 
+          doesn't call doif_dirname and returns the actual dirname.  
+
+          - All get_xxx functions that called their doif_xxx function had the 
+          get_combined_type bit added, except transdir, which had get_transdir 
+          changed to return the actual translated directory string.
+
+        * templates/automake.mpd:
+        * templates/cdt6cproject.mpd:
+        * templates/em3.mpd:
+        * templates/ghs.mpd:
+        * templates/make.mpd:
+        * templates/make.net.mpd:
+        * templates/nmake.mpd:
+        * templates/vc10.mpd:
+        * templates/vc6.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+
+          Added dependent_libs functionality.
+
+        * templates/nmake.mpd:
+
+          Added dependent_libs functionality.  Added code for handling 
+          custom_types for each configuration.
+
 Wed Aug 25 18:36:32 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * docs/templates/vc10.txt:
