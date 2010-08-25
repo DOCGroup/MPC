@@ -109,6 +109,19 @@
 	:dependsRelative=<%custom_type->input_file->dependencie%>
 <%endfor%>
 <%endif%>
+<%if(sharedname)%>
+<%if(flag_overrides(custom_type->input_file, dependent_libs))%>
+<%foreach(dep_lib, flag_overrides(custom_type->input_file, dependent_libs))%>
+	:dependsRelative=<%dirname(dep_lib)%>/<%lib_prefix%><%libname_prefix%><%basename(dep_lib)%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%libext(".so")%>
+<%endfor%>
+<%else%>
+<%if(custom_type->dependent_libs)%>
+<%foreach(custom_type->dependent_libs)%>
+	:dependsRelative=<%dirname(custom_type->dependent_lib)%>/<%lib_prefix%><%libname_prefix%><%basename(custom_type->dependent_lib)%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%libext(".so")%>
+<%endfor%>
+<%endif%>
+<%endif%>
+<%endif%>
 <%if(flag_overrides(custom_type->input_file, gendir))%>
 	:preexecShell='cd <%reltop%> && <%mkdir%> <%flag_overrides(custom_type->input_file, gendir)%><%postmkdir%>'
 <%endif%>

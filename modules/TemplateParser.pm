@@ -32,18 +32,25 @@ use vars qw(@ISA);
 # 3 means that parameters to perform_ should not be evaluated
 # 4 means there is a post_ method available (called after the results of
 #   calling perform_ for a nested function are written to the output)
+# 5 means that the get_ method performs the get_ and doif_ functionality
 #
 # Perl Function		Parameter Type		Return Type
 # get_			string			string or array
 # perform_		array reference		array
 # doif_			array reference		boolean
 #
+my $get_type             = 1 << 0;
+my $perform_type         = 1 << 1;
+my $doif_type            = 1 << 2;
+my $perform_no_eval_type = 1 << 3;
+my $post_type            = 1 << 4;
+my $get_combined_type    = 1 << 5;
 my %keywords = ('if'              => 0,
                 'else'            => 0,
                 'endif'           => 0,
-                'noextension'     => 3,
-                'dirname'         => 7,
-                'basename'        => 0,
+                'noextension'     => $get_type|$perform_type,
+                'dirname'         => $get_type|$perform_type|$doif_type,
+                'basename'        => $get_type|$perform_type|$doif_type,
                 'basenoextension' => 0,
                 'foreach'         => 0,
                 'forfirst'        => 0,
@@ -54,32 +61,32 @@ my %keywords = ('if'              => 0,
                 'eval'            => 0,
                 'comment'         => 0,
                 'marker'          => 0,
-                'uc'              => 3,
-                'lc'              => 3,
+                'uc'              => $get_type|$perform_type,
+                'lc'              => $get_type|$perform_type,
                 'ucw'             => 0,
-                'normalize'       => 3,
-                'flag_overrides'  => 1,
-                'reverse'         => 3,
-                'sort'            => 3,
-                'uniq'            => 3,
-                'multiple'        => 5,
-                'starts_with'     => 5,
-                'ends_with'       => 5,
-                'contains'        => 5,
-                'remove_from'     => 0xf,
-                'compares'        => 5,
-		'vars_equal'    => 1 | 2,
-                'duplicate_index' => 5,
-                'transdir'        => 5,
-                'has_extension'   => 5,
+                'normalize'       => $get_type|$perform_type,
+                'flag_overrides'  => $get_type,
+                'reverse'         => $get_type|$perform_type,
+                'sort'            => $get_type|$perform_type,
+                'uniq'            => $get_type|$perform_type,
+                'multiple'        => $get_type|$doif_type|$get_combined_type,
+                'starts_with'     => $get_type|$doif_type|$get_combined_type,
+                'ends_with'       => $get_type|$doif_type|$get_combined_type,
+                'contains'        => $get_type|$doif_type|$get_combined_type,
+                'remove_from'     => $get_type|$perform_type|$doif_type|$perform_no_eval_type|$get_combined_type,
+                'compares'        => $get_type|$doif_type|$get_combined_type,
+                'vars_equal'      => $get_type|$perform_type,
+                'duplicate_index' => $get_type|$doif_type|$get_combined_type,
+                'transdir'        => $get_type|$doif_type,
+                'has_extension'   => $get_type|$doif_type|$get_combined_type,
                 'keyname_used'    => 0,
                 'scope'           => 0,
-                'full_path'       => 3,
-                'extensions'      => 0xa,
-                'create_aux_file' => 0x12,
+                'full_path'       => $get_type|$perform_type,
+                'extensions'      => $perform_type|$perform_no_eval_type,
+                'create_aux_file' => $perform_type|$post_type,
                 'end_aux_file'    => 0,
-                'translate_vars'  => 2 | 1,
-                'convert_slashes' => 2,
+                'translate_vars'  => $get_type|$perform_type,
+                'convert_slashes' => $perform_type,
                 'new_guid'        => 0,
                 'deref'           => 0,
                 'set'             => 0,
@@ -489,9 +496,9 @@ sub process_foreach {
     while($val =~ /(\w+)\((.+)\)/) {
       my $cmd = $1;
       $val = $2;
-      if (($keywords{$cmd} & 0x02) != 0) {
+      if (($keywords{$cmd} & $perform_type) != 0) {
         push(@cmds, 'perform_' . $cmd);
-        if (($keywords{$cmd} & 0x08) != 0) {
+        if (($keywords{$cmd} & $perform_no_eval_type) != 0) {
           my @params = $self->split_parameters($val);
           $val = \@params;
           last;
@@ -1173,10 +1180,21 @@ sub process_compound_if {
 
     if (defined $cmds[0]) {
       ## Start out calling get_xxx on the string
-      my $type = 0x01;
+      my $type = $get_type;
       my $prefix = 'get_';
 
       $val = $str;
+      
+      ## If there is only one command, we have to add it to the list
+      ## again so that we can get the variable value and then use
+      ## the doif_ version to test it, unless the get_ function
+      ## also performs the doif_ functionality.
+      if ($#cmds == 0 && defined $keywords{$cmds[0]} &&
+          ($keywords{$cmds[0]} & $doif_type) != 0 &&
+          ($keywords{$cmds[0]} & $get_combined_type) == 0) {
+        push(@cmds, $cmds[0]);
+      }
+      
       foreach my $cmd (reverse @cmds) {
         if (defined $keywords{$cmd} && ($keywords{$cmd} & $type) != 0) {
           my $func = "$prefix$cmd";
@@ -1184,7 +1202,7 @@ sub process_compound_if {
 
           ## Now that we have a value, we need to switch over
           ## to calling doif_xxx
-          $type = 0x04;
+          $type = $doif_type;
           $prefix = 'doif_';
         }
         else {
@@ -1539,17 +1557,17 @@ sub evaluate_nested_functions {
       next;
     }
 
-    my $type = 0x01;
+    my $type = $get_type;
     my $prefix = 'get_';
     foreach my $cmd (reverse @cmds) {
       if (defined $keywords{$cmd} && ($keywords{$cmd} & $type) != 0) {
         my $func = "$prefix$cmd";
-        if ($type == 0x01) {
+        if ($type == $get_type) {
           $val = $self->$func($val);
           $val = [ $val ] if (!UNIVERSAL::isa($val, 'ARRAY'));
           ## Now that we have a value, we need to switch over
           ## to calling perform_xxx
-          $type = 0x02;
+          $type = $perform_type;
           $prefix = 'perform_';
         }
         else {
@@ -1565,11 +1583,11 @@ sub evaluate_nested_functions {
     push @results, "@$val";
   }
 
-  if (defined $keywords{$funcname} && ($keywords{$funcname} & 0x02)) {
+  if (defined $keywords{$funcname} && ($keywords{$funcname} & $perform_type)) {
     my $func = 'perform_' . $funcname;
     my @array = $self->$func(\@results);
     $self->append_current("@array");
-    if ($keywords{$funcname} & 0x10) {
+    if ($keywords{$funcname} & $post_type) {
       $func = 'post_' . $funcname;
       $self->$func();
     }
@@ -1585,7 +1603,7 @@ sub perform_dirname {
   my($self, $value) = @_;
   my @val;
   foreach my $val (@$value) {
-    push(@val, $self->validated_dirname($val));
+    push(@val, $self->tp_dirname($val));
   }
   return @val;
 }
@@ -1593,7 +1611,7 @@ sub perform_dirname {
 
 sub get_dirname {
   my($self, $name) = @_;
-  return $self->doif_dirname($self->get_value_with_default($name));
+  return $self->tp_dirname($self->get_value_with_default($name));
 }
 
 
@@ -1601,7 +1619,7 @@ sub doif_dirname {
   my($self, $value) = @_;
 
   if (defined $value) {
-    $value = $self->validated_dirname($value);
+    $value = $self->tp_dirname($value);
     return ($value ne '.');
   }
   return undef;
@@ -1612,7 +1630,34 @@ sub handle_dirname {
   my($self, $name) = @_;
 
   $self->append_current(
-            $self->validated_dirname($self->get_value_with_default($name)));
+            $self->tp_dirname($self->get_value_with_default($name)));
+}
+
+
+sub perform_basename {
+  my($self, $value) = @_;
+  my @val;
+  foreach my $val (@$value) {
+    push(@val, $self->tp_basename($val));
+  }
+  return @val;
+}
+
+
+sub get_basename {
+  my($self, $name) = @_;
+  return $self->tp_basename($self->get_value_with_default($name));
+}
+
+
+sub doif_basename {
+  my($self, $value) = @_;
+
+  if (defined $value) {
+    $value = $self->tp_basename($value);
+    return ($value ne '.');
+  }
+  return undef;
 }
 
 
@@ -1722,15 +1767,8 @@ sub handle_duplicate_index {
   $self->append_current($value) if (defined $value);
 }
 
-
-sub get_transdir {
-  my($self, $name) = @_;
-  return $self->doif_transdir($self->get_value_with_default($name));
-}
-
-
-sub doif_transdir {
-  my($self, $value) = @_;
+sub actual_transdir {
+ my($self, $value) = @_;
 
   if ($value =~ /([\/\\])/) {
     return $self->{'prjc'}->translate_directory(
@@ -1740,10 +1778,22 @@ sub doif_transdir {
   return undef;
 }
 
+sub get_transdir {
+  my($self, $name) = @_;
+  return $self->actual_transdir($self->get_value_with_default($name));
+}
+
+
+sub doif_transdir {
+  my($self, $value) = @_;
+
+  return (defined $value ? $self->actual_transdir($value) : undef);
+}
+
 
 sub handle_transdir {
   my($self, $name) = @_;
-  my $value = $self->doif_transdir($self->get_value_with_default($name));
+  my $value = $self->actual_transdir($self->get_value_with_default($name));
   $self->append_current($value) if (defined $value);
 }
 
