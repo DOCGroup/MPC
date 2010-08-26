@@ -4523,7 +4523,8 @@ sub write_output_file {
       ($status, $error) = $tp->parse_file($tfile);
       last if (!$status);
 
-      if (defined $self->{'source_callback'}) {
+      if (defined $self->{'source_callback'} &&
+          $self->file_visible($self->{'current_template'})) {
         my $cb     = $self->{'source_callback'};
         my $pjname = $self->get_assignment('project_name');
         my @list   = $self->get_component_list('source_files');
