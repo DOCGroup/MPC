@@ -93,11 +93,7 @@ sub post_workspace {
                                                         "$cwd/$project",
                                                         $dep);
             if (defined $relative) {
-
               $relative =~ s!/!\\!g;
-
-              ## Temporary hack for vc10, this probably needs to change.
-              $relative =~ s/\.filters$//;
 
               if ($lang eq Creator::cplusplus) {
                 ## If the current project is not managed, then we will
