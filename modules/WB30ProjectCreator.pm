@@ -52,21 +52,30 @@ sub project_file_name {
 sub post_file_creation {
   my($self, $file) = @_;
   if ($file =~ /$templates{'wb26wrmakefile'}$/) {
-    open IN, $file or die "Can't open $file for post-processing input.";
     my @lines;
-    while (<IN>) {
-      s/\\&quot;/\\"/g;
-      s/&quot;/"/g;
-      s/&gt;/>/g;
-      s/&lt;/</g;
-      s/&amp;/&/g;
-      push @lines, $_;
+    if (open(IN, $file)) {
+      while(<IN>) {
+        s/\\&quot;/\\"/g;
+        s/&quot;/"/g;
+        s/&gt;/>/g;
+        s/&lt;/</g;
+        s/&amp;/&/g;
+        push(@lines, $_);
+      }
+      close(IN);
     }
-    close IN;
-    open OUT, ">$file" or die "Can't open $file for post-processing output.";
-    print OUT @lines;
-    close OUT;
+    else {
+      return "Can't open $file for post-processing input.";
+    }
+    if (open(OUT, ">$file")) {
+      print OUT @lines;
+      close(OUT);
+    }
+    else {
+      return "Can't open $file for post-processing output.";
+    }
   }
+  return undef;
 }
 
 sub get_template {
