@@ -441,6 +441,12 @@ sub process_assignment {
         $self->{'dependency_attributes'}->{$2} = $3;
       }
 
+      if (!$self->valid_project_name($value)) {
+        $self->warning("after '$value' contains an invalid project name in " .
+                       $self->{'current_input'} . ' at line ' .
+                       $self->get_line_number() . '.');
+      }
+
       ## Support the '*' mechanism as in the project name, to allow
       ## the user to correctly depend on another project within the same
       ## directory.

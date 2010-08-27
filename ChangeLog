@@ -1,3 +1,9 @@
+Fri Aug 27 18:21:22 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Warn if an assignment to 'after' contains an invalid project name.
+
 Fri Aug 27 14:59:06 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/GHSProjectCreator.pm:
