@@ -1,3 +1,19 @@
+Fri Aug 27 14:59:06 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/GHSProjectCreator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/VC8ProjectCreator.pm:
+        * modules/WB30ProjectCreator.pm:
+
+          Changed post_file_creation() to return an error status.  Returning
+          undef indicates no error.  A string returned is used as the error
+          message.
+
+          Additionally, a valid_project_name() has been added and the list
+          of invalid project name characters has been expanded to cover most
+          of those that are not allowed by Visual Studio and those that do
+          not work within a makefile.
+
 Thu Aug 26 15:04:04 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * modules/ProjectCreator.pm:
