@@ -1,3 +1,24 @@
+Fri Aug 27 21:34:44 UTC 2010  Brian Johnson  <johnsonb@ociweb.com>
+
+        * templates/automake.mpd:
+        * templates/cdt6cproject.mpd:
+        * templates/em3.mpd:
+        * templates/ghs.mpd:
+        * templates/make.mpd:
+        * templates/make.net.mpd:
+        * templates/nmake.mpd:
+        * templates/vc10.mpd:
+        * templates/vc6.mpd:
+        * templates/vc7.mpd:
+        * templates/vc8.mpd:
+        
+          Changed to use !need_staticflag to prevent dependent_libs from
+          being generated for static projects.
+          
+        * templates/wb26wrmakefile.mpd:
+        
+          Added dependent_libs keyword handling to wb26.
+
 Fri Aug 27 18:21:22 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * modules/ProjectCreator.pm:
