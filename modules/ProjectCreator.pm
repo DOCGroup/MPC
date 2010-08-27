@@ -878,12 +878,7 @@ sub parse_line {
         ## Set up the default project name
         if ($status) {
           if (defined $name) {
-            if ($name =~ /[\/\\]/) {
-              $status = 0;
-              $errorString = 'Projects can not have a slash ' .
-                             'or a back slash in the name';
-            }
-            else {
+            if ($self->valid_project_name($name)) {
               ## We should only set the project name if we are not
               ## reading in a parent project.
               if (!defined $self->{'reading_parent'}->[0]) {
@@ -904,6 +899,11 @@ sub parse_line {
                 $self->warning("Ignoring project name " .
                                "$name in a base project.");
               }
+            }
+            else {
+              $status = 0;
+              $errorString = 'Projects can not have the following in ' .
+                             'the name: / \\ = ? : & " < > | # %';
             }
           }
         }
@@ -3869,10 +3869,10 @@ sub get_special_value {
       return defined $1 ? $1 : $based;
     }
     else {
-      $based =~ /:(.*)/;
-      my $attribs = $1;
-      my %attr = map {split '='} split(',', $attribs);
-      return $attr{$cmd};
+      if ($based =~ /:(.*)/) {
+        my %attr = map { split('=', $_) } split(',', $1);
+        return $attr{$cmd};
+      }
     }
   }
   else {
@@ -4579,7 +4579,11 @@ sub write_output_file {
           if ($different) {
             unlink($name);
             if (rename($tmp, $name)) {
-              $self->post_file_creation($name);
+              $error = $self->post_file_creation($name);
+              if (defined $error) {
+                $status = 0;
+                last;
+              }
             }
             else {
               $error = "Unable to open $name for output.";
@@ -4599,7 +4603,11 @@ sub write_output_file {
               print $fh $line;
             }
             close($fh);
-            $self->post_file_creation($name);
+            $error = $self->post_file_creation($name);
+            if (defined $error) {
+              $status = 0;
+              last;
+            }
           }
           else {
             $error = "Unable to open $name for output.";
@@ -5353,6 +5361,11 @@ sub get_dependency_attribute {
   return $_[0]->{'dependency_attributes'}->{$_[1]};
 }
 
+sub valid_project_name {
+  #my($self, $name) = @_;
+  return $_[1] !~ /[\/\\=\?:&"<>|#%]/;
+}
+
 # ************************************************************
 # Accessors used by support scripts
 # ************************************************************
@@ -5400,6 +5413,7 @@ sub use_win_compatibility_commands {
 sub post_file_creation {
   #my $self = shift;
   #my $file = shift;
+  return undef;
 }
 
 
