@@ -92,34 +92,34 @@ REALCLEAN : CLEAN
 <%if(pdbl)%>
 	-@del /f/q "$(OUTDIR)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
 <%endif%>
-        -@del /f/q "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>"
-        -@del /f/q "$(OUTDIR)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
-        -@del /f/q "$(OUTDIR)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.exp"
-        -@del /f/q "$(OUTDIR)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.ilk"
+	-@del /f/q "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>"
+	-@del /f/q "$(OUTDIR)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
+	-@del /f/q "$(OUTDIR)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.exp"
+	-@del /f/q "$(OUTDIR)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.ilk"
 <%else%>
 <%if(staticname && type_is_dynamic)%>
 <%if(pdbl || pdbc)%>
 	-@del /f/q "$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
 <%endif%>
-        -@del /f/q "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>"
+	-@del /f/q "<%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>"
 <%endif%>
 <%endif%>
 <%if(staticname && type_is_static || !sharedname && type_is_dynamic)%>
-        -@del /f/q "$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
-        -@del /f/q "$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.exp"
-        -@del /f/q "$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.ilk"
+	-@del /f/q "$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
+	-@del /f/q "$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.exp"
+	-@del /f/q "$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.ilk"
 <%endif%>
 <%if(pdbc && type_is_static)%>
 	-@del /f/q "<%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb"
 <%endif%>
 <%if(exename)%>
-        -@del /f/q "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>"
-        -@del /f/q "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.ilk"
+	-@del /f/q "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>"
+	-@del /f/q "$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.ilk"
 <%endif%>
 <%foreach(custom_types)%>
 <%foreach(custom_type->input_files)%>
 <%foreach(custom_type->input_file->output_files)%>
-        -@del /f/q "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>"
+	-@del /f/q "<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>"
 <%endfor%>
 <%endfor%>
 <%endfor%>
@@ -128,12 +128,12 @@ REALCLEAN : CLEAN
 <%endif%>
 
 "$(INTDIR)" :
-    if not exist "<%intermediate_dir%>\$(NULL)" mkdir "<%intermediate_dir%>"
-    if not exist "<%intermediate_dir%>\<%project_name%>\$(NULL)" mkdir "<%intermediate_dir%>\<%project_name%>"
-    if not exist "$(INTDIR)\$(NULL)" mkdir "$(INTDIR)"
+	if not exist "<%intermediate_dir%>\$(NULL)" mkdir "<%intermediate_dir%>"
+	if not exist "<%intermediate_dir%>\<%project_name%>\$(NULL)" mkdir "<%intermediate_dir%>\<%project_name%>"
+	if not exist "$(INTDIR)\$(NULL)" mkdir "$(INTDIR)"
 
 CPP=<%cc("cl.exe")%>
-CPP_COMMON=<%if(TreatWChar_tAsBuiltInType)%>/Zc:wchar_t <%endif%>/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%><%optimize_flags("/O2")%><%else%><%debug_flags("/Ob0")%><%endif%> <%compile_flags%><%foreach(DisableSpecificWarnings)%> /wd<%DisableSpecificWarning%><%endfor%><%if(managed)%> /EHsc- /Gm- /clr<%endif%><%if(pdbc)%> /Fd"<%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%>$(INTDIR)/<%endif%>"<%endif%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines platform_defines macros)%>/D <%define%> <%endfor%><%if(unicode)%>/D UNICODE /D _UNICODE <%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%><%if(macro_for_lib_modifier)%><%if(use_lib_modifier)%><%if(lib_modifier)%>/D MPC_LIB_MODIFIER=\"<%lib_modifier%>\"<%endif%><%endif%><%endif%> /FD /c
+CPP_COMMON=<%if(TreatWChar_tAsBuiltInType)%>/Zc:wchar_t <%endif%>/nologo <%if(add_compile)%><%add_compile%> <%endif%><%if(optimize)%><%optimize_flags("/O2")%><%else%><%debug_flags("/Ob0")%><%endif%> <%compile_flags%><%foreach(DisableSpecificWarnings)%> /wd<%DisableSpecificWarning%><%endfor%><%if(managed)%> /GX- /Gm- /clr<%endif%><%if(pdbc)%> /Fd"<%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%>$(INTDIR)/<%endif%>"<%endif%> <%foreach(includes)%>/I "<%include%>" <%endfor%><%foreach(defines cpu_defines common_defines platform_defines macros)%>/D <%define%> <%endfor%><%if(unicode)%>/D UNICODE /D _UNICODE <%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%>/D <%dynamicflag%> <%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%>/D <%staticflag%> <%endfor%><%endif%><%if(macro_for_lib_modifier)%><%if(use_lib_modifier)%><%if(lib_modifier)%>/D MPC_LIB_MODIFIER=\"<%lib_modifier%>\"<%endif%><%endif%><%endif%> /FD /c
 <%if(pch_header)%>CPP_PCH=<%foreach(pch_defines)%>/D <%pch_define%> <%endfor%><%if(pch_source)%>/Yu<%else%>/YX<%endif%>"<%pch_header%>" /Fp"$(INTDIR)\<%transdir(pch_header)%><%basenoextension(pch_header)%>.pch"<%endif%>
 CPP_PROJ=$(CPP_COMMON) <%if(pch_header)%>$(CPP_PCH) <%endif%>/Fo"<%fo_flag("$(INTDIR)\\\\")%>"
 
@@ -165,12 +165,12 @@ LINK32_OBJS= \
 
 "<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%libname_prefix%><%if(sharedname)%><%sharedname%><%else%><%staticname%><%endif%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endif%><%if(type_is_static)%>$(OUTDIR)\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endif%><%if(exename)%>$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>" : $(DEF_FILE) $(LINK32_OBJS)
 <%if(prelink)%>
-    <%eval(prelink)%>
+	<%eval(prelink)%>
 <%endif%>
-    $(LINK32) @<<
+	$(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
-    if exist "<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>.manifest<%endif%><%if(exename)%>$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>.manifest<%endif%><%if(type_is_static)%>$(OUTDIR)\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>.manifest<%endif%>" mt.exe -manifest "<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>.manifest<%endif%><%if(exename)%>$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>.manifest<%endif%><%if(type_is_static)%>$(OUTDIR)\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>.manifest<%endif%>" -outputresource:$@;<%if(type_is_dynamic)%>2<%endif%><%if(exename)%>1<%endif%><%if(type_is_static)%>2<%endif%>
+	if exist "<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>.manifest<%endif%><%if(exename)%>$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>.manifest<%endif%><%if(type_is_static)%>$(OUTDIR)\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>.manifest<%endif%>" mt.exe -manifest "<%if(type_is_dynamic)%><%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\<%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>.manifest<%endif%><%if(exename)%>$(INSTALLDIR)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>.manifest<%endif%><%if(type_is_static)%>$(OUTDIR)\<%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>.manifest<%endif%>" -outputresource:$@;<%if(type_is_dynamic)%>2<%endif%><%if(exename)%>1<%endif%><%if(type_is_static)%>2<%endif%>
 <%endif%>
 
 <%if(prebuild)%>
@@ -192,39 +192,39 @@ CLEAN :
 
 <%if(exeout)%>
 "$(INSTALLDIR)" :
-    if not exist "$(INSTALLDIR)\$(NULL)" mkdir "$(INSTALLDIR)"
+	if not exist "$(INSTALLDIR)\$(NULL)" mkdir "$(INSTALLDIR)"
 
 <%endif%>
 "$(OUTDIR)" :
-    if not exist "$(OUTDIR)\$(NULL)" mkdir "$(OUTDIR)"
+	if not exist "$(OUTDIR)\$(NULL)" mkdir "$(OUTDIR)"
 
 .c{$(INTDIR)}.obj::
-   $(CPP) @<<
+	$(CPP) @<<
    $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
+	$(CPP) @<<
    $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
+	$(CPP) @<<
    $(CPP_PROJ) $<
 <<
 
 .c{$(INTDIR)}.sbr::
-   $(CPP) @<<
+	$(CPP) @<<
    $(CPP_PROJ) $<
 <<
 
 .cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
+	$(CPP) @<<
    $(CPP_PROJ) $<
 <<
 
 .cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
+	$(CPP) @<<
    $(CPP_PROJ) $<
 <<
 
@@ -247,7 +247,7 @@ CPP_SWITCHES=<%if(TreatWChar_tAsBuiltInType)%>/Zc:wchar_t <%endif%>/nologo <%if(
 
 "$(INTDIR)\<%transdir(pch_source)%><%basenoextension(pch_source)%>.obj" "$(INTDIR)\<%transdir(pch_header)%><%basenoextension(pch_header)%>.pch" : $(SOURCE)
 <%if(transdir(pch_source))%>
-        @if not exist "$(INTDIR)\<%transdir(pch_source)%>$(NULL)" mkdir "$(INTDIR)\<%transdir(pch_source)%>"
+	@if not exist "$(INTDIR)\<%transdir(pch_source)%>$(NULL)" mkdir "$(INTDIR)\<%transdir(pch_source)%>"
 <%endif%>
 	$(CPP) @<<
   $(CPP_SWITCHES) /Fo"$(INTDIR)\<%transdir(pch_source)%><%basenoextension(pch_source)%>.obj" $(SOURCE)
@@ -265,7 +265,7 @@ SOURCE="<%source_file%>"
 <%if(transdir(source_file))%>
 	@if not exist "$(INTDIR)\<%transdir(source_file)%>$(NULL)" mkdir "$(INTDIR)\<%transdir(source_file)%>"
 <%endif%>
-	$(CPP) <%if(pch_header && !flag_overrides(source_file, no_pch))%>$(CPP_PCH) <%endif%>$(CPP_COMMON) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%><%if(flag_overrides(source_file, managed))%>/EHsc- /Gm- /clr <%endif%>/Fo"$(INTDIR)\<%transdir(source_file)%><%basenoextension(source_file)%>.obj" $(SOURCE)
+	$(CPP) <%if(pch_header && !flag_overrides(source_file, no_pch))%>$(CPP_PCH) <%endif%>$(CPP_COMMON) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%><%if(flag_overrides(source_file, managed))%>/GX- /Gm- /clr <%endif%>/Fo"$(INTDIR)\<%transdir(source_file)%><%basenoextension(source_file)%>.obj" $(SOURCE)
 
 <%endfor%>
 <%endif%>
@@ -281,7 +281,7 @@ SOURCE="<%custom_type->input_file%>"
 InputPath=<%custom_type->input_file%>
 
 <%foreach(custom_type->input_file->output_files)%>"<%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%>" <%endfor%>: $(SOURCE) <%foreach(custom_type->input_file->dependencies)%> "<%custom_type->input_file->dependencie%>"<%endfor%><%if(flag_overrides(custom_type->input_file, dependent))%><%foreach(dep, flag_overrides(custom_type->input_file, dependent))%> "<%dep%><%if(!has_extension(dep))%><%exe_ext%><%endif%>"<%endfor%><%else%><%if(custom_type->dependent)%><%foreach(custom_type->dependent)%> "<%custom_type->dependent%><%if(!has_extension(custom_type->dependent))%><%exe_ext%><%endif%>"<%endfor%><%endif%><%endif%><%if(!need_staticflags)%><%if(flag_overrides(custom_type->input_file, dependent_libs))%><%foreach(dep_lib, flag_overrides(custom_type->input_file, dependent_libs))%> "<%dirname(dep_lib)%>\<%libname_prefix%><%basename(dep_lib)%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>"<%endfor%><%else%><%if(custom_type->dependent_libs)%><%foreach(custom_type->dependent_libs)%> "<%dirname(custom_type->dependent_lib)%>\<%libname_prefix%><%basename(custom_type->dependent_lib)%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%>"<%endfor%><%endif%><%endif%><%endif%>
-	<<tempfile.bat
+	<<tempfile-<%normalize(platform)%>-<%normalize(configuration)%>-<%normalize(custom_type)%>-<%normalize(custom_type->input_file)%>.bat
 	@echo off
 <%if(custom_type->libpath)%>
 	PATH=%PATH%;<%custom_type->libpath%>

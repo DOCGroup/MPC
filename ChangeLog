@@ -1,3 +1,30 @@
+Mon Aug 30 19:21:23 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/CDT6ProjectCreator.pm:
+
+          Added the ability to override platform auto-detection using an
+          environment variable.
+
+        * modules/ProjectCreator.pm:
+
+          Added pre_write_output_file() as a hook method that can be overriden
+          by specific ProjectCreators.
+
+        * modules/VC10ProjectCreator.pm:
+
+          Override pre_write_output_file(), but it doesn't do anything yet.
+
+        * templates/nmake.mpd:
+
+          - Normalized start-of-line whitespace to be a tab for all lines that
+            start commands (not inline script files).  Nmake itself doesn't
+            care about the start-of-line whitespace but it helps editors.
+          - Use /GX- to disable /EHsc when managed.
+          - Generate a unique temp file name instead of always using
+            tempfile.bat.  There appears to be a bug with nmake on some
+            machines where it still has an open file handle and it's trying to
+            delete/overwrite the temp file.
+
 Mon Aug 30 15:38:18 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * config/qt4_gui.mpb:
