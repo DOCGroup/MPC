@@ -1,3 +1,11 @@
+Mon Aug 30 15:38:18 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * config/qt4_gui.mpb:
+
+          Some systems with both qt3 and qt4 installed need to run the moc and
+          uic tools as "moc-qt4" and "uic-qt4".  Allow this to be enabled by
+          setting the QT4_SUFFIX environment variable.
+
 Fri Aug 27 21:34:44 UTC 2010  Brian Johnson  <johnsonb@ociweb.com>
 
         * templates/automake.mpd:
@@ -11,12 +19,12 @@ Fri Aug 27 21:34:44 UTC 2010  Brian Johnson  <johnsonb@ociweb.com>
         * templates/vc6.mpd:
         * templates/vc7.mpd:
         * templates/vc8.mpd:
-        
+
           Changed to use !need_staticflag to prevent dependent_libs from
           being generated for static projects.
-          
+
         * templates/wb26wrmakefile.mpd:
-        
+
           Added dependent_libs keyword handling to wb26.
 
 Fri Aug 27 18:21:22 UTC 2010  Adam Mitz  <mitza@ociweb.com>
