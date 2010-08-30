@@ -4760,6 +4760,12 @@ sub write_project {
           }
         }
 
+        ## Hook for implementing type-specific behavior.
+        ($status, $error) = $self->pre_write_output_file($webapp);
+        if (!$status) {
+          return $status, $error;
+        }
+
         ## We don't need to pass a file name here.  write_output_file()
         ## will determine the file name for itself.
         ($status, $error) = $self->write_output_file($webapp);
@@ -5564,6 +5570,10 @@ sub requires_forward_slashes {
 }
 
 sub warn_useless_project {
+  return 1;
+}
+
+sub pre_write_output_file {
   return 1;
 }
 

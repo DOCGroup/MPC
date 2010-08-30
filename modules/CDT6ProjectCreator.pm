@@ -56,7 +56,10 @@ sub fill_value {
   my($self, $name) = @_;
 
   if ($name eq 'platforms') {
-    if ($^O eq 'darwin') {
+    if (defined $ENV{'MPC_CDT_PLATFORMS'}) {
+      return $ENV{'MPC_CDT_PLATFORMS'};
+    }
+    elsif ($^O eq 'darwin') {
       return 'macosx';
     }
     elsif ($^O eq 'MSWin32') {
