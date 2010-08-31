@@ -1,3 +1,14 @@
+Tue Aug 31 20:21:25 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
+
+        * templates/cdt6cproject.mpd:
+        
+          Changed announcement message for custom build steps to not
+          include the command.  Putting in the command caused problems for
+          custom types whose command included <%quote%>, and those are
+          sometimes required due to other issues.  When those other issues
+          are resolved, we can put the command back in the announcement
+          message.
+
 Mon Aug 30 19:21:23 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * modules/CDT6ProjectCreator.pm:
