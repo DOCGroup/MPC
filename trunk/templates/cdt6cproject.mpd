@@ -219,7 +219,7 @@ all: $(GENERATED)
           rcbsApplicability="override"
           resourcePath="<%custom_type->input_file%>"
           toolsToInvoke="org.eclipse.cdt.managedbuilder.ui.rcbs.467489715">
-  <tool announcement="Invoking <%if(flag_overrides(custom_type->input_file, command))%><%translate_vars(flag_overrides(custom_type->input_file, command), 1)%><%else%><%translate_vars(custom_type->command, 1)%><%endif%> on <%custom_type->input_file%>"
+  <tool announcement="Invoking custom build step for type <%custom_type%> on <%custom_type->input_file%>"
         command="<%shell%> ..<%slash%><%create_aux_file(platform, _, configuration, _, custom_type, _, normalize(custom_type->input_file), script_ext)%><%script_hdr%>
 <%comment(LIBPATH)%><%if(custom_type->libpath)%><%setenv%> <%libenv%>=<%envvar_pre%><%libenv%><%envvar_post%><%pathsep%><%translate_vars(custom_type->libpath)%>
 <%endif%>cd ..<%slash%>..
