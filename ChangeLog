@@ -1,7 +1,13 @@
+Fri Sep 10 15:06:04 UTC 2010  William R. Otte  <wotte@dre.vanderbilt.edu>
+
+        * config/xscdefaults.mpb:
+
+          Added from CIAO.
+
 Tue Aug 31 20:21:25 UTC 2010  Chris Cleeland  <cleeland@ociweb.com>
 
         * templates/cdt6cproject.mpd:
-        
+
           Changed announcement message for custom build steps to not
           include the command.  Putting in the command caused problems for
           custom types whose command included <%quote%>, and those are
