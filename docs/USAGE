@@ -68,7 +68,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
        -nocomments     Do not place comments in the generated files.
        -noreldefs      Do not try to generate default relative definitions.
        -notoplevel     Do not generate the top level target file.  Files
-                       are still process, but no top level file is created.
+                       are still processed, but no top level file is created.
        -recurse        Recurse from the current directory and generate from
                        all found input files.
        -relative       Any $() variable in an mpc file that is matched to NAME
