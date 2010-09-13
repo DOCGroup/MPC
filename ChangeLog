@@ -1,3 +1,12 @@
+Mon Sep 13 21:51:32 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * docs/templates/vc8csharp.txt:
+        * templates/vc8csharp.mpd:
+
+          Added and documented the DisableSpecificWarnings template variable.
+          Thanks to Charles Calkins (calkinsc at ociweb dot com) for this and
+          the previous change.
+
 Mon Sep 13 21:11:20 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * docs/USAGE:
