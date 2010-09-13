@@ -85,7 +85,7 @@
     <NMakeCleanCommandLine><%makeclean%> CONF=<%configuration%></NMakeOutput>
     <NMakeOutput><%makeoutput%></NMakeOutput>
 <%else%>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(type_is_dynamic)%><%if(dllout)%><%dllout%>\<%else%><%libout%>\<%endif%><%else%><%if(type_is_static)%><%libout%>\<%else%><%if(exeout)%><%exeout%>\<%if(windows_style)%>\<%output_dir("Debug")%>\<%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%>\<%else%><%output_dir(".")%>\<%endif%><%endif%><%endif%><%endif%></OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(type_is_dynamic)%><%if(dllout)%><%dllout%>\<%else%><%libout%>\<%endif%><%else%><%if(type_is_static)%><%libout%>\<%else%><%if(exeout)%><%exeout%>\<%if(windows_style)%><%output_dir("Debug")%>\<%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%>\<%else%><%output_dir(".")%>\<%endif%><%endif%><%endif%><%endif%></OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%intermediate_dir%>\<%noextension(project_file)%>\<%if(output_subdir)%><%output_subdir%>\<%endif%></IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(debug_prj)%>true<%else%>false<%endif%></LinkIncremental>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%endif%></TargetName>
@@ -265,7 +265,7 @@
 <%if(BrowseInformationFile)%>
       <BrowseInformationFile><%BrowseInformationFile%></BrowseInformationFile>
 <%endif%>
-      <WarningLevel>Level<%warning_level("3")%></WarningLevel>
+      <WarningLevel><%if(compares(warning_level, all))%>EnableAllWarnings<%else%><%if(compares(warning_level, none) || compares(warning_level, 0))%>TurnOffAllWarnings<%else%>Level<%warning_level("3")%><%endif%><%endif%></WarningLevel>
 <%if(!managed && debug_format)%>
       <DebugInformationFormat><%debug_format%></DebugInformationFormat>
 <%endif%>

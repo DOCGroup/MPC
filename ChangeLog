@@ -1,3 +1,19 @@
+Mon Sep 13 21:11:20 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * docs/USAGE:
+
+          Fixed a typo.
+
+        * docs/templates/vc10.txt:
+
+          Removed a redundant \ from the OutDir.
+          Added warning_level settings for "all" and "none", adding to the
+          existing levels of 1-4.
+
+        * templates/vc10.mpd:
+
+          Documented warning levels.
+
 Fri Sep 10 15:06:04 UTC 2010  William R. Otte  <wotte@dre.vanderbilt.edu>
 
         * config/xscdefaults.mpb:
