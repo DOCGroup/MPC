@@ -70,8 +70,9 @@
     <DebugSymbols><%if(optimize)%>false<%else%>true<%endif%></DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
-    <NoWarn>
-    </NoWarn>
+<%if(DisableSpecificWarnings)%>
+    <NoWarn><%foreach(DisableSpecificWarnings)%><%DisableSpecificWarning%><%fornotlast(";")%><%endfor%></NoWarn>
+<%endif%> 
     <Optimize><%if(optimize)%>true<%else%>false<%endif%></Optimize>
     <RegisterForComInterop><%RegisterForComInterop("false")%></RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>

@@ -8,6 +8,7 @@ allowunsafeblocks = Enable/disable the use of the unsafe keyword.
 common_defines = Specifies macros that are common to all target types.
 comreferences = Creates references to COM libraries. Each entry in the list takes the form libraryname:guid=the_guid and can optionally list more attribute name/value pairs separated by commas.  The valid attributes besides guid (with their defaults) are majorver (1), minorver (0), lcid (0), wrapper (tlbimp), isolated (False), copylocal (False), and embed (omitted).
 defines = Macros that are specific to a particular configuration.
+disablespecificwarnings = A space separated list of warning numbers to be disabled.
 guid = The value for this variable is generated during project generation.
 keyfile = Indicate the keyfile to use when signing the assembly.
 prversion = This setting specifies the ProductVersion in the generated .csproj file.
