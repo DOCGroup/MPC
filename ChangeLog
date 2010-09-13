@@ -4,13 +4,13 @@ Mon Sep 13 21:11:20 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
           Fixed a typo.
 
-        * docs/templates/vc10.txt:
+        * templates/vc10.mpd:
 
           Removed a redundant \ from the OutDir.
           Added warning_level settings for "all" and "none", adding to the
           existing levels of 1-4.
 
-        * templates/vc10.mpd:
+        * docs/templates/vc10.txt:
 
           Documented warning levels.
 
