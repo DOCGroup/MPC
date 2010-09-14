@@ -1,3 +1,10 @@
+Tue Sep 14 19:38:30 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * prj_install.pl:
+
+          Fixed a bug in the symlink-detection logic when the same file appears
+          in more than one MPC component list.
+
 Mon Sep 13 21:51:32 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * docs/templates/vc8csharp.txt:
