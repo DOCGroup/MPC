@@ -88,7 +88,7 @@ sub copyFiles {
   foreach my $file (@$files) {
     if (-l $file) {
       my $dest = readlink($file);
-      if (exists $linkTargets{$dest}) {
+      if (exists $linkTargets{$dest} && $file ne $linkTargets{$dest}) {
         if (length $file <= length $linkTargets{$dest}) {
           $localLink{$file} = $linkTargets{$dest};
         }
