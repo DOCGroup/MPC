@@ -441,6 +441,8 @@ sub process_assignment {
         $self->{'dependency_attributes'}->{$2} = $3;
       }
 
+      ## Check the after value and warn the user in the event that it
+      ## contains a value that can not be used within a project name.
       if (!$self->valid_project_name($value)) {
         $self->warning("after '$value' contains an invalid project name in " .
                        $self->{'current_input'} . ' at line ' .
@@ -5357,13 +5359,15 @@ sub get_resource_tag {
 
 sub find_command_helper {
   my($self, $tag) = @_;
-  if (!defined $tag) {
-    return undef;
-  }
+
+  ## No tag results in no command helper
+  return undef if (!defined $tag);
+
+  ## See if we have a command helper for this tag
   my $ch = CommandHelper::get($tag);
-  if (defined $ch) {
-    return $ch;
-  }
+  return $ch if (defined $ch);
+
+  ## None for the base define custom, try again with the parent
   return $self->find_command_helper($self->{'define_custom_parent'}->{$tag});
 }
 

@@ -137,7 +137,7 @@ sub printUsage {
 "       -nocomments     Do not place comments in the generated files.\n" .
 "       -noreldefs      Do not try to generate default relative definitions.\n" .
 "       -notoplevel     Do not generate the top level target file.  Files\n" .
-"                       are still process, but no top level file is created.\n" .
+"                       are still processed, but no top level file is created.\n" .
 "       -recurse        Recurse from the current directory and generate from\n" .
 "                       all found input files.\n" .
 "       -relative       Any \$() variable in an mpc file that is matched to NAME\n" .

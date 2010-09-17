@@ -74,10 +74,10 @@ CCC           = $(CXX)
 MAKEFILE      = <%project_file%>
 DEPENDENCIES  = <%if(supports_include)%>.depend.<%endif%>$(MAKEFILE)
 <%if(exename)%>
-BTARGETDIR    = <%if(exeout)%><%exeout%><%else%>.<%endif%><%slash%><%targetoutdir%>
+BTARGETDIR    = <%if(exeout)%><%exeout%><%output_dir_ext%><%else%>.<%endif%><%slash%><%targetoutdir%>
 BIN           = $(BTARGETDIR)<%exename%>$(EXESUFFIX)$(EXEEXT)
 <%else%>
-LTARGETDIR    = <%libout%><%slash%><%targetoutdir%>
+LTARGETDIR    = <%libout%><%if(!compares(libout, .))%><%output_dir_ext%><%endif%><%slash%><%targetoutdir%>
 <%endif%>
 CAT           = <%type("cat")%>
 MV            = <%move("mv -f")%>
@@ -107,7 +107,7 @@ LIB           = $(LTARGETDIR)$(LIBPREFIX)<%staticname%>$(LIBSUFFIX)$(AREXT)
 <%endif%>
 <%if(dll_ext && sharedname)%>
 SOEXT         = <%dll_ext%>
-SHTARGETDIR   = <%if(dllout)%><%dllout%><%else%><%libout%><%endif%><%slash%><%targetoutdir%>
+SHTARGETDIR   = <%if(dllout)%><%dllout%><%if(!compares(dllout, .))%><%output_dir_ext%><%endif%><%else%><%libout%><%if(!compares(libout, .))%><%output_dir_ext%><%endif%><%endif%><%slash%><%targetoutdir%>
 <%if(version && versupport)%>
 SHLIB_BASE    = $(LIBPREFIX)<%sharedname%>$(LIBSUFFIX)$(SOEXT)
 <%endif%>
@@ -290,7 +290,9 @@ $(TEMPINCDIR):
 	@$(TESTDIRSTART) "<%targetoutdir%><%obj_dir%><%dirname(source_file)%>" $(TESTDIREND) $(MKDIR) "<%targetoutdir%><%obj_dir%><%dirname(source_file)%>"
 <%endif%>
 	<%if(ends_with(source_file, \.c) || ends_with(source_file, \.[Ss]))%>$(COMPILE.c)<%else%>$(COMPILE.cc)<%endif%> <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%><%if(pchuse && pch_source && pchsupport)%><%pchuse%><%pch_header%><%pchext%> <%if(pchstop)%><%pchstop%><%pch_header%><%endif%><%endif%>$(EXPORTFLAGS) $(OUTPUT_OPTION) <%source_file%>
-<%if(source_file->postcommand)%>	<%source_file->postcommand%><%endif%>
+<%if(source_file->postcommand)%>
+	<%source_file->postcommand%>
+<%endif%>
 
 <%endfor%>
 <%if(resource_files)%>
@@ -325,6 +327,9 @@ realclean: clean
 <%if(postclean)%>
 	-<%eval(postclean)%>
 <%endif%>
+
+check-syntax:
+	$(COMPILE.cc) $(EXPORTFLAGS)<%if(checkopt)%> <%checkopt%><%endif%> $(CHK_SOURCES)
 
 <%if(prebuild)%>
 __prebuild__:
