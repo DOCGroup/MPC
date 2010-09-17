@@ -1184,7 +1184,7 @@ sub process_compound_if {
       my $prefix = 'get_';
 
       $val = $str;
-      
+
       ## If there is only one command, we have to add it to the list
       ## again so that we can get the variable value and then use
       ## the doif_ version to test it, unless the get_ function
@@ -1194,7 +1194,7 @@ sub process_compound_if {
           ($keywords{$cmds[0]} & $get_combined_type) == 0) {
         push(@cmds, $cmds[0]);
       }
-      
+
       foreach my $cmd (reverse @cmds) {
         if (defined $keywords{$cmd} && ($keywords{$cmd} & $type) != 0) {
           my $func = "$prefix$cmd";
