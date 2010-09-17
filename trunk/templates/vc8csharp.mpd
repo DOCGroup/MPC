@@ -72,7 +72,7 @@
     <NoStdLib>false</NoStdLib>
 <%if(DisableSpecificWarnings)%>
     <NoWarn><%foreach(DisableSpecificWarnings)%><%DisableSpecificWarning%><%fornotlast(";")%><%endfor%></NoWarn>
-<%endif%> 
+<%endif%>
     <Optimize><%if(optimize)%>true<%else%>false<%endif%></Optimize>
     <RegisterForComInterop><%RegisterForComInterop("false")%></RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>

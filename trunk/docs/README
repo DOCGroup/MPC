@@ -489,11 +489,11 @@ dependent           If this is given a value, then a dependency upon that
 dependent_libs      If this is given a value, then a dependency upon that
                     library value will be given to all of the generated files.
                     The format for this entry should be the basename for the
-                    library (no library prefix, postfix, or extension) 
+                    library (no library prefix, postfix, or extension)
                     preceded by any relative or absolute path to the library.
-                    The typical use for this would be so that a project is 
-                    rebuilt when a library needs to be rebuilt for its 
-                    dependent executable. The default for this is unset and no 
+                    The typical use for this would be so that a project is
+                    rebuilt when a library needs to be rebuilt for its
+                    dependent executable. The default for this is unset and no
                     dependency will be generated.
 inputext            This is a comma separated list of input file extensions
                     that belong to the command.
@@ -769,7 +769,7 @@ regardless of the presence of an extension definition.  In this case, the
 input file will be "excluded" from the build.
 
 For custom file types, there are a few keywords that can be used within the
-custom file type input lists: command, commandflags, dependent, 
+custom file type input lists: command, commandflags, dependent,
 dependent_libs, gendir and postcommand.  These keywords (except for gendir)
 can be used to augment or override the values of the same name defined in a
 Define_Custom section. gendir can be used to specify the directory in which
