@@ -1,3 +1,26 @@
+Fri Sep 17 11:25:48 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * docs/html/MakeProjectCreator.html:
+        * templates/vc8csharp.mpd:
+
+          Removed trailing whitespace.
+
+        * docs/templates/make.txt:
+        * modules/MakeWorkspaceCreator.pm:
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Added support for the check-syntax target used by emacs.
+
+        * modules/Options.pm:
+
+          Fixed a typo.
+
+        * modules/ProjectCreator.pm:
+
+          Cleaned up and commented a bit of code.
+
 Tue Sep 14 19:38:30 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * prj_install.pl:
