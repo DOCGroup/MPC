@@ -1,3 +1,8 @@
+Mon Sep 27 11:44:08 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/wireshark.mpb:
+          vc10 support
+
 Fri Sep 17 11:25:48 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
