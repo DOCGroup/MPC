@@ -203,6 +203,7 @@ my %csvc = ('source_files'        => [ "\\.cs" ],
             'aspx_files'          => [ "\\.aspx" ],
             'ico_files'           => [ "\\.ico" ],
             'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
+            'embedded_resource_files' => [],
            );
 
 my %csma = ('source_files' => [ 'dependent_upon',
