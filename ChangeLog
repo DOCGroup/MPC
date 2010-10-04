@@ -1,3 +1,11 @@
+Mon Oct  4 15:32:05 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+        * templates/vc8csharp.mpd:
+
+          Added "Embedded_Resource_Files" as a component name for C#.
+          From Charles Calkins (calkinsc at ociweb dot com).
+
 Mon Sep 27 11:44:08 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/wireshark.mpb:
