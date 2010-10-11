@@ -1,3 +1,28 @@
+Mon Oct 11 20:40:13 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/make.txt:
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Added support for the 'profile' and 'coverage' template variables.
+          If a compiler has options for profiling and coverage testing, they
+          will be added to the compile and link lines.
+
+        * modules/CommandHelper.pm:
+
+          Added a comment about escaping regular expression special
+          characters.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where a source file that was explicitly added and ends
+          in _T.cpp would automatically be added as a template file if the
+          template files component was left defaulted.
+
+        * templates/nmake.mpd:
+
+          Added support for the 'profile' template variable.
+
 Mon Oct  4 15:32:05 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * modules/ProjectCreator.pm:
