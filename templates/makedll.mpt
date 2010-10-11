@@ -117,6 +117,8 @@ gcc {
   pchnobj   = 1
   checkopt  = -Wall -Wextra -pedantic -fsyntax-only
   visopt    = -fvisibility=hidden -fvisibility-inlines-hidden
+  profopt   = -pg
+  covopt    = -fprofile-arcs -ftest-coverage
 }
 
 arm_elf_gcc {
@@ -131,6 +133,8 @@ arm_elf_gcc {
   pchnobj       = 1
   checkopt      = -Wall -Wextra -pedantic -fsyntax-only
   visopt        = -fvisibility=hidden -fvisibility-inlines-hidden
+  profopt       = -pg
+  covopt        = -fprofile-arcs -ftest-coverage
 }
 
 Intel {

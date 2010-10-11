@@ -3384,7 +3384,7 @@ sub list_generated_file {
 
 sub add_corresponding_component_files {
   my($self, $filecomp, $tag) = @_;
-  my $grname   = $grouped_key . $tag;
+  my $grname = $grouped_key . $tag;
 
   ## Create a hash array keyed off of the existing files of the type
   ## that we plan on adding.
@@ -3686,6 +3686,12 @@ sub generate_defaults {
       }
     }
   }
+
+  ## The code to add template files automatically when it is left
+  ## defaulted by the user may add source files that happen to end in _t
+  ## (minus the extension).  If we do not remove template files that are
+  ## also listed as source files, the generated projects can be invalid.
+  $self->remove_duplicated_files('template_files', 'source_files');
 
   ## Now that all of the other files have been added
   ## we need to remove those that have need to be removed
