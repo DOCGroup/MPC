@@ -1,3 +1,8 @@
+Wed Oct 20 09:18:05 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/nddsmonitor.mpb:
+          New base project for RTI ndds monitor library
+
 Mon Oct 11 20:40:13 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/make.txt:
