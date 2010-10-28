@@ -123,7 +123,15 @@ sub mpc_dirname {
     }
   }
   else {
-    return dirname($dir);
+    ## Get the directory portion of the original directory or file path.
+    $dir = dirname($dir);
+
+    ## If the result is just a drive specification, we need to append a
+    ## slash to the end of the path so that cygwin perl can use this
+    ## return value within a chdir() call.
+    $dir .= '/' if ($dir =~ /^[a-z]:$/i);
+
+    return $dir;
   }
 }
 

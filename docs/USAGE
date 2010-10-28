@@ -54,7 +54,9 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        option can be used multiple times to add directories.
        -into           Place all output files in a mirrored directory
                        structure starting at <directory>.  This should be a
-                       full path.
+                       full path.  If any project within the workspace is
+                       referenced via a full path, use of this option is
+                       likely to cause problems.
        -language       Specify the language preference; possible values are
                        [cplusplus, csharp, java, vb].  The default is
                        cplusplus.
