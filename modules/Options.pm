@@ -96,77 +96,79 @@ sub printUsage {
                $spaces . "[files]\n\n";
 
   print STDERR
-"       -base           Add <project> as a base project to each generated\n" .
-"                       project file.  Do not provide a file extension, the\n" .
-"                       .mpb extension will be tried first; if that fails the\n" .
-"                       .mpc extension will be tried.\n" .
-"       -exclude        Use this option to exclude directories or files when\n" .
-"                       searching for input files.\n" .
-"       -expand_vars    Perform direct expansion, instead of performing relative\n" .
-"                       replacement with either -use_env or -relative options.\n" .
-"       -feature_file   Specifies the feature file to read before processing.\n" .
-"                       The default feature file is default.features under the\n" .
-"                       config directory.\n" .
-"       -features       Specifies the feature list to set before processing.\n" .
-"       -for_eclipse    Generate files for use with eclipse.  This is only\n" .
-"                       useful for make based project types.\n" .
-"       -gendot         Generate .dot files for use with Graphviz.\n" .
-"       -genins         Generate .ins files for use with prj_install.pl.\n" .
-"       -gfeature_file  Specifies the global feature file.  The\n" .
-"                       default value is global.features under the\n" .
-"                       config directory.\n" .
-"       -global         Specifies the global input file.  Values stored\n" .
-"                       within this file are applied to all projects.\n" .
-"       -hierarchy      Generate a workspace in a hierarchical fashion.\n" .
-"       -include        Specifies a directory to search when looking for base\n" .
-"                       projects, template input files and templates.  This\n" .
-"                       option can be used multiple times to add directories.\n" .
-"       -into           Place all output files in a mirrored directory\n" .
-"                       structure starting at <directory>.  This should be a\n" .
-"                       full path.\n" .
+"       -base           Add <project> as a base project to each generated\n",
+"                       project file.  Do not provide a file extension, the\n",
+"                       .mpb extension will be tried first; if that fails the\n",
+"                       .mpc extension will be tried.\n",
+"       -exclude        Use this option to exclude directories or files when\n",
+"                       searching for input files.\n",
+"       -expand_vars    Perform direct expansion, instead of performing relative\n",
+"                       replacement with either -use_env or -relative options.\n",
+"       -feature_file   Specifies the feature file to read before processing.\n",
+"                       The default feature file is default.features under the\n",
+"                       config directory.\n",
+"       -features       Specifies the feature list to set before processing.\n",
+"       -for_eclipse    Generate files for use with eclipse.  This is only\n",
+"                       useful for make based project types.\n",
+"       -gendot         Generate .dot files for use with Graphviz.\n",
+"       -genins         Generate .ins files for use with prj_install.pl.\n",
+"       -gfeature_file  Specifies the global feature file.  The\n",
+"                       default value is global.features under the\n",
+"                       config directory.\n",
+"       -global         Specifies the global input file.  Values stored\n",
+"                       within this file are applied to all projects.\n",
+"       -hierarchy      Generate a workspace in a hierarchical fashion.\n",
+"       -include        Specifies a directory to search when looking for base\n",
+"                       projects, template input files and templates.  This\n",
+"                       option can be used multiple times to add directories.\n",
+"       -into           Place all output files in a mirrored directory\n",
+"                       structure starting at <directory>.  This should be a\n",
+"                       full path.  If any project within the workspace is\n",
+"                       referenced via a full path, use of this option is\n",
+"                       likely to cause problems.\n",
 "       -language       Specify the language preference; possible values are\n",
-"                       [", join(', ', sort(Creator::validLanguages())), "].  The default is\n".
-"                       " . Creator::defaultLanguage() . ".\n",
-"       -make_coexistence If multiple 'make' based project types are\n" .
-"                       generated, they will be named such that they can coexist.\n" .
-"       -name_modifier  Modify output names.  The pattern passed to this\n" .
-"                       parameter will have the '*' portion replaced with the\n" .
-"                       actual output name.  Ex. *_Static\n" .
-"       -apply_project  When used in conjunction with -name_modifier, it applies\n" .
-"                       the name modifier to the project name also.\n" .
-"       -nocomments     Do not place comments in the generated files.\n" .
-"       -noreldefs      Do not try to generate default relative definitions.\n" .
-"       -notoplevel     Do not generate the top level target file.  Files\n" .
-"                       are still processed, but no top level file is created.\n" .
-"       -recurse        Recurse from the current directory and generate from\n" .
-"                       all found input files.\n" .
-"       -relative       Any \$() variable in an mpc file that is matched to NAME\n" .
-"                       is replaced by VAL only if VAL can be made into a\n" .
-"                       relative path based on the current working directory.\n" .
-"                       This option can be used multiple times to add multiple\n" .
-"                       variables.\n" .
-"       -relative_file  Specifies the relative file to read before processing.\n" .
-"                       The default relative file is default.rel under the\n" .
-"                       config directory.\n" .
-"       -static         Specifies that only static projects will be generated.\n" .
-"                       By default, only dynamic projects are generated.\n" .
-"       -template       Specifies the template name (with no extension).\n" .
-"       -ti             Specifies the template input file (with no extension)\n" .
-"                       for the specific type (ex. -ti dll_exe:vc8exe).\n" .
-"       -type           Specifies the type of project file to generate.  This\n" .
-"                       option can be used multiple times to generate multiple\n" .
-"                       types.  There is no longer a default.\n" .
-"       -use_env        Use environment variables for all uses of \$() instead\n" .
-"                       of the relative replacement values.\n" .
-"       -value_project  This option allows modification of a project variable\n" .
-"                       assignment .  Use += to add VAL to the NAME's value.\n" .
-"                       Use -= to subtract and = to override the value.\n" .
-"                       This can be used to introduce new name value pairs to\n" .
-"                       a project.  However, it must be a valid project\n" .
-"                       assignment.\n" .
-"       -value_template This option allows modification of a template input\n" .
-"                       name value pair.  Use += to add VAL to the NAME's\n" .
-"                       value.  Use -= to subtract and = to override the value.\n" .
+"                       [", join(', ', sort(Creator::validLanguages())), "].  The default is\n",
+"                       ", Creator::defaultLanguage(), ".\n",
+"       -make_coexistence If multiple 'make' based project types are\n",
+"                       generated, they will be named such that they can coexist.\n",
+"       -name_modifier  Modify output names.  The pattern passed to this\n",
+"                       parameter will have the '*' portion replaced with the\n",
+"                       actual output name.  Ex. *_Static\n",
+"       -apply_project  When used in conjunction with -name_modifier, it applies\n",
+"                       the name modifier to the project name also.\n",
+"       -nocomments     Do not place comments in the generated files.\n",
+"       -noreldefs      Do not try to generate default relative definitions.\n",
+"       -notoplevel     Do not generate the top level target file.  Files\n",
+"                       are still processed, but no top level file is created.\n",
+"       -recurse        Recurse from the current directory and generate from\n",
+"                       all found input files.\n",
+"       -relative       Any \$() variable in an mpc file that is matched to NAME\n",
+"                       is replaced by VAL only if VAL can be made into a\n",
+"                       relative path based on the current working directory.\n",
+"                       This option can be used multiple times to add multiple\n",
+"                       variables.\n",
+"       -relative_file  Specifies the relative file to read before processing.\n",
+"                       The default relative file is default.rel under the\n",
+"                       config directory.\n",
+"       -static         Specifies that only static projects will be generated.\n",
+"                       By default, only dynamic projects are generated.\n",
+"       -template       Specifies the template name (with no extension).\n",
+"       -ti             Specifies the template input file (with no extension)\n",
+"                       for the specific type (ex. -ti dll_exe:vc8exe).\n",
+"       -type           Specifies the type of project file to generate.  This\n",
+"                       option can be used multiple times to generate multiple\n",
+"                       types.  There is no longer a default.\n",
+"       -use_env        Use environment variables for all uses of \$() instead\n",
+"                       of the relative replacement values.\n",
+"       -value_project  This option allows modification of a project variable\n",
+"                       assignment .  Use += to add VAL to the NAME's value.\n",
+"                       Use -= to subtract and = to override the value.\n",
+"                       This can be used to introduce new name value pairs to\n",
+"                       a project.  However, it must be a valid project\n",
+"                       assignment.\n",
+"       -value_template This option allows modification of a template input\n",
+"                       name value pair.  Use += to add VAL to the NAME's\n",
+"                       value.  Use -= to subtract and = to override the value.\n",
 "       -version        Print the MPC version and exit.\n";
 }
 

@@ -1,3 +1,34 @@
+Thu Oct 28 11:44:02 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/USAGE:
+        * modules/Options.pm:
+
+          Added information to the -into option description that desribes
+          behavior when a project is referenced via a full path.
+
+        * docs/html/MakeProjectCreator.html:
+
+          Fixed the wording of the -base option description.  And, added
+          information to the -into option description that desribes behavior
+          when a project is referenced via a full path.
+
+        * modules/Creator.pm:
+
+          Added code to warn the user that using the -into option with a
+          project that is referenced via a full path will not work properly.
+
+        * modules/DirectoryManager.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Modified to append a slash to directories that are only a drive
+          letter and colon.
+
+        * mpc.pl:
+        * mwc.pl:
+
+          Modified these scripts to pull in ACE specific modules and config
+          files if the ACE_ROOT environment variable is set and MPC is
+          located underneath the directory to which ACE_ROOT points.
 Wed Oct 20 09:18:05 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/nddsmonitor.mpb:

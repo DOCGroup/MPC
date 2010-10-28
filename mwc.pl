@@ -27,7 +27,20 @@ use File::Basename;
 my $basePath = (defined $FindBin::RealBin && $FindBin::RealBin ne '' ?
                   $FindBin::RealBin : File::Spec->rel2abs(dirname($0)));
 $basePath = VMS::Filespec::unixify($basePath) if ($^O eq 'VMS');
-unshift(@INC, $basePath . '/modules');
+
+## Add the full path to the MPC modules to the Perl include path
+my $mpcpath = $basePath;
+unshift(@INC, $mpcpath . '/modules');
+
+## If the ACE_ROOT environment variable is defined and this version of
+## MPC is located inside the directory to which ACE_ROOT points, we will
+## assume that the user wanted the ACE specific version of this script.
+## We will change the $basePath to what it would have been had the user
+## run this script out of $ACE_ROOT/bin.
+my $aceroot = $ENV{ACE_ROOT};
+$aceroot =~ s!\\!/!g if (defined $aceroot);
+$basePath = $aceroot . '/bin/MakeProjectCreator'
+               if (defined $aceroot && $aceroot eq dirname($basePath));
 
 require Driver;
 
@@ -36,7 +49,7 @@ require Driver;
 # ************************************************************
 
 sub getBasePath {
-  return $basePath;
+  return $mpcpath;
 }
 
 # ************************************************************
