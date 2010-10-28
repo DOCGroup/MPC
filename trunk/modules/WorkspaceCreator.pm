@@ -1141,6 +1141,7 @@ sub topname {
   if ($file =~ /^([^\/\\]+)[\/\\](.*)/) {
     $dir  = $1;
     $rest = $2;
+    $dir .= '/' if ($dir =~ /^[a-z]:$/i);
   }
   return $dir, $rest;
 }
