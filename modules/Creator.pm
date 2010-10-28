@@ -946,10 +946,21 @@ sub get_language {
 sub get_outdir {
   my $self = shift;
   if (defined $self->{'into'}) {
+    ## First, try to remove our starting directory from the current
+    ## working directory.
     my $outdir = $self->getcwd();
     my $re = $self->escape_regex_special($self->getstartdir());
+    if ($outdir !~ s/^$re//) {
+      ## If that fails and we're running on an OS that supports drive
+      ## letters, we need to try to remove the drive letter.  We also
+      ## warn the user that it's not likely to work properly.
+      my $orig = $outdir;
+      if ((($^O eq 'MSWin32' || $^O eq 'cygwin') &&
+           $outdir =~ s/^[a-z]://i) || $outdir =~ m!^/!) {
+        $self->warning("Unable to use $orig with the -into option");
+      }
+    }
 
-    $outdir =~ s/^$re//;
     return $self->{'into'} . $outdir;
   }
   else {
