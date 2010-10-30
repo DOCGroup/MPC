@@ -163,30 +163,6 @@ sub fill_value {
   elsif ($name eq 'cultures') {
 
     my $crlf = $self->crlf();
-	
-	#these are keywords, such as exeout, includes, etc.
-	#foreach my $key (keys %{$self->{'valid_names'}}) {
-	#  print "key: ".$key.": ";
-	#  if (UNIVERSAL::isa($self->{'valid_names'}->{$key}, 'ARRAY')) {
-	#   my @arr = $self->{'valid_names'}->{$key};
-	#	foreach my $val (@arr) {
-	#		print $val." ";
-	#	}
-	#  }
-	#  else {
-	#    print $self->{'valid_names'}->{$key};
-	#  }
-	#  print $crlf;
-	#}
-	#print $crlf;
-
-    # return $self->{'valid_names'}->{$name};
-	#my @cust_files = $self->get_component_list('WebUILng2ResXGen_Files');
-	
-	#foreach my $cust_file (@cust_files) {
-	#	print $cust_file.$crlf;
-	#}
-
 
   	# iterate over resx_files, make list of culture abbreviations
 	my @resx_files  = $self->get_component_list('resx_files');

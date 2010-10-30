@@ -94,10 +94,9 @@ sub post_workspace {
   # for each project, find all dependencies
   foreach my $project (keys %project_dependencies) {
   	# foreach my $cfg (@cfgs_main) -> <configuration|platform> could be <Debug|AnyCPU Release|AnyCPU> or <Debug|Win32 Release|Win32 Debug|x64 Release|x64>
-	# $pname is the short name, e.g., "FLDataComponent", also as $self->{'project_info'}->{$project}->[0];
 	my($pname_main, $rawdeps_main, $guid_main, $language_main, $custom_only_main, $nocross_main, $managed_main, $make_group_main, @cfgs_main) = @{$$info{$project}};
 
-	# only generate a group if "make_group = 1" is in the specific(wix2) {} section of the MPC file
+	# only generate a group if "make_group = 1"
 	if ($make_group_main) {
 
 		my %all_deps = ();  # all dependencies used by any project referenced by $project
