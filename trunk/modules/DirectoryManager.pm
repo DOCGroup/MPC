@@ -146,9 +146,9 @@ sub mpc_glob {
     my @files;
     my($pre, $mid, $post) = ($1, $2, $3);
     for(my $i = 0; $i < length($mid); $i++) {
-      foreach my $new ($self->mpc_glob($pre . substr($mid, $i, 1) . $post)) {
-        push(@files, $new) if (!StringProcessor::fgrep($new, \@files));
-      }
+      StringProcessor::merge(\@files,
+                             [$self->mpc_glob($pre . substr($mid, $i, 1)
+                                              . $post)]);
     }
     return @files;
   }

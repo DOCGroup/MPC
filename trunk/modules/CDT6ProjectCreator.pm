@@ -74,6 +74,11 @@ sub fill_value {
     return $self->get_project_info()->[5];
   }
 
+  return $self->get_configurable($name);
+}
+
+sub get_configurable {
+  #my($self, $name) = @_;
   return undef;
 }
 
@@ -118,6 +123,14 @@ sub get_lib_template_input_file {
 sub use_win_compatibility_commands {
   return (defined $ENV{'MPC_CDT_HOST_WIN32'})
       ? $ENV{'MPC_CDT_HOST_WIN32'} : ($^O eq 'MSWin32' || $^O eq 'cygwin');
+}
+
+sub pre_write_output_file {
+  my $self = shift;
+  if ($self->{'assign'}->{'custom_only'}) {
+    return 1;
+  }
+  return $self->combine_custom_types();
 }
 
 1;
