@@ -72,6 +72,9 @@
     </buildCommand>
     <buildCommand>
       <name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+<%if(scanner_config_builder_triggers)%>
+      <triggers><%scanner_config_builder_triggers%></triggers>
+<%endif%>
       <arguments>
       </arguments>
     </buildCommand>

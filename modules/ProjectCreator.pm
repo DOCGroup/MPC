@@ -604,9 +604,7 @@ sub begin_project {
     my $baseprojs = $self->get_baseprojs();
 
     if (defined $parents) {
-      foreach my $base (@$baseprojs) {
-        push(@$parents, $base) if (!StringProcessor::fgrep($base, $parents));
-      }
+      StringProcessor::merge($parents, $baseprojs);
     }
     else {
       $parents = $baseprojs;
@@ -1290,9 +1288,9 @@ sub process_component_line {
         $self->{'custom_special_output'}->{$tag}->{$key} = $self->create_array($out);
       }
       if (defined $dep) {
-        $self->{'custom_special_depend'}->{$key} = $self->create_array($dep);
+        $self->{'custom_special_depend'}->{$tag}->{$key} = $self->create_array($dep);
         if ($self->{'convert_slashes'}) {
-          foreach my $depfile (@{$self->{'custom_special_depend'}->{$key}}) {
+          foreach my $depfile (@{$self->{'custom_special_depend'}->{$tag}->{$key}}) {
             $depfile =~ s/\//\\/g;
           }
         }
@@ -4010,6 +4008,7 @@ sub get_command_subs {
     $valid{'bat'}   = '.bat';
     $valid{'cmd'}   = '.cmd';
     $valid{'exe'}   = '.exe';
+    $valid{'pathsep'} = ';';
   }
   else {
     $valid{'cat'}   = 'cat';
@@ -4025,6 +4024,7 @@ sub get_command_subs {
     $valid{'bat'}   = '';
     $valid{'cmd'}   = '';
     $valid{'exe'}   = '';
+    $valid{'pathsep'} = ':';
   }
 
   ## Add the project specific compatibility commands
@@ -4216,6 +4216,90 @@ sub convert_command_parameters {
 }
 
 
+sub get_custom_special_output {
+  my $self  = shift;
+  my $tag   = shift;
+  my $input = shift;
+  if (defined $self->{'custom_special_output'}->{$tag} &&
+      defined $self->{'custom_special_output'}->{$tag}->{$input} &&
+      (!defined $self->{'flag_overrides'}->{$tag} ||
+       !defined $self->{'flag_overrides'}->{$tag}->{$input} ||
+       !defined $self->{'flag_overrides'}->{$tag}->{$input}->{'gendir'}
+       || $self->{'flag_overrides'}->{$tag}->{$input}->{'gendir'} eq '.')) {
+    return $self->{'custom_special_output'}->{$tag}->{$input};
+  }
+  return [];
+}
+
+
+sub get_first_custom_output {
+  my $self  = shift;
+  my $input = shift;
+  my $tag   = shift;
+  my %vcomps;
+  foreach my $vc (keys %{$self->{'valid_components'}}) {
+    my @comps = $self->get_component_list($vc);
+    $vcomps{$vc} = \@comps;
+  }
+  $vcomps{$generic_key} = [];
+  my $ainput = $input;
+  my $cinput = $input;
+
+  ## Remove the extension
+  $cinput =~ s/\.[^\.]+$//;
+
+  ## If we are converting slashes,
+  ## change them back for this parameter
+  $ainput =~ s/\\/\//g if ($self->{'convert_slashes'});
+
+  foreach my $vc (keys %{$self->{'valid_components'}}) {
+    my @cout = $self->check_custom_output($tag, $cinput, $ainput, $vc,
+                                          $vcomps{$vc});
+    return $cout[0] if @cout;
+  }
+  my @cout = $self->check_custom_output($tag, $cinput, $ainput, $generic_key,
+                                        $vcomps{$generic_key});
+  return $cout[0] if @cout;
+  my $aref = $self->get_custom_special_output($tag, $ainput);
+  return $$aref[0] if @$aref;
+  return '';
+}
+
+
+sub get_custom_assign_or_override {
+  my $self   = shift;
+  my $var    = shift; # which variable? (command, commandflags, etc.)
+  my $tag    = shift; # custom_files
+  my $input  = shift; # input file name which may override
+  my @params = @_;
+
+  my $key = undef;
+  if (defined $self->{'flag_overrides'}->{$tag}) {
+    my $ustyle = $input;
+    $ustyle =~ s/\\/\//g if ($self->{'convert_slashes'});
+    my $dir = $self->mpc_dirname($ustyle);
+    if (defined $self->{'flag_overrides'}->{$tag}->{$ustyle}) {
+      $key = $ustyle;
+    }
+    elsif (defined $self->{'flag_overrides'}->{$tag}->{$dir}) {
+      $key = $dir;
+    }
+  }
+  my $value = undef;
+  if (defined $key) {
+    $value = $self->{'flag_overrides'}->{$tag}->{$key}->{$var};
+  }
+  if (!defined $value) {
+    $value = $self->get_assignment($var, $self->{'generated_exts'}->{$tag});
+  }
+  return undef if !defined $value;
+  if (defined $customDefined{$var} && ($customDefined{$var} & 0x14)) {
+    return $self->convert_command_parameters($tag, $value, @params);
+  }
+  return $value;
+}
+
+
 sub get_custom_value {
   my $self   = shift;
   my $cmd    = shift;
@@ -4252,6 +4336,8 @@ sub get_custom_value {
     $value = \@array;
 
     $self->{'custom_output_files'} = {};
+    $self->{'custom_dependency_files'} = {};
+    $self->{'custom_multi_cmd'} = {};
     my %vcomps;
     foreach my $vc (keys %{$self->{'valid_components'}}) {
       my @comps = $self->get_component_list($vc);
@@ -4271,6 +4357,24 @@ sub get_custom_value {
       ## change them back for this parameter
       $ainput =~ s/\\/\//g if ($self->{'convert_slashes'});
 
+      if (defined $self->{'combined_custom'}->{$based}) {
+        $self->{'custom_multi_cmd'}->{$input} =
+          $self->{'combined_custom'}->{$based};
+
+        my $cdf = $self->{'custom_dependency_files'};
+        my $csd = $self->{'custom_special_depend'};
+        foreach my $tag (@{$self->{'combined_custom'}->{$based}}) {
+          if (defined $csd->{$tag} && defined $csd->{$tag}->{$ainput}) {
+            $cdf->{$input} = [] if (!defined $cdf->{$input});
+            StringProcessor::merge($cdf->{$input}, $csd->{$tag}->{$ainput});
+          }
+        }
+      }
+      else {
+        $self->{'custom_dependency_files'}->{$input} =
+          $self->{'custom_special_depend'}->{$based}->{$ainput};
+      }
+
       ## Add all of the output files.  We can not add $generic_key to the
       ## list here (as it used to be).  It may have been handled by
       ## generated_filenames.
@@ -4278,28 +4382,47 @@ sub get_custom_value {
         ## The output of multiple components could be input for the
         ## current component type ($based).  We need to avoid adding
         ## duplicates here.
-        foreach my $file ($self->check_custom_output(
-                            $based, $cinput, $ainput, $vc, $vcomps{$vc})) {
-          push(@outputs, $file) if (!StringProcessor::fgrep($file, \@outputs));
+        if (defined $self->{'combined_custom'}->{$based}) {
+          foreach my $tag (@{$self->{'combined_custom'}->{$based}}) {
+            my @cout = $self->check_custom_output($tag, $cinput, $ainput, $vc,
+                                                  $vcomps{$vc});
+            StringProcessor::merge(\@outputs, \@cout);
+          }
+        }
+        else {
+          my @cout = $self->check_custom_output($based, $cinput, $ainput, $vc,
+                                                $vcomps{$vc});
+          StringProcessor::merge(\@outputs, \@cout);
         }
       }
-      foreach my $file ($self->check_custom_output($based, $cinput,
-                                                   $ainput, $generic_key,
-                                                   $vcomps{$generic_key})) {
-        push(@outputs, $file) if (!StringProcessor::fgrep($file, \@outputs));
+      if (defined $self->{'combined_custom'}->{$based}) {
+        foreach my $tag (@{$self->{'combined_custom'}->{$based}}) {
+          my @cout = $self->check_custom_output($tag, $cinput, $ainput,
+                                                $generic_key,
+                                                $vcomps{$generic_key});
+          StringProcessor::merge(\@outputs, \@cout);
+        }
+      }
+      else {
+        my @cout = $self->check_custom_output($based, $cinput, $ainput,
+                                              $generic_key,
+                                              $vcomps{$generic_key});
+        StringProcessor::merge(\@outputs, \@cout);
       }
 
       ## Add specially listed files avoiding duplicates.  We don't want
       ## to add these files if gendir is set to something besides .
-      if (defined $self->{'custom_special_output'}->{$based} &&
-          defined $self->{'custom_special_output'}->{$based}->{$ainput} &&
-          (!defined $self->{'flag_overrides'}->{$based} ||
-           !defined $self->{'flag_overrides'}->{$based}->{$ainput} ||
-           !defined $self->{'flag_overrides'}->{$based}->{$ainput}->{'gendir'} ||
-           $self->{'flag_overrides'}->{$based}->{$ainput}->{'gendir'} eq '.')) {
-        foreach my $file (@{$self->{'custom_special_output'}->{$based}->{$ainput}}) {
-          push(@outputs, $file) if (!StringProcessor::fgrep($file, \@outputs));
+      if (defined $self->{'combined_custom'}->{$based}) {
+        foreach my $tag (@{$self->{'combined_custom'}->{$based}}) {
+          StringProcessor::merge(\@outputs,
+                                 $self->get_custom_special_output($tag,
+                                                                  $ainput));
         }
+      }
+      else {
+        StringProcessor::merge(\@outputs,
+                               $self->get_custom_special_output($based,
+                                                                $ainput));
       }
 
       if ($self->{'convert_slashes'}) {
@@ -4376,9 +4499,44 @@ sub get_custom_value {
     $value = \@array;
   }
   elsif ($cmd eq 'dependencies') {
-    ## If we are converting slashes, change them back for this parameter
-    $based =~ s/\\/\//g if ($self->{'convert_slashes'});
-    $value = $self->{'custom_special_depend'}->{$based};
+    $value = $self->{'custom_dependency_files'}->{$based};
+  }
+  elsif ($cmd eq 'commands') { # only used with 'combined_custom'
+    $value = [];
+    my %details = ('flags' => 'commandflags',
+                   'outopt' => 'output_option',
+                   'gdir' => 'gendir');
+    for my $tag (@{$self->{'custom_multi_cmd'}->{$based}}) {
+      my $command = $self->get_custom_assign_or_override('command', $tag,
+                                                         $based, @params);
+      push(@$value, $command);
+      my $det = $self->{'custom_multi_details'}->{$command} = {};
+      for my $k (keys %details) {
+        $det->{$k} = $self->get_custom_assign_or_override($details{$k}, $tag,
+                                                          $based, @params);
+      }
+      if ($det->{'outopt'} && $self->{'custom_output_files'}->{$based}) {
+        # only 1 output file is supported with output_option
+        $det->{'outfile'} = $self->get_first_custom_output($based, $tag);
+        $det->{'outfile'} =~ s/\//\\/g if $self->{'convert_slashes'};
+        if (defined $det->{'gdir'}) {
+          my $basename = $det->{'outfile'};
+          if ($self->{'convert_slashes'}) {
+            $basename =~ s/.*[\/\\]//;
+          }
+          else {
+            $basename =~ s/.*\///;
+          }
+          $det->{'outfile'} =
+            $det->{'gdir'} . $self->{'command_subs'}->{'slash'} . $basename;
+        }
+      }
+    }
+  }
+  elsif ($cmd eq 'flags' || $cmd eq 'outopt' || $cmd eq 'outfile' ||
+         $cmd eq 'gdir') {
+    # only used with 'combined_custom'
+    $value = $self->{'custom_multi_details'}->{$based}->{$cmd} || '';
   }
   elsif (defined $customDefined{$cmd}) {
     $value = $self->get_assignment($cmd,
@@ -4893,6 +5051,7 @@ sub reset_generating_types {
                'exclude_components'   => $language{$lang}->[1],
                'matching_assignments' => $language{$lang}->[2],
                'generated_exts'       => {},
+               'combined_custom'      => {},
                'valid_names'          => \%validNames,
               );
 
@@ -5388,6 +5547,119 @@ sub valid_project_name {
   #my($self, $name) = @_;
   return $_[1] !~ /[\/\\=\?:&"<>|#%]/;
 }
+
+
+sub append_flag_override {
+  ## Append $value to the flag_overrides for <$tag, $input, $key>
+  my $self  = shift;
+  my $tag   = shift;
+  my $key   = shift;
+  my $input = shift;
+  my $value = shift;
+  return if !defined $value || $value eq '';
+  my %join = ('postcommand' => ' ' . $self->{'command_subs'}->{'and'} . ' ');
+  my $sep = ($join{$key}) ? $join{$key} : ' ';
+  my $fo = $self->{'flag_overrides'}->{$tag};
+  $fo->{$input}->{$key} .= ($fo->{$input}->{$key} ? $sep : '') . $value;
+}
+
+
+# Some project types can't represent the same input file being used by
+# more than one custom type.  This function will look for such cases and
+# combine them into a single invocation of a synthetic custom type that
+# inherits properties from both of them.
+# Project types needing this transformation should call this function from
+# their overridden pre_write_output_file() method.
+sub combine_custom_types {
+  my $self = shift;
+  my %input; # (input_file_name => [custom1_files, custom2_files], ...)
+  my $fo = $self->{'flag_overrides'};
+
+  # Build the %input data structure as an index of how each input file is used.
+  foreach my $tag (keys %{$self->{'generated_exts'}}) {
+    foreach my $complist (values %{$self->{$tag}}) {
+      foreach my $group (keys %$complist) {
+        foreach my $in (@{$complist->{$group}}) {
+          # only add to %input if some command would be run for this type
+          my $ustyle = $in;
+          $ustyle =~ s/\\/\//g if $self->{'convert_slashes'};
+          my $dir = $self->mpc_dirname($ustyle);
+          my $of = (!defined $fo->{$tag} ? undef :
+                    (defined $fo->{$tag}->{$ustyle} ? $ustyle :
+                     (defined $fo->{$tag}->{$dir} ? $dir : undef)));
+          if ($self->{'generated_exts'}->{$tag}->{'command'} ||
+              (defined $of && $fo->{$tag}->{$of}->{'command'})) {
+            push(@{$input{$in}}, $tag);
+          }
+        }
+      }
+    }
+  }
+
+  # For each input file used in multiple custom types, move it into the new
+  # synthetic type.
+
+  foreach my $in (keys %input) {
+    next if scalar @{$input{$in}} < 2;
+    my $combo_tag = join('_and_', map {/(.+)_files$/; $1} @{$input{$in}})
+      . '_files';
+    if (!$self->{'combined_custom'}->{$combo_tag}) {
+      $self->{'combined_custom'}->{$combo_tag} = $input{$in};
+      $self->process_assignment_add('custom_types', $combo_tag);
+      my $ge = $self->{'generated_exts'}->{$combo_tag} = {};
+
+      my $combo_vc = $self->{'valid_components'}->{$combo_tag} = [];
+      foreach my $tag (@{$input{$in}}) {
+        StringProcessor::merge($combo_vc, $self->{'valid_components'}->{$tag});
+        if ($self->{'generated_exts'}->{$tag}->{'libpath'}) {
+          $ge->{'libpath'} .= ($ge->{'libpath'} ?
+                               $self->{'command_subs'}->{'pathsep'} : '') .
+                               $self->{'generated_exts'}->{$tag}->{'libpath'};
+        }
+      }
+      $fo->{$combo_tag} = {};
+      my @keys = keys %custom;
+      push(@keys, @default_matching_assignments);
+      $self->{'matching_assignments'}->{$combo_tag} = \@keys;
+    }
+
+    # Add to new type -- groups aren't relevant here, so just use the default
+    push(@{$self->{$combo_tag}->{'default'}->{'default_group'}}, $in);
+
+    # Remove from existing types
+    my $override_recurse = 0;
+    foreach my $tag (@{$input{$in}}) {
+      foreach my $complist (values %{$self->{$tag}}) {
+        foreach my $group (keys %$complist) {
+          foreach my $idx (0 .. $#{$complist->{$group}}) {
+            if ($complist->{$group}->[$idx] eq $in) {
+              splice(@{$complist->{$group}}, $idx, 1);
+            }
+          }
+        }
+      }
+      if (defined $fo->{$tag} && defined $fo->{$tag}->{$in} &&
+          defined $fo->{$tag}->{$in} && $fo->{$tag}->{$in}->{'recurse'}) {
+        ++$override_recurse;
+      }
+      foreach my $k ('dependent', 'dependent_libs', 'postcommand') {
+        $self->append_flag_override($combo_tag, $k, $in,
+                                    (defined $fo && defined $fo->{$k})
+                                    ? $fo->{$k}
+                                    : $self->{'generated_exts'}->{$tag}->{$k});
+      }
+    }
+
+    # If all existing uses agree to recurse, the new type should recurse too
+    if ($override_recurse == scalar @{$input{$in}}) {
+      $fo->{$combo_tag}->{$in}->{'recurse'} = 1;
+    }
+
+  }
+
+  return 1;
+}
+
 
 # ************************************************************
 # Accessors used by support scripts

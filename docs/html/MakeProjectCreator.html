@@ -4513,6 +4513,18 @@
                     <tr>
                       <td rowspan="1" colspan="1">
                         <p class="TblCode"><em class=
+                        "TableCode">&lt;%pathsep%&gt;</em></p>
+                      </td>
+
+                      <td rowspan="1" colspan="1">
+                        <p class="Tbl-Body">A platform non-specific path
+                        separator (; or :).</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td rowspan="1" colspan="1">
+                        <p class="TblCode"><em class=
                         "TableCode">&lt;%or%&gt;</em></p>
                       </td>
 
@@ -6424,6 +6436,112 @@
 
                 <p class="Code">&nbsp;</p>
               </li>
+
+              <li class="Body">Certain project types don't support the same
+              input file used by multiple custom types (current examples of
+              this are vc10, cdt6, and cdt7). To accomodate these types, MPC
+              has a capability called "combined custom".  With this capability
+              enabled in the specific ProjectCreator, MPC will "fold together"
+              the multiple custom steps so that the target tool (Visual Studio
+              or Eclipse CDT) sees it as a single custom step that happens to
+              run two or more commands.  When "combined custom" is enabled,
+              the template needs to be written for it by checking if
+              <em class="Code">custom_type-&gt;input_file-&gt;commands</em> is
+              non-empty.  If it isn't empty, the values in it can be iterated
+              over with a <em class="Code">&lt;%foreach%&gt;</em>.  During that
+              iteration, the following values can be obtained by the template.
+              Each one would appear in the template preceeded by
+              <em class="Code">custom_type-&gt;input_file-&gt;</em></li>
+
+              <li style="list-style: none">
+                <h6 class="NumberedTableTitle">Custom Type Fields for Combined
+                  Custom</h6>
+                <table border="1"
+                       summary="Custom Type Fields for Combined Custom">
+                  <tr>
+                    <th rowspan="1" colspan="1">
+                      <p class="Tbl-Heading">Value</p>
+                    </th>
+
+                    <th rowspan="1" colspan="1">
+                      <p class="Tbl-Heading">Description</p>
+                    </th>
+                  </tr>
+
+                  <tr>
+                    <td rowspan="1" colspan="1">
+                      <p class="Tbl-Body"><em class=
+                      "TableCode">command</em></p>
+                    </td>
+
+                    <td rowspan="1" colspan="1">
+                      <p class="Tbl-Body">The effective command, taking into
+                      account the <em class="TableCode">flag_overrides</em>.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td rowspan="1" colspan="1">
+                      <p class="Tbl-Body"><em class=
+                      "TableCode">command-&gt;outopt</em></p>
+                    </td>
+
+                    <td rowspan="1" colspan="1">
+                      <p class="Tbl-Body">The <em class=
+                      "TableCode">output_option</em> for this particular
+                        command, taking into account the
+                        <em class="TableCode">flag_overrides</em>.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td rowspan="1" colspan="1">
+                      <p class="Tbl-Body"><em class=
+                      "TableCode">command-&gt;outfile</em></p>
+                    </td>
+
+                    <td rowspan="1" colspan="1">
+                      <p class="Tbl-Body">The first output file for this
+                        particular command (for use with
+                        <em class="TableCode">outopt</em>).
+                      </p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td rowspan="1" colspan="1">
+                      <p class="Tbl-Body"><em class=
+                      "TableCode">command-&gt;flags</em></p>
+                    </td>
+
+                    <td rowspan="1" colspan="1">
+                      <p class="Tbl-Body">The <em class=
+                      "TableCode">commandflags</em> for this particular
+                        command, taking into account the
+                        <em class="TableCode">flag_overrides</em>.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td rowspan="1" colspan="1">
+                      <p class="Tbl-Body"><em class=
+                      "TableCode">command-&gt;gdir</em></p>
+                    </td>
+
+                    <td rowspan="1" colspan="1">
+                      <p class="Tbl-Body">The <em class=
+                      "TableCode">gendir</em> for this particular
+                        command.
+                      </p>
+                    </td>
+                  </tr>
+
+                </table>
+              </li>
+
             </ul>
           </div>
 
