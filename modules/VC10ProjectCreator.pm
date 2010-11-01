@@ -85,10 +85,7 @@ sub project_file_name {
 
 sub pre_write_output_file {
   my($self, $webapp) = @_;
-  my $status = 1;
-  my $error;
-
-  return $status, $error;
+  return $self->combine_custom_types();
 }
 
 1;

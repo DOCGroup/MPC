@@ -1,3 +1,54 @@
+Mon Nov  1 18:21:59 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/StringProcessor.pm:
+
+          Added a "merge" function for appending non-duplicates onto a list.
+
+        * modules/DirectoryManager.pm:
+        * modules/ProjectCreator.pm:
+
+          Use the StringProcessor::merge() function where applicable.
+          Fixed a bug where the custom type explicit dependencies (<<) were not
+          tracked separately for each type.
+          Added <%pathsep%> as a pseudo-variable (; or :).
+          Added the capability called "combined custom", which (when enabled
+          by the specific project creator) treats input files used by more than
+          one custom type as if they were just in one type, and that type has
+          multiple commands and the combined set of inputs and outputs.  See
+          the HTML documentation for details.
+
+        * modules/CDT6ProjectCreator.pm:
+        * modules/VC10ProjectCreator.pm:
+
+          Enabled combined custom.
+
+        * modules/CDT6WorkspaceCreator.pm:
+        * modules/CDT7ProjectCreator.pm:
+        * modules/CDT7WorkspaceCreator.pm:
+
+          Added the cdt7 type, which builds on cdt6 and therefore doesn't
+          need its own templates.  Eclipse's CDT version 7 comes with the
+          "Helios" (3.6) version of Eclipse.
+
+        * docs/README:
+        * docs/html/MakeProjectCreator.html:
+
+          Documented <%pathsep%> and combined-custom.
+
+        * templates/cdt6cproject.mpd:
+
+          Cleaned up a lot of formatting and simplifed some of the MPC template
+          language constructs, added uses of cdt7-specific variables.
+          Added support for combined custom.
+
+        * templates/cdt6project.mpd:
+
+          Support cdt7.
+
+        * templates/vc10.mpd:
+
+          Added support for combined custom.
+
 Thu Oct 28 11:44:02 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/USAGE:
