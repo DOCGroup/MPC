@@ -107,8 +107,8 @@ sub is_culture_code {
 	'he-IL', 'uz', 'hi', 'uz-UZ-Cyrl', 'hi-IN', 'uz-UZ-Latn', 
 	'hu', 'vi');
 
-	return 1 if (exists {map { $_ => 1 } @culture_codes}->{$culture_code});
-	return 0;
+  return 1 if (exists {map { $_ => 1 } @culture_codes}->{$culture_code});
+  return 0;
 }
 
 
@@ -164,29 +164,29 @@ sub fill_value {
 
     my $crlf = $self->crlf();
 
-  	# iterate over resx_files, make list of culture abbreviations
-	my @resx_files  = $self->get_component_list('resx_files');
+    # iterate over resx_files, make list of culture abbreviations
+    my @resx_files  = $self->get_component_list('resx_files');
 
-	my %cultures = ();
-	foreach my $resx_file (@resx_files) {
-		my @parts = split('\.', $resx_file);
-		if ($parts[-1] eq 'resx') {  # if the file is a .resx file
-			if (is_culture_code($parts[-2])) { # if a culture is specified
-			    $cultures{$parts[-2]} = 1;  # remember that culture
-			}
-			else {
-				$cultures{'_neutral_'} = 1;  # have a neutral culture
-			}
-		}
-	}
+    my %cultures = ();
+    foreach my $resx_file (@resx_files) {
+      my @parts = split('\.', $resx_file);
+      if ($parts[-1] eq 'resx') {  # if the file is a .resx file
+        if (is_culture_code($parts[-2])) { # if a culture is specified
+          $cultures{$parts[-2]} = 1;  # remember that culture
+        }
+        else {
+          $cultures{'_neutral_'} = 1;  # have a neutral culture
+        }
+      }
+    }
 
-	# flatten into a string
-	my $found_cultures = '';
-	foreach my $culture (keys %cultures) {
-		$found_cultures = $found_cultures . $culture . ' ';
-	}
-
-	return $found_cultures;
+    # flatten into a string
+    my $found_cultures = '';
+    foreach my $culture (keys %cultures) {
+      $found_cultures = $found_cultures . $culture . ' ';
+    }
+    
+    return $found_cultures;
   }
   return undef;
 }

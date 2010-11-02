@@ -8,7 +8,7 @@
 guid = The value for this variable is generated during project generation.
 install_location = A space separated list of installation directories.
 source_directory = The value of either exeout, dllout, or libout with the variable portion converted to a suitable value for WIX.
-// if wix2=1 is set
+// if wix_extended=1 is set
 exclude = If true (1), no components are generated for WiX for this project
 guid = The value for this variable is generated during project generation.
 install_location = A space separated list of installation directories.
