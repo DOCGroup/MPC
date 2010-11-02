@@ -94,69 +94,67 @@ sub post_workspace {
   # for each project, find all dependencies
   foreach my $project (keys %project_dependencies) {
   	# foreach my $cfg (@cfgs_main) -> <configuration|platform> could be <Debug|AnyCPU Release|AnyCPU> or <Debug|Win32 Release|Win32 Debug|x64 Release|x64>
-	my($pname_main, $rawdeps_main, $guid_main, $language_main, $custom_only_main, $nocross_main, $managed_main, $make_group_main, @cfgs_main) = @{$$info{$project}};
+    my($pname_main, $rawdeps_main, $guid_main, $language_main, $custom_only_main, $nocross_main, $managed_main, $make_group_main, @cfgs_main) = @{$$info{$project}};
 
-	# only generate a group if "make_group = 1"
-	if ($make_group_main) {
+    # only generate a group if "make_group = 1"
+    if ($make_group_main) {
+	  my %all_deps = ();  # all dependencies used by any project referenced by $project
+      my @dep_stack = ($project);
+      while (my $top = pop @dep_stack) {
+        # add current project to dependencies (use hash key as set)
+        $all_deps{$top} = 1;  
+        my $deps = $project_dependencies{$top};
+        foreach my $dep (@$deps) {
+          # add current project's dependencies to stack for processing, if not already processed
+          push(@dep_stack, $dep) if !exists $all_deps{$dep};
+        }
+      }
+    
+      # Create two configurations, Debug and Release, for each project - WiX is for Windows, so this is guaranteed
+      my @configs = ('Debug', 'Release');
+      foreach my $config (@configs) {
 
-		my %all_deps = ();  # all dependencies used by any project referenced by $project
-		my @dep_stack = ($project);
-		while (my $top = pop @dep_stack) {
-		  # add current project to dependencies (use hash key as set)
-		  $all_deps{$top} = 1;  
-		  my $deps = $project_dependencies{$top};
-		  foreach my $dep (@$deps) {
-			# add current project's dependencies to stack for processing, if not already processed
-			push(@dep_stack, $dep) if !exists $all_deps{$dep};
-		  }
-		}
+        # For each configuration, emit two platforms, Win32 and x64, but be careful of AnyCPU
+        my @platforms = ('Win32', 'x64');
+        foreach my $platform (@platforms) {
 
-		# Create two configurations, Debug and Release, for each project - WiX is for Windows, so this is guaranteed
-		my @configs = ('Debug', 'Release');
-		foreach my $config (@configs) {
+          print $fh '  <Fragment>'.$crlf;
+          print $fh '    <ComponentGroup Id="MainGroup.'.$config.'_'.$platform.'_'.$pname_main.'">'.$crlf;
 
-			# For each configuration, emit two platforms, Win32 and x64, but be careful of AnyCPU
-			my @platforms = ('Win32', 'x64');
-			foreach my $platform (@platforms) {
+          # add main project - pattern is "ComponentGroup.<Debug|Release>_<Win32|x64|AnyCPU>_<projectname>"
+          my $pform = $platform;
+          if (!exists {map { $_ => 1 } @cfgs_main}->{$config.'|'.$pform}) {
+            $pform = 'AnyCPU';
+          }
+          print $fh '      <ComponentGroupRef Id="ComponentGroup.'.$config.'_'.$pform.'_'.$pname_main.'" />'.$crlf;
 
-				print $fh '  <Fragment>'.$crlf;
-				print $fh '    <ComponentGroup Id="MainGroup.'.$config.'_'.$platform.'_'.$pname_main.'">'.$crlf;
+          # loop over each dependency, and obtain its parameters
+          foreach my $dep (keys %all_deps) {
+            foreach my $p (@{$self->{'projects'}}) {
+              if ($dep eq $self->{'project_info'}->{$p}->[0] || $dep eq $self->mpc_basename($p)) {
+                my($pname_dep, $rawdeps_dep, $guid_dep, $language_dep, $custom_only_dep, $nocross_dep, $managed_dep, $make_group_main, @cfgs_dep) = @{$$info{$p}};
 
-				# add main project
-				# pattern is "ComponentGroup.<Debug|Release>_<Win32|x64|AnyCPU>_<projectname>"
-				my $pform = $platform;
-				if (!exists {map { $_ => 1 } @cfgs_main}->{$config.'|'.$pform}) {
-					$pform = 'AnyCPU';
-			    }
-				print $fh '      <ComponentGroupRef Id="ComponentGroup.'.$config.'_'.$pform.'_'.$pname_main.'" />'.$crlf;
+                # add dependency
+                $pform = $platform;
+                if (!exists {map { $_ => 1 } @cfgs_dep}->{$config.'|'.$pform}) {
+                  $pform = 'AnyCPU';
+                }
+                print $fh '      <ComponentGroupRef Id="ComponentGroup.'.$config.'_'.$pform.'_'.$pname_dep.'" />'.$crlf;
 
-				# loop over each dependency, and obtain its parameters
-				foreach my $dep (keys %all_deps) {
-				 foreach my $p (@{$self->{'projects'}}) {
-				   if ($dep eq $self->{'project_info'}->{$p}->[0] || $dep eq $self->mpc_basename($p)) {
-					 my($pname_dep, $rawdeps_dep, $guid_dep, $language_dep, $custom_only_dep, $nocross_dep, $managed_dep, $make_group_main, @cfgs_dep) = @{$$info{$p}};
-				 
-					 # add dependency
-					 $pform = $platform;
-					 if (!exists {map { $_ => 1 } @cfgs_dep}->{$config.'|'.$pform}) {
-					    $pform = 'AnyCPU';
-					 }
-					 print $fh '      <ComponentGroupRef Id="ComponentGroup.'.$config.'_'.$pform.'_'.$pname_dep.'" />'.$crlf;
-
-					 last;
-				   }
-				  }
-				}
-
-				print $fh '    </ComponentGroup>'.$crlf;
-				print $fh '  </Fragment>'.$crlf;
-				print $fh $crlf;	  
-			}
-		}
-
-	  }
+                last;
+              }
+            }
+          }
+        
+          print $fh '    </ComponentGroup>'.$crlf;
+          print $fh '  </Fragment>'.$crlf;
+          print $fh $crlf;	  
+        }
+      }
+    
+    }
   }
- 
+
 
   print $fh '</Include>'.$crlf;            
 }

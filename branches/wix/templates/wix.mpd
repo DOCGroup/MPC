@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <Include>
 <%marker(top)%>
-<%if(wix2)%>
+<%if(wix_extended)%>
 <%foreach(platforms)%>
 <%foreach(configurations)%>
 <%if(!exclude)%>
