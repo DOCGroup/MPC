@@ -130,7 +130,7 @@ sub fgrep {
   return undef;
 }
 
-sub merge { 
+sub merge {
   # Push each element of @$list on to @$into, unless it's already in @$into.
   my($into, $list) = @_;
   foreach my $in (@$list) {
