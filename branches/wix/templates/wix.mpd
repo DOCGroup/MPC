@@ -9,10 +9,10 @@
 <%comment("same fragment, and just the debug component is used in an installer, the release component will")%>
 <%comment("be identified as unused, and an error generated.  That is, it seems that referencing any component")%> 
 <%comment("in a fragment causes the entire fragment to be pulled in, and any unused component in the fragment will be flagged as an error")%>
-  <Fragment Id="<%configuration%>_<%platform%>_<%project_name%>">
-    <ComponentGroup Id="ComponentGroup.<%configuration%>_<%platform%>_<%project_name%>">
+  <Fragment Id="<%normalize(configuration)%>_<%normalize(platform)%>_<%project_name%>">
+    <ComponentGroup Id="ComponentGroup.<%normalize(configuration)%>_<%normalize(platform)%>_<%project_name%>">
 <%if(!no_binary)%>
-      <ComponentRef Id="<%configuration%>_<%platform%><%foreach(name, install_location)%>_<%name%><%endfor%>.<%if(type_is_dynamic)%><%normalize(libname_prefix)%><%normalize(sharedname)%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%normalize(exename)%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>" />
+      <ComponentRef Id="<%normalize(configuration)%>_<%normalize(platform)%><%foreach(name, install_location)%>_<%name%><%endfor%>.<%if(type_is_dynamic)%><%normalize(libname_prefix)%><%normalize(sharedname)%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%normalize(exename)%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>" />
 <%endif%>
 <%if(gme_install || gme_decorator)%>
       <ComponentRef Id="gme.component.<%gme_progid%>" />
@@ -36,8 +36,8 @@
 <%foreach(name, install_location)%>
       <Directory Id="<%project_name%>.binary.<%forcount%>.<%name%>" Name="<%name%>">
 <%endfor%>
-        <Component Id="<%configuration%>_<%platform%>.<%if(type_is_dynamic)%><%normalize(libname_prefix)%><%normalize(sharedname)%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%normalize(exename)%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>" Guid="*">
-          <File Id="<%configuration%>_<%platform%>_<%if(type_is_dynamic)%><%normalize(libname_prefix)%><%normalize(sharedname)%>_dll<%else%><%normalize(exename)%>_exe<%endif%>"
+        <Component Id="<%normalize(configuration)%>_<%normalize(platform)%>.<%if(type_is_dynamic)%><%normalize(libname_prefix)%><%normalize(sharedname)%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%normalize(exename)%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>" Guid="*">
+          <File Id="<%normalize(configuration)%>_<%normalize(platform)%>_<%if(type_is_dynamic)%><%normalize(libname_prefix)%><%normalize(sharedname)%>_dll<%else%><%normalize(exename)%>_exe<%endif%>"
                 Name="<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
                 Source="<%if(type_is_dynamic)%><%if(dllout)%><%full_path(dllout)%>/<%else%><%full_path(libout)%>/<%endif%><%else%><%if(type_is_static)%><%full_path(libout)%>/<%else%><%if(exeout)%><%full_path(exeout)%>/<%if(windows_style)%><%output_dir("Debug")%>/<%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%>/<%else%><%output_dir(".")%>/<%endif%><%endif%><%endif%><%endif%><%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
                 DiskId="<%diskid(1)%>" 
