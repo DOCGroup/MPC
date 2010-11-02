@@ -1,10 +1,24 @@
+Tue Nov  2 19:13:09 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
+
+        * modules/WixWorkspaceCreator.pm:
+        
+          Generalized the configuration and platform selection to match
+          what is available in the projects, instead of assuming default
+          VC-style configurations.
+
+        * templates/wix.mpd:
+        * templates/wixcs.mpd:
+        
+          Added normalize() to the configuration and platform values to
+          handle entries such as "Windows Mobile 6 SDK".
+
 Tue Nov  2 17:23:26 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
 
         * docs/templates/wix.txt:
         * modules/WixProjectCreator.pm:
         * modules/WixWorkspaceCreator.pm:
         * templates/wix.mpd:
-        
+
           Changed the "wix2" flag to "wix_extended" and fixed formatting
           to match existing convention.
 

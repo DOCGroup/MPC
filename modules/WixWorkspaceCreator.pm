@@ -59,6 +59,13 @@ sub write_comps {
   }
 }
 
+
+sub normalize {
+  my $val = shift;
+  $val =~ tr/ \t\/\\\-$()./_/;
+  return $val;
+}
+
 sub post_workspace {
   my($self, $fh) = @_;
   my $info = $self->get_project_info();
@@ -109,47 +116,40 @@ sub post_workspace {
           push(@dep_stack, $dep) if !exists $all_deps{$dep};
         }
       }
-    
-      # Create two configurations, Debug and Release, for each project - WiX is for Windows, so this is guaranteed
-      my @configs = ('Debug', 'Release');
-      foreach my $config (@configs) {
 
-        # For each configuration, emit two platforms, Win32 and x64, but be careful of AnyCPU
-        my @platforms = ('Win32', 'x64');
-        foreach my $platform (@platforms) {
+      # for every config/platform pairing, emit a MainGroup
+      foreach my $cfg (@cfgs_main) {
+        my ($config, $platform) = split('\|', $cfg);
 
-          print $fh '  <Fragment>'.$crlf;
-          print $fh '    <ComponentGroup Id="MainGroup.'.$config.'_'.$platform.'_'.$pname_main.'">'.$crlf;
+        print $fh '  <Fragment>'.$crlf;
+        print $fh '    <ComponentGroup Id="MainGroup.'.normalize($config).'_'.normalize($platform).'_'.$pname_main.'">'.$crlf;
 
-          # add main project - pattern is "ComponentGroup.<Debug|Release>_<Win32|x64|AnyCPU>_<projectname>"
-          my $pform = $platform;
-          if (!exists {map { $_ => 1 } @cfgs_main}->{$config.'|'.$pform}) {
-            $pform = 'AnyCPU';
-          }
-          print $fh '      <ComponentGroupRef Id="ComponentGroup.'.$config.'_'.$pform.'_'.$pname_main.'" />'.$crlf;
+        # add main project - pattern is "ComponentGroup.<Debug|Release>_<Win32|x64|AnyCPU>_<projectname>"
+        print $fh '      <ComponentGroupRef Id="ComponentGroup.'.normalize($config).'_'.normalize($platform).'_'.$pname_main.'" />'.$crlf;
 
-          # loop over each dependency, and obtain its parameters
-          foreach my $dep (keys %all_deps) {
-            foreach my $p (@{$self->{'projects'}}) {
-              if ($dep eq $self->{'project_info'}->{$p}->[0] || $dep eq $self->mpc_basename($p)) {
-                my($pname_dep, $rawdeps_dep, $guid_dep, $language_dep, $custom_only_dep, $nocross_dep, $managed_dep, $make_group_main, @cfgs_dep) = @{$$info{$p}};
+        # loop over each dependency, and obtain its parameters
+        foreach my $dep (keys %all_deps) {
+          foreach my $p (@{$self->{'projects'}}) {
+            if ($dep eq $self->{'project_info'}->{$p}->[0] || $dep eq $self->mpc_basename($p)) {
+              my($pname_dep, $rawdeps_dep, $guid_dep, $language_dep, $custom_only_dep, $nocross_dep, $managed_dep, $make_group_main, @cfgs_dep) = @{$$info{$p}};
 
-                # add dependency
-                $pform = $platform;
-                if (!exists {map { $_ => 1 } @cfgs_dep}->{$config.'|'.$pform}) {
-                  $pform = 'AnyCPU';
-                }
-                print $fh '      <ComponentGroupRef Id="ComponentGroup.'.$config.'_'.$pform.'_'.$pname_dep.'" />'.$crlf;
-
-                last;
+              # add dependency - include AnyCPU if no dependency configuration matches exactly (if the AnyCPU platform exists, that is)
+              my $pform = $platform;
+              if (!exists {map { $_ => 1 } @cfgs_dep}->{$config.'|'.$pform}) {
+                $pform = 'AnyCPU';
               }
+              if (exists {map { $_ => 1 } @cfgs_dep}->{$config.'|'.$pform}) {
+                print $fh '      <ComponentGroupRef Id="ComponentGroup.'.normalize($config).'_'.normalize($pform).'_'.$pname_dep.'" />'.$crlf;
+              }
+
+              last;
             }
           }
-        
-          print $fh '    </ComponentGroup>'.$crlf;
-          print $fh '  </Fragment>'.$crlf;
-          print $fh $crlf;	  
         }
+        
+        print $fh '    </ComponentGroup>'.$crlf;
+        print $fh '  </Fragment>'.$crlf;
+        print $fh $crlf;	  
       }
     
     }
