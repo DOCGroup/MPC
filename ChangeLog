@@ -1,3 +1,20 @@
+Wed Nov  3 14:53:37 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
+
+        * docs/templates/wix.txt:
+        * modules/CDT6WorkspaceCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/WixProjectCreator.pm:
+        * modules/WixWorkspaceCreator.pm:
+        * templates/wix.mpd:
+        * templates/wix.mpt:
+        * templates/wixcs.mpd:
+        * templates/wixcs.mpt:
+        
+          Extended the "wix" project type to support C#, decorated names, 
+          internationalized .NET resources, and generation of components 
+          and groups based on configurations and platforms.
+
 Wed Nov  3 14:31:32 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * modules/StringProcessor.pm:
