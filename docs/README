@@ -217,6 +217,7 @@ postbuild       If this is defined in the project, the value will be
                   <%rmdir%>  - Platform non-specific recursive directory
                                delete command.
                   <%nul%>    - Platform non-specific null device.
+                  <%pathsep%>- Platform non-specific path separator (; or :).
                   <%gt%>     - Project non-specific greater than sign.
                   <%lt%>     - Project non-specific less than sign.
                   <%and%>    - Project non-specific and sign.
