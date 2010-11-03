@@ -143,7 +143,7 @@ sub write_comps {
 
   ## Project Information
   foreach my $project (@list) {
-    my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, $managed, @cfgs) = @{$$pjs{$project}};
+    my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, $managed, $make_group, @cfgs) = @{$$pjs{$project}};
     my $pguid = $guids{$language};
     my $deps = $self->get_validated_ordering($project);
     my($name, $proj) = $self->adjust_names($pname, $project, $language);
