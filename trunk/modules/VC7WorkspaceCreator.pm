@@ -143,8 +143,7 @@ sub write_comps {
 
   ## Project Information
   foreach my $project (@list) {
-    #my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, $managed, $make_group, @cfgs) = @{$$pjs{$project}};
-    my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, $managed, @cfgs) = @{$$pjs{$project}};
+    my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, $managed, $make_group, @cfgs) = @{$$pjs{$project}};
     my $pguid = $guids{$language};
     my $deps = $self->get_validated_ordering($project);
     my($name, $proj) = $self->adjust_names($pname, $project, $language);
@@ -163,7 +162,7 @@ sub write_comps {
             ") = preSolution$crlf";
   my %configs;
   foreach my $project (@list) {
-    my($name, $deps, $pguid, $lang, $custom_only, $nocross, $managed, @cfgs) = @{$$pjs{$project}};
+    my($name, $deps, $pguid, $lang, $custom_only, $nocross, $managed, $make_group, @cfgs) = @{$$pjs{$project}};
     foreach my $cfg (@cfgs) {
       $configs{$self->get_short_config_name($cfg)} = $cfg;
     }
@@ -190,7 +189,7 @@ sub write_comps {
 
   ## Go through each project and print out the settings per GUID
   foreach my $project (@list) {
-    my($name, $deps, $pguid, $lang, $custom_only, $nocross, $managed, @cfgs) = @{$$pjs{$project}};
+    my($name, $deps, $pguid, $lang, $custom_only, $nocross, $managed, $make_group, @cfgs) = @{$$pjs{$project}};
     my %all_configs = %configs;
     foreach my $cfg (sort @cfgs) {
       my $c = $self->get_short_config_name($cfg);

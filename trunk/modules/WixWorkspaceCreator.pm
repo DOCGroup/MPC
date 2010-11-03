@@ -101,11 +101,8 @@ sub post_workspace {
   # for each project, find all dependencies
   foreach my $project (keys %project_dependencies) {
   	# foreach my $cfg (@cfgs_main) -> <configuration|platform> could be <Debug|AnyCPU Release|AnyCPU> or <Debug|Win32 Release|Win32 Debug|x64 Release|x64>
-    #my($pname_main, $rawdeps_main, $guid_main, $language_main, $custom_only_main, $nocross_main, $managed_main, $make_group_main, @cfgs_main) = @{$$info{$project}};
-    my($pname_main, $rawdeps_main, $guid_main, $language_main, $custom_only_main, $nocross_main, $managed_main, @cfgs_main) = @{$$info{$project}};
-    
-    my $make_group_main = 1;  # for now
-    
+    my($pname_main, $rawdeps_main, $guid_main, $language_main, $custom_only_main, $nocross_main, $managed_main, $make_group_main, @cfgs_main) = @{$$info{$project}};
+        
     # only generate a group if "make_group = 1"
     if ($make_group_main) {
 	  my %all_deps = ();  # all dependencies used by any project referenced by $project
