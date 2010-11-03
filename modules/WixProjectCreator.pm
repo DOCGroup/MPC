@@ -72,39 +72,39 @@ sub is_culture_code {
 
   # from http://sharpertutorials.com/list-of-culture-codes/
   my @culture_codes = (
-	'af', 'hu-HU', 'af-ZA', 'is', 'sq', 'is-IS', 
-	'sq-AL', 'id', 'ar', 'id-ID', 'ar-DZ', 'it', 
-	'ar-BH', 'it-IT', 'ar-EG', 'it-CH', 'ar-IQ', 'ja', 
-	'ar-JO', 'ja-JP', 'ar-KW', 'kn', 'ar-LB', 'kn-IN', 	
-	'ar-LY', 'kk', 'ar-MA', 'kk-KZ', 'ar-OM', 'kok', 
+	'af', 'hu-HU', 'af-ZA', 'is', 'sq', 'is-IS',
+	'sq-AL', 'id', 'ar', 'id-ID', 'ar-DZ', 'it',
+	'ar-BH', 'it-IT', 'ar-EG', 'it-CH', 'ar-IQ', 'ja',
+	'ar-JO', 'ja-JP', 'ar-KW', 'kn', 'ar-LB', 'kn-IN',
+	'ar-LY', 'kk', 'ar-MA', 'kk-KZ', 'ar-OM', 'kok',
 	'ar-QA', 'kok-IN', 'ar-SA', 'ko', 'ar-SY', 'ko-KR',
-	'ar-TN', 'ky', 'ar-AE', 'ky-KG', 'ar-YE', 'lv', 
-	'hy', 'lv-LV', 'hy-AM', 'lt', 'az', 'lt-LT', 
-	'az-AZ-Cyrl', 'mk', 'az-AZ-Latn', 'mk-MK', 'eu', 'ms', 
-	'eu-ES', 'ms-BN', 'be', 'ms-MY', 'be-BY', 'mr', 
-	'bg', 'mr-IN', 'bg-BG', 'mn', 'ca', 'mn-MN', 
-	'ca-ES', 'no', 'zh-HK', 'nb-NO', 'zh-MO', 'nn-NO', 
-	'zh-CN', 'pl', 'zh-CHS', 'pl-PL', 'zh-SG', 'pt', 
-	'zh-TW', 'pt-BR', 'zh-CHT', 'pt-PT', 'hr', 'pa', 
-	'hr-HR', 'pa-IN', 'cs', 'ro', 'cs-CZ', 'ro-RO', 
-	'da', 'ru', 'da-DK', 'ru-RU', 'div', 'sa', 
-	'div-MV', 'sa-IN', 'nl', 'sr-SP-Cyrl', 'nl-BE', 'sr-SP-Latn', 
-	'nl-NL', 'sk', 'en', 'sk-SK', 'en-AU', 'sl', 
-	'en-BZ', 'sl-SI', 'en-CA', 'es', 'en-CB', 'es-AR', 
-	'en-IE', 'es-BO', 'en-JM', 'es-CL', 'en-NZ', 'es-CO', 
-	'en-PH', 'es-CR', 'en-ZA', 'es-DO', 'en-TT', 'es-EC', 
-	'en-GB', 'es-SV', 'en-US', 'es-GT', 'en-ZW', 'es-HN', 
-	'et', 'es-MX', 'et-EE', 'es-NI', 'fo', 'es-PA', 
-	'fo-FO', 'es-PY', 'fa', 'es-PE', 'fa-IR', 'es-PR', 
-	'fi', 'es-ES', 'fi-FI', 'es-UY', 'fr', 'es-VE', 
-	'fr-BE', 'sw', 'fr-CA', 'sw-KE', 'fr-FR', 'sv', 
-	'fr-LU', 'sv-FI', 'fr-MC', 'sv-SE', 'fr-CH', 'syr', 
-	'gl', 'syr-SY', 'gl-ES', 'ta', 'ka', 'ta-IN', 
-	'ka-GE', 'tt', 'de', 'tt-RU', 'de-AT', 'te', 
-	'de-DE', 'te-IN', 'de-LI', 'th', 'de-LU', 'th-TH', 
-	'de-CH', 'tr', 'el', 'tr-TR', 'el-GR', 'uk', 
-	'gu', 'uk-UA', 'gu-IN', 'ur', 'he', 'ur-PK', 
-	'he-IL', 'uz', 'hi', 'uz-UZ-Cyrl', 'hi-IN', 'uz-UZ-Latn', 
+	'ar-TN', 'ky', 'ar-AE', 'ky-KG', 'ar-YE', 'lv',
+	'hy', 'lv-LV', 'hy-AM', 'lt', 'az', 'lt-LT',
+	'az-AZ-Cyrl', 'mk', 'az-AZ-Latn', 'mk-MK', 'eu', 'ms',
+	'eu-ES', 'ms-BN', 'be', 'ms-MY', 'be-BY', 'mr',
+	'bg', 'mr-IN', 'bg-BG', 'mn', 'ca', 'mn-MN',
+	'ca-ES', 'no', 'zh-HK', 'nb-NO', 'zh-MO', 'nn-NO',
+	'zh-CN', 'pl', 'zh-CHS', 'pl-PL', 'zh-SG', 'pt',
+	'zh-TW', 'pt-BR', 'zh-CHT', 'pt-PT', 'hr', 'pa',
+	'hr-HR', 'pa-IN', 'cs', 'ro', 'cs-CZ', 'ro-RO',
+	'da', 'ru', 'da-DK', 'ru-RU', 'div', 'sa',
+	'div-MV', 'sa-IN', 'nl', 'sr-SP-Cyrl', 'nl-BE', 'sr-SP-Latn',
+	'nl-NL', 'sk', 'en', 'sk-SK', 'en-AU', 'sl',
+	'en-BZ', 'sl-SI', 'en-CA', 'es', 'en-CB', 'es-AR',
+	'en-IE', 'es-BO', 'en-JM', 'es-CL', 'en-NZ', 'es-CO',
+	'en-PH', 'es-CR', 'en-ZA', 'es-DO', 'en-TT', 'es-EC',
+	'en-GB', 'es-SV', 'en-US', 'es-GT', 'en-ZW', 'es-HN',
+	'et', 'es-MX', 'et-EE', 'es-NI', 'fo', 'es-PA',
+	'fo-FO', 'es-PY', 'fa', 'es-PE', 'fa-IR', 'es-PR',
+	'fi', 'es-ES', 'fi-FI', 'es-UY', 'fr', 'es-VE',
+	'fr-BE', 'sw', 'fr-CA', 'sw-KE', 'fr-FR', 'sv',
+	'fr-LU', 'sv-FI', 'fr-MC', 'sv-SE', 'fr-CH', 'syr',
+	'gl', 'syr-SY', 'gl-ES', 'ta', 'ka', 'ta-IN',
+	'ka-GE', 'tt', 'de', 'tt-RU', 'de-AT', 'te',
+	'de-DE', 'te-IN', 'de-LI', 'th', 'de-LU', 'th-TH',
+	'de-CH', 'tr', 'el', 'tr-TR', 'el-GR', 'uk',
+	'gu', 'uk-UA', 'gu-IN', 'ur', 'he', 'ur-PK',
+	'he-IL', 'uz', 'hi', 'uz-UZ-Cyrl', 'hi-IN', 'uz-UZ-Latn',
 	'hu', 'vi');
 
   return 1 if (exists {map { $_ => 1 } @culture_codes}->{$culture_code});
@@ -185,7 +185,7 @@ sub fill_value {
     foreach my $culture (keys %cultures) {
       $found_cultures = $found_cultures . $culture . ' ';
     }
-    
+
     return $found_cultures;
   }
   return undef;
