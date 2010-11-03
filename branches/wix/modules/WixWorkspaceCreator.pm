@@ -84,9 +84,9 @@ sub post_workspace {
 
   print $fh '    </ComponentGroup>', $crlf,
             '  </Fragment>', $crlf;
-            
-            
-           
+
+
+
   print $fh $crlf;
 
   # For every project marked with "make_group", create a ComponentGroup that references all dependencies
@@ -109,7 +109,7 @@ sub post_workspace {
       my @dep_stack = ($project);
       while (my $top = pop @dep_stack) {
         # add current project to dependencies (use hash key as set)
-        $all_deps{$top} = 1;  
+        $all_deps{$top} = 1;
         my $deps = $project_dependencies{$top};
         foreach my $dep (@$deps) {
           # add current project's dependencies to stack for processing, if not already processed
@@ -146,17 +146,17 @@ sub post_workspace {
             }
           }
         }
-        
+
         print $fh '    </ComponentGroup>'.$crlf;
         print $fh '  </Fragment>'.$crlf;
-        print $fh $crlf;	  
+        print $fh $crlf;
       }
-    
+
     }
   }
 
 
-  print $fh '</Include>'.$crlf;            
+  print $fh '</Include>'.$crlf;
 }
 
 1;
