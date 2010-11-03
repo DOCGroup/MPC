@@ -1,49 +1,53 @@
-Tue Nov  2 19:13:09 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
+Mon Nov  1 18:21:59 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
-        * modules/WixWorkspaceCreator.pm:
-        
-          Generalized the configuration and platform selection to match
-          what is available in the projects, instead of assuming default
-          VC-style configurations.
+        * modules/StringProcessor.pm:
 
-        * templates/wix.mpd:
-        * templates/wixcs.mpd:
-        
-          Added normalize() to the configuration and platform values to
-          handle entries such as "Windows Mobile 6 SDK".
+          Added a "merge" function for appending non-duplicates onto a list.
 
-Tue Nov  2 17:23:26 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
+        * modules/DirectoryManager.pm:
+        * modules/ProjectCreator.pm:
 
-        * docs/templates/wix.txt:
-        * modules/WixProjectCreator.pm:
-        * modules/WixWorkspaceCreator.pm:
-        * templates/wix.mpd:
+          Use the StringProcessor::merge() function where applicable.
+          Fixed a bug where the custom type explicit dependencies (<<) were not
+          tracked separately for each type.
+          Added <%pathsep%> as a pseudo-variable (; or :).
+          Added the capability called "combined custom", which (when enabled
+          by the specific project creator) treats input files used by more than
+          one custom type as if they were just in one type, and that type has
+          multiple commands and the combined set of inputs and outputs.  See
+          the HTML documentation for details.
 
-          Changed the "wix2" flag to "wix_extended" and fixed formatting
-          to match existing convention.
+        * modules/CDT6ProjectCreator.pm:
+        * modules/VC10ProjectCreator.pm:
 
-Sat Oct 30 00:11:31 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
+          Enabled combined custom.
 
-        * modules/WixProjectCreator.pm:
-        * modules/WixWorkspaceCreator.pm:
-
-          Removed unneeded comments.
-
-Fri Oct 29 18:44:33 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
-
-        * docs/templates/wix.txt:
         * modules/CDT6WorkspaceCreator.pm:
-        * modules/TemplateParser.pm:
-        * modules/VC7WorkspaceCreator.pm:
-        * modules/WixProjectCreator.pm:
-        * modules/WixWorkspaceCreator.pm:
-        * templates/wix.mpd:
-        * templates/wix.mpt:
-        * templates/wixcs.mpd:
-        * templates/wixcs.mpt:
+        * modules/CDT7ProjectCreator.pm:
+        * modules/CDT7WorkspaceCreator.pm:
 
-          Extended the "wix" type to support configurations, platforms,
-          decorated names, project-specific groups, and C#.
+          Added the cdt7 type, which builds on cdt6 and therefore doesn't
+          need its own templates.  Eclipse's CDT version 7 comes with the
+          "Helios" (3.6) version of Eclipse.
+
+        * docs/README:
+        * docs/html/MakeProjectCreator.html:
+
+          Documented <%pathsep%> and combined-custom.
+
+        * templates/cdt6cproject.mpd:
+
+          Cleaned up a lot of formatting and simplifed some of the MPC template
+          language constructs, added uses of cdt7-specific variables.
+          Added support for combined custom.
+
+        * templates/cdt6project.mpd:
+
+          Support cdt7.
+
+        * templates/vc10.mpd:
+
+          Added support for combined custom.
 
 Thu Oct 28 11:44:02 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
