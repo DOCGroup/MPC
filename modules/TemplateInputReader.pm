@@ -49,7 +49,7 @@ sub parse_line {
 
   if ($line eq '') {
   }
-  elsif ($line =~ /^([\w\s\(\)\.]+)\s*{$/) {
+  elsif ($line =~ /^([-\w\s\(\)\.]+)\s*{$/) {
     ## Entering a new scope, we need to save the real name so that it can
     ## be accessed at a later time.
     my $rname = $1;
