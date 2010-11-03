@@ -1,3 +1,11 @@
+Wed Nov  3 15:37:12 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
+
+        * modules/CDT6WorkspaceCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/WixWorkspaceCreator.pm:
+        
+          Temporarily removed wix "make_group" flag.
+
 Wed Nov  3 14:53:37 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
 
         * docs/templates/wix.txt:
@@ -10,9 +18,9 @@ Wed Nov  3 14:53:37 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
         * templates/wix.mpt:
         * templates/wixcs.mpd:
         * templates/wixcs.mpt:
-        
-          Extended the "wix" project type to support C#, decorated names, 
-          internationalized .NET resources, and generation of components 
+
+          Extended the "wix" project type to support C#, decorated names,
+          internationalized .NET resources, and generation of components
           and groups based on configurations and platforms.
 
 Wed Nov  3 14:31:32 UTC 2010  Adam Mitz  <mitza@ociweb.com>
