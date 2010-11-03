@@ -1,7 +1,17 @@
+Wed Nov  3 16:42:10 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
+
+        * modules/CDT6WorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/WixWorkspaceCreator.pm:
+        
+          Re-enabled the wix "make_group" flag.
+
 Wed Nov  3 15:41:16 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
 
         * modules/VC7WorkspaceCreator.pm:
-        
+
           Temporarily removed wix "make_group" flag.
 
 Wed Nov  3 15:37:12 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>

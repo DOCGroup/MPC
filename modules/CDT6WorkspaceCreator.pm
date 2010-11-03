@@ -71,8 +71,7 @@ sub write_comps {
   $self->{'seen_deps'} = {};
 
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
-    #my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, $managed, $make_group, @cfgs) = @{$$info{$project}};
-    my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, $managed, @cfgs) = @{$$info{$project}};
+    my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, $managed, $make_group, @cfgs) = @{$$info{$project}};
     print $fh "$pname ",
       Cwd::abs_path($self->mpc_dirname($project)), '/.project', $crlf;
     $self->add_dependencies($creator, $project);
