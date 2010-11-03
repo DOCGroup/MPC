@@ -2146,7 +2146,7 @@ sub collect_data {
   $prjc->update_project_info($self, 1, ['managed']);
 
   ## For WiX, only generate top-level groups for projects marked with "make_group"
-  #$prjc->update_project_info($self, 1, ['make_group']);
+  $prjc->update_project_info($self, 1, ['make_group']);
 
   ## Some Windows based projects can't deal with certain version
   ## values.  So, for those we provide a translated version.

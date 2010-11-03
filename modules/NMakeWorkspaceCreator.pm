@@ -75,7 +75,7 @@ sub write_comps {
   ## configuration (if available).  It just so happens that Debug comes
   ## before Release so sorting the configurations works in our favor.
   foreach my $project (keys %$pjs) {
-    my($name, $deps, $pguid, $lang, $custom_only, $nocross, $managed, @cfgs) = @{$pjs->{$project}};
+    my($name, $deps, $pguid, $lang, $custom_only, $nocross, $managed, $make_group, @cfgs) = @{$pjs->{$project}};
     @cfgs = sort @cfgs;
     if (defined $cfgs[0]) {
       $default = $cfgs[0];
