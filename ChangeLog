@@ -1,3 +1,9 @@
+Thu Nov  4 11:38:47 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
+
+        * modules/WixWorkspaceCreator.pm:
+        
+          Fixed fuzz error.
+
 Wed Nov  3 16:42:10 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
 
         * modules/CDT6WorkspaceCreator.pm:
@@ -5,7 +11,7 @@ Wed Nov  3 16:42:10 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
         * modules/TemplateParser.pm:
         * modules/VC7WorkspaceCreator.pm:
         * modules/WixWorkspaceCreator.pm:
-        
+
           Re-enabled the wix "make_group" flag.
 
 Wed Nov  3 15:41:16 UTC 2010  Charles Calkins  <calkinsc@ociweb.com>
