@@ -19,5 +19,6 @@ project : taoidldefaults {
     -I <%quote%>$(OSPL_HOME)/include/dcps/C++/CCPP/$(SPLICE_ORB)<%quote%> \
     -C -l cpp -b CCPP/$(SPLICE_ORB)
 
-  idlflags += -I <%quote%>$(OSPL_HOME)/custom_lib/ccpp<%quote%>
+  idlflags += -I <%quote%>$(OSPL_HOME)/custom_lib/ccpp<%quote%> \
+    -I <%quote%>$(OSPL_HOME)/etc/idl<%quote%>
 }
