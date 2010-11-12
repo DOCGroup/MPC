@@ -69,7 +69,8 @@ sub write_comps {
 
     ## Add the project name and project file information
     print $fh "###############################################################################$crlf$crlf",
-              "Project: \"$$pjs{$project}->[0]\"=", $self->slash_to_backslash($project),
+              'Project: "', $$pjs{$project}->[ProjectCreator::PROJECT_NAME],
+              '"=', $self->slash_to_backslash($project),
               " - Package Owner=<4>$crlf$crlf",
               "Package=<5>${crlf}{{{$crlf}}}$crlf$crlf",
               "Package=<4>${crlf}{{{$crlf";

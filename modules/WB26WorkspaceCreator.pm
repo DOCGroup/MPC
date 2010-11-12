@@ -79,7 +79,7 @@ sub write_comps {
   ## Print out the target
   print $fh 'description.buildorder=';
   foreach my $project (@list) {
-    print $fh "$pre$$pjs{$project}->[0]/";
+    print $fh $pre, $$pjs{$project}->[ProjectCreator::PROJECT_NAME], '/';
   }
   print $fh $self->crlf();
 }

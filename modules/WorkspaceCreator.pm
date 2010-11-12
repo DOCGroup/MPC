@@ -1009,7 +1009,7 @@ sub write_workspace {
       ## Note that these name are handled case-insensitive by VC6
       my %names;
       foreach my $project (@{$self->{'projects'}}) {
-        my $name = lc($self->{'project_info'}->{$project}->[0]);
+        my $name = lc($self->{'project_info'}->{$project}->[ProjectCreator::PROJECT_NAME]);
         if (defined $names{$name}) {
           ++$duplicates;
           $self->error("Duplicate case-insensitive project '$name'. " .
@@ -1089,10 +1089,11 @@ sub write_workspace {
           print $dh "digraph $wsname {\n";
           foreach my $project (@{$self->{'projects'}}) {
             if (defined $targnum{$project}) {
-              my $pname = $self->{'project_info'}->{$project}->[0];
+              my $pname = $self->{'project_info'}->{$project}->[ProjectCreator::PROJECT_NAME];
               foreach my $number (@{$targnum{$project}}) {
                 print $dh "  $pname -> ",
-                          "$self->{'project_info'}->{$list[$number]}->[0];\n";
+                          $self->{'project_info'}->{$list[$number]}->[ProjectCreator::PROJECT_NAME],
+                          ";\n";
               }
             }
           }
@@ -1418,12 +1419,12 @@ sub indirect_dependency {
   my($self, $dir, $ccheck, $cfile) = @_;
 
   $self->{'indirect_checked'}->{$ccheck} = 1;
-  if (index($self->{'project_info'}->{$ccheck}->[1], $cfile) >= 0) {
+  if (index($self->{'project_info'}->{$ccheck}->[ProjectCreator::DEPENDENCIES], $cfile) >= 0) {
     return 1;
   }
   else {
     my $deps = $self->create_array(
-                        $self->{'project_info'}->{$ccheck}->[1]);
+       $self->{'project_info'}->{$ccheck}->[ProjectCreator::DEPENDENCIES]);
     foreach my $dep (@$deps) {
       if (defined $self->{'project_info'}->{"$dir$dep"} &&
           !defined $self->{'indirect_checked'}->{"$dir$dep"} &&
@@ -1504,7 +1505,7 @@ sub add_implicit_project_dependencies {
               (!defined $self->{'project_info'}->{$ccheck} ||
                !$self->indirect_dependency($dir, $ccheck, $cfile))) {
             ## Append the dependency
-            $self->{'project_info'}->{$file}->[1] .= " $append";
+            $self->{'project_info'}->{$file}->[ProjectCreator::DEPENDENCIES] .= " $append";
           }
         }
       }
@@ -1608,7 +1609,7 @@ sub sort_within_group {
     if (defined $$deps[0]) {
       my $baseproj = ($self->{'dependency_is_filename'} ?
                               $self->mpc_basename($$list[$i]) :
-                              $self->{'project_info'}->{$$list[$i]}->[0]);
+                              $self->{'project_info'}->{$$list[$i]}->[ProjectCreator::PROJECT_NAME]);
       my $moved = 0;
       foreach my $dep (@$deps) {
         if ($baseproj ne $dep) {
@@ -1616,7 +1617,7 @@ sub sort_within_group {
           for(my $j = $i + 1; $j <= $end; ++$j) {
             my $ldep = ($self->{'dependency_is_filename'} ?
                                 $self->mpc_basename($$list[$j]) :
-                                $self->{'project_info'}->{$$list[$j]}->[0]);
+                                $self->{'project_info'}->{$$list[$j]}->[ProjectCreator::PROJECT_NAME]);
             if ($ldep eq $dep) {
               $movepjs = [$i, $j];
               ## If so, move it in front of the current project.
@@ -1870,7 +1871,7 @@ sub number_target_deps {
           ## the project file from the "project_info".
           my $key = ($self->{'dependency_is_filename'} ?
                              $self->mpc_basename($list[$j]) :
-                             $self->{'project_info'}->{$list[$j]}->[0]);
+                             $self->{'project_info'}->{$list[$j]}->[ProjectCreator::PROJECT_NAME]);
           push(@numbers, $j) if (exists $dhash{$key});
         }
 
@@ -1892,7 +1893,7 @@ sub project_target_translation {
   ## some versions of make.
   foreach my $key (keys %{$self->{'project_info'}}) {
     my $dir  = $self->mpc_dirname($key);
-    my $name = $self->{'project_info'}->{$key}->[0];
+    my $name = $self->{'project_info'}->{$key}->[ProjectCreator::PROJECT_NAME];
 
     ## We want to compare to the upper most directory.  This will be the
     ## one that may conflict with the project name.
@@ -2139,7 +2140,7 @@ sub get_validated_ordering {
           ## Avoid circular dependencies
           if ($dep ne $name && $dep ne $self->mpc_basename($project)) {
             foreach my $p (@{$self->{'projects'}}) {
-              if ($dep eq $self->{'project_info'}->{$p}->[0] ||
+              if ($dep eq $self->{'project_info'}->{$p}->[ProjectCreator::PROJECT_NAME] ||
                   $dep eq $self->mpc_basename($p)) {
                 $found = 1;
                 last;
