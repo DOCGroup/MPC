@@ -1891,9 +1891,9 @@ sub perform_translate_vars {
   my ($pre, $post) = ($os eq 'win32') ? ('%', '%') : ('${', '}');
 
   ## Replace $() with the environment variable reference characters.
-  $val =~ s[\$\(([^)]+)\)(\S*)][my ($var, $rest) = ($1, $2);
-                                $rest =~ s!/!\\!g if $os eq 'win32';
-                                "$pre$var$post$rest"]ge;
+  $val =~ s{\$\(([^)]+)\)([^\s\$]*)}{my ($var, $rest) = ($1, $2);
+                                     $rest =~ s!/!\\!g if $os eq 'win32';
+                                     "$pre$var$post$rest"}ge;
   return $val;
 }
 
