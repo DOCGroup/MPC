@@ -102,14 +102,19 @@ sub print_dependencies {
   ## we must have some way to map plain project names to guids.
   my %name_to_guid_map;
   foreach my $project (@$list) {
-    my($name, $deps, $guid) = @{$$pjs{$project}};
+    my($name, $guid) = $gen->access_pi_values($pjs, $project,
+                                              ProjectCreator::PROJECT_NAME,
+                                              ProjectCreator::PROJECT_GUID);
     $name_to_guid_map{$name} = $guid;
   }
 
   ## Project Dependencies
   print $fh "\tGlobalSection(ProjectDependencies) = postSolution$crlf";
   foreach my $project (@$list) {
-    my($name, $rawdeps, $project_guid) = @{$$pjs{$project}};
+    my($name, $project_guid) = $gen->access_pi_values(
+                                              $pjs, $project,
+                                              ProjectCreator::PROJECT_NAME,
+                                              ProjectCreator::PROJECT_GUID);
     my $deps = $self->get_validated_ordering($project);
     if (defined $$deps[0]) {
       my $i = 0;
@@ -137,13 +142,20 @@ sub write_comps {
   ## we must have some way to map plain project names to guids.
   my %name_to_guid_map;
   foreach my $project (@list) {
-    my($name, $deps, $guid) = @{$$pjs{$project}};
+    my($name, $guid) = $gen->access_pi_values($pjs, $project,
+                                              ProjectCreator::PROJECT_NAME,
+                                              ProjectCreator::PROJECT_GUID);
     $name_to_guid_map{$name} = $guid;
   }
 
   ## Project Information
   foreach my $project (@list) {
-    my($pname, $rawdeps, $guid, $language, $custom_only, $nocross, $managed, $make_group, @cfgs) = @{$$pjs{$project}};
+    my($pname, $guid, $language, @cfgs) =
+      $gen->access_pi_values($pjs, $project,
+                             ProjectCreator::PROJECT_NAME,
+                             ProjectCreator::PROJECT_GUID,
+                             ProjectCreator::LANGUAGE,
+                             ProjectCreator::CONFIGURATIONS);
     my $pguid = $guids{$language};
     my $deps = $self->get_validated_ordering($project);
     my($name, $proj) = $self->adjust_names($pname, $project, $language);
@@ -162,7 +174,8 @@ sub write_comps {
             ") = preSolution$crlf";
   my %configs;
   foreach my $project (@list) {
-    my($name, $deps, $pguid, $lang, $custom_only, $nocross, $managed, $make_group, @cfgs) = @{$$pjs{$project}};
+    my @cfgs = $gen->access_pi_values($pjs, $project,
+                                      ProjectCreator::CONFIGURATIONS);
     foreach my $cfg (@cfgs) {
       $configs{$self->get_short_config_name($cfg)} = $cfg;
     }
@@ -189,18 +202,25 @@ sub write_comps {
 
   ## Go through each project and print out the settings per GUID
   foreach my $project (@list) {
-    my($name, $deps, $pguid, $lang, $custom_only, $nocross, $managed, $make_group, @cfgs) = @{$$pjs{$project}};
+    my($pguid, $custom_only, $nocross, @cfgs) =
+      $gen->access_pi_values($pjs, $project,
+                             ProjectCreator::PROJECT_GUID,
+                             ProjectCreator::CUSTOM_ONLY,
+                             ProjectCreator::NO_CROSS_COMPILE,
+                             ProjectCreator::CONFIGURATIONS);
     my %all_configs = %configs;
     foreach my $cfg (sort @cfgs) {
       my $c = $self->get_short_config_name($cfg);
-      my $deployable = !$nocross;
-      my $buildable = $deployable;
+      my $deployable = !$nocross && !$custom_only;
+      my $buildable = !$nocross;
+
+      ## I don't like this hard-coded configuration information.
+      ## CAE 11/4/2010
       if (index($cfg, 'Win32') >= 0 || index($cfg, 'x64') >= 0) {
-        $deployable = 0;
+        $deployable = undef;
         $buildable = 1;
-      } elsif ($custom_only) {
-        $deployable = 0;
       }
+
       if (defined $anycpu) {
         ## There is a non-C++ project; there is no need to explicitly
         ## enable building of the configurations for this project.  So, we
@@ -210,8 +230,8 @@ sub write_comps {
       }
       else {
         print $fh "\t\t{$pguid}.$c.ActiveCfg = $cfg$crlf";
-        print $fh "\t\t{$pguid}.$c.Build.0 = $cfg$crlf"  if ($buildable == 1);
-        print $fh "\t\t{$pguid}.$c.Deploy.0 = $cfg$crlf" if ($deployable == 1);
+        print $fh "\t\t{$pguid}.$c.Build.0 = $cfg$crlf"  if ($buildable);
+        print $fh "\t\t{$pguid}.$c.Deploy.0 = $cfg$crlf" if ($deployable);
       }
     }
 

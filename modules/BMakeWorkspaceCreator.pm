@@ -88,7 +88,7 @@ sub write_comps {
   ## Translate each project name
   my %trans;
   foreach my $project (@list) {
-    $trans{$project} = $$pjs{$project}->[0];
+    $trans{$project} = $$pjs{$project}->[ProjectCreator::PROJECT_NAME];
   }
 
   ## Send all the information to our base class method

@@ -67,7 +67,7 @@ sub normalize {
 }
 
 sub post_workspace {
-  my($self, $fh) = @_;
+  my($self, $fh, $gen) = @_;
   my $info = $self->get_project_info();
   my $crlf = $self->crlf();
 
@@ -79,7 +79,8 @@ sub post_workspace {
 
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     print $fh '      <ComponentGroupRef Id="ComponentGroup.',
-              $$info{$project}->[0], '" />', $crlf;
+              $$info{$project}->[ProjectCreator::PROJECT_NAME], '" />',
+              $crlf;
   }
 
   print $fh '    </ComponentGroup>', $crlf,
@@ -94,18 +95,22 @@ sub post_workspace {
   my $projects = $self->get_projects();
   my @list = $self->sort_dependencies($projects, 0);
   foreach my $project (@list) {
-	my $deps = $self->get_validated_ordering($project);
-	$project_dependencies{$project} = [ @$deps ];
+    my $deps = $self->get_validated_ordering($project);
+    $project_dependencies{$project} = [ @$deps ];
   }
 
   # for each project, find all dependencies
   foreach my $project (keys %project_dependencies) {
-  	# foreach my $cfg (@cfgs_main) -> <configuration|platform> could be <Debug|AnyCPU Release|AnyCPU> or <Debug|Win32 Release|Win32 Debug|x64 Release|x64>
-    my($pname_main, $rawdeps_main, $guid_main, $language_main, $custom_only_main, $nocross_main, $managed_main, $make_group_main, @cfgs_main) = @{$$info{$project}};
-
+    # foreach my $cfg (@cfgs_main) -> <configuration|platform> could be <Debug|AnyCPU Release|AnyCPU> or <Debug|Win32 Release|Win32 Debug|x64 Release|x64>
+    my($pname_main, $make_group_main, @cfgs_main) =
+      $gen->access_pi_values($info, $project,
+                             ProjectCreator::PROJECT_NAME,
+                             ProjectCreator::MAKE_GROUP,
+                             ProjectCreator::CONFIGURATIONS);
     # only generate a group if "make_group = 1"
     if ($make_group_main) {
-	  my %all_deps = ();  # all dependencies used by any project referenced by $project
+      # all dependencies used by any project referenced by $project
+      my %all_deps;
       my @dep_stack = ($project);
       while (my $top = pop @dep_stack) {
         # add current project to dependencies (use hash key as set)
@@ -121,17 +126,24 @@ sub post_workspace {
       foreach my $cfg (@cfgs_main) {
         my ($config, $platform) = split('\|', $cfg);
 
-        print $fh '  <Fragment>'.$crlf;
-        print $fh '    <ComponentGroup Id="MainGroup.'.normalize($config).'_'.normalize($platform).'_'.$pname_main.'">'.$crlf;
+        print $fh '  <Fragment>', $crlf,
+                  '    <ComponentGroup Id="MainGroup.', normalize($config),
+                  '_', normalize($platform), '_', $pname_main, '">', $crlf;
 
         # add main project - pattern is "ComponentGroup.<Debug|Release>_<Win32|x64|AnyCPU>_<projectname>"
-        print $fh '      <ComponentGroupRef Id="ComponentGroup.'.normalize($config).'_'.normalize($platform).'_'.$pname_main.'" />'.$crlf;
+        print $fh '      <ComponentGroupRef Id="ComponentGroup.',
+                  normalize($config), '_', normalize($platform), '_',
+                  $pname_main, '" />', $crlf;
 
         # loop over each dependency, and obtain its parameters
         foreach my $dep (keys %all_deps) {
           foreach my $p (@{$self->{'projects'}}) {
-            if ($dep eq $self->{'project_info'}->{$p}->[0] || $dep eq $self->mpc_basename($p)) {
-              my($pname_dep, $rawdeps_dep, $guid_dep, $language_dep, $custom_only_dep, $nocross_dep, $managed_dep, $make_group_main, @cfgs_dep) = @{$$info{$p}};
+            if ($dep eq $info->{$p}->[ProjectCreator::PROJECT_NAME] ||
+                $dep eq $self->mpc_basename($p)) {
+              my($pname_dep, @cfgs_dep) =
+                $gen->access_pi_values($info, $p,
+                                       ProjectCreator::PROJECT_NAME,
+                                       ProjectCreator::CONFIGURATIONS);
 
               # add dependency - include AnyCPU if no dependency configuration matches exactly (if the AnyCPU platform exists, that is)
               my $pform = $platform;
@@ -139,24 +151,22 @@ sub post_workspace {
                 $pform = 'AnyCPU';
               }
               if (exists {map { $_ => 1 } @cfgs_dep}->{$config.'|'.$pform}) {
-                print $fh '      <ComponentGroupRef Id="ComponentGroup.'.normalize($config).'_'.normalize($pform).'_'.$pname_dep.'" />'.$crlf;
+                print $fh '      <ComponentGroupRef Id="ComponentGroup.',
+                          normalize($config), '_', normalize($pform),
+                          '_', $pname_dep, '" />', $crlf;
               }
-
               last;
             }
           }
         }
 
-        print $fh '    </ComponentGroup>'.$crlf;
-        print $fh '  </Fragment>'.$crlf;
-        print $fh $crlf;
+        print $fh '    </ComponentGroup>', $crlf,
+                  '  </Fragment>', $crlf, $crlf;
       }
-
     }
   }
 
-
-  print $fh '</Include>'.$crlf;
+  print $fh '</Include>', $crlf;
 }
 
 1;
