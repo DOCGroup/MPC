@@ -62,7 +62,13 @@ sub post_workspace {
   ## non-managed c++ library or a "utility" project causes a warning in
   ## Visual Studio 2008 and higher.
   foreach my $project (@projects) {
-    my($name, $deps, $guid, $lang, $custom_only, $nocross, $managed) = @{$$pjs{$project}};
+    my($name, $guid, $lang, $custom_only, $managed) =
+      $creator->access_pi_values($pjs, $project,
+                                 ProjectCreator::PROJECT_NAME,
+                                 ProjectCreator::PROJECT_GUID,
+                                 ProjectCreator::LANGUAGE,
+                                 ProjectCreator::CUSTOM_ONLY,
+                                 ProjectCreator::MANAGED_PROJECT);
     $gmap{$name} = [$guid, !$custom_only && ($managed ||
                                              $lang ne Creator::cplusplus)];
   }
@@ -78,8 +84,8 @@ sub post_workspace {
       my @read;
       my $crlf = $self->crlf();
       my $cwd  = $self->getcwd();
-      my $lang = $$pjs{$project}->[3];
-      my $managed = $$pjs{$project}->[6];
+      my $lang = $$pjs{$project}->[ProjectCreator::LANGUAGE];
+      my $managed = $$pjs{$project}->[ProjectCreator::MANAGED_PROJECT];
 
       while(<$ph>) {
         ## This is a comment found in vc8.mpd if the project contains the

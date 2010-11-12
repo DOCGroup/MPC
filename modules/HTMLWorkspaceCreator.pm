@@ -60,20 +60,20 @@ sub write_comps {
   my $crlf = $self->crlf();
 
   ## Start the table for all of the projects
-  print $fh "<table style=\"table-layout:fixed\" width=\"400\" " .
-            "summary=\"MPC Projects\">$crlf" .
-            "<col style=\"background-color: darkcyan;\">$crlf" .
-            "<thead>$crlf" .
-            "<tr><td>Projects In Build Order</td></tr>$crlf" .
-            "</thead>$crlf" .
+  print $fh "<table style=\"table-layout:fixed\" width=\"400\" ",
+            "summary=\"MPC Projects\">$crlf",
+            "<col style=\"background-color: darkcyan;\">$crlf",
+            "<thead>$crlf",
+            "<tr><td>Projects In Build Order</td></tr>$crlf",
+            "</thead>$crlf",
             "<tbody>$crlf";
 
   ## Sort the projects in build order instead of alphabetical order
   my $project_info = $self->get_project_info();
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
-    print $fh "<tr><td>" .
-              "<a href='$project'>$$project_info{$project}->[0]</a>" .
-              "</td></tr>$crlf";
+    print $fh "<tr><td><a href='$project'>",
+              $$project_info{$project}->[ProjectCreator::PROJECT_NAME],
+              "</a></td></tr>$crlf";
   }
 
   ## End the table

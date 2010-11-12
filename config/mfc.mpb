@@ -1,17 +1,10 @@
 // -*- MPC -*-
 // $Id$
 
-project {
+project: winapp {
   requires += mfc
   macros   += _AFXDLL
-  specific(em3, nmake, vc6) {
-    subsystem = windows
-  } else {
-    subsystem = 2
-  }
-  specific(vc10) {
-    subsystem = Windows
-  }
+
   specific {
     use_mfc = 2
     unicode_mfc_entry = wWinMainCRTStartup

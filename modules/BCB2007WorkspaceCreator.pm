@@ -79,7 +79,7 @@ sub write_comps {
 
   ## Print the project targets
   foreach my $project (@projects) {
-    my $name = $$project_info{$project}->[0];
+    my $name = $$project_info{$project}->[ProjectCreator::PROJECT_NAME];
     print $fh '  <Target Name="', $name, '">', $crlf,
               '    <MSBuild Projects="', $self->mpc_basename($project), '" Targets="" />', $crlf,
               '  </Target>', $crlf,
@@ -95,7 +95,7 @@ sub write_comps {
   print $fh '  <Target Name="Build">', $crlf,
             '    <CallTarget Targets="';
   foreach my $project (@projects) {
-    print $fh $$project_info{$project}->[0], ';';
+    print $fh $$project_info{$project}->[ProjectCreator::PROJECT_NAME], ';';
   }
 
   ## Print the target make order
@@ -104,7 +104,8 @@ sub write_comps {
             '  <Target Name="Make">', $crlf,
             '    <CallTarget Targets="';
   foreach my $project (@projects) {
-    print $fh $$project_info{$project}->[0], ':Make;';
+    print $fh $$project_info{$project}->[ProjectCreator::PROJECT_NAME],
+              ':Make;';
   }
 
   ## Print the target clean order
@@ -113,7 +114,8 @@ sub write_comps {
             '  <Target Name="Clean">', $crlf,
             '    <CallTarget Targets="';
   foreach my $project (@projects) {
-    print $fh $$project_info{$project}->[0], ':Clean;';
+    print $fh $$project_info{$project}->[ProjectCreator::PROJECT_NAME],
+              ':Clean;';
   }
   print $fh '" />', $crlf,
             '  </Target>', $crlf,
