@@ -161,6 +161,24 @@ my $tikey       = '/ti/';
 ## Matches with generic_outputext
 my $generic_key = 'generic_files';
 
+## These constants are used with the "project info" and
+## must match the order that is defined by the call order
+## of ProjectCreator::update_project_info().  This is called
+## order is determined by the TemplateParser.
+##
+## NOTE: If you are going to add a new constant, you must make it the
+##       numeric avlue of the CONFIGURATIONS constant and increment
+##       the existing CONFIGURATIONS value.
+use constant PROJECT_NAME     => 0;
+use constant DEPENDENCIES     => 1;
+use constant PROJECT_GUID     => 2;
+use constant LANGUAGE         => 3;
+use constant CUSTOM_ONLY      => 4;
+use constant NO_CROSS_COMPILE => 5;
+use constant MANAGED_PROJECT  => 6;
+use constant MAKE_GROUP       => 7;
+use constant CONFIGURATIONS   => 8;
+
 # ************************************************************
 # C++ Specific Component Settings
 # ************************************************************
@@ -2410,7 +2428,14 @@ sub generated_filenames {
         last if ($good);
       }
     }
-    return () if (!$good);
+
+    ## If we were not able to find the right file type, then we can get
+    ## out early.  However, if the type for which we are generating
+    ## ($tag) is a built-in type, we need to continue on as there is a
+    ## possibility that the input type ($type) will generate files for
+    ## the generating type.
+    return () if (!$good &&
+                  !defined $language{$self->get_language()}->[0]->{$tag});
   }
 
   my @pearr = $self->get_pre_keyword_array('pre_extension',
@@ -5131,6 +5156,27 @@ sub update_project_info {
   }
 
   return $value;
+}
+
+
+sub access_pi_values {
+  my $self = shift;
+  my $pjs  = shift;
+  my $proj = shift;
+
+  ## This will use the keys left in @_ as indices into the project
+  ## info array.  But, if the user wants configurations, we need to
+  ## pop that key off and access it along with all the rest of the
+  ## elements in the array.  The CONFIGURATIONS key should always
+  ## be last if it's included at all.  If it's not, the caller will
+  ## only receive the first configuration instead of all of them.
+  if ($_[$#_] == CONFIGURATIONS) {
+    my $last = scalar(@{$$pjs{$proj}}) - 1;
+    pop(@_);
+    return @{$$pjs{$proj}}[@_], @{$$pjs{$proj}}[CONFIGURATIONS..$last];
+  }
+
+  return @{$$pjs{$proj}}[@_];
 }
 
 

@@ -1,8 +1,71 @@
+Fri Nov 12 12:39:55 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/mfc.mpb:
+        * config/winapp.mpb:
+
+          Factored out portions that instruct a Windows project to be a
+          GUI.
+
+        * config/wxadvanced.mpb:
+        * config/wxaui.mpb:
+        * config/wxbase.mpb:
+        * config/wxcore.mpb:
+        * config/wxdbgrid.mpb:
+        * config/wxgl.mpb:
+        * config/wxhtml.mpb:
+        * config/wxmedia.mpb:
+        * config/wxnet.mpb:
+        * config/wxodbc.mpb:
+        * config/wxpropertygrid.mpb:
+        * config/wxqa.mpb:
+        * config/wxribbon.mpb:
+        * config/wxrichtext.mpb:
+        * config/wxstc.mpb:
+        * config/wxxml.mpb:
+        * config/wxxrc.mpb:
+
+          Added base projects for the various wxWindows.
+
+        * config/wxmake.mpb:
+        * config/wxmsvs.mpb:
+
+          These base projects are project type specific and designed to work
+          with wxWindows.  The comments inside the files describe their use.
+
+        * modules/BCB2007WorkspaceCreator.pm:
+        * modules/BMakeWorkspaceCreator.pm:
+        * modules/CDT6ProjectCreator.pm:
+        * modules/CDT6WorkspaceCreator.pm:
+        * modules/HTMLWorkspaceCreator.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/VC6WorkspaceCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/VC8WorkspaceCreator.pm:
+        * modules/WB26WorkspaceCreator.pm:
+        * modules/WixWorkspaceCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Use constants to access the 'project_info' arrays instead of magic
+          numbers.  Also, a method from ProjectCreator can be used to pull
+          specific values out of the 'project_info' instead of directly
+          accessing the array.
+
+          ProjectCreator also has a bug fix relating to the use of
+          Modify_Custom in conjunction with a built-in component type (e.g.,
+          Source_Files).  If that is used, files that are generated from
+          other custom definitions were not getting added to the project.
+
+        * templates/makedll.mpt:
+
+          Changed the link flags to use both -shared and -dynamic.  Earlier
+          versions of gcc used -dynamic and later versions use -shared.
+
 Fri Nov 12 08:49:38 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/TemplateParser.pm:
           Committed fix from Adam Mitz that fixed problems with dds4ccm and
-          cdt6/cdt7
+          cdt6/cdt7.
 
 Wed Nov 10 02:28:28 UTC 2010  James H. Hill  <hillj at cs dot iupui dot edu>
 

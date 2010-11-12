@@ -71,7 +71,7 @@ sub fill_value {
   }
   elsif ($name eq 'nocross') {
     # return the value of the 'nocross' element from the project_info array
-    return $self->get_project_info()->[5];
+    return $self->get_project_info()->[ProjectCreator::NO_CROSS_COMPILE];
   }
 
   return $self->get_configurable($name);

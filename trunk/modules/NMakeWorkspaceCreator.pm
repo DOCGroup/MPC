@@ -63,7 +63,7 @@ sub write_project_targets {
 
 
 sub write_comps {
-  my($self, $fh) = @_;
+  my($self, $fh, $gen) = @_;
   my %targnum;
   my $pjs     = $self->get_project_info();
   my @list    = $self->number_target_deps($self->get_projects(), $pjs,
@@ -75,8 +75,8 @@ sub write_comps {
   ## configuration (if available).  It just so happens that Debug comes
   ## before Release so sorting the configurations works in our favor.
   foreach my $project (keys %$pjs) {
-    my($name, $deps, $pguid, $lang, $custom_only, $nocross, $managed, $make_group, @cfgs) = @{$pjs->{$project}};
-    @cfgs = sort @cfgs;
+    my @cfgs = sort $gen->access_pi_values($pjs, $project,
+                                           ProjectCreator::CONFIGURATIONS);
     if (defined $cfgs[0]) {
       $default = $cfgs[0];
 
