@@ -15,6 +15,9 @@ use strict;
 use VC8ProjectCreator;
 use VC71WorkspaceCreator;
 
+##AHM Temp
+use Dumpvalue;
+
 use vars qw(@ISA);
 @ISA = qw(VC71WorkspaceCreator);
 
@@ -56,6 +59,14 @@ sub post_workspace {
   my $pjs = $self->get_project_info();
   my @projects = $self->sort_dependencies($self->get_projects(), 0);
   my %gmap;
+
+
+##AHM Temp
+  my $dv = new Dumpvalue();
+  foreach my $key ('aggregated_mpc', 'mpc_to_output') {
+    print ">>> $key\n";
+    $dv->dumpValue($self->{$key});
+  }
 
   ## Store a map of the project name to project guid and whether or not
   ## it is suitable to be referenced.  Adding a reference to a

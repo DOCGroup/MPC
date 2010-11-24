@@ -86,9 +86,12 @@ sub printUsage {
       print STDERR "\n$spaces        ";
       $len = $olen + $klen;
     }
+    elsif ($i) {
+      print STDERR ' ';
+    }
     print STDERR $keys[$i];
     if ($i != $#keys) {
-      print STDERR ' | ';
+      print STDERR ' |';
       $len += 3;
     }
   }
