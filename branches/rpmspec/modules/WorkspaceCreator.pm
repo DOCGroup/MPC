@@ -71,6 +71,8 @@ sub new {
   $self->{'exclude'}             = {};
   $self->{'associated'}          = {};
   $self->{'scoped_assign'}       = {};
+  $self->{'aggregated_mpc'}      = {};
+  $self->{'mpc_to_output'}       = {};
 
   ## These are maintained/modified throughout processing
   $self->{$self->{'type_check'}} = 0;
@@ -83,6 +85,7 @@ sub new {
   $self->{'ordering_cache'}      = {};
   $self->{'handled_scopes'}      = {};
   $self->{'scoped_basedir'}      = undef;
+  $self->{'current_aggregated'}  = undef;
 
   ## These are static throughout processing
   $self->{'coexistence'}         = $self->requires_make_coexistence() ? 1 : $makeco;
@@ -168,6 +171,8 @@ sub parse_line {
           $self->{'exclude'}        = $self->{'orig_exclude'};
           $self->{'associated'}     = {};
           $self->{'scoped_assign'}  = {};
+          $self->{'aggregated_mpc'} = {};
+          $self->{'mpc_to_output'}  = {};
         }
         $self->{$self->{'type_check'}} = 0;
       }
@@ -296,12 +301,14 @@ sub aggregated_workspace {
     my $oline = $self->get_line_number();
     my $tc    = $self->{$self->{'type_check'}};
     my $ag    = $self->{'handled_scopes'}->{$aggregated};
+    my $pca   = $self->{'current_aggregated'};
     my $psbd  = $self->{'scoped_basedir'};
     my($status, $error, @values) = (0, 'No recognizable lines');
 
     $self->{'handled_scopes'}->{$aggregated} = undef;
     $self->set_line_number(0);
     $self->{$self->{'type_check'}} = 0;
+    $self->{'current_aggregated'} = $file;
     $self->{'scoped_basedir'} = $self->mpc_dirname($file);
 
     ## If the directory name for the file is the current directory, we
@@ -346,6 +353,7 @@ sub aggregated_workspace {
     close($fh);
 
     $self->{'scoped_basedir'} = $psbd;
+    $self->{'current_aggregated'} = $pca;
     $self->{'handled_scopes'}->{$aggregated} = $ag;
     $self->{$self->{'type_check'}} = $tc;
     $self->set_line_number($oline);
@@ -720,16 +728,7 @@ sub handle_scoped_unknown {
     }
 
     foreach my $file (@files) {
-      if (!$self->excluded($file)) {
-        if (defined $dupchk && exists $$dupchk{$file}) {
-          $self->information("Duplicate mpc file ($file) added by an " .
-                             'aggregate workspace.  It will be ignored.');
-        }
-        else {
-          $self->{'scoped_assign'}->{$file} = $flags;
-          push(@{$self->{'project_files'}}, $file);
-        }
-      }
+      $self->add_aggregated_mpc($file, $dupchk, $flags);
     }
   }
   else {
@@ -741,22 +740,30 @@ sub handle_scoped_unknown {
         last if (!$status);
       }
       else {
-        if (!$self->excluded($expfile)) {
-          if (defined $dupchk && exists $$dupchk{$expfile}) {
-            $self->information("Duplicate mpc file ($expfile) added by an " .
-                               'aggregate workspace.  It will be ignored.');
-          }
-          else {
-            $self->{'scoped_assign'}->{$expfile} = $flags;
-            push(@{$self->{'project_files'}}, $expfile);
-          }
-        }
+        $self->add_aggregated_mpc($expfile, $dupchk, $flags);
       }
     }
   }
   $self->{'handled_scopes'}->{$type} = 1;
 
   return $status, $error;
+}
+
+
+sub add_aggregated_mpc {
+  my($self, $file, $dupchk, $flags) = @_;
+  if (!$self->excluded($file)) {
+    if (defined $dupchk && exists $$dupchk{$file}) {
+      $self->information("Duplicate mpc file ($file) added by an " .
+                         'aggregate workspace.  It will be ignored.');
+    }
+    else {
+      $self->{'scoped_assign'}->{$file} = $flags;
+      push(@{$self->{'project_files'}}, $file);
+      push(@{$self->{'aggregated_mpc'}->{$self->{'current_aggregated'}}},
+           $file);
+    }
+  }
 }
 
 
@@ -1325,6 +1332,8 @@ sub generate_project_files {
             $allprinfo{$prkey}   = $gen_proj_info;
             $allliblocs{$prkey}  = $gen_lib_locs;
           }
+
+          push(@{$self->{'mpc_to_output'}->{$ofile}}, @$files_written);
         }
         $self->cd($cwd);
         $self->save_project_info($files_written, $gen_proj_info,
