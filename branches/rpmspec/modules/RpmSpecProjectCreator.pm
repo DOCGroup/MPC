@@ -1,15 +1,33 @@
 package RpmSpecProjectCreator;
 
+# ************************************************************
+# Description   : An RPM .spec file Project Creator
+# Author        : Adam Mitz (OCI)
+# Create Date   : 11/23/2010
+# ************************************************************
+
+# ************************************************************
+# Pragmas
+# ************************************************************
+
 use strict;
 use ProjectCreator;
 
 use vars qw(@ISA);
 @ISA = qw(ProjectCreator);
 
+# ************************************************************
+# Subroutine Section
+# ************************************************************
+
 sub project_file_extension {
   return '.dummy';
 }
 
+# Don't actually write anything, just keep MPC internal data structures
+# up-to-date as if it had been written.  We don't want a .spec file for each
+# MPC project because that is too fine-grained.  See the corresponding
+# workspace creator for the actual .spec file creation.
 sub write_output_file {
   my $self = shift;
   my $tover = $self->get_template_override();
@@ -21,7 +39,6 @@ sub write_output_file {
   }
 
   my $template = $templates[0];
-#  print "Template is $template\n"; # 'rpmspec'
   $self->{'current_template'} = $template;
 
   my $name = $self->transform_file_name($self->project_file_name(undef,
