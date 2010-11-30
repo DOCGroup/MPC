@@ -36,10 +36,11 @@ my $deflang = 'cplusplus';
 ## A map of all of the allowed languages.  The 'website' value
 ## is not here because it isn't really a language.  It is used
 ## as a language internally by some project types though.
-my %languages = (cplusplus => 1,
-                 csharp    => 1,
-                 java      => 1,
-                 vb        => 1,
+## NOTE: We call the constant as a function to support Perl 5.6.
+my %languages = (cplusplus() => 1,
+                 csharp()    => 1,
+                 java()      => 1,
+                 vb()        => 1,
                 );
 
 my $assign_key  = 'assign';

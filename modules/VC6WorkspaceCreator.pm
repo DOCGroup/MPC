@@ -72,8 +72,8 @@ sub write_comps {
               'Project: "', $$pjs{$project}->[ProjectCreator::PROJECT_NAME],
               '"=', $self->slash_to_backslash($project),
               " - Package Owner=<4>$crlf$crlf",
-              "Package=<5>${crlf}{{{$crlf}}}$crlf$crlf",
-              "Package=<4>${crlf}{{{$crlf";
+              "Package=<5>$crlf", '{{{', $crlf, "}}}$crlf$crlf",
+              "Package=<4>$crlf", '{{{', $crlf;
 
     my $deps = $self->get_validated_ordering($project);
     if (defined $$deps[0]) {
@@ -98,8 +98,8 @@ sub post_workspace {
   ## This text is always the same
   print $fh "###############################################################################$crlf$crlf",
             "Global:$crlf$crlf",
-            "Package=<5>${crlf}{{{$crlf}}}$crlf$crlf",
-            "Package=<3>${crlf}{{{$crlf}}}$crlf$crlf",
+            "Package=<5>$crlf", '{{{', "$crlf}}}$crlf$crlf",
+            "Package=<3>$crlf", '{{{', "$crlf}}}$crlf$crlf",
             "###############################################################################$crlf$crlf";
 }
 
