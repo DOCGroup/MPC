@@ -17,13 +17,18 @@ use VC9ProjectCreator;
 use vars qw(@ISA);
 @ISA = qw(VC9ProjectCreator);
 
-my %info = (Creator::cplusplus => {'ext'      => '.vcxproj',
-                                   'dllexe'   => 'vc10exe',
-                                   'libexe'   => 'vc10libexe',
-                                   'dll'      => 'vc10dll',
-                                   'lib'      => 'vc10lib',
-                                   'template' => [ 'vc10', 'vc10filters' ],
-                                  },
+# ************************************************************
+# Data Section
+# ************************************************************
+
+## NOTE: We call the constant as a function to support Perl 5.6.
+my %info = (Creator::cplusplus() => {'ext'      => '.vcxproj',
+                                     'dllexe'   => 'vc10exe',
+                                     'libexe'   => 'vc10libexe',
+                                     'dll'      => 'vc10dll',
+                                     'lib'      => 'vc10lib',
+                                     'template' => [ 'vc10', 'vc10filters' ],
+                                    },
            );
 
 my %config = ('vcversion' => '10.00',
@@ -32,6 +37,10 @@ my %config = ('vcversion' => '10.00',
               'targetframeworkversion' => '4.0',
               'xmlheader' => 1,
               );
+
+# ************************************************************
+# Subroutine Section
+# ************************************************************
 
 sub get_info_hash {
   my($self, $key) = @_;
