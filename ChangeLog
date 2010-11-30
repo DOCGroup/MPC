@@ -1,3 +1,20 @@
+Tue Nov 30 12:58:03 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+        * modules/MakeProjectCreator.pm:
+        * modules/ProjectCreator.pm:
+        * modules/VC10ProjectCreator.pm:
+        * modules/VC6WorkspaceCreator.pm:
+        * modules/VC7ProjectCreator.pm:
+        * modules/VC7WorkspaceCreator.pm:
+        * modules/VC8ProjectCreator.pm:
+        * modules/VC8WorkspaceCreator.pm:
+        * modules/WixProjectCreator.pm:
+
+          Made modifications to the use of constants within the
+          initialization of file level hash maps.  They need to be called
+          like functions in order to support Perl 5.6.
+
 Fri Nov 12 12:39:55 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/mfc.mpb:

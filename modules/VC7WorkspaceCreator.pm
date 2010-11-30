@@ -24,11 +24,12 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my %guids = (Creator::cplusplus => '8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942',
-             Creator::csharp    => 'FAE04EC0-301F-11D3-BF4B-00C04F79EFBC',
-             Creator::java      => 'E6FDF86B-F3D1-11D4-8576-0002A516ECE8',
-             Creator::vb        => 'F184B08F-C81C-45F6-A57F-5ABD9991F28F',
-             Creator::website   => 'E24C65DC-7377-472B-9ABA-BC803B73C61A',
+## NOTE: We call the constant as a function to support Perl 5.6.
+my %guids = (Creator::cplusplus() => '8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942',
+             Creator::csharp()    => 'FAE04EC0-301F-11D3-BF4B-00C04F79EFBC',
+             Creator::java()      => 'E6FDF86B-F3D1-11D4-8576-0002A516ECE8',
+             Creator::vb()        => 'F184B08F-C81C-45F6-A57F-5ABD9991F28F',
+             Creator::website()   => 'E24C65DC-7377-472B-9ABA-BC803B73C61A',
             );
 
 # ************************************************************

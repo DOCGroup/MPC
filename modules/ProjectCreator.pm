@@ -275,16 +275,18 @@ my %vbma = ('source_files' => [ 'subtype' ],
 # 5     Name of the tag for 'resource_files' for this language
 #        * This is special because it gets treated like source_files in that
 #          a project with only these files is a library/exe not "custom only".
-my %language = (Creator::cplusplus => [ \%cppvc, \%cppec, \%cppma, 'main',
-                                        1, $cppresource ],
 
-                Creator::csharp    => [ \%csvc, {}, \%csma, 'Main', 0,
-                                        $csresource ],
+## NOTE: We call the constant as a function to support Perl 5.6.
+my %language = (Creator::cplusplus() => [ \%cppvc, \%cppec, \%cppma, 'main',
+                                          1, $cppresource ],
 
-                Creator::java      => [ \%jvc, {}, {}, 'main', 0 ],
+                Creator::csharp()    => [ \%csvc, {}, \%csma, 'Main', 0,
+                                          $csresource ],
 
-                Creator::vb        => [ \%vbvc, {}, \%vbma, 'Main', 0,
-                                        $vbresource ],
+                Creator::java()      => [ \%jvc, {}, {}, 'main', 0 ],
+
+                Creator::vb()        => [ \%vbvc, {}, \%vbma, 'Main', 0,
+                                          $vbresource ],
                );
 my %mains;
 
