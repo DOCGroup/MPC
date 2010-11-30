@@ -54,8 +54,7 @@ sub rpmname {
   my $outfile = $mwc;
   $outfile =~ s/\.mwc$//i;
   $outfile = $self->get_modified_workspace_name($outfile, $ext, 1);
-  my $base = lc $self->mpc_basename($outfile);
-             # RPM requires lower-case .spec file names
+  my $base = $self->mpc_basename($outfile);
   $base =~ tr/-/_/; # - is special for RPM, we translate it to _
   if ($check_unique && $rpm2mwc->{$base}) {
     die "ERROR: Can't create a duplicate RPM name: $base for mwc file $mwc\n" .
