@@ -23,7 +23,7 @@ configuration_parent_root = cdt.managedbuild.config.gnu
 toolchain_superclass_root = cdt.managedbuild.toolchain.gnu
 toolchain_internal_builder_root = cdt.managedbuild.target.gnu.builder
 targetplatform_superclass = cdt.managedbuild.target.gnu.platform
-outputtype_superclass = cdt.managedbuild.tool.gnu.cpp.linker.so.debug.output
+outputtype_superclass = cdt.managedbuild.tool.gnu.cpp.linker.output
 
 // These are just defaults
 exe_ext_nodot =
