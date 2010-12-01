@@ -69,7 +69,9 @@ sub post_workspace {
 
   # for debugging only
 #  my $dv = new Dumpvalue();
-#  foreach my $key ('aggregated_mpc', 'mpc_to_output') {
+#  print ">>> ASSIGN:\n";
+#  $dv->dumpValue($self->get_assignment_hash());
+#  foreach my $key ('aggregated_mpc', 'aggregated_assign', 'mpc_to_output') {
 #    print ">>> $key\n";
 #    $dv->dumpValue($self->{$key});
 #  }

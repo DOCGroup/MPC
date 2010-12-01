@@ -72,6 +72,7 @@ sub new {
   $self->{'associated'}          = {};
   $self->{'scoped_assign'}       = {};
   $self->{'aggregated_mpc'}      = {};
+  $self->{'aggregated_assign'}   = {};
   $self->{'mpc_to_output'}       = {};
 
   ## These are maintained/modified throughout processing
@@ -172,6 +173,7 @@ sub parse_line {
           $self->{'associated'}     = {};
           $self->{'scoped_assign'}  = {};
           $self->{'aggregated_mpc'} = {};
+          $self->{'aggregated_assign'} = {};
           $self->{'mpc_to_output'}  = {};
         }
         $self->{$self->{'type_check'}} = 0;
@@ -303,6 +305,7 @@ sub aggregated_workspace {
     my $ag    = $self->{'handled_scopes'}->{$aggregated};
     my $pca   = $self->{'current_aggregated'};
     my $psbd  = $self->{'scoped_basedir'};
+    my $prev_assign = $self->clone($self->get_assignment_hash());
     my($status, $error, @values) = (0, 'No recognizable lines');
 
     $self->{'handled_scopes'}->{$aggregated} = undef;
@@ -352,6 +355,12 @@ sub aggregated_workspace {
     }
     close($fh);
 
+    if ($status) {
+      $self->{'aggregated_assign'}->{$file} =
+          $self->clone($self->get_assignment_hash());
+      $self->{'assign'} = $prev_assign;
+    }
+
     $self->{'scoped_basedir'} = $psbd;
     $self->{'current_aggregated'} = $pca;
     $self->{'handled_scopes'}->{$aggregated} = $ag;
@@ -377,6 +386,9 @@ sub parse_scope {
   }
   elsif ($name eq 'associate') {
     return $self->parse_associate($fh, $type);
+  }
+  elsif ($name eq 'specific') {
+    return $self->parse_specific($fh, $type, $validNames, $flags, $elseflags);
   }
   else {
     return $self->SUPER::parse_scope($fh, $name, $type,
@@ -615,6 +627,34 @@ sub parse_associate {
 }
 
 
+sub parse_specific {
+  my($self, $fh, $typestr, $validNames, $flags, $elseflags) = @_;
+  my $types   = $self->process_types($typestr);
+  my $wctype  = $self->{'wctype'};
+  my $matches = exists $types->{$wctype};
+
+  # $elseflags needs to be defined for Creator::parse_scope to allow "} else {"
+  $elseflags = {} unless defined $elseflags;
+
+  return $self->SUPER::parse_scope($fh, 'specific', $matches ? $wctype : undef,
+                                   $validNames, $matches ? ($flags, $elseflags)
+                                   : (undef, $flags));
+}
+
+
+sub handle_unknown_assignment {
+  my $self   = shift;
+  my $type   = shift;
+  my @values = @_;
+
+  if (defined $type) {
+    $self->process_any_assignment(undef, @values);
+  }
+
+  return 1, undef;
+}
+
+
 sub excluded {
   my($self, $file) = @_;
 
@@ -656,6 +696,9 @@ sub handle_scoped_unknown {
   my $status = 1;
   my $error;
   my $dupchk;
+
+  ## If $type is undef, we are in a skipped part of a specific block
+  return 1 unless defined $type;
 
   if ($line =~ /^\w+.*{/) {
     if (defined $fh) {
