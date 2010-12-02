@@ -167,7 +167,7 @@ my $generic_key = 'generic_files';
 ## order is determined by the TemplateParser.
 ##
 ## NOTE: If you are going to add a new constant, you must make it the
-##       numeric avlue of the CONFIGURATIONS constant and increment
+##       numeric value of the CONFIGURATIONS constant and increment
 ##       the existing CONFIGURATIONS value.
 use constant PROJECT_NAME     => 0;
 use constant DEPENDENCIES     => 1;
@@ -204,6 +204,8 @@ my %cppec = ('source_files' => $cppvc{'template_files'},
 my %cppma = ('source_files' => ['buildflags',
                                 'managed',
                                 'no_pch',
+                               ],
+             'header_files' => [ 'dependent_upon',
                                ],
             );
 
