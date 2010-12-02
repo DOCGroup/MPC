@@ -774,7 +774,15 @@
 <%if(compares(grouped_header_file, default_group))%>
 <%foreach(grouped_header_file->files)%>
 			<File
+<%if(flag_overrides(grouped_header_file->file, dependent_upon))%>
+				RelativePath="<%grouped_header_file->file%>"
+				FileType="3">
+				<File
+					RelativePath="<%flag_overrides(grouped_header_file->file, dependent_upon)%>">
+				</File>
+<%else%>
 				RelativePath="<%grouped_header_file->file%>">
+<%endif%>
 			</File>
 <%endfor%>
 <%else%>
@@ -783,7 +791,16 @@
 				Filter="">
 <%foreach(grouped_header_file->files)%>
 				<File
+<%if(flag_overrides(grouped_header_file->file, dependent_upon))%>
+					RelativePath="<%grouped_header_file->file%>"
+					FileType="3">
+					<File
+						RelativePath="<%flag_overrides(grouped_header_file->file, dependent_upon)%>">
+					</File>
+<%else%>
 					RelativePath="<%grouped_header_file->file%>">
+<%endif%>
+
 				</File>
 <%endfor%>
 			</Filter>
@@ -792,7 +809,15 @@
 <%else%>
 <%foreach(header_files)%>
 			<File
+<%if(flag_overrides(header_file, dependent_upon))%>
+				RelativePath="<%header_file%>"
+				FileType="3">
+				<File
+					RelativePath="<%flag_overrides(header_file, dependent_upon)%>">
+				</File>
+<%else%>
 				RelativePath="<%header_file%>">
+<%endif%>
 			</File>
 <%endfor%>
 <%endif%>
