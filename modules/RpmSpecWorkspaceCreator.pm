@@ -98,12 +98,11 @@ sub post_workspace {
     my $name = "$outdir/$agg"; # $agg may contain directory parts
     my $dir  = $self->mpc_dirname($name);
     my $base = $mwc2rpm{$agg};
+    my $rpm = $base;
+    $rpm =~ s/$ext$//;
     $name = "$dir/$base";
     mkpath($dir, 0, 0777) if ($dir ne '.');
 
-    open OUT, ">$name" or die "can't open $name";
-    print OUT "Mock RPM spec file for '$base'\n\n";
-#    my %dep; # keys are projects that projects in this RPM depend on
     my %rpm_requires; # keys are RPMs that this RPM depends on
     my @projects;
     foreach my $m (@{$self->{'aggregated_mpc'}->{$agg}}) {
@@ -114,7 +113,6 @@ sub post_workspace {
         push @projects, $proj;
         my $deps = $self->get_validated_ordering("$projdir/$p");
         foreach my $d (@$deps) {
-#          $dep{$d} = 1;
           my $rpmdep = $proj2rpm{$d};
           if (defined $rpmdep && $rpmdep ne $base) {
             $rpm_requires{$rpmdep} = 1;
@@ -122,12 +120,110 @@ sub post_workspace {
         }
       }
     }
-    print OUT "Contains projects: \n\t", join("\n\t", sort @projects), "\n\n";
-#    print OUT "Depends on projects: ",
-#      join(' ', sort map {s/$prjext$//; $_} keys %dep), "\n\n";
-    print OUT "Depends on RPMs: ", join(' ', sort keys %rpm_requires), "\n\n";
+
+    # The hash %rep has replacement values for the template .spec file text,
+    # those values come from a few different sources, starting with the
+    # workspace-wide assignments, then let RPM-specific ones (from aggregated
+    # workspaces) override those, finally add the ones known by MPC.
+    my %rep = %{$self->get_assignment_hash()};
+    while (my($key, $val) = each %{$self->{'aggregated_assign'}->{$agg}}) {
+      $rep{$key} = $val;
+    }
+    $rep{'rpm_name'} = $rpm;
+    $rep{'rpm_mpc_requires'} =
+        join(' ', sort map {s/$ext$//; $_} keys %rpm_requires);
+
+    # Allow the description to span multiple lines
+    $rep{'rpm_description'} =~ s/\\n\s*/\n/g if exists $rep{'rpm_description'};
+
+    open OUT, ">$name" or die "can't open $name";
+    my $spec = get_template();
+    $spec =~ s/<%(\w+)(?:\("?([^)"]*)"?\))?%>/exists $rep{lc $1} ? $rep{lc $1} :
+                                              defined $2 ? $2 :
+                                              ">>ERROR: no value for $1<<"/ge;#/
+    print OUT $spec;
     close OUT;
   }
+}
+
+
+sub get_template {
+  return <<'EOT';
+License: <%rpm_license("Freeware")%>
+Version: <%rpm_version%>
+Release: <%rpm_releasenumber%>
+
+# Need to have this, but not sure what to put.  It's advisory,
+# rpmbuild also looks for the basename in the SOURCES directory
+Source: <%rpm_source_base("")%><%rpm_name%>.tgz
+
+Name: <%rpm_name%>
+Group: <%rpm_group%>
+Summary: <%rpm_summary%>
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
+Prefix: <%rpm_prefix("/")%>
+AutoReqProv: <%rpm_autorequiresprovides("no")%>
+Requires: <%rpm_mpc_requires%> <%rpm_requires()%>
+Provides: <%rpm_provides()%>
+
+%description
+<%rpm_description%>
+
+%files -f %{_tmppath}/<%rpm_name%>.flist
+%defattr(-,root,root)
+%doc 
+%config  
+
+
+
+%post -n <%rpm_name%>
+
+
+
+%postun
+
+%prep
+%setup -n <%rpm_name%>-<%rpm_version%>
+
+%build
+rm -rf $RPM_BUILD_ROOT
+# we need to set ACE_ROOT, TAO_ROOT, CIAO_ROOT and others.  for now, just
+# check for their existence
+[ -z "$ACE_ROOT" -o -z "$TAO_ROOT" -o -z "$CIAO_ROOT" -o -z "$MPC_ROOT" ] && exit 1
+mwc.pl -type gnuace -base install
+make
+
+%install
+if [ "$RPM_BUILD_ROOT" = "/" ]; then
+  echo "Build root of / is a bad idea.  Bailing."
+  exit 1
+fi
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT/install
+export install_dir=$RPM_BUILD_ROOT/install
+export pkg_dir=$RPM_BUILD_ROOT/<%rpm_name%>_dir
+mkdir -p $RPM_BUILD_ROOT/<%rpm_name%>_dir
+make INSTALL_PREFIX=${install_dir} install
+mkdir -p ${install_dir}/usr/share/applications
+mkdir -p ${install_dir}/usr/share/man
+files=$(find ${install_dir}/usr/share/man -name '*.bz2')
+if [[ "${files}" ]]; then echo "${files}"|xargs bunzip2 -q; fi
+files=$(find ${install_dir}/usr/share/man -name '*.[0-9]')
+if [[ "${files}" ]]; then echo "${files}"|xargs gzip -9;fi
+cp -ra ${install_dir}/* ${pkg_dir}
+mkdir -p ${pkg_dir}/usr/share/applications
+find $RPM_BUILD_ROOT/<%rpm_name%>_dir ! -type d|sed s^$RPM_BUILD_ROOT/<%rpm_name%>_dir^^|sed /^\s*$/d > %{_tmppath}/<%rpm_name%>.flist
+find $RPM_BUILD_ROOT/<%rpm_name%>_dir -type d|sed s^$RPM_BUILD_ROOT/<%rpm_name%>_dir^^|sed '\&^/usr$&d;\&^/usr/share/man&d;\&^/usr/games$&d;\&^/lib$&d;\&^/etc$&d;\&^/boot$&d;\&^/usr/bin$&d;\&^/usr/lib$&d;\&^/usr/share$&d;\&^/var$&d;\&^/var/lib$&d;\&^/var/spool$&d;\&^/var/cache$&d;\&^/var/lock$&d;\&^/tmp/apkg&d'|sed /^\s*$/d|sed 's&^&%dir &' >> %{_tmppath}/<%rpm_name%>.flist
+cp -ra $RPM_BUILD_ROOT/*_dir/* $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT/*_dir
+rm -rf $RPM_BUILD_ROOT/install
+
+%clean
+make realclean
+find . -name 'GNUmakefile*' -print | xargs rm -f
+
+%changelog
+EOT
 }
 
 1;
