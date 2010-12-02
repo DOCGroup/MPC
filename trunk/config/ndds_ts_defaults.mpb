@@ -3,7 +3,7 @@
 
 project {
   Define_Custom(NDDSTypeSupport) {
-    command               = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%quote%> -corba <%input_noext%>C.h -orb ACE_TAO1.8
+    command               = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%quote%> -corba <%input_noext%>C.h -orb ACE_TAO2.0
     commandflags          = -language C++ -replace -namespace -I$(TAO_ROOT) -I$(TAO_ROOT)/tao
 
     dependent             = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%bat%><%quote%>
@@ -21,4 +21,5 @@ project {
     override no_hidden_visibility = 1
     override no_strict_aliasing = 1
   }
+
 }
