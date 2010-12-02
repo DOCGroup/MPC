@@ -1,3 +1,15 @@
+Thu Dec  2 12:57:11 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * docs/html/MakeProjectCreator.html:
+        * modules/ProjectCreator.pm:
+        * templates/vc8.mpd:
+
+          Committing changes provided by Artur Doci <artur at doci dot info>.
+          This provides support for the 'dependent_upon' keyword for use
+          within the scope of Header_Files for C++ projects for vc8 and vc9
+          only.
+
 Thu Dec  2 08:57:38 UTC 2010  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_ts_defaults.mpb:
