@@ -183,6 +183,10 @@ buildflags      This keyword can only be used as a source component scoped
                 setting (ie. inside the scope of Source_Files).  It
                 specifies additional build flags that will be passed to the
                 compiler as the source files are being compiled.
+dependent_upon  This keyword can only be used as a header component scoped
+                setting (ie. inside the scope of Header_Files).  It
+                determines which file the header file is dependent
+                upon for vc8, and vc9 only.
 dllout          If defined, specifies where the dynamic libraries will be
                 placed.  This overrides libout in the dynamic case.
 libout          Specifies where the dynamic and static libraries will be placed
