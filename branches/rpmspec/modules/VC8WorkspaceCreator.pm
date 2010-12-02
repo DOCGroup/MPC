@@ -22,10 +22,11 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my %lang_map = (Creator::cplusplus => 'Visual C#',
-                Creator::csharp    => 'Visual C#',
-                Creator::vb        => 'Visual Basic',
-                Creator::java      => 'Visual J#');
+## NOTE: We call the constant as a function to support Perl 5.6.
+my %lang_map = (Creator::cplusplus() => 'Visual C#',
+                Creator::csharp()    => 'Visual C#',
+                Creator::vb()        => 'Visual Basic',
+                Creator::java()      => 'Visual J#');
 
 # ************************************************************
 # Subroutine Section
