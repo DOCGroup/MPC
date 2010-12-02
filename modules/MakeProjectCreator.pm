@@ -22,21 +22,22 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my %info = (Creator::cplusplus => {'dllexe'   => 'makeexe',
-                                   'dll'      => 'makedll',
-                                   'template' => 'make',
+## NOTE: We call the constant as a function to support Perl 5.6.
+my %info = (Creator::cplusplus() => {'dllexe'   => 'makeexe',
+                                     'dll'      => 'makedll',
+                                     'template' => 'make',
                                   },
-            Creator::csharp    => {'dllexe'   => 'make.net',
-                                   'dll'      => 'make.net',
-                                   'template' => 'make.net',
+            Creator::csharp()    => {'dllexe'   => 'make.net',
+                                     'dll'      => 'make.net',
+                                     'template' => 'make.net',
                                   },
-            Creator::java      => {'dllexe'   => 'makeexe',
-                                   'dll'      => 'makedll',
-                                   'template' => 'make',
+            Creator::java()      => {'dllexe'   => 'makeexe',
+                                     'dll'      => 'makedll',
+                                     'template' => 'make',
                                   },
-            Creator::vb        => {'dllexe'   => 'make.net',
-                                   'dll'      => 'make.net',
-                                   'template' => 'make.net',
+            Creator::vb()        => {'dllexe'   => 'make.net',
+                                     'dll'      => 'make.net',
+                                     'template' => 'make.net',
                                    },
            );
 

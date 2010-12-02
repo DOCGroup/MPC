@@ -22,20 +22,21 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my %info = (Creator::cplusplus => {'ext'      => '.wxi',
-                                   'dllexe'   => 'wix',
-                                   'libexe'   => 'wix',
-                                   'dll'      => 'wix',
-                                   'lib'      => 'wix',
-                                   'template' => 'wix',
-                                  },
-            Creator::csharp => {'ext'      => '.wxi',
-                                'dllexe'   => 'wixcs',
-                                'libexe'   => 'wixcs',
-                                'dll'      => 'wixcs',
-                                'lib'      => 'wixcs',
-                                'template' => 'wixcs',
-                               },
+## NOTE: We call the constant as a function to support Perl 5.6.
+my %info = (Creator::cplusplus() => {'ext'      => '.wxi',
+                                     'dllexe'   => 'wix',
+                                     'libexe'   => 'wix',
+                                     'dll'      => 'wix',
+                                     'lib'      => 'wix',
+                                     'template' => 'wix',
+                                    },
+            Creator::csharp() => {'ext'      => '.wxi',
+                                  'dllexe'   => 'wixcs',
+                                  'libexe'   => 'wixcs',
+                                  'dll'      => 'wixcs',
+                                  'lib'      => 'wixcs',
+                                  'template' => 'wixcs',
+                                 },
            );
 
 # ************************************************************
