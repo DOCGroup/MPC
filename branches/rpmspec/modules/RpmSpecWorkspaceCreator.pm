@@ -161,7 +161,7 @@ sub post_workspace {
       $rep{$key} = $self->process_special($val);
     }
     $rep{'rpm_name'} = $rpm;
-    $rep{'rpm_mpc_workspace'} = $agg;
+    $rep{'rpm_mpc_workspace'} = $self->mpc_basename($agg);
     $rep{'rpm_mpc_requires'} =
         join(' ', sort map {s/$ext$//; $_} keys %rpm_requires);
 
@@ -249,14 +249,14 @@ export install_dir=$RPM_BUILD_ROOT/install
 export pkg_dir=$RPM_BUILD_ROOT/<%rpm_name%>_dir
 mkdir -p $RPM_BUILD_ROOT/<%rpm_name%>_dir
 make INSTALL_PREFIX=${install_dir} install
-mkdir -p ${install_dir}/usr/share/man
-files=$(find ${install_dir}/usr/share/man -name '*.bz2')
+mkdir -p ${install_dir}/share/man
+files=$(find ${install_dir}/share/man -name '*.bz2')
 if [[ "${files}" ]]; then echo "${files}"| xargs bunzip2 -q; fi
-files=$(find ${install_dir}/usr/share/man -name '*.[0-9]')
+files=$(find ${install_dir}/share/man -name '*.[0-9]')
 if [[ "${files}" ]]; then echo "${files}"| xargs gzip -9; fi
 cp -ra ${install_dir}/* ${pkg_dir}
-find $RPM_BUILD_ROOT/<%rpm_name%>_dir ! -type d | sed s^$RPM_BUILD_ROOT/<%rpm_name%>_dir^^ | sed /^\s*$/d > %{_tmppath}/<%rpm_name%>.flist
-find $RPM_BUILD_ROOT/<%rpm_name%>_dir -type d | sed s^$RPM_BUILD_ROOT/<%rpm_name%>_dir^^ | sed '\&^/usr$&d;\&^/usr/share/man&d;\&^/usr/games$&d;\&^/lib$&d;\&^/etc$&d;\&^/boot$&d;\&^/usr/bin$&d;\&^/usr/lib$&d;\&^/usr/share$&d;\&^/var$&d;\&^/var/lib$&d;\&^/var/spool$&d;\&^/var/cache$&d;\&^/var/lock$&d;\&^/tmp/apkg&d' | sed /^\s*$/d | sed 's&^&%dir &' >> %{_tmppath}/<%rpm_name%>.flist
+find ${pkg_dir} ! -type d | sed s^${pkg_dir}^^ | sed /^\s*$/d > %{_tmppath}/<%rpm_name%>.flist
+find ${pkg_dir} -type d | sed s^${pkg_dir}^^ | sed '\&^/usr$&d;\&^/usr/share/man&d;\&^/usr/games$&d;\&^/lib$&d;\&^/etc$&d;\&^/boot$&d;\&^/usr/bin$&d;\&^/usr/lib$&d;\&^/usr/share$&d;\&^/var$&d;\&^/var/lib$&d;\&^/var/spool$&d;\&^/var/cache$&d;\&^/var/lock$&d;\&^/tmp/apkg&d' | sed /^\s*$/d | sed 's&^&%dir &' >> %{_tmppath}/<%rpm_name%>.flist
 cp -ra $RPM_BUILD_ROOT/*_dir/* $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT/*_dir
 rm -rf $RPM_BUILD_ROOT/install
