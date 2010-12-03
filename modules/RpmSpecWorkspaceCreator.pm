@@ -64,6 +64,28 @@ sub rpmname {
   return $base;
 }
 
+## helper functions for the mini-template language
+
+sub mtl_cond {
+  my($vars, $pre, $rep) = @_;
+  my @v;
+  return (@v = grep {$_} map {$rep->{lc $_}} split(' ', $vars)) ? "$pre@v" : '';
+}
+
+sub mtl_apply {
+  my($name, $subst, $rep) = @_;
+  return join("\n", map {my $x = $subst; $x =~ s!\$_!$_!g; $x}
+              split(' ', $rep->{lc $name}));
+}
+
+sub mtl_var {
+  my($name, $default, $rep) = @_;
+  return defined $rep->{lc $name} ? $rep->{lc $name} :
+      (defined $default ? $default : ">>ERROR: no value for $name<<");
+}
+
+## end helper functions for the mini-template language
+
 sub post_workspace {
   my($self, $fh, $prjc) = @_;
 
@@ -125,23 +147,54 @@ sub post_workspace {
     # those values come from a few different sources, starting with the
     # workspace-wide assignments, then let RPM-specific ones (from aggregated
     # workspaces) override those, finally add the ones known by MPC.
+    # process_special() handles quotes and escape characters.
+
     my %rep = %{$self->get_assignment_hash()};
+
+    # Allow the description to span multiple lines in the output file
+    $rep{'rpm_description'} =~ s/\\n\s*/\n/g if exists $rep{'rpm_description'};
+
+    map {$_ = $self->process_special($_)} values %rep;
+
     while (my($key, $val) = each %{$self->{'aggregated_assign'}->{$agg}}) {
-      $rep{$key} = $val;
+      $val =~ s/\\n\s*/\n/g if $key eq 'rpm_description';
+      $rep{$key} = $self->process_special($val);
     }
     $rep{'rpm_name'} = $rpm;
+    $rep{'rpm_mpc_workspace'} = $agg;
     $rep{'rpm_mpc_requires'} =
         join(' ', sort map {s/$ext$//; $_} keys %rpm_requires);
 
-    # Allow the description to span multiple lines
-    $rep{'rpm_description'} =~ s/\\n\s*/\n/g if exists $rep{'rpm_description'};
-
     open OUT, ">$name" or die "can't open $name";
-    my $spec = get_template();
-    $spec =~ s/<%(\w+)(?:\("?([^)"]*)"?\))?%>/exists $rep{lc $1} ? $rep{lc $1} :
-                                              defined $2 ? $2 :
-                                              ">>ERROR: no value for $1<<"/ge;#/
-    print OUT $spec;
+    my $t = get_template();
+
+    ## We have decided not to reuse the TemplateParser.pm, so this file has
+    ## its own little template language which is a subset of that one.
+
+    ## <%cond(var1 [var2...], prefix)%>
+    ##   Output the prefix text followed by the concatenated, space separated,
+    ##   values of the variables (var1, var2, etc) only if at least one of
+    ##   said values is non-empty.
+    $t =~ s/<%cond\(([\w ]+), (.+)\)%>/mtl_cond($1, $2, \%rep)/ge;
+
+    ## <%perl(expr)%>
+    ##   Evaluate an arbitrary perl expression, which can reference the normal
+    ##   variable replacements (see <%var%>, below) as $rep{'name'}.
+    $t =~ s/<%perl\((.+)\)%>/join "\n", eval $1/ge;
+
+    ## <%apply(listvar, text)%>
+    ##   Treat the value of variable 'listvar' as a list (splitting on spaces)
+    ##   and repeat the text for each element of the list, substituting $_ in
+    ##   the text with the current list element.
+    $t =~ s/<%apply\((\w+), (.+)\)%>/mtl_apply($1, $2, \%rep)/ge;
+
+    ## <%var(default)%> or <%var%>
+    ##   Output the value of variable 'var', either with a default value or an
+    ##   error if 'var' is unknown.  If 'default' is enclosed in double-quotes,
+    ##   they are ignored (for compatibility with TemplateParser).
+    $t =~ s/<%(\w+)(?:\("?([^)"]*)"?\))?%>/mtl_var($1, $2, \%rep)/ge;
+
+    print OUT $t;
     close OUT;
   }
 }
@@ -152,33 +205,26 @@ sub get_template {
 License: <%rpm_license("Freeware")%>
 Version: <%rpm_version%>
 Release: <%rpm_releasenumber%>
-
-# Need to have this, but not sure what to put.  It's advisory,
-# rpmbuild also looks for the basename in the SOURCES directory
-Source: <%rpm_source_base("")%><%rpm_name%>.tgz
-
+Source: <%rpm_source_base("")%><%rpm_name%>.tar.gz
 Name: <%rpm_name%>
 Group: <%rpm_group%>
 Summary: <%rpm_summary%>
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Prefix: <%rpm_prefix("/")%>
 AutoReqProv: <%rpm_autorequiresprovides("no")%>
-Requires: <%rpm_mpc_requires%> <%rpm_requires()%>
-Provides: <%rpm_provides()%>
+<%cond(rpm_buildrequires, BuildRequires: )%>
+<%cond(rpm_mpc_requires rpm_requires, Requires: )%>
+<%cond(rpm_provides, Provides: )%>
 
 %description
 <%rpm_description%>
 
 %files -f %{_tmppath}/<%rpm_name%>.flist
 %defattr(-,root,root)
-%doc 
-%config  
+%doc
+%config
 
-
-
-%post -n <%rpm_name%>
-
-
+%post
 
 %postun
 
@@ -186,12 +232,11 @@ Provides: <%rpm_provides()%>
 %setup -n <%rpm_name%>-<%rpm_version%>
 
 %build
+<%apply(env_check, [ -z $$_ ] && echo Environment variable $_ is required. && exit 1)%>
 rm -rf $RPM_BUILD_ROOT
-# we need to set ACE_ROOT, TAO_ROOT, CIAO_ROOT and others.  for now, just
-# check for their existence
-[ -z "$ACE_ROOT" -o -z "$TAO_ROOT" -o -z "$CIAO_ROOT" -o -z "$MPC_ROOT" ] && exit 1
-mwc.pl -type gnuace -base install
-make
+<%prebuild()%>
+<%makefile_generator(mwc.pl -type gnuace)%> -base install <%rpm_mpc_workspace%>
+make <%makeflags()%>
 
 %install
 if [ "$RPM_BUILD_ROOT" = "/" ]; then
@@ -204,23 +249,21 @@ export install_dir=$RPM_BUILD_ROOT/install
 export pkg_dir=$RPM_BUILD_ROOT/<%rpm_name%>_dir
 mkdir -p $RPM_BUILD_ROOT/<%rpm_name%>_dir
 make INSTALL_PREFIX=${install_dir} install
-mkdir -p ${install_dir}/usr/share/applications
 mkdir -p ${install_dir}/usr/share/man
 files=$(find ${install_dir}/usr/share/man -name '*.bz2')
-if [[ "${files}" ]]; then echo "${files}"|xargs bunzip2 -q; fi
+if [[ "${files}" ]]; then echo "${files}"| xargs bunzip2 -q; fi
 files=$(find ${install_dir}/usr/share/man -name '*.[0-9]')
-if [[ "${files}" ]]; then echo "${files}"|xargs gzip -9;fi
+if [[ "${files}" ]]; then echo "${files}"| xargs gzip -9; fi
 cp -ra ${install_dir}/* ${pkg_dir}
-mkdir -p ${pkg_dir}/usr/share/applications
-find $RPM_BUILD_ROOT/<%rpm_name%>_dir ! -type d|sed s^$RPM_BUILD_ROOT/<%rpm_name%>_dir^^|sed /^\s*$/d > %{_tmppath}/<%rpm_name%>.flist
-find $RPM_BUILD_ROOT/<%rpm_name%>_dir -type d|sed s^$RPM_BUILD_ROOT/<%rpm_name%>_dir^^|sed '\&^/usr$&d;\&^/usr/share/man&d;\&^/usr/games$&d;\&^/lib$&d;\&^/etc$&d;\&^/boot$&d;\&^/usr/bin$&d;\&^/usr/lib$&d;\&^/usr/share$&d;\&^/var$&d;\&^/var/lib$&d;\&^/var/spool$&d;\&^/var/cache$&d;\&^/var/lock$&d;\&^/tmp/apkg&d'|sed /^\s*$/d|sed 's&^&%dir &' >> %{_tmppath}/<%rpm_name%>.flist
+find $RPM_BUILD_ROOT/<%rpm_name%>_dir ! -type d | sed s^$RPM_BUILD_ROOT/<%rpm_name%>_dir^^ | sed /^\s*$/d > %{_tmppath}/<%rpm_name%>.flist
+find $RPM_BUILD_ROOT/<%rpm_name%>_dir -type d | sed s^$RPM_BUILD_ROOT/<%rpm_name%>_dir^^ | sed '\&^/usr$&d;\&^/usr/share/man&d;\&^/usr/games$&d;\&^/lib$&d;\&^/etc$&d;\&^/boot$&d;\&^/usr/bin$&d;\&^/usr/lib$&d;\&^/usr/share$&d;\&^/var$&d;\&^/var/lib$&d;\&^/var/spool$&d;\&^/var/cache$&d;\&^/var/lock$&d;\&^/tmp/apkg&d' | sed /^\s*$/d | sed 's&^&%dir &' >> %{_tmppath}/<%rpm_name%>.flist
 cp -ra $RPM_BUILD_ROOT/*_dir/* $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT/*_dir
 rm -rf $RPM_BUILD_ROOT/install
 
 %clean
 make realclean
-find . -name 'GNUmakefile*' -print | xargs rm -f
+find . -name '<%makefile_name_pattern(GNUmakefile*)%>' -o -name '.depend.*' | xargs rm -f
 
 %changelog
 EOT
