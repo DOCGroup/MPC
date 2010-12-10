@@ -255,15 +255,15 @@ if [ "$RPM_BUILD_ROOT" = "/" ]; then
   exit 1
 fi
 rm -rf $RPM_BUILD_ROOT
-export install_dir=$RPM_BUILD_ROOT/install<%rpm_prefix("/usr")%>
-mkdir -p $install_dir
+export staging_dir=$RPM_BUILD_ROOT/install<%rpm_prefix("/usr")%>
+mkdir -p $staging_dir
 export pkg_dir=$RPM_BUILD_ROOT/<%rpm_name%>_dir
 mkdir -p $RPM_BUILD_ROOT/<%rpm_name%>_dir
-make INSTALL_PREFIX=${install_dir} install
-if [ -d ${install_dir}/share/man ]; then
-  files=$(find ${install_dir}/share/man -name '*.bz2')
+make INSTALL_PREFIX=${staging_dir} install
+if [ -d ${staging_dir}/share/man ]; then
+  files=$(find ${staging_dir}/share/man -name '*.bz2')
   if [[ "${files}" ]]; then echo "${files}" | xargs bunzip2 -q; fi
-  files=$(find ${install_dir}/share/man -name '*.[0-9]')
+  files=$(find ${staging_dir}/share/man -name '*.[0-9]')
   if [[ "${files}" ]]; then echo "${files}" | xargs gzip -9; fi
 fi
 cp -a $RPM_BUILD_ROOT/install/* ${pkg_dir}
