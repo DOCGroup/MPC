@@ -246,7 +246,7 @@ AutoReqProv: <%rpm_autorequiresprovides("no")%>
 <%apply(env_check, [ -z $$_ ] && echo Environment variable $_ is required. && exit 1)%>
 rm -rf $RPM_BUILD_ROOT
 <%prebuild()%>
-<%makefile_generator(mwc.pl -type gnuace)%> -base install -value_project libpaths+=<%rpm_mpc_temp_inst(/tmp/mpcrpm/inst)%>/lib -value_project includes+=<%rpm_mpc_temp_inst(/tmp/mpcrpm/inst)%>/include -value_template install_dir=. <%rpm_mpc_workspace%>
+<%makefile_generator(mwc.pl -type gnuace)%> -base install -value_project libpaths+=<%rpm_mpc_temp_inst(/tmp/mpcrpm/inst)%>/lib -value_project includes+=<%rpm_mpc_temp_inst(/tmp/mpcrpm/inst)%>/include <%mkgen_args()%> <%rpm_mpc_workspace%>
 make <%makeflags()%>
 
 %install
