@@ -3302,7 +3302,7 @@ sub list_default_generated {
       foreach my $type (@$tags) {
         ## Only add generated files if the following is true:
         ## 1) The generating type is not the same as the receiving type.
-        ## 2) The receivng type is not "special" (unless it hasn't been
+        ## 2) The receiving type is not "special" (unless it hasn't been
         ##    supplied by the user).
         ## 3) The receiving type is not user defined or it is user
         ##    defined and has 'automatic_in' set to true.
