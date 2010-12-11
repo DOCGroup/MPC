@@ -1860,7 +1860,7 @@ sub sort_dependencies {
   ## created we may get multiple groups for the same directory.
 
   ## Put the projects in the order specified
-  ## by the project dpendencies.  We only need to do
+  ## by the project dependencies.  We only need to do
   ## this if there is more than one element in the array.
   if ($#list > 0) {
     ## If the parameter wasn't passed in or it was passed in
