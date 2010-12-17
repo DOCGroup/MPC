@@ -356,7 +356,7 @@ build () {
   echo Running rpmbuild on $PKG.spec for arch $RPM_ARCH, see rpm-$PKG.log for details
   rpmbuild -ba --target $RPM_ARCH $RPM_TOP/SPECS/$PKG.spec > $START_DIR/rpm-$PKG.log 2>&1
   if [ $? != 0 ]; then
-    echo rpmbuild of $PKG.spec failed; STOPPING.
+    echo rpmbuild of $PKG.spec failed. STOPPING.
     exit $?
   fi
   echo Installing $PKG to the temporary area
