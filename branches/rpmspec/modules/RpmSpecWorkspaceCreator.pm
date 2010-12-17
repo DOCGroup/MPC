@@ -335,7 +335,7 @@ RPM_TOP=`rpmbuild --showrc | grep ': _topdir\b' | sed 's/^.*: _topdir\s*//' | pe
 START_DIR=`pwd`
 TMP_DIR=/tmp/mpcrpm
 DB_DIR=`rpmbuild --showrc | grep ': _dbpath\b' | sed 's/^.*: _dbpath\s*//' | perl -pe's/%\{(\w+)\}/$x = qx(rpmbuild --showrc | grep ": $1\\\b" | sed "s\/^.*: $1\\\s*\/\/"); chomp $x; $x/e'`
-RPM_ARCH=`uname -m`
+RPM_ARCH=${1-`uname -m`}
 echo MPC RPM build script: output files will be placed in $RPM_TOP/RPMS
 [ -z $MPC_ROOT ] && echo ERROR: MPC_ROOT must be set && exit 1
 rm -rf $TMP_DIR && mkdir $TMP_DIR && cp -a $DB_DIR $TMP_DIR/db || exit $?
@@ -353,14 +353,14 @@ build () {
   cd $TMP_DIR
   tar chzf $RPM_TOP/SOURCES/$PKG.tar.gz $PKG-$VER && rm -rf $PKG-$VER
   cp $START_DIR/$PKG_DIR/$PKG.spec $RPM_TOP/SPECS
-  echo Running rpmbuild on $PKG.spec, see rpm-$PKG.log for details
-  rpmbuild -ba $RPM_TOP/SPECS/$PKG.spec > $START_DIR/rpm-$PKG.log 2>&1
+  echo Running rpmbuild on $PKG.spec for arch $RPM_ARCH, see rpm-$PKG.log for details
+  rpmbuild -ba --target $RPM_ARCH $RPM_TOP/SPECS/$PKG.spec > $START_DIR/rpm-$PKG.log 2>&1
   if [ $? != 0 ]; then
     echo rpmbuild of $PKG.spec failed; STOPPING.
     exit $?
   fi
   echo Installing $PKG to the temporary area
-  rpm --dbpath $TMP_DIR/db --prefix $TMP_DIR/inst -iv $RPM_TOP/RPMS/$RPM_ARCH/$PKG-$VER-$REL.$RPM_ARCH.rpm || exit $?
+  rpm --ignorearch --dbpath $TMP_DIR/db --prefix $TMP_DIR/inst -iv $RPM_TOP/RPMS/$RPM_ARCH/$PKG-$VER-$REL.$RPM_ARCH.rpm || exit $?
   cd $START_DIR
 }
 
