@@ -278,8 +278,13 @@ AutoReqProv: <%rpm_autorequiresprovides("no")%>
 %config
 
 %post
+<%rpm_post_cmd()%>
+
+%preun
+<%rpm_preun_cmd()%>
 
 %postun
+<%rpm_postun_cmd()%>
 
 %prep
 %setup -n <%rpm_name%>-<%rpm_version%>
@@ -349,7 +354,11 @@ build () {
   tar chzf $RPM_TOP/SOURCES/$PKG.tar.gz $PKG-$VER && rm -rf $PKG-$VER
   cp $START_DIR/$PKG_DIR/$PKG.spec $RPM_TOP/SPECS
   echo Running rpmbuild on $PKG.spec, see rpm-$PKG.log for details
-  rpmbuild -ba $RPM_TOP/SPECS/$PKG.spec > $START_DIR/rpm-$PKG.log 2>&1 || exit $?
+  rpmbuild -ba $RPM_TOP/SPECS/$PKG.spec > $START_DIR/rpm-$PKG.log 2>&1
+  if [ $? != 0 ]; then
+    echo rpmbuild of $PKG.spec failed; STOPPING.
+    exit $?
+  fi
   echo Installing $PKG to the temporary area
   rpm --dbpath $TMP_DIR/db --prefix $TMP_DIR/inst -iv $RPM_TOP/RPMS/$RPM_ARCH/$PKG-$VER-$REL.$RPM_ARCH.rpm || exit $?
   cd $START_DIR
