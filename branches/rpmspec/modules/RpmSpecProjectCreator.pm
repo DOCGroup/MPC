@@ -11,6 +11,8 @@ package RpmSpecProjectCreator;
 # ************************************************************
 
 use strict;
+use File::Path;
+
 use ProjectCreator;
 
 use vars qw(@ISA);
@@ -62,6 +64,12 @@ sub write_output_file {
       $self->warning("Ignoring callback: $cb.");
     }
   }
+
+  # Still need outdir since ProjectCreator::write_install_file (or similar)
+  # may depend on outdir existing before the WorkspaceCreator runs.
+  my $outdir = $self->get_outdir();
+  mkpath($outdir, 0, 0777) if ($outdir ne '.');
+
   $self->add_file_written($name);
   return 1, '';
 }
