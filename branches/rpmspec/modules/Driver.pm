@@ -538,9 +538,9 @@ sub run {
       ++$loopTimes;
 
       if (!$loaded{$name}) {
-	mpc_debug::chkpnt_pre_creator_load($name);
+        mpc_debug::chkpnt_pre_creator_load($name);
         require "$name.pm";
-	mpc_debug::chkpnt_post_creator_load($name);
+        mpc_debug::chkpnt_post_creator_load($name);
         $loaded{$name} = 1;
       }
       my $file = $cfile;
