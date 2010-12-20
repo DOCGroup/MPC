@@ -673,9 +673,9 @@ sub begin_project {
             }
 
             ## Begin reading the parent
-	    mpc_debug::chkpnt_pre_parse_base_project($file);
+            mpc_debug::chkpnt_pre_parse_base_project($file);
             $status = $self->parse_file($file);
-	    mpc_debug::chkpnt_post_parse_base_project($file, $status);
+            mpc_debug::chkpnt_post_parse_base_project($file, $status);
 
             ## Take the base project file off of the parent stack
             pop(@{$self->{'reading_parent'}});
