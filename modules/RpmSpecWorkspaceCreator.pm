@@ -106,6 +106,11 @@ sub post_workspace {
     }
   }
 
+  if (0 == scalar keys %proj2rpm) {
+    # nothing to generate (no aggregated workspaces)
+    return;
+  }
+
   my $outdir = $self->get_outdir();
   my $now = strftime '%a %b %d %Y %H:%M:%S', localtime;
 
@@ -120,15 +125,7 @@ sub post_workspace {
       my $v = $val->[1];
       $v =~ s/\\n\s*/\n/g if $key eq 'rpm_description';
       $v = $self->process_special($v);
-      if ($val->[0] == 0) {
-        $self->process_assignment($key, $v, \%assign);
-      }
-      elsif ($val->[0] > 0) {
-        $self->process_assignment_add($key, $v, \%assign);
-      }
-      else {
-        $self->process_assignment_sub($key, $v, \%assign);
-      }
+      $self->process_any_assignment(\%assign, $val->[0], $key, $v);
     }
   }
 
@@ -240,6 +237,7 @@ sub post_workspace {
   my %seen;
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     my $rpm = $proj2rpm{$self->mpc_basename($project)};
+    next if !defined $rpm;
     if (!$seen{$rpm}) {
       $seen{$rpm} = 1;
       my $dir = $self->mpc_dirname($rpm2mwc{$rpm});
