@@ -1,3 +1,9 @@
+Mon Dec 20 18:55:04 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc10.mpd:
+
+          Fixed TargetName for static libs -- previously it was blank.
+
 Mon Dec 20 13:40:26 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/html/MakeProjectCreator.html:
