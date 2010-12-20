@@ -1,3 +1,27 @@
+Mon Dec 20 13:40:26 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/html/MakeProjectCreator.html:
+
+          Changed the example to use the current project variable name,
+          'exeout', instead of 'install'.
+
+        * modules/Options.pm:
+
+          Warn the user when they provide a path to -relative that is not a
+          full path.
+
+        * modules/OutputMessage.pm:
+
+          Change new line characters to a newl line plus spaces to make the
+          messages align.
+
+        * modules/ProjectCreator.pm:
+        * modules/StringProcessor.pm:
+
+          Fixed a bug where assignments of values with spaces or $() that
+          ended in a back-slash would result in the removal of one of the
+          surrounding double quotes.
+
 Thu Dec  2 12:57:11 UTC 2010  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:

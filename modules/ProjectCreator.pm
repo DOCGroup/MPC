@@ -2060,8 +2060,18 @@ sub remove_duplicate_addition {
         if (!exists $parts{$val}) {
           ## We need to supply quotes if there is a space in the value or
           ## a variable.  The variable may contain spaces.
-          my $qt = ($val =~ /\s/ || $val =~ /\$\(.+\)/ ? '"' : '');
-          $allowed .= $qt . $val . $qt . ' ';
+          if ($val =~ /\s/ || $val =~ /\$\(.+\)/) {
+            ## If we're going to add quotes around this item and the
+            ## value ends in a backslash we need to append another
+            ## backslash so that when it's used with
+            ## StringProcessor::create_array() the function will not think
+            ## that the trailing quote is escaped.
+            $val .= '\\' if ($val =~ /\\$/);
+            $allowed .= '"' . $val . '" ';
+          }
+          else {
+            $allowed .= $val . ' ';
+          }
         }
       }
       $allowed =~ s/\s+$//;
@@ -4025,7 +4035,7 @@ sub get_command_subs {
   if (UNIVERSAL::isa($self, 'WinProjectBase') ||
       $self->use_win_compatibility_commands()) {
     $valid{'cat'}   = 'type';
-    $valid{'cmp'}   = 'fc';
+    $valid{'cmp'}   = 'fc /b';
     $valid{'cp'}    = 'copy /y';
     $valid{'mkdir'} = 'mkdir';
     $valid{'mv'}    = 'move /y';
