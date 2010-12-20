@@ -51,6 +51,7 @@ sub set_levels {
 
 sub split_message {
   my($self, $msg, $spc) = @_;
+  $msg =~ s/\n+/\n$spc/g;
   $msg =~ s/\.\s+/.\n$spc/g;
   return $msg . "\n";
 }

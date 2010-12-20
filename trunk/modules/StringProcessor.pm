@@ -71,11 +71,16 @@ sub create_array {
   my($self, $line) = @_;
   my @array;
 
-  ## Replace all escaped double and single quotes with special characters
-  my $escaped = ($line =~ s/\\\"/\01/g);
+  ## Replace all escaped double and single quotes with special
+  ## characters.  We need to distinguish between doubly escaped quotes
+  ## (<%equote%>) and escaped quotes (\").  We also need to retain the
+  ## escaped escape characters.
+  my $escaped = ($line =~ s/\\\\\"/\01/g);
   $escaped |= ($line =~ s/\\\'/\02/g);
   $escaped |= ($line =~ s/\\ /\03/g);
   $escaped |= ($line =~ s/\\\t/\04/g);
+  $escaped |= ($line =~ s/\\\"/\05/g);
+  $escaped |= ($line =~ s/\\\\/\06/g);
 
   foreach my $part (grep(!/^\s*$/,
                          split(/(\"[^\"]+\"|\'[^\']+\'|\s+)/, $line))) {
@@ -83,12 +88,15 @@ sub create_array {
     $part =~ s/^"(.*)"$/$1/;
     $part =~ s/^'(.*)'$/$1/;
 
-    ## Put any escaped double or single quotes back into the string.
+    ## Put any escaped escaped characters back into the string, but
+    ## processed to take out one of the escape sequences.
     if ($escaped) {
-      $part =~ s/\01/\"/g;
+      $part =~ s/\01/\\"/g;
       $part =~ s/\02/\'/g;
       $part =~ s/\03/ /g;
       $part =~ s/\04/\t/g;
+      $part =~ s/\05/\"/g;
+      $part =~ s/\06/\\/g;
     }
 
     ## Push it onto the array
@@ -106,10 +114,10 @@ sub crlf {
 
 
 sub windows_crlf {
-  ## Windows, OS/2 and cygwin require a carriage return and line feed.
+  ## Windows and cygwin require a carriage return and line feed.
   ## However, at some point cygwin changed the way it does output and can
   ## be controled through an environment variable.
-  return ($^O eq 'MSWin32' || $^O eq 'os2' ||
+  return ($^O eq 'MSWin32' ||
           ($^O eq 'cygwin' &&
            ($] < 5.008 || (defined $ENV{PERLIO} && $ENV{PERLIO} eq 'crlf'))) ?
            "\n" : "\r\n");
