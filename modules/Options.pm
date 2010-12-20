@@ -443,7 +443,12 @@ sub options {
           ## the current working directory.
           if ($val !~ /^[\/\\]/ &&
               $val !~ /^[A-Za-z]:[\/\\]?/) {
+            my $orig = $val;
             $val = DirectoryManager::getcwd() . '/' . $val;
+
+            ## Inform the user that we're changing the value that they
+            ## provided.
+            $self->warning("-relative value $orig has been changed to\n$val");
           }
 
           ## Clean up the path as much as possible.  For some reason,
