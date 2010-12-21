@@ -636,9 +636,13 @@ sub parse_specific {
   # $elseflags needs to be defined for Creator::parse_scope to allow "} else {"
   $elseflags = {} unless defined $elseflags;
 
+  # Assignments within 'specific' always go to the workspace-level assignment
+  # hash table instead of the $flags bound to the scope.
+  my $assign = $self->get_assignment_hash();
+
   return $self->SUPER::parse_scope($fh, 'specific', $matches ? $wctype : undef,
-                                   $validNames, $matches ? ($flags, $elseflags)
-                                   : (undef, $flags));
+                                   $validNames, $matches ? ($assign, $elseflags)
+                                   : (undef, $assign));
 }
 
 
