@@ -1410,6 +1410,14 @@
 
               <p class="Code">&nbsp;&nbsp;}</p>
 
+              <p class="Code">&nbsp;</p>
+
+              <p class="Code">&nbsp;&nbsp;specific(rpmspec) {</p>
+
+              <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;rpm_version = 1.0</p>
+
+              <p class="Code">&nbsp;&nbsp;}</p>
+
               <p class="Code">}</p>
 
               <p class="Code">&nbsp;</p>
@@ -1428,13 +1436,16 @@
             This information would then be included in each workspace that
             inherits from it.</li>
 
-            <li class="Body">The lines between the curly braces contain
-            assignments, mpc files, directories, other workspace files or
-            exclusion sections. The mpc files listed will be included in the
-            workspace. If a directory is listed within the workspace, the
-            workspace creator will recursively traverse that directory and
-            use any mpc files that are found. If a workspace file is listed
-            it will be aggregated into the main workspace.</li>
+            <li class="Body">The lines between the curly braces
+            contain assignments, mpc files, directories, other
+            workspace files or exclusion sections.  For each listed item,
+            <ul>
+              <li>an mpc file will be included in the workspace</li>
+            
+              <li>a directory recursively traversed and any mpc files
+            found will be included</li>
+              <li><a name="AggregatedWorkspace"></a>a workspace file will be aggregated into the main workspace.</li>
+            </ul>
 
             <li class="Body">A workspace can have assignments interspersed
             within the directories and mpc files. These assignments modify
@@ -1455,6 +1466,17 @@
             assignment may be useful for workspaces that require specific
             <em class="Code">mwc.pl</em> options in order to process
             correctly.</li>
+
+            <li class="Body"><a name="workspaceSpecific"></a>Workspaces
+            support a <em class="Code">specific</em> clause
+            conceptually and syntactically similar to <a
+            href="#projectSpecific">the project <em
+            class="Code">specific</em> clause.</a>  Any variables
+            defined/assigned within the clause are only available to
+            workspaces, not to projects.  Not all workspace types
+            use the <em class="Code">specific</em> clause, so consult
+            the documentation for the type for details on how it might
+            use the clause.</li> 
 
             <li class="Body">The only other setting supported by mwc.pl is
             <em class="Code">implicit</em>. If <em class="Code">implicit</em>
