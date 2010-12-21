@@ -808,7 +808,7 @@ sub add_aggregated_mpc {
       $self->{'scoped_assign'}->{$file} = $flags;
       push(@{$self->{'project_files'}}, $file);
       push(@{$self->{'aggregated_mpc'}->{$self->{'current_aggregated'}}},
-           $file);
+           $file) if defined $self->{'current_aggregated'};
     }
   }
 }
