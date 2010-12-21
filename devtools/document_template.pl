@@ -234,9 +234,11 @@ if (open($fh, $input)) {
   my $skip = $inputIsPerl;
 
   while(<$fh>) {
-    $skip = 0 if ($skip && /$startPattern/);
-    $skip = 1 if (!$skip && /$endPattern/);
-    next if $skip;
+    if ($inputIsPerl) {
+      $skip = 0 if ($skip && /$startPattern/);
+      $skip = 1 if (!$skip && /$endPattern/);
+      next if $skip;
+    }
 
     my $len = length($_);
     for(my $start = 0; $start < $len;) {
