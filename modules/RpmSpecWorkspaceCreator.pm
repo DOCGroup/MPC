@@ -35,6 +35,21 @@ sub workspace_file_name {
   return $self->get_modified_workspace_name($self->get_workspace_name(), $ext);
 }
 
+# Called by document_template.pl
+sub documentation_info {
+  shift; #ignore package name
+  my $keywords = shift;
+  %$keywords = ('apply' => \&interpret_keyword, 'cond' => \&interpret_keyword);
+  return '^sub get_template', '^EOT$';
+}
+
+# Called by document_template.pl
+sub interpret_keyword {
+  my $vname = shift;
+  $vname = (split /,/, $vname)[0];
+  return ($vname, $vname, $vname, undef);
+}
+
 # Don't actually write the .spec file for the workspace.  Instead just invoke
 # the $func callback so that post_workspace() and other parts of the normal
 # workspace processing are called.  We don't want a .spec file for each MPC
