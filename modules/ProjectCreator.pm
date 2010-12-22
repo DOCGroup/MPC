@@ -14,6 +14,7 @@ use strict;
 use FileHandle;
 use File::Path;
 
+use mpc_debug;
 use Creator;
 use TemplateInputReader;
 use TemplateParser;
@@ -454,6 +455,7 @@ sub process_assignment {
 
   if (defined $value) {
     if ($name eq 'after') {
+      mpc_debug::chkpnt_pre_after_keyword_assignment($name, $value, $assign, $calledfrom);
       ## Support dependency attributes.  They may or may not be used by
       ## the project or workspace creator implementation.  They are
       ## stored separately from the dependencies themselves.  Also, note
@@ -479,6 +481,7 @@ sub process_assignment {
         $value = $self->fill_type_name($value,
                                        $self->get_default_project_name());
       }
+      mpc_debug::chkpnt_post_after_keyword_assignment($name, $value, $assign, $calledfrom);
     }
 
     ## If this particular project type does not consider the dollar sign
@@ -670,7 +673,9 @@ sub begin_project {
             }
 
             ## Begin reading the parent
+            mpc_debug::chkpnt_pre_parse_base_project($file);
             $status = $self->parse_file($file);
+            mpc_debug::chkpnt_post_parse_base_project($file, $status);
 
             ## Take the base project file off of the parent stack
             pop(@{$self->{'reading_parent'}});
@@ -3312,7 +3317,7 @@ sub list_default_generated {
       foreach my $type (@$tags) {
         ## Only add generated files if the following is true:
         ## 1) The generating type is not the same as the receiving type.
-        ## 2) The receivng type is not "special" (unless it hasn't been
+        ## 2) The receiving type is not "special" (unless it hasn't been
         ##    supplied by the user).
         ## 3) The receiving type is not user defined or it is user
         ##    defined and has 'automatic_in' set to true.

@@ -39,7 +39,7 @@ require StringProcessor;
 my %keywords;
 my %arrow_op;
 my $doc_ext  = '.txt';
-my $version  = '1.3';
+my $version  = '1.4';
 
 # ******************************************************************
 # Subroutine Section
@@ -165,6 +165,8 @@ sub display_template {
 sub usageAndExit {
   print "document_template.pl v$version\n",
         "Usage: ", basename($0), " <template> [<outputfile> [language]]\n\n",
+        "template    - .mpd file to document.  Certain MPC types don't use a template,\n",
+        "              in that case this argument can be the Perl module.\n",
         "outputfile  - This defaults to the name of the template file with the .mpd\n",
         "              extension replaced with '.html'  If <outputfile> ends in '.txt',\n",
         "              the output is in text format similar to what is found in\n",
@@ -191,6 +193,7 @@ usageAndExit() if (!defined $input || $input =~ /^-/);
 if (!defined $output) {
   $output = $input;
   $output =~ s/\.mpd$//;
+  $output =~ s/(\w+)(Project|Workspace)Creator\.pm$/lc $1/e;
   $output .= '.html';
 }
 elsif ($output =~ /\.txt$/) {
@@ -214,11 +217,29 @@ if (open($fh, $input)) {
   }
 
   my %template_keys;
-  setup_keywords($language);
-
   my @foreach;
   my $findex  = -1;
+
+  my $inputIsPerl = ($input =~ /\.pm$/);
+  my ($startPattern, $endPattern);
+  if ($inputIsPerl) {
+    my $pkg = basename($input);
+    $pkg =~ s/\.pm$//e;
+    require $input;
+    ($startPattern, $endPattern) = $pkg->documentation_info(\%keywords);
+  }
+  else {
+    setup_keywords($language);
+  }
+  my $skip = $inputIsPerl;
+
   while(<$fh>) {
+    if ($inputIsPerl) {
+      $skip = 0 if ($skip && /$startPattern/);
+      $skip = 1 if (!$skip && /$endPattern/);
+      next if $skip;
+    }
+
     my $len = length($_);
     for(my $start = 0; $start < $len;) {
       my $sindex = index($_, '<%', $start);
@@ -300,6 +321,9 @@ if (open($fh, $input)) {
                 $key  = lc($vname);
                 $tvar = undef;
               }
+            }
+            elsif (UNIVERSAL::isa($keywords{$name}, 'CODE')) {
+              ($name, $key, $vname, $tvar) = &{$keywords{$name}}($vname);
             }
           }
           else {
@@ -390,7 +414,14 @@ if (open($fh, $input)) {
 
   my $doc = $input;
   $doc =~ s/\.[^\.]+$/$doc_ext/;
-  $doc =~ s/templates/docs\/templates/;
+  if ($inputIsPerl) {
+    $doc =~ s/modules/docs\/templates/;
+    $doc =~ s/(\w+)(Project|Workspace)Creator$doc_ext$/lc($1) . $doc_ext/e;
+  }
+  else {
+    $doc =~ s/templates/docs\/templates/;
+  }
+
   if (-r $doc) {
     $template_cp->read_file($doc);
   }
