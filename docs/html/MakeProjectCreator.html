@@ -215,6 +215,29 @@
 
               <tr>
                 <td rowspan="1" colspan="1">
+                  <p class="Tbl-Body"><em class="TableCode">
+                      <a href="CDT6.html">cdt6</a></em></p>
+                </td>
+
+                <td rowspan="1" colspan="1">
+                  <p class="Tbl-Body">Eclipse CDT 6 (for Eclipse "Galileo" 3.5)
+                </p></td>
+              </tr>
+
+              <tr>
+                <td rowspan="1" colspan="1">
+                  <p class="Tbl-Body"><em class="TableCode">
+                      <a href="CDT6.html"><!--CDT6.html describes cdt7 as well
+                                            -->cdt7</a></em></p>
+                </td>
+
+                <td rowspan="1" colspan="1">
+                  <p class="Tbl-Body">Eclipse CDT 7 (for Eclipse "Helios" 3.6)
+                </p></td>
+              </tr>
+
+              <tr>
+                <td rowspan="1" colspan="1">
                   <p class="Tbl-Body"><em class="TableCode">em3</em></p>
                 </td>
 
@@ -280,6 +303,17 @@
 
               <tr>
                 <td rowspan="1" colspan="1">
+                  <p class="TblCode"><em class="TableCode">
+                      <a href="RpmSpec.html">rpmspec</a></em></p>
+                </td>
+
+                <td rowspan="1" colspan="1">
+                  <p class="Tbl-Body">RPM packaging .spec files.</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td rowspan="1" colspan="1">
                   <p class="TblCode"><em class="TableCode">sle</em></p>
                 </td>
 
@@ -331,7 +365,7 @@
 
               <tr>
                 <td rowspan="1" colspan="1">
-                  <p class="TblCode">vc9</p>
+                  <p class="TblCode"><em class="TableCode">vc9</em></p>
                 </td>
 
                 <td rowspan="1" colspan="1">
@@ -341,7 +375,7 @@
 
               <tr>
                 <td rowspan="1" colspan="1">
-                  <p class="TblCode">vc10</p>
+                  <p class="TblCode"><em class="TableCode">vc10</em></p>
                 </td>
 
                 <td rowspan="1" colspan="1">
@@ -351,11 +385,23 @@
 
               <tr>
                 <td rowspan="1" colspan="1">
-                  <p class="TblCode">wb26</p>
+                  <p class="TblCode"><em class="TableCode"><a href="WB26.html">
+                        wb26</a></em></p>
                 </td>
 
                 <td rowspan="1" colspan="1">
                   <p class="Tbl-Body">Wind River Workbench 2.6.</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td rowspan="1" colspan="1">
+                  <p class="TblCode"><em class="TableCode"><a href="WB30.html">
+                        wb30</a></em></p>
+                </td>
+
+                <td rowspan="1" colspan="1">
+                  <p class="Tbl-Body">Wind River Workbench 3.0.</p>
                 </td>
               </tr>
 
@@ -1410,6 +1456,14 @@
 
               <p class="Code">&nbsp;&nbsp;}</p>
 
+              <p class="Code">&nbsp;</p>
+
+              <p class="Code">&nbsp;&nbsp;specific(rpmspec) {</p>
+
+              <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;rpm_version = 1.0</p>
+
+              <p class="Code">&nbsp;&nbsp;}</p>
+
               <p class="Code">}</p>
 
               <p class="Code">&nbsp;</p>
@@ -1428,13 +1482,16 @@
             This information would then be included in each workspace that
             inherits from it.</li>
 
-            <li class="Body">The lines between the curly braces contain
-            assignments, mpc files, directories, other workspace files or
-            exclusion sections. The mpc files listed will be included in the
-            workspace. If a directory is listed within the workspace, the
-            workspace creator will recursively traverse that directory and
-            use any mpc files that are found. If a workspace file is listed
-            it will be aggregated into the main workspace.</li>
+            <li class="Body">The lines between the curly braces
+            contain assignments, mpc files, directories, other
+            workspace files or exclusion sections.  For each listed item,
+            <ul>
+              <li>an mpc file will be included in the workspace</li>
+            
+              <li>a directory recursively traversed and any mpc files
+            found will be included</li>
+              <li><a name="AggregatedWorkspace"></a>a workspace file will be aggregated into the main workspace.</li>
+            </ul>
 
             <li class="Body">A workspace can have assignments interspersed
             within the directories and mpc files. These assignments modify
@@ -1468,6 +1525,20 @@
             <em class="Code">implicit</em> can be useful when you want to
             define specific workspaces, but the MPC defaults are sufficient
             for the directories involved within the workspace.</li>
+
+            <li class="Body"><a name="workspaceSpecific"></a>Workspaces
+            support a <em class="Code">specific</em> clause
+            conceptually and syntactically similar to <a
+            href="#projectSpecific">the project <em
+            class="Code">specific</em> clause.</a>  Any variables
+            assigned within the clause are only available to
+            workspaces, not to projects.   Two sorts of assignments are
+            possible: first are assignments to the keywords
+            <em class="Code">cmdline</em> and <em class="Code">implicit</em>
+            and the second are type-specific variables.  Consult the
+            documentation for the type for details on type-specific variables.
+            Keyword assignments impact the entire workspace, not just the
+            <em class="Code">specific</em> scope.</li> 
 
             <li class="Body">Scoped assignments are assignments that are
             associated with specific mpc files or directories listed with the
@@ -2434,7 +2505,7 @@
           </div>
 
           <div>
-            <h6 class="Head5">Specific Clause</h6>
+            <h6 class="Head5"><a name="projectSpecific">Specific Clause</a></h6>
 
             <ul>
               <li class="BodyNoLead">The <em class="Code">specific</em>

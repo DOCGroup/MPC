@@ -1,3 +1,54 @@
+Wed Dec 22 17:28:56 UTC 2010  Adam Mitz  <mitza@ociweb.com>
+
+        These changes were initially developed on the "rpmspec" branch.
+
+        * modules/RpmSpecProjectCreator.pm:
+        * modules/RpmSpecWorkspaceCreator.pm:
+
+          New type for generating RPM .spec files.
+
+        * modules/Options.pm:
+
+          Don't generate trailing whitespace in the list of types.
+
+        * modules/Creator.pm:
+
+          Extracted the =, +=, -= handling so it can be reused elsewhere.
+
+        * modules/WorkspaceCreator.pm:
+
+          Keep track of aggregated workspaces for use by some particular
+          WorkspaceCreators.  Allow "specific" scopes within workspaces.
+
+        * devtools/document_template.pl:
+
+          Added ability to process templates embedded in Perl modules.
+
+        * docs/USAGE:
+
+          Added new types to the usage info for -type.
+
+        * docs/README:
+        * docs/html/MakeProjectCreator.css:
+        * docs/html/MakeProjectCreator.html:
+        * docs/html/RpmSpec.html:
+        * docs/html/rpmworkflow.dot:
+        * docs/html/rpmworkflow.png:
+        * docs/templates/rpmspec.txt:
+
+          Documented rpmspec type and "specific" scopes in workspaces.
+
+        * modules/mpc_debug.pm:
+
+          New Perl module to assist with debugging MPC.
+
+        * modules/Driver.pm:
+        * modules/Parser.pm:
+        * modules/ProjectCreator.pm:
+        * mwc.pl:
+
+          Use mpc_debug.
+
 Mon Dec 20 18:55:04 UTC 2010  Adam Mitz  <mitza@ociweb.com>
 
         * templates/vc10.mpd:

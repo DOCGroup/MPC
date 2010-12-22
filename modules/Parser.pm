@@ -13,6 +13,7 @@ package Parser;
 use strict;
 use FileHandle;
 
+use mpc_debug;
 use OutputMessage;
 use StringProcessor;
 use DirectoryManager;
@@ -71,6 +72,7 @@ sub read_file {
   my $status = 1;
   my $errorString;
 
+  mpc_debug::chkpnt_pre_read_file($input, $cache);
   $self->{'line_number'} = 0;
   if (open($ih, $input)) {
     $self->debug("Open $input");
@@ -109,6 +111,7 @@ sub read_file {
     $errorString = "Unable to open \"$input\" for reading";
     $status = 0;
   }
+  mpc_debug::chkpnt_post_read_file($input, $cache, $status, $errorString);
 
   return $status, $errorString;
 }
