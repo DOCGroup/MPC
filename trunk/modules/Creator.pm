@@ -338,15 +338,7 @@ sub parse_scope {
           ## processing the assignment as we will be throwing the value
           ## away anyway.
           if (defined $type) {
-            if ($values[0] == 0) {
-              $self->process_assignment($values[1], $values[2], $flags);
-            }
-            elsif ($values[0] == 1) {
-              $self->process_assignment_add($values[1], $values[2], $flags);
-            }
-            elsif ($values[0] == -1) {
-              $self->process_assignment_sub($values[1], $values[2], $flags);
-            }
+            $self->process_any_assignment($flags, @values);
           }
         }
         else {
@@ -366,6 +358,21 @@ sub parse_scope {
     }
   }
   return $status, $errorString;
+}
+
+
+sub process_any_assignment {
+  my($self, $flags, @values) = @_;
+
+  if ($values[0] == 0) {
+    $self->process_assignment($values[1], $values[2], $flags);
+  }
+  elsif ($values[0] == 1) {
+    $self->process_assignment_add($values[1], $values[2], $flags);
+  }
+  elsif ($values[0] == -1) {
+    $self->process_assignment_sub($values[1], $values[2], $flags);
+  }
 }
 
 
