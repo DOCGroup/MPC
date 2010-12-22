@@ -1711,3 +1711,12 @@ EM.zWhite {
 	vertical-align: baseline;
 	font-family: "Times New Roman";
 }
+img.floating {
+    float: right;
+    margin: lex;
+}
+pre.codeexample {
+    font-size: 8.0 pt;
+    font-family: "courier new";
+    margin-left: 24 pt;
+}
