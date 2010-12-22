@@ -12,6 +12,7 @@ package Driver;
 
 use strict;
 
+use mpc_debug;
 use Options;
 use Parser;
 use Version;
@@ -537,10 +538,13 @@ sub run {
       ++$loopTimes;
 
       if (!$loaded{$name}) {
+        mpc_debug::chkpnt_pre_creator_load($name);
         require "$name.pm";
+        mpc_debug::chkpnt_post_creator_load($name);
         $loaded{$name} = 1;
       }
       my $file = $cfile;
+      mpc_debug::chkpnt_pre_creator_create($name);
       my $creator = $name->new($options->{'global'},
                                $options->{'include'},
                                $options->{'template'},
@@ -570,6 +574,7 @@ sub run {
                                $options->{'gendot'},
                                $options->{'comments'},
                                $options->{'for_eclipse'});
+      mpc_debug::chkpnt_post_creator_create($name);
 
       ## Update settings based on the configuration file
       $creator->set_verbose_ordering($cfg->get_value('verbose_ordering'));

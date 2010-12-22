@@ -95,6 +95,10 @@ workspace {
   associate(other) {
     dir3
   }
+
+  specific(rpmspec) {
+    rpm_version = 1.0
+  }
 }
 
 The associate scope associates a name with one or more directories.
@@ -106,6 +110,15 @@ associations.
 Currently automake is the only project type that supports associations.
 Each directory listed under an association is grouped together and
 built conditionally based on the association name.
+
+Workspaces support a 'specific' clause conceptually and syntactically similar
+to the project 'specific' clause, described below.  Any variables assigned
+within the clause are only available to workspaces, not to projects.  Two sorts
+of assignments are possible: first are assignments to the keywords cmdline and
+implicit (described in the section 'Workspaces', below) and the second are
+type-specific variables.  Consult the documentation for the type for details on
+type-specific variables.  Keyword assignments (cmdline and implicit) impact the
+entire workspace, not just the 'specific' scope.
 
 Finally, prop:value are properties in MPC. They are used to group
 together common workspace/project types. More details on properties

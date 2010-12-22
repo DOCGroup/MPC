@@ -32,6 +32,9 @@ $basePath = VMS::Filespec::unixify($basePath) if ($^O eq 'VMS');
 my $mpcpath = $basePath;
 unshift(@INC, $mpcpath . '/modules');
 
+# Has to be a require because it's in the modules directory.
+require mpc_debug;
+
 ## If the ACE_ROOT environment variable is defined and this version of
 ## MPC is located inside the directory to which ACE_ROOT points, we will
 ## assume that the user wanted the ACE specific version of this script.
