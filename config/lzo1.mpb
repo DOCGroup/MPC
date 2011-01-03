@@ -2,7 +2,13 @@
 // $Id$
 
 feature(lzo1) {
-  includes += $(LZO1_ROOT)/include
+  // If the include files for lzo1 are not relative to the root (for
+  // example, /usr/include/lzo), set the LZO1_INCDIR environment variable.
+  expand(LZO1_INCDIR) {
+    LZO1_INCDIR
+    $(LZO1_ROOT)/include
+  }
+  includes += $(LZO1_INCDIR)
   libpaths += $(LZO1_ROOT)/lib
   specific (prop:microsoft) {
     lit_libs += liblzo
