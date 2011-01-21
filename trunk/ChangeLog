@@ -1,3 +1,9 @@
+Fri Jan 21 20:44:36 UTC 2011  Brian Johnson  <johnsonb@ociweb.com>
+
+        * clone_build_tree.pl:
+        
+          Limited core pattern match to just files.
+
 Mon Jan  3 18:08:05 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/lzo2.mpb:
