@@ -52,7 +52,6 @@ sub findCallback {
                   defined $exclude &&
                   /^$exclude\z/s && ($File::Find::prune = 1)       ||
                   /^\.cvsignore\z/s && ($File::Find::prune = 1)    ||
-                  /^build\z/s && ($File::Find::prune = 1)          ||
                   /^\..*obj\z/s && ($File::Find::prune = 1)        ||
                   /^Templates\.DB\z/s && ($File::Find::prune = 1)  ||
                   /^Debug\z/s && ($File::Find::prune = 1)          ||
@@ -523,6 +522,7 @@ $builddir = getcwd() . '/build' if (!defined $builddir);
 if (index($builddir, getcwd()) == 0) {
   $exclude = substr($builddir, length(getcwd()) + 1);
   $exclude =~ s/([\+\-\\\$\[\]\(\)\.])/\\$1/g;
+  $exclude =~ s/.*?([^\/]+)$/$1/;
 }
 else {
   $absolute = 1;
