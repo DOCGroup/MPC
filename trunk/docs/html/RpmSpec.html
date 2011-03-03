@@ -18,6 +18,7 @@
 
   <div>
     <h3 class="Head2">Background/Abstract</h3>
+    <ul>
     <li class="body">The <em>RpmSpec Type</em> generates
     <samp>.spec</samp> files suitable for use by the <samp><a
     href="http://docs.fedoraproject.org/en-US/Fedora_Draft_Documentation/0.1/html/RPM_Guide/ch-rpmbuild.html">rpmbuild</a></samp>
@@ -38,7 +39,7 @@
     work on platforms for which an RPM port exists, but such success
     would be coincidental and neither intended, tested, nor
     guaranteed.</li>
-    
+    </ul>
   </div>
 
   <div>
@@ -91,7 +92,7 @@
 
  <div>
   <h3 class="Head2">Adapting/Writing Projects for Packaging</h3>
-   <h4><a name-"mwcnotes"></a>Creating Workspaces</h4>
+   <h4><a name="mwcnotes"></a>Creating Workspaces</h4>
    <p>The RpmSpec type uses <a
     href="MakeProjectCreator.html#AggregatedWorkspace">aggregate
     workspaces</a> to define the scope of a package.  In other words,
@@ -118,8 +119,8 @@ workspace {
 }
 </pre>
    Details on the variables allowed in the <samp>specific</samp>
-   clause can be found in <a href="../templates/rpmspec.txt">the
-   <samp>$MPC_ROOT/docs/templates/rpmspec.txt</samp> file.</a>
+   clause can be found in the <a href="../templates/rpmspec.txt">
+   <samp>$MPC_ROOT/docs/templates/rpmspec.txt</samp></a> file.
    
    <p>If you use workspaces as a part of
    building right now, you may wish to write additional
@@ -144,6 +145,7 @@ workspace {
    developer can augment or replace MPC's guesses using
    <samp>Install*_Files</samp> groupings.  See the documentation on
    the <samp>gnuace</samp> installation feature for details.
+  </div>
 </div>
 
 <div>
@@ -195,6 +197,5 @@ workspace {
 
 
 <hr>
-<address></address>
-<!-- hhmts start --> Last modified: Fri Dec 24 09:28:45 CST 2010 <!-- hhmts end -->
+<!-- hhmts start --> Last modified: Fri Jan 14 09:09:04 CST 2011 <!-- hhmts end -->
 </body> </html>
