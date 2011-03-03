@@ -726,7 +726,23 @@ sub handle_scoped_unknown {
   }
   elsif (defined $self->{'scoped_basedir'}) {
     if ($self->path_is_relative($line)) {
-      $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
+      if ($line eq '.') {
+        $line = $self->{'scoped_basedir'};
+      }
+      else {
+        ## This is a relative path and the project may have been added
+        ## previously without a relative path.  We need to convert the
+        ## relative path into an absolute path and, if possible, remove
+        ## the current working directory from the front.  This will get
+        ## it down to a path that's relative to the current directory and
+        ## likely to match up with the addition of this file or directory
+        ## from an upper workspace.
+        my $cwd = $self->getcwd();
+        $line = Cwd::abs_path($self->{'scoped_basedir'} . "/$line");
+        if (index($line, $cwd) == 0) {
+          $line = substr($line, length($cwd) + 1);
+        }
+      }
     }
   }
 
