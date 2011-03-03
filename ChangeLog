@@ -1,3 +1,16 @@
+Thu Mar  3 18:51:23 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/html/RpmSpec.html:
+
+          Fixed html errors and warnings.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where a project added by an aggregated workspace
+          containing a relative path would not be recognized as a duplicate
+          if the same project were added by another workspace without a
+          relative path.
+
 Tue Feb 15 16:02:17 UTC 2011  Adam Mitz  <mitza@ociweb.com>
 
         * MPC version 3.9.0 released.
