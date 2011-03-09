@@ -1,3 +1,9 @@
+Wed Mar  9 13:51:00 UTC 2011  William R. Otte  <wotte@dre.vanderbilt.edu>
+
+        * config/ndds_ts_defaults.mpb:
+
+          Added PLATFORM_NDDS_ARGS at the suggestion of Johnny Willemsen.
+
 Thu Mar  3 18:51:23 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/html/RpmSpec.html:
