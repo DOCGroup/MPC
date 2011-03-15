@@ -181,7 +181,7 @@ Example.mpc, then the modified project name would be Example_Client.
 
 If the value set for exename contains an asterisk then the asterisk portion
 of the name will be replaced with the current project name.  The same logic
-applies to sharedname and staticname.
+applies to sharedname, staticname, after and libs.
 
 If multiple projects are going to be contained within a single workspace
 (using mwc.pl), there can be no duplication of project names.  This is
