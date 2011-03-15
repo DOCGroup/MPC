@@ -483,6 +483,10 @@ sub process_assignment {
       }
       mpc_debug::chkpnt_post_after_keyword_assignment($name, $value, $assign, $calledfrom);
     }
+    ## Support the '*' mechanism for libs assignment as well.
+    elsif ($name eq 'libs' && index($value, '*') >= 0) {
+      $value = $self->fill_type_name($value, $self->get_default_project_name());
+    }
 
     ## If this particular project type does not consider the dollar sign
     ## special and the user has provided two dollarsigns as an escape, we
