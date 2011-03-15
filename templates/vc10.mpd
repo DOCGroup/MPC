@@ -38,6 +38,9 @@
 <%else%>
     <CharacterSet>NotSet</CharacterSet>
 <%endif%>
+<%if(PlatformToolset)%>
+    <PlatformToolset><%PlatformToolset%></PlatformToolset>
+<%endif%>
 <%if(managed)%>
     <CLRSupport><%if(compares(managed,0))%>false<%else%><%if(compares(managed,1))%>true<%else%><%if(compares(managed,2))%>Pure<%else%><%if(compares(managed,3))%>Safe<%else%><%managed%><%endif%><%endif%><%endif%><%endif%></CLRSupport>
 <%endif%>

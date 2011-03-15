@@ -117,6 +117,7 @@ pdbl =  If this boolean template variable is set, the Linker Debugging property 
 peruserredirection = When Register Output is enabled, Per-user redirection forces registry writes to HKEY_CLASSES_ROOT to be redirected to HKEY_CURRENT_USER.
 platform = Specifies the target platform.
 platform_defines = Macros that are specific to a particular platform.
+platformtoolset = Use an alternate toolset, for example from vc9 or a different Windows SDK release (PlatformToolset in the vcxproj file).
 preprocesskeepcomments = Suppresses comment strip from source code; requires that one of the 'Preprocessing' options be set.
 preprocesssuppresslinenumbers = Preprocess without #line directives.
 preprocesstofile = Preprocesses C and C++ source files and writes the preprocessed output to a file. This option suppresses compilation, thus it does not produce an .obj file.
