@@ -80,6 +80,9 @@
     <WarningLevel><%warning_level("4")%></WarningLevel>
     <DebugType><%if(optimize)%>none<%else%>full<%endif%></DebugType>
     <ErrorReport>prompt</ErrorReport>
+<%if(PlatformTarget)%>
+    <PlatformTarget><%PlatformTarget%></PlatformTarget>
+<%endif%>
   </PropertyGroup>
 <%endfor%>
 <%endfor%>
