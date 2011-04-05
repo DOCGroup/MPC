@@ -1,3 +1,10 @@
+Tue Apr  5 19:25:02 UTC 2011  Phil Mesnier  <mesnier_p@ociweb.com>
+
+        * modules/Creator.pm:
+        * modules/WorkspaceCreator.pm:
+        
+          Fuzz fix.
+
 Tue Apr  5 18:47:09 UTC 2011  Don Hudson  <hudsond@ociweb.com>
 
        * modules/WorkspaceCreator.pm:
