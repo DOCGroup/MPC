@@ -215,7 +215,7 @@ sub parse_parents {
 
 
 sub parse_known {
-  my($self, $line) = @_;
+  my($self, $line, $fh) = @_;
   my $status = 1;
   my $errorString;
   my $type = $self->{'grammar_type'};
@@ -263,7 +263,7 @@ sub parse_known {
     $errorString = "No $type was defined";
     $status = 0;
   }
-  elsif ($self->parse_assignment($line, \@values)) {
+  elsif ($self->parse_assignment($line, \@values, $fh)) {
     ## If this returns true, then we've found an assignment
   }
   elsif ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*(:.*)?\s*{$/) {
@@ -289,6 +289,51 @@ sub parse_known {
   return $status, $errorString, @values;
 }
 
+## Parse an assignment that is bracketed by curly braces so it can span multiple lines.
+## This method parses the bracketed assignment into a regular assignment
+## and then calls SUPER::parse_assigment.
+##
+## A bracketed assigment has the form of:
+##
+##   keyword <operator> [optional flags] {
+## This spans
+## multiple lines
+##   }
+##
+## Optional flags are \s to retain leading white space and 
+## \n to retain new lines.  These flags are be combined.
+sub parse_assignment {
+  my($self, $line, $values, $fh) = @_;
+
+  if ($line =~ /^(\w+)\s*([\-+]?=)\s*(\\[sn]{1,2})?\s*{$/) {
+    my $comp = lc($1);
+    my $op = $2;
+    my $keep_leading_whitespace = ($3 eq "\\s" || $3 eq "\\ns" || $3 eq "\\sn");
+    my $keep_new_lines = ($3 eq "\\n" || $3 eq "\\ns" || $3 eq "\\sn");
+
+    my $bracketed_assignment;
+    while(<$fh>) {
+      ## This is not an error,
+      ## this is the end of the bracketed assignment.
+      last if ($_ =~ /^\s*}\s*$/);
+
+      ## Strip comments.
+      my $current_line = $self->strip_comments($_);
+      ## Skip blank lines unless we're keeping new lines.
+      next if (!$keep_new_lines && $self->is_blank_line($current_line));
+
+      $bracketed_assignment .= "\n" if defined $bracketed_assignment && $keep_new_lines;
+
+      $bracketed_assignment .= $self->strip_lt_whitespace($current_line, $keep_leading_whitespace);
+    }
+
+    if (defined $bracketed_assignment) {
+      $line = $comp . $op . $bracketed_assignment;
+    }
+  }
+
+  return $self->SUPER::parse_assignment($line, \@$values);
+}
 
 sub parse_scope {
   my($self, $fh, $name, $type, $validNames, $flags, $elseflags) = @_;
@@ -332,7 +377,7 @@ sub parse_scope {
     }
     else {
       my @values;
-      if (defined $validNames && $self->parse_assignment($line, \@values)) {
+      if (defined $validNames && $self->parse_assignment($line, \@values, $fh)) {
         if (defined $$validNames{$values[1]}) {
           ## If $type is not defined, we don't even need to bother with
           ## processing the assignment as we will be throwing the value
@@ -1161,7 +1206,7 @@ sub relative {
       my $ovalue = $value;
       my($rel, $how) = $self->get_initial_relative_values();
       $value = $self->expand_variables($value, $rel,
-                                       $expand_template, $scope, $how);
+                                       $expand_template, $scope, $how, 0);
 
       if ($ovalue eq $value || index($value, '$') >= 0) {
         ($rel, $how) = $self->get_secondary_relative_values();
