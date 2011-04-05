@@ -1256,7 +1256,7 @@ sub generate_hierarchy {
         ## Write out the hierachical workspace
         $self->cd($current);
         ($status, $errorString) = $self->generate_hierarchy($creator, \@saved, \%sinfo);
-        
+
         $self->{'projects'}       = \@saved;
         $self->{'project_info'}   = \%sinfo;
         $self->{'workspace_name'} = $self->base_directory();
