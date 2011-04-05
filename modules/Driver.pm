@@ -577,7 +577,8 @@ sub run {
       mpc_debug::chkpnt_post_creator_create($name);
 
       ## Update settings based on the configuration file
-      $creator->set_verbose_ordering($cfg->get_value('verbose_ordering'));
+      my $verbose_ordering = $cfg->get_value('verbose_ordering');
+      $creator->set_verbose_ordering($verbose_ordering) if defined $verbose_ordering;
 
       if ($base ne $file) {
         my $dir = ($base eq '' ? $file : $self->mpc_dirname($file));

@@ -93,7 +93,7 @@ sub new {
   $self->{'for_eclipse'}         = $foreclipse;
   $self->{'generate_dot'}        = $gendot;
   $self->{'generate_ins'}        = $genins;
-  $self->{'verbose_ordering'}    = undef;
+  $self->{'verbose_ordering'}    = $self->default_verbose_ordering();
   $self->{'wctype'}              = $self->extractType("$self");
   $self->{'workspace_comments'}  = $comments;
 
@@ -183,7 +183,7 @@ sub parse_line {
       }
       else {
         ## Workspace Beginning
-        ## Deal with the inheritance hiearchy first
+        ## Deal with the inheritance hierarchy first
         if (defined $values[2]) {
           foreach my $parent (@{$values[2]}) {
             ## Read in the parent onto ourself
@@ -449,7 +449,7 @@ sub process_types {
   ## Remove all negated types from the collection.
   foreach my $key (keys %types) {
     if ($key =~ /^!\s*(\w+)/) {
-      if ($1 == $self->{wctype}) {
+      if ($1 eq $self->{wctype}) {
         ## Remove the negated key
         delete $types{$key};
 
@@ -2230,7 +2230,7 @@ sub get_validated_ordering {
             }
             if (!$found) {
               if ($self->{'verbose_ordering'}) {
-                $self->warning("'$name' references '$dep' which has " .
+                $self->warning("processing '$project' and '$name' references '$dep' which has " .
                                "not been processed.");
               }
               splice(@$deps, $i, 1);
@@ -2429,6 +2429,11 @@ sub workspace_file_extension {
 sub workspace_per_project {
   #my $self = shift;
   return 0;
+}
+
+
+sub default_verbose_ordering {
+  return 0; # Don't warning if there are missing dependencies.
 }
 
 

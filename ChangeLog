@@ -1,3 +1,29 @@
+Tue Apr  5 18:47:09 UTC 2011  Don Hudson  <hudsond@ociweb.com>
+
+       * modules/WorkspaceCreator.pm:
+
+         Added default_verbose_ordering() that returns false
+         and used it to set verbose_ordering.  This allows derived workspace
+         creators to override the default verbose ordering.
+
+         Fixed typo in comment.
+
+         Corrected Perl warning by replacing == with eq in an if statement.
+
+         Modified the verbose ordering warning message to include the name
+         of the project being processed.
+
+       * modules/Driver.pm:
+
+          Changed to set verbose ordering on the creator only if it's defined
+          in the config file.
+
+        * modules/RpmSpecWorkspaceCreator.pm:
+
+          Added default_verbose_ordering() that returns true so that
+          a warning is logged if there are missing dependencies when
+          generating an rpm spec file.
+
 Tue Apr  5 12:57:22 UTC 2011  Don Hudson  <hudsond@ociweb.com>
 
         * docs/html/MakeProjectCreator.html:
