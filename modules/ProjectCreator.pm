@@ -792,7 +792,7 @@ sub parse_line {
   my($self, $ih, $line) = @_;
   my($status,
      $errorString,
-     @values) = $self->parse_known($line);
+     @values) = $self->parse_known($line, $ih);
 
   ## parse_known() passes back an array of values
   ## that make up the contents of the line parsed.
@@ -1028,7 +1028,7 @@ sub parse_line {
         }
         elsif ($comp eq 'expand') {
           $self->{'parsing_expand'} = 1;
-          ($status, $errorString) = $self->parse_scope($ih, $comp, $name);
+          ($status, $errorString) = $self->parse_scope($ih, $comp, $name, undef);
           $self->{'parsing_expand'} = undef;
         }
         else {
@@ -1247,7 +1247,7 @@ sub handle_scoped_unknown {
 }
 
 sub process_component_line {
-  my($self, $tag, $line, $flags,
+  my($self, $tag, $line, $fh, $flags,
      $grname, $current, $excarr, $comps, $count) = @_;
   my $status = 1;
   my $error;
@@ -1255,7 +1255,7 @@ sub process_component_line {
   my @values;
 
   ## If this returns true, then we've found an assignment
-  if ($self->parse_assignment($line, \@values)) {
+  if ($self->parse_assignment($line, \@values, $fh)) {
     $status = $self->parse_scoped_assignment($tag, @values, $flags);
     if (!$status) {
       $error = 'Unknown keyword: ' . $values[1];
@@ -1417,7 +1417,7 @@ sub parse_conditional {
     }
     elsif ($add) {
       ($status, $error) = $self->process_component_line(
-                                              $tag, $line, $flags,
+                                              $tag, $line, $fh, $flags,
                                               $grname, $current,
                                               $exclude, $comps, $count);
       last if (!$status);
@@ -1523,7 +1523,7 @@ sub parse_components {
       }
     }
     else {
-      ($status, $error) = $self->process_component_line($tag, $line, \%flags,
+      ($status, $error) = $self->process_component_line($tag, $line, $fh, \%flags,
                                                         \$grname, $current,
                                                         \@exclude, $comps,
                                                         \$count);
@@ -1848,7 +1848,7 @@ sub parse_define_custom {
     else {
       my @values;
       ## If this returns true, then we've found an assignment
-      if ($self->parse_assignment($line, \@values)) {
+      if ($self->parse_assignment($line, \@values, $fh)) {
         my($type, $name, $value) = @values;
         ## The 'automatic' keyword has always contained two distinct
         ## functions.  The first is to automatically add input files of
@@ -2213,6 +2213,7 @@ sub read_template_input {
 
 sub already_added {
   my($self, $array, $name) = @_;
+  my $case_tolerant = $self->case_insensitive();
 
   ## This method expects that the file name will be unix style
   $name =~ s/\\/\//g if ($self->{'convert_slashes'});
@@ -2221,8 +2222,16 @@ sub already_added {
   $name =~ s/^\.\///;
   my $dsname = "./$name";
 
+  ## Take into account file system case-insenitivity.
+  if ($case_tolerant) {
+    $name = lc($name);
+    $dsname = lc($dsname);
+  }
+
   foreach my $file (@$array) {
-    return 1 if ($file eq $name || $file eq $dsname);
+    my $my_file = ($case_tolerant ? lc($file) : $file);
+
+    return 1 if ($my_file eq $name || $my_file eq $dsname);
   }
 
   return 0;
