@@ -300,7 +300,7 @@ sub parse_known {
 ## multiple lines
 ##   }
 ##
-## Optional flags are \s to retain leading white space and 
+## Optional flags are \s to retain leading white space and
 ## \n to retain new lines.  These flags are be combined.
 sub parse_assignment {
   my($self, $line, $values, $fh) = @_;
