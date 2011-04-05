@@ -43,16 +43,37 @@ sub new {
 }
 
 
+sub strip_comments {
+  my($self, $line) = @_;
+
+  $line =~ s/\/\/.*//;
+  return $line;
+}
+
+
+sub strip_lt_whitespace {
+  my($self, $line, $keep_leading_whitespace) = @_;
+
+  $line =~ s/^\s+// if !$keep_leading_whitespace;
+  $line =~ s/\s+$//;
+  return $line;
+}
+
+
+sub is_blank_line {
+  my($self, $line) = @_;
+  return m/^\s+$/;
+}
+
+
 sub strip_line {
   my($self, $line) = @_;
 
   ## Keep track of our line number
   ++$self->{'line_number'};
 
-  ## Remove comments and leading and trailing white-space.
-  $line =~ s/\/\/.*//;
-  $line =~ s/^\s+//;
-  $line =~ s/\s+$//;
+  $line = $self->strip_comments($line);
+  $line = $self->strip_lt_whitespace($line);
 
   return $line;
 }

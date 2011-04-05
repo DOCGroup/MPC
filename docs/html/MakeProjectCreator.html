@@ -2202,6 +2202,25 @@
               <li class="BodyNoLead">Assignments can also use the <em class=
               "Code">+=</em> and <em class="Code">-=</em> operators to add
               and subtract values from keyword values.</li>
+             
+              <li class="Body">Assignments can be bracketed by curly braces 
+              so they can span multiple lines. The opening curly brace must 
+              be the last thing on the same line as the operator and the closing 
+              brace must be on its own line (but can have leading white space).  
+              Optionally, \n, \s, or \ns can be included after the operator.  These
+              indicate that new lines should be retained (\n) and leading white space
+              should be retained (\s).</li>
+
+              <li style="list-style: none">
+                <p class="Code">&nbsp;</p>
+                <p class="Code">specific(rpmspec) {</p>
+                <p class="Code">&nbsp;rpm_description = \ns {</p>
+                <p class="Code">This description</p>
+                <p class="Code">spans multiple lines.</p>
+                <p class="Code">&nbsp;}</p>
+                <p class="Code">}</p>
+                <p class="Code">&nbsp;</p>
+              </li>
 
               <li class="Body">If a <em class="Code">sharedname</em> is
               specified in the mpc file and <em class="Code">staticname</em>

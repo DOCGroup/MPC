@@ -77,7 +77,7 @@ sub new {
 
   ## These are maintained/modified throughout processing
   $self->{$self->{'type_check'}} = 0;
-  $self->{'cacheok'}             = 1;
+  $self->{'cacheok'}             = $self->default_cacheok();
   $self->{'lib_locations'}       = {};
   $self->{'reading_parent'}      = [];
   $self->{'global_feature_file'} = $gfeature;
@@ -126,6 +126,9 @@ sub new {
   return $self;
 }
 
+sub default_cacheok {
+  return 1;
+}
 
 sub set_verbose_ordering {
   my($self, $value) = @_;
@@ -141,7 +144,7 @@ sub modify_assignment_value {
 
 sub parse_line {
   my($self, $ih, $line, $flags) = @_;
-  my($status, $error, @values) = $self->parse_known($line);
+  my($status, $error, @values) = $self->parse_known($line, $ih);
 
   ## Was the line recognized?
   if ($status && defined $values[0]) {
@@ -321,7 +324,7 @@ sub aggregated_workspace {
 
     while(<$fh>) {
       my $line = $self->preprocess_line($fh, $_);
-      ($status, $error, @values) = $self->parse_known($line);
+      ($status, $error, @values) = $self->parse_known($line, $fh);
 
       ## Was the line recognized?
       if ($status) {
@@ -490,7 +493,7 @@ sub parse_exclude {
         if ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
           ++$count;
         }
-        elsif ($self->parse_assignment($line, [])) {
+        elsif ($self->parse_assignment($line, [], $fh)) {
           ## Ignore all assignments
         }
         else {
@@ -593,7 +596,7 @@ sub parse_associate {
       if ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
         ++$count;
       }
-      elsif ($self->parse_assignment($line, [])) {
+      elsif ($self->parse_assignment($line, [], $fh)) {
         $errorString = 'Assignments are not ' .
                        'allowed within an associate scope';
         last;
@@ -1005,7 +1008,8 @@ sub get_current_output_name {
 sub write_and_compare_file {
   my($self, $outdir, $oname, $func, @params) = @_;
   my $fh    = new FileHandle();
-  my $error = undef;
+  my $status = 1;
+  my $errorString = undef;
 
   ## Set the output directory if one wasn't provided
   $outdir = $self->get_outdir() if (!defined $outdir);
@@ -1027,19 +1031,24 @@ sub write_and_compare_file {
     my $tmp = "$outdir/MWC$>.$$";
     my $different = 1;
     if (open($fh, ">$tmp")) {
-      &$func($self, $fh, @params);
+      ($status, $errorString) = &$func($self, $fh, @params);
       close($fh);
 
-      $different = 0 if (!$self->files_are_different($name, $tmp));
+      $different = 0 if ($status && !$self->files_are_different($name, $tmp));
     }
     else {
-      $error = "Unable to open $tmp for output.";
+      $status = 0;
+      $errorString = "Unable to open $tmp for output.";
     }
 
-    if (!defined $error) {
+    if ($status) {
       if ($different) {
         unlink($name);
-        $error = "Unable to open $name for output" if (!rename($tmp, $name));
+
+        if (!rename($tmp, $name)) {
+          $status = 0;
+          $errorString = "Unable to open $name for output";
+        }
       }
       else {
         ## There is no need to rename, so remove our temp file.
@@ -1053,17 +1062,18 @@ sub write_and_compare_file {
       close($fh);
     }
     else {
-      $error = "Unable to open $name for output.";
+      $status = 0;
+      $errorString = "Unable to open $name for output.";
     }
   }
 
-  return $error;
+  return $status, $errorString;
 }
 
 sub write_workspace {
   my($self, $creator, $addfile) = @_;
   my $status = 1;
-  my $error;
+  my $errorString;
   my $duplicates = 0;
 
   if ($self->get_toplevel()) {
@@ -1101,7 +1111,7 @@ sub write_workspace {
     my $abort_creation = 0;
     if ($duplicates > 0) {
       $abort_creation = 1;
-      $error = "Duplicate case-insensitive project names are " .
+      $errorString = "Duplicate case-insensitive project names are " .
                "not allowed within a workspace.";
       $status = 0;
     }
@@ -1119,31 +1129,29 @@ sub write_workspace {
       }
 
       if ($addfile || !$self->file_written($name)) {
-        $error = $self->write_and_compare_file(
+        ($status, $errorString) = $self->write_and_compare_file(
                           undef, $name,
                           sub {
                             my($self, $fh) = @_;
                             $self->pre_workspace($fh, $creator, $addfile);
-                            $self->write_comps($fh, $creator, $addfile);
+                            my($status, $errorString) = $self->write_comps($fh, $creator, $addfile);
+                            ## If write_comps() does't return a status, set status to true.
+                            $status = 1 if (!defined $status || $status eq "");
+                            if ($status) {
+                              my $wsHelper = WorkspaceHelper::get($self);
+                              $wsHelper->perform_custom_processing($fh, $creator, $addfile);
 
-                            my $wsHelper = WorkspaceHelper::get($self);
-                            $wsHelper->perform_custom_processing($fh, $creator, $addfile);
-
-                            $self->post_workspace($fh, $creator, $addfile);
+                              $self->post_workspace($fh, $creator, $addfile);
+                            }
+                            return $status, $errorString;
                           });
-        if (defined $error) {
-          $status = 0;
-        }
-        else {
-          $self->add_file_written($name) if ($addfile);
-        }
+        $self->add_file_written($name) if ($status && $addfile);
       }
 
       my $additional = $self->get_additional_output();
       foreach my $entry (@$additional) {
-        $error = $self->write_and_compare_file(@$entry);
-        if (defined $error) {
-          $status = 0;
+        ($status, $errorString) = $self->write_and_compare_file(@$entry);
+        if (!$status) {
           last;
         }
       }
@@ -1179,7 +1187,7 @@ sub write_workspace {
     $self->{'per_project_workspace_name'} = undef if (!$addfile);
   }
 
-  return $status, $error;
+  return $status, $errorString;
 }
 
 
@@ -1224,6 +1232,8 @@ sub generate_hierarchy {
   my @saved;
   my %sinfo;
   my $cwd = $self->getcwd();
+  my $status = 1;
+  my $errorString;
 
   ## Make a copy of these.  We will be modifying them.
   ## It is necessary to sort the projects to get the correct ordering.
@@ -1245,15 +1255,14 @@ sub generate_hierarchy {
       if ($current ne '.') {
         ## Write out the hierachical workspace
         $self->cd($current);
-        $self->generate_hierarchy($creator, \@saved, \%sinfo);
-
+        ($status, $errorString) = $self->generate_hierarchy($creator, \@saved, \%sinfo);
+        
         $self->{'projects'}       = \@saved;
         $self->{'project_info'}   = \%sinfo;
         $self->{'workspace_name'} = $self->base_directory();
+        ($status, $errorString) = $self->write_workspace($creator) if ($status);
 
-        my($status, $error) = $self->write_workspace($creator);
-        $self->error($error) if (!$status);
-
+        last if !$status;
         $self->cd($cwd);
       }
 
@@ -1268,19 +1277,19 @@ sub generate_hierarchy {
       $sinfo{$rest} = $projinfo{$prj};
     }
   }
-  if (defined $current && $current ne '.') {
+  if ($status && defined $current && $current ne '.') {
     $self->cd($current);
-    $self->generate_hierarchy($creator, \@saved, \%sinfo);
+    ($status, $errorString) = $self->generate_hierarchy($creator, \@saved, \%sinfo);
 
     $self->{'projects'}       = \@saved;
     $self->{'project_info'}   = \%sinfo;
     $self->{'workspace_name'} = $self->base_directory();
-
-    my($status, $error) = $self->write_workspace($creator);
-    $self->error($error) if (!$status);
+    ($status, $errorString) = $self->write_workspace($creator) if ($status);
 
     $self->cd($cwd);
   }
+
+  return $status, $errorString;
 }
 
 
@@ -1299,6 +1308,7 @@ sub generate_project_files {
   my $prevcache = $self->{'cacheok'};
   my %gstate    = $creator->save_state();
   my $genimpdep = $self->generate_implicit_project_dependencies();
+  my $errorString;
 
   ## Save this project creator setting for later use in the
   ## number_target_deps() method.
@@ -1437,7 +1447,7 @@ sub generate_project_files {
   $self->{'lib_locations'} = \%liblocs;
   if ($self->get_hierarchy() || $self->workspace_per_project()) {
     my $orig = $self->{'workspace_name'};
-    $self->generate_hierarchy($creator, \@projects, \%pi);
+    ($status, $errorString) = $self->generate_hierarchy($creator, \@projects, \%pi);
     $self->{'workspace_name'} = $orig;
   }
 
@@ -1445,7 +1455,7 @@ sub generate_project_files {
   $self->{'projects'}      = \@projects;
   $self->{'project_info'}  = \%pi;
 
-  return $status, $creator;
+  return $status, $creator, $errorString;
 }
 
 
@@ -1990,8 +2000,8 @@ sub optionError {
 sub process_cmdline {
   my($self, $cmdline, $parameters) = @_;
 
-  ## It's ok to use the cache
-  $self->{'cacheok'} = 1;
+  ## Set cache use to default.
+  $self->{'cacheok'} = $self->default_cacheok();
 
   if (defined $cmdline && $cmdline ne '') {
     my $args = $self->create_array($cmdline);

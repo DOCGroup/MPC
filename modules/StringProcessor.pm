@@ -21,7 +21,8 @@ sub parse_assignment {
 
   ## In MPC, a scope can have spaces in it.  However, it can not end
   ## in a space.
-  if ($line =~ /^((\w+[-\s\w]+\w::)*\w+)\s*([\-+]?=)\s*(.*)?/) {
+  ## Line may have embedded new lines, so using 's' modifier.
+  if ($line =~ /^((\w+[-\s\w]+\w::)*\w+)\s*([\-+]?=)\s*(.*)?/s) {
     my $op = ($3 eq '+=' ? 1 : $3 eq '-=' ? -1 : 0);
     push(@$values, $op, $self->resolve_alias(lc($1)), $4);
     return 1;

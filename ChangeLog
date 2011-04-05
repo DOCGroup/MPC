@@ -1,3 +1,77 @@
+Tue Apr  5 12:57:22 UTC 2011  Don Hudson  <hudsond@ociweb.com>
+
+        * docs/html/MakeProjectCreator.html:
+
+          Added bracketed (multiline) assigments to documentation,
+          i.e., assignment of form:
+
+          keyword <operator> [optional flags] {
+                    This is
+                    a multiline assignment.
+          }
+
+          Optional flags are \s to retain leading white space and
+          \n to retain new lines.  These flags are be combined.
+
+        * docs/templates/rpmspec.txt:
+
+          Added rpm_pre_cmd keyword for %pre section of the RPM spec file
+          and rpm_url for the URL tag in the RPM spec file.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Changed to default to cacheok of false as some intermediate project
+          files are deleted must be regenerated if a project is regenerated.
+          This was causing an error, but the error was only being logged.
+
+          Changed to return an error code and message when workspace generation
+          fails in some cases where an error message was only logged.
+
+        * modules/Creator.pm:
+
+          Added parse_assignment() that pre-parses bracketed assigments
+          (see comment on docs/html/MakeProjectCreator.html) before
+          calling SUPER::parse_assignment(). This method takes an optional
+          file handle that must be used for bracketed assignment support.
+
+        * modules/DirectoryManager.pm:
+
+          Corrected typo in comment.
+
+        * modules/Parser.pm:
+
+          Added strip_comments(), strip_lt_whitespace(), and is_blank_line().
+
+        * modules/ProjectCreator.pm:
+
+          Added file handle parse_assignment and related method calls for
+          bracketed assignment support.  See comment on modules/Creator.pm.
+
+          Added case sensitivity logic to already_added() similar to other places in code.
+
+        * modules/RpmSpecWorkspaceCreator.pm:
+
+          Changed write_and_compare_file() to return 1 instead of undef as method
+          must now return status.
+
+          Added %pre section and URL tag to RPM spec file generation.
+
+        * modules/StringProcessor.pm:
+
+          Changed parse_assignment() to not strip ending new line
+          as later parsing may need it.
+
+        * modules/WorkspaceCreator.pm:
+
+          Added file handle parse_assignment and related method calls for
+          bracketed assignment support.  See comment on modules/Creator.pm.
+
+          Changed to return an error code and message when workspace generation
+          fails in some cases where an error message was only logged.
+
+          Added default_cacheok() which returns true and is used to set 'cacheok'
+          so this method can be overridden when 'cacheok' needs to be false.
+
 Fri Mar 18 15:07:53 UTC 2011  Adam Mitz  <mitza@ociweb.com>
 
         * docs/templates/vc8csharp.txt:
