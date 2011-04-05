@@ -36,6 +36,11 @@ sub compare_output {
   return 1;
 }
 
+## Can't cache as some intermediate project files are deleted
+## and must be regenerated if a project is regenerated.
+sub default_cacheok {
+  return 0;
+}
 
 sub files_are_different {
   my($self, $old, $new) = @_;
@@ -253,6 +258,8 @@ sub write_comps {
   my $installable_pkgconfig;
   my $includedir;
   my $project_name;
+  my $status = 1;
+  my $errorString;
 
   ## To avoid unnecessarily emitting blank assignments, rip through the
   ## Makefile.<project>.am files and check for conditions.
@@ -306,7 +313,9 @@ sub write_comps {
         $in_condition = 0;
       }
       else {
-        $self->error("Unable to open $local for reading.");
+        $errorString = "Unable to open $local for reading.";
+        $status = 0;
+        last;
       }
     }
   }
@@ -319,8 +328,8 @@ sub write_comps {
   ## Print out the Makefile.am.
   my $wsHelper = WorkspaceHelper::get($self);
   my $convert_header_name;
-  if ((!defined $includedir && $installable_headers)
-      || $installable_pkgconfig) {
+  if ($status && ((!defined $includedir && $installable_headers)
+      || $installable_pkgconfig)) {
     if (!defined $includedir && $installable_headers) {
       my $incdir = $wsHelper->modify_value('includedir',
                                            $self->get_includedir());
@@ -336,16 +345,13 @@ sub write_comps {
     print $fh $crlf;
   }
 
-  if (@locals) {
-    my($status, $error) = $wsHelper->write_settings($self, $fh, @locals);
-    if (!$status) {
-      $self->error($error);
-    }
+  if ($status && @locals) {
+    ($status, $errorString) = $wsHelper->write_settings($self, $fh, @locals);
   }
 
   ## Create the SUBDIRS setting.  If there are associated projects, then
   ## we will also set up conditionals for it as well.
-  if ($have_subdirs == 1) {
+  if ($status && $have_subdirs == 1) {
     my $assoc = $self->get_associated_projects();
     my @aorder;
     my %afiles;
@@ -398,7 +404,7 @@ sub write_comps {
   ## Now, for each target used in a conditional, emit a blank assignment
   ## and mark that we've seen that target to avoid changing the += to =
   ## as the individual files are pulled in.
-  if (%conditional_targets) {
+  if ($status && %conditional_targets) {
     my $primary;
     my $count;
 
@@ -416,7 +422,7 @@ sub write_comps {
 
   ## Take the local Makefile.<project>.am files and insert each one here,
   ## then delete it.
-  if (@locals) {
+  if ($status && @locals) {
     my $pfh = new FileHandle();
     my $liblocs = $self->get_lib_locations();
     my $here = $self->getcwd();
@@ -560,7 +566,9 @@ sub write_comps {
         print $fh $crlf;
       }
       else {
-        $self->error("Unable to open $local for reading.");
+        $errorString = "Unable to open $local for reading.";
+        $status = 0;
+        last;
       }
     }
   }
@@ -569,7 +577,7 @@ sub write_comps {
   ## autoconf/automake flags down the tree when running autoconf.
   ## *** This may be too closely tied to how we have things set up in ACE,
   ## even though it's recommended practice. ***
-  if ($toplevel) {
+  if ($status && $toplevel) {
     my $m4inc = '-I m4';
     print $fh $crlf,
               'ACLOCAL = @ACLOCAL@', $crlf,
@@ -582,7 +590,7 @@ sub write_comps {
   }
 
   ## Finish up with the cleanup specs.
-  if (@locals) {
+  if ($status && @locals) {
     ## There is no reason to emit this if there are no local targets.
     ## An argument could be made that it shouldn't be emitted in any
     ## case because it could be handled by CLEANFILES or a verbatim
@@ -597,6 +605,8 @@ sub write_comps {
               "\t-rm -rf templateregistry ir.out", $crlf,
               "\t-rm -rf ptrepository SunWS_cache Templates.DB", $crlf;
   }
+
+  return $status, $errorString;
 }
 
 

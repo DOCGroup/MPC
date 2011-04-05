@@ -61,7 +61,7 @@ sub interpret_keyword {
 sub write_and_compare_file {
   my($self, $outdir, $oname, $func, @params) = @_;
   &$func($self, undef, @params);
-  return undef;
+  return 1;
 }
 
 sub rpmname {
@@ -275,6 +275,7 @@ Source: <%rpm_source_base("")%><%rpm_name%>.tar.gz
 Name: <%rpm_name%>
 Group: <%rpm_group%>
 Summary: <%rpm_summary%>
+<%cond(rpm_url, URL: )%>
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Prefix: <%rpm_prefix("/usr")%>
 AutoReqProv: <%rpm_autorequiresprovides("no")%>
@@ -289,6 +290,9 @@ AutoReqProv: <%rpm_autorequiresprovides("no")%>
 %defattr(-,root,root)
 %doc
 %config
+
+%pre
+<%rpm_pre_cmd()%>
 
 %post
 <%rpm_post_cmd()%>
