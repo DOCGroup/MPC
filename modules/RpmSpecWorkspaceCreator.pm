@@ -43,6 +43,10 @@ sub documentation_info {
   return '^sub get_template', '^EOT$';
 }
 
+sub default_verbose_ordering {
+  return 1; # Warn if there are missing dependencies.
+}
+
 # Called by document_template.pl
 sub interpret_keyword {
   my $vname = shift;
