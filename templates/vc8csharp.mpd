@@ -131,7 +131,7 @@
   </ItemGroup>
   <ItemGroup>
 <%foreach(source_files)%>
-<%if(contains(flag_overrides(source_file, subtype), ^(Form|Component)$))%>
+<%if(contains(flag_overrides(source_file, subtype), ^(Form|Component|UserControl)$))%>
     <Compile Include="<%source_file%>">
       <SubType><%flag_overrides(source_file, subtype)%></SubType>
 <%if(flag_overrides(source_file, dependent_upon))%>
@@ -158,7 +158,7 @@
 <%endif%>
 <%endfor%>
 <%foreach(source_files)%>
-<%if(!contains(flag_overrides(source_file, subtype), ^(Form|Component)$))%>
+<%if(!contains(flag_overrides(source_file, subtype), ^(Form|Component|UserControl)$))%>
 <%if(!compares(vcversion, 8.00) && ends_with(source_file, \.manifest))%>
     <None Include="<%source_file%>" />
 <%else%>
