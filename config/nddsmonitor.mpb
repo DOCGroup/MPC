@@ -1,7 +1,7 @@
 // -*- MPC -*-
 // $Id$
 
-feature (nddsmonitor) :nddslib {
+feature (nddsmonitor) : nddslib {
   libs += rtimonitoring
 }
 
