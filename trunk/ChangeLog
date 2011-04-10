@@ -1,3 +1,10 @@
+Sun Apr 10 17:39:57 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/nddsexe_with_idl.mpb:
+        * config/nddslib_with_idl.mpb:
+          Removed these files, use nddslib/nddsexe with the needed ts_defaults
+          base project
+
 Sun Apr 10 12:07:15 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_ts_defaults.mpb:
