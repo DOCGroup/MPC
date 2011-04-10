@@ -1,3 +1,10 @@
+Sun Apr 10 12:07:15 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_ts_defaults.mpb:
+          Removed CCK related options, this way someone can use NDDS without
+          requiring him to use the CCK, if you need the cck support, use
+          ndds_cck_ts_defaults as new base
+
 Sat Apr  9 11:47:11 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_cck_ts_defaults.mpb:
