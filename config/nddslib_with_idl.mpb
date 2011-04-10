@@ -1,5 +1,0 @@
-// -*- MPC -*-
-// $Id$
-
-project : nddslib, ndds_ts_defaults {
-}
