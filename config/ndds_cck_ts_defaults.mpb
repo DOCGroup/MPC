@@ -2,5 +2,5 @@
 // $Id$
 
 project : ndds_ts_defaults {
-  ndds_ts_flags += -corba <%input_noext%>C.h -orb ACE_TAO2.0 -I$(TAO_ROOT) -I$(TAO_ROOT)/tao
+  ndds_ts_flags += -corba <%input_noext%>C.h -orb ACE_TAO2.0 -enableEscapeChar -I$(TAO_ROOT) -I$(TAO_ROOT)/tao
 }
