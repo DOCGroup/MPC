@@ -1,3 +1,8 @@
+Mon Apr 11 01:57:43 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/tena_base.mpb:
+        * config/tena_middleware.mpb:
+
 Sun Apr 10 17:39:57 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/nddsexe_with_idl.mpb:
