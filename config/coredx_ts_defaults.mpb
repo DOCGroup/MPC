@@ -4,14 +4,13 @@
 project {
   Define_Custom(CoreDXTypeSupport) {
     command               = <%quote%>$(COREDX_TOP)/host/$(COREDX_HOST)/bin/coredx_ddl<%quote%>
-
+    commandflags          = -l cpp -f
     dependent             = <%quote%>$(COREDX_TOP)/host/$(COREDX_HOST)/bin/coredx_ddl<%quote%>
-
-    source_pre_extension  = , Support
-    source_outputext      = .cxx
-    header_pre_extension  = , Support
-    header_outputext      = .h
-    keyword ndds_ts_flags = commandflags
+    source_pre_extension  = , TypeSupport, DataReader, DataWriter
+    source_outputext      = .cc
+    header_pre_extension  = , TypeSupport, DataReader, DataWriter
+    header_outputext      = .hh
+    keyword coredx_ts_flags = commandflags
   }
 
   requires += coredx
