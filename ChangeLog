@@ -1,3 +1,8 @@
+Thu Apr 14 11:53:22 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/coredx_ts_defaults.mpb:
+          Extended this file
+
 Mon Apr 11 12:25:37 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/ndds_cck_ts_defaults.mpb:
