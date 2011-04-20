@@ -1,0 +1,8 @@
+// $Id$
+
+project : tena_base {
+  specific {
+    lit_libs     += libTENA_Middleware-$(TENA_PLATFORM)-v$(TENA_VERSION)
+    dynamicflags += TENA_PLATFORM=$(TENA_PLATFORM)
+  }
+}
