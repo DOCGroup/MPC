@@ -61,7 +61,7 @@ sub write_comps {
   ## Send all the information to our base class method
   $self->write_named_targets($fh, $self->crlf(), \%targnum, \@list,
                              ($self->languageIs(Creator::csharp) ?
-                               'bundle ' : '') . $targets, '', 'generated ',
+                               'bundle ' : '') . $targets, '', '',
                              $self->project_target_translation(1), 1);
 }
 
