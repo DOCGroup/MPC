@@ -1,3 +1,10 @@
+Wed Apr 27 14:07:44 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/make.mpd:
+
+          In the custom-only case, make sure that "all" is the first target
+          listed, and also have the "generated" target invoke prebuild.
+
 Wed Apr 27 13:25:32 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * prj_install.pl:
