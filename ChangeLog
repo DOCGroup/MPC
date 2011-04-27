@@ -1,3 +1,10 @@
+Wed Apr 27 14:31:56 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/MakeWorkspaceCreator.pm:
+
+          Due to the change below, the workspace makefile no longer needs
+          to explicitly invoke the "generated" target in the projects.
+
 Wed Apr 27 14:07:44 UTC 2011  Adam Mitz  <mitza@ociweb.com>
 
         * templates/make.mpd:
