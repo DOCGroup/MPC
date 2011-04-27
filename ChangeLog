@@ -1,3 +1,9 @@
+Wed Apr 27 13:25:32 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * prj_install.pl:
+          Added fix for OSX, thanks to Paul Fitzpatrick
+          <paul at robotrebuilt dot com> for reporting this
+
 Thu Apr 14 11:53:22 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/coredx_ts_defaults.mpb:
