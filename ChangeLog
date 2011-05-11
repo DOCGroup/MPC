@@ -1,3 +1,10 @@
+Wed May 11 14:18:13 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc10.mpd:
+
+          Generate the msbuild LinkKeyFile element from the MPC template
+          variable keyfile.  Thanks to Charles Calkins for the patch.
+
 Wed Apr 27 14:31:56 UTC 2011  Adam Mitz  <mitza@ociweb.com>
 
         * modules/MakeWorkspaceCreator.pm:

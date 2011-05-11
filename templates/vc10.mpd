@@ -116,6 +116,9 @@
 <%if(EmbedManifest || keyfile)%>
     <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(EmbedManifest)%><%EmbedManifest%><%else%><%if(keyfile)%>false<%endif%><%endif%></EmbedManifest>
 <%endif%>
+<%if(keyfile)%>
+    <LinkKeyFile Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%keyfile%></LinkKeyFile>
+<%endif%>
 <%endif%>
 <%endfor%>
 <%endfor%>
