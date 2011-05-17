@@ -1,3 +1,17 @@
+Tue May 17 15:32:48 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Driver.pm:
+        * modules/Options.pm:
+        * modules/OutputMessage.pm:
+
+          Added debug information about the possible base projects that are
+          available.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where subtracting values that contain psuedo variables
+          failed because they were not evaluated before subtracting.
+
 Wed May 11 14:18:13 UTC 2011  Adam Mitz  <mitza@ociweb.com>
 
         * templates/vc10.mpd:
