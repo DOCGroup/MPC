@@ -49,6 +49,11 @@ sub set_levels {
   }
 }
 
+## Accessor for the debug setting.  No parameters are necesary.
+sub get_debug_level {
+  return $debug;
+}
+
 sub split_message {
   my($self, $msg, $spc) = @_;
   $msg =~ s/\n+/\n$spc/g;

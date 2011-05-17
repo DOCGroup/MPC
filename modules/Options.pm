@@ -554,6 +554,10 @@ sub options {
     }
   }
 
+  ## The following can be time consuming, so we'll only do it if we know
+  ## we're debugging.
+  $self->dump_base_projects(\@include) if ($self->get_debug_level());
+
   return {'global'           => $global,
           'feature_file'     => $feature_f,
           'gfeature_file'    => $gfeature_f,
@@ -607,6 +611,21 @@ sub is_set {
   }
 
   return undef;
+}
+
+sub dump_base_projects {
+  my($self, $includes) = @_;
+  my $dp = new FileHandle();
+
+  ## Go through each include directory and print all of the possible base
+  ## projects.  Both .mpb and .mpc files can be base projects.
+  foreach my $dir (@$includes) {
+    if (opendir($dp, $dir)) {
+      $self->debug("Base projects from $dir: " .
+                   join(' ', grep(/\.mp[bc]$/, readdir($dp))));
+      closedir($dp);
+    }
+  }
 }
 
 1;
