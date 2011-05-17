@@ -545,6 +545,15 @@ sub process_assignment_sub {
   ## fix up the value and change the name.
   ($name, $value) = $self->create_recursive_settings($name, $value, $assign);
 
+  ## If the assignment name is valid and requires parameter (<%...%>)
+  ## replacement, then do so.  But, only do so on actual keywords.
+  ## User defined keywords must not have the parameters replaced in
+  ## order for them to get the correct replacement values later on.
+  if (defined $validNames{$name} &&
+      ($validNames{$name} & 0x04) == 0 && index($value, '<%') >= 0) {
+    $value = $self->replace_parameters($value, $self->{'command_subs'});
+  }
+
   return $self->SUPER::process_assignment_sub($name, $value, $assign);
 }
 
