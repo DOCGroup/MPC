@@ -1,3 +1,10 @@
+Thu May 19 15:29:01 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * config/glib.mpb:
+
+          Allow customization of the include search path for GLib since
+          at least some 64-bit Linux distros use "lib64" in place of "lib".
+
 Tue May 17 15:32:48 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Driver.pm:
