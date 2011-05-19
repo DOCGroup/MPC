@@ -9,8 +9,13 @@ project {
     2.0
   }
 
+  expand(GLIB_LIB_DIR) {
+    $GLIB_LIB_DIR
+    lib
+  }
+
   includes      += $(GLIB_ROOT)/include/glib-$(GLIB_VERSION) \
-                   $(GLIB_ROOT)/lib/glib-$(GLIB_VERSION)/include
+                   $(GLIB_ROOT)/$(GLIB_LIB_DIR)/glib-$(GLIB_VERSION)/include
   libpaths      += $(GLIB_ROOT)/lib
 
   lit_libs      += glib-$(GLIB_VERSION)
