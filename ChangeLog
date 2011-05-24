@@ -1,3 +1,12 @@
+Tue May 24 14:42:55 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/Options.pm:
+
+          Trim any trailing slashes from input files (really directories)
+          provided on the command line.  Leaving the trailing slash
+          can result in the wrong number of ".." components in relative
+          path expansions.
+
 Thu May 19 15:29:01 UTC 2011  Adam Mitz  <mitza@ociweb.com>
 
         * config/glib.mpb:
