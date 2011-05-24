@@ -550,6 +550,8 @@ sub options {
       $self->optionError("Unknown option: $arg");
     }
     else {
+      ## We need to remove the trailing slash or back-slash so that when
+      ## we calculate the directory depth we don't get the wrong number.
       $arg =~ s/[\/\\]+$//;
       push(@input, $arg);
     }
