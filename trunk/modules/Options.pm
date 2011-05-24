@@ -550,6 +550,7 @@ sub options {
       $self->optionError("Unknown option: $arg");
     }
     else {
+      $arg =~ s/[\/\\]+$//;
       push(@input, $arg);
     }
   }
