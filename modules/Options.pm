@@ -182,6 +182,18 @@ sub optionError {
 }
 
 
+sub path_cleanup {
+  ## Clean up the path as much as possible.  For some reason,
+  ## File::Spec->canonpath() on Windows doesn't remove trailing
+  ## /. from the path.  (Current versions have fixed this, but
+  ## we'll leave the work-around in case users have an old Perl.)
+  my $p = File::Spec->canonpath($_[0]);
+  $p =~ s/\\/\//g;
+  $p =~ s!/\.$!!;
+  return $p;
+}
+
+
 sub completion_command {
   my($self, $name, $types) = @_;
   my $str = "complete $name " .
@@ -454,12 +466,7 @@ sub options {
             $self->warning("-relative value $orig has been changed to\n$val");
           }
 
-          ## Clean up the path as much as possible.  For some reason,
-          ## File::Spec->canonpath() on Windows doesn't remove trailing
-          ## /. from the path.
-          $relative{$name} = File::Spec->canonpath($val);
-          $relative{$name} =~ s/\\/\//g;
-          $relative{$name} =~ s!/\.$!!;
+          $relative{$name} = path_cleanup($val);
         }
         else {
           $self->optionError('Invalid argument to -relative');
@@ -550,10 +557,7 @@ sub options {
       $self->optionError("Unknown option: $arg");
     }
     else {
-      ## We need to remove the trailing slash or back-slash so that when
-      ## we calculate the directory depth we don't get the wrong number.
-      $arg =~ s/[\/\\]+$//;
-      push(@input, $arg);
+      push(@input, path_cleanup($arg));
     }
   }
 
