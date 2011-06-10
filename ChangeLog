@@ -1,3 +1,16 @@
+Fri Jun 10 14:51:32 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/Options.pm:
+
+          Modification to previous commit: also handle duplicate slashes and
+          other path cleanup operations.
+
+        * templates/vc10.mpd:
+
+          Unlike previous versions, vc10 runs all custom build steps for the
+          project in the same cmd shell.  Use setlocal/endlocal when adding
+          to the PATH to avoid redundant additions to PATH.
+
 Tue May 24 14:42:55 UTC 2011  Adam Mitz  <mitza@ociweb.com>
 
         * modules/Options.pm:
