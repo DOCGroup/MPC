@@ -1,3 +1,13 @@
+Thu Jun 16 20:16:29 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc10.mpd:
+
+          When creating static libs, don't provide dependent libs as the
+          AdditionalDependencies for the lib tool.  This change makes
+          static libs in vc10 work like vc9 (and -type make for that matter).
+          Before this, a library that depended on another would end up
+          including all of the dependent lib's object files.
+
 Fri Jun 10 14:51:32 UTC 2011  Adam Mitz  <mitza@ociweb.com>
 
         * modules/Options.pm:
