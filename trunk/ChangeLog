@@ -1,3 +1,8 @@
+Thu Jun 30 06:58:25 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_example_ts_defaults.mpb:
+          New base project for ndds to generate example code
+
 Thu Jun 16 20:16:29 UTC 2011  Adam Mitz  <mitza@ociweb.com>
 
         * templates/vc10.mpd:
