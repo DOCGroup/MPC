@@ -1,9 +1,15 @@
+Wed Aug 10 02:32:49 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/pintools_32bit.mpb:
+
+          Fixed errors in the specification.
+
 Mon Aug  1 18:16:21 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/pintools_32bit.mpb:
 
-	  New base project for building a Pintool. This base project
-	  only supports 32-bit Linux and Windows operating systems.
+          New base project for building a Pintool. This base project
+          only supports 32-bit Linux and Windows operating systems.
 
 Thu Jun 30 06:58:25 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
 
