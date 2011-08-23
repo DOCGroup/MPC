@@ -1,0 +1,312 @@
+Wed Aug 10 02:32:49 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/pintools_32bit.mpb:
+
+          Fixed errors in the specification.
+
+Mon Aug  1 18:16:21 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/pintools_32bit.mpb:
+
+          New base project for building a Pintool. This base project
+          only supports 32-bit Linux and Windows operating systems.
+
+Thu Jun 30 06:58:25 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_example_ts_defaults.mpb:
+          New base project for ndds to generate example code
+
+Thu Jun 16 20:16:29 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc10.mpd:
+
+          When creating static libs, don't provide dependent libs as the
+          AdditionalDependencies for the lib tool.  This change makes
+          static libs in vc10 work like vc9 (and -type make for that matter).
+          Before this, a library that depended on another would end up
+          including all of the dependent lib's object files.
+
+Fri Jun 10 14:51:32 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/Options.pm:
+
+          Modification to previous commit: also handle duplicate slashes and
+          other path cleanup operations.
+
+        * templates/vc10.mpd:
+
+          Unlike previous versions, vc10 runs all custom build steps for the
+          project in the same cmd shell.  Use setlocal/endlocal when adding
+          to the PATH to avoid redundant additions to PATH.
+
+Tue May 24 14:42:55 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/Options.pm:
+
+          Trim any trailing slashes from input files (really directories)
+          provided on the command line.  Leaving the trailing slash
+          can result in the wrong number of ".." components in relative
+          path expansions.
+
+Thu May 19 15:29:01 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * config/glib.mpb:
+
+          Allow customization of the include search path for GLib since
+          at least some 64-bit Linux distros use "lib64" in place of "lib".
+
+Tue May 17 15:32:48 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Driver.pm:
+        * modules/Options.pm:
+        * modules/OutputMessage.pm:
+
+          Added debug information about the possible base projects that are
+          available.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug where subtracting values that contain psuedo variables
+          failed because they were not evaluated before subtracting.
+
+Wed May 11 14:18:13 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc10.mpd:
+
+          Generate the msbuild LinkKeyFile element from the MPC template
+          variable keyfile.  Thanks to Charles Calkins for the patch.
+
+Wed Apr 27 14:31:56 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/MakeWorkspaceCreator.pm:
+
+          Due to the change below, the workspace makefile no longer needs
+          to explicitly invoke the "generated" target in the projects.
+
+Wed Apr 27 14:07:44 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/make.mpd:
+
+          In the custom-only case, make sure that "all" is the first target
+          listed, and also have the "generated" target invoke prebuild.
+
+Wed Apr 27 13:25:32 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * prj_install.pl:
+          Added fix for OSX, thanks to Paul Fitzpatrick
+          <paul at robotrebuilt dot com> for reporting this
+
+Thu Apr 14 11:53:22 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/coredx_ts_defaults.mpb:
+          Extended this file
+
+Mon Apr 11 12:25:37 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_cck_ts_defaults.mpb:
+          Added -enableEscapeChar
+
+Mon Apr 11 01:57:43 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/tena_base.mpb:
+
+          The base project for all TENA base projects. It defines
+          common properties and sets the 'tena' feature.
+
+        * config/tena_middleware.mpb:
+
+          Base project for linking against the TENA middleware library.
+
+Sun Apr 10 17:39:57 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/nddsexe_with_idl.mpb:
+        * config/nddslib_with_idl.mpb:
+          Removed these files, use nddslib/nddsexe with the needed ts_defaults
+          base project
+
+Sun Apr 10 12:07:15 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_ts_defaults.mpb:
+          Removed CCK related options, this way someone can use NDDS without
+          requiring him to use the CCK, if you need the cck support, use
+          ndds_cck_ts_defaults as new base
+
+Sat Apr  9 11:47:11 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_cck_ts_defaults.mpb:
+          New base project, ndds_ts_defaults will be changed soon for just RTI
+          DDS without the CCK support. If you want to use the CCK, derive
+          from this base project
+
+        * config/nddsmonitor.mpb:
+          Layout change
+
+Fri Apr  8 14:35:18 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc8csharp.mpd:
+
+          Added "UserControl" as a valid subtype setting for C#.
+
+Wed Apr  6 12:02:50 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/coredx_ts_defaults.mpb:
+        * config/coredxlib.mpb:
+          Starter files for CoreDX
+
+        * config/ndds_ts_defaults.mpb:
+          Layout change
+
+Tue Apr  5 19:25:02 UTC 2011  Phil Mesnier  <mesnier_p@ociweb.com>
+
+        * modules/Creator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Fuzz fix.
+
+Tue Apr  5 18:47:09 UTC 2011  Don Hudson  <hudsond@ociweb.com>
+
+       * modules/WorkspaceCreator.pm:
+
+         Added default_verbose_ordering() that returns false
+         and used it to set verbose_ordering.  This allows derived workspace
+         creators to override the default verbose ordering.
+
+         Fixed typo in comment.
+
+         Corrected Perl warning by replacing == with eq in an if statement.
+
+         Modified the verbose ordering warning message to include the name
+         of the project being processed.
+
+       * modules/Driver.pm:
+
+          Changed to set verbose ordering on the creator only if it's defined
+          in the config file.
+
+        * modules/RpmSpecWorkspaceCreator.pm:
+
+          Added default_verbose_ordering() that returns true so that
+          a warning is logged if there are missing dependencies when
+          generating an rpm spec file.
+
+Tue Apr  5 12:57:22 UTC 2011  Don Hudson  <hudsond@ociweb.com>
+
+        * docs/html/MakeProjectCreator.html:
+
+          Added bracketed (multiline) assigments to documentation,
+          i.e., assignment of form:
+
+          keyword <operator> [optional flags] {
+                    This is
+                    a multiline assignment.
+          }
+
+          Optional flags are \s to retain leading white space and
+          \n to retain new lines.  These flags are be combined.
+
+        * docs/templates/rpmspec.txt:
+
+          Added rpm_pre_cmd keyword for %pre section of the RPM spec file
+          and rpm_url for the URL tag in the RPM spec file.
+
+        * modules/AutomakeWorkspaceCreator.pm:
+
+          Changed to default to cacheok of false as some intermediate project
+          files are deleted must be regenerated if a project is regenerated.
+          This was causing an error, but the error was only being logged.
+
+          Changed to return an error code and message when workspace generation
+          fails in some cases where an error message was only logged.
+
+        * modules/Creator.pm:
+
+          Added parse_assignment() that pre-parses bracketed assigments
+          (see comment on docs/html/MakeProjectCreator.html) before
+          calling SUPER::parse_assignment(). This method takes an optional
+          file handle that must be used for bracketed assignment support.
+
+        * modules/DirectoryManager.pm:
+
+          Corrected typo in comment.
+
+        * modules/Parser.pm:
+
+          Added strip_comments(), strip_lt_whitespace(), and is_blank_line().
+
+        * modules/ProjectCreator.pm:
+
+          Added file handle parse_assignment and related method calls for
+          bracketed assignment support.  See comment on modules/Creator.pm.
+
+          Added case sensitivity logic to already_added() similar to other places in code.
+
+        * modules/RpmSpecWorkspaceCreator.pm:
+
+          Changed write_and_compare_file() to return 1 instead of undef as method
+          must now return status.
+
+          Added %pre section and URL tag to RPM spec file generation.
+
+        * modules/StringProcessor.pm:
+
+          Changed parse_assignment() to not strip ending new line
+          as later parsing may need it.
+
+        * modules/WorkspaceCreator.pm:
+
+          Added file handle parse_assignment and related method calls for
+          bracketed assignment support.  See comment on modules/Creator.pm.
+
+          Changed to return an error code and message when workspace generation
+          fails in some cases where an error message was only logged.
+
+          Added default_cacheok() which returns true and is used to set 'cacheok'
+          so this method can be overridden when 'cacheok' needs to be false.
+
+Fri Mar 18 15:07:53 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * docs/templates/vc8csharp.txt:
+        * templates/vc8csharp.mpd:
+
+          Added the "PlatformTarget" template variable for C#.
+
+Tue Mar 15 14:54:48 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc10.mpd:
+        * docs/templates/vc10.txt:
+
+          Added the "PlatformToolset" template variable.
+
+        * modules/ProjectCreator.pm:
+        * docs/README:
+
+          Allow the "*" replacement for assignments to the libs keyword.
+
+Wed Mar  9 13:51:00 UTC 2011  William R. Otte  <wotte@dre.vanderbilt.edu>
+
+        * config/ndds_ts_defaults.mpb:
+
+          Added PLATFORM_NDDS_ARGS at the suggestion of Johnny Willemsen.
+
+Thu Mar  3 18:51:23 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/html/RpmSpec.html:
+
+          Fixed html errors and warnings.
+
+        * modules/WorkspaceCreator.pm:
+
+          Fixed a bug where a project added by an aggregated workspace
+          containing a relative path would not be recognized as a duplicate
+          if the same project were added by another workspace without a
+          relative path.
+
+Tue Feb 15 16:02:17 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+
+        * MPC version 3.9.0 released.
+
+Local Variables:
+mode: change-log
+add-log-time-format: (lambda () (progn (setq tz (getenv TZ)) (set-time-zone-rule UTC) (setq time (format-time-string %a %b %e %H:%M:%S %Z %Y (current-time))) (set-time-zone-rule tz) time))
+indent-tabs-mode: nil
+End:
