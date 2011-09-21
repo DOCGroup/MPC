@@ -74,7 +74,7 @@ fi
 ## Create our working directory and make the spec file
 mkdir -p $WDIR
 cd $WDIR
-sed "s/VERSION/$VERSION/; s/PACKAGER/$PACKAGER/; s!FINALDIR!$FDIR!" $loc/rpm/MPC.spec > MPC.spec
+sed "s/VERSION/$VERSION/; s/PACKAGER/$PACKAGER/; s!FINALDIR!$FDIR!" $loc/rpm/MPC.templ > MPC.spec
 
 ## Make a copy of the original MPC source to the new directory
 mkdir -p $MDIR/$FDIR

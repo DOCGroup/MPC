@@ -1,3 +1,13 @@
+Wed Sep 21 18:51:02 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * rpm/MPC.templ:
+        * rpm/buildrpm.sh:
+        * rpm/MPC.spec:
+          Renamed the MPC spec file template to .templ and update the script
+          to read the template and create MPC.spec. Within a source package
+          we can only have one spec file and MPC is also included in the A/T/C/D
+          source package which will result in two spec files
+
 Tue Sep 20 13:34:11 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/tena_middleware.mpb:
