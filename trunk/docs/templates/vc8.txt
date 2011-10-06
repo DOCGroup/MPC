@@ -1,3 +1,5 @@
+// $Id$
+//
 // Current as of 5/30/2008
 // This defines the role of all the template variables specific to the
 // 'vc8' project type.
