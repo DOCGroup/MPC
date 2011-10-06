@@ -1,3 +1,5 @@
+// $Id$
+//
 //
 // Document template variables for -type rpmspec
 // Please try to keep this alphabetically sorted.
