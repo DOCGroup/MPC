@@ -1,11 +1,10 @@
-# $Id$
-
 package BCB2009ProjectCreator;
 
 # ************************************************************
 # Description   : The Borland C++ Builder 2009 Project Creator
 # Author        : Johnny Willemsen
 # Create Date   : 17/10/2008
+# $Id$
 # ************************************************************
 
 # ************************************************************

@@ -1,11 +1,10 @@
-# $Id$
-
 package BMakeWorkspaceCreator;
 
 # ************************************************************
 # Description   : A Borland Make Workspace (Makefile) creator
 # Author        : Chad Elliott
 # Create Date   : 2/03/2004
+# $Id$
 # ************************************************************
 
 # ************************************************************
