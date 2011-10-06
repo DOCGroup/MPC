@@ -1,11 +1,10 @@
-# $Id$
-
 package StringProcessor;
 
 # ************************************************************
 # Description   : Perform various algorithms on strings
 # Author        : Chad Elliott
 # Create Date   : 3/07/2003
+# $Id$
 # ************************************************************
 
 # ************************************************************

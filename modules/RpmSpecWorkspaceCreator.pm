@@ -1,11 +1,10 @@
-# $Id$
-
 package RpmSpecWorkspaceCreator;
 
 # ************************************************************
 # Description   : An RPM .spec file Workspace Creator
 # Author        : Adam Mitz (OCI)
 # Create Date   : 11/23/2010
+# $Id$
 # ************************************************************
 
 # ************************************************************

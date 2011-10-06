@@ -1,11 +1,10 @@
-# $Id$
-
 package CDT6WorkspaceCreator;
 
 # ************************************************************
 # Description   : Eclipse CDT 6 generator
 # Author        : Chris Cleeland, Object Computing, Inc.
 # Create Date   : 23-Apr-2010
+# $Id$
 # ************************************************************
 
 # ************************************************************

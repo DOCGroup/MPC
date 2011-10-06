@@ -1,11 +1,10 @@
-# $Id$
-
 package CCWorkspaceCreator;
 
 # ************************************************************
 # Description   : A Code Composer Workspace creator
 # Author        : Chad Elliott
 # Create Date   : 9/18/2006
+# $Id$
 # ************************************************************
 
 # ************************************************************

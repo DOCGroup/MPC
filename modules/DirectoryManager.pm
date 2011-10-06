@@ -1,11 +1,10 @@
-# $Id$
-
 package DirectoryManager;
 
 # ************************************************************
 # Description   : This module provides directory related methods
 # Author        : Chad Elliott
 # Create Date   : 5/13/2004
+# $Id$
 # ************************************************************
 
 # ************************************************************
