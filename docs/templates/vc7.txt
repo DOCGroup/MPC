@@ -1,3 +1,5 @@
+// $Id$
+//
 // Current as of 3/23/2010
 // This defines the role of all the template variables specific to the
 // 'vc7' and 'vc71' project types.
