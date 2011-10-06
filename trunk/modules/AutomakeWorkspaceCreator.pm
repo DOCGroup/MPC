@@ -1,11 +1,10 @@
-# $Id$
-
 package AutomakeWorkspaceCreator;
 
 # ************************************************************
 # Description   : A Automake Workspace (Makefile) creator
 # Author        : J.T. Conklin & Steve Huston
 # Create Date   : 5/13/2002
+# $Id$
 # ************************************************************
 
 # ************************************************************

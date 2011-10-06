@@ -1,11 +1,10 @@
-# $Id$
-
 package CDT7WorkspaceCreator;
 
 # ************************************************************
 # Description   : A CDT7 Workspace Creator (Eclipse 3.6)
 # Author        : Adam Mitz, Object Computing, Inc.
 # Create Date   : 10/04/2010
+# $Id$
 # ************************************************************
 
 # ************************************************************

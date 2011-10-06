@@ -1,11 +1,10 @@
-# $Id$
-
 package MakeWorkspaceCreator;
 
 # ************************************************************
 # Description   : A Generic Workspace (Makefile) creator
 # Author        : Chad Elliott
 # Create Date   : 2/18/2003
+# $Id$
 # ************************************************************
 
 # ************************************************************
