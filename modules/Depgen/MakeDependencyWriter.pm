@@ -4,7 +4,7 @@ package MakeDependencyWriter;
 # Description   : Generates generic Makefile dependencies.
 # Author        : Chad Elliott
 # Create Date   : 2/10/2002
-# $Id
+# $Id$
 # ************************************************************
 
 # ************************************************************
