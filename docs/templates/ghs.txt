@@ -1,3 +1,5 @@
+// $Id$
+//
 bsp = If a bsp is necessary, this variable should be set to the bsp name.
 exceptions = This controls whether exceptions are used or not.  It is on by default.
 libext = Similar to the common lib_ext except that this one is normally left to the default.

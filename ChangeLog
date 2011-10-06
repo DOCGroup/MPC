@@ -1,3 +1,31 @@
+Thu Oct  6 12:40:46 UTC 2011  Marcel Smit  <msmit@remedy.nl>
+
+        * docs/README:
+        * docs/templates/automake.txt:
+        * docs/templates/bmake.txt:
+        * docs/templates/cc.txt:
+        * docs/templates/cdt6cproject.txt:
+        * docs/templates/cdt6project.txt:
+        * docs/templates/common.txt:
+        * docs/templates/ghs.txt:
+        * docs/templates/make.net.txt:
+        * docs/templates/make.txt:
+        * docs/templates/rpmspec.txt:
+        * docs/templates/vc10.txt:
+        * docs/templates/vc7.txt:
+        * docs/templates/vc7csharp.txt:
+        * docs/templates/vc7java.txt:
+        * docs/templates/vc7vb.txt:
+        * docs/templates/vc8.txt:
+        * docs/templates/vc8csharp.txt:
+        * docs/templates/vc8java.txt:
+        * docs/templates/vc8vb.txt:
+        * docs/templates/wb26.txt:
+        * docs/templates/wb26wrmakefile.txt:
+        * docs/templates/wb26wrproject.txt:
+        * docs/templates/wix.txt:
+          Fuzz: added missing $Id $ string.
+
 Thu Oct  6 12:27:57 UTC 2011  Marcel Smit  <msmit@remedy.nl>
 
         * modules/AutomakeProjectCreator.pm:

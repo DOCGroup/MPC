@@ -1,3 +1,4 @@
+// $Id$
 //
 // Document template variables for templates templates/cdt6project.mpd.
 // Please try to keep this alphabetically sorted.
