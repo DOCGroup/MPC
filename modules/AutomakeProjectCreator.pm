@@ -1,11 +1,10 @@
-# $Id$
-
 package AutomakeProjectCreator;
 
 # ************************************************************
 # Description   : A Automake Project Creator
 # Author        : J.T. Conklin & Chad Elliott
 # Create Date   : 2/26/2003
+# $Id$
 # ************************************************************
 
 # ************************************************************

@@ -2,6 +2,7 @@
 # Description   : Generates object files for NMake Makefiles.
 # Author        : Chad Elliott
 # Create Date   : 5/23/2003
+# $Id
 # ************************************************************
 
 package WinProjectBaseEx;

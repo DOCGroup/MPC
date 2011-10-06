@@ -1,11 +1,10 @@
-# $Id$
-
 package BDS4ProjectCreator;
 
 # ************************************************************
 # Description   : The Borland Developer Studio 4 Project Creator
 # Author        : Johnny Willemsen
 # Create Date   : 14/12/2005
+# $Id$
 # ************************************************************
 
 # ************************************************************
