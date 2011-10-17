@@ -11,6 +11,7 @@ arflags = Flags passed to the static library creation tool.
 arflags64 = The 64-bit version of flags passed to the static library creation tool.
 build64bit = Determine whether this project is built in 64-bit mode.
 cc = Holds the C compiler.
+cflags = A set of flags that are only passed to the C compiler.
 checkopt = Compiler specific options to signify syntax checking only.
 chmod = A utility to change permissions on a file.
 clean = Additional files or directories to be "cleaned" when the clean target is invoked.
