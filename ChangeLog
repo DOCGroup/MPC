@@ -1,3 +1,11 @@
+Mon Oct 17 18:33:05 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/make.mpd:
+        * docs/templates/make.txt:
+
+          Define CFLAGS, but only if the 'cflags' template variable has been
+          defined.
+
 Thu Oct  6 12:40:46 UTC 2011  Marcel Smit  <msmit@remedy.nl>
 
         * docs/README:
