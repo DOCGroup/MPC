@@ -1,7 +1,0 @@
-// -*- MPC -*-
-// $Id$
-
-conditional_include "ghscommon"
-
-libext           = a
-need_staticflags = 1
