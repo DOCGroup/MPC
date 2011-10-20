@@ -1,6 +1,0 @@
-// -*- MPC -*-
-// $Id$
-
-project: boost_base {
-  lit_libs += boost_regex$(BOOST_CFG)
-}
