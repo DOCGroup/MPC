@@ -1,8 +1,0 @@
-// -*- MPC -*-
-// $Id$
-
-conditional_include "ghscommon"
-
-libext = .so
-
-conditional_include "user_ghsdll"
