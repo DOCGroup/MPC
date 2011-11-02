@@ -1,3 +1,9 @@
+Wed Nov  2 21:06:18 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * templates/wix.mpd:
+
+          Added support for processing projects with custom_only set.
+
 Wed Oct 19 19:11:50 UTC 2011  William R. Otte  <wotte@dre.vanderbilt.edu>
 
         * config/openmp.mpb:

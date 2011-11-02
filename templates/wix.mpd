@@ -7,7 +7,7 @@
 <%if(!exclude)%>
 <%comment("Only put one component in a fragment. If, say, both the debug and release components are in the")%>
 <%comment("same fragment, and just the debug component is used in an installer, the release component will")%>
-<%comment("be identified as unused, and an error generated.  That is, it seems that referencing any component")%> 
+<%comment("be identified as unused, and an error generated.  That is, it seems that referencing any component")%>
 <%comment("in a fragment causes the entire fragment to be pulled in, and any unused component in the fragment will be flagged as an error")%>
   <Fragment Id="<%normalize(configuration)%>_<%normalize(platform)%>_<%project_name%>">
     <ComponentGroup Id="ComponentGroup.<%normalize(configuration)%>_<%normalize(platform)%>_<%project_name%>">
@@ -29,7 +29,7 @@
       <ComponentRef Id="<%component%>" />
 <%endfor%>
     </ComponentGroup>
-    
+
     <DirectoryRef Id="INSTALLDIR">
 <%marker(component_top)%>
 <%if(!no_binary)%>
@@ -40,12 +40,12 @@
           <File Id="<%normalize(configuration)%>_<%normalize(platform)%>_<%if(type_is_dynamic)%><%normalize(libname_prefix)%><%normalize(sharedname)%>_dll<%else%><%normalize(exename)%>_exe<%endif%>"
                 Name="<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
                 Source="<%if(type_is_dynamic)%><%if(dllout)%><%full_path(dllout)%>/<%else%><%full_path(libout)%>/<%endif%><%else%><%if(type_is_static)%><%full_path(libout)%>/<%else%><%if(exeout)%><%full_path(exeout)%>/<%if(windows_style)%><%output_dir("Debug")%>/<%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%>/<%else%><%output_dir(".")%>/<%endif%><%endif%><%endif%><%endif%><%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
-                DiskId="<%diskid(1)%>" 
+                DiskId="<%diskid(1)%>"
 <%if(com_register)%>
                 SelfRegCost="1"
 <%endif%>
            />
-        </Component>    
+        </Component>
 <%foreach(name, install_location)%>
       </Directory>
 <%endfor%>
@@ -115,12 +115,13 @@
 <%marker(component_bottom)%>
     </DirectoryRef>
    </Fragment>
-<%endif%>  
+<%endif%>
 <%endfor%>
 <%endfor%>
 <%else%>
   <Fragment Id="<%project_name%>">
     <ComponentGroup Id="ComponentGroup.<%project_name%>">
+<%if(!custom_only)%>
 <%if(!no_binary)%>
       <ComponentRef Id="<%project_name%><%foreach(name, install_location)%>.<%name%><%endfor%>.<%if(type_is_dynamic)%><%normalize(sharedname)%>.dll<%else%><%normalize(exename)%>.exe<%endif%>" />
 <%endif%>
@@ -138,9 +139,11 @@
 <%foreach(components)%>
       <ComponentRef Id="<%component%>" />
 <%endfor%>
+<%endif%>
     </ComponentGroup>
 
-    <DirectoryRef Id="INSTALLDIR">
+<%if(!custom_only)%>
+      <DirectoryRef Id="INSTALLDIR">
 <%marker(component_top)%>
 <%if(!no_binary)%>
 <%foreach(name, install_location)%>
@@ -235,6 +238,7 @@
 <%endif%>
 <%marker(component_bottom)%>
     </DirectoryRef>
+<%endif%>
   </Fragment>
 <%endif%>
 <%marker(bottom)%>
