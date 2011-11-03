@@ -1,3 +1,10 @@
+Thu Nov  3 12:00:45 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/html/MakeProjectCreator.html:
+
+          Corrected the list of options ignored by the workspace 'cmdline'
+          setting.
+
 Wed Nov  2 21:06:18 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * templates/wix.mpd:
