@@ -149,6 +149,7 @@ sub cached_file_read {
     $self->{'line_number'} = 0;
     foreach my $line (@$lines) {
       ++$self->{'line_number'};
+
       ## Since we're "reading" a cached file, we must pass undef as the
       ## file handle to parse_line().
       ($status, $error) = $self->parse_line(undef, $line);

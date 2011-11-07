@@ -104,6 +104,9 @@ my %arrow_op_ref = ('custom_type'     => 'custom types',
                     'feature'         => 'features',
                    );
 
+# optmized regex
+my $parse_line_re1 = qr/^[ ]*<%(\w+)(?:\((?:(?:\w+\s*,\s*)*[!]?\w+\(.+\)|[^\)]+)\))?%>$/;
+
 # ************************************************************
 # Subroutine Section
 # ************************************************************
@@ -2168,8 +2171,7 @@ sub parse_line {
   ## contains a keyword, then we do
   ## not need to add a newline to the end.
   if ($self->{'foreach'}->{'processing'} == 0 && !$self->{'eval'} &&
-      ($line !~ /^[ ]*<%(\w+)(?:\((?:(?:\w+\s*,\s*)*[!]?\w+\(.+\)|[^\)]+)\))?%>$/ ||
-       !defined $keywords{$1})) {
+      ($line !~ /$parse_line_re1/ || !defined $keywords{$1})) {
     $line .= $self->{'crlf'};
   }
 

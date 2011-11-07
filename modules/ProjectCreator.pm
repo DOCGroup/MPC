@@ -4999,7 +4999,6 @@ sub write_project {
         if (!$status) {
           return $status, $error;
         }
-
         ## We don't need to pass a file name here.  write_output_file()
         ## will determine the file name for itself.
         ($status, $error) = $self->write_output_file($webapp);
