@@ -318,7 +318,7 @@ specific        This scope allows assignments that are specific to a
                   lit_libs += c
                   ...
                 } else {
-                  list_libs += c_other
+                  lit_libs += c_other
                   ...
                 }
 
