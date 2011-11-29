@@ -65,7 +65,7 @@ sub process {
     ## Generate the new dependencies and write them to the file
     my $dep = new DependencyGenerator($macros, $ipaths, $replace,
                                       $type, $noinline,
-                                      $exclude, $append);
+                                      $exclude);
 
     ## Sort the files so the dependencies are reproducible
     foreach my $file (sort @$files) {
