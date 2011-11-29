@@ -1,15 +1,22 @@
+Tue Nov 29 18:35:56 UTC 2011  Chip Jones  <jonesc@ociweb.com>
+
+        * modules/Depgen/DependencyEditor.pm:
+
+          Removed unnecessary append argument sent to
+          DependencyGenerator.
+
 Mon Nov  7 17:21:36 UTC 2011  Chip Jones  <jonesc@ociweb.com>
 
         * modules/Depgen/DependencyEditor.pm:
         * modules/Depgen/Driver.pm:
-        
-          Added -tgnuidl type for generating IDL dependencies and 
+
+          Added -tgnuidl type for generating IDL dependencies and
           -a for appending to an existing .depend file.
 
         * modules/Parser.pm:
         * modules/ProjectCreator.pm:
         * modules/TemplateParser.pm:
-        
+
           Changes to support -a and -tgnuidl options.
 
 Mon Nov  7 15:37:29 UTC 2011  Adam Mitz  <mitza@ociweb.com>
