@@ -31,7 +31,7 @@ while [ ! -x $loc/mpc.pl ]; do
 done
 
 ## Build up the packager name and email address
-if [ -z "REPLYTO" ]; then
+if [ -z "$REPLYTO" ]; then
   DOMAIN=`hostname | sed 's/[^\.][^\.]*\.//'`
   if [ -z "$DOMAIN" ]; then
     DOMAIN=`grep '^search' /etc/resolv.conf | sed 's/.* //'`
@@ -64,15 +64,36 @@ BDIR=/tmp/mpc
 ## of MPC.spec
 FDIR=/usr/lib/MPC
 
-## The directory where RPM will place the resulting file
-if [ -x /usr/src/redhat ]; then
-  RPMLOC=/usr/src/redhat
-else
-  RPMLOC=/usr/src/packages
+##Check if build and work diretory already exist
+if [ -d "$BDIR" -o -f "$BDIR" ]; then
+  echo "Necessary directory $BDIR aleady exists."
+  echo "Exiting."
+  exit
 fi
 
-## Create our working directory and make the spec file
+if [ -d "$WDIR" -o -f "$WDIR" ]; then
+  echo "Necessary directory $WDIR aleady exists."
+  echo "Exiting."
+  exit
+fi
+
+## Create our working directory
 mkdir -p $WDIR
+
+## The directory where RPM will place the resulting file
+if [ -x /usr/src/redhat -a -w /usr/src/redhat ]; then
+  RPMLOC=/usr/src/redhat
+elif [ -x /usr/src/packages -a -w /usr/src/packages ]; then
+  RPMLOC=/usr/src/packages
+else
+  RPMLOC=$WDIR/rpmbuild
+  mkdir -p $RPMLOC
+  mkdir -p $RPMLOC/BUILD
+  mkdir -p $RPMLOC/RPMS
+  mkdir -p $RPMLOC/SOURCES
+fi
+
+## Make the spec file
 cd $WDIR
 sed "s/VERSION/$VERSION/; s/PACKAGER/$PACKAGER/; s!FINALDIR!$FDIR!" $loc/rpm/MPC.templ > MPC.spec
 
@@ -83,13 +104,18 @@ tar --exclude=.svn -cf - . | (cd $WDIR/$MDIR/$FDIR; tar -xf -)
 
 ## Create the build source tar.bz2
 cd $WDIR
-tar cf $RPMLOC/SOURCES/$MDIR.tar $MDIR
+tar --owner root --group root -cf $RPMLOC/SOURCES/$MDIR.tar $MDIR
 bzip2 -9f $RPMLOC/SOURCES/$MDIR.tar
 
 ## Perform the RPM creation step
 rm -rf $BDIR
 mkdir -p $BDIR
-rpmbuild -bb MPC.spec
+rpmbuild --define "_topdir $RPMLOC" -bb MPC.spec
+
+if [ "$RPMLOC" = "$WDIR/rpmbuild" ]; then
+  echo "Copying rpm to $loc/rpm"
+  cp $RPMLOC/RPMS/*/*.rpm $loc/rpm
+fi
 
 ## Clean everything up
 cd ..
