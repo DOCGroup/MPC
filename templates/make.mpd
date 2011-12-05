@@ -54,10 +54,13 @@ PICFLAGS      = <%pic%>
 <%if(cflags)%>
 CFLAGS        = <%cflags%>
 <%endif%>
+<%if(ccflags)%>
+CCFLAGS        = <%ccflags%>
+<%endif%>
 CPPFLAGS      = <%if(visibility && visopt)%><%visopt%> <%endif%>$(PICFLAGS) $(GENFLAGS)<%if(compile_flags)%> <%compile_flags%><%endif%><%if(profile)%> <%profopt%><%endif%><%if(coverage)%> <%covopt%><%endif%><%if(cpu)%> -DCPU=$(CPU)<%endif%><%if(tempincopt)%> <%tempincopt%>$(TEMPINCDIR)<%endif%><%if(compilerflags)%> <%compilerflags%><%endif%><%if(build64bit && compilerflags64)%> <%compilerflags64%><%endif%><%if(pch_source && pchsupport)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%><%if(extracppflags)%><%foreach(extracppflags)%><%if(!starts_with(extracppflag, -D) || !contains(language, java))%> <%extracppflag%><%endif%><%endfor%><%endif%><%if(includes)%><%foreach(includes)%> -I"<%include%>"<%endfor%><%endif%><%if(!contains(language, java) && macros)%><%foreach(macros)%> -D<%macro%><%endfor%><%endif%>
 OBJEXT        = <%obj_ext%>
 OUTPUT_OPTION = <%output_option(-o \"$@\")%>
-COMPILE.c     = $(CC) $(CFLAGS) $(CCFLAGS) $(CPPFLAGS) <%compile_option("-c")%>
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) <%compile_option("-c")%>
 COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) <%compile_option%>
 <%if(rc)%>
 RESEXT        = <%res_ext%>
@@ -234,7 +237,7 @@ PATH              := $(PATH):<%custom_type->libpath%>
 <%endif%>
 <%foreach(custom_type->input_files)%>
 <%if(custom_type->input_file->output_files)%>
-<%if(multiple(custom_type->input_file->output_files))%>
+<%if(notparallel && multiple(custom_type->input_file->output_files))%>
 .NOTPARALLEL:
 <%endif%>
 <%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%><%slash%><%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(" ")%><%endfor%>: <%custom_type->input_file%><%if(custom_type->input_file->dependencies)%><%foreach(custom_type->input_file->dependencies)%><%if(gnumake)%><%if(contains(custom_type->input_file->dependencie, \$))%> $(subst $(SPACE),\$(SPACE),<%custom_type->input_file->dependencie%>)<%else%> <%scope(enter, escape, \\s)%><%custom_type->input_file->dependencie%><%scope(leave)%><%endif%><%else%><%if(!contains(custom_type->input_file->dependencie, \$))%> <%scope(enter, escape, \\s)%><%custom_type->input_file->dependencie%><%scope(leave)%><%endif%><%endif%><%endfor%><%endif%><%if(flag_overrides(custom_type->input_file, dependent))%><%foreach(dep, flag_overrides(custom_type->input_file, dependent))%><%if(gnumake)%><%if(contains(dep, \$))%> $(subst $(SPACE),\$(SPACE),<%dep%>)<%else%> <%scope(enter, escape, \\s)%><%dep%><%scope(leave)%><%endif%><%else%><%if(!contains(dep, \$))%> <%scope(enter, escape, \\s)%><%dep%><%scope(leave)%><%endif%><%endif%><%endfor%><%else%><%if(custom_type->dependent)%><%foreach(custom_type->dependent)%><%if(gnumake)%><%if(contains(custom_type->dependent, \$))%> $(subst $(SPACE),\$(SPACE),<%custom_type->dependent%>)<%else%> <%scope(enter, escape, \\s)%><%custom_type->dependent%><%scope(leave)%><%endif%><%else%><%if(!contains(custom_type->dependent, \$))%> <%scope(enter, escape, \\s)%><%custom_type->dependent%><%scope(leave)%><%endif%><%endif%><%endfor%><%endif%><%endif%><%if(!need_staticflags)%><%if(flag_overrides(custom_type->input_file, dependent_libs))%><%foreach(dep_lib, flag_overrides(custom_type->input_file, dependent_libs))%><%if(gnumake)%><%if(contains(dep_lib, \$))%> $(subst $(SPACE),\$(SPACE),<%dirname(dep_lib)%>/$(LIBPREFIX)<%basename(dep_lib)%>$(LIBSUFFIX)$(SOEXT))<%else%> <%scope(enter, escape, \\s)%><%dirname(dep_lib)%>/$(LIBPREFIX)<%basename(dep_lib)%>$(LIBSUFFIX)$(SOEXT)<%scope(leave)%><%endif%><%else%><%if(!contains(dep_lib, \$))%> <%scope(enter, escape, \\s)%><%dirname(dep_lib)%>/$(LIBPREFIX)<%basename(dep_lib)%>$(LIBSUFFIX)$(SOEXT)<%scope(leave)%><%endif%><%endif%><%endfor%><%else%><%if(custom_type->dependent_libs)%><%foreach(custom_type->dependent_libs)%><%if(gnumake)%><%if(contains(custom_type->dependent_libs, \$))%> $(subst $(SPACE),\$(SPACE),<%dirname(custom_type->dependent_lib)%>/$(LIBPREFIX)<%basename(custom_type->dependent_lib)%>$(LIBSUFFIX)$(SOEXT))<%else%> <%scope(enter, escape, \\s)%><%dirname(custom_type->dependent_lib)%>/$(LIBPREFIX)<%basename(custom_type->dependent_lib)%>$(LIBSUFFIX)$(SOEXT)<%scope(leave)%><%endif%><%else%><%if(!contains(custom_type->dependent_libs, \$))%> <%scope(enter, escape, \\s)%><%dirname(custom_type->dependent_lib)%>/$(LIBPREFIX)<%basename(custom_type->dependent_lib)%>$(LIBSUFFIX)$(SOEXT)<%scope(leave)%><%endif%><%endif%><%endfor%><%endif%><%endif%><%endif%>

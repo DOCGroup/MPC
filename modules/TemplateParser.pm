@@ -310,8 +310,8 @@ sub get_value {
   my $value;
   my $counter = $self->{'foreach'}->{'count'};
   my $fromprj;
-  my $scope;
-  my $sname;
+  my @scopes;
+  my @snames;
   my $adjust = 1;
 
   ## $name should always be all lower-case
@@ -319,14 +319,11 @@ sub get_value {
 
   ## First, check the temporary scope (set inside a foreach)
   if ($counter >= 0) {
-    ## Find the outer most scope for our variable name
-    for(my $index = $counter; $index >= 0; --$index) {
-      if (defined $self->{'foreach'}->{'scope_name'}->[$index]) {
-        $scope = $self->{'foreach'}->{'scope_name'}->[$index];
-        $sname = $scope . '::' . $name;
-        last;
-      }
-    }
+    ## Create a list of possible scoped names
+    @scopes = reverse @{$self->{'foreach'}->{'scope_name'}};
+    @snames = map { $_ . '::' . $name } @scopes;
+    push(@snames, $name);
+
     while(!defined $value && $counter >= 0) {
       $value = $self->{'foreach'}->{'temp_scope'}->[$counter]->{$name};
       --$counter;
@@ -337,6 +334,9 @@ sub get_value {
         defined $value && defined $target_type_vars{$name}) {
       $value = $self->{'values'}->{$name};
     }
+  }
+  else {
+    @snames = ($name);
   }
 
   if (!defined $value) {
@@ -353,8 +353,7 @@ sub get_value {
       if (!defined $value) {
         ## Calling adjust_value here allows us to pick up template
         ## overrides before getting values elsewhere.
-        my $uvalue = $self->{'prjc'}->adjust_value([$sname, $name],
-                                                   [], $self);
+        my $uvalue = $self->{'prjc'}->adjust_value(\@snames, [], $self);
         if (defined $$uvalue[0]) {
           $value = $uvalue;
           $adjust = 0;
@@ -404,7 +403,7 @@ sub get_value {
   ## Adjust the value even if we haven't obtained one from an outside
   ## source.
   if ($adjust && defined $value) {
-    $value = $self->{'prjc'}->adjust_value([$sname, $name], $value, $self);
+    $value = $self->{'prjc'}->adjust_value(\@snames, $value, $self);
   }
 
   ## If the value did not come from the project creator, we
@@ -425,7 +424,8 @@ sub get_value {
     }
   }
 
-  return $self->{'prjc'}->relative($value, undef, $scope);
+  return (defined $value ?
+            $self->{'prjc'}->relative($value, undef, \@scopes) : undef);
 }
 
 
