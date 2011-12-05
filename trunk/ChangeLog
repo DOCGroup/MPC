@@ -1,5 +1,10 @@
-Mon Dec  5 15:17:04 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
+Mon Dec  5 15:32:37 UTC 2011  Adam Mitz  <mitza@ociweb.com>
 
+        * docs/USAGE:
+
+          Removed obsolete note about a default -type.
+
+Mon Dec  5 15:17:04 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
         * modules/TemplateParser.pm:
