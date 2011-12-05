@@ -185,9 +185,8 @@ those directories will be excluded when searching for project or workspace
 files.
 
 The -type option can be used multiple times on the same command line to
-generate projects of different types per mpc file.  The default type for
-this version of MPC is 'make'.  NOTE: The -ti option overrides the template
-input file for all types specified.
+generate projects of different types per mpc file.  NOTE: The -ti option
+overrides the template input file for all types specified.
 
 The -feature_file specifies a file to be read that enables or disables
 features.  These feature names can be anything, but they should correspond
