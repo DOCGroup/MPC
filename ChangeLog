@@ -1,3 +1,27 @@
+Mon Dec  5 15:17:04 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
+
+
+        * modules/Creator.pm:
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where the inner-most template scope was usable at any
+          given point within a template.  Thanks to Adam Mitz for helping me
+          debug this and to Holger Schönstedt for bringing this to my
+          attention.
+
+        * docs/templates/make.txt:
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Added a 'ccflags' template variable to allow users to specify C++
+          compiler options and a 'notparallel' template variable to allow
+          users to control whether or not a .NOTPARALLEL is added to the
+          makefile.
+
+        * templates/wix.mpd:
+
+          Fixed whitespace.
+
 Wed Nov 30 21:33:46 UTC 2011  Trevor Fields  <fields_t@ociweb.com>
 
         * rpm/buildrpm.sh:
