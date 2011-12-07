@@ -1,3 +1,9 @@
+Wed Dec  7 23:47:24 UTC 2011  Trevor Fields  <fields_t@ociweb.com>
+
+          * rpm/buildrpm.sh:
+
+            Fixes to build on systems where rpmbuild uses buildroot.
+
 Mon Dec  5 15:32:37 UTC 2011  Adam Mitz  <mitza@ociweb.com>
 
         * docs/USAGE:

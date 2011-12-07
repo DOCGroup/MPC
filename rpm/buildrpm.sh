@@ -33,12 +33,17 @@ done
 ## Build up the packager name and email address
 if [ -z "$REPLYTO" ]; then
   DOMAIN=`hostname | sed 's/[^\.][^\.]*\.//'`
-  if [ -z "$DOMAIN" ]; then
-    DOMAIN=`grep '^search' /etc/resolv.conf | sed 's/.* //'`
+  FULLDOMAIN=`echo $DOMAIN | grep '\.'`
+  if [ -z "$DOMAIN" -o -z "$FULLDOMAIN" ]; then
+    RESOLVDOMAIN=`grep '^search' /etc/resolv.conf | sed 's/.*\s//'`
+    FULLDOMAIN=`echo $RESOLVDOMAIN | grep '\.'`
+    if [ -z "$DOMAIN" -o -n "$FULLDOMAIN" ]; then
+      DOMAIN=$RESOLVDOMAIN
+    fi
   fi
   REPLYTO="$LOGNAME@$DOMAIN"
 fi
-PACKAGER=`grep $LOGNAME /etc/passwd | cut -d: -f5`
+PACKAGER=`getent passwd $LOGNAME | cut -d: -f5`
 if [ -z "$PACKAGER" ]; then
   PACKAGER=$CL_USERNAME
 fi
@@ -110,7 +115,7 @@ bzip2 -9f $RPMLOC/SOURCES/$MDIR.tar
 ## Perform the RPM creation step
 rm -rf $BDIR
 mkdir -p $BDIR
-rpmbuild --define "_topdir $RPMLOC" -bb MPC.spec
+rpmbuild --define "_topdir $RPMLOC" --define "_buildrootdir $BDIR" --define "buildroot $BDIR" -bb MPC.spec
 
 if [ "$RPMLOC" = "$WDIR/rpmbuild" ]; then
   echo "Copying rpm to $loc/rpm"
