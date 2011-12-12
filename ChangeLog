@@ -1,8 +1,16 @@
+Mon Dec 12 19:03:08 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/Options.pm:
+        * modules/VC11ProjectCreator.pm:
+        * modules/VC11WorkspaceCreator.pm:
+          Added vc11 type, looks like the project format is still the same
+          as with vc10, but this way we can use -type vc11 in some experimental
+          builds
+
 Wed Dec  7 23:47:24 UTC 2011  Trevor Fields  <fields_t@ociweb.com>
 
-          * rpm/buildrpm.sh:
-
-            Fixes to build on systems where rpmbuild uses buildroot.
+        * rpm/buildrpm.sh:
+          Fixes to build on systems where rpmbuild uses buildroot.
 
 Mon Dec  5 15:32:37 UTC 2011  Adam Mitz  <mitza@ociweb.com>
 
