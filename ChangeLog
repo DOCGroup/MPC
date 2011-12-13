@@ -1,3 +1,9 @@
+Tue Dec 13 21:04:44 UTC 20111  Trevor Fields  <fields_t@ociweb.com>
+
+        * rpm/buildrpm.sh:
+
+          Removed potential of running the check-buildroot script.
+
 Mon Dec 12 19:03:08 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/Options.pm:
