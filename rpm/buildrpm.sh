@@ -115,7 +115,7 @@ bzip2 -9f $RPMLOC/SOURCES/$MDIR.tar
 ## Perform the RPM creation step
 rm -rf $BDIR
 mkdir -p $BDIR
-rpmbuild --define "_topdir $RPMLOC" --define "_buildrootdir $BDIR" --define "buildroot $BDIR" -bb MPC.spec
+rpmbuild --define "_topdir $RPMLOC" --define "_buildrootdir $BDIR" --define "buildroot $BDIR" --define "__arch_install_post %{nil}" -bb MPC.spec
 
 if [ "$RPMLOC" = "$WDIR/rpmbuild" ]; then
   echo "Copying rpm to $loc/rpm"
