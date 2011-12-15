@@ -357,6 +357,7 @@ cygwin {
   exe_ext    = .exe
   rc         = windres
   res_ext    = .o
+  pic        =
   depgen_flags = -t make
 }
 
