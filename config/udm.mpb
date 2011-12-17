@@ -2,9 +2,9 @@
 // $Id$
 
 project : xerces {
-  libs     += UdmDll zlib
+  lit_libs += UdmDll
   includes += $(GME_ROOT)/SDK/BON/Common $(GME_ROOT)/SDK/BON $(UDM_PATH)/include .
-  libpaths += $(UDM_PATH)/lib $(UDM_3RDPARTY_PATH)/zlib
+  libpaths += $(UDM_PATH)/lib
 
   specific {
      midl_flags += /server none /client none
@@ -25,4 +25,9 @@ project : xerces {
 
     keyword udmflags  = commandflags
   }
+}
+
+feature(zlib) {
+  lit_libs += zlib
+  libpaths += $(UDM3RDPARTY_PATH)/zlib
 }
