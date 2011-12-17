@@ -1,3 +1,10 @@
+Sat Dec 17 21:11:08 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/udm.mpb:
+
+          Changes libs declaration to lit_libs since there is no
+          differentiation between debug and release import libraries.
+
 Fri Dec 16 17:06:05 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/portico.mpb:
