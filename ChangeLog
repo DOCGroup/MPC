@@ -1,3 +1,10 @@
+Sat Dec 17 21:40:53 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * templates/wix.mpd:
+
+          Added support for using the use_lib_modifier setting for
+          the non-extended template.
+
 Sat Dec 17 21:11:08 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/udm.mpb:
