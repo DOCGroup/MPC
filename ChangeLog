@@ -1,3 +1,9 @@
+Mon Dec 19 14:55:30 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/udm.mpb:
+
+          Added support for Debug/Release configurations.
+
 Sat Dec 17 21:40:53 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * templates/wix.mpd:
