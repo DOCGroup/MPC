@@ -109,7 +109,7 @@ sub fill_value {
   }
 
   ## Consult another method for this template name.  This method is
-  ## overrridden by the other project creators that inherit from this
+  ## overridden by the other project creators that inherit from this
   ## one.
   return $self->get_configurable($name);
 }
