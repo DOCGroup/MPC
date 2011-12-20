@@ -1,3 +1,17 @@
+Tue Dec 20 11:42:28 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/VC11ProjectCreator.pm:
+        * modules/VC11WorkspaceCreator.pm:
+        * templates/vc11dll.mpt:
+        * templates/vc11exe.mpt:
+        * templates/vc11lib.mpt:
+        * templates/vc11libexe.mpt:
+        * templates/vc11platforms.mpt:
+          Extended support for vc11
+
+        * modules/VC7ProjectCreator.pm:
+          Fixed typo
+
 Mon Dec 19 14:55:30 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/udm.mpb:
