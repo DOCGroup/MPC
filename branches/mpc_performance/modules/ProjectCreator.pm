@@ -22,6 +22,9 @@ use TemplateParser;
 use FeatureParser;
 use CommandHelper;
 
+use Data::Dumper;
+use Tie::IxHash;
+
 use vars qw(@ISA);
 @ISA = qw(Creator);
 
@@ -299,7 +302,7 @@ my %mains;
 # ************************************************************
 
 sub new {
-  my($class, $global, $inc, $template, $ti, $dynamic, $static, $relative, $addtemp, $addproj, $progress, $toplevel, $baseprojs, $gfeature, $relative_f, $feature, $features, $hierarchy, $exclude, $makeco, $nmod, $applypj, $genins, $into, $language, $use_env, $expandvars, $gendot, $comments, $foreclipse) = @_;
+  my($class, $global, $inc, $template, $ti, $dynamic, $static, $relative, $addtemp, $addproj, $progress, $toplevel, $baseprojs, $gfeature, $relative_f, $feature, $features, $hierarchy, $exclude, $makeco, $nmod, $applypj, $genins, $into, $language, $use_env, $expandvars, $gendot, $comments, $foreclipse, $pid) = @_;
   my $self = $class->SUPER::new($global, $inc,
                                 $template, $ti, $dynamic, $static,
                                 $relative, $addtemp, $addproj,
@@ -350,6 +353,9 @@ sub new {
 
   $self->add_default_matching_assignments();
   $self->reset_generating_types();
+
+  $self->{'pid'} = $pid;
+  $self->{'llctr'} = 0; # counts the hash insertion order for mp-mpc
 
   return $self;
 }
@@ -872,8 +878,17 @@ sub parse_line {
                   elsif (index($cwd, $start) == 0) {
                     $amount = length($start) + 1;
                   }
-                  $self->{'lib_locations'}->{$val} =
+                  if ($self->{'pid'} eq 'child') {
+
+                    $self->{'lib_locations'}->{$val} =
+                      ++$self->{'llctr'} . '|' .
                       substr($cwd, $amount);
+                  }
+                  else {
+
+                    $self->{'lib_locations'}->{$val} =
+                      substr($cwd, $amount);                    
+                  }
                   last;
                 }
               }
@@ -1474,6 +1489,10 @@ sub parse_components {
     $$names{$name} = $comps;
   }
   $$comps{$current} = [] if (!defined $$comps{$current});
+
+  # preserve order
+  #tie %$names, "Tie::IxHash";
+  #tie %$comps, "Tie::IxHash";
 
   my $count = 0;
   while(<$fh>) {
@@ -2571,10 +2590,10 @@ sub add_generated_files {
 
   ## This method is called by list_default_generated.  It performs the
   ## actual file insertion and grouping.
-
   ## Get the generated filenames
   my @added;
   foreach my $file (keys %$arr) {
+        
     foreach my $gen ($self->generated_filenames($$arr{$file}, $gentype,
                                                 $tag, $file, 1)) {
       $self->list_generated_file($gentype, $tag, \@added, $gen, $$arr{$file});
@@ -3285,7 +3304,7 @@ sub generated_source_listed {
     my $comps = $$names{$name};
     foreach my $key (keys %$comps) {
       foreach my $val (@{$$comps{$key}}) {
-        foreach my $i (keys %$arr) {
+        foreach my $i (%$arr) {
           ## If $gent doesn't cause $tag files to be generated, then we
           ## can just return a non-zero value to short-circuit attempting
           ## to add generated files after the caller continues.
@@ -3320,6 +3339,8 @@ sub list_default_generated {
     if (defined $self->{$gentype}) {
       ## Build up the list of files
       my %arr;
+      #tie %arr, "Tie::IxHash"; # preserve insertion order.
+
       my $names = $self->{$gentype};
       my $group;
       foreach my $name (keys %$names) {
