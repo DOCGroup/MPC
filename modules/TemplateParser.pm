@@ -106,6 +106,7 @@ my %arrow_op_ref = ('custom_type'     => 'custom types',
 
 # optmized regex
 my $parse_line_re1 = qr/^[ ]*<%(\w+)(?:\((?:(?:\w+\s*,\s*)*[!]?\w+\(.+\)|[^\)]+)\))?%>$/;
+my $process_name_re1 = qr/([^%\(]+)(\(([^%]+)\))?%>/;
 
 # ************************************************************
 # Subroutine Section
@@ -1993,7 +1994,7 @@ sub process_name {
   my $errorString;
 
   ## Split the line into a name and value
-  if ($line =~ /([^%\(]+)(\(([^%]+)\))?%>/) {
+  if ($line =~ /$process_name_re1/) {
     my $name = lc($1);
     my $val  = $3;
     $length += length($name);

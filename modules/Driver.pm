@@ -581,7 +581,11 @@ sub run {
                                $options->{'expand_vars'},
                                $options->{'gendot'},
                                $options->{'comments'},
-                               $options->{'for_eclipse'});
+                               $options->{'for_eclipse'},
+                               $options->{'workers'},
+                               $options->{'workers_dir'},
+                               $options->{'workers_port'});
+
       mpc_debug::chkpnt_post_creator_create($name);
 
       ## Update settings based on the configuration file

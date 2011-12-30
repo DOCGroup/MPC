@@ -166,7 +166,25 @@ sub run {
       $macros{$1} = $3;
     }
     elsif ($arg =~ /^\-I(.*)/) {
-      push(@ipaths, File::Spec->canonpath($1));
+      # support '-Idir' and '-I dir'
+      if ('' ne $1) {
+        push(@ipaths, File::Spec->canonpath($1));
+      }
+      else {
+        # get next arg
+        if (++$i < $argc) {
+          $arg = $$args[$i];
+          if ($arg =~ /^\-/) {
+            $self->usageAndExit('Invalid use of -I');
+          }
+
+          push(@ipaths, File::Spec->canonpath($arg));
+
+        }
+        else {
+          $self->usageAndExit('Invalid use of -I');
+        }
+      }
     }
     elsif ($arg eq '-A') {
       foreach my $auto (@{$self->{'automatic'}}) {
