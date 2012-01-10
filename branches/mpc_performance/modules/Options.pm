@@ -502,6 +502,13 @@ sub options {
       if (!defined $workers_dir) {
         $self->optionError('-workers_dir requires an argument');
       }
+
+      if (! -d $workers_dir) {
+        $self->diagnostic("Creating temp directory $workers_dir");
+        unless (mkdir $workers_dir) {
+          $self->optionError("Unable to create temp directory $workers_dir");
+        }
+      }
     }
     elsif ($arg eq '-workers_port') {
       $i++;
@@ -509,6 +516,10 @@ sub options {
 
       if (!defined $workers_port) {
         $self->optionError('-workers_port requires an argument');
+      }
+
+      if ($workers_port < 0 || $workers_port > 65535) {
+        $self->optionError('valid -workers_port range is between 0 and 65535');
       }
     }
     elsif ($arg eq '-ti') {

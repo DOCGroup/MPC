@@ -1783,7 +1783,7 @@ sub send_to_parent {
   }
 
   map { print $sock "$_\n"; } @$arr;
-  close $sock;
+  $sock->close();
 }
 
 sub generate_project_files_fork_socket {
@@ -1829,8 +1829,24 @@ sub generate_project_files_fork_socket {
   my $fin;
 
   my $num_prj_files = $#{$self->{'project_files'}} + 1;
+
+  ## reduce the number of workers if necessary
+  ## what if $num_workers > SOMAXCONN?? (unlikely)
+  if ($num_workers > SOMAXCONN) {
+    $self->diagnostic("Multiprocess MPC reducing # workers from $num_workers to " . SOMAXCONN . ", the max # of queued connections");
+    $num_workers = SOMAXCONN;
+  }
+
+  if ($num_workers > $num_prj_files) {
+    # don't fork more workers than there are jobs
+    $self->diagnostic("Multiprocess MPC reducing # workers from $num_workers to $num_prj_files, the number of project files.");
+    $num_workers = $num_prj_files;
+  }
+
   my $num_per_worker = int ($num_prj_files / $num_workers);
   my $num_lines_per_prj = 6;
+
+  $self->diagnostic("Multiprocess MPC using $num_workers workers to process $num_prj_files project files.");
 
   for (my $wctr = 0; $wctr < $num_workers; ++$wctr) {
     $beg = $wctr * $num_per_worker;
@@ -1847,36 +1863,36 @@ sub generate_project_files_fork_socket {
 
   }
 
+  ## Setup listener. Do this before fork so that (in the rare case)
+  ## when child tries to send data before the accept(), the socket
+  ## is at least initialized.
+  my $sock = new IO::Socket::INET (
+                                   LocalHost => 'localhost',
+                                   LocalPort => $wport,
+                                   Proto     => 'tcp',
+                                   Listen    => $num_workers,
+                                   Reuse     => 1
+                                  );
+  if (!defined ($sock)) {
+    die "Error setting up parent listener";
+  }
+
   ## spawn the workers.
   my $id = 0;
   while ($id < $num_workers) {
+    # use pipes as barrier
     $pid = fork();
     if ($pid != 0) {
       push @pids, $pid;
     } else {
+      ## after fork, child knows its id and which data to use.
       $self->{'pid'} = 'child';
       last;
     }
     ++$id;
   }
 
-  ## after fork, child knows its id and know which data to use.
   if ($self->{pid} eq 'parent') {
-    ## setup listener
-    ## what if $num_workers > SOMAXCONN?? (unlikely)
-
-    my $sock = new IO::Socket::INET (
-                                     LocalHost => 'localhost',
-                                     LocalPort => $wport,
-                                     Proto     => 'tcp',
-                                     Listen    => $num_workers,
-                                     Reuse     => 1
-                                    );
-    if (!defined ($sock)) {
-      # children should get the signal.
-      die "Error setting up parent listener";
-    }
-
     $self->diagnostic("Multiprocess MPC using port $wport.");
 
     # read the data from the kids
@@ -1899,8 +1915,12 @@ sub generate_project_files_fork_socket {
         }
       }
     }
+    # all data has been read
+    $sock->close();
+
   } else {
-    ## This is the child.
+    ## This is the code the workers run.
+    undef $sock;
     ## generate projects
     my @cdata = ($id);
     foreach my $ofile (@{$wdata[$id]}) {
