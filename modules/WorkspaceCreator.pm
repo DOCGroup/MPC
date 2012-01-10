@@ -31,8 +31,8 @@ use vars qw(@ISA);
 
 ## process stuff
 our $num_workers = 0;           # single-process
-our $wdir;                      # tmp directory      
-our $wport;                     
+our $wdir;                      # tmp directory
+our $wport;
 
 my $wsext  = 'mwc';
 my $wsbase = 'mwb';
@@ -65,7 +65,7 @@ sub new {
      $toplevel, $baseprojs, $gfeature, $relative_f, $feature,
      $features, $hierarchy, $exclude, $makeco, $nmod, $applypj,
      $genins, $into, $language, $use_env, $expandvars, $gendot,
-     $comments, $foreclipse, $workers, $workers_dir, 
+     $comments, $foreclipse, $workers, $workers_dir,
      $workers_port) = @_;
 
   my $self = Creator::new($class, $global, $inc,
@@ -79,7 +79,7 @@ sub new {
 
   $self->{'pid'} = 'parent';
 
-  # implicit dependency order counter. this is 
+  # implicit dependency order counter. this is
   # incremented in the children.
   $self->{'imp_dep_ctr'};
 
@@ -1366,7 +1366,7 @@ sub generate_project_files {
           $gen_lib_locs  = $allliblocs{$prkey};
 
           $status = 1;
-        } else {          
+        } else {
 	  $status = $creator->generate($self->mpc_basename($file));
 
           ## If any one project file fails, then stop
@@ -1426,7 +1426,7 @@ sub generate_project_files {
   if ($status && $genimpdep) {
     $self->add_implicit_project_dependencies($creator, $cwd);
   }
-  
+
   ## If we are generating the hierarchical workspaces, then do so
   $self->{'lib_locations'} = \%liblocs;
   if ($self->get_hierarchy() || $self->workspace_per_project()) {
@@ -1443,7 +1443,7 @@ sub generate_project_files {
 }
 
 sub generate_project_files_fork {
-  my $self      = shift;
+  my $self   = shift;
   my $status = (scalar @{$self->{'project_files'}} == 0 ? 1 : 0);
 
   my @projects;
@@ -1474,31 +1474,48 @@ sub generate_project_files_fork {
 
   ## Set the source file callback on our project creator
   $creator->set_source_listing_callback([\&source_listing_callback, $self]);
-  
+
   my $pid;
   my @pids;
   my $tmp = 'mpctmp00000000';
 
-  $wdir = '/tmp/mpc' if !$wdir;
+  if (!$wdir) {
+    if ($^O eq 'MSWin32') {
+      $wdir = $ENV{TEMP};
+    }
+    else {
+      $wdir = '/tmp/mpc' if !$wdir;
+    }
+  }
+
+  if (!$wdir) {
+    die "No temporary directory found. Supply one with \"-worker_dir\" option.";
+  }
+
+  $self->diagnostic("Multiprocess MPC using \"$wdir\" for temporary files.");
 
   unless (-d $wdir) {
-    mkdir $wdir || die "can't make /tmp/mpc"
+    mkdir $wdir || die "can't find or create directory $wdir"
   }
-  
+
   my @tmpfiles = glob "${wdir}/mpctmp*";
   for my $file (@tmpfiles) {
     unlink $file;
   }
 
+  my $num_tmp_files = scalar (@tmpfiles);
+
+  $self->diagnostic("Multiprocess MPC removed $num_tmp_files existing files like \"mpctmp\*\" in $wdir.");
+
   foreach my $ofile (@{$self->{'project_files'}}) {
     if ($#pids + 1 >= $num_workers) {
-      waitpid(shift @pids, 0); 
+      waitpid(shift @pids, 0);
     }
-    
+
     ++$tmp;
 
     ## open the output file in parent so it can die if there's an error
-    open (FD, ">/tmp/mpc/$tmp") || die "Can't open $tmp for write";
+    open (FD, ">${wdir}/$tmp") || die "Can't open $tmp for write";
 
     $pid = fork();
     if ($pid != 0) {
@@ -1510,7 +1527,7 @@ sub generate_project_files_fork {
         my $file    = $ofile;
         my $dir     = $self->mpc_dirname($file);
         my $restore = 0;
-        
+
         if (defined $self->{'scoped_assign'}->{$ofile}) {
           ## Handle the implicit assignment
           my $oi = $self->{'scoped_assign'}->{$ofile}->{'implicit'};
@@ -1518,29 +1535,29 @@ sub generate_project_files_fork {
             $previmpl = $impl;
             $impl     = $oi;
           }
-          
+
           ## Handle the cmdline assignment
           my $cmdline = $self->{'scoped_assign'}->{$ofile}->{'cmdline'};
           if (defined $cmdline && $cmdline ne '') {
             ## Save the cacheok value
             $prevcache = $self->{'cacheok'};
-            
+
             ## Get the current parameters and process the command line
             my %parameters = $self->current_parameters();
             $self->process_cmdline($cmdline, \%parameters);
-            
+
             ## Set the parameters on the creator
             $creator->restore_state(\%parameters);
             $restore = 1;
           }
         }
-        
+
         ## If we are generating implicit projects and the file is a
         ## directory, then we set the dir to the file and empty the file
         if ($impl && -d $file) {
           $dir  = $file;
           $file = '';
-          
+
           ## If the implicit assignment value was not a number, then
           ## we will add this value to our base projects.
           if ($impl !~ /^\d+$/) {
@@ -1550,11 +1567,11 @@ sub generate_project_files_fork {
             $self->{'cacheok'} = 0;
           }
         }
-        
+
         ## Generate the key for this project file
         my $prkey = $self->getcwd() . '/' .
           ($file eq '' ? $dir : $file) . "-$postkey";
-        
+
         ## We must change to the subdirectory for
         ## which this project file is intended
 
@@ -1571,18 +1588,18 @@ sub generate_project_files_fork {
             $status = 1;
           } else {
             $status = $creator->generate($self->mpc_basename($file));
-            
+
             ## If any one project file fails, then stop
             ## processing altogether.
             if (!$status) {
-              # save the status info and exit. the parent will 
+              # save the status info and exit. the parent will
 	      # see the error.
-	      print FD "$status|Unable to process " . 
+	      print FD "$status|Unable to process " .
 		($file eq '' ? " in $dir" : $file) . "\n";
 
 	      exit(1);          # child error
             }
-            
+
             ## Get the individual project information and
             ## generated file name(s)
             $files_written = $creator->get_files_written();
@@ -1590,15 +1607,15 @@ sub generate_project_files_fork {
             $gen_lib_locs  = $creator->get_lib_locations();
 
           }
-          
-	  
+
+
 	  print FD "$status|''|$self->{'cacheok'}|$previmpl|$prevcache\n";
 	  print FD "$ofile|$prkey|$dir|$cwd|$restore\n";
-	  
+
 	  print FD Dumper ($files_written), "\n";
 	  print FD Dumper ($gen_proj_info), "\n";
 	  print FD Dumper ($gen_lib_locs), "\n";
-	  
+
 	  # there's a callback that sets the project file list
 	  # since we can't callback between processes we store
 	  # the list for later
@@ -1612,13 +1629,13 @@ sub generate_project_files_fork {
 
 	  exit (1);             # child error
         }
-        
+
       } else {
         ## This one was excluded, so status is ok
         ## no need to set though since the child will exit.
-	#$status = 1; 
+	#$status = 1;
       }
-      
+
       exit(0);                  # child is finished
     }
   }
@@ -1632,21 +1649,21 @@ sub generate_project_files_fork {
 
   # read the children's stored data
   my @kid_data = glob "/tmp/mpc/mpctmp*";
-    
+
   for my $kd (@kid_data) {
     open (FD, "<$kd") || die "Can't open $kd for read";
 
-    ($status, $msg, $cacheok, $previmpl, $prevcache) = split /\|/, <FD>; 
+    ($status, $msg, $cacheok, $previmpl, $prevcache) = split /\|/, <FD>;
 
     if (!$status) {
       return $status, $creator, $msg;
     }
 
     ($ofile, $prkey, $dir, $cwd, $restore) = split /\|/, <FD>;
-      
+
     eval (<FD>);
     my $files_written = $VAR1;
-    
+
     eval (<FD>);
     my $gen_proj_info = $VAR1;
 
@@ -1655,10 +1672,10 @@ sub generate_project_files_fork {
     # single process.
     eval (<FD>);
     my $gen_lib_locs;
-    for my $k (sort { substr($a, 0 , index ($a, '|')) <=> 
+    for my $k (sort { substr($a, 0 , index ($a, '|')) <=>
 			substr ($b, 0, index ($b, '|')) } keys %$VAR1) {
-      
-      $gen_lib_locs->{substr ($k, index ($k, '|') + 1)} = 
+
+      $gen_lib_locs->{substr ($k, index ($k, '|') + 1)} =
 	$VAR1->{$k};
     }
 
@@ -1666,10 +1683,10 @@ sub generate_project_files_fork {
     # created or else multi-process implicit dependency may differ from
     # single process.
     eval (<FD>);
-    for my $k (sort { substr($a, 0 , index ($a, '|')) <=> 
+    for my $k (sort { substr($a, 0 , index ($a, '|')) <=>
 			substr ($b, 0, index ($b, '|')) } keys %$VAR1) {
-      
-      $self->{'project_file_list'}->{substr ($k, index ($k, '|') + 1)} = 
+
+      $self->{'project_file_list'}->{substr ($k, index ($k, '|') + 1)} =
 	$VAR1->{$k};
     }
 
@@ -1712,7 +1729,7 @@ sub generate_project_files_fork {
       ## We don't restore the state before we leave,
       ## but that's ok since we will be exiting soon.
       return 0, $creator, $msg;
-    
+
     }
 
     ## Return things to the way they were
@@ -1722,7 +1739,7 @@ sub generate_project_files_fork {
       $creator->restore_state(\%gstate);
     }
   }
-   
+
   ## Add implict project dependencies based on source files
   ## that have been used by multiple projects.  If we do it here
   ## before we call generate_hierarchy(), we don't have to call it
@@ -1742,11 +1759,11 @@ sub generate_project_files_fork {
     ($status, $errorString) = $self->generate_hierarchy($creator, \@projects, \%pi);
     $self->{'workspace_name'} = $orig;
   }
-  
+
   ## Reset the projects and project_info
   $self->{'projects'}      = \@projects;
   $self->{'project_info'}  = \%pi;
- 
+
   return $status, $creator, $errorString;
 }
 
@@ -1760,7 +1777,7 @@ sub send_to_parent {
                                    PeerPort => $wport,
                                    Proto => 'tcp',
                                   );
-          
+
   if (!defined ($sock)) {
     die "Child could not create socket";
   }
@@ -1801,7 +1818,7 @@ sub generate_project_files_fork_socket {
 
   ## Set the source file callback on our project creator
   $creator->set_source_listing_callback([\&source_listing_callback, $self]);
-  
+
   my $pid;
   my @pids;
   my @pdata;                    # parents data sent from children.
@@ -1818,16 +1835,16 @@ sub generate_project_files_fork_socket {
   for (my $wctr = 0; $wctr < $num_workers; ++$wctr) {
     $beg = $wctr * $num_per_worker;
     $fin = $beg + $num_per_worker - 1;
-    
+
     @{$wdata[$wctr]} = @{$self->{'project_files'}}[$beg..$fin];
   }
 
   ## give any remaining data to last worker.
   if ($num_prj_files > $num_per_worker * $num_workers) {
-    push @{$wdata[$num_workers - 1]} , 
-      @{$self->{'project_files'}}[$num_per_worker 
+    push @{$wdata[$num_workers - 1]} ,
+      @{$self->{'project_files'}}[$num_per_worker
                                   * $num_workers..$#{$self->{'project_files'}}];
-    
+
   }
 
   ## spawn the workers.
@@ -1860,20 +1877,22 @@ sub generate_project_files_fork_socket {
       die "Error setting up parent listener";
     }
 
+    $self->diagnostic("Multiprocess MPC using port $wport.");
+
     # read the data from the kids
     for (my $ctr = 0; $ctr < $num_workers; ++$ctr) {
       my $handle = $sock->accept();
       die "Accept error" if !$handle;
       my $id = <$handle>;
-      @{$pdata[$id]} = <$handle>;  
+      @{$pdata[$id]} = <$handle>;
 
       # each project as 6 records
       if ((($#{$pdata[$id]} + 1) / $num_lines_per_prj) != $num_per_worker) {
-        if ($#{$pdata[$id]} != 0) { 
-          # 0 indicates a failed status which will be delt with later 
+        if ($#{$pdata[$id]} != 0) {
+          # 0 indicates a failed status which will be delt with later
           if (($id == $num_workers - 1) && ((($#{$pdata[$id]} + 1) / $num_lines_per_prj) != $num_per_worker + $#{$self->{'project_files'}} + 1 - ($num_workers * $num_per_worker))) {
             # The last child may have more than num_per_worker records
-            my $rec = $#{$pdata[$id]} + 1;  
+            my $rec = $#{$pdata[$id]} + 1;
             my $exp = $num_per_worker * $num_lines_per_prj;
             die "There is an error in the child data. Expected $exp. Received $rec";
           }
@@ -1889,7 +1908,7 @@ sub generate_project_files_fork_socket {
         my $file    = $ofile;
         my $dir     = $self->mpc_dirname($file);
         my $restore = 0;
-        
+
         if (defined $self->{'scoped_assign'}->{$ofile}) {
           ## Handle the implicit assignment
           my $oi = $self->{'scoped_assign'}->{$ofile}->{'implicit'};
@@ -1897,29 +1916,29 @@ sub generate_project_files_fork_socket {
             $previmpl = $impl;
             $impl     = $oi;
           }
-          
+
           ## Handle the cmdline assignment
           my $cmdline = $self->{'scoped_assign'}->{$ofile}->{'cmdline'};
           if (defined $cmdline && $cmdline ne '') {
             ## Save the cacheok value
             $prevcache = $self->{'cacheok'};
-          
+
             ## Get the current parameters and process the command line
             my %parameters = $self->current_parameters();
             $self->process_cmdline($cmdline, \%parameters);
-          
+
             ## Set the parameters on the creator
             $creator->restore_state(\%parameters);
             $restore = 1;
           }
         }
-        
+
         ## If we are generating implicit projects and the file is a
         ## directory, then we set the dir to the file and empty the file
         if ($impl && -d $file) {
           $dir  = $file;
           $file = '';
-          
+
           ## If the implicit assignment value was not a number, then
           ## we will add this value to our base projects.
           if ($impl !~ /^\d+$/) {
@@ -1929,11 +1948,11 @@ sub generate_project_files_fork_socket {
             $self->{'cacheok'} = 0;
           }
         }
-        
+
         ## Generate the key for this project file
         my $prkey = $self->getcwd() . '/' .
           ($file eq '' ? $dir : $file) . "-$postkey";
-        
+
         ## We must change to the subdirectory for
         ## which this project file is intended
 
@@ -1950,20 +1969,20 @@ sub generate_project_files_fork_socket {
             $status = 1;
           } else {
             $status = $creator->generate($self->mpc_basename($file));
-            
+
             ## If any one project file fails, then stop
             ## processing altogether.
             if (!$status) {
-              # save the status info and exit. the parent will 
+              # save the status info and exit. the parent will
               # see the error.
               @cdata = ($id);
-              push @cdata, "$status|Unable to process " . 
+              push @cdata, "$status|Unable to process " .
                 ($file eq '' ? " in $dir" : $file) . "\n";
 
               $self->send_to_parent(\@cdata);
               exit(1);          # child error
             }
-            
+
             ## Get the individual project information and
             ## generated file name(s)
             $files_written = $creator->get_files_written();
@@ -1971,13 +1990,13 @@ sub generate_project_files_fork_socket {
             $gen_lib_locs  = $creator->get_lib_locations();
 
           }
-          
+
           push @cdata, "$status|''|$self->{'cacheok'}|$previmpl|$prevcache";
           push @cdata, "$ofile|$prkey|$dir|$cwd|$restore";
           push @cdata, Dumper ($files_written);
           push @cdata, Dumper ($gen_proj_info);
           push @cdata, Dumper ($gen_lib_locs);
-	  
+
           # there's a callback that sets the project file list
           # since we can't callback between processes we store
           # the list for later
@@ -1995,15 +2014,15 @@ sub generate_project_files_fork_socket {
 
           exit (1);             # child error
         }
-        
+
       } else {
         ## This one was excluded, so status is ok
         ## no need to set though since the child will exit.
-        #$status = 1; 
+        #$status = 1;
       }
-      
+
     }
-    
+
     # send all the data at once.
     $self->send_to_parent(\@cdata);
 
@@ -2024,30 +2043,30 @@ sub generate_project_files_fork_socket {
   # read the children's stored data
   for (my $i = 0; $i < $num_workers; ++$i) {
     for (my $j = 0; $j <  $#{$pdata[$i]} + 1; ++$j) {
-      ($status, $msg, $cacheok, $previmpl, $prevcache) = split /\|/, ${$pdata[$i]}[$j++]; 
+      ($status, $msg, $cacheok, $previmpl, $prevcache) = split /\|/, ${$pdata[$i]}[$j++];
 
       # check that the child was successful
       if (!$status) {
         return $status, $creator, $msg;
       }
 
-      ($ofile, $prkey, $dir, $cwd, $restore) = split /\|/, ${$pdata[$i]}[$j++]; 
-      
+      ($ofile, $prkey, $dir, $cwd, $restore) = split /\|/, ${$pdata[$i]}[$j++];
+
       eval (${$pdata[$i]}[$j++]);
       my $files_written = $VAR1;
-    
+
       eval (${$pdata[$i]}[$j++]);
       my $gen_proj_info = $VAR1;
-    
+
       # have to reconstitute gen_lib_locs in the same order it was
       # created or else multi-process implicit dependency may differ from
       # single process.
       eval (${$pdata[$i]}[$j++]);
       my $gen_lib_locs;
-      for my $k (sort { substr($a, 0 , index ($a, '|')) <=> 
+      for my $k (sort { substr($a, 0 , index ($a, '|')) <=>
                           substr ($b, 0, index ($b, '|')) } keys %$VAR1) {
-      
-        $gen_lib_locs->{substr ($k, index ($k, '|') + 1)} = 
+
+        $gen_lib_locs->{substr ($k, index ($k, '|') + 1)} =
           $VAR1->{$k};
       }
 
@@ -2055,10 +2074,10 @@ sub generate_project_files_fork_socket {
       # created or else multi-process implicit dependency may differ from
       # single process.
       eval (${$pdata[$i]}[$j]);
-      for my $k (sort { substr($a, 0 , index ($a, '|')) <=> 
+      for my $k (sort { substr($a, 0 , index ($a, '|')) <=>
                           substr ($b, 0, index ($b, '|')) } keys %$VAR1) {
-      
-        $self->{'project_file_list'}->{substr ($k, index ($k, '|') + 1)} = 
+
+        $self->{'project_file_list'}->{substr ($k, index ($k, '|') + 1)} =
           $VAR1->{$k};
       }
 
@@ -2101,7 +2120,7 @@ sub generate_project_files_fork_socket {
         ## We don't restore the state before we leave,
         ## but that's ok since we will be exiting soon.
         return 0, $creator, $msg;
-    
+
       }
 
       ## Return things to the way they were
@@ -2112,7 +2131,7 @@ sub generate_project_files_fork_socket {
       }
     }
   }
-   
+
   ## Add implict project dependencies based on source files
   ## that have been used by multiple projects.  If we do it here
   ## before we call generate_hierarchy(), we don't have to call it
@@ -2132,11 +2151,11 @@ sub generate_project_files_fork_socket {
     ($status, $errorString) = $self->generate_hierarchy($creator, \@projects, \%pi);
     $self->{'workspace_name'} = $orig;
   }
-  
+
   ## Reset the projects and project_info
   $self->{'projects'}      = \@projects;
   $self->{'project_info'}  = \%pi;
- 
+
   return $status, $creator, $errorString;
 }
 
@@ -2934,8 +2953,8 @@ sub get_validated_ordering {
 
 sub source_listing_callback {
   my($self, $project_file, $project_name, $list) = @_;
-  
-  # have to keep projects in the the same order as if run in 
+
+  # have to keep projects in the the same order as if run in
   # single process. otherwise implicit dependencies produces
   # different output
   if ($self->{'pid'} ne 'parent') {

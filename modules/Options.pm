@@ -273,7 +273,7 @@ sub options {
   my $gendot = ($defaults ? 0 : undef);
   my $foreclipse = ($defaults ? 0 : undef);
   my $workers = ($defaults ? 0 : undef);
-  my $workers_dir = ($defaults ? '/tmp/mpc' : undef);
+  my $workers_dir ;
   my $workers_port;
 
   ## Process the command line arguments
