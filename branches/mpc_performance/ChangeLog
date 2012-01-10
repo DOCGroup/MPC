@@ -1,25 +1,35 @@
+Tue Jan 10 05:10:23 UTC 2012  Chip Jones  <jonesc@ociweb.com>
+
+        * modules/Options.pm:
+        * modules/ProjectCreator.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Fixed -worker_dir command line option on Windows
+          and Linux. Corrected some formatting erorrs found
+          by fuzz.pl.
+
 Fri Dec 30 16:14:57 UTC 2011  Chip Jones  <jonesc@ociweb.com>
 
         * modules/Creator.pm:
-          
+
           Code formatting changes.
 
         * modules/Depgen/Driver.pm:
-        
-          Added support for both '-Idir' and '-I dir' options 
+
+          Added support for both '-Idir' and '-I dir' options
           to depgen.pl.
 
-        * modules/Driver.pm:         
+        * modules/Driver.pm:
         * modules/Options.pm:
         * modules/ProjectCreator.pm:
         * modules/TemplateParser.pm:
         * modules/WorkspaceCreator.pm:
-        
-          Modified MPC to generate projects in separate processes. 
-          This experimental feature is enabled with the 
+
+          Modified MPC to generate projects in separate processes.
+          This experimental feature is enabled with the
           command-line option '-workers.' It's behavior can
           be modified with the '-workers_dir' and '-workers_port'
-          directives. 
+          directives.
 
 Tue Nov 29 18:35:56 UTC 2011  Chip Jones  <jonesc@ociweb.com>
 

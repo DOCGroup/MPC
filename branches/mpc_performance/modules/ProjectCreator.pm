@@ -23,7 +23,7 @@ use FeatureParser;
 use CommandHelper;
 
 use Data::Dumper;
-use Tie::IxHash;
+#use Tie::IxHash;
 
 use vars qw(@ISA);
 @ISA = qw(Creator);
@@ -887,7 +887,7 @@ sub parse_line {
                   else {
 
                     $self->{'lib_locations'}->{$val} =
-                      substr($cwd, $amount);                    
+                      substr($cwd, $amount);
                   }
                   last;
                 }
@@ -2593,7 +2593,6 @@ sub add_generated_files {
   ## Get the generated filenames
   my @added;
   foreach my $file (keys %$arr) {
-        
     foreach my $gen ($self->generated_filenames($$arr{$file}, $gentype,
                                                 $tag, $file, 1)) {
       $self->list_generated_file($gentype, $tag, \@added, $gen, $$arr{$file});
