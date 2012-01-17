@@ -44,6 +44,7 @@ sub printUsage {
                $spaces . "[-apply_project] [-version] [-into <directory>]\n" .
                $spaces . "[-gfeature_file <file name>] [-nocomments]\n" .
                $spaces . "[-relative_file <file name>] [-for_eclipse]\n" .
+               $spaces . "[-workers <#>] [-workers_dir <dir> | -workers_port <#>]\n" .
                $spaces . "[-language <";
 
   my $olen = length($spaces) + 12;
@@ -157,6 +158,15 @@ sub printUsage {
 "       -static         Specifies that only static projects will be generated.\n",
 "                       By default, only dynamic projects are generated.\n",
 "       -template       Specifies the template name (with no extension).\n",
+"       -workers        Specifies number of child processes to use to generate\n",
+"                       projects.\n",
+"       -workers_dir    The directory for storing temporary output files\n",
+"                       from the child processes.  The default is '/tmp/mpc'\n",
+"                       If neither -workers_dir nor -workers_port is used,\n",
+"                       -workers_dir is assumed.\n",
+"       -workers_port   The port number for the parent listener. If neither\n",
+"                       -workers_dir nor -workers_port is used, -workers_dir\n",
+"                       is assumed.\n",
 "       -ti             Specifies the template input file (with no extension)\n",
 "                       for the specific type (ex. -ti dll_exe:vc8exe).\n",
 "       -type           Specifies the type of project file to generate.  This\n",
@@ -165,7 +175,7 @@ sub printUsage {
 "       -use_env        Use environment variables for all uses of \$() instead\n",
 "                       of the relative replacement values.\n",
 "       -value_project  This option allows modification of a project variable\n",
-"                       assignment .  Use += to add VAL to the NAME's value.\n",
+"                       assignment.  Use += to add VAL to the NAME's value.\n",
 "                       Use -= to subtract and = to override the value.\n",
 "                       This can be used to introduce new name value pairs to\n",
 "                       a project.  However, it must be a valid project\n",
@@ -262,6 +272,9 @@ sub options {
   my $genins = ($defaults ? 0 : undef);
   my $gendot = ($defaults ? 0 : undef);
   my $foreclipse = ($defaults ? 0 : undef);
+  my $workers = ($defaults ? 0 : undef);
+  my $workers_dir ;
+  my $workers_port;
 
   ## Process the command line arguments
   for(my $i = 0; $i <= $#args; $i++) {
@@ -474,6 +487,41 @@ sub options {
         }
       }
     }
+    elsif ($arg eq '-workers') {
+      $i++;
+      $workers = $args[$i];
+
+      if (!defined $workers) {
+        $self->optionError('-workers requires an argument');
+      }
+    }
+    elsif ($arg eq '-workers_dir') {
+      $i++;
+      $workers_dir = $args[$i];
+
+      if (!defined $workers_dir) {
+        $self->optionError('-workers_dir requires an argument');
+      }
+
+      if (! -d $workers_dir) {
+        $self->diagnostic("Creating temp directory $workers_dir");
+        unless (mkdir $workers_dir) {
+          $self->optionError("Unable to create temp directory $workers_dir");
+        }
+      }
+    }
+    elsif ($arg eq '-workers_port') {
+      $i++;
+      $workers_port = $args[$i];
+
+      if (!defined $workers_port) {
+        $self->optionError('-workers_port requires an argument');
+      }
+
+      if ($workers_port < 0 || $workers_port > 65535) {
+        $self->optionError('valid -workers_port range is between 0 and 65535');
+      }
+    }
     elsif ($arg eq '-ti') {
       $i++;
       my $tmpi = $args[$i];
@@ -583,6 +631,9 @@ sub options {
           'static'           => $static,
           'relative'         => \%relative,
           'reldefs'          => $reldefs,
+          'workers'          => $workers,
+          'workers_dir'      => $workers_dir,
+          'workers_port'     => $workers_port,
           'toplevel'         => $toplevel,
           'recurse'          => $recurse,
           'addtemp'          => \%addtemp,
