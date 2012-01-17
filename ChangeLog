@@ -1,3 +1,30 @@
+Mon Jan 16 22:01:41 UTC 2012  Chip Jones  <jonesc@ociweb.com>
+
+        * modules/Creator.pm:
+
+          Modifications to support multiprocess MPC.
+
+        * modules/Depgen/DependencyEditor.pm:
+        * modules/Depgen/Driver.pm:
+
+          Modified dependency generator to support appending to existing
+          files and generating dependencies for IDL files.
+
+        * modules/Driver.pm:
+        * modules/Options.pm:
+        * modules/Parser.pm:
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Modified MPC to generate projects in separate processes.
+          This experimental feature is enabled with the
+          command-line option '-workers.' It's behavior can
+          be modified with the '-workers_dir' and '-workers_port'
+          directives.
+
+          This is a merge of work done in the 'mpc_performance' branch.
+
 Tue Dec 20 11:42:28 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/VC11ProjectCreator.pm:
