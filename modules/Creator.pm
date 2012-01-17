@@ -66,7 +66,14 @@ my $onVMS = DirectoryManager::onVMS();
 # ************************************************************
 
 sub new {
-  my($class, $global, $inc, $template, $ti, $dynamic, $static, $relative, $addtemp, $addproj, $progress, $toplevel, $baseprojs, $feature, $features, $hierarchy, $nmodifier, $applypj, $into, $language, $use_env, $expandvars, $type) = @_;
+  my($class, $global, $inc, $template,
+     $ti, $dynamic, $static, $relative,
+     $addtemp, $addproj, $progress,
+     $toplevel, $baseprojs, $feature,
+     $features, $hierarchy, $nmodifier,
+     $applypj, $into, $language, $use_env,
+     $expandvars, $type) = @_;
+
   my $self = Parser::new($class, $inc);
 
   $self->{'relative'}        = $relative;
@@ -104,7 +111,6 @@ sub new {
 
   return $self;
 }
-
 
 sub preprocess_line {
   my($self, $fh, $line) = @_;
@@ -194,7 +200,6 @@ sub generate {
 
   return $status;
 }
-
 
 # split an inheritance list like ": a,b, c" into components
 sub parse_parents {
