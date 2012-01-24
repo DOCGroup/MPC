@@ -20,6 +20,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-exclude <directories>] [-name_modifier <pattern>]
               [-apply_project] [-version] [-into <directory>]
               [-gfeature_file <file name>] [-nocomments] [-for_eclipse]
+              [-workers <#>] [-workers_dir <dir> | -workers_port <#>]
               [-relative_file <file name>]
               [-language <cplusplus | csharp | java | vb>]
               [-type <automake | bcb2007 | bcb2009 | bds4 | bmake | cc | cdt6 |
@@ -84,6 +85,15 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
        -static         Specifies that only static projects will be generated.
                        By default, only dynamic projects are generated.
        -template       Specifies the template name (with no extension).
+       -workers        Specifies number of child processes to use to generate
+                       projects.
+       -workers_dir    The directory for storing temporary output files
+                       from the child processes.  The default is '/tmp/mpc'
+                       If neither -workers_dir nor -workers_port is used,
+                       -workers_dir is assumed.
+       -workers_port   The port number for the parent listener. If neither
+                       -workers_dir nor -workers_port is used, -workers_dir
+                       is assumed.
        -ti             Specifies the template input file (with no extension)
                        for the specific type (ex. -ti dll_exe:vc8exe).
        -type           Specifies the type of project file to generate.  This

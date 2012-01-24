@@ -787,7 +787,7 @@
                   "TableCode">_ROOT</em> will be automatically used as a
                   relative path replacement. For more information see
                   <a href="MakeProjectCreator.html#Additional%20-relative%20information"
-                  class="XRef">the -relative Option.</a>.</p>
+                  class="XRef">the -relative Option</a>.</p>
                 </td>
               </tr>
 
@@ -800,7 +800,7 @@
                 <td rowspan="1" colspan="1">
                   <p class="Tbl-Body">This option allows you to override the
                   default relative definitions file, which is default.rel
-                  under the MPC config directory..</p>
+                  under the MPC config directory.</p>
                 </td>
               </tr>
 
@@ -841,7 +841,7 @@
                   file can be overridden for a particular project type. For
                   more information see <a href=
                   "MakeProjectCreator.html#Additional%20-ti%20information"
-                  class="XRef">the -ti Option.</a>.</p>
+                  class="XRef">the -ti Option</a>.</p>
                 </td>
               </tr>
 
@@ -885,7 +885,7 @@
                   must be a valid project assignment. For more information
                   see <a href=
                   "MakeProjectCreator.html#Additional%20-value_project%20information"
-                  class="XRef">the -value_project Option.</a>.</p>
+                  class="XRef">the -value_project Option</a>.</p>
                 </td>
               </tr>
 
@@ -901,7 +901,50 @@
                   line. It can not be used to introduce new template input
                   name value pairs. For more information see <a href=
                   "MakeProjectCreator.html#Additional%20-value_template%20information"
-                  class="XRef">the -value_template Option.</a>.</p>
+                  class="XRef">the -value_template Option</a>.</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td rowspan="1" colspan="1">
+                  <p class="Tbl-Body"><em class="TableCode">-workers</em></p>
+                </td>
+
+                <td rowspan="1" colspan="1">
+                  <p class="Tbl-Body">Specifies number of child processes to 
+                  use to generate projects. For more information see <a href=
+                  "MakeProjectCreator.html#Additional%20-workers%20information"
+                  class="XRef">the -workers Option</a>.</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td rowspan="1" colspan="1">
+                  <p class="Tbl-Body"><em class="TableCode">-workers_dir</em></p>
+                </td>
+
+                <td rowspan="1" colspan="1">
+                  <p class="Tbl-Body">The directory for storing temporary 
+                  output files from the child processes. The default is 
+                  '/tmp/mpc' on Unix systems and %TEMP% on Windows. If 
+                  neither -workers_dir nor -workers_port is used, 
+                  -workers_dir is assumed. For more information see <a href=
+                  "MakeProjectCreator.html#Additional%20-workers_dir%20information"
+                  class="XRef">the -workers_dir Option</a>.</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td rowspan="1" colspan="1">
+                  <p class="Tbl-Body"><em class="TableCode">-workers_port</em></p>
+                </td>
+
+                <td rowspan="1" colspan="1">
+                  <p class="Tbl-Body">The port number for the parent listener.
+                  If neither -workers_dir nor -workers_port is used, 
+                  -workers_dir is assumed. For more information see <a href=
+                  "MakeProjectCreator.html#Additional%20-workers_port%20information"
+                  class="XRef">the -workers_port Option</a>.</p>
                 </td>
               </tr>
 
@@ -928,8 +971,11 @@
             "XRef">Command Line Options</a> require an expanded explanation.
             You will find more information on the <em class=
             "Code">-relative</em>, <em class="Code">-ti</em>, <em class=
-            "Code">-value_project</em> and <em class=
-            "Code">-value_template</em> options below.</li>
+            "Code">-value_project</em>, <em class=
+            "Code">-value_template</em>, <em class=
+            "Code">-workers</em>, <em class=
+            "Code">-workers_dir</em> and <em class=
+            "Code">-workers_port</em> options below.</li>
           </ul>
 
           <div>
@@ -1101,6 +1147,88 @@
               Documentation</a> section. Names that are not listed as project
               keywords (see <a href="MakeProjectCreator.html#82186" class=
               "XRef">Assignment Keywords</a>) are template variables.</li>
+            </ul>
+          </div>
+
+          <div>
+            <a name="Additional -workers information"></a>
+
+            <h6 class="Head5">The -workers Option.</h6>
+
+            <ul>
+              <li class="BodyNoLead">This option specifies the number of 
+              child process to use to generate projects. Using multiple 
+              workers can decrease project generation time significantly
+              on multiprocessor systems. For example, if you wanted to
+              distribute projects among four worker processes, you 
+              would run the following command:</li>
+
+              <li style="list-style: none">
+                <p class="Code">&nbsp;</p>
+
+                <p class="Code">mwc.pl -type gnuace -workers 4</p>
+
+                <p class="Code">&nbsp;</p>
+              </li>
+
+              <li class="Body">In multi-process MPC, each child has 
+              to pass intermediate project info back to the parent. This 
+              is done using temporary files or using a socket. The temp 
+              file implementation, <a href=
+"MakeProjectCreator.html#Additional%20-workers_dir%20information" 
+class="XRef">the -workers_dir option</a>, 
+              forks a new child for each project and ensures there are 
+              never more children running than requested. The socket 
+              listener implementation, <a href= 
+"MakeProjectCreator.html#Additional%20-workers_port%20information"  
+class="XRef">the -workers_port option</a>, 
+              pre-forks N children and distributes jobs to them.</li>
+            </ul>
+          </div>
+
+          <div>
+            <a name="Additional -workers_dir information"></a>
+
+            <h6 class="Head5">The -workers_dir Option.</h6>
+
+            <ul>
+              <li class="BodyNoLead">This option specifies the directory for 
+              storing temporary output files from the child processes. 
+              The default is '/tmp/mpc' on Unix-like systems and %TEMP%
+              on Windows. If neither <em class="Code">-workers_dir</em> 
+              nor <em class="Code">-workers_port</em> is 
+              used, <em class="Code">-workers_dir</em> is assumed. For 
+              example, if you wanted to use 4 workers and '/tmp/mydir' for 
+              temporary filess, you would run the following command:</li>
+
+              <li style="list-style: none">
+                <p class="Code">&nbsp;</p>
+
+                <p class="Code">mwc.pl -type gnuace -workers 4 -workers_dir /tmp/mydir</p>
+
+                <p class="Code">&nbsp;</p>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <a name="Additional -workers_port information"></a>
+
+            <h6 class="Head5">The -workers_port Option.</h6>
+
+            <ul>
+              <li class="BodyNoLead">This option specifies the port number
+              where the parent listens for project information from the 
+              children. If you wanted to receive information from 2 workers
+              on port 9876, you would run the following command:</li>
+
+              <li style="list-style: none">
+                <p class="Code">&nbsp;</p>
+
+                <p class="Code">mwc.pl -type gnuace -workers 2 -workers_port 9876</p>
+                <p class="Code">&nbsp;</p>
+              </li>
+
             </ul>
           </div>
         </div>
