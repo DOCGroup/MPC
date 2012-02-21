@@ -765,6 +765,9 @@
 <%endfor%>
 <%endfor%>
 <%endif%>
+<%if(duplicate_index(source_file))%>
+      <ObjectFileName>$(IntDir)\%(Filename)<%duplicate_index(source_file)%>.obj</ObjectFileName>
+<%endif%>
     </ClCompile>
 <%endif%>
 <%endif%>
