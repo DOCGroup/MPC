@@ -1,3 +1,10 @@
+Tue Feb 21 20:13:24 UTC 2012  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/vc10.mpd:
+
+          Support multiple source files with the same name (in different
+          directories) in a single project.
+
 Tue Jan 24 19:01:18 UTC 2012  Chip Jones  <jonesc@ociweb.com>
 
         * ChangeLog:
