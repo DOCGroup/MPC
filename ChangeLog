@@ -1,3 +1,10 @@
+Mon Feb 27 21:33:06 UTC 2012  Adam Mitz  <mitza@ociweb.com>
+
+        * docs/html/MakeProjectCreator.css:
+        * docs/html/MakeProjectCreator.html:
+
+          HTML documentation update from Kevin Stanley of OCI.
+
 Tue Feb 21 20:13:24 UTC 2012  Adam Mitz  <mitza@ociweb.com>
 
         * templates/vc10.mpd:
