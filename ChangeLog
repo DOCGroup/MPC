@@ -1,3 +1,10 @@
+Wed Mar  7 19:24:02 UTC 2012  Brian Johnson  <johnsonb@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Adding flag to allow linking files normally avoided, but not part of
+          -l flag operations.
+
 Mon Feb 27 21:33:06 UTC 2012  Adam Mitz  <mitza@ociweb.com>
 
         * docs/html/MakeProjectCreator.css:
