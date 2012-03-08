@@ -78,8 +78,9 @@ sub process {
              /^\s*#\s*include\s+[<"]([^">]+)[">]/o) {
         ## Locate the include file
         my $inc;
-        if (exists $self->{'ifound'}->{$1}) {
-          $inc = $self->{'ifound'}->{$1};
+        if (exists $self->{'ifound'}->{$dir} &&
+            exists $self->{'ifound'}->{$dir}->{$1}) {
+          $inc = $self->{'ifound'}->{$dir}->{$1};
         }
         else {
           foreach my $dirp (@{$self->{'ipaths'}}) {
@@ -97,7 +98,7 @@ sub process {
               $inc = "$dir/$1";
             }
           }
-          $self->{'ifound'}->{$1} = $inc;
+          $self->{'ifound'}->{$dir}->{$1} = $inc;
         }
 
         ## If we've found the include file, then process it too.
