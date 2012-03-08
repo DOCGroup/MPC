@@ -1965,9 +1965,12 @@ sub prepare_parameters {
   my($self, $prefix) = @_;
   my $input = $self->get_value($prefix . '->input_file');
   my $output;
+  my $indir;
+  my $outdir;
 
   if (defined $input) {
     $input =~ s/\//\\/g if ($self->{'cslashes'});
+    $indir = $self->tp_dirname($input);
     $output = $self->get_value($prefix . '->input_file->output_files');
 
     if (defined $output) {
@@ -1975,8 +1978,11 @@ sub prepare_parameters {
       for(my $i = 0; $i < $size; ++$i) {
         my $fo = $self->get_flag_overrides($prefix . '->input_file, gendir');
         if (defined $fo) {
-          $$output[$i] = ($fo eq '.' ? '' : $fo . '/') .
-                         $self->tp_basename($$output[$i]);
+          $outdir = $self->tp_dirname($$output[$i]);
+          if (!($outdir ne '' && $indir ne $outdir && $fo ne $outdir)) {
+	    $$output[$i] = ($fo eq '.' ? '' : $fo . '/') .
+			  $self->tp_basename($$output[$i]);
+          }
         }
         $$output[$i] =~ s/\//\\/g if ($self->{'cslashes'});
       }
