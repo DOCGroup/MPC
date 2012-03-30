@@ -1250,10 +1250,9 @@ sub topname {
   my($self, $file) = @_;
   my $dir  = '.';
   my $rest = $file;
-  if ($file =~ /^([^\/\\]+)[\/\\](.*)/) {
+  if ($file =~ /^([^\/\\]+)[\/\\](.*)/ && $1 !~ /^[a-z]:$/i) {
     $dir  = $1;
     $rest = $2;
-    $dir .= '/' if ($dir =~ /^[a-z]:$/i);
   }
   return $dir, $rest;
 }
