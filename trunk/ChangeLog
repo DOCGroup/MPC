@@ -1,3 +1,9 @@
+Fri Mar 30 13:45:44 UTC 2012  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          In topname(), recognize Windows drive-letter paths as absolute.
+
 Thu Mar  8 22:41:34 UTC 2012  Adam Mitz  <mitza@ociweb.com>
 
         * modules/Depgen/Preprocessor.pm:
