@@ -353,6 +353,7 @@ specific        This scope allows assignments that are specific to a
                 vc8      |         |      |     X     |    X    |
                 vc9      |         |      |     X     |    X    |
                 vc10     |         |      |     X     |    X    |
+                vc11     |         |      |     X     |    X    |
                 wix      |         |      |           |    X    |
 
                 ? - indicates that this is controled by the MPC_GHS_UNIX
