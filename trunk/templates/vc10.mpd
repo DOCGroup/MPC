@@ -234,10 +234,8 @@
       <ExceptionHandling><%ExceptionHandling%></ExceptionHandling>
 <%endif%>
 <%if(!managed)%>
-<%if(optimize)%>
 <%if(BasicRuntimeChecks)%>
       <BasicRuntimeChecks><%BasicRuntimeChecks%></BasicRuntimeChecks>
-<%endif%>
 <%endif%>
 <%endif%>
 <%if(ExpandAttributedSource)%>

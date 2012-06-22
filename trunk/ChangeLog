@@ -1,3 +1,10 @@
+Fri Jun 22 14:31:02 UTC 2012  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/vc10.mpd:
+
+          Modified to allow setting 'BasicRuntimeChecks' regardless of the
+          'optimize' setting.
+
 Wed Jun  6 13:09:54 UTC 2012  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * modules/ProjectCreator.pm:
