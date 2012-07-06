@@ -1,3 +1,12 @@
+Fri Jul  6 16:46:47 UTC 2012  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+        * modules/TemplateParser.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Fixed "Useless use of hash element in void context" and "Use of
+          uninitialized value $_ in concatenation" warnings.
+
 Fri Jun 22 14:31:02 UTC 2012  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/vc10.mpd:

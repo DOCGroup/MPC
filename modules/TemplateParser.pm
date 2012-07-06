@@ -325,7 +325,7 @@ sub get_value {
   if ($counter >= 0) {
     ## Create a list of possible scoped names
     @scopes = reverse @{$self->{'foreach'}->{'scope_name'}};
-    @snames = map { $_ . '::' . $name } @scopes;
+    @snames = map { defined $_ ? $_ . '::' . $name : $name } @scopes;
     push(@snames, $name);
 
     while(!defined $value && $counter >= 0) {
