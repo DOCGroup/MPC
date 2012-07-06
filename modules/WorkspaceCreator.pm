@@ -81,7 +81,7 @@ sub new {
 
   # implicit dependency order counter. this is
   # incremented in the children.
-  $self->{'imp_dep_ctr'};
+  $self->{'imp_dep_ctr'} = 0;
 
   ## These need to be reset at the end of each
   ## workspace processed within a .mwc file
@@ -127,7 +127,8 @@ sub new {
     }
     push(@{$self->{'exclude'}->{$type}}, @$exclude);
     $self->{'orig_exclude'} = $self->{'exclude'};
-  } else {
+  }
+  else {
     $self->{'orig_exclude'} = {};
   }
 
@@ -237,18 +238,22 @@ sub parse_line {
                 $self->diagnostic("Multiprocess MPC removed $wdir/$lock");
               }
 
-            } else {
-              ## Socket-based Multiprocess MPC
-              ($gstat, $creator, $err) = $self->generate_project_files_fork_socket();
             }
-          } else {
+            else {
+              ## Socket-based Multiprocess MPC
+              ($gstat, $creator, $err) =
+                  $self->generate_project_files_fork_socket();
+            }
+          }
+          else {
             ($gstat, $creator, $err) = $self->generate_project_files();
           }
           if ($gstat) {
             #exit(1);
             ($status, $error) = $self->write_workspace($creator, 1);
             $self->{'assign'} = {};
-          } else {
+          }
+          else {
             $error = $err;
             $status = 0;
           }
@@ -266,7 +271,8 @@ sub parse_line {
           $self->{'mpc_to_output'}  = {};
         }
         $self->{$self->{'type_check'}} = 0;
-      } else {
+      }
+      else {
         ## Workspace Beginning
         ## Deal with the inheritance hierarchy first
         if (defined $values[2]) {
@@ -283,7 +289,8 @@ sub parse_line {
               pop(@{$self->{'reading_parent'}});
 
               $error = "Invalid parent: $parent" if (!$status);
-            } else {
+            }
+            else {
               $status = 0;
               $error = "Unable to locate parent: $parent";
             }
@@ -296,15 +303,15 @@ sub parse_line {
             $status = 0;
             $error = 'Workspaces can not have a slash ' .
               'or a back slash in the name';
-          } else {
+          }
+          else {
             $name =~ s/^\(\s*//;
             $name =~ s/\s*\)$//;
 
             ## Replace any *'s with the default name
             if (index($name, '*') >= 0) {
               $name = $self->fill_type_name(
-                                            $name,
-                                            $self->get_default_workspace_name());
+                               $name, $self->get_default_workspace_name());
             }
 
             $self->{'workspace_name'} = $name;
@@ -312,14 +319,17 @@ sub parse_line {
         }
         $self->{$self->{'type_check'}} = 1;
       }
-    } elsif ($values[0] eq '0') {
+    }
+    elsif ($values[0] eq '0') {
       if (defined $validNames{$values[1]}) {
         $self->process_assignment($values[1], $values[2], $flags);
-      } else {
+      }
+      else {
         $error = "Invalid assignment name: '$values[1]'";
         $status = 0;
       }
-    } elsif ($values[0] eq '1') {
+    }
+    elsif ($values[0] eq '1') {
       if (defined $validNames{$values[1]}) {
         ## This code only runs when there is a non-scoped assignment.  As
         ## such, we can safely replace all environment variables here so
@@ -327,29 +337,35 @@ sub parse_line {
         ## workspaces.
         $self->replace_env_vars(\$values[2]) if ($values[2] =~ /\$/);
         $self->process_assignment_add($values[1], $values[2], $flags);
-      } else {
+      }
+      else {
         $error = "Invalid addition name: $values[1]";
         $status = 0;
       }
-    } elsif ($values[0] eq '-1') {
+    }
+    elsif ($values[0] eq '-1') {
       if (defined $validNames{$values[1]}) {
         $self->process_assignment_sub($values[1], $values[2], $flags);
-      } else {
+      }
+      else {
         $error = "Invalid subtraction name: $values[1]";
         $status = 0;
       }
-    } elsif ($values[0] eq 'component') {
+    }
+    elsif ($values[0] eq 'component') {
       my %copy = %{defined $flags ? $flags : $self->get_assignment_hash()};
       ($status, $error) = $self->parse_scope($ih,
                                              $values[1],
                                              $values[2],
                                              \%validNames,
                                              \%copy);
-    } else {
+    }
+    else {
       $error = "Unrecognized line: $line";
       $status = 0;
     }
-  } elsif ($status == -1) {
+  }
+  elsif ($status == -1) {
     ## If the line contains a variable, try to replace it with an actual
     ## value.
     $line = $self->relative($line) if (index($line, '$') >= 0);
@@ -360,7 +376,8 @@ sub parse_line {
         my %copy = %{defined $flags ? $flags : $self->get_assignment_hash()};
         ($status, $error) = $self->aggregated_workspace($expfile, \%copy);
         last if (!$status);
-      } else {
+      }
+      else {
         push(@{$self->{'project_files'}}, $expfile);
         $status = 1;
       }
@@ -409,20 +426,23 @@ sub aggregated_workspace {
               $status = 0;
               $error  = 'Aggregated workspace (' . $name .
                 ') can not inherit from another workspace';
-            } else {
+            }
+            else {
               ($status, $error) = $self->parse_scope($fh,
                                                      '',
                                                      $aggregated,
                                                      \%validNames,
                                                      $flags);
             }
-          } else {
+          }
+          else {
             $status = 0;
             $error = 'Unable to aggregate ' . $file;
           }
           last;
         }
-      } else {
+      }
+      else {
         last;
       }
     }
@@ -456,11 +476,14 @@ sub parse_scope {
 
   if ($name eq 'exclude') {
     return $self->parse_exclude($fh, $type, $flags);
-  } elsif ($name eq 'associate') {
+  }
+  elsif ($name eq 'associate') {
     return $self->parse_associate($fh, $type);
-  } elsif ($name eq 'specific') {
+  }
+  elsif ($name eq 'specific') {
     return $self->parse_specific($fh, $type, $validNames, $flags, $elseflags);
-  } else {
+  }
+  else {
     return $self->SUPER::parse_scope($fh, $name, $type,
                                      $validNames, $flags, $elseflags);
   }
@@ -484,7 +507,8 @@ sub process_types {
 
         ## Remove the original property from the types.
         delete $types{$key};
-      } elsif ($key =~ /^!prop:\s*(\w+)/) {
+      }
+      elsif ($key =~ /^!prop:\s*(\w+)/) {
         ## Negate the property.
         $props{$1} = 0;
 
@@ -502,10 +526,12 @@ sub process_types {
     if (exists $$wcprops{$key}) {
       if ($$wcprops{$key} == 1 and $$wcprops{$key} == $val) {
         $types{$self->{wctype}} = 1;
-      } else {
+      }
+      else {
         delete $types{$self->{wctype}};
       }
-    } elsif ($val == 0) {
+    }
+    elsif ($val == 0) {
       $types{$self->{wctype}} = 1;
     }
   }
@@ -540,22 +566,27 @@ sub parse_exclude {
       my $line = $self->preprocess_line($fh, $_);
 
       if ($line eq '') {
-      } elsif ($line =~ /^}(.*)$/) {
+      }
+      elsif ($line =~ /^}(.*)$/) {
         --$count;
         if (defined $1 && $1 ne '') {
           $status = 0;
           $errorString = "Trailing characters found: '$1'";
-        } else {
+        }
+        else {
           $status = 1;
           $errorString = undef;
         }
         last if ($count == 0);
-      } else {
+      }
+      else {
         if ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
           ++$count;
-        } elsif ($self->parse_assignment($line, [], $fh)) {
+        }
+        elsif ($self->parse_assignment($line, [], $fh)) {
           ## Ignore all assignments
-        } else {
+        }
+        else {
           if ($line =~ /^"([^"]+)"$/) {
             $line = $1;
           }
@@ -570,7 +601,8 @@ sub parse_exclude {
           }
           if ($line =~ /[\?\*\[\]]/) {
             push(@exclude, $self->mpc_glob($line));
-          } else {
+          }
+          else {
             push(@exclude, $line);
           }
         }
@@ -583,14 +615,16 @@ sub parse_exclude {
       }
       push(@{$self->{'exclude'}->{$type}}, @exclude);
     }
-  } else {
+  }
+  else {
     if ($negated) {
       ($status, $errorString) = $self->SUPER::parse_scope($fh,
                                                           'exclude',
                                                           $typestr,
                                                           \%validNames,
                                                           $flags);
-    } else {
+    }
+    else {
       ## If this exclude block didn't match the current type and the
       ## exclude wasn't negated, we need to eat the exclude block so that
       ## these lines don't get included into the workspace.
@@ -599,12 +633,14 @@ sub parse_exclude {
 
         if ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
           ++$count;
-        } elsif ($line =~ /^}(.*)$/) {
+        }
+        elsif ($line =~ /^}(.*)$/) {
           --$count;
           if (defined $1 && $1 ne '') {
             $status = 0;
             $errorString = "Trailing characters found: '$1'";
-          } else {
+          }
+          else {
             $status = 1;
             $errorString = undef;
           }
@@ -633,24 +669,29 @@ sub parse_associate {
     my $line = $self->preprocess_line($fh, $_);
 
     if ($line eq '') {
-    } elsif ($line =~ /^}(.*)$/) {
+    }
+    elsif ($line =~ /^}(.*)$/) {
       --$count;
       if (defined $1 && $1 ne '') {
         $errorString = "Trailing characters found: '$1'";
         last;
-      } else {
+      }
+      else {
         $status = 1;
         $errorString = undef;
       }
       last if ($count == 0);
-    } else {
+    }
+    else {
       if ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
         ++$count;
-      } elsif ($self->parse_assignment($line, [], $fh)) {
+      }
+      elsif ($self->parse_assignment($line, [], $fh)) {
         $errorString = 'Assignments are not ' .
           'allowed within an associate scope';
         last;
-      } else {
+      }
+      else {
         if ($line =~ /^"([^"]+)"$/) {
           $line = $1;
         }
@@ -667,7 +708,8 @@ sub parse_associate {
           foreach my $file ($self->mpc_glob($line)) {
             $self->{'associated'}->{$assoc_key}->{$file} = 1;
           }
-        } else {
+        }
+        else {
           $self->{'associated'}->{$assoc_key}->{$line} = 1;
         }
       }
@@ -762,7 +804,8 @@ sub handle_scoped_unknown {
       $self->{$self->{'type_check'}} = 1;
       ($status, $error, @values) = $self->parse_line($fh, $line, $flags);
       $self->{$self->{'type_check'}} = $tc;
-    } else {
+    }
+    else {
       $status = 0;
       $error  = 'Unhandled line: ' . $line;
     }
@@ -773,11 +816,13 @@ sub handle_scoped_unknown {
   ## value.
   if (index($line, '$') >= 0) {
     $line = $self->relative($line);
-  } elsif (defined $self->{'scoped_basedir'}) {
+  }
+  elsif (defined $self->{'scoped_basedir'}) {
     if ($self->path_is_relative($line)) {
       if ($line eq '.') {
         $line = $self->{'scoped_basedir'};
-      } else {
+      }
+      else {
         ## This is a relative path and the project may have been added
         ## previously without a relative path.  We need to convert the
         ## relative path into an absolute path and, if possible, remove
@@ -841,14 +886,16 @@ sub handle_scoped_unknown {
     foreach my $file (@files) {
       $self->add_aggregated_mpc($file, $dupchk, $flags);
     }
-  } else {
+  }
+  else {
     foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
                          $line) {
       if ($expfile =~ /\.$wsext$/) {
         ## An aggregated workspace within an aggregated workspace or scope.
         ($status, $error) = $self->aggregated_workspace($expfile, $flags);
         last if (!$status);
-      } else {
+      }
+      else {
         $self->add_aggregated_mpc($expfile, $dupchk, $flags);
       }
     }
@@ -865,7 +912,8 @@ sub add_aggregated_mpc {
     if (defined $dupchk && exists $$dupchk{$file}) {
       $self->information("Duplicate mpc file ($file) added by an " .
                          'aggregate workspace.  It will be ignored.');
-    } else {
+    }
+    else {
       $self->{'scoped_assign'}->{$file} = $flags;
       push(@{$self->{'project_files'}}, $file);
       push(@{$self->{'aggregated_mpc'}->{$self->{'current_aggregated'}}},
@@ -894,7 +942,8 @@ sub search_for_files {
 
         unshift(@$array, $file);
       }
-    } elsif ($file =~ /\.mpc$/) {
+    }
+    elsif ($file =~ /\.mpc$/) {
       $file =~ s/^\.\///;
 
       # Strip out ^ symbols
@@ -946,7 +995,8 @@ sub generate_default_components {
           if ($impl || $self->{'scoped_assign'}->{$file}->{'implicit'}) {
             push(@built, $file);
           }
-        } else {
+        }
+        else {
           push(@built, $file);
         }
       }
@@ -958,7 +1008,8 @@ sub generate_default_components {
 
     ## Set the project files
     $self->{'project_files'} = \@built;
-  } else {
+  }
+  else {
     ## Add all of the wanted files in this directory
     ## and in the subdirectories.
     $excluded |= $self->search_for_files($files, $pjf, $impl);
@@ -981,7 +1032,8 @@ sub get_default_workspace_name {
 
   if ($name eq '') {
     $name = $self->base_directory();
-  } else {
+  }
+  else {
     ## Since files on UNIX can have back slashes, we transform them
     ## into underscores.
     $name =~ s/\\/_/g;
@@ -1073,7 +1125,8 @@ sub write_and_compare_file {
       close($fh);
 
       $different = 0 if ($status && !$self->files_are_different($name, $tmp));
-    } else {
+    }
+    else {
       $status = 0;
       $errorString = "Unable to open $tmp for output.";
     }
@@ -1086,16 +1139,19 @@ sub write_and_compare_file {
           $status = 0;
           $errorString = "Unable to open $name for output";
         }
-      } else {
+      }
+      else {
         ## There is no need to rename, so remove our temp file.
         unlink($tmp);
       }
     }
-  } else {
+  }
+  else {
     if (open($fh, ">$name")) {
       &$func($self, $fh, @params);
       close($fh);
-    } else {
+    }
+    else {
       $status = 0;
       $errorString = "Unable to open $name for output.";
     }
@@ -1133,11 +1189,13 @@ sub write_workspace {
                        "Look in " . $self->mpc_dirname($project) .
                        " and " . $self->mpc_dirname($names{$name}) .
                        " for project name conflicts.");
-        } else {
+        }
+        else {
           $names{$name} = $project;
         }
       }
-    } else {
+    }
+    else {
       $self->{'per_project_workspace_name'} = 1;
     }
 
@@ -1149,7 +1207,8 @@ sub write_workspace {
       $errorString = "Duplicate case-insensitive project names are " .
         "not allowed within a workspace.";
       $status = 0;
-    } else {
+    }
+    else {
       if (!defined $self->{'projects'}->[0]) {
         $self->information('No projects were created.');
         $abort_creation = 1;
@@ -1211,7 +1270,8 @@ sub write_workspace {
           }
           print $dh "}\n";
           close($dh);
-        } else {
+        }
+        else {
           $self->warning("Unable to write to $wsname.dot.");
         }
       }
@@ -1282,7 +1342,8 @@ sub generate_hierarchy {
       $current = $top;
       push(@saved, $rest);
       $sinfo{$rest} = $projinfo{$prj};
-    } elsif ($top ne $current) {
+    }
+    elsif ($top ne $current) {
       if ($current ne '.') {
         ## Write out the hierachical workspace
         $self->cd($current);
@@ -1302,7 +1363,8 @@ sub generate_hierarchy {
       @saved = ($rest);
       %sinfo = ();
       $sinfo{$rest} = $projinfo{$prj};
-    } else {
+    }
+    else {
       push(@saved, $rest);
       $sinfo{$rest} = $projinfo{$prj};
     }
@@ -1413,7 +1475,8 @@ sub generate_project_files {
           $gen_lib_locs  = $allliblocs{$prkey};
 
           $status = 1;
-        } else {
+        }
+        else {
 	  $status = $creator->generate($self->mpc_basename($file));
 
           ## If any one project file fails, then stop
@@ -1443,7 +1506,8 @@ sub generate_project_files {
         $self->save_project_info($files_written, $gen_proj_info,
                                  $gen_lib_locs, $dir,
                                  \@projects, \%pi, \%liblocs);
-      } else {
+      }
+      else {
         ## Unable to change to the directory.
         ## We don't restore the state before we leave,
         ## but that's ok since we will be exiting soon.
@@ -1456,7 +1520,8 @@ sub generate_project_files {
         $self->{'cacheok'} = $prevcache;
         $creator->restore_state(\%gstate);
       }
-    } else {
+    }
+    else {
       ## This one was excluded, so status is ok
       $status = 1;
     }
@@ -1549,7 +1614,8 @@ sub generate_project_files_fork {
     $pid = fork();
     if ($pid != 0) {
       push @pids, $pid;
-    } else {
+    }
+    else {
       $self->{'pid'} = 'child';
 
       if (!$self->excluded($ofile)) {
@@ -1615,7 +1681,8 @@ sub generate_project_files_fork {
             $gen_lib_locs  = $allliblocs{$prkey};
 
             $status = 1;
-          } else {
+          }
+          else {
             $status = $creator->generate($self->mpc_basename($file));
 
             ## If any one project file fails, then stop
@@ -1650,7 +1717,8 @@ sub generate_project_files_fork {
 	  # the list for later
 	  print FD Dumper ($self->{'project_file_list'}), "\n";
 
-        } else {
+        }
+        else {
           ## Unable to change to the directory.
           ## We don't restore the state before we leave,
           ## but that's ok since we will be exiting soon.
@@ -1659,7 +1727,8 @@ sub generate_project_files_fork {
 	  exit (1);             # child error
         }
 
-      } else {
+      }
+      else {
         ## This one was excluded, so status is ok
         ## no need to set though since the child will exit.
 	#$status = 1;
@@ -1727,7 +1796,8 @@ sub generate_project_files_fork {
 	$gen_proj_info = $allprinfo{$prkey};
 	$gen_lib_locs  = $allliblocs{$prkey};
 	$status = 1;
-      } else {
+      }
+      else {
 	# file is already generated. check status
 	if (!$status) {
 
@@ -1752,8 +1822,8 @@ sub generate_project_files_fork {
       $self->save_project_info($files_written, $gen_proj_info,
 			       $gen_lib_locs, $dir,
 			       \@projects, \%pi, \%liblocs);
-    } else {
-
+    }
+    else {
       ## Unable to change to the directory.
       ## We don't restore the state before we leave,
       ## but that's ok since we will be exiting soon.
@@ -1913,7 +1983,8 @@ sub generate_project_files_fork_socket {
     $pid = fork();
     if ($pid != 0) {
       push @pids, $pid;
-    } else {
+    }
+    else {
       ## after fork, child knows its id and which data to use.
       $self->{'pid'} = 'child';
       last;
@@ -1946,8 +2017,8 @@ sub generate_project_files_fork_socket {
     }
     # all data has been read
     $sock->close();
-
-  } else {
+  }
+  else {
     ## This is the code the workers run.
     undef $sock;
     ## generate projects
@@ -2016,7 +2087,8 @@ sub generate_project_files_fork_socket {
             $gen_lib_locs  = $allliblocs{$prkey};
 
             $status = 1;
-          } else {
+          }
+          else {
             $status = $creator->generate($self->mpc_basename($file));
 
             ## If any one project file fails, then stop
@@ -2053,7 +2125,8 @@ sub generate_project_files_fork_socket {
 
           $self->cd($cwd);
 
-        } else {
+        }
+        else {
           ## Unable to change to the directory.
           ## We don't restore the state before we leave,
           ## but that's ok since we will be exiting soon.
@@ -2063,19 +2136,19 @@ sub generate_project_files_fork_socket {
 
           exit (1);             # child error
         }
-      ## Return things to the way they were
-      $impl = $previmpl if (defined $self->{'scoped_assign'}->{$ofile});
-      if ($restore) {
-        $self->{'cacheok'} = $prevcache;
-        $creator->restore_state(\%gstate);
-      }
 
-      } else {
+        ## Return things to the way they were
+        $impl = $previmpl if (defined $self->{'scoped_assign'}->{$ofile});
+        if ($restore) {
+          $self->{'cacheok'} = $prevcache;
+          $creator->restore_state(\%gstate);
+        }
+      }
+      else {
         ## This one was excluded, so status is ok
         ## no need to set though since the child will exit.
         #$status = 1;
       }
-
     }
 
     # send all the data at once.
@@ -2144,7 +2217,8 @@ sub generate_project_files_fork_socket {
           $gen_proj_info = $allprinfo{$prkey};
           $gen_lib_locs  = $allliblocs{$prkey};
           $status = 1;
-        } else {
+        }
+        else {
           # file is already generated. check status
           if (!$status) {
 
@@ -2169,7 +2243,8 @@ sub generate_project_files_fork_socket {
         $self->save_project_info($files_written, $gen_proj_info,
                                  $gen_lib_locs, $dir,
                                  \@projects, \%pi, \%liblocs);
-      } else {
+      }
+      else {
 
         ## Unable to change to the directory.
         ## We don't restore the state before we leave,
@@ -2244,7 +2319,8 @@ sub non_intersection {
   foreach my $r (@$right) {
     if (exists $check{$r}) {
       $status = 1;
-    } else {
+    }
+    else {
       push(@$over, $r);
     }
   }
@@ -2258,7 +2334,8 @@ sub indirect_dependency {
   $self->{'indirect_checked'}->{$ccheck} = 1;
   if (index($self->{'project_info'}->{$ccheck}->[ProjectCreator::DEPENDENCIES], $cfile) >= 0) {
     return 1;
-  } else {
+  }
+  else {
     my $deps = $self->create_array(
                                    $self->{'project_info'}->{$ccheck}->[ProjectCreator::DEPENDENCIES]);
     foreach my $dep (@$deps) {
@@ -2311,7 +2388,8 @@ sub add_implicit_project_dependencies {
           $self->{'project_file_list'}->{$ikey}->[2] = \@over;
           if (defined $bidir{$key}) {
             push(@{$bidir{$key}}, $ikey);
-          } else {
+          }
+          else {
             $bidir{$key} = [$ikey];
           }
           my $append = $creator->translate_value('after', $key);
@@ -2410,7 +2488,8 @@ sub sort_within_group {
         (defined $$movepjs[0] && defined $$prevpjs[0] &&
          $$movepjs[0] == $$prevpjs[0] && $$movepjs[1] == $$prevpjs[1])) {
       ++$ccount;
-    } else {
+    }
+    else {
       $ccount = 0;
     }
 
@@ -2656,7 +2735,8 @@ sub sort_dependencies {
         my $dir = $self->get_first_level_directory($list[$li]);
         if (!defined $previous->[1]) {
           $previous = [$li, $dir];
-        } elsif ($previous->[1] ne $dir) {
+        }
+        elsif ($previous->[1] ne $dir) {
           push(@grindex, [$previous->[0], $li - 1]);
           $previous = [$li, $dir];
         }
@@ -2670,7 +2750,8 @@ sub sort_dependencies {
 
       ## Now sort the groups as single entities
       $self->sort_by_groups(\@list, \@grindex) if ($#grindex > 0);
-    } else {
+    }
+    else {
       $self->sort_within_group(\@list, 0, $#list);
     }
   }
@@ -2733,7 +2814,8 @@ sub project_target_translation {
     $dir =~ s/[\/\\].*//;
     if (($case && $dir eq $name) || (!$case && lc($dir) eq lc($name))) {
       $map{$key} = "$name-target";
-    } else {
+    }
+    else {
       $map{$key} = $name;
     }
   }
@@ -2768,13 +2850,16 @@ sub process_cmdline {
 
         if (!defined $type) {
           ## This option was not used, so we ignore it
-        } elsif ($type eq 'ARRAY') {
+        }
+        elsif ($type eq 'ARRAY') {
           push(@{$parameters->{$key}}, @{$options->{$key}});
-        } elsif ($type eq 'HASH') {
+        }
+        elsif ($type eq 'HASH') {
           foreach my $hk (keys %{$options->{$key}}) {
             $parameters->{$key}->{$hk} = $options->{$key}->{$hk};
           }
-        } elsif ($type eq 'SCALAR') {
+        }
+        elsif ($type eq 'SCALAR') {
           $parameters->{$key} = $options->{$key};
         }
       }
@@ -2921,7 +3006,8 @@ sub get_modified_workspace_name {
   if (!defined $previous_workspace_name{$type}->{$pwd}) {
     $previous_workspace_name{$type}->{$pwd} = $wsname;
     $self->{'current_workspace_name'} = undef;
-  } else {
+  }
+  else {
     my $prefix = ($oname eq $wsname ? $name : "$name.$wsname");
     $previous_workspace_name{$type}->{$pwd} = $wsname;
     while ($self->file_written("$prefix" .
@@ -2960,7 +3046,8 @@ sub get_validated_ordering {
 
   if (defined $self->{'ordering_cache'}->{$project}) {
     $deps = $self->{'ordering_cache'}->{$project};
-  } else {
+  }
+  else {
     $deps = [];
     if (defined $self->{'project_info'}->{$project}) {
       my($name, $dstr) = @{$self->{'project_info'}->{$project}};
@@ -2988,7 +3075,8 @@ sub get_validated_ordering {
               --$dlen;
               --$i;
             }
-          } else {
+          }
+          else {
             ## If a project references itself, we must remove it
             ## from the list of dependencies.
             splice(@$deps, $i, 1);
@@ -3028,7 +3116,8 @@ sub sort_projects_by_directory {
 
   if ($sa >= 0 && $sb == -1) {
     return 1;
-  } elsif ($sb >= 0 && $sa == -1) {
+  }
+  elsif ($sb >= 0 && $sa == -1) {
     return -1;
   }
   return $left cmp $right;
@@ -3058,7 +3147,8 @@ sub get_relative_dep_file {
       my $dir = $dirs[$i];
       if ($project =~ s/^$dir\///) {
         $last = $i;
-      } else {
+      }
+      else {
         last;
       }
     }
@@ -3066,7 +3156,8 @@ sub get_relative_dep_file {
     my $dependee = $self->{'project_file_list'}->{$dep}->[0];
     if ($last == -1) {
       return $base . '/' . $dependee;
-    } else {
+    }
+    else {
       my $built = '';
       for (my $i = $last + 1; $i <= $#dirs; $i++) {
         $built .= $dirs[$i] . '/';
@@ -3092,7 +3183,8 @@ sub create_command_line_string {
       ## contains a dollar sign, we need to wrap the argument in single
       ## quotes so that the UNIX shell does not interpret it.
       $arg = "'$arg'";
-    } else {
+    }
+    else {
       ## Unfortunately, the Windows command line shell does not
       ## understand single quotes correctly.  So, we have the distinction
       ## above and handle dollar signs here too.
@@ -3100,7 +3192,8 @@ sub create_command_line_string {
     }
     if (defined $str) {
       $str .= " $arg";
-    } else {
+    }
+    else {
       $str = $arg;
     }
   }
