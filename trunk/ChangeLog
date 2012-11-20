@@ -1,3 +1,9 @@
+Tue Nov 20 18:27:27 UTC 2012  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/lzo1.mpb:
+        * config/lzo2.mpb:
+          Fixed expand parts
+
 Fri Jul  6 16:46:47 UTC 2012  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
