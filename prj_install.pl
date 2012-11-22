@@ -186,7 +186,7 @@ sub determineSpecialName {
     my $fh   = new FileHandle();
     if (opendir($fh, $odir)) {
       foreach my $file (grep(!/^\.\.?$/, readdir($fh))) {
-        if ($file =~ /^lib$name\.(a|so|sl|dylib)/ ||
+        if ($file =~ /^lib$name(-[0-9]+(\.[0-9]+)*)?\.(a|so|sl|dylib)/ ||
             $file =~ /^(lib)?$name.*\.(dll|lib)$/i) {
           push(@libs, "$dir$insdir$binarydir$file");
         }
