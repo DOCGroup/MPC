@@ -1,3 +1,8 @@
+Thu Nov 22 09:19:24 UTC 2012  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * prj_install.pl:
+          Extended shared library installation for debian packaging
+
 Tue Nov 20 18:27:27 UTC 2012  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/lzo1.mpb:
