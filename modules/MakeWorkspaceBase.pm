@@ -61,6 +61,7 @@ sub workspace_preamble {
 
   ## Optionally print the workspace comment
   $self->print_workspace_comment($fh,
+            '# -*-Makefile-*-', $crlf,
             '#----------------------------------------------------------------------------', $crlf,
             '#       ', $name, $crlf,
             '#', $crlf,
