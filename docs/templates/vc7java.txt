@@ -1,3 +1,5 @@
+// $Id$
+//
 // Current as of 11/15/2007
 // This defines the role of all the template variables specific to the
 // 'vc7' and 'vc71' project types with the java language.

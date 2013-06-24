@@ -4,6 +4,7 @@ package Driver;
 # Description   : Functionality to call a workspace or project creator
 # Author        : Chad Elliott
 # Create Date   : 5/28/2002
+# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -285,7 +286,9 @@ sub run {
     OutputMessage::set_levels($cfg->get_value('logging'));
   }
 
-  $self->debug("CMD: $0 @ARGV");
+  ## Assembling a string from an array can be time consuming.  If we're
+  ## not debugging, then skip it.
+  $self->debug("CMD: $0 @ARGV") if ($self->get_debug_level());
 
   ## After we read the config file, see if the user has provided
   ## dynamic types
@@ -425,8 +428,13 @@ sub run {
   push(@{$options->{'include'}}, $self->{'basepath'} . '/config',
                                  $self->{'basepath'} . '/templates');
 
-  ## All includes (except the current directory) have been added by this time
-  $self->debug("INCLUDES: @{$options->{'include'}}");
+  ## All includes (except the current directory) have been added by this
+  ## time.  Both of the following can be time consuming, so we'll only do
+  ## it if we know we're debugging.
+  if ($self->get_debug_level()) {
+    $self->debug("INCLUDES: @{$options->{'include'}}");
+    $self->dump_base_projects($options->{'include'});
+  }
 
   ## Set the global feature file
   my $global_feature_file = (defined $options->{'gfeature_file'} &&
@@ -573,11 +581,16 @@ sub run {
                                $options->{'expand_vars'},
                                $options->{'gendot'},
                                $options->{'comments'},
-                               $options->{'for_eclipse'});
+                               $options->{'for_eclipse'},
+                               $options->{'workers'},
+                               $options->{'workers_dir'},
+                               $options->{'workers_port'});
+
       mpc_debug::chkpnt_post_creator_create($name);
 
       ## Update settings based on the configuration file
-      $creator->set_verbose_ordering($cfg->get_value('verbose_ordering'));
+      my $verbose_ordering = $cfg->get_value('verbose_ordering');
+      $creator->set_verbose_ordering($verbose_ordering) if defined $verbose_ordering;
 
       if ($base ne $file) {
         my $dir = ($base eq '' ? $file : $self->mpc_dirname($file));

@@ -4,6 +4,7 @@ package TemplateParser;
 # Description   : Parses the template and fills in missing values
 # Author        : Chad Elliott
 # Create Date   : 5/17/2002
+# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -102,6 +103,10 @@ my %arrow_op_ref = ('custom_type'     => 'custom types',
                     'grouped_.*_file' => 'grouped files',
                     'feature'         => 'features',
                    );
+
+# optmized regex
+my $parse_line_re1 = qr/^[ ]*<%(\w+)(?:\((?:(?:\w+\s*,\s*)*[!]?\w+\(.+\)|[^\)]+)\))?%>$/;
+my $process_name_re1 = qr/([^%\(]+)(\(([^%]+)\))?%>/;
 
 # ************************************************************
 # Subroutine Section
@@ -309,8 +314,8 @@ sub get_value {
   my $value;
   my $counter = $self->{'foreach'}->{'count'};
   my $fromprj;
-  my $scope;
-  my $sname;
+  my @scopes;
+  my @snames;
   my $adjust = 1;
 
   ## $name should always be all lower-case
@@ -318,14 +323,11 @@ sub get_value {
 
   ## First, check the temporary scope (set inside a foreach)
   if ($counter >= 0) {
-    ## Find the outer most scope for our variable name
-    for(my $index = $counter; $index >= 0; --$index) {
-      if (defined $self->{'foreach'}->{'scope_name'}->[$index]) {
-        $scope = $self->{'foreach'}->{'scope_name'}->[$index];
-        $sname = $scope . '::' . $name;
-        last;
-      }
-    }
+    ## Create a list of possible scoped names
+    @scopes = reverse @{$self->{'foreach'}->{'scope_name'}};
+    @snames = map { defined $_ ? $_ . '::' . $name : $name } @scopes;
+    push(@snames, $name);
+
     while(!defined $value && $counter >= 0) {
       $value = $self->{'foreach'}->{'temp_scope'}->[$counter]->{$name};
       --$counter;
@@ -336,6 +338,9 @@ sub get_value {
         defined $value && defined $target_type_vars{$name}) {
       $value = $self->{'values'}->{$name};
     }
+  }
+  else {
+    @snames = ($name);
   }
 
   if (!defined $value) {
@@ -352,8 +357,7 @@ sub get_value {
       if (!defined $value) {
         ## Calling adjust_value here allows us to pick up template
         ## overrides before getting values elsewhere.
-        my $uvalue = $self->{'prjc'}->adjust_value([$sname, $name],
-                                                   [], $self);
+        my $uvalue = $self->{'prjc'}->adjust_value(\@snames, [], $self);
         if (defined $$uvalue[0]) {
           $value = $uvalue;
           $adjust = 0;
@@ -403,7 +407,7 @@ sub get_value {
   ## Adjust the value even if we haven't obtained one from an outside
   ## source.
   if ($adjust && defined $value) {
-    $value = $self->{'prjc'}->adjust_value([$sname, $name], $value, $self);
+    $value = $self->{'prjc'}->adjust_value(\@snames, $value, $self);
   }
 
   ## If the value did not come from the project creator, we
@@ -424,7 +428,8 @@ sub get_value {
     }
   }
 
-  return $self->{'prjc'}->relative($value, undef, $scope);
+  return (defined $value ?
+            $self->{'prjc'}->relative($value, undef, \@scopes) : undef);
 }
 
 
@@ -1960,9 +1965,12 @@ sub prepare_parameters {
   my($self, $prefix) = @_;
   my $input = $self->get_value($prefix . '->input_file');
   my $output;
+  my $indir;
+  my $outdir;
 
   if (defined $input) {
     $input =~ s/\//\\/g if ($self->{'cslashes'});
+    $indir = $self->tp_dirname($input);
     $output = $self->get_value($prefix . '->input_file->output_files');
 
     if (defined $output) {
@@ -1970,8 +1978,11 @@ sub prepare_parameters {
       for(my $i = 0; $i < $size; ++$i) {
         my $fo = $self->get_flag_overrides($prefix . '->input_file, gendir');
         if (defined $fo) {
-          $$output[$i] = ($fo eq '.' ? '' : $fo . '/') .
-                         $self->tp_basename($$output[$i]);
+          $outdir = $self->tp_dirname($$output[$i]);
+          if (!($outdir ne '' && $indir ne $outdir && $fo ne $outdir)) {
+	    $$output[$i] = ($fo eq '.' ? '' : $fo . '/') .
+			  $self->tp_basename($$output[$i]);
+          }
         }
         $$output[$i] =~ s/\//\\/g if ($self->{'cslashes'});
       }
@@ -1989,7 +2000,7 @@ sub process_name {
   my $errorString;
 
   ## Split the line into a name and value
-  if ($line =~ /([^%\(]+)(\(([^%]+)\))?%>/) {
+  if ($line =~ /$process_name_re1/) {
     my $name = lc($1);
     my $val  = $3;
     $length += length($name);
@@ -2167,8 +2178,7 @@ sub parse_line {
   ## contains a keyword, then we do
   ## not need to add a newline to the end.
   if ($self->{'foreach'}->{'processing'} == 0 && !$self->{'eval'} &&
-      ($line !~ /^[ ]*<%(\w+)(?:\((?:(?:\w+\s*,\s*)*[!]?\w+\(.+\)|[^\)]+)\))?%>$/ ||
-       !defined $keywords{$1})) {
+      ($line !~ /$parse_line_re1/ || !defined $keywords{$1})) {
     $line .= $self->{'crlf'};
   }
 

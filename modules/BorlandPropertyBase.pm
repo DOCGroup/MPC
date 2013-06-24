@@ -4,6 +4,7 @@ package BorlandPropertyBase;
 # Description   : A Borland base module for properties.
 # Author        : Chad Elliott
 # Create Date   : 5/5/2009
+# $Id$
 # ************************************************************
 
 # ************************************************************

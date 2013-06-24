@@ -4,6 +4,7 @@ package RpmSpecProjectCreator;
 # Description   : An RPM .spec file Project Creator
 # Author        : Adam Mitz (OCI)
 # Create Date   : 11/23/2010
+# $Id$
 # ************************************************************
 
 # ************************************************************

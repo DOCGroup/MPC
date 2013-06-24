@@ -4,6 +4,7 @@ package VC9ProjectCreator;
 # Description   : A VC9 Project Creator
 # Author        : Johnny Willemsen
 # Create Date   : 11/22/2007
+# $Id$
 # ************************************************************
 
 # ************************************************************

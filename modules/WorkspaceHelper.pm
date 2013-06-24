@@ -4,6 +4,7 @@ package WorkspaceHelper;
 # Description   : Base class and factory for all workspace helpers
 # Author        : Chad Elliott
 # Create Date   : 9/01/2004
+# $Id$
 # ************************************************************
 
 # ************************************************************

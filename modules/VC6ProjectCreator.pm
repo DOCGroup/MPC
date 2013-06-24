@@ -4,6 +4,7 @@ package VC6ProjectCreator;
 # Description   : A VC6 Project Creator
 # Author        : Chad Elliott
 # Create Date   : 3/14/2002
+# $Id$
 # ************************************************************
 
 # ************************************************************

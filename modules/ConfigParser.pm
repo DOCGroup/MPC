@@ -4,6 +4,7 @@ package ConfigParser;
 # Description   : Reads a generic config file and store the values
 # Author        : Chad Elliott
 # Create Date   : 6/12/2006
+# $Id$
 # ************************************************************
 
 # ************************************************************

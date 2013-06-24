@@ -4,6 +4,7 @@ package VC8ProjectCreator;
 # Description   : A VC8 Project Creator
 # Author        : Johnny Willemsen
 # Create Date   : 4/21/2004
+# $Id$
 # ************************************************************
 
 # ************************************************************

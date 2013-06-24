@@ -4,6 +4,7 @@ package OutputMessage;
 # Description   : Prints information, warnings and errors.
 # Author        : Chad Elliott
 # Create Date   : 2/02/2004
+# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -47,6 +48,11 @@ sub set_levels {
     $information = ($str =~ /info(rmation)?\s*=\s*(\d+)/i ? $2 : 0);
     $warnings    = ($str =~ /warn(ing)?\s*=\s*(\d+)/i ? $2 : 0);
   }
+}
+
+## Accessor for the debug setting.  No parameters are necesary.
+sub get_debug_level {
+  return $debug;
 }
 
 sub split_message {

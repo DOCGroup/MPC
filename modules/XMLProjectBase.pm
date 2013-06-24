@@ -4,6 +4,7 @@ package XMLProjectBase;
 # Description   : An XML base module for Project Creators
 # Author        : Chad Elliott
 # Create Date   : 1/30/2006
+# $Id$
 # ************************************************************
 
 # ************************************************************

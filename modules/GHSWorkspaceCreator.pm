@@ -4,6 +4,7 @@ package GHSWorkspaceCreator;
 # Description   : A GHS Workspace creator for version 4.x
 # Author        : Chad Elliott
 # Create Date   : 7/3/2002
+# $Id$
 # ************************************************************
 
 # ************************************************************

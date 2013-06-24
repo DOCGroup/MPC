@@ -4,6 +4,7 @@ package WB26ProjectCreator;
 # Description   : Workbench 2.6 / VxWorks 6.4 generator
 # Author        : Johnny Willemsen
 # Create Date   : 07/01/2008
+# $Id$
 # ************************************************************
 
 # ************************************************************

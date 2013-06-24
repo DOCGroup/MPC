@@ -7,6 +7,7 @@ package GHSProjectCreator;
 #                 set the MPC_GHS_UNIX environment variable.
 # Author        : Chad Elliott
 # Create Date   : 4/19/2002
+# $Id$
 # ************************************************************
 
 # ************************************************************
