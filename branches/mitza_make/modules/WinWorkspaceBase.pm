@@ -4,6 +4,7 @@ package WinWorkspaceBase;
 # Description   : A Windows base module for Workspace Creators
 # Author        : Chad Elliott
 # Create Date   : 2/26/2007
+# $Id$
 # ************************************************************
 
 # ************************************************************

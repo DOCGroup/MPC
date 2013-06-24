@@ -4,6 +4,7 @@ package VC9WorkspaceCreator;
 # Description   : A VC9 Workspace Creator
 # Author        : Johnny Willemsen
 # Create Date   : 11/22/2007
+# $Id$
 # ************************************************************
 
 # ************************************************************

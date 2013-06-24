@@ -4,6 +4,7 @@ package WinPropertyBase;
 # Description   : A Windows base module for properties
 # Author        : Chad Elliott
 # Create Date   : 3/9/2010
+# $Id$
 # ************************************************************
 
 # ************************************************************

@@ -4,6 +4,7 @@ package VC71ProjectCreator;
 # Description   : A VC7.1 Project Creator
 # Author        : Chad Elliott
 # Create Date   : 4/17/2003
+# $Id$
 # ************************************************************
 
 # ************************************************************

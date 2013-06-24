@@ -4,6 +4,7 @@ package SLEWorkspaceCreator;
 # Description   : The SLE Workspace Creator
 # Author        : Johnny Willemsen
 # Create Date   : 3/23/2004
+# $Id$
 # ************************************************************
 
 # ************************************************************

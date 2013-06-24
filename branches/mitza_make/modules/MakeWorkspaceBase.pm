@@ -4,6 +4,7 @@ package MakeWorkspaceBase;
 # Description   : A Make Workspace base module
 # Author        : Chad Elliott
 # Create Date   : 11/21/2006
+# $Id$
 # ************************************************************
 
 # ************************************************************

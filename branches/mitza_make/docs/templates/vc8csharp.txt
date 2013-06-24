@@ -1,3 +1,5 @@
+// $Id$
+//
 // Current as of 10/26/2006
 // This defines the role of all the template variables specific to the
 // 'vc8' project type with the csharp language.
@@ -11,6 +13,7 @@ defines = Macros that are specific to a particular configuration.
 disablespecificwarnings = A space separated list of warning numbers to be disabled.
 guid = The value for this variable is generated during project generation.
 keyfile = Indicate the keyfile to use when signing the assembly.
+platformtarget = Set the Platform Target, for example x86 to force a 32-bit .NET framework.
 prversion = This setting specifies the ProductVersion in the generated .csproj file.
 registerforcominterop = This setting corresponds to the Build Output property "Register for COM interop". The boolean values true and false correspond to enabling or disabling the feature in the IDE.
 schemaversion = This setting specifies the SchemaVersion in the generated .csproj file.

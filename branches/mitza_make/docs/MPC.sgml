@@ -362,6 +362,32 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><parameter>-workers</parameter></term>
+        <listitem>
+          <para>
+	  Specifies number of child processes to use to generate projects.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter>-workers_dir</parameter></term>
+        <listitem>
+          <para>
+	  The directory for storing temporary output files from the child processes. 
+	  The default is '/tmp/mpc' If neither -workers_dir nor -workers_port is used,
+     -workers_dir is assumed.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter>-workers_port</parameter></term>
+        <listitem>
+          <para>
+	  The port number for the parent listener.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term><parameter>-version</parameter></term>
         <listitem>
           <para>

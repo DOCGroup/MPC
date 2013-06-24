@@ -4,6 +4,7 @@ package Creator;
 # Description   : Base class for workspace and project creators
 # Author        : Chad Elliott
 # Create Date   : 5/13/2002
+# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -65,7 +66,14 @@ my $onVMS = DirectoryManager::onVMS();
 # ************************************************************
 
 sub new {
-  my($class, $global, $inc, $template, $ti, $dynamic, $static, $relative, $addtemp, $addproj, $progress, $toplevel, $baseprojs, $feature, $features, $hierarchy, $nmodifier, $applypj, $into, $language, $use_env, $expandvars, $type) = @_;
+  my($class, $global, $inc, $template,
+     $ti, $dynamic, $static, $relative,
+     $addtemp, $addproj, $progress,
+     $toplevel, $baseprojs, $feature,
+     $features, $hierarchy, $nmodifier,
+     $applypj, $into, $language, $use_env,
+     $expandvars, $type) = @_;
+
   my $self = Parser::new($class, $inc);
 
   $self->{'relative'}        = $relative;
@@ -103,7 +111,6 @@ sub new {
 
   return $self;
 }
-
 
 sub preprocess_line {
   my($self, $fh, $line) = @_;
@@ -194,7 +201,6 @@ sub generate {
   return $status;
 }
 
-
 # split an inheritance list like ": a,b, c" into components
 sub parse_parents {
   my($parents, $errorStringRef, $statusRef) = @_;
@@ -215,7 +221,7 @@ sub parse_parents {
 
 
 sub parse_known {
-  my($self, $line) = @_;
+  my($self, $line, $fh) = @_;
   my $status = 1;
   my $errorString;
   my $type = $self->{'grammar_type'};
@@ -263,7 +269,7 @@ sub parse_known {
     $errorString = "No $type was defined";
     $status = 0;
   }
-  elsif ($self->parse_assignment($line, \@values)) {
+  elsif ($self->parse_assignment($line, \@values, $fh)) {
     ## If this returns true, then we've found an assignment
   }
   elsif ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*(:.*)?\s*{$/) {
@@ -289,6 +295,51 @@ sub parse_known {
   return $status, $errorString, @values;
 }
 
+## Parse an assignment that is bracketed by curly braces so it can span multiple lines.
+## This method parses the bracketed assignment into a regular assignment
+## and then calls SUPER::parse_assigment.
+##
+## A bracketed assigment has the form of:
+##
+##   keyword <operator> [optional flags] {
+## This spans
+## multiple lines
+##   }
+##
+## Optional flags are \s to retain leading white space and
+## \n to retain new lines.  These flags are be combined.
+sub parse_assignment {
+  my($self, $line, $values, $fh) = @_;
+
+  if ($line =~ /^(\w+)\s*([\-+]?=)\s*(\\[sn]{1,2})?\s*{$/) {
+    my $comp = lc($1);
+    my $op = $2;
+    my $keep_leading_whitespace = ($3 eq "\\s" || $3 eq "\\ns" || $3 eq "\\sn");
+    my $keep_new_lines = ($3 eq "\\n" || $3 eq "\\ns" || $3 eq "\\sn");
+
+    my $bracketed_assignment;
+    while(<$fh>) {
+      ## This is not an error,
+      ## this is the end of the bracketed assignment.
+      last if ($_ =~ /^\s*}\s*$/);
+
+      ## Strip comments.
+      my $current_line = $self->strip_comments($_);
+      ## Skip blank lines unless we're keeping new lines.
+      next if (!$keep_new_lines && $self->is_blank_line($current_line));
+
+      $bracketed_assignment .= "\n" if defined $bracketed_assignment && $keep_new_lines;
+
+      $bracketed_assignment .= $self->strip_lt_whitespace($current_line, $keep_leading_whitespace);
+    }
+
+    if (defined $bracketed_assignment) {
+      $line = $comp . $op . $bracketed_assignment;
+    }
+  }
+
+  return $self->SUPER::parse_assignment($line, \@$values);
+}
 
 sub parse_scope {
   my($self, $fh, $name, $type, $validNames, $flags, $elseflags) = @_;
@@ -332,7 +383,7 @@ sub parse_scope {
     }
     else {
       my @values;
-      if (defined $validNames && $self->parse_assignment($line, \@values)) {
+      if (defined $validNames && $self->parse_assignment($line, \@values, $fh)) {
         if (defined $$validNames{$values[1]}) {
           ## If $type is not defined, we don't even need to bother with
           ## processing the assignment as we will be throwing the value
@@ -978,7 +1029,7 @@ sub get_outdir {
 
 
 sub expand_variables {
-  my($self, $value, $rel, $expand_template, $scope, $expand, $warn) = @_;
+  my($self, $value, $rel, $expand_template, $scopes, $expand, $warn) = @_;
   my $cwd = $self->getcwd();
   my $start = 0;
   my $forward_slashes  = $self->{'convert_slashes'} ||
@@ -1064,8 +1115,12 @@ sub expand_variables {
            $self->expand_variables_from_template_values()) {
       my $ti = $self->get_template_input();
       my $val = (defined $ti ? $ti->get_value($name) : undef);
-      my $sname = (defined $scope ? $scope . "::$name" : undef);
-      my $arr = $self->adjust_value([$sname, $name],
+      my @snames;
+      if (defined $scopes) {
+        @snames = map { defined $_ ? $_ . '::' . $name : $name } @$scopes;
+      }
+      push(@snames, $name);
+      my $arr = $self->adjust_value(\@snames,
                                     (defined $val ? $val : []));
       if (UNIVERSAL::isa($arr, 'HASH')) {
         $self->warning("$name conflicts with a template variable scope");
@@ -1136,13 +1191,13 @@ sub replace_env_vars {
 
 
 sub relative {
-  my($self, $value, $expand_template, $scope) = @_;
+  my($self, $value, $expand_template, $scopes) = @_;
 
   if (defined $value) {
     if (UNIVERSAL::isa($value, 'ARRAY')) {
       my @built;
       foreach my $val (@$value) {
-        my $rel = $self->relative($val, $expand_template, $scope);
+        my $rel = $self->relative($val, $expand_template, $scopes);
         if (UNIVERSAL::isa($rel, 'ARRAY')) {
           push(@built, @$rel);
         }
@@ -1161,12 +1216,12 @@ sub relative {
       my $ovalue = $value;
       my($rel, $how) = $self->get_initial_relative_values();
       $value = $self->expand_variables($value, $rel,
-                                       $expand_template, $scope, $how);
+                                       $expand_template, $scopes, $how, 0);
 
       if ($ovalue eq $value || index($value, '$') >= 0) {
         ($rel, $how) = $self->get_secondary_relative_values();
         $value = $self->expand_variables($value, $rel,
-                                         $expand_template, $scope,
+                                         $expand_template, $scopes,
                                          $how, 1);
       }
     }
