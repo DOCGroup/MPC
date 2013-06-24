@@ -1,3 +1,14 @@
+Mon Jun 24 18:55:51 UTC 2013  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/make.mpd:
+
+          Extend the DEPLIBS handling of static libraries to workspaces
+          that don't use -static and have a mix of static and shared.
+          With this change, shared libs and executables will be re-linked
+          when the static libs they use are changed.
+          Also, make sure postbuild doesn't run in parallel with the normal
+          build steps and use "-include" to suppress warnings (gnu make only).
+
 Thu Nov 22 09:19:24 UTC 2012  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * prj_install.pl:
