@@ -4,7 +4,6 @@ package VC6WorkspaceCreator;
 # Description   : A VC6 Workspace Creator
 # Author        : Chad Elliott
 # Create Date   : 5/13/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************

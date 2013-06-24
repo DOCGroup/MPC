@@ -4,7 +4,6 @@ package DependencyEditor;
 # Description   : Edits existing dependencies.
 # Author        : Chad Elliott
 # Create Date   : 2/10/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -27,14 +26,13 @@ sub new {
 
 sub process {
   my($self, $output, $type, $noinline, $macros,
-     $ipaths, $replace, $exclude, $files,
-     $append) = @_;
+     $ipaths, $replace, $exclude, $files) = @_;
 
   ## Back up the original file and receive the contents
   my $contents;
   if (-s $output) {
     $contents = [];
-    if (!$self->backup($output, $contents, $append)) {
+    if (!$self->backup($output, $contents)) {
       print STDERR "ERROR: Unable to backup $output\n";
       return 1;
     }
@@ -49,24 +47,13 @@ sub process {
       }
     }
 
-    if (!$append) {
-      ## Write out the new dependency marker
-      print $fh "# DO NOT DELETE THIS LINE -- depgen.pl uses it.\n",
-	        "# DO NOT PUT ANYTHING AFTER THIS LINE, IT WILL GO AWAY.\n\n";
-    }
-    else {
-      ## Write start append comment
-      print $fh "# DO NOT DELETE THIS LINE -- depgen.pl appended ",
-	        "the following.\n",
-	        "# APPENDED DEPENDENCY RULES " ,
-		"by depgen.pl.\n\n";
-    }
+    ## Write out the new dependency marker
+    print $fh "# DO NOT DELETE THIS LINE -- depgen.pl uses it.\n",
+              "# DO NOT PUT ANYTHING AFTER THIS LINE, IT WILL GO AWAY.\n\n";
 
     ## Generate the new dependencies and write them to the file
     my $dep = new DependencyGenerator($macros, $ipaths, $replace,
-                                      $type, $noinline,
-                                      $exclude);
-
+                                      $type, $noinline, $exclude);
     ## Sort the files so the dependencies are reproducible
     foreach my $file (sort @$files) {
       ## In some situations we may be passed a directory as part of an
@@ -89,22 +76,13 @@ sub process {
 
 
 sub backup {
-  my($self, $source, $contents, $append) = @_;
+  my($self, $source, $contents) = @_;
   my $status;
   my $fh     = new FileHandle();
   my $backup = "$source.bak";
 
   ## Back up the file.  While doing so, keep track of the contents of the
-  ## file and keep everything except the old dependencies or keep
-  ## everything if appending.
-  my $search_string;
-  if (!$append) {
-    $search_string = 'DO NOT DELETE';
-  }
-  else {
-    $search_string = 'IF YOU PUT ANYTHING HERE IT WILL GO AWAY';
-  }
-
+  ## file and keep everything except the old dependencies.
   if (open($fh, $source)) {
     my $oh = new FileHandle();
     if (open($oh, ">$backup")) {
@@ -113,7 +91,7 @@ sub backup {
       while(<$fh>) {
         print $oh $_;
         if ($record) {
-          if (index($_, $search_string) >= 0) {
+          if (index($_, 'DO NOT DELETE') >= 0) {
             $record = undef;
           }
           else {

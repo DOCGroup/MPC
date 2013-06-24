@@ -4,7 +4,6 @@ package HTMLWorkspaceCreator;
 # Description   : An html workspace creator
 # Author        : Justin Michel
 # Create Date   : 8/25/2003
-# $Id$
 # ************************************************************
 
 # ************************************************************

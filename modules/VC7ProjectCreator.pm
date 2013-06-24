@@ -4,7 +4,6 @@ package VC7ProjectCreator;
 # Description   : A VC7 Project Creator
 # Author        : Chad Elliott
 # Create Date   : 4/23/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -109,7 +108,7 @@ sub fill_value {
   }
 
   ## Consult another method for this template name.  This method is
-  ## overridden by the other project creators that inherit from this
+  ## overrridden by the other project creators that inherit from this
   ## one.
   return $self->get_configurable($name);
 }

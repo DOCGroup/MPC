@@ -4,7 +4,6 @@ package HTMLProjectCreator;
 # Description   : An HTML project creator to display all settings
 # Author        : Justin Michel & Chad Elliott
 # Create Date   : 8/25/2003
-# $Id$
 # ************************************************************
 
 # ************************************************************

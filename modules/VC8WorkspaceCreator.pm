@@ -4,7 +4,6 @@ package VC8WorkspaceCreator;
 # Description   : A VC8 Workspace Creator
 # Author        : Johnny Willemsen
 # Create Date   : 4/21/2004
-# $Id$
 # ************************************************************
 
 # ************************************************************

@@ -4,7 +4,6 @@ package EM3WorkspaceCreator;
 # Description   : An eMbedded v3 Workspace Creator
 # Author        : Chad Elliott
 # Create Date   : 7/3/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************

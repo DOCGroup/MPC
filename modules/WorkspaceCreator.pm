@@ -4,7 +4,6 @@ package WorkspaceCreator;
 # Description   : Base class for all workspace creators
 # Author        : Chad Elliott
 # Create Date   : 5/13/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -19,20 +18,12 @@ use Creator;
 use Options;
 use WorkspaceHelper;
 
-use IO::Socket;
-use Data::Dumper;
-
 use vars qw(@ISA);
 @ISA = qw(Creator Options);
 
 # ************************************************************
 # Data Section
 # ************************************************************
-
-## process stuff
-our $num_workers = 0;           # single-process
-our $wdir;                      # tmp directory
-our $wport;
 
 my $wsext  = 'mwc';
 my $wsbase = 'mwb';
@@ -60,14 +51,7 @@ my $onVMS = DirectoryManager::onVMS();
 # ************************************************************
 
 sub new {
-  my($class, $global, $inc, $template, $ti, $dynamic,
-     $static, $relative, $addtemp, $addproj, $progress,
-     $toplevel, $baseprojs, $gfeature, $relative_f, $feature,
-     $features, $hierarchy, $exclude, $makeco, $nmod, $applypj,
-     $genins, $into, $language, $use_env, $expandvars, $gendot,
-     $comments, $foreclipse, $workers, $workers_dir,
-     $workers_port) = @_;
-
+  my($class, $global, $inc, $template, $ti, $dynamic, $static, $relative, $addtemp, $addproj, $progress, $toplevel, $baseprojs, $gfeature, $relative_f, $feature, $features, $hierarchy, $exclude, $makeco, $nmod, $applypj, $genins, $into, $language, $use_env, $expandvars, $gendot, $comments, $foreclipse) = @_;
   my $self = Creator::new($class, $global, $inc,
                           $template, $ti, $dynamic, $static,
                           $relative, $addtemp, $addproj,
@@ -76,12 +60,6 @@ sub new {
                           $hierarchy, $nmod, $applypj,
                           $into, $language, $use_env, $expandvars,
                           'workspace');
-
-  $self->{'pid'} = 'parent';
-
-  # implicit dependency order counter. this is
-  # incremented in the children.
-  $self->{'imp_dep_ctr'} = 0;
 
   ## These need to be reset at the end of each
   ## workspace processed within a .mwc file
@@ -99,7 +77,7 @@ sub new {
 
   ## These are maintained/modified throughout processing
   $self->{$self->{'type_check'}} = 0;
-  $self->{'cacheok'}             = $self->default_cacheok();
+  $self->{'cacheok'}             = 1;
   $self->{'lib_locations'}       = {};
   $self->{'reading_parent'}      = [];
   $self->{'global_feature_file'} = $gfeature;
@@ -113,10 +91,9 @@ sub new {
   ## These are static throughout processing
   $self->{'coexistence'}         = $self->requires_make_coexistence() ? 1 : $makeco;
   $self->{'for_eclipse'}         = $foreclipse;
-  $self->{'workers'}             = $workers;
   $self->{'generate_dot'}        = $gendot;
   $self->{'generate_ins'}        = $genins;
-  $self->{'verbose_ordering'}    = $self->default_verbose_ordering();
+  $self->{'verbose_ordering'}    = undef;
   $self->{'wctype'}              = $self->extractType("$self");
   $self->{'workspace_comments'}  = $comments;
 
@@ -146,19 +123,9 @@ sub new {
     $self->warning("Using the -make_coexistence option has " .
                    "no effect on the " . $self->{'wctype'} . " type.");
   }
-
-  ## multi-process config
-  $num_workers = $workers if $workers > $num_workers;
-  $wdir = $workers_dir;
-  $wport = $workers_port;
-
   return $self;
 }
 
-
-sub default_cacheok {
-  return 1;
-}
 
 sub set_verbose_ordering {
   my($self, $value) = @_;
@@ -174,7 +141,7 @@ sub modify_assignment_value {
 
 sub parse_line {
   my($self, $ih, $line, $flags) = @_;
-  my($status, $error, @values) = $self->parse_known($line, $ih);
+  my($status, $error, @values) = $self->parse_known($line);
 
   ## Was the line recognized?
   if ($status && defined $values[0]) {
@@ -187,69 +154,8 @@ sub parse_line {
 
           ## End of workspace; Have subclass write out the file
           ## Generate the project files
-          my($gstat, $creator, $err);
-          if ($num_workers > 0) {
-            if (!defined ($wport)) {
-              ## use temp files for multiprocess mpc
-              ## Lock the temp directory before generating project files.
-              my $lock = 'mpc-worker.lock';
-
-              ## check for valid temp directory
-              if (!$wdir) {
-                if ($^O eq 'MSWin32') {
-                  $wdir = $ENV{TEMP};
-                }
-                else {
-                  $wdir = '/tmp/mpc';
-                }
-              }
-
-              ## shouldn't happen
-              if (!$wdir) {
-                die "Error: No temporary directory found. Supply one with \"-worker_dir\" option.\n";
-              }
-
-              $self->diagnostic("Multiprocess MPC using \"$wdir\" for temporary files.");
-
-              unless (-d $wdir) {
-                mkdir $wdir || die "Error: Can't find or create directory $wdir\n"
-              }
-
-              ## lock the directory
-              if (-e "$wdir/$lock") {
-		die "Error: Another instance of MPC is using $wdir, or a previous session failed to remove the lock file $lock\n";
-              }
-              else {
-		open (FDL, ">$wdir/$lock") || die "Error reating lock file $lock in $wdir\n";
-		print FDL "File generated by MPC process ", $$, " on ", scalar (localtime(time())), "\n";
-                close FDL;
-
-                $self->diagnostic("Multiprocess MPC created lock file $wdir/$lock");
-              }
-
-              ## generate the project files
-              ($gstat, $creator, $err) = $self->generate_project_files_fork();
-
-              ## Release temp directory lock;
-              if (!unlink("$wdir/$lock")) {
-                $self->error("Multiprocess MPC unable to remove lock file $wdir/$lock");
-              }
-              else {
-                $self->diagnostic("Multiprocess MPC removed $wdir/$lock");
-              }
-
-            }
-            else {
-              ## Socket-based Multiprocess MPC
-              ($gstat, $creator, $err) =
-                  $self->generate_project_files_fork_socket();
-            }
-          }
-          else {
-            ($gstat, $creator, $err) = $self->generate_project_files();
-          }
+          my($gstat, $creator, $err) = $self->generate_project_files();
           if ($gstat) {
-            #exit(1);
             ($status, $error) = $self->write_workspace($creator, 1);
             $self->{'assign'} = {};
           }
@@ -274,7 +180,7 @@ sub parse_line {
       }
       else {
         ## Workspace Beginning
-        ## Deal with the inheritance hierarchy first
+        ## Deal with the inheritance hiearchy first
         if (defined $values[2]) {
           foreach my $parent (@{$values[2]}) {
             ## Read in the parent onto ourself
@@ -302,7 +208,7 @@ sub parse_line {
           if ($name =~ /[\/\\]/) {
             $status = 0;
             $error = 'Workspaces can not have a slash ' .
-              'or a back slash in the name';
+                     'or a back slash in the name';
           }
           else {
             $name =~ s/^\(\s*//;
@@ -311,7 +217,8 @@ sub parse_line {
             ## Replace any *'s with the default name
             if (index($name, '*') >= 0) {
               $name = $self->fill_type_name(
-                               $name, $self->get_default_workspace_name());
+                                    $name,
+                                    $self->get_default_workspace_name());
             }
 
             $self->{'workspace_name'} = $name;
@@ -371,7 +278,7 @@ sub parse_line {
     $line = $self->relative($line) if (index($line, '$') >= 0);
 
     foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
-                         $line) {
+                                                 $line) {
       if ($expfile =~ /\.$wsext$/) {
         my %copy = %{defined $flags ? $flags : $self->get_assignment_hash()};
         ($status, $error) = $self->aggregated_workspace($expfile, \%copy);
@@ -412,9 +319,9 @@ sub aggregated_workspace {
     ## not match up with itself later on where scoped_basedir is used.
     $self->{'scoped_basedir'} = undef if ($self->{'scoped_basedir'} eq '.');
 
-    while (<$fh>) {
+    while(<$fh>) {
       my $line = $self->preprocess_line($fh, $_);
-      ($status, $error, @values) = $self->parse_known($line, $fh);
+      ($status, $error, @values) = $self->parse_known($line);
 
       ## Was the line recognized?
       if ($status) {
@@ -425,7 +332,7 @@ sub aggregated_workspace {
               $name =~ s/\.[^\.]+$//;
               $status = 0;
               $error  = 'Aggregated workspace (' . $name .
-                ') can not inherit from another workspace';
+                        ') can not inherit from another workspace';
             }
             else {
               ($status, $error) = $self->parse_scope($fh,
@@ -450,7 +357,7 @@ sub aggregated_workspace {
 
     if ($status) {
       $self->{'aggregated_assign'}->{$file} =
-        $self->clone($self->get_assignment_hash());
+          $self->clone($self->get_assignment_hash());
       $self->{'assign'} = $prev_assign;
     }
 
@@ -539,7 +446,7 @@ sub process_types {
   ## Remove all negated types from the collection.
   foreach my $key (keys %types) {
     if ($key =~ /^!\s*(\w+)/) {
-      if ($1 eq $self->{wctype}) {
+      if ($1 == $self->{wctype}) {
         ## Remove the negated key
         delete $types{$key};
 
@@ -562,7 +469,7 @@ sub parse_exclude {
   my @exclude;
 
   if (exists $$types{$self->{wctype}}) {
-    while (<$fh>) {
+    while(<$fh>) {
       my $line = $self->preprocess_line($fh, $_);
 
       if ($line eq '') {
@@ -583,7 +490,7 @@ sub parse_exclude {
         if ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
           ++$count;
         }
-        elsif ($self->parse_assignment($line, [], $fh)) {
+        elsif ($self->parse_assignment($line, [])) {
           ## Ignore all assignments
         }
         else {
@@ -628,7 +535,7 @@ sub parse_exclude {
       ## If this exclude block didn't match the current type and the
       ## exclude wasn't negated, we need to eat the exclude block so that
       ## these lines don't get included into the workspace.
-      while (<$fh>) {
+      while(<$fh>) {
         my $line = $self->preprocess_line($fh, $_);
 
         if ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
@@ -665,7 +572,7 @@ sub parse_associate {
     $self->{'associated'}->{$assoc_key} = {};
   }
 
-  while (<$fh>) {
+  while(<$fh>) {
     my $line = $self->preprocess_line($fh, $_);
 
     if ($line eq '') {
@@ -686,9 +593,9 @@ sub parse_associate {
       if ($line =~ /^(\w+)\s*(\([^\)]+\))?\s*{$/) {
         ++$count;
       }
-      elsif ($self->parse_assignment($line, [], $fh)) {
+      elsif ($self->parse_assignment($line, [])) {
         $errorString = 'Assignments are not ' .
-          'allowed within an associate scope';
+                       'allowed within an associate scope';
         last;
       }
       else {
@@ -819,23 +726,7 @@ sub handle_scoped_unknown {
   }
   elsif (defined $self->{'scoped_basedir'}) {
     if ($self->path_is_relative($line)) {
-      if ($line eq '.') {
-        $line = $self->{'scoped_basedir'};
-      }
-      else {
-        ## This is a relative path and the project may have been added
-        ## previously without a relative path.  We need to convert the
-        ## relative path into an absolute path and, if possible, remove
-        ## the current working directory from the front.  This will get
-        ## it down to a path that's relative to the current directory and
-        ## likely to match up with the addition of this file or directory
-        ## from an upper workspace.
-        my $cwd = $self->getcwd();
-        $line = Cwd::abs_path($self->{'scoped_basedir'} . "/$line");
-        if (index($line, $cwd) == 0) {
-          $line = substr($line, length($cwd) + 1);
-        }
-      }
+      $line = $self->{'scoped_basedir'} . ($line ne '.' ? "/$line" : '');
     }
   }
 
@@ -872,7 +763,7 @@ sub handle_scoped_unknown {
           do {
             $exc = $self->mpc_dirname($exc);
             $remove{$exc} = 1;
-          } while ($exc ne '.' && $exc !~ /[a-z]:[\/\\]/i);
+          } while($exc ne '.' && $exc !~ /[a-z]:[\/\\]/i);
         }
       }
 
@@ -889,7 +780,7 @@ sub handle_scoped_unknown {
   }
   else {
     foreach my $expfile ($line =~ /[\?\*\[\]]/ ? $self->mpc_glob($line) :
-                         $line) {
+                                                 $line) {
       if ($expfile =~ /\.$wsext$/) {
         ## An aggregated workspace within an aggregated workspace or scope.
         ($status, $error) = $self->aggregated_workspace($expfile, $flags);
@@ -930,9 +821,9 @@ sub search_for_files {
   foreach my $file (@$files) {
     if (-d $file) {
       my @f = $self->generate_default_file_list(
-                                                $file,
-                                                $self->{'exclude'}->{$self->{'wctype'}},
-                                                \$excluded);
+                        $file,
+                        $self->{'exclude'}->{$self->{'wctype'}},
+                        \$excluded);
       $self->search_for_files(\@f, $array, $impl);
       if ($impl) {
         $file =~ s/^\.\///;
@@ -961,7 +852,7 @@ sub remove_duplicate_projects {
   my($self, $list) = @_;
   my $count = scalar(@$list);
 
-  for (my $i = 0; $i < $count; ++$i) {
+  for(my $i = 0; $i < $count; ++$i) {
     my $file = $$list[$i];
     foreach my $inner (@$list) {
       if ($file ne $inner &&
@@ -988,8 +879,8 @@ sub generate_default_components {
         if (-d $file) {
           my @found;
           my @gen = $self->generate_default_file_list(
-                                                      $file,
-                                                      $self->{'exclude'}->{$self->{'wctype'}});
+                               $file,
+                               $self->{'exclude'}->{$self->{'wctype'}});
           $self->search_for_files(\@gen, \@found, $impl);
           push(@built, @found);
           if ($impl || $self->{'scoped_assign'}->{$file}->{'implicit'}) {
@@ -1069,9 +960,9 @@ sub generate_defaults {
 
   my $excluded = 0;
   my @files = $self->generate_default_file_list(
-                                                '.',
-                                                $self->{'exclude'}->{$self->{'wctype'}},
-                                                \$excluded);
+                       '.',
+                       $self->{'exclude'}->{$self->{'wctype'}},
+                       \$excluded);
 
   ## Generate default components
   $self->generate_default_components(\@files,
@@ -1098,8 +989,7 @@ sub get_current_output_name {
 sub write_and_compare_file {
   my($self, $outdir, $oname, $func, @params) = @_;
   my $fh    = new FileHandle();
-  my $status = 1;
-  my $errorString = undef;
+  my $error = undef;
 
   ## Set the output directory if one wasn't provided
   $outdir = $self->get_outdir() if (!defined $outdir);
@@ -1121,24 +1011,19 @@ sub write_and_compare_file {
     my $tmp = "$outdir/MWC$>.$$";
     my $different = 1;
     if (open($fh, ">$tmp")) {
-      ($status, $errorString) = &$func($self, $fh, @params);
+      &$func($self, $fh, @params);
       close($fh);
 
-      $different = 0 if ($status && !$self->files_are_different($name, $tmp));
+      $different = 0 if (!$self->files_are_different($name, $tmp));
     }
     else {
-      $status = 0;
-      $errorString = "Unable to open $tmp for output.";
+      $error = "Unable to open $tmp for output.";
     }
 
-    if ($status) {
+    if (!defined $error) {
       if ($different) {
         unlink($name);
-
-        if (!rename($tmp, $name)) {
-          $status = 0;
-          $errorString = "Unable to open $name for output";
-        }
+        $error = "Unable to open $name for output" if (!rename($tmp, $name));
       }
       else {
         ## There is no need to rename, so remove our temp file.
@@ -1152,23 +1037,20 @@ sub write_and_compare_file {
       close($fh);
     }
     else {
-      $status = 0;
-      $errorString = "Unable to open $name for output.";
+      $error = "Unable to open $name for output.";
     }
   }
 
-  return $status, $errorString;
+  return $error;
 }
 
 sub write_workspace {
-
   my($self, $creator, $addfile) = @_;
   my $status = 1;
-  my $errorString;
+  my $error;
   my $duplicates = 0;
 
   if ($self->get_toplevel()) {
-
     ## There is usually a progress indicator callback provided, but if
     ## the output is being redirected, there will be no progress
     ## indicator.
@@ -1176,7 +1058,6 @@ sub write_workspace {
     &$progress() if (defined $progress);
 
     if ($addfile) {
-
       ## To be consistent across multiple project types, we disallow
       ## duplicate project names for all types, not just VC6.
       ## Note that these name are handled case-insensitive by VC6
@@ -1204,8 +1085,8 @@ sub write_workspace {
     my $abort_creation = 0;
     if ($duplicates > 0) {
       $abort_creation = 1;
-      $errorString = "Duplicate case-insensitive project names are " .
-        "not allowed within a workspace.";
+      $error = "Duplicate case-insensitive project names are " .
+               "not allowed within a workspace.";
       $status = 0;
     }
     else {
@@ -1222,29 +1103,31 @@ sub write_workspace {
       }
 
       if ($addfile || !$self->file_written($name)) {
-        ($status, $errorString) = $self->write_and_compare_file(
-                                                                undef, $name,
-                                                                sub {
-                                                                  my($self, $fh) = @_;
-                                                                  $self->pre_workspace($fh, $creator, $addfile);
-                                                                  my($status, $errorString) = $self->write_comps($fh, $creator, $addfile);
-                                                                  ## If write_comps() does't return a status, set status to true.
-                                                                  $status = 1 if (!defined $status || $status eq "");
-                                                                  if ($status) {
-                                                                    my $wsHelper = WorkspaceHelper::get($self);
-                                                                    $wsHelper->perform_custom_processing($fh, $creator, $addfile);
+        $error = $self->write_and_compare_file(
+                          undef, $name,
+                          sub {
+                            my($self, $fh) = @_;
+                            $self->pre_workspace($fh, $creator, $addfile);
+                            $self->write_comps($fh, $creator, $addfile);
 
-                                                                    $self->post_workspace($fh, $creator, $addfile);
-                                                                  }
-                                                                  return $status, $errorString;
-                                                                });
-        $self->add_file_written($name) if ($status && $addfile);
+                            my $wsHelper = WorkspaceHelper::get($self);
+                            $wsHelper->perform_custom_processing($fh, $creator, $addfile);
+
+                            $self->post_workspace($fh, $creator, $addfile);
+                          });
+        if (defined $error) {
+          $status = 0;
+        }
+        else {
+          $self->add_file_written($name) if ($addfile);
+        }
       }
 
       my $additional = $self->get_additional_output();
       foreach my $entry (@$additional) {
-        ($status, $errorString) = $self->write_and_compare_file(@$entry);
-        if (!$status) {
+        $error = $self->write_and_compare_file(@$entry);
+        if (defined $error) {
+          $status = 0;
           last;
         }
       }
@@ -1263,8 +1146,8 @@ sub write_workspace {
               my $pname = $self->{'project_info'}->{$project}->[ProjectCreator::PROJECT_NAME];
               foreach my $number (@{$targnum{$project}}) {
                 print $dh "  $pname -> ",
-                  $self->{'project_info'}->{$list[$number]}->[ProjectCreator::PROJECT_NAME],
-                    ";\n";
+                          $self->{'project_info'}->{$list[$number]}->[ProjectCreator::PROJECT_NAME],
+                          ";\n";
               }
             }
           }
@@ -1280,7 +1163,7 @@ sub write_workspace {
     $self->{'per_project_workspace_name'} = undef if (!$addfile);
   }
 
-  return $status, $errorString;
+  return $status, $error;
 }
 
 
@@ -1310,9 +1193,10 @@ sub topname {
   my($self, $file) = @_;
   my $dir  = '.';
   my $rest = $file;
-  if ($file =~ /^([^\/\\]+)[\/\\](.*)/ && $1 !~ /^[a-z]:$/i) {
+  if ($file =~ /^([^\/\\]+)[\/\\](.*)/) {
     $dir  = $1;
     $rest = $2;
+    $dir .= '/' if ($dir =~ /^[a-z]:$/i);
   }
   return $dir, $rest;
 }
@@ -1324,8 +1208,6 @@ sub generate_hierarchy {
   my @saved;
   my %sinfo;
   my $cwd = $self->getcwd();
-  my $status = 1;
-  my $errorString;
 
   ## Make a copy of these.  We will be modifying them.
   ## It is necessary to sort the projects to get the correct ordering.
@@ -1347,14 +1229,15 @@ sub generate_hierarchy {
       if ($current ne '.') {
         ## Write out the hierachical workspace
         $self->cd($current);
-        ($status, $errorString) = $self->generate_hierarchy($creator, \@saved, \%sinfo);
+        $self->generate_hierarchy($creator, \@saved, \%sinfo);
 
         $self->{'projects'}       = \@saved;
         $self->{'project_info'}   = \%sinfo;
         $self->{'workspace_name'} = $self->base_directory();
-        ($status, $errorString) = $self->write_workspace($creator) if ($status);
 
-        last if !$status;
+        my($status, $error) = $self->write_workspace($creator);
+        $self->error($error) if (!$status);
+
         $self->cd($cwd);
       }
 
@@ -1369,20 +1252,21 @@ sub generate_hierarchy {
       $sinfo{$rest} = $projinfo{$prj};
     }
   }
-  if ($status && defined $current && $current ne '.') {
+  if (defined $current && $current ne '.') {
     $self->cd($current);
-    ($status, $errorString) = $self->generate_hierarchy($creator, \@saved, \%sinfo);
+    $self->generate_hierarchy($creator, \@saved, \%sinfo);
 
     $self->{'projects'}       = \@saved;
     $self->{'project_info'}   = \%sinfo;
     $self->{'workspace_name'} = $self->base_directory();
-    ($status, $errorString) = $self->write_workspace($creator) if ($status);
+
+    my($status, $error) = $self->write_workspace($creator);
+    $self->error($error) if (!$status);
 
     $self->cd($cwd);
   }
-
-  return $status, $errorString;
 }
+
 
 sub generate_project_files {
   my $self      = shift;
@@ -1394,14 +1278,11 @@ sub generate_project_files {
   my $cwd = $self->getcwd();
   my $impl = $self->get_assignment('implicit');
   my $postkey = $creator->get_dynamic() .
-    $creator->get_static() . "-$self";
+                $creator->get_static() . "-$self";
   my $previmpl  = $impl;
   my $prevcache = $self->{'cacheok'};
   my %gstate    = $creator->save_state();
   my $genimpdep = $self->generate_implicit_project_dependencies();
-  my $errorString;
-
-  $Data::Dumper::Indent = 0;
 
   ## Save this project creator setting for later use in the
   ## number_target_deps() method.
@@ -1461,7 +1342,7 @@ sub generate_project_files {
 
       ## Generate the key for this project file
       my $prkey = $self->getcwd() . '/' .
-        ($file eq '' ? $dir : $file) . "-$postkey";
+                  ($file eq '' ? $dir : $file) . "-$postkey";
 
       ## We must change to the subdirectory for
       ## which this project file is intended
@@ -1473,11 +1354,10 @@ sub generate_project_files {
           $files_written = $allprojects{$prkey};
           $gen_proj_info = $allprinfo{$prkey};
           $gen_lib_locs  = $allliblocs{$prkey};
-
           $status = 1;
         }
         else {
-	  $status = $creator->generate($self->mpc_basename($file));
+          $status = $creator->generate($self->mpc_basename($file));
 
           ## If any one project file fails, then stop
           ## processing altogether.
@@ -1485,7 +1365,7 @@ sub generate_project_files {
             ## We don't restore the state before we leave,
             ## but that's ok since we will be exiting right now.
             return $status, $creator,
-              "Unable to process " . ($file eq '' ? " in $dir" : $file);
+                   "Unable to process " . ($file eq '' ? " in $dir" : $file);
           }
 
           ## Get the individual project information and
@@ -1525,7 +1405,6 @@ sub generate_project_files {
       ## This one was excluded, so status is ok
       $status = 1;
     }
-
   }
 
   ## Add implict project dependencies based on source files
@@ -1534,7 +1413,6 @@ sub generate_project_files {
   ## in generate_hierarchy() for each workspace.
   $self->{'projects'}     = \@projects;
   $self->{'project_info'} = \%pi;
-
   if ($status && $genimpdep) {
     $self->add_implicit_project_dependencies($creator, $cwd);
   }
@@ -1543,7 +1421,7 @@ sub generate_project_files {
   $self->{'lib_locations'} = \%liblocs;
   if ($self->get_hierarchy() || $self->workspace_per_project()) {
     my $orig = $self->{'workspace_name'};
-    ($status, $errorString) = $self->generate_hierarchy($creator, \@projects, \%pi);
+    $self->generate_hierarchy($creator, \@projects, \%pi);
     $self->{'workspace_name'} = $orig;
   }
 
@@ -1551,742 +1429,7 @@ sub generate_project_files {
   $self->{'projects'}      = \@projects;
   $self->{'project_info'}  = \%pi;
 
-  return $status, $creator, $errorString;
-}
-
-sub generate_project_files_fork {
-  my $self   = shift;
-  my $status = (scalar @{$self->{'project_files'}} == 0 ? 1 : 0);
-
-  my @projects;
-  my %pi;
-  my %liblocs;
-
-  my $creator = $self->project_creator('child');
-  my $cwd = $self->getcwd();
-  my $impl = $self->get_assignment('implicit');
-  my $postkey = $creator->get_dynamic() .
-    $creator->get_static() . "-$self";
-  my $previmpl  = $impl;
-  my $prevcache = $self->{'cacheok'};
-  my %gstate    = $creator->save_state();
-  my $genimpdep = $self->generate_implicit_project_dependencies();
-  my $errorString;
-
-  my @save;
-  my $VAR1;
-  $Data::Dumper::Indent = 0;
-
-  ## Save this project creator setting for later use in the
-  ## number_target_deps() method.
-  $self->{'dependency_is_filename'} = $creator->dependency_is_filename();
-
-  ## Remove the address portion of the $self string
-  $postkey =~ s/=.*//;
-
-  ## Set the source file callback on our project creator
-  $creator->set_source_listing_callback([\&source_listing_callback, $self]);
-
-  my $pid;
-  my @pids;
-  my $tmp = 'mpctmp00000000';
-
-  ## remove old temp files
-  my @tmpfiles = glob "${wdir}/mpctmp*";
-  for my $file (@tmpfiles) {
-    unlink $file || die "Error: Unable to delete tmp file $file in directory $wdir";
-  }
-
-  my $num_tmp_files = scalar (@tmpfiles);
-
-  $self->diagnostic("Multiprocess MPC removed $num_tmp_files existing files like \"mpctmp\*\" in $wdir.");
-
-  foreach my $ofile (@{$self->{'project_files'}}) {
-    if ($#pids + 1 >= $num_workers) {
-      waitpid(shift @pids, 0);
-    }
-
-    ++$tmp;
-
-    ## open the output file in parent so it can die if there's an error
-    open (FD, ">${wdir}/$tmp") || die "Can't open $tmp for write";
-
-    $pid = fork();
-    if ($pid != 0) {
-      push @pids, $pid;
-    }
-    else {
-      $self->{'pid'} = 'child';
-
-      if (!$self->excluded($ofile)) {
-        my $file    = $ofile;
-        my $dir     = $self->mpc_dirname($file);
-        my $restore = 0;
-
-        if (defined $self->{'scoped_assign'}->{$ofile}) {
-          ## Handle the implicit assignment
-          my $oi = $self->{'scoped_assign'}->{$ofile}->{'implicit'};
-          if (defined $oi) {
-            $previmpl = $impl;
-            $impl     = $oi;
-          }
-
-          ## Handle the cmdline assignment
-          my $cmdline = $self->{'scoped_assign'}->{$ofile}->{'cmdline'};
-          if (defined $cmdline && $cmdline ne '') {
-            ## Save the cacheok value
-            $prevcache = $self->{'cacheok'};
-
-            ## Get the current parameters and process the command line
-            my %parameters = $self->current_parameters();
-            $self->process_cmdline($cmdline, \%parameters);
-
-            ## Set the parameters on the creator
-            $creator->restore_state(\%parameters);
-            $restore = 1;
-          }
-        }
-
-        ## If we are generating implicit projects and the file is a
-        ## directory, then we set the dir to the file and empty the file
-        if ($impl && -d $file) {
-          $dir  = $file;
-          $file = '';
-
-          ## If the implicit assignment value was not a number, then
-          ## we will add this value to our base projects.
-          if ($impl !~ /^\d+$/) {
-            my $bps = $creator->get_baseprojs();
-            push(@$bps, split(/\s+/, $impl));
-            $restore = 1;
-            $self->{'cacheok'} = 0;
-          }
-        }
-
-        ## Generate the key for this project file
-        my $prkey = $self->getcwd() . '/' .
-          ($file eq '' ? $dir : $file) . "-$postkey";
-
-        ## We must change to the subdirectory for
-        ## which this project file is intended
-
-        if ($self->cd($dir)) {
-          my $files_written = [];
-          my $gen_proj_info = [];
-          my $gen_lib_locs  = {};
-
-          if ($self->{'cacheok'} && defined $allprojects{$prkey}) {
-            $files_written = $allprojects{$prkey};
-            $gen_proj_info = $allprinfo{$prkey};
-            $gen_lib_locs  = $allliblocs{$prkey};
-
-            $status = 1;
-          }
-          else {
-            $status = $creator->generate($self->mpc_basename($file));
-
-            ## If any one project file fails, then stop
-            ## processing altogether.
-            if (!$status) {
-              # save the status info and exit. the parent will
-	      # see the error.
-	      print FD "$status|Unable to process " .
-		($file eq '' ? " in $dir" : $file) . "\n";
-
-	      exit(1);          # child error
-            }
-
-            ## Get the individual project information and
-            ## generated file name(s)
-            $files_written = $creator->get_files_written();
-            $gen_proj_info = $creator->get_project_info();
-            $gen_lib_locs  = $creator->get_lib_locations();
-
-          }
-
-
-	  print FD "$status|''|$self->{'cacheok'}|$previmpl|$prevcache\n";
-	  print FD "$ofile|$prkey|$dir|$cwd|$restore\n";
-
-	  print FD Dumper ($files_written), "\n";
-	  print FD Dumper ($gen_proj_info), "\n";
-	  print FD Dumper ($gen_lib_locs), "\n";
-
-	  # there's a callback that sets the project file list
-	  # since we can't callback between processes we store
-	  # the list for later
-	  print FD Dumper ($self->{'project_file_list'}), "\n";
-
-        }
-        else {
-          ## Unable to change to the directory.
-          ## We don't restore the state before we leave,
-          ## but that's ok since we will be exiting soon.
-	  print FD "$status|Unable to change directory to $dir\n";
-
-	  exit (1);             # child error
-        }
-
-      }
-      else {
-        ## This one was excluded, so status is ok
-        ## no need to set though since the child will exit.
-	#$status = 1;
-      }
-
-      exit(0);                  # child is finished
-    }
-  }
-
-  for $pid (@pids) {
-    # this will also reap any zombies
-    waitpid($pid, 0);
-  }
-
-  my ($msg, $cacheok, $ofile, $prkey, $dir, $restore);
-
-  # read the children's stored data
-  my @kid_data = glob "${wdir}/mpctmp*";
-
-  for my $kd (@kid_data) {
-    open (FD, "<$kd") || die "Can't open $kd for read";
-
-    ($status, $msg, $cacheok, $previmpl, $prevcache) = split /\|/, <FD>;
-
-    if (!$status) {
-      return $status, $creator, $msg;
-    }
-
-    ($ofile, $prkey, $dir, $cwd, $restore) = split /\|/, <FD>;
-
-    eval (<FD>);
-    my $files_written = $VAR1;
-
-    eval (<FD>);
-    my $gen_proj_info = $VAR1;
-
-    # have to reconstitute gen_lib_locs in the same order it was
-    # created or else multi-process implicit dependency may differ from
-    # single process.
-    eval (<FD>);
-    my $gen_lib_locs;
-    for my $k (sort { substr($a, 0 , index ($a, '|')) <=>
-			substr ($b, 0, index ($b, '|')) } keys %$VAR1) {
-
-      $gen_lib_locs->{substr ($k, index ($k, '|') + 1)} =
-	$VAR1->{$k};
-    }
-
-    # have to reconstitute project_file_list in the same order it was
-    # created or else multi-process implicit dependency may differ from
-    # single process.
-    eval (<FD>);
-    for my $k (sort { substr($a, 0 , index ($a, '|')) <=>
-			substr ($b, 0, index ($b, '|')) } keys %$VAR1) {
-
-      $self->{'project_file_list'}->{substr ($k, index ($k, '|') + 1)} =
-	$VAR1->{$k};
-    }
-
-    $self->{'cacheok'} = $cacheok;
-    if ($self->cd($dir)) {
-      if ($self->{'cacheok'} && defined $allprojects{$prkey}) {
-
-	$files_written = $allprojects{$prkey};
-	$gen_proj_info = $allprinfo{$prkey};
-	$gen_lib_locs  = $allliblocs{$prkey};
-	$status = 1;
-      }
-      else {
-	# file is already generated. check status
-	if (!$status) {
-
-	  ## We don't restore the state before we leave,
-	  ## but that's ok since we will be exiting right now.
-	  return $status, $creator, $msg;
-	}
-
-	## Get the individual project information and
-	## generated file name(s)
-	if ($self->{'cacheok'}) {
-
-	  $allprojects{$prkey} = $files_written;
-	  $allprinfo{$prkey}   = $gen_proj_info;
-	  $allliblocs{$prkey}  = $gen_lib_locs;
-	}
-
-	push(@{$self->{'mpc_to_output'}->{$ofile}}, @$files_written);
-      }
-
-      $self->cd($cwd);
-      $self->save_project_info($files_written, $gen_proj_info,
-			       $gen_lib_locs, $dir,
-			       \@projects, \%pi, \%liblocs);
-    }
-    else {
-      ## Unable to change to the directory.
-      ## We don't restore the state before we leave,
-      ## but that's ok since we will be exiting soon.
-      return 0, $creator, $msg;
-
-    }
-
-    ## Return things to the way they were
-    $impl = $previmpl if (defined $self->{'scoped_assign'}->{$ofile});
-    if ($restore) {
-      $self->{'cacheok'} = $prevcache;
-      $creator->restore_state(\%gstate);
-    }
-  }
-
-  ## Add implict project dependencies based on source files
-  ## that have been used by multiple projects.  If we do it here
-  ## before we call generate_hierarchy(), we don't have to call it
-  ## in generate_hierarchy() for each workspace.
-  $self->{'projects'}     = \@projects;
-  $self->{'project_info'} = \%pi;
-
-  if ($status && $genimpdep) {
-    #print "aipd: $cwd\n", Dumper ($creator), "\n";
-    $self->add_implicit_project_dependencies($creator, $cwd);
-  }
-
-  ## If we are generating the hierarchical workspaces, then do so
-  $self->{'lib_locations'} = \%liblocs;
-  if ($self->get_hierarchy() || $self->workspace_per_project()) {
-    my $orig = $self->{'workspace_name'};
-    ($status, $errorString) = $self->generate_hierarchy($creator, \@projects, \%pi);
-    $self->{'workspace_name'} = $orig;
-  }
-
-  ## Reset the projects and project_info
-  $self->{'projects'}      = \@projects;
-  $self->{'project_info'}  = \%pi;
-
-  return $status, $creator, $errorString;
-}
-
-sub send_to_parent {
-  my $self = shift;
-  my $arr = shift;
-
-  # send the data
-  my $sock = new IO::Socket::INET (
-                                   PeerAddr => 'localhost',
-                                   PeerPort => $wport,
-                                   Proto => 'tcp',
-                                  );
-
-  if (!defined ($sock)) {
-    die "Child could not create socket";
-  }
-
-  map { print $sock "$_\n"; } @$arr;
-  $sock->close();
-}
-
-sub generate_project_files_fork_socket {
-  my $self      = shift;
-  my $status = (scalar @{$self->{'project_files'}} == 0 ? 1 : 0);
-
-  my @projects;
-  my %pi;
-  my %liblocs;
-
-  my $creator = $self->project_creator('child');
-  my $cwd = $self->getcwd();
-  my $impl = $self->get_assignment('implicit');
-  my $postkey = $creator->get_dynamic() .
-    $creator->get_static() . "-$self";
-  my $previmpl  = $impl;
-  my $prevcache = $self->{'cacheok'};
-  my %gstate    = $creator->save_state();
-  my $genimpdep = $self->generate_implicit_project_dependencies();
-  my $errorString;
-
-  my @save;
-  my $VAR1;
-  $Data::Dumper::Indent = 0;
-
-  ## Save this project creator setting for later use in the
-  ## number_target_deps() method.
-  $self->{'dependency_is_filename'} = $creator->dependency_is_filename();
-
-  ## Remove the address portion of the $self string
-  $postkey =~ s/=.*//;
-
-  ## Set the source file callback on our project creator
-  $creator->set_source_listing_callback([\&source_listing_callback, $self]);
-
-  my $pid;
-  my @pids;
-  my @pdata;                    # parents data sent from children.
-
-  ## setup workers' data
-  my @wdata;
-  my $beg;
-  my $fin;
-
-  my $num_prj_files = $#{$self->{'project_files'}} + 1;
-
-  ## reduce the number of workers if necessary
-  ## what if $num_workers > SOMAXCONN?? (unlikely)
-  if ($num_workers > SOMAXCONN) {
-    $self->diagnostic("Multiprocess MPC reducing # workers from $num_workers to " . SOMAXCONN . ", the max # of queued connections");
-    $num_workers = SOMAXCONN;
-  }
-
-  if ($num_workers > $num_prj_files) {
-    # don't fork more workers than there are jobs
-    $self->diagnostic("Multiprocess MPC reducing # workers from $num_workers to $num_prj_files, the number of project files.");
-    $num_workers = $num_prj_files;
-  }
-
-  my $num_per_worker = int ($num_prj_files / $num_workers);
-  my $num_lines_per_prj = 6;
-
-  $self->diagnostic("Multiprocess MPC using $num_workers workers to process $num_prj_files project files.");
-
-  for (my $wctr = 0; $wctr < $num_workers; ++$wctr) {
-    $beg = $wctr * $num_per_worker;
-    $fin = $beg + $num_per_worker - 1;
-
-    @{$wdata[$wctr]} = @{$self->{'project_files'}}[$beg..$fin];
-  }
-
-  ## give any remaining data to last worker.
-  if ($num_prj_files > $num_per_worker * $num_workers) {
-    push @{$wdata[$num_workers - 1]} ,
-      @{$self->{'project_files'}}[$num_per_worker
-                                  * $num_workers..$#{$self->{'project_files'}}];
-
-  }
-
-  ## Setup listener. Do this before fork so that (in the rare case)
-  ## when child tries to send data before the accept(), the socket
-  ## is at least initialized.
-  my $sock = new IO::Socket::INET (
-                                   LocalHost => 'localhost',
-                                   LocalPort => $wport,
-                                   Proto     => 'tcp',
-                                   Listen    => $num_workers,
-                                   Reuse     => 1
-                                  );
-  if (!defined ($sock)) {
-    die "Error setting up parent listener";
-  }
-
-  ## spawn the workers.
-  my $id = 0;
-  while ($id < $num_workers) {
-    # use pipes as barrier
-    $pid = fork();
-    if ($pid != 0) {
-      push @pids, $pid;
-    }
-    else {
-      ## after fork, child knows its id and which data to use.
-      $self->{'pid'} = 'child';
-      last;
-    }
-    ++$id;
-  }
-
-  if ($self->{pid} eq 'parent') {
-    $self->diagnostic("Multiprocess MPC using port $wport.");
-
-    # read the data from the kids
-    for (my $ctr = 0; $ctr < $num_workers; ++$ctr) {
-      my $handle = $sock->accept();
-      die "Accept error" if !$handle;
-      my $id = <$handle>;
-      @{$pdata[$id]} = <$handle>;
-
-      # each project as 6 records
-      if ((($#{$pdata[$id]} + 1) / $num_lines_per_prj) != $num_per_worker) {
-        if ($#{$pdata[$id]} != 0) {
-          # 0 indicates a failed status which will be delt with later
-          if (($id == $num_workers - 1) && ((($#{$pdata[$id]} + 1) / $num_lines_per_prj) != $num_per_worker + $#{$self->{'project_files'}} + 1 - ($num_workers * $num_per_worker))) {
-            # The last child may have more than num_per_worker records
-            my $rec = $#{$pdata[$id]} + 1;
-            my $exp = $num_per_worker * $num_lines_per_prj;
-            die "There is an error in the child data. Expected $exp. Received $rec";
-          }
-        }
-      }
-    }
-    # all data has been read
-    $sock->close();
-  }
-  else {
-    ## This is the code the workers run.
-    undef $sock;
-    ## generate projects
-    my @cdata = ($id);
-    foreach my $ofile (@{$wdata[$id]}) {
-      if (!$self->excluded($ofile)) {
-        my $file    = $ofile;
-        my $dir     = $self->mpc_dirname($file);
-        my $restore = 0;
-
-        if (defined $self->{'scoped_assign'}->{$ofile}) {
-          ## Handle the implicit assignment
-          my $oi = $self->{'scoped_assign'}->{$ofile}->{'implicit'};
-          if (defined $oi) {
-            $previmpl = $impl;
-            $impl     = $oi;
-          }
-
-          ## Handle the cmdline assignment
-          my $cmdline = $self->{'scoped_assign'}->{$ofile}->{'cmdline'};
-          if (defined $cmdline && $cmdline ne '') {
-            ## Save the cacheok value
-            $prevcache = $self->{'cacheok'};
-
-            ## Get the current parameters and process the command line
-            my %parameters = $self->current_parameters();
-            $self->process_cmdline($cmdline, \%parameters);
-
-            ## Set the parameters on the creator
-            $creator->restore_state(\%parameters);
-            $restore = 1;
-          }
-        }
-
-        ## If we are generating implicit projects and the file is a
-        ## directory, then we set the dir to the file and empty the file
-        if ($impl && -d $file) {
-          $dir  = $file;
-          $file = '';
-
-          ## If the implicit assignment value was not a number, then
-          ## we will add this value to our base projects.
-          if ($impl !~ /^\d+$/) {
-            my $bps = $creator->get_baseprojs();
-            push(@$bps, split(/\s+/, $impl));
-            $restore = 1;
-            $self->{'cacheok'} = 0;
-          }
-        }
-
-        ## Generate the key for this project file
-        my $prkey = $self->getcwd() . '/' .
-          ($file eq '' ? $dir : $file) . "-$postkey";
-
-        ## We must change to the subdirectory for
-        ## which this project file is intended
-
-        if ($self->cd($dir)) {
-          my $files_written = [];
-          my $gen_proj_info = [];
-          my $gen_lib_locs  = {};
-
-          if ($self->{'cacheok'} && defined $allprojects{$prkey}) {
-            $files_written = $allprojects{$prkey};
-            $gen_proj_info = $allprinfo{$prkey};
-            $gen_lib_locs  = $allliblocs{$prkey};
-
-            $status = 1;
-          }
-          else {
-            $status = $creator->generate($self->mpc_basename($file));
-
-            ## If any one project file fails, then stop
-            ## processing altogether.
-            if (!$status) {
-              # save the status info and exit. the parent will
-              # see the error.
-              @cdata = ($id);
-              push @cdata, "$status|Unable to process " .
-                ($file eq '' ? " in $dir" : $file) . "\n";
-
-              $self->send_to_parent(\@cdata);
-              exit(1);          # child error
-            }
-
-            ## Get the individual project information and
-            ## generated file name(s)
-            $files_written = $creator->get_files_written();
-            $gen_proj_info = $creator->get_project_info();
-            $gen_lib_locs  = $creator->get_lib_locations();
-
-          }
-
-          push @cdata, "$status|''|$self->{'cacheok'}|$previmpl|$prevcache";
-          push @cdata, "$ofile|$prkey|$dir|$cwd|$restore";
-          push @cdata, Dumper ($files_written);
-          push @cdata, Dumper ($gen_proj_info);
-          push @cdata, Dumper ($gen_lib_locs);
-
-          # there's a callback that sets the project file list
-          # since we can't callback between processes we store
-          # the list for later
-          push @cdata, Dumper ($self->{'project_file_list'});
-
-          $self->cd($cwd);
-
-        }
-        else {
-          ## Unable to change to the directory.
-          ## We don't restore the state before we leave,
-          ## but that's ok since we will be exiting soon.
-          @cdata = ($id);
-          push @cdata, "$status|Unable to change directory to $dir\n";
-          $self->send_to_parent(\@cdata);
-
-          exit (1);             # child error
-        }
-
-        ## Return things to the way they were
-        $impl = $previmpl if (defined $self->{'scoped_assign'}->{$ofile});
-        if ($restore) {
-          $self->{'cacheok'} = $prevcache;
-          $creator->restore_state(\%gstate);
-        }
-      }
-      else {
-        ## This one was excluded, so status is ok
-        ## no need to set though since the child will exit.
-        #$status = 1;
-      }
-    }
-
-    # send all the data at once.
-    $self->send_to_parent(\@cdata);
-
-    exit (0);
-
-    # end of child
-  }
-
-  # This is the parent again.
-
-  for $pid (@pids) {
-    # this will reap any zombies
-    waitpid($pid, 0);
-  }
-
-  my ($msg, $cacheok, $ofile, $prkey, $dir, $restore);
-
-  # read the children's stored data
-  for (my $i = 0; $i < $num_workers; ++$i) {
-    for (my $j = 0; $j <  $#{$pdata[$i]} + 1; ++$j) {
-      ($status, $msg, $cacheok, $previmpl, $prevcache) = split /\|/, ${$pdata[$i]}[$j++];
-
-      # check that the child was successful
-      if (!$status) {
-        return $status, $creator, $msg;
-      }
-
-      ($ofile, $prkey, $dir, $cwd, $restore) = split /\|/, ${$pdata[$i]}[$j++];
-
-      eval (${$pdata[$i]}[$j++]);
-      my $files_written = $VAR1;
-
-      eval (${$pdata[$i]}[$j++]);
-      my $gen_proj_info = $VAR1;
-
-      # have to reconstitute gen_lib_locs in the same order it was
-      # created or else multi-process implicit dependency may differ from
-      # single process.
-      eval (${$pdata[$i]}[$j++]);
-      my $gen_lib_locs;
-      for my $k (sort { substr($a, 0 , index ($a, '|')) <=>
-                          substr ($b, 0, index ($b, '|')) } keys %$VAR1) {
-
-        $gen_lib_locs->{substr ($k, index ($k, '|') + 1)} =
-          $VAR1->{$k};
-      }
-
-      # have to reconstitute project_file_list in the same order it was
-      # created or else multi-process implicit dependency may differ from
-      # single process.
-      eval (${$pdata[$i]}[$j]);
-      for my $k (sort { substr($a, 0 , index ($a, '|')) <=>
-                          substr ($b, 0, index ($b, '|')) } keys %$VAR1) {
-
-        $self->{'project_file_list'}->{substr ($k, index ($k, '|') + 1)} =
-          $VAR1->{$k};
-      }
-
-      $self->{'cacheok'} = $cacheok;
-      if ($self->cd($dir)) {
-        if ($self->{'cacheok'} && defined $allprojects{$prkey}) {
-
-          $files_written = $allprojects{$prkey};
-          $gen_proj_info = $allprinfo{$prkey};
-          $gen_lib_locs  = $allliblocs{$prkey};
-          $status = 1;
-        }
-        else {
-          # file is already generated. check status
-          if (!$status) {
-
-            ## We don't restore the state before we leave,
-            ## but that's ok since we will be exiting right now.
-            return $status, $creator, $msg;
-          }
-
-          ## Get the individual project information and
-          ## generated file name(s)
-          if ($self->{'cacheok'}) {
-
-            $allprojects{$prkey} = $files_written;
-            $allprinfo{$prkey}   = $gen_proj_info;
-            $allliblocs{$prkey}  = $gen_lib_locs;
-          }
-
-          push(@{$self->{'mpc_to_output'}->{$ofile}}, @$files_written);
-        }
-
-        $self->cd($cwd);
-        $self->save_project_info($files_written, $gen_proj_info,
-                                 $gen_lib_locs, $dir,
-                                 \@projects, \%pi, \%liblocs);
-      }
-      else {
-
-        ## Unable to change to the directory.
-        ## We don't restore the state before we leave,
-        ## but that's ok since we will be exiting soon.
-        return 0, $creator, $msg;
-
-      }
-
-      ## Return things to the way they were
-      $impl = $previmpl if (defined $self->{'scoped_assign'}->{$ofile});
-      if ($restore) {
-        $self->{'cacheok'} = $prevcache;
-        $creator->restore_state(\%gstate);
-      }
-    }
-  }
-
-  ## Add implict project dependencies based on source files
-  ## that have been used by multiple projects.  If we do it here
-  ## before we call generate_hierarchy(), we don't have to call it
-  ## in generate_hierarchy() for each workspace.
-  $self->{'projects'}     = \@projects;
-  $self->{'project_info'} = \%pi;
-
-  if ($status && $genimpdep) {
-    #print "aipd: $cwd\n", Dumper ($creator), "\n";
-    $self->add_implicit_project_dependencies($creator, $cwd);
-  }
-
-  ## If we are generating the hierarchical workspaces, then do so
-  $self->{'lib_locations'} = \%liblocs;
-  if ($self->get_hierarchy() || $self->workspace_per_project()) {
-    my $orig = $self->{'workspace_name'};
-    ($status, $errorString) = $self->generate_hierarchy($creator, \@projects, \%pi);
-    $self->{'workspace_name'} = $orig;
-  }
-
-  ## Reset the projects and project_info
-  $self->{'projects'}      = \@projects;
-  $self->{'project_info'}  = \%pi;
-
-  return $status, $creator, $errorString;
+  return $status, $creator;
 }
 
 
@@ -2337,7 +1480,7 @@ sub indirect_dependency {
   }
   else {
     my $deps = $self->create_array(
-                                   $self->{'project_info'}->{$ccheck}->[ProjectCreator::DEPENDENCIES]);
+       $self->{'project_info'}->{$ccheck}->[ProjectCreator::DEPENDENCIES]);
     foreach my $dep (@$deps) {
       if (defined $self->{'project_info'}->{"$dir$dep"} &&
           !defined $self->{'indirect_checked'}->{"$dir$dep"} &&
@@ -2366,7 +1509,6 @@ sub add_implicit_project_dependencies {
   ## project so that the next time around the foreach, we don't find it
   ## as a dependent on the one that we just modified.
   my @pflkeys = keys %{$self->{'project_file_list'}};
-
   foreach my $key (@pflkeys) {
     foreach my $ikey (@pflkeys) {
       ## Not the same project and
@@ -2379,9 +1521,9 @@ sub add_implicit_project_dependencies {
            !$self->array_contains($bidir{$ikey}, [$key]))) {
         my @over;
         if ($self->non_intersection(
-                                    $self->{'project_file_list'}->{$key}->[2],
-                                    $self->{'project_file_list'}->{$ikey}->[2],
-                                    \@over)) {
+                      $self->{'project_file_list'}->{$key}->[2],
+                      $self->{'project_file_list'}->{$ikey}->[2],
+                      \@over)) {
           ## The project contains shared source files, so we need to
           ## look into adding an implicit inter-project dependency.
           $save{$ikey} = $self->{'project_file_list'}->{$ikey}->[2];
@@ -2480,7 +1622,7 @@ sub sort_within_group {
 
   ## Put the projects in the order specified
   ## by the project dependencies.
-  for (my $i = $start; $i <= $end; ++$i) {
+  for(my $i = $start; $i <= $end; ++$i) {
     ## If our moved project equals our previously moved project then
     ## we count this as a possible circular dependency.
     my $key = "@$list";
@@ -2505,7 +1647,7 @@ sub sort_within_group {
       }
       $self->warning('Circular dependency detected while processing the ' .
                      ($self->{'current_input'} eq '' ?
-                      'default' : $self->{'current_input'}) .
+                       'default' : $self->{'current_input'}) .
                      ' workspace. ' .
                      'The following projects are involved: ' .
                      (defined $other ? "$$list[$other], " : '') .
@@ -2522,23 +1664,23 @@ sub sort_within_group {
     $deps = $self->get_validated_ordering($$list[$i]);
     if (defined $$deps[0]) {
       my $baseproj = ($self->{'dependency_is_filename'} ?
-                      $self->mpc_basename($$list[$i]) :
-                      $self->{'project_info'}->{$$list[$i]}->[ProjectCreator::PROJECT_NAME]);
+                              $self->mpc_basename($$list[$i]) :
+                              $self->{'project_info'}->{$$list[$i]}->[ProjectCreator::PROJECT_NAME]);
       my $moved = 0;
       foreach my $dep (@$deps) {
         if ($baseproj ne $dep) {
           ## See if the dependency is listed after this project
-          for (my $j = $i + 1; $j <= $end; ++$j) {
+          for(my $j = $i + 1; $j <= $end; ++$j) {
             my $ldep = ($self->{'dependency_is_filename'} ?
-                        $self->mpc_basename($$list[$j]) :
-                        $self->{'project_info'}->{$$list[$j]}->[ProjectCreator::PROJECT_NAME]);
+                                $self->mpc_basename($$list[$j]) :
+                                $self->{'project_info'}->{$$list[$j]}->[ProjectCreator::PROJECT_NAME]);
             if ($ldep eq $dep) {
               $movepjs = [$i, $j];
               ## If so, move it in front of the current project.
               ## The original code, which had splices, didn't always
               ## work correctly (especially on AIX for some reason).
               my $save = $$list[$j];
-              for (my $k = $j; $k > $i; --$k) {
+              for(my $k = $j; $k > $i; --$k) {
                 $$list[$k] = $$list[$k - 1];
               }
               $$list[$i] = $save;
@@ -2565,16 +1707,16 @@ sub build_dependency_chain {
       ## Find the item in the list that matches our current dependency
       my $mapped = $$map{$dep};
       if (defined $mapped) {
-        for (my $i = 0; $i < $len; $i++) {
+        for(my $i = 0; $i < $len; $i++) {
           if ($$list[$i] eq $mapped) {
 
             ## Locate the group number to which the dependency belongs
-            for (my $j = 0; $j < $glen; $j++) {
+            for(my $j = 0; $j < $glen; $j++) {
               if ($i >= $$groups[$j]->[0] && $i <= $$groups[$j]->[1]) {
 
                 if ($j != $ni) {
                   ## Add every project in the group to the dependency chain
-                  for (my $k = $$groups[$j]->[0]; $k <= $$groups[$j]->[1]; $k++) {
+                  for(my $k = $$groups[$j]->[0]; $k <= $$groups[$j]->[1]; $k++) {
                     my $ldep = $self->mpc_basename($$list[$k]);
                     if (!exists $$gdeps{$ldep}) {
                       $$gdeps{$ldep} = 1;
@@ -2616,11 +1758,11 @@ sub sort_by_groups {
   }
 
   my %circular_checked;
-  for (my $gi = 0; $gi <= $#groups; ++$gi) {
+  for(my $gi = 0; $gi <= $#groups; ++$gi) {
     ## Detect circular dependencies
     if (!$circular_checked{$gi}) {
       $circular_checked{$gi} = 1;
-      for (my $i = $groups[$gi]->[0]; $i <= $groups[$gi]->[1]; ++$i) {
+      for(my $i = $groups[$gi]->[0]; $i <= $groups[$gi]->[1]; ++$i) {
         my %gdeps;
         $self->build_dependency_chain($$list[$i], $llen, $list, $gi,
                                       $#groups + 1, \@groups,
@@ -2650,7 +1792,7 @@ sub sort_by_groups {
           my @keys = sort keys %dirs;
           $self->warning('Circular directory dependency detected in the ' .
                          ($self->{'current_input'} eq '' ?
-                          'default' : $self->{'current_input'}) .
+                           'default' : $self->{'current_input'}) .
                          ' workspace. ' .
                          'The following director' .
                          ($#keys == 0 ? 'y is' : 'ies are') .
@@ -2662,38 +1804,38 @@ sub sort_by_groups {
 
     ## Build up the group dependencies
     my %gdeps;
-    for (my $i = $groups[$gi]->[0]; $i <= $groups[$gi]->[1]; ++$i) {
+    for(my $i = $groups[$gi]->[0]; $i <= $groups[$gi]->[1]; ++$i) {
       my $deps = $self->get_validated_ordering($$list[$i]);
       @gdeps{@$deps} = () if (defined $$deps[0]);
     }
 
     ## Search the rest of the groups for any of the group dependencies
-    for (my $gj = $gi + 1; $gj <= $#groups; ++$gj) {
-      for (my $i = $groups[$gj]->[0]; $i <= $groups[$gj]->[1]; ++$i) {
+    for(my $gj = $gi + 1; $gj <= $#groups; ++$gj) {
+      for(my $i = $groups[$gj]->[0]; $i <= $groups[$gj]->[1]; ++$i) {
         if (exists $gdeps{$self->mpc_basename($$list[$i])}) {
           ## Move this group ($gj) in front of the current group ($gi)
           my @save;
-          for (my $j = $groups[$gi]->[1] + 1; $j <= $groups[$gj]->[1]; ++$j) {
+          for(my $j = $groups[$gi]->[1] + 1; $j <= $groups[$gj]->[1]; ++$j) {
             push(@save, $$list[$j]);
           }
           my $offset = $groups[$gj]->[1] - $groups[$gi]->[1];
-          for (my $j = $groups[$gi]->[1]; $j >= $groups[$gi]->[0]; --$j) {
+          for(my $j = $groups[$gi]->[1]; $j >= $groups[$gi]->[0]; --$j) {
             $$list[$j + $offset] = $$list[$j];
           }
-          for (my $j = 0; $j <= $#save; ++$j) {
+          for(my $j = 0; $j <= $#save; ++$j) {
             $$list[$groups[$gi]->[0] + $j] = $save[$j];
           }
 
           ## Update the group indices
           my $shiftamt = ($groups[$gi]->[1] - $groups[$gi]->[0]) + 1;
-          for (my $j = $gi + 1; $j <= $gj; ++$j) {
+          for(my $j = $gi + 1; $j <= $gj; ++$j) {
             $groups[$j]->[0] -= $shiftamt;
             $groups[$j]->[1] -= $shiftamt;
           }
           my @grsave = @{$groups[$gi]};
           $grsave[0] += $offset;
           $grsave[1] += $offset;
-          for (my $j = $gi; $j < $gj; ++$j) {
+          for(my $j = $gi; $j < $gj; ++$j) {
             $groups[$j] = $groups[$j + 1];
             $circular_checked{$j} = $circular_checked{$j + 1};
           }
@@ -2731,7 +1873,7 @@ sub sort_dependencies {
       ## First determine the individual groups
       my @grindex;
       my $previous = [0, undef];
-      for (my $li = 0; $li <= $#list; ++$li) {
+      for(my $li = 0; $li <= $#list; ++$li) {
         my $dir = $self->get_first_level_directory($list[$li]);
         if (!defined $previous->[1]) {
           $previous = [$li, $dir];
@@ -2766,7 +1908,7 @@ sub number_target_deps {
 
   ## This block of code must be done after the list of dependencies
   ## has been sorted in order to get the correct project numbers.
-  for (my $i = 0; $i <= $#list; ++$i) {
+  for(my $i = 0; $i <= $#list; ++$i) {
     my $project = $list[$i];
     if (defined $$pjs{$project}) {
       my($name, $deps) = @{$$pjs{$project}};
@@ -2779,13 +1921,13 @@ sub number_target_deps {
         ## up to the point of this project for the projects
         ## that this one depends on.  When the project is
         ## found, we put the target number in the numbers array.
-        for (my $j = 0; $j < $i; ++$j) {
+        for(my $j = 0; $j < $i; ++$j) {
           ## If the dependency is a filename, then take the basename of
           ## the project file.  Otherwise, get the project name based on
           ## the project file from the "project_info".
           my $key = ($self->{'dependency_is_filename'} ?
-                     $self->mpc_basename($list[$j]) :
-                     $self->{'project_info'}->{$list[$j]}->[ProjectCreator::PROJECT_NAME]);
+                             $self->mpc_basename($list[$j]) :
+                             $self->{'project_info'}->{$list[$j]}->[ProjectCreator::PROJECT_NAME]);
           push(@numbers, $j) if (exists $dhash{$key});
         }
 
@@ -2832,8 +1974,8 @@ sub optionError {
 sub process_cmdline {
   my($self, $cmdline, $parameters) = @_;
 
-  ## Set cache use to default.
-  $self->{'cacheok'} = $self->default_cacheok();
+  ## It's ok to use the cache
+  $self->{'cacheok'} = 1;
 
   if (defined $cmdline && $cmdline ne '') {
     my $args = $self->create_array($cmdline);
@@ -2915,11 +2057,6 @@ sub current_parameters {
 
 sub project_creator {
   my $self = shift;
-  my $pid = shift;
-  if (not defined $pid) {
-    $pid = 'parent';
-  }
-
   my $str = "$self";
 
   ## NOTE: If the subclassed WorkspaceCreator name prefix does not
@@ -2966,8 +2103,7 @@ sub project_creator {
                    $parameters{'expand_vars'},
                    $self->{'gendot'},
                    $parameters{'comments'},
-                   $self->{'for_eclipse'},
-                   $pid);
+                   $self->{'for_eclipse'});
 }
 
 
@@ -3010,19 +2146,19 @@ sub get_modified_workspace_name {
   else {
     my $prefix = ($oname eq $wsname ? $name : "$name.$wsname");
     $previous_workspace_name{$type}->{$pwd} = $wsname;
-    while ($self->file_written("$prefix" .
-                               ($self->{'modified_count'} > 0 ?
-                                ".$self->{'modified_count'}" : '') .
-                               "$ext")) {
+    while($self->file_written("$prefix" .
+                              ($self->{'modified_count'} > 0 ?
+                                   ".$self->{'modified_count'}" : '') .
+                              "$ext")) {
       ++$self->{'modified_count'};
     }
     $self->{'current_workspace_name'} =
-      "$prefix" . ($self->{'modified_count'} > 0 ?
-                   ".$self->{'modified_count'}" : '') . "$ext";
+               "$prefix" . ($self->{'modified_count'} > 0 ?
+                                ".$self->{'modified_count'}" : '') . "$ext";
   }
 
   return (defined $self->{'current_workspace_name'} ?
-          $self->{'current_workspace_name'} : "$name$ext");
+                  $self->{'current_workspace_name'} : "$name$ext");
 }
 
 
@@ -3054,7 +2190,7 @@ sub get_validated_ordering {
       if (defined $dstr && $dstr ne '') {
         $deps = $self->create_array($dstr);
         my $dlen = scalar(@$deps);
-        for (my $i = 0; $i < $dlen; $i++) {
+        for(my $i = 0; $i < $dlen; $i++) {
           my $dep   = $$deps[$i];
           my $found = 0;
           ## Avoid circular dependencies
@@ -3068,7 +2204,7 @@ sub get_validated_ordering {
             }
             if (!$found) {
               if ($self->{'verbose_ordering'}) {
-                $self->warning("processing '$project' and '$name' references '$dep' which has " .
+                $self->warning("'$name' references '$dep' which has " .
                                "not been processed.");
               }
               splice(@$deps, $i, 1);
@@ -3096,14 +2232,6 @@ sub get_validated_ordering {
 
 sub source_listing_callback {
   my($self, $project_file, $project_name, $list) = @_;
-
-  # have to keep projects in the the same order as if run in
-  # single process. otherwise implicit dependencies produces
-  # different output
-  if ($self->{'pid'} ne 'parent') {
-    $project_name = ++$self->{'imp_dep_ctr'} . '|' . $project_name;
-  }
-
   $self->{'project_file_list'}->{$project_name} = [ $project_file,
                                                     $self->getcwd(), $list ];
 }
@@ -3143,7 +2271,7 @@ sub get_relative_dep_file {
     my @dirs = grep(!/^$/, split('/', $base));
     my $last = -1;
     $project =~ s/^\///;
-    for (my $i = 0; $i <= $#dirs; $i++) {
+    for(my $i = 0; $i <= $#dirs; $i++) {
       my $dir = $dirs[$i];
       if ($project =~ s/^$dir\///) {
         $last = $i;
@@ -3159,7 +2287,7 @@ sub get_relative_dep_file {
     }
     else {
       my $built = '';
-      for (my $i = $last + 1; $i <= $#dirs; $i++) {
+      for(my $i = $last + 1; $i <= $#dirs; $i++) {
         $built .= $dirs[$i] . '/';
       }
       $built .= $dependee;
@@ -3275,11 +2403,6 @@ sub workspace_file_extension {
 sub workspace_per_project {
   #my $self = shift;
   return 0;
-}
-
-
-sub default_verbose_ordering {
-  return 0;                     # Don't warning if there are missing dependencies.
 }
 
 

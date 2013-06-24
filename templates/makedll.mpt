@@ -36,7 +36,6 @@ supports_include = 1
 visibility       =
 depgen_flags     =
 cc               = cc
-notparallel      = 1
 
 // ***********************************************************************
 // Configuration Section
@@ -357,7 +356,6 @@ cygwin {
   exe_ext    = .exe
   rc         = windres
   res_ext    = .o
-  pic        =
   depgen_flags = -t make
 }
 

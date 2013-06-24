@@ -31,19 +31,14 @@ while [ ! -x $loc/mpc.pl ]; do
 done
 
 ## Build up the packager name and email address
-if [ -z "$REPLYTO" ]; then
+if [ -z "REPLYTO" ]; then
   DOMAIN=`hostname | sed 's/[^\.][^\.]*\.//'`
-  FULLDOMAIN=`echo $DOMAIN | grep '\.'`
-  if [ -z "$DOMAIN" -o -z "$FULLDOMAIN" ]; then
-    RESOLVDOMAIN=`grep '^search' /etc/resolv.conf | sed 's/.*\s//'`
-    FULLDOMAIN=`echo $RESOLVDOMAIN | grep '\.'`
-    if [ -z "$DOMAIN" -o -n "$FULLDOMAIN" ]; then
-      DOMAIN=$RESOLVDOMAIN
-    fi
+  if [ -z "$DOMAIN" ]; then
+    DOMAIN=`grep '^search' /etc/resolv.conf | sed 's/.* //'`
   fi
   REPLYTO="$LOGNAME@$DOMAIN"
 fi
-PACKAGER=`getent passwd $LOGNAME | cut -d: -f5`
+PACKAGER=`grep $LOGNAME /etc/passwd | cut -d: -f5`
 if [ -z "$PACKAGER" ]; then
   PACKAGER=$CL_USERNAME
 fi
@@ -69,38 +64,17 @@ BDIR=/tmp/mpc
 ## of MPC.spec
 FDIR=/usr/lib/MPC
 
-##Check if build and work diretory already exist
-if [ -d "$BDIR" -o -f "$BDIR" ]; then
-  echo "Necessary directory $BDIR aleady exists."
-  echo "Exiting."
-  exit
-fi
-
-if [ -d "$WDIR" -o -f "$WDIR" ]; then
-  echo "Necessary directory $WDIR aleady exists."
-  echo "Exiting."
-  exit
-fi
-
-## Create our working directory
-mkdir -p $WDIR
-
 ## The directory where RPM will place the resulting file
-if [ -x /usr/src/redhat -a -w /usr/src/redhat ]; then
+if [ -x /usr/src/redhat ]; then
   RPMLOC=/usr/src/redhat
-elif [ -x /usr/src/packages -a -w /usr/src/packages ]; then
-  RPMLOC=/usr/src/packages
 else
-  RPMLOC=$WDIR/rpmbuild
-  mkdir -p $RPMLOC
-  mkdir -p $RPMLOC/BUILD
-  mkdir -p $RPMLOC/RPMS
-  mkdir -p $RPMLOC/SOURCES
+  RPMLOC=/usr/src/packages
 fi
 
-## Make the spec file
+## Create our working directory and make the spec file
+mkdir -p $WDIR
 cd $WDIR
-sed "s/VERSION/$VERSION/; s/PACKAGER/$PACKAGER/; s!FINALDIR!$FDIR!" $loc/rpm/MPC.templ > MPC.spec
+sed "s/VERSION/$VERSION/; s/PACKAGER/$PACKAGER/; s!FINALDIR!$FDIR!" $loc/rpm/MPC.spec > MPC.spec
 
 ## Make a copy of the original MPC source to the new directory
 mkdir -p $MDIR/$FDIR
@@ -109,18 +83,13 @@ tar --exclude=.svn -cf - . | (cd $WDIR/$MDIR/$FDIR; tar -xf -)
 
 ## Create the build source tar.bz2
 cd $WDIR
-tar --owner root --group root -cf $RPMLOC/SOURCES/$MDIR.tar $MDIR
+tar cf $RPMLOC/SOURCES/$MDIR.tar $MDIR
 bzip2 -9f $RPMLOC/SOURCES/$MDIR.tar
 
 ## Perform the RPM creation step
 rm -rf $BDIR
 mkdir -p $BDIR
-rpmbuild --define "_topdir $RPMLOC" --define "_buildrootdir $BDIR" --define "buildroot $BDIR" --define "__arch_install_post %{nil}" -bb MPC.spec
-
-if [ "$RPMLOC" = "$WDIR/rpmbuild" ]; then
-  echo "Copying rpm to $loc/rpm"
-  cp $RPMLOC/RPMS/*/*.rpm $loc/rpm
-fi
+rpmbuild -bb MPC.spec
 
 ## Clean everything up
 cd ..

@@ -4,7 +4,6 @@ package MakeWorkspaceCreator;
 # Description   : A Generic Workspace (Makefile) creator
 # Author        : Chad Elliott
 # Create Date   : 2/18/2003
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -62,7 +61,7 @@ sub write_comps {
   ## Send all the information to our base class method
   $self->write_named_targets($fh, $self->crlf(), \%targnum, \@list,
                              ($self->languageIs(Creator::csharp) ?
-                               'bundle ' : '') . $targets, '', '',
+                               'bundle ' : '') . $targets, '', 'generated ',
                              $self->project_target_translation(1), 1);
 }
 

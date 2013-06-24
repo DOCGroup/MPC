@@ -4,7 +4,6 @@ package Parser;
 # Description   : A basic parser that requires a parse_line override
 # Author        : Chad Elliott
 # Create Date   : 5/16/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -44,37 +43,16 @@ sub new {
 }
 
 
-sub strip_comments {
-  my($self, $line) = @_;
-
-  $line =~ s/\/\/.*//;
-  return $line;
-}
-
-
-sub strip_lt_whitespace {
-  my($self, $line, $keep_leading_whitespace) = @_;
-
-  $line =~ s/^\s+// if !$keep_leading_whitespace;
-  $line =~ s/\s+$//;
-  return $line;
-}
-
-
-sub is_blank_line {
-  my($self, $line) = @_;
-  return m/^\s+$/;
-}
-
-
 sub strip_line {
   my($self, $line) = @_;
 
   ## Keep track of our line number
   ++$self->{'line_number'};
 
-  $line = $self->strip_comments($line);
-  $line = $self->strip_lt_whitespace($line);
+  ## Remove comments and leading and trailing white-space.
+  $line =~ s/\/\/.*//;
+  $line =~ s/^\s+//;
+  $line =~ s/\s+$//;
 
   return $line;
 }
@@ -149,7 +127,6 @@ sub cached_file_read {
     $self->{'line_number'} = 0;
     foreach my $line (@$lines) {
       ++$self->{'line_number'};
-
       ## Since we're "reading" a cached file, we must pass undef as the
       ## file handle to parse_line().
       ($status, $error) = $self->parse_line(undef, $line);

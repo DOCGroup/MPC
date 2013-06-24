@@ -4,7 +4,6 @@ package VC10WorkspaceCreator;
 # Description   : A VC10 Workspace Creator
 # Author        : Johnny Willemsen
 # Create Date   : 11/10/2008
-# $Id$
 # ************************************************************
 
 # ************************************************************

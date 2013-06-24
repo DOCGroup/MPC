@@ -1,5 +1,3 @@
-$Id$
-
 .:: 3/13/2002 ::.
 
 The Makefile, Project and Workspace Creator.
@@ -183,7 +181,7 @@ Example.mpc, then the modified project name would be Example_Client.
 
 If the value set for exename contains an asterisk then the asterisk portion
 of the name will be replaced with the current project name.  The same logic
-applies to sharedname, staticname, after and libs.
+applies to sharedname and staticname.
 
 If multiple projects are going to be contained within a single workspace
 (using mwc.pl), there can be no duplication of project names.  This is
@@ -318,7 +316,7 @@ specific        This scope allows assignments that are specific to a
                   lit_libs += c
                   ...
                 } else {
-                  lit_libs += c_other
+                  list_libs += c_other
                   ...
                 }
 
@@ -353,7 +351,6 @@ specific        This scope allows assignments that are specific to a
                 vc8      |         |      |     X     |    X    |
                 vc9      |         |      |     X     |    X    |
                 vc10     |         |      |     X     |    X    |
-                vc11     |         |      |     X     |    X    |
                 wix      |         |      |           |    X    |
 
                 ? - indicates that this is controled by the MPC_GHS_UNIX

@@ -4,7 +4,6 @@ package BCB2009WorkspaceCreator;
 # Description   : A BCB2009 Workspace Creator
 # Author        : Johnny Willemsen
 # Create Date   : 17/10/2008
-# $Id$
 # ************************************************************
 
 # ************************************************************

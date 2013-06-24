@@ -4,7 +4,6 @@ package RpmSpecWorkspaceCreator;
 # Description   : An RPM .spec file Workspace Creator
 # Author        : Adam Mitz (OCI)
 # Create Date   : 11/23/2010
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -44,10 +43,6 @@ sub documentation_info {
   return '^sub get_template', '^EOT$';
 }
 
-sub default_verbose_ordering {
-  return 1; # Warn if there are missing dependencies.
-}
-
 # Called by document_template.pl
 sub interpret_keyword {
   my $vname = shift;
@@ -66,7 +61,7 @@ sub interpret_keyword {
 sub write_and_compare_file {
   my($self, $outdir, $oname, $func, @params) = @_;
   &$func($self, undef, @params);
-  return 1;
+  return undef;
 }
 
 sub rpmname {
@@ -280,7 +275,6 @@ Source: <%rpm_source_base("")%><%rpm_name%>.tar.gz
 Name: <%rpm_name%>
 Group: <%rpm_group%>
 Summary: <%rpm_summary%>
-<%cond(rpm_url, URL: )%>
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Prefix: <%rpm_prefix("/usr")%>
 AutoReqProv: <%rpm_autorequiresprovides("no")%>
@@ -295,9 +289,6 @@ AutoReqProv: <%rpm_autorequiresprovides("no")%>
 %defattr(-,root,root)
 %doc
 %config
-
-%pre
-<%rpm_pre_cmd()%>
 
 %post
 <%rpm_post_cmd()%>

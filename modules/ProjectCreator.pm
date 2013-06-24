@@ -4,7 +4,6 @@ package ProjectCreator;
 # Description   : Base class for all project creators
 # Author        : Chad Elliott
 # Create Date   : 3/13/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -21,9 +20,6 @@ use TemplateInputReader;
 use TemplateParser;
 use FeatureParser;
 use CommandHelper;
-
-use Data::Dumper;
-#use Tie::IxHash;
 
 use vars qw(@ISA);
 @ISA = qw(Creator);
@@ -193,7 +189,7 @@ my $cppresource = 'resource_files';
 
 ## Valid component names within a project along with the valid file extensions
 my %cppvc = ('source_files'        => [ "\\.cpp", "\\.cxx", "\\.cc", "\\.c", "\\.C", ],
-             'template_files'      => [ "_T\\.cpp", "_T\\.cxx", "_T\\.cc", "_T\\.c", "_T\\.C", "_t\\.cpp", "_t\\.cxx", "_t\\.cc", "_t\\.c", "_t\\.C", "\\.tpp" ],
+             'template_files'      => [ "_T\\.cpp", "_T\\.cxx", "_T\\.cc", "_T\\.c", "_T\\.C", "_t\\.cpp", "_t\\.cxx", "_t\\.cc", "_t\\.c", "_t\\.C" ],
              'header_files'        => [ "\\.h", "\\.hpp", "\\.hxx", "\\.hh", ],
              'inline_files'        => [ "\\.i", "\\.ipp", "\\.inl", ],
              'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
@@ -302,7 +298,7 @@ my %mains;
 # ************************************************************
 
 sub new {
-  my($class, $global, $inc, $template, $ti, $dynamic, $static, $relative, $addtemp, $addproj, $progress, $toplevel, $baseprojs, $gfeature, $relative_f, $feature, $features, $hierarchy, $exclude, $makeco, $nmod, $applypj, $genins, $into, $language, $use_env, $expandvars, $gendot, $comments, $foreclipse, $pid) = @_;
+  my($class, $global, $inc, $template, $ti, $dynamic, $static, $relative, $addtemp, $addproj, $progress, $toplevel, $baseprojs, $gfeature, $relative_f, $feature, $features, $hierarchy, $exclude, $makeco, $nmod, $applypj, $genins, $into, $language, $use_env, $expandvars, $gendot, $comments, $foreclipse) = @_;
   my $self = $class->SUPER::new($global, $inc,
                                 $template, $ti, $dynamic, $static,
                                 $relative, $addtemp, $addproj,
@@ -353,9 +349,6 @@ sub new {
 
   $self->add_default_matching_assignments();
   $self->reset_generating_types();
-
-  $self->{'pid'} = $pid;
-  $self->{'llctr'} = 0; # counts the hash insertion order for mp-mpc
 
   return $self;
 }
@@ -490,10 +483,6 @@ sub process_assignment {
       }
       mpc_debug::chkpnt_post_after_keyword_assignment($name, $value, $assign, $calledfrom);
     }
-    ## Support the '*' mechanism for libs assignment as well.
-    elsif ($name eq 'libs' && index($value, '*') >= 0) {
-      $value = $self->fill_type_name($value, $self->get_default_project_name());
-    }
 
     ## If this particular project type does not consider the dollar sign
     ## special and the user has provided two dollarsigns as an escape, we
@@ -551,15 +540,6 @@ sub process_assignment_sub {
   ## See if the name is one of the special "recursive" settings.  If so,
   ## fix up the value and change the name.
   ($name, $value) = $self->create_recursive_settings($name, $value, $assign);
-
-  ## If the assignment name is valid and requires parameter (<%...%>)
-  ## replacement, then do so.  But, only do so on actual keywords.
-  ## User defined keywords must not have the parameters replaced in
-  ## order for them to get the correct replacement values later on.
-  if (defined $validNames{$name} &&
-      ($validNames{$name} & 0x04) == 0 && index($value, '<%') >= 0) {
-    $value = $self->replace_parameters($value, $self->{'command_subs'});
-  }
 
   return $self->SUPER::process_assignment_sub($name, $value, $assign);
 }
@@ -808,7 +788,7 @@ sub parse_line {
   my($self, $ih, $line) = @_;
   my($status,
      $errorString,
-     @values) = $self->parse_known($line, $ih);
+     @values) = $self->parse_known($line);
 
   ## parse_known() passes back an array of values
   ## that make up the contents of the line parsed.
@@ -878,16 +858,8 @@ sub parse_line {
                   elsif (index($cwd, $start) == 0) {
                     $amount = length($start) + 1;
                   }
-                  if ($self->{'pid'} eq 'child') {
-                    $self->{'lib_locations'}->{$val} =
-                      ++$self->{'llctr'} . '|' .
+                  $self->{'lib_locations'}->{$val} =
                       substr($cwd, $amount);
-                  }
-                  else {
-
-                    $self->{'lib_locations'}->{$val} =
-                      substr($cwd, $amount);
-                  }
                   last;
                 }
               }
@@ -1052,7 +1024,7 @@ sub parse_line {
         }
         elsif ($comp eq 'expand') {
           $self->{'parsing_expand'} = 1;
-          ($status, $errorString) = $self->parse_scope($ih, $comp, $name, undef);
+          ($status, $errorString) = $self->parse_scope($ih, $comp, $name);
           $self->{'parsing_expand'} = undef;
         }
         else {
@@ -1271,7 +1243,7 @@ sub handle_scoped_unknown {
 }
 
 sub process_component_line {
-  my($self, $tag, $line, $fh, $flags,
+  my($self, $tag, $line, $flags,
      $grname, $current, $excarr, $comps, $count) = @_;
   my $status = 1;
   my $error;
@@ -1279,7 +1251,7 @@ sub process_component_line {
   my @values;
 
   ## If this returns true, then we've found an assignment
-  if ($self->parse_assignment($line, \@values, $fh)) {
+  if ($self->parse_assignment($line, \@values)) {
     $status = $self->parse_scoped_assignment($tag, @values, $flags);
     if (!$status) {
       $error = 'Unknown keyword: ' . $values[1];
@@ -1441,7 +1413,7 @@ sub parse_conditional {
     }
     elsif ($add) {
       ($status, $error) = $self->process_component_line(
-                                              $tag, $line, $fh, $flags,
+                                              $tag, $line, $flags,
                                               $grname, $current,
                                               $exclude, $comps, $count);
       last if (!$status);
@@ -1488,10 +1460,6 @@ sub parse_components {
     $$names{$name} = $comps;
   }
   $$comps{$current} = [] if (!defined $$comps{$current});
-
-  # preserve order
-  #tie %$names, "Tie::IxHash";
-  #tie %$comps, "Tie::IxHash";
 
   my $count = 0;
   while(<$fh>) {
@@ -1551,7 +1519,7 @@ sub parse_components {
       }
     }
     else {
-      ($status, $error) = $self->process_component_line($tag, $line, $fh, \%flags,
+      ($status, $error) = $self->process_component_line($tag, $line, \%flags,
                                                         \$grname, $current,
                                                         \@exclude, $comps,
                                                         \$count);
@@ -1876,7 +1844,7 @@ sub parse_define_custom {
     else {
       my @values;
       ## If this returns true, then we've found an assignment
-      if ($self->parse_assignment($line, \@values, $fh)) {
+      if ($self->parse_assignment($line, \@values)) {
         my($type, $name, $value) = @values;
         ## The 'automatic' keyword has always contained two distinct
         ## functions.  The first is to automatically add input files of
@@ -2241,7 +2209,6 @@ sub read_template_input {
 
 sub already_added {
   my($self, $array, $name) = @_;
-  my $case_tolerant = $self->case_insensitive();
 
   ## This method expects that the file name will be unix style
   $name =~ s/\\/\//g if ($self->{'convert_slashes'});
@@ -2250,16 +2217,8 @@ sub already_added {
   $name =~ s/^\.\///;
   my $dsname = "./$name";
 
-  ## Take into account file system case-insenitivity.
-  if ($case_tolerant) {
-    $name = lc($name);
-    $dsname = lc($dsname);
-  }
-
   foreach my $file (@$array) {
-    my $my_file = ($case_tolerant ? lc($file) : $file);
-
-    return 1 if ($my_file eq $name || $my_file eq $dsname);
+    return 1 if ($file eq $name || $file eq $dsname);
   }
 
   return 0;
@@ -2589,6 +2548,7 @@ sub add_generated_files {
 
   ## This method is called by list_default_generated.  It performs the
   ## actual file insertion and grouping.
+
   ## Get the generated filenames
   my @added;
   foreach my $file (keys %$arr) {
@@ -3337,8 +3297,6 @@ sub list_default_generated {
     if (defined $self->{$gentype}) {
       ## Build up the list of files
       my %arr;
-      #tie %arr, "Tie::IxHash"; # preserve insertion order.
-
       my $names = $self->{$gentype};
       my $group;
       foreach my $name (keys %$names) {
@@ -5018,6 +4976,7 @@ sub write_project {
         if (!$status) {
           return $status, $error;
         }
+
         ## We don't need to pass a file name here.  write_output_file()
         ## will determine the file name for itself.
         ($status, $error) = $self->write_output_file($webapp);
@@ -5052,22 +5011,7 @@ sub get_project_info {
 
 
 sub get_lib_locations {
-  if ($_[0]->{'pid'} eq 'child') {
-    my $lib_locs;
-    for my $k (sort { substr($a, 0 , index ($a, '|')) <=>
-                        substr ($b, 0, index ($b, '|')) } keys %{$_[0]->{'lib_locations'}}) {
-
-      # if we are a worker, we need to strip leading 'number|'
-      my $x = $_[0]->{'lib_locations'}->{$k};
-      $x =~ s/\d+\|//;
-
-      $lib_locs->{substr ($k, index ($k, '|') + 1)} = $x;
-    }
-    return $lib_locs
-  }
-  else {
-    return $_[0]->{'lib_locations'};
-  }
+  return $_[0]->{'lib_locations'};
 }
 
 

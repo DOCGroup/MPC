@@ -4,7 +4,6 @@ package WinProjectBase;
 # Description   : A Windows base module for Project Creators
 # Author        : Chad Elliott
 # Create Date   : 1/4/2005
-# $Id$
 # ************************************************************
 
 # ************************************************************

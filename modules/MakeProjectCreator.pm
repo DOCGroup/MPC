@@ -4,7 +4,6 @@ package MakeProjectCreator;
 # Description   : A Generic Make Project Creator
 # Author        : Chad Elliott
 # Create Date   : 2/18/2003
-# $Id$
 # ************************************************************
 
 # ************************************************************
