@@ -133,8 +133,10 @@ STATICFLAGS   =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
 <%endif%>
 EXPORTFLAGS   = <%if(exename)%><%if(need_staticflags)%>$(STATICFLAGS)<%endif%><%else%><%if(dll_ext && sharedname)%>$(DYNAMICFLAGS)<%else%>$(STATICFLAGS)<%endif%><%endif%>
 <%endif%>
-<%if(gnumake && exename && libpaths && need_staticflags)%>
-DEPLIBS       = $(foreach lib,<%foreach(libs)%> <%libname_prefix%><%lib%><%endfor%> <%lit_libs%>, $(foreach libpath,<%foreach(libpaths)%><%if(targetoutdir)%> <%libpath%>/<%targetoutdir%><%endif%> <%libpath%><%endfor%>, $(wildcard $(libpath)/lib$(lib).a)))
+<%if(gnumake && libpaths)%>
+<%if(exename || sharedname)%>
+DEPLIBS       = $(foreach lib,<%foreach(libs)%> <%libname_prefix%><%lib%>$(LIBSUFFIX)<%endfor%> <%lit_libs%>, $(foreach libpath,<%foreach(libpaths)%><%if(targetoutdir)%> <%libpath%>/<%targetoutdir%><%endif%> <%libpath%><%endfor%>, $(wildcard $(libpath)/lib$(lib)<%lib_ext(".a")%>)))
+<%endif%>
 <%endif%>
 <%if(multiple(configurations) || multiple(platforms))%>
 endif
@@ -171,7 +173,7 @@ specialscript:
 
 <%endif%>
 <%endif%>
-$(BIN):<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelinktargetobj)%> <%targetoutdir%><%obj_dir%><%prelinktargetobj%><%else%><%if(prelinktarget)%> <%prelinktarget%><%endif%><%endif%> $(OBJS)<%if(gnumake && exename && libpaths && need_staticflags)%> $(DEPLIBS)<%endif%>
+$(BIN):<%if(tempinc)%> $(TEMPINCDIR)<%endif%><%if(prelinktargetobj)%> <%targetoutdir%><%obj_dir%><%prelinktargetobj%><%else%><%if(prelinktarget)%> <%prelinktarget%><%endif%><%endif%> $(OBJS)<%if(gnumake && libpaths)%> $(DEPLIBS)<%endif%>
 	@$(TESTDIRSTART) "$(BTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(BTARGETDIR)"
 <%if(prelink)%>
 	<%eval(prelink)%>
@@ -190,7 +192,7 @@ $(SHLIB):
 	cd $(SHTARGETDIR) && ln -s $(SHLIB_BASE).<%version%> $(SHLIB_BASE)
 
 <%endif%>
-$(SHLIB)<%if(version && versupport)%>.<%version%><%endif%>: <%if(tempinc)%>$(TEMPINCDIR) <%endif%>$(OBJS)
+$(SHLIB)<%if(version && versupport)%>.<%version%><%endif%>: <%if(tempinc)%>$(TEMPINCDIR) <%endif%>$(OBJS)<%if(gnumake && libpaths)%> $(DEPLIBS)<%endif%>
 	@$(TESTDIRSTART) "$(SHTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(SHTARGETDIR)"
 <%if(prelink)%>
 	<%eval(prelink)%>
@@ -345,7 +347,7 @@ __prebuild__:
 
 <%endif%>
 <%if(postbuild)%>
-__postbuild__:
+__postbuild__:<%if(exename)%> $(BIN)<%endif%><%if(dll_ext && sharedname)%><%if(version && versupport)%> $(SHLIB).<%version%><%endif%> $(SHLIB)<%endif%><%if(staticname)%> $(LIB)<%endif%>
 	@<%eval(postbuild)%>
 
 <%endif%>
@@ -366,7 +368,7 @@ depend:
 
 <%if(forlast)%>
 <%if(supports_include)%>
-include $(DEPENDENCIES)
+<%if(gnumake)%>-<%endif%>include $(DEPENDENCIES)
 <%else%>
 # DO NOT DELETE THIS LINE
 <%endif%>
