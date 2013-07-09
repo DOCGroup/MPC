@@ -1,3 +1,28 @@
+Tue Jul  9 15:06:50 UTC 2013  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/make.mpd:
+
+          If object files are moved to a different directory (by using
+          targetoutdir or obj_dir), apply the transdir function so that
+          source files in relative directories still result in object
+          files within the custom object directory.  obj_dir or targetoutdir
+          may contain variable replacement expressions (starting with $) and
+          these are preserved in the .depend files as well.
+
+        * modules/Depgen/MakeObjectGenerator.pm:
+
+          Make depgen aware of the different rules for -type make obj dirs.
+
+        * modules/TemplateParser.pm:
+
+          Provide a way to escape the variable replacement expressions in
+          makefiles with a general "subst" function (implemented as Perl s///g).
+
+        * modules/DirectoryManager.pm:
+
+          In translate_directory(), fixed a bug in the regex for changing
+          repeated occurrences of .. to dotdot.
+
 Wed Jun 26 16:14:28 UTC 2013  Phil Mesnier  <mesnier_p@ociweb.com>
 
         * modules/Version.pm:

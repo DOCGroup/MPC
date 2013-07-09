@@ -74,6 +74,7 @@ my %keywords = ('if'              => 0,
                 'starts_with'     => $get_type|$doif_type|$get_combined_type,
                 'ends_with'       => $get_type|$doif_type|$get_combined_type,
                 'contains'        => $get_type|$doif_type|$get_combined_type,
+                'subst'           => $get_type|$doif_type|$get_combined_type,
                 'remove_from'     => $get_type|$perform_type|$doif_type|$perform_no_eval_type|$get_combined_type,
                 'compares'        => $get_type|$doif_type|$get_combined_type,
                 'vars_equal'      => $get_type|$perform_type,
@@ -936,6 +937,33 @@ sub doif_contains {
 sub handle_contains {
   my($self, $str) = @_;
   $self->generic_handle('doif_contains', $str);
+}
+
+
+sub get_subst {
+  my($self, $str) = @_;
+  return $self->doif_subst([$str]);
+}
+
+
+sub doif_subst {
+  my($self, $val) = @_;
+
+  if (defined $val) {
+    my($name, $pattern, $replacement) = $self->split_parameters("@$val");
+    if (defined $name && defined $pattern && defined $replacement) {
+      my $result = $self->get_value_with_default($name);
+      $result =~ s/$pattern/$replacement/g;
+      return $result;
+    }
+  }
+  return undef;
+}
+
+
+sub handle_subst {
+  my($self, $str) = @_;
+  $self->generic_handle('doif_subst', $str);
 }
 
 
