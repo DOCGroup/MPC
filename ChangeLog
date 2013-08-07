@@ -1,3 +1,9 @@
+Wed Aug  7 07:12:31 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+        * templates/bmakecommon.mpt:
+        * templates/wb30exe.mpt:
+
 Tue Jul  9 15:06:50 UTC 2013  Adam Mitz  <mitza@ociweb.com>
 
         * templates/make.mpd:
