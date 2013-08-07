@@ -8,7 +8,8 @@
 <%marker(top)%>
 <%foreach(configurations)%>
 !ifdef <%normalize(uc(configuration))%>
-OCFLAGS      = <%if(optimize)%>-O2<%else%><%if(debug_prj)%>-v -y -Od -vi- -k<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
+OCFLAGS32    = <%if(optimize)%>-O2<%else%><%if(debug_prj)%>-v -y -Od -vi- -k<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
+OCFLAGS64    = <%if(optimize)%>-O2<%else%><%if(debug_prj)%>-O3 <%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
 CFG_DIR      = <%intermediate_dir%>\\
 LIBMODIFIER  = <%if(use_lib_modifier)%><%lib_modifier%><%endif%>
 EXEMODIFIER  = <%if(use_exe_modifier)%><%lib_modifier%><%endif%>
@@ -50,27 +51,45 @@ CG_CFLAGS = -vG
 CG_LIB    = cg32.lib
 !endif
 
+<%if(build64bit)%>
+OBJ_EXT      = <%obj64_ext%>
+<%else%>
+OBJ_EXT      = <%obj32_ext%>
+<%endif%>
+
 <%if(use_vcl)%>
 STARTUP_LETTER = <%if(exename)%>w<%else%><%startup_letter%><%endif%>
 <%else%>
 VCL_CFLAGS     = -D_NO_VCL
 STARTUP_LETTER = <%startup_letter%>
 <%endif%>
-STARTUP_OBJ    = c0$(STARTUP_LETTER)32$(UC_MAIN)$(OBJ_EXT)
+<%if(build64bit)%>
+STARTUP_BITS   = 64
+<%else%>
+STARTUP_BITS   = 32
+<%endif%>
+STARTUP_OBJ    = c0$(STARTUP_LETTER)$(STARTUP_BITS)$(UC_MAIN)$(OBJ_EXT)
 
-OBJ_EXT      = <%obj_ext%>
 DLL_EXT      = <%dll_ext%>
-LIB_EXT      = <%lib_ext%>
+<%if(build64bit)%>
+LIB_EXT      = <%lib64_ext%>
+<%else%>
+LIB_EXT      = <%lib32_ext%>
+<%endif%>
 EXE_EXT      = <%exe_ext%>
-CC           = <%cc%>
-RC           = <%rc%>
-LINK         = <%link%>
+CC32         = <%cc32%>
+RC32         = <%rc32%>
+LINK32       = <%link32%>
+CC64         = <%cc64%>
+RC64         = <%rc64%>
+LINK64       = <%link64%>
 TLIB         = <%tlib%>
 THREADFLAGS  = <%thflags%>
 DLLFLAGS     = <%dllflags%>
 LIBFLAGS     = <%libflags%>
 EXEFLAGS     = <%exeflags%>
-WARNFLAGS    = <%warnflags%>
+WARNFLAGS32  = <%warnflags32%>
+WARNFLAGS64  = <%warnflags64%>
 CCFLAGS      = <%ccflags%><%if(type_is_binary)%> <%binary_compile_flags("-tWR -tWD")%><%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
 
 INTERMEDIATE = $(CFG_DIR)$(UNICODE_DIR)<%noextension(project_name)%>
@@ -97,6 +116,11 @@ OBJFILES = \
 <%if(libpaths)%>
 
 LFLAGS   = \
+<%if(build64bit)%>
+           -L"$(BDS)\lib\win64\release" -L"$(BDS)\lib\win64\debug" \
+<%else%>
+           -L"$(BDS)\lib\win32\release" -L"$(BDS)\lib\win32\debug" \
+<%endif%>
 <%if(linkflags)%>
         <%linkflags%> \
 <%endif%>
@@ -124,7 +148,12 @@ LIBFILES = \
 <%foreach(reverse(pure_libs))%>
            <%pure_lib%> \
 <%endfor%>
-           $(CG_LIB) <%common_libs%>
+<%if(build64bit)%>
+           <%common_libs%> <%common64_libs%>
+<%else%>
+           $(CG_LIB) <%common_libs%> <%common32_libs%>
+<%endif%>
+
 <%if(resource_files)%>
 
 !ifndef STATIC_CFG
@@ -158,9 +187,15 @@ CFLAGS = \
 <%foreach(cflags)%>
          <%cflag%> \
 <%endfor%>
-<%foreach(common_flags)%>
-         <%common_flag%> \
+<%if(build64bit)%>
+<%foreach(common64_flags)%>
+         <%common64_flag%> \
 <%endfor%>
+<%else%>
+<%foreach(common32_flags)%>
+         <%common32_flag%> \
+<%endfor%>
+<%endif%>
 <%foreach(macros common_defines)%>
          -D<%macro%> \
 <%endfor%>
@@ -176,12 +211,16 @@ OUTPUTDIR = $(EXEOUTPUTDIR)
 all:<%if(prebuild)%> __prebuild__<%endif%> $(OUTPUTDIR)$(NAME)$(EXE_EXT)<%if(postbuild)%> __postbuild__<%endif%>
 
 $(OUTPUTDIR)$(NAME)$(EXE_EXT): $(OBJFILES) $(RESOURCE)
-	@if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
+  @if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
 <%if(prelink)%>
-	<%eval(prelink)%>
+  <%eval(prelink)%>
 <%endif%>
-	$(LINK) @&&!
-	$(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
+<%if(build64bit)%>
+  $(LINK64) @&&!
+<%else%>
+  $(LINK32) @&&!
+<%endif%>
+  $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
 !
 
 <%endif%>
@@ -191,12 +230,16 @@ OUTPUTDIR = <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\\
 all:<%if(prebuild)%> __prebuild__<%endif%> $(OUTPUTDIR)$(NAME)$(DLL_EXT)<%if(postbuild)%> __postbuild__<%endif%>
 
 $(OUTPUTDIR)$(NAME)$(DLL_EXT): $(OBJFILES) $(RESOURCE)
-	@if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
+  @if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
 <%if(prelink)%>
-	<%eval(prelink)%>
+  <%eval(prelink)%>
 <%endif%>
-	$(LINK) @&&!
-	$(DLLFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
+<%if(build64bit)%>
+  $(LINK64) @&&!
+<%else%>
+  $(LINK32) @&&!
+<%endif%>
+  $(DLLFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
 !
 !endif
 
@@ -207,8 +250,8 @@ OUTPUTDIR = <%libout%>\\
 all:<%if(prebuild)%> __prebuild__<%endif%> $(OUTPUTDIR)$(NAME)$(LIB_EXT)<%if(postbuild)%> __postbuild__<%endif%>
 
 $(OUTPUTDIR)$(NAME)$(LIB_EXT): $(OBJFILES)
-	@if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
-	$(TLIB) $(LIBFLAGS) $(OUTPUTDIR)$(NAME)$(LIB_EXT) @&&!
+  @if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
+  $(TLIB) $(LIBFLAGS) $(OUTPUTDIR)$(NAME)$(LIB_EXT) @&&!
 + $(**: = &^
 + )
 !
@@ -217,7 +260,7 @@ $(OUTPUTDIR)$(NAME)$(LIB_EXT): $(OBJFILES)
 <%endif%>
 <%if(!exename && !sharedname && !staticname)%>
 all:<%if(prebuild)%> __prebuild__<%endif%><%if(postbuild)%> __postbuild__<%endif%>
-	@-rem
+  @-rem
 
 <%endif%>
 <%if(custom_types)%>
@@ -232,24 +275,24 @@ PATH = $(PATH);<%custom_type->libpath%>
 <%if(flag_overrides(custom_type->input_file, gendir))%>
         @if not exist "<%flag_overrides(custom_type->input_file, gendir)%>" mkdir "<%flag_overrides(custom_type->input_file, gendir)%>"
 <%endif%>
-	<%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%if(custom_type->output_option)%><%custom_type->input_file%> <%custom_type->output_option%> $@<%else%><%custom_type->input_file%><%endif%>
+  <%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%if(custom_type->output_option)%><%custom_type->input_file%> <%custom_type->output_option%> $@<%else%><%custom_type->input_file%><%endif%>
 <%if(flag_overrides(custom_type->input_file, postcommand))%>
 <%foreach(custom_type->input_file)%>
-	<%flag_overrides(custom_type->input_file, postcommand)%>
+  <%flag_overrides(custom_type->input_file, postcommand)%>
 <%endfor%>
 <%else%>
 <%if(custom_type->postcommand)%>
 <%foreach(custom_type->input_file)%>
-	<%custom_type->postcommand%>
+  <%custom_type->postcommand%>
 <%endfor%>
 <%endif%>
 <%endif%>
 <%if(pch_header)%>
 <%if(custom_type->pch_postrule)%>
 <%foreach(custom_type->input_file->source_output_files)%>
-	@echo \#include "<%pch_header%>" > temporary.src
-	@type <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temporary.src
-	@move /y temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
+  @echo \#include "<%pch_header%>" > temporary.src
+  @type <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%> >> temporary.src
+  @move /y temporary.src <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->source_output_file)%><%else%><%custom_type->input_file->source_output_file%><%endif%>
 <%endfor%>
 <%endif%>
 <%endif%>
@@ -269,40 +312,64 @@ all:<%if(prebuild)%> __prebuild__<%endif%> $(GENERATED_DIRTY)<%if(postbuild)%> _
 
 <%endif%>
 generated: $(GENERATED_DIRTY)
-	@-rem
+  @-rem
 
 .path$(OBJ_EXT) = $(INTERMEDIATE)
 
 .path.cpp = $(CPPDIR)
 .cpp$(OBJ_EXT):
-	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+<%if(build64bit)%>
+        $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
+<%else%>
+        $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+<%endif%>
 
 .path.cxx = $(CPPDIR)
 .cxx$(OBJ_EXT):
-	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+<%if(build64bit)%>
+        $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
+<%else%>
+        $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+<%endif%>
 
 .path.cc = $(CPPDIR)
 .cc$(OBJ_EXT):
-	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+<%if(build64bit)%>
+        $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
+<%else%>
+        $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+<%endif%>
 
 .path.C = $(CPPDIR)
 .C$(OBJ_EXT):
-	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+<%if(build64bit)%>
+        $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
+<%else%>
+        $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+<%endif%>
 
 .path.c = $(CPPDIR)
 .c$(OBJ_EXT):
-	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+<%if(build64bit)%>
+        $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
+<%else%>
+        $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+<%endif%>
 
 <%foreach(source_files)%>
 <%if(transdir(source_file) || flag_overrides(source_file, buildflags))%>
 "$(INTERMEDIATE)\<%transdir(source_file)%><%basenoextension(source_file)%>$(OBJ_EXT)":
-	@if not exist "$(INTERMEDIATE)\<%transdir(source_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(source_file)%>"
-	$(CC) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) <%source_file%>
+  @if not exist "$(INTERMEDIATE)\<%transdir(source_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(source_file)%>"
+<%if(build64bit)%>
+  $(CC64) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) <%source_file%>
+<%else%>
+  $(CC32) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) <%source_file%>
+<%endif%>
 
 <%endif%>
 <%endfor%>
@@ -312,14 +379,14 @@ generated: $(GENERATED_DIRTY)
 
 .path.rc = $(RESDIR)
 .rc.res:
-	@if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(RC) $(RC_FLAGS) -fo$@ $<
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+        $(RC32) $(RC_FLAGS) -fo$@ $<
 
 <%foreach(resource_files)%>
 <%if(transdir(resource_file))%>
 "$(INTERMEDIATE)\<%transdir(resource_file)%><%basenoextension(resource_file)%>.res":
-	@if not exist "$(INTERMEDIATE)\<%transdir(resource_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(resource_file)%>"
-	$(RC) -fo$@ <%resource_file%>
+  @if not exist "$(INTERMEDIATE)\<%transdir(resource_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(resource_file)%>"
+  $(RC32) -fo$@ <%resource_file%>
 
 <%endif%>
 <%endfor%>
@@ -357,17 +424,17 @@ realclean: clean
         @del "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" 2>NUL
 <%endif%>
 <%if(postclean)%>
-	-<%eval(postclean)%>
+  -<%eval(postclean)%>
 <%endif%>
 
 <%if(prebuild)%>
 __prebuild__:
-	@<%eval(prebuild)%>
+  @<%eval(prebuild)%>
 
 <%endif%>
 <%if(postbuild)%>
 __postbuild__:
-	@<%eval(postbuild)%>
+  @<%eval(postbuild)%>
 
 <%endif%>
 <%marker(local)%>
