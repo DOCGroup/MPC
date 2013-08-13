@@ -3,6 +3,148 @@ Wed Aug  7 07:12:31 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
         * templates/bmake.mpd:
         * templates/bmakecommon.mpt:
         * templates/wb30exe.mpt:
+          Optional support for Embarcadero C++ BuilderXE4 using bcc64
+
+          commit 868d7e4b98937d72b11704eb8ad176ba3a7a8f0c
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Wed Jun 26 13:23:05 2013 +0200
+
+                    Disable warning
+                  * templates/bmakecommon.mpt:
+
+          commit 343897776235c7eec82609fc2662699bc4e8b303
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Thu Jun 20 14:04:21 2013 +0200
+
+                    bcc32 attempt fix
+                  * templates/bmake.mpd:
+
+          commit 419e2b2b441ab8be42a1f07a4c657b1d56cfcfda
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 21:03:35 2013 +0200
+
+                    release fix
+                  * templates/bmake.mpd:
+
+          commit 17f31fbe7ace3f9f2eca7ccd97224b4fddab5d13
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 20:49:56 2013 +0200
+
+                    Switch 32/64
+                  * templates/bmake.mpd:
+
+          commit 9c6f7276d252354d59642acfefb29bdd32a73d64
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 20:39:50 2013 +0200
+
+                    Support for 32/64 common libs
+                  * templates/bmake.mpd:
+                  * templates/bmakecommon.mpt:
+
+          commit bf93fc1382d6a5dfc9b8be98b8a3c1e8fb1ca47a
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 20:32:35 2013 +0200
+
+                    Handle different libext
+                  * templates/bmake.mpd:
+                  * templates/bmakecommon.mpt:
+
+          commit 7d7352e64dd3e6054327df6cf904d66d878a8a14
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 20:25:46 2013 +0200
+
+                    Added path for startup obj
+                  * templates/bmake.mpd:
+
+          commit f258eaa34f75c4eeb01a6ab9dceb1cc0698cdf2f
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 19:23:33 2013 +0200
+
+                    Obj extension and startup object
+                  * templates/bmake.mpd:
+                  * templates/bmakecommon.mpt:
+
+          commit cf382b74a31665f253fe6d391e4265150cfa08e3
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 18:15:17 2013 +0200
+
+                    Use correct linker
+                  * templates/bmake.mpd:
+
+          commit 967f92ce04790a4eba1b416f9008c7f7c7feb69c
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 17:13:45 2013 +0200
+
+                    Use -o instead of -n with bcc64
+                  * templates/bmake.mpd:
+
+          commit 72498537d3fb82064f1865d9a95bcb4c59267a12
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 16:34:37 2013 +0200
+
+                    64bit needs space after -n
+                  * templates/bmake.mpd:
+
+          commit 347735af4a8c8be4e79dc21dbdeea05949a6778f
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 16:30:24 2013 +0200
+
+                    Zap a few options that clang64 doesn't support
+                  * templates/bmake.mpd:
+
+          commit 21237991013bbeb96cf050bc2b85299064a29749
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 16:26:54 2013 +0200
+
+                    Common_flags
+                  * templates/bmake.mpd:
+                  * templates/bmakecommon.mpt:
+
+          commit 06a0fb4d793fb13c2288d324c4e67b20304a90cb
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 16:21:16 2013 +0200
+
+                    32/64 warnflagsd
+                  * templates/bmake.mpd:
+                  * templates/bmakecommon.mpt:
+
+          commit 4db86c833e0edf2dce6d372376d1505ebf353a81
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 16:19:08 2013 +0200
+
+                    Tweak 32/64 OCFLAGS
+                  * templates/bmake.mpd:
+
+          commit 42d96e494a7365c2cb9dff94cacba271baabf9c4
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 16:08:23 2013 +0200
+
+                    Work in progress for bcc64
+                  * templates/bmake.mpd:
+                  * templates/bmakecommon.mpt:
+                  * templates/wb30exe.mpt:
+
+          commit 2ce83e3fc41d95463b9234ec0acb02a66bdcfbd6
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 15:44:26 2013 +0200
+
+                    Started with 64bit
+                  * templates/bmakecommon.mpt:
+
+          commit b68f3f361fed4325680f90719b4416f5948daec5
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Fri Aug 17 20:42:42 2012 +0200
+
+                  * templates/bmakecommon.mpt:
+                    Revert
+
+          commit 04c3e35b9cbfd8b2e06d659121ed68e59d5ed0e1
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Fri Aug 17 20:39:53 2012 +0200
+
+                  * templates/bmakecommon.mpt:
+                    Added support for BUILDBITS64
+
 
 Tue Jul  9 15:06:50 UTC 2013  Adam Mitz  <mitza@ociweb.com>
 
