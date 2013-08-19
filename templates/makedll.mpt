@@ -372,6 +372,7 @@ mingw_msys {
   rc           = rc
   pic          =
   depgen_flags = -t make
+  gnumake = 1
 }
 
 // MinGW compiler with the built-in Windows shell and native make
@@ -398,6 +399,7 @@ mingw {
   depgen_flags = -t make
   echo_outer_quote =
   expanded_variable_assignment = 1
+  gnumake = 1
 }
 
 dmc_win {

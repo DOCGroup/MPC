@@ -356,8 +356,10 @@ __postbuild__:<%if(exename)%> $(BIN)<%endif%><%if(dll_ext && sharedname)%><%if(v
 #       Dependencies
 #----------------------------------------------------------------------------
 
+<%if(!gnumake)%>
 $(DEPENDENCIES):
 	@$(TOUCH) $(DEPENDENCIES)
+<%endif%>
 
 depend:
 <%if(source_files || pch_source)%>
