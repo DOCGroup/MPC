@@ -1,3 +1,8 @@
+Mon Aug 19 07:22:20 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+          bcc64 has no support for pch
+
 Wed Aug  7 07:12:31 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmake.mpd:
