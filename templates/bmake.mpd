@@ -170,6 +170,7 @@ RC_FLAGS = \
 <%endif%>
 !endif
 <%endif%>
+<%if(!build64bit)%>
 <%if(pch_header)%>
 
 # Borland precompiled headers can choke on some header files.
@@ -181,6 +182,7 @@ PCH_CFLAGS = \
 <%endfor%>
              -H=$(INTERMEDIATE)\<%noextension(project_name)%>.csm -Hh=<%pch_header%>
 !endif
+<%endif%>
 <%endif%>
 
 CFLAGS = \
