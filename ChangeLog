@@ -1,3 +1,10 @@
+Mon Aug 19 09:52:47 CDT 2013  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          If we have GNU Make, no need for a rule to touch the .depend file.
+
 Mon Aug 19 07:22:20 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmake.mpd:
