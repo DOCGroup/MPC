@@ -1,3 +1,13 @@
+Sat Aug 24 18:36:37 UTC 2013  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/pintool.mpb:
+
+          Renamed base project, and improved support for intel64 and ia32.
+
+        * config/pintools_32bit.mpb:
+
+          Removed this file.
+
 Mon Aug 19 09:52:47 CDT 2013  Adam Mitz  <mitza@ociweb.com>
 
         * templates/make.mpd:
