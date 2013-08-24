@@ -5,10 +5,10 @@ project : xerces {
   includes += . \
               $(GME_ROOT)/SDK/BON/Common \
               $(UDM_PATH)/include \
-              $(GME_ROOT)/SDK/BON
+              $(GME_ROOT)/SDK/BON \
+              $(GME_ROOT)/Interfaces
 
-  libpaths += $(UDM_PATH)/lib \
-              $(UDM_3RDPARTY_PATH)/zlib
+  libpaths += $(UDM_PATH)/lib
 
   specific {
     midl_flags += /server none /client none
@@ -32,4 +32,8 @@ project : xerces {
 
     keyword udmflags  = commandflags
   }
+}
+
+feature (zlib) {
+  libpaths += $(UDM_3RDPARTY_PATH)/zlib
 }
