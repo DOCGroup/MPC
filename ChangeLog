@@ -1,3 +1,13 @@
+Sat Aug 24 18:40:18 UTC 2013  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/udm.mpb:
+
+          Update to latest version of UDM.
+
+        * config/pintools_32bit.mpb:
+
+          Removed this file.
+
 Sat Aug 24 18:36:37 UTC 2013  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/pintool.mpb:
