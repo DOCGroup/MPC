@@ -1,3 +1,11 @@
+Fri Sep  6 20:51:59 UTC 2013  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/pin.mpb:
+        * config/pintool.mpb:
+
+          Separated the definitions for linking against Pin without creating
+          a Pintool, and for creating a Pintool.
+
 Sat Aug 24 18:40:18 UTC 2013  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/udm.mpb:

@@ -1,72 +1,7 @@
 // $Id$
 
-project {
-  includes += $(PIN_ROOT)/source/include \
-              $(PIN_ROOT)/source/include/pin \
-              $(PIN_ROOT)/source/include/pin/gen \
-              $(PIN_ROOT)/extras/components/include
-
+project : pin {
   specific (prop:windows) {
-    macros += TARGET_WINDOWS BIGARRAY_MULTIPLIER=1 USING_XED _SECURE_SCL=0
-
-    compile_flags += /Oy
-
-    linkflags += -Wl,--hash-style=sysv -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pintool.ver
-
-    runtime_library = 0
-    DisableSpecificWarning += 4530
-    IgnoreAllDefaultLibraries = true
     link_options += /EXPORT:main /ENTRY:Ptrace_DllMainCRTStartup@12
-  } else {
-    macros += TARGET_LINUX
-
-    compile_flags += -fomit-frame-pointer -fno-strict-aliasing
-  }
-
-  verbatim (gnuace, top) {
-    // We have to disable hidden symbols since we are
-    // not manually exporting the main() function.
-    no_hidden_visibility = 1
-  }
-
-  verbatim (make, top) {
-    // We have to disable hidden symbols since we are
-    // not manually exporting the main() function.
-    no_hidden_visibility = 1
-  }
-}
-
-feature(ia32) {
-  includes += $(PIN_ROOT)/extras/xed2-ia32/include
-
-  libpaths += $(PIN_ROOT)/ia32/lib \
-              $(PIN_ROOT)/ia32/lib-ext \
-              $(PIN_ROOT)/extras/xed2-ia32/lib
-
-  specific (prop:windows) {
-    macros += TARGET_IA32 HOST_IA32
-
-    // DO NOT CHANGE ORDER
-    pure_libs += "ntdll-32.lib libxed.lib pin.lib pinvm.lib libcmt.lib libcpmt.lib"
-
-    //libs += pin xed dwarf elf
-
-    libpaths += $(PIN_ROOT)/ia32/lib \
-                $(PIN_ROOT)/ia32/lib-ext
-  }
-}
-
-feature(intel64) {
-  includes += $(PIN_ROOT)/extras/xed2-intel64/include
-
-  libpaths += $(PIN_ROOT)/intel64/lib \
-              $(PIN_ROOT)/intel64/lib-ext \
-              $(PIN_ROOT)/extras/xed2-intel64/lib
-
-  specific (prop:windows) {
-    macros += TARGET_IA32E HOST_IA32E
-
-    // DO NOT CHANGE ORDER
-    pure_libs += "ntdll-64.lib libxed.lib pin.lib pinvm.lib libcmt.lib libcpmt.lib"
   }
 }
