@@ -1257,14 +1257,22 @@ sub write_workspace {
           my @list = $self->number_target_deps($self->{'projects'},
                                                $self->{'project_info'},
                                                \%targnum, 0);
+          ## If the workspace name contains a dot, we will replace it
+          ## with two underscores.  Graphviz does not accept names with
+          ## dots.
+          $wsname =~ s/\./__/g;
           print $dh "digraph $wsname {\n";
           foreach my $project (@{$self->{'projects'}}) {
             if (defined $targnum{$project}) {
+              ## If the project name contains a dot, we will replace it
+              ## with two underscores.  Graphviz does not accept names
+              ## with dots.
               my $pname = $self->{'project_info'}->{$project}->[ProjectCreator::PROJECT_NAME];
+              $pname =~ s/\./__/g;
               foreach my $number (@{$targnum{$project}}) {
-                print $dh "  $pname -> ",
-                  $self->{'project_info'}->{$list[$number]}->[ProjectCreator::PROJECT_NAME],
-                    ";\n";
+                my $depr = $self->{'project_info'}->{$list[$number]}->[ProjectCreator::PROJECT_NAME];
+                $depr =~ s/\./__/g;
+                print $dh "  $pname -> ", $depr, ";\n";
               }
             }
           }

@@ -217,7 +217,15 @@
     <Content Include="<%ico_file%>" />
 <%endfor%>
 <%foreach(config_files)%>
+<%if(flag_overrides(config_file, generates_source))%>
+    <Compile Include="<%noextension(config_file)%>.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon><%basename(config_file)%></DependentUpon>
+    </Compile>
+<%else%>
     <None Include="<%config_file%>" />
+<%endif%>
 <%endfor%>
 <%foreach(documentation_files)%>
     <None Include="<%documentation_file%>" />
