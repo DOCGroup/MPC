@@ -47,7 +47,6 @@ sub parse_line {
     ## too.
     my $name  = $1;
     my $clean = $2;
-    $name =~ s/\s+$//;
 
     ## Pre-process the name and value
     my $value = $self->preprocess($clean);
@@ -129,6 +128,11 @@ sub preprocess {
     ## Do the replacement
     $str =~ s/\$\??([\(\w\)]+)/$val/;
   }
+
+  ## Remove leading and trailing spaces
+  $str =~ s/^\s+//;
+  $str =~ s/\s+$//;
+
   return $str;
 }
 
