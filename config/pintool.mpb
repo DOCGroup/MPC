@@ -3,5 +3,7 @@
 project : pin {
   specific (prop:windows) {
     link_options += /EXPORT:main /ENTRY:Ptrace_DllMainCRTStartup@12
+  } else {
+    linkflags += -Wl,-exported_symbols_list -Wl,$(PIN_ROOT)/source/include/pin/pintool.exp
   }
 }
