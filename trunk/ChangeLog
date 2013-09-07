@@ -1,3 +1,25 @@
+Sat Sep  7 15:15:55 UTC 2013  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ConfigParser.pm:
+
+          Remove leading and trailing spaces from lines read from a file to
+          avoid adding them to paths and other values.
+
+        * modules/WorkspaceCreator.pm:
+
+          Replace '.' with '__' in project names used within Graphviz files.
+          Names with periods in them are not accepted.
+
+        * templates/make.net.mpd:
+
+          Use libs, lit_libs, and pure_libs as is done within the vc8 C#
+          template.
+
+        * templates/vc8csharp.mpd:
+
+          If a config file group has the 'generates_source' setting, we will
+          add a .Designer.cs file to the compile list.
+
 Sat Sep  7 03:49:06 UTC 2013  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/pin.mpb:
