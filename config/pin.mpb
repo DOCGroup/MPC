@@ -6,8 +6,10 @@ project {
               $(PIN_ROOT)/source/include/pin/gen \
               $(PIN_ROOT)/extras/components/include
 
+  macros += BIGARRAY_MULTIPLIER=1 USING_XED
+
   specific (prop:windows) {
-    macros += TARGET_WINDOWS BIGARRAY_MULTIPLIER=1 USING_XED _SECURE_SCL=0
+    macros += TARGET_WINDOWS _SECURE_SCL=0
 
     compile_flags += /Oy
 
@@ -17,18 +19,32 @@ project {
     DisableSpecificWarning += 4530
     IgnoreAllDefaultLibraries = true
   } else {
-    macros += TARGET_LINUX
+    compile_flags += -O3 -fomit-frame-pointer -fno-strict-aliasing -Wunused-parameter -Wno-unknown-pragmas -fno-stack-protector -fPIC
 
-    compile_flags += -fomit-frame-pointer -fno-strict-aliasing
+    libs += pin xed
   }
 
   verbatim (gnuace, top) {
+    // Check for MacOS X vs. Linux
+    ifeq ($(shell uname -s), Darwin)
+      CPPFLAGS += -DTARGET_MAC
+    else
+      CPPFLAGS += -DTARGET_LINUX
+    endif
+
     // We have to disable hidden symbols since we are
     // not manually exporting the main() function.
     no_hidden_visibility = 1
   }
 
   verbatim (make, top) {
+    // Check for MacOS X vs. Linux
+    ifeq ($(shell uname -s), Darwin)
+      CPPFLAGS += -DTARGET_MAC
+    else
+      CPPFLAGS += -DTARGET_LINUX
+    endif
+
     // We have to disable hidden symbols since we are
     // not manually exporting the main() function.
     no_hidden_visibility = 1
@@ -42,13 +58,11 @@ feature(ia32) {
               $(PIN_ROOT)/ia32/lib-ext \
               $(PIN_ROOT)/extras/xed2-ia32/lib
 
-  specific (prop:windows) {
-    macros += TARGET_IA32 HOST_IA32
+  macros += TARGET_IA32 HOST_IA32
 
+  specific (prop:windows) {
     // DO NOT CHANGE ORDER
     pure_libs += "ntdll-32.lib libxed.lib pin.lib pinvm.lib libcmt.lib libcpmt.lib"
-
-    //libs += pin xed dwarf elf
 
     libpaths += $(PIN_ROOT)/ia32/lib \
                 $(PIN_ROOT)/ia32/lib-ext
@@ -62,9 +76,9 @@ feature(intel64) {
               $(PIN_ROOT)/intel64/lib-ext \
               $(PIN_ROOT)/extras/xed2-intel64/lib
 
-  specific (prop:windows) {
-    macros += TARGET_IA32E HOST_IA32E
+  macros += TARGET_IA32E HOST_IA32E
 
+  specific (prop:windows) {
     // DO NOT CHANGE ORDER
     pure_libs += "ntdll-64.lib libxed.lib pin.lib pinvm.lib libcmt.lib libcpmt.lib"
   }
