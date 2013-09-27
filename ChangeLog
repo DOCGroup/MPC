@@ -1,3 +1,9 @@
+Fri Sep 27 20:48:52 UTC 2013  Adam Mitz  <mitza@ociweb.com>
+
+        * config/boost_chrono.mpb:
+
+          Adding a new mpb for a new Boost library.
+
 Sat Sep  7 15:15:55 UTC 2013  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ConfigParser.pm:
