@@ -1,3 +1,9 @@
+Thu Oct  3 13:13:33 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_ts_defaults.mpb:
+          Don't use quote for dependent, causes Visual Studio not
+          be able to compile files with rtiddsgen
+
 Fri Sep 27 20:48:52 UTC 2013  Adam Mitz  <mitza@ociweb.com>
 
         * config/boost_chrono.mpb:
