@@ -24,7 +24,7 @@ project {
     libs += pin xed
   }
 
-  verbatim (gnuace, top) {
+  verbatim (gnuace, macros) {
     // Check for MacOS X vs. Linux
     ifeq ($(shell uname -s), Darwin)
       CPPFLAGS += -DTARGET_MAC
@@ -37,7 +37,7 @@ project {
     no_hidden_visibility = 1
   }
 
-  verbatim (make, top) {
+  verbatim (make, macros) {
     // Check for MacOS X vs. Linux
     ifeq ($(shell uname -s), Darwin)
       CPPFLAGS += -DTARGET_MAC
