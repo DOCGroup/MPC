@@ -25,7 +25,8 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-language <cplusplus | csharp | java | vb>]
               [-type <automake | bcb2007 | bcb2009 | bds4 | bmake | cc | cdt6 |
                       cdt7 | em3 | ghs | html | make | nmake | rpmspec | sle |
-                      vc6 | vc7 | vc71 | vc8 | vc9 | vc10 | wb26 | wb30 | wix>]
+                      vc6 | vc7 | vc71 | vc8 | vc9 | vc10 | vc11 | vc12 | wb26 |
+                      wb30 | wix>]
               [files]
 
        -base           Add <project> as a base project to each generated
