@@ -1,3 +1,15 @@
+Tue Oct 29 12:30:07 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/VC12ProjectCreator.pm:
+        * modules/VC12WorkspaceCreator.pm:
+        * templates/vc12dll.mpt:
+        * templates/vc12exe.mpt:
+        * templates/vc12lib.mpt:
+        * templates/vc12libexe.mpt:
+        * templates/vc12platforms.mpt:
+          Starter templates for vc12, needs some more work later, just
+          now seperate templates and creators
+
 Tue Oct 29 10:41:11 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * docs/README:
