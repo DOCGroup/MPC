@@ -28,6 +28,8 @@ project {
     // Check for MacOS X vs. Linux
     ifeq ($(shell uname -s), Darwin)
       CPPFLAGS += -DTARGET_MAC
+      LDFLAGS  += -lpindwarf -lpinpthread
+      LDFLAGS  -= -lpthread
     else
       CPPFLAGS += -DTARGET_LINUX
     endif
@@ -41,6 +43,8 @@ project {
     // Check for MacOS X vs. Linux
     ifeq ($(shell uname -s), Darwin)
       CPPFLAGS += -DTARGET_MAC
+      LDFLAGS  += -lpindwarf -lpinpthread
+      LDFLAGS  -= -lpthread
     else
       CPPFLAGS += -DTARGET_LINUX
     endif
