@@ -472,6 +472,30 @@
                 <tr>
                   <td rowspan="1" colspan="1">
                     <p class="TblCode">
+                      <em class="TableCode">vc11</em>
+                    </p>
+                  </td>
+
+                  <td rowspan="1" colspan="1">
+                    <p class="Tbl-Body">Visual Studio 2012.</p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <p class="TblCode">
+                      <em class="TableCode">vc12</em>
+                    </p>
+                  </td>
+
+                  <td rowspan="1" colspan="1">
+                    <p class="Tbl-Body">Visual Studio 2013.</p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <p class="TblCode">
                       <em class="TableCode">
                         <a href="WB26.html">
                           wb26
@@ -1459,7 +1483,7 @@
 class="XRef">the -workers_dir option</a>,
                   forks a new child for each project and ensures there are
                   never more children running than requested. The socket
-                  listener implementation, <a href= 
+                  listener implementation, <a href=
 "MakeProjectCreator.html#Additional-workers_port_information"
 class="XRef">the -workers_port option</a>,
                   pre-forks N children and distributes jobs to them.
@@ -1777,8 +1801,9 @@ class="XRef">the -workers_port option</a>,
               variable only affects the way workspace dependencies are created
               for <em class="Emphasis">static</em> projects with the <em class=
           "Code">em3</em>, <em class="Code">vc6</em>, <em class=
-          "Code">vc7</em>, <em class="Code">vc71</em>, vc8, vc9 and
-              <em class="Code">vc10</em> project types. If this environment
+          "Code">vc7</em>, <em class="Code">vc71</em>, <em class="Code">vc8</em>,
+          <em class="Code">vc9</em>, <em class="Code">vc10</em>, <em class="Code">vc11</em>, and
+              <em class="Code">vc12</em> project types. If this environment
               variable is set, MPC will generate inter-project dependencies for
               libraries within a single workspace. This is usually not desired
               since adding these dependencies in a static workspace has the side
@@ -1934,7 +1959,7 @@ class="XRef">the -workers_port option</a>,
 
                 <p class="Code">
                   &nbsp;&nbsp;exclude(vc6, vc7, vc71, vc8, vc9,
-                  vc10, nmake) {
+                  vc10, vc11, vc12, nmake) {
                 </p>
 
                 <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;this_directory</p>
@@ -2281,8 +2306,8 @@ class="Code">specific</em> clause.
                             </em><br>
                       These name-value pairs may be used in the creation
                       of the dependencies of the project.
-                          
-                        
+
+
                           </p>
                         </td>
                       </tr>
@@ -2540,7 +2565,8 @@ class="Code">specific</em> clause.
                             supported by the <em class="Code">nmake</em>,
                             <em class="Code">vc7</em>, <em class="Code">vc71</em>,
                             <em class="Code">vc8</em>, <em class="Code">vc9</em>,
-                            and <em class="Code">vc10</em> project types.
+                            <em class="Code">vc10</em>, <em class="Code">vc11</em>,
+                            and <em class="Code">vc12</em> project types.
                           </p>
                         </td>
                       </tr>
@@ -3184,8 +3210,9 @@ class="Code">specific</em> clause.
                   form has the effect of visually grouping files in the generated
                   project file for the <em class="Code">em3</em>, <em class=
               "Code">gnuace</em>, <em class="Code">vc6</em>, <em class=
-              "Code">vc7</em>, <em class="Code">vc71</em>, vc8, vc9 and
-                  <em class="Code">vc10</em> project types.
+              "Code">vc7</em>, <em class="Code">vc71</em>, <em class="Code">vc8</em>,
+              <em class="Code">vc9</em>, <em class="Code">vc10</em>, <em class="Code">vc11</em> and
+                  <em class="Code">vc12</em> project types.
                 </p>
 
                 <p class="Body">
@@ -3220,7 +3247,7 @@ class="Code">specific</em> clause.
 
                   <p class="Code">}</p>
 
-                  
+
                 </blockquote>
 
                 <p class="Body">
@@ -3243,7 +3270,7 @@ class="Code">specific</em> clause.
                 </p>
 
                 <blockquote>
-                  
+
                   <p class="Code">verbatim(gnuace, bottom) {</p>
 
                   <p class="Code">&nbsp;&nbsp;all: foo</p>
@@ -3275,7 +3302,7 @@ class="Code">specific</em> clause.
                 </p>
 
                 <blockquote>
- 
+
                   <p class="Code">expand(VAR_NAME) {</p>
 
                   <p class="Code">&nbsp;&nbsp;$ENV_VAR</p>
@@ -3747,6 +3774,54 @@ class="Code">specific</em> clause.
                           <td rowspan="1" colspan="1">
                             <p class="Tbl-Body">
                               <em class="TableCode">vc10</em>
+                            </p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">&nbsp;</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">&nbsp;</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">Yes</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">Yes</p>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">
+                              <em class="TableCode">vc11</em>
+                            </p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">&nbsp;</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">&nbsp;</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">Yes</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">Yes</p>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">
+                              <em class="TableCode">vc12</em>
                             </p>
                           </td>
 
@@ -7855,7 +7930,7 @@ class="Code">specific</em> clause.
                           This value is implemented by the VC7
                           and WIX project creator modules. It returns a <em class=
                     "Code">guid</em> value based on the project that is
-                          usable within VC7, VC71, VC8, VC9, VC10 and WIX project
+                          usable within VC7, VC71, VC8, VC9, VC10, VC11, VC12, and WIX project
                           files.
                         </p>
                       </td>
@@ -7995,7 +8070,8 @@ class="Code">specific</em> clause.
                           VC7ProjectCreator. It returns the version number of the
                           type of project being generated. 7.00 is return for vc7,
                           7.10 is return for vc71 and 8.00 is returned for vc8,
-                          9.00 is returned for vc9, 10.00 is returned for vc10.
+                          9.00 is returned for vc9, 10.00 is returned for vc10,
+                          11.00 is returned for vc11, 12.0 is returned for vc12.
                         </p>
                       </td>
                     </tr>
@@ -8313,7 +8389,7 @@ class="Code">specific</em> clause.
                     <p class="Body">
                       Certain project types don't support the same
                       input file used by multiple custom types (current examples of
-                      this are vc10, cdt6, and cdt7). To accomodate these types, MPC
+                      this are vc10, vc11, vc12, cdt6, and cdt7). To accomodate these types, MPC
                       has a capability called "combined custom".  With this capability
                       enabled in the specific ProjectCreator, MPC will "fold together"
                       the multiple custom steps so that the target tool (Visual Studio
