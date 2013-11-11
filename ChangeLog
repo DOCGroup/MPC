@@ -1,3 +1,9 @@
+Mon Nov 11 22:29:26 UTC 2013  James H. Hill  <hillj@cs.iupui.edu>
+
+        * config/pin.mpb:
+        
+          Added 'avoids' definition to feature definitions.
+
 Mon Nov 11 17:27:23 UTC 2013  Phil Mesnier  <mesnier_p@ociweb.com>
 
         * docs/USAGE:
