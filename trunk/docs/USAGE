@@ -15,13 +15,13 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
               [-noreldefs] [-notoplevel] [-static] [-genins] [-use_env]
               [-value_template <NAME+=VAL | NAME=VAL | NAME-=VAL>]
               [-value_project <NAME+=VAL | NAME=VAL | NAME-=VAL>]
-              [-make_coexistence] [-feature_file <file name>]
-              [-expand_vars] [-features <feature definitions>] [-gendot]
+              [-make_coexistence] [-feature_file <file name>] [-gendot]
+              [-expand_vars] [-features <feature definitions>]
               [-exclude <directories>] [-name_modifier <pattern>]
               [-apply_project] [-version] [-into <directory>]
-              [-gfeature_file <file name>] [-nocomments] [-for_eclipse]
+              [-gfeature_file <file name>] [-nocomments]
+              [-relative_file <file name>] [-for_eclipse]
               [-workers <#>] [-workers_dir <dir> | -workers_port <#>]
-              [-relative_file <file name>]
               [-language <cplusplus | csharp | java | vb>]
               [-type <automake | bcb2007 | bcb2009 | bds4 | bmake | cc | cdt6 |
                       cdt7 | em3 | ghs | html | make | nmake | rpmspec | sle |
@@ -81,7 +81,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
                        This option can be used multiple times to add multiple
                        variables.
        -relative_file  Specifies the relative file to read before processing.
-                       The default feature file is default.rel under the
+                       The default relative file is default.rel under the
                        config directory.
        -static         Specifies that only static projects will be generated.
                        By default, only dynamic projects are generated.
@@ -103,7 +103,7 @@ Usage: mwc.pl [-global <file>] [-include <directory>] [-recurse]
        -use_env        Use environment variables for all uses of $() instead
                        of the relative replacement values.
        -value_project  This option allows modification of a project variable
-                       assignment .  Use += to add VAL to the NAME's value.
+                       assignment.  Use += to add VAL to the NAME's value.
                        Use -= to subtract and = to override the value.
                        This can be used to introduce new name value pairs to
                        a project.  However, it must be a valid project
