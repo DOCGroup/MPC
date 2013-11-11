@@ -63,6 +63,7 @@ feature(ia32) {
               $(PIN_ROOT)/extras/xed2-ia32/lib
 
   macros += TARGET_IA32 HOST_IA32
+  avoids += intel64
 
   specific (prop:windows) {
     // DO NOT CHANGE ORDER
@@ -81,6 +82,7 @@ feature(intel64) {
               $(PIN_ROOT)/extras/xed2-intel64/lib
 
   macros += TARGET_IA32E HOST_IA32E
+  avoids += ia32
 
   specific (prop:windows) {
     // DO NOT CHANGE ORDER
