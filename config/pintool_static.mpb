@@ -17,7 +17,8 @@ project : pin_static {
     else
       # TODO Add support for linking against gcc libraries included with Pin
       CPPFLAGS += -DTARGET_LINUX
-      LDFLAGS  += -Wl,--hash-style=sysv -lelf -ldwarf -Wl,-Bsymbolic
+      LDLIBS   += -lelf -ldwarf
+      LDFLAGS  += -Wl,--hash-style=sysv -Wl,-Bsymbolic
     endif
   }
 
@@ -29,7 +30,8 @@ project : pin_static {
     else
       # TODO Add support for linking against gcc libraries included with Pin
       CPPFLAGS += -DTARGET_LINUX
-      LDFLAGS  += -Wl,--hash-style=sysv -ldwarf -lelf -Wl,-Bsymbolic
+      LIBS     += -ldwarf -lelf
+      LDFLAGS  += -Wl,--hash-style=sysv -Wl,-Bsymbolic
     endif
   }
 }
