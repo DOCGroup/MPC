@@ -1,3 +1,13 @@
+Tue Nov 19 07:37:13 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc11dll.mpt:
+        * templates/vc11exe.mpt:
+        * templates/vc11lib.mpt:
+        * templates/vc11libexe.mpt:
+          Use vc11 instead of vc11, fixes bugzilla 4147, thanks to
+          Russ Noseworthy <J dot Russell dot Noseworthy at TENA-SDA dot org>
+          for reporting this
+
 Mon Nov 18 16:12:07 UTC 2013  James H. Hill  <hillj@cs.iupui.edu>
 
         * config/pin_base.mpb:
