@@ -1,3 +1,13 @@
+Tue Nov 19 17:43:48 UTC 2013  Phil Mesnier  <mesnier_p@ociweb.com>
+
+        * templates/vc10.mpd:
+          Fix for condition that appears when using custom commands in a
+          project that include concatinated steps. The build tool appears
+          to execute the text following the & in the "Invoking" message
+          body. Encapsulating the message string in quotes resolves this.
+          Thanks to Dave Cornelius <david dot cornelius at
+          agustawestland dot com>
+
 Tue Nov 19 07:37:13 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc11dll.mpt:
