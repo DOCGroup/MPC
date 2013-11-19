@@ -14,7 +14,7 @@ Tue Nov 19 07:37:13 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
         * templates/vc11exe.mpt:
         * templates/vc11lib.mpt:
         * templates/vc11libexe.mpt:
-          Use vc11 instead of vc11, fixes bugzilla 4147, thanks to
+          Use vc11 instead of vc10, fixes bugzilla 4147, thanks to
           Russ Noseworthy <J dot Russell dot Noseworthy at TENA-SDA dot org>
           for reporting this
 
