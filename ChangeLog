@@ -2,7 +2,7 @@ Mon Jan  6 08:15:22 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc10platforms.mpt:
           Set the platform toolset explicit to v100, thanks to
-          Winston Jenks <Winston dot JENKSat capesoftware dot com>
+          Winston Jenks <Winston dot JENKS at capesoftware dot com>
           for pointing out that this should be done
 
 Tue Nov 19 17:43:48 UTC 2013  Phil Mesnier  <mesnier_p@ociweb.com>
