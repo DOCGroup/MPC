@@ -17,6 +17,11 @@ project {
     runtime_library = 0
     DisableSpecificWarning += 4530
     IgnoreAllDefaultLibraries = true
+
+    // We need to remove the _DEBUG macro so that Visual Studio does not
+    // try to link against the debug C++ libraries. Otherwise, the program
+    // will not compile, and will have link errors.
+    Debug::macros -= _DEBUG
   } else {
     compile_flags += -O3 -fomit-frame-pointer -fno-strict-aliasing -Wunused-parameter -Wno-unknown-pragmas -fno-stack-protector -fPIC
     libs += xed
@@ -28,6 +33,10 @@ project {
     else
       CPPFLAGS += -DTARGET_LINUX
     endif
+
+    // We have to disable hidden symbols since we are not manually exporting
+    // the main() function.
+    no_hidden_visibility = 1
   }
 
   verbatim (gnuace, macros) {
