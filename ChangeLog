@@ -1,3 +1,10 @@
+Tue Jan 28 02:37:12 UTC 2014  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/pin_base.mpb:
+
+          Fixed configuratation errors for building debug version of
+          pintools on Windows.
+
 Mon Jan  6 08:15:22 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/vc10platforms.mpt:
