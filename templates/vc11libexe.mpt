@@ -82,4 +82,4 @@ MFC Debug {
 }
 
 conditional_include "vcpartialmacros"
-conditional_include "user_vc10libexe"
+conditional_include "user_vc11libexe"

@@ -13,16 +13,19 @@ package MakeObjectGenerator;
 
 use strict;
 use ObjectGenerator;
+use DirectoryManager;
 
 use vars qw(@ISA);
 @ISA = qw(ObjectGenerator);
+
+my $dm = bless {}, 'DirectoryManager';
 
 # ************************************************************
 # Subroutine Section
 # ************************************************************
 
 sub process {
-  my $noext = $_[1];
+  my $noext = $dm->translate_directory($_[1]);
   my @exts  = ('o');
   my @dirs  = (defined $ENV{VDIR} ? $ENV{VDIR} : '');
   $noext =~ s/\.[^\.]+$//o;

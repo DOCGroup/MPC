@@ -18,7 +18,7 @@ use strict;
 # ************************************************************
 
 ## This is the starting major and minor version
-my $version = '3.9';
+my $version = '4.0';
 my $once    = 1;
 
 # ************************************************************

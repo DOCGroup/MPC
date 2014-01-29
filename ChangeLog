@@ -1,695 +1,367 @@
-Thu Nov 22 09:19:24 UTC 2012  Johnny Willemsen  <jwillemsen@remedy.nl>
+Tue Jan 28 02:37:12 UTC 2014  James H. Hill  <hillj at cs dot iupui dot edu>
 
-        * prj_install.pl:
-          Extended shared library installation for debian packaging
+        * config/pin_base.mpb:
 
-Tue Nov 20 18:27:27 UTC 2012  Johnny Willemsen  <jwillemsen@remedy.nl>
+          Fixed configuratation errors for building debug version of
+          pintools on Windows.
 
-        * config/lzo1.mpb:
-        * config/lzo2.mpb:
-          Fixed expand parts
+Mon Jan  6 08:15:22 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 
-Fri Jul  6 16:46:47 UTC 2012  Chad Elliott  <elliott_c@ociweb.com>
-
-        * modules/Creator.pm:
-        * modules/TemplateParser.pm:
-        * modules/WorkspaceCreator.pm:
-
-          Fixed "Useless use of hash element in void context" and "Use of
-          uninitialized value $_ in concatenation" warnings.
-
-Fri Jun 22 14:31:02 UTC 2012  Chad Elliott  <elliott_c@ociweb.com>
-
-        * templates/vc10.mpd:
-
-          Modified to allow setting 'BasicRuntimeChecks' regardless of the
-          'optimize' setting.
-
-Wed Jun  6 13:09:54 UTC 2012  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * modules/ProjectCreator.pm:
-          Handle tpp files as template files
-
-        * docs/README
-          Mention vc11
-
-Fri Apr 27 13:31:52 UTC 2012  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * templates/vc8platforms.mpt:
         * templates/vc10platforms.mpt:
-          Updated WinCE platforms
+          Set the platform toolset explicit to v100, thanks to
+          Winston Jenks <Winston dot JENKS at capesoftware dot com>
+          for pointing out that this should be done
 
-Fri Mar 30 13:45:44 UTC 2012  Adam Mitz  <mitza@ociweb.com>
-
-        * modules/WorkspaceCreator.pm:
-          In topname(), recognize Windows drive-letter paths as absolute.
-
-Thu Mar  8 22:41:34 UTC 2012  Adam Mitz  <mitza@ociweb.com>
-
-        * modules/Depgen/Preprocessor.pm:
-
-          Cached results of full path to #included files need to be
-          kept separately for each directory of input files.
-
-Thu Mar  8 06:50:28 UTC 2011  Martin Corino  <mcorino@remedy.nl>
-
-        * modules/TemplateParser.pm:
-
-          Fix to solve problems with IDL projects using the combination of
-          setting 'gendir' and defining custom output files (in separate
-          directory/ies *not* equal to 'gendir').
-
-Wed Mar  7 19:24:02 UTC 2012  Brian Johnson  <johnsonb@ociweb.com>
-
-        * clone_build_tree.pl:
-
-          Adding flag to allow linking files normally avoided, but not part of
-          -l flag operations.
-
-Mon Feb 27 21:33:06 UTC 2012  Adam Mitz  <mitza@ociweb.com>
-
-        * docs/html/MakeProjectCreator.css:
-        * docs/html/MakeProjectCreator.html:
-
-          HTML documentation update from Kevin Stanley of OCI.
-
-Tue Feb 21 20:13:24 UTC 2012  Adam Mitz  <mitza@ociweb.com>
+Tue Nov 19 17:43:48 UTC 2013  Phil Mesnier  <mesnier_p@ociweb.com>
 
         * templates/vc10.mpd:
+          Fix for condition that appears when using custom commands in a
+          project that include concatinated steps. The build tool appears
+          to execute the text following the & in the "Invoking" message
+          body. Encapsulating the message string in quotes resolves this.
+          Thanks to Dave Cornelius <david dot cornelius at
+          agustawestland dot com>
 
-          Support multiple source files with the same name (in different
-          directories) in a single project.
+Tue Nov 19 07:37:13 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
 
-Tue Jan 24 19:01:18 UTC 2012  Chip Jones  <jonesc@ociweb.com>
-
-        * ChangeLog:
-          Added changelog entry for -workers options.
-
-Tue Jan 24 18:26:46 UTC 2012  Chip Jones  <jonesc@ociweb.com>
-
-        * docs/MPC.sgml:
-        * docs/USAGE:
-        * docs/html/MakeProjectCreator.html:
-
-          Added documentation for -workers options.
-
-Mon Jan 16 22:01:41 UTC 2012  Chip Jones  <jonesc@ociweb.com>
-
-        * modules/Creator.pm:
-
-          Modifications to support multiprocess MPC.
-
-        * modules/Depgen/DependencyEditor.pm:
-        * modules/Depgen/Driver.pm:
-
-          Modified dependency generator to support appending to existing
-          files and generating dependencies for IDL files.
-
-        * modules/Driver.pm:
-        * modules/Options.pm:
-        * modules/Parser.pm:
-        * modules/ProjectCreator.pm:
-        * modules/TemplateParser.pm:
-        * modules/WorkspaceCreator.pm:
-
-          Modified MPC to generate projects in separate processes.
-          This experimental feature is enabled with the
-          command-line option '-workers.' It's behavior can
-          be modified with the '-workers_dir' and '-workers_port'
-          directives.
-
-          This is a merge of work done in the 'mpc_performance' branch.
-
-Tue Dec 20 11:42:28 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * modules/VC11ProjectCreator.pm:
-        * modules/VC11WorkspaceCreator.pm:
         * templates/vc11dll.mpt:
         * templates/vc11exe.mpt:
         * templates/vc11lib.mpt:
         * templates/vc11libexe.mpt:
-        * templates/vc11platforms.mpt:
-          Extended support for vc11
+          Use vc11 instead of vc10, fixes bugzilla 4147, thanks to
+          Russ Noseworthy <J dot Russell dot Noseworthy at TENA-SDA dot org>
+          for reporting this
 
-        * modules/VC7ProjectCreator.pm:
-          Fixed typo
+Mon Nov 18 16:12:07 UTC 2013  James H. Hill  <hillj@cs.iupui.edu>
 
-Mon Dec 19 14:55:30 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+        * config/pin_base.mpb:
+        * config/pintool.mpb:
+        * config/pintool_static.mpb:
 
-        * config/udm.mpb:
+          Fixed compilation errors on Linux.
 
-          Added support for Debug/Release configurations.
+Mon Nov 18 00:05:53 UTC 2013  James H. Hill  <hillj@cs.iupui.edu>
 
-Sat Dec 17 21:40:53 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+        * config/pin_base.mpb:
+        * config/pintool.mpb:
+        * config/pintool_static.mpb:
 
-        * templates/wix.mpd:
+          Refactored base projects to so that there is one for building a
+          static pintool vs building a non-static pintool since it links
+          to different libraries, and the approach for developing either
+          one is completely different.
 
-          Added support for using the use_lib_modifier setting for
-          the non-extended template.
+Mon Nov 11 22:29:26 UTC 2013  James H. Hill  <hillj@cs.iupui.edu>
 
-Sat Dec 17 21:11:08 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+        * config/pin.mpb:
 
-        * config/udm.mpb:
+          Added 'avoids' definition to feature definitions.
 
-          Changes libs declaration to lit_libs since there is no
-          differentiation between debug and release import libraries.
-
-Fri Dec 16 17:06:05 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
-
-        * config/portico.mpb:
-
-          Base project for Portico implementation of HLA.
-
-Thu Dec 15 04:21:11 UTC 2011  Adam Mitz  <mitza@ociweb.com>
-
-        * templates/makedll.mpt:
-
-          Cygwin doesn't use -fPIC, GCC warns if it's present.
-
-Tue Dec 13 21:04:44 UTC 20111  Trevor Fields  <fields_t@ociweb.com>
-
-        * rpm/buildrpm.sh:
-
-          Removed potential of running the check-buildroot script.
-
-Mon Dec 12 19:03:08 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * modules/Options.pm:
-        * modules/VC11ProjectCreator.pm:
-        * modules/VC11WorkspaceCreator.pm:
-          Added vc11 type, looks like the project format is still the same
-          as with vc10, but this way we can use -type vc11 in some experimental
-          builds
-
-Wed Dec  7 23:47:24 UTC 2011  Trevor Fields  <fields_t@ociweb.com>
-
-        * rpm/buildrpm.sh:
-          Fixes to build on systems where rpmbuild uses buildroot.
-
-Mon Dec  5 15:32:37 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+Mon Nov 11 17:27:23 UTC 2013  Phil Mesnier  <mesnier_p@ociweb.com>
 
         * docs/USAGE:
+          Clean up a couple of typos.
 
-          Removed obsolete note about a default -type.
+Tue Oct 29 12:30:07 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
 
-Mon Dec  5 15:17:04 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
+        * modules/VC12ProjectCreator.pm:
+        * modules/VC12WorkspaceCreator.pm:
+        * templates/vc12dll.mpt:
+        * templates/vc12exe.mpt:
+        * templates/vc12lib.mpt:
+        * templates/vc12libexe.mpt:
+        * templates/vc12platforms.mpt:
+          Starter templates for vc12, needs some more work later, just
+          now seperate templates and creators
 
-        * modules/Creator.pm:
-        * modules/TemplateParser.pm:
+Tue Oct 29 10:41:11 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
 
-          Fixed a bug where the inner-most template scope was usable at any
-          given point within a template.  Thanks to Adam Mitz for helping me
-          debug this and to Holger Schönstedt for bringing this to my
-          attention.
+        * docs/README:
+        * docs/USAGE:
+          Added vc11/vc12
 
-        * docs/templates/make.txt:
+Tue Oct 29 10:31:02 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * docs/html/MakeProjectCreator.html:
+          Added vc11/vc12
+
+Tue Oct 29 06:00:44 UTC 2013  James H. Hill  <hillj@cs.iupui.edu>
+
+        * config/pin.mpb:
+
+          Fixed compilation errors on MacOS X.
+
+Fri Oct 25 18:42:59 UTC 2013  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/pin.mpb:
+
+          Moved verbatim code from 'top' to 'macros' section.
+
+Thu Oct  3 13:13:33 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/ndds_ts_defaults.mpb:
+          Don't use quote for dependent, causes Visual Studio not
+          be able to compile files with rtiddsgen
+
+Fri Sep 27 20:48:52 UTC 2013  Adam Mitz  <mitza@ociweb.com>
+
+        * config/boost_chrono.mpb:
+
+          Adding a new mpb for a new Boost library.
+
+Sat Sep  7 15:15:55 UTC 2013  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ConfigParser.pm:
+
+          Remove leading and trailing spaces from lines read from a file to
+          avoid adding them to paths and other values.
+
+        * modules/WorkspaceCreator.pm:
+
+          Replace '.' with '__' in project names used within Graphviz files.
+          Names with periods in them are not accepted.
+
+        * templates/make.net.mpd:
+
+          Use libs, lit_libs, and pure_libs as is done within the vc8 C#
+          template.
+
+        * templates/vc8csharp.mpd:
+
+          If a config file group has the 'generates_source' setting, we will
+          add a .Designer.cs file to the compile list.
+
+Sat Sep  7 03:49:06 UTC 2013  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/pin.mpb:
+        * config/pintool.mpb:
+
+          Fixed compilation and runtime errors on MacOS X.
+
+Fri Sep  6 20:51:59 UTC 2013  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/pin.mpb:
+        * config/pintool.mpb:
+
+          Separated the definitions for linking against Pin without creating
+          a Pintool, and for creating a Pintool.
+
+Sat Aug 24 18:40:18 UTC 2013  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/udm.mpb:
+
+          Update to latest version of UDM.
+
+        * config/pintools_32bit.mpb:
+
+          Removed this file.
+
+Sat Aug 24 18:36:37 UTC 2013  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/pintool.mpb:
+
+          Renamed base project, and improved support for intel64 and ia32.
+
+        * config/pintools_32bit.mpb:
+
+          Removed this file.
+
+Mon Aug 19 09:52:47 CDT 2013  Adam Mitz  <mitza@ociweb.com>
+
         * templates/make.mpd:
         * templates/makedll.mpt:
 
-          Added a 'ccflags' template variable to allow users to specify C++
-          compiler options and a 'notparallel' template variable to allow
-          users to control whether or not a .NOTPARALLEL is added to the
-          makefile.
+          If we have GNU Make, no need for a rule to touch the .depend file.
 
-        * templates/wix.mpd:
+Mon Aug 19 07:22:20 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
 
-          Fixed whitespace.
+        * templates/bmake.mpd:
+          bcc64 has no support for pch
 
-Wed Nov 30 21:33:46 UTC 2011  Trevor Fields  <fields_t@ociweb.com>
+Wed Aug  7 07:12:31 UTC 2013  Johnny Willemsen  <jwillemsen@remedy.nl>
 
-        * rpm/buildrpm.sh:
+        * templates/bmake.mpd:
+        * templates/bmakecommon.mpt:
+        * templates/wb30exe.mpt:
+          Optional support for Embarcadero C++ BuilderXE4 using bcc64
 
-          Fixes to correctly gather packager information.
-          Changes so rpm can be built by non root user.
+          commit 868d7e4b98937d72b11704eb8ad176ba3a7a8f0c
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Wed Jun 26 13:23:05 2013 +0200
 
-Mon Nov  7 15:37:29 UTC 2011  Adam Mitz  <mitza@ociweb.com>
+                    Disable warning
+                  * templates/bmakecommon.mpt:
 
-        * docs/README:
+          commit 343897776235c7eec82609fc2662699bc4e8b303
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Thu Jun 20 14:04:21 2013 +0200
 
-          Typo fix.
+                    bcc32 attempt fix
+                  * templates/bmake.mpd:
 
-Thu Nov  3 12:00:45 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
+          commit 419e2b2b441ab8be42a1f07a4c657b1d56cfcfda
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 21:03:35 2013 +0200
 
-        * docs/html/MakeProjectCreator.html:
+                    release fix
+                  * templates/bmake.mpd:
 
-          Corrected the list of options ignored by the workspace 'cmdline'
-          setting.
+          commit 17f31fbe7ace3f9f2eca7ccd97224b4fddab5d13
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 20:49:56 2013 +0200
 
-Wed Nov  2 21:06:18 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
+                    Switch 32/64
+                  * templates/bmake.mpd:
 
-        * templates/wix.mpd:
+          commit 9c6f7276d252354d59642acfefb29bdd32a73d64
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 20:39:50 2013 +0200
 
-          Added support for processing projects with custom_only set.
+                    Support for 32/64 common libs
+                  * templates/bmake.mpd:
+                  * templates/bmakecommon.mpt:
 
-Wed Oct 19 19:11:50 UTC 2011  William R. Otte  <wotte@dre.vanderbilt.edu>
+          commit bf93fc1382d6a5dfc9b8be98b8a3c1e8fb1ca47a
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 20:32:35 2013 +0200
 
-        * config/openmp.mpb:
+                    Handle different libext
+                  * templates/bmake.mpd:
+                  * templates/bmakecommon.mpt:
 
-          Base project for openmp.
+          commit 7d7352e64dd3e6054327df6cf904d66d878a8a14
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 20:25:46 2013 +0200
 
-Mon Oct 17 18:33:05 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
+                    Added path for startup obj
+                  * templates/bmake.mpd:
+
+          commit f258eaa34f75c4eeb01a6ab9dceb1cc0698cdf2f
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 19:23:33 2013 +0200
+
+                    Obj extension and startup object
+                  * templates/bmake.mpd:
+                  * templates/bmakecommon.mpt:
+
+          commit cf382b74a31665f253fe6d391e4265150cfa08e3
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 18:15:17 2013 +0200
+
+                    Use correct linker
+                  * templates/bmake.mpd:
+
+          commit 967f92ce04790a4eba1b416f9008c7f7c7feb69c
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 17:13:45 2013 +0200
+
+                    Use -o instead of -n with bcc64
+                  * templates/bmake.mpd:
+
+          commit 72498537d3fb82064f1865d9a95bcb4c59267a12
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 16:34:37 2013 +0200
+
+                    64bit needs space after -n
+                  * templates/bmake.mpd:
+
+          commit 347735af4a8c8be4e79dc21dbdeea05949a6778f
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 16:30:24 2013 +0200
+
+                    Zap a few options that clang64 doesn't support
+                  * templates/bmake.mpd:
+
+          commit 21237991013bbeb96cf050bc2b85299064a29749
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 16:26:54 2013 +0200
+
+                    Common_flags
+                  * templates/bmake.mpd:
+                  * templates/bmakecommon.mpt:
+
+          commit 06a0fb4d793fb13c2288d324c4e67b20304a90cb
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 16:21:16 2013 +0200
+
+                    32/64 warnflagsd
+                  * templates/bmake.mpd:
+                  * templates/bmakecommon.mpt:
+
+          commit 4db86c833e0edf2dce6d372376d1505ebf353a81
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 16:19:08 2013 +0200
+
+                    Tweak 32/64 OCFLAGS
+                  * templates/bmake.mpd:
+
+          commit 42d96e494a7365c2cb9dff94cacba271baabf9c4
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 16:08:23 2013 +0200
+
+                    Work in progress for bcc64
+                  * templates/bmake.mpd:
+                  * templates/bmakecommon.mpt:
+                  * templates/wb30exe.mpt:
+
+          commit 2ce83e3fc41d95463b9234ec0acb02a66bdcfbd6
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Mon May 27 15:44:26 2013 +0200
+
+                    Started with 64bit
+                  * templates/bmakecommon.mpt:
+
+          commit b68f3f361fed4325680f90719b4416f5948daec5
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Fri Aug 17 20:42:42 2012 +0200
+
+                  * templates/bmakecommon.mpt:
+                    Revert
+
+          commit 04c3e35b9cbfd8b2e06d659121ed68e59d5ed0e1
+          Author: Johnny Willemsen <jwillemsen@remedy.nl>
+          Date:   Fri Aug 17 20:39:53 2012 +0200
+
+                  * templates/bmakecommon.mpt:
+                    Added support for BUILDBITS64
+
+
+Tue Jul  9 15:06:50 UTC 2013  Adam Mitz  <mitza@ociweb.com>
 
         * templates/make.mpd:
-        * docs/templates/make.txt:
 
-          Define CFLAGS, but only if the 'cflags' template variable has been
-          defined.
+          If object files are moved to a different directory (by using
+          targetoutdir or obj_dir), apply the transdir function so that
+          source files in relative directories still result in object
+          files within the custom object directory.  obj_dir or targetoutdir
+          may contain variable replacement expressions (starting with $) and
+          these are preserved in the .depend files as well.
 
-Thu Oct  6 12:40:46 UTC 2011  Marcel Smit  <msmit@remedy.nl>
+        * modules/Depgen/MakeObjectGenerator.pm:
 
-        * docs/README:
-        * docs/templates/automake.txt:
-        * docs/templates/bmake.txt:
-        * docs/templates/cc.txt:
-        * docs/templates/cdt6cproject.txt:
-        * docs/templates/cdt6project.txt:
-        * docs/templates/common.txt:
-        * docs/templates/ghs.txt:
-        * docs/templates/make.net.txt:
-        * docs/templates/make.txt:
-        * docs/templates/rpmspec.txt:
-        * docs/templates/vc10.txt:
-        * docs/templates/vc7.txt:
-        * docs/templates/vc7csharp.txt:
-        * docs/templates/vc7java.txt:
-        * docs/templates/vc7vb.txt:
-        * docs/templates/vc8.txt:
-        * docs/templates/vc8csharp.txt:
-        * docs/templates/vc8java.txt:
-        * docs/templates/vc8vb.txt:
-        * docs/templates/wb26.txt:
-        * docs/templates/wb26wrmakefile.txt:
-        * docs/templates/wb26wrproject.txt:
-        * docs/templates/wix.txt:
-          Fuzz: added missing $Id $ string.
+          Make depgen aware of the different rules for -type make obj dirs.
 
-Thu Oct  6 12:27:57 UTC 2011  Marcel Smit  <msmit@remedy.nl>
-
-        * modules/AutomakeProjectCreator.pm:
-        * modules/AutomakeWorkspaceCreator.pm:
-        * modules/BCB2007ProjectCreator.pm:
-        * modules/BCB2007WorkspaceCreator.pm:
-        * modules/BCB2009ProjectCreator.pm:
-        * modules/BCB2009WorkspaceCreator.pm:
-        * modules/BDS4ProjectCreator.pm:
-        * modules/BDS4WorkspaceCreator.pm:
-        * modules/BMakeProjectCreator.pm:
-        * modules/BMakeWorkspaceCreator.pm:
-        * modules/BorlandProjectBase.pm:
-        * modules/BorlandPropertyBase.pm:
-        * modules/CCProjectCreator.pm:
-        * modules/CCWorkspaceCreator.pm:
-        * modules/CDT6ProjectCreator.pm:
-        * modules/CDT6WorkspaceCreator.pm:
-        * modules/CDT7ProjectCreator.pm:
-        * modules/CDT7WorkspaceCreator.pm:
-        * modules/CommandHelper.pm:
-        * modules/ConfigParser.pm:
-        * modules/Creator.pm:
-        * modules/DirectoryManager.pm:
-        * modules/Driver.pm:
-        * modules/EM3ProjectCreator.pm:
-        * modules/EM3WorkspaceCreator.pm:
-        * modules/FeatureParser.pm:
-        * modules/GHSProjectCreator.pm:
-        * modules/GHSPropertyBase.pm:
-        * modules/GHSWorkspaceCreator.pm:
-        * modules/GUID.pm:
-        * modules/HTMLProjectCreator.pm:
-        * modules/HTMLWorkspaceCreator.pm:
-        * modules/MPC.pm:
-        * modules/MWC.pm:
-        * modules/MakeProjectBase.pm:
-        * modules/MakeProjectCreator.pm:
-        * modules/MakePropertyBase.pm:
-        * modules/MakeWorkspaceBase.pm:
-        * modules/MakeWorkspaceCreator.pm:
-        * modules/NMakeProjectCreator.pm:
-        * modules/NMakeWorkspaceCreator.pm:
-        * modules/Options.pm:
-        * modules/OutputMessage.pm:
-        * modules/Parser.pm:
-        * modules/ProjectCreator.pm:
-        * modules/RpmSpecProjectCreator.pm:
-        * modules/RpmSpecWorkspaceCreator.pm:
-        * modules/SLEProjectCreator.pm:
-        * modules/SLEWorkspaceCreator.pm:
-        * modules/StringProcessor.pm:
-        * modules/TemplateInputReader.pm:
         * modules/TemplateParser.pm:
-        * modules/VC10ProjectCreator.pm:
-        * modules/VC10WorkspaceCreator.pm:
-        * modules/VC6ProjectCreator.pm:
-        * modules/VC6WorkspaceCreator.pm:
-        * modules/VC71ProjectCreator.pm:
-        * modules/VC71WorkspaceCreator.pm:
-        * modules/VC7ProjectCreator.pm:
-        * modules/VC7WorkspaceCreator.pm:
-        * modules/VC8ProjectCreator.pm:
-        * modules/VC8WorkspaceCreator.pm:
-        * modules/VC9ProjectCreator.pm:
-        * modules/VC9WorkspaceCreator.pm:
-        * modules/VCProjectBase.pm:
-        * modules/VCPropertyBase.pm:
-        * modules/Version.pm:
-        * modules/WB26ProjectCreator.pm:
-        * modules/WB26WorkspaceCreator.pm:
-        * modules/WB30ProjectCreator.pm:
-        * modules/WB30WorkspaceCreator.pm:
-        * modules/WinProjectBase.pm:
-        * modules/WinPropertyBase.pm:
-        * modules/WinVersionTranslator.pm:
-        * modules/WinWorkspaceBase.pm:
-        * modules/WixProjectCreator.pm:
-        * modules/WixWorkspaceCreator.pm:
-        * modules/WorkspaceCreator.pm:
-        * modules/WorkspaceHelper.pm:
-        * modules/XMLProjectBase.pm:
-        * modules/mpc_debug.pm:
-          Fuzz: added missing $Id $ string.
 
-Wed Sep 21 18:51:02 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * rpm/MPC.templ:
-        * rpm/buildrpm.sh:
-        * rpm/MPC.spec:
-          Renamed the MPC spec file template to .templ and update the script
-          to read the template and create MPC.spec. Within a source package
-          we can only have one spec file and MPC is also included in the A/T/C/D
-          source package which will result in two spec files
-
-Tue Sep 20 13:34:11 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
-
-        * config/tena_middleware.mpb:
-
-          Fixed error in base project to support non-Windows environments.
-
-Wed Aug 10 02:32:49 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
-
-        * config/pintools_32bit.mpb:
-
-          Fixed errors in the specification.
-
-Mon Aug  1 18:16:21 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
-
-        * config/pintools_32bit.mpb:
-
-          New base project for building a Pintool. This base project
-          only supports 32-bit Linux and Windows operating systems.
-
-Thu Jun 30 06:58:25 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * config/ndds_example_ts_defaults.mpb:
-          New base project for ndds to generate example code
-
-Thu Jun 16 20:16:29 UTC 2011  Adam Mitz  <mitza@ociweb.com>
-
-        * templates/vc10.mpd:
-
-          When creating static libs, don't provide dependent libs as the
-          AdditionalDependencies for the lib tool.  This change makes
-          static libs in vc10 work like vc9 (and -type make for that matter).
-          Before this, a library that depended on another would end up
-          including all of the dependent lib's object files.
-
-Fri Jun 10 14:51:32 UTC 2011  Adam Mitz  <mitza@ociweb.com>
-
-        * modules/Options.pm:
-
-          Modification to previous commit: also handle duplicate slashes and
-          other path cleanup operations.
-
-        * templates/vc10.mpd:
-
-          Unlike previous versions, vc10 runs all custom build steps for the
-          project in the same cmd shell.  Use setlocal/endlocal when adding
-          to the PATH to avoid redundant additions to PATH.
-
-Tue May 24 14:42:55 UTC 2011  Adam Mitz  <mitza@ociweb.com>
-
-        * modules/Options.pm:
-
-          Trim any trailing slashes from input files (really directories)
-          provided on the command line.  Leaving the trailing slash
-          can result in the wrong number of ".." components in relative
-          path expansions.
-
-Thu May 19 15:29:01 UTC 2011  Adam Mitz  <mitza@ociweb.com>
-
-        * config/glib.mpb:
-
-          Allow customization of the include search path for GLib since
-          at least some 64-bit Linux distros use "lib64" in place of "lib".
-
-Tue May 17 15:32:48 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
-
-        * modules/Driver.pm:
-        * modules/Options.pm:
-        * modules/OutputMessage.pm:
-
-          Added debug information about the possible base projects that are
-          available.
-
-        * modules/ProjectCreator.pm:
-
-          Fixed a bug where subtracting values that contain psuedo variables
-          failed because they were not evaluated before subtracting.
-
-Wed May 11 14:18:13 UTC 2011  Adam Mitz  <mitza@ociweb.com>
-
-        * templates/vc10.mpd:
-
-          Generate the msbuild LinkKeyFile element from the MPC template
-          variable keyfile.  Thanks to Charles Calkins for the patch.
-
-Wed Apr 27 14:31:56 UTC 2011  Adam Mitz  <mitza@ociweb.com>
-
-        * modules/MakeWorkspaceCreator.pm:
-
-          Due to the change below, the workspace makefile no longer needs
-          to explicitly invoke the "generated" target in the projects.
-
-Wed Apr 27 14:07:44 UTC 2011  Adam Mitz  <mitza@ociweb.com>
-
-        * templates/make.mpd:
-
-          In the custom-only case, make sure that "all" is the first target
-          listed, and also have the "generated" target invoke prebuild.
-
-Wed Apr 27 13:25:32 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * prj_install.pl:
-          Added fix for OSX, thanks to Paul Fitzpatrick
-          <paul at robotrebuilt dot com> for reporting this
-
-Thu Apr 14 11:53:22 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * config/coredx_ts_defaults.mpb:
-          Extended this file
-
-Mon Apr 11 12:25:37 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * config/ndds_cck_ts_defaults.mpb:
-          Added -enableEscapeChar
-
-Mon Apr 11 01:57:43 UTC 2011  James H. Hill  <hillj at cs dot iupui dot edu>
-
-        * config/tena_base.mpb:
-
-          The base project for all TENA base projects. It defines
-          common properties and sets the 'tena' feature.
-
-        * config/tena_middleware.mpb:
-
-          Base project for linking against the TENA middleware library.
-
-Sun Apr 10 17:39:57 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * config/nddsexe_with_idl.mpb:
-        * config/nddslib_with_idl.mpb:
-          Removed these files, use nddslib/nddsexe with the needed ts_defaults
-          base project
-
-Sun Apr 10 12:07:15 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * config/ndds_ts_defaults.mpb:
-          Removed CCK related options, this way someone can use NDDS without
-          requiring him to use the CCK, if you need the cck support, use
-          ndds_cck_ts_defaults as new base
-
-Sat Apr  9 11:47:11 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * config/ndds_cck_ts_defaults.mpb:
-          New base project, ndds_ts_defaults will be changed soon for just RTI
-          DDS without the CCK support. If you want to use the CCK, derive
-          from this base project
-
-        * config/nddsmonitor.mpb:
-          Layout change
-
-Fri Apr  8 14:35:18 UTC 2011  Adam Mitz  <mitza@ociweb.com>
-
-        * templates/vc8csharp.mpd:
-
-          Added "UserControl" as a valid subtype setting for C#.
-
-Wed Apr  6 12:02:50 UTC 2011  Johnny Willemsen  <jwillemsen@remedy.nl>
-
-        * config/coredx_ts_defaults.mpb:
-        * config/coredxlib.mpb:
-          Starter files for CoreDX
-
-        * config/ndds_ts_defaults.mpb:
-          Layout change
-
-Tue Apr  5 19:25:02 UTC 2011  Phil Mesnier  <mesnier_p@ociweb.com>
-
-        * modules/Creator.pm:
-        * modules/WorkspaceCreator.pm:
-
-          Fuzz fix.
-
-Tue Apr  5 18:47:09 UTC 2011  Don Hudson  <hudsond@ociweb.com>
-
-       * modules/WorkspaceCreator.pm:
-
-         Added default_verbose_ordering() that returns false
-         and used it to set verbose_ordering.  This allows derived workspace
-         creators to override the default verbose ordering.
-
-         Fixed typo in comment.
-
-         Corrected Perl warning by replacing == with eq in an if statement.
-
-         Modified the verbose ordering warning message to include the name
-         of the project being processed.
-
-       * modules/Driver.pm:
-
-          Changed to set verbose ordering on the creator only if it's defined
-          in the config file.
-
-        * modules/RpmSpecWorkspaceCreator.pm:
-
-          Added default_verbose_ordering() that returns true so that
-          a warning is logged if there are missing dependencies when
-          generating an rpm spec file.
-
-Tue Apr  5 12:57:22 UTC 2011  Don Hudson  <hudsond@ociweb.com>
-
-        * docs/html/MakeProjectCreator.html:
-
-          Added bracketed (multiline) assigments to documentation,
-          i.e., assignment of form:
-
-          keyword <operator> [optional flags] {
-                    This is
-                    a multiline assignment.
-          }
-
-          Optional flags are \s to retain leading white space and
-          \n to retain new lines.  These flags are be combined.
-
-        * docs/templates/rpmspec.txt:
-
-          Added rpm_pre_cmd keyword for %pre section of the RPM spec file
-          and rpm_url for the URL tag in the RPM spec file.
-
-        * modules/AutomakeWorkspaceCreator.pm:
-
-          Changed to default to cacheok of false as some intermediate project
-          files are deleted must be regenerated if a project is regenerated.
-          This was causing an error, but the error was only being logged.
-
-          Changed to return an error code and message when workspace generation
-          fails in some cases where an error message was only logged.
-
-        * modules/Creator.pm:
-
-          Added parse_assignment() that pre-parses bracketed assigments
-          (see comment on docs/html/MakeProjectCreator.html) before
-          calling SUPER::parse_assignment(). This method takes an optional
-          file handle that must be used for bracketed assignment support.
+          Provide a way to escape the variable replacement expressions in
+          makefiles with a general "subst" function (implemented as Perl s///g).
 
         * modules/DirectoryManager.pm:
 
-          Corrected typo in comment.
+          In translate_directory(), fixed a bug in the regex for changing
+          repeated occurrences of .. to dotdot.
 
-        * modules/Parser.pm:
+Wed Jun 26 16:14:28 UTC 2013  Phil Mesnier  <mesnier_p@ociweb.com>
 
-          Added strip_comments(), strip_lt_whitespace(), and is_blank_line().
+        * modules/Version.pm:
 
-        * modules/ProjectCreator.pm:
+          MPC version 4.0 released.
 
-          Added file handle parse_assignment and related method calls for
-          bracketed assignment support.  See comment on modules/Creator.pm.
+Wed Jun 26 16:13:40 UTC 2013  Phil Mesnier  <mesnier_p@ociweb.com>
 
-          Added case sensitivity logic to already_added() similar to other places in code.
+        * ChangeLog:
 
-        * modules/RpmSpecWorkspaceCreator.pm:
-
-          Changed write_and_compare_file() to return 1 instead of undef as method
-          must now return status.
-
-          Added %pre section and URL tag to RPM spec file generation.
-
-        * modules/StringProcessor.pm:
-
-          Changed parse_assignment() to not strip ending new line
-          as later parsing may need it.
-
-        * modules/WorkspaceCreator.pm:
-
-          Added file handle parse_assignment and related method calls for
-          bracketed assignment support.  See comment on modules/Creator.pm.
-
-          Changed to return an error code and message when workspace generation
-          fails in some cases where an error message was only logged.
-
-          Added default_cacheok() which returns true and is used to set 'cacheok'
-          so this method can be overridden when 'cacheok' needs to be false.
-
-Fri Mar 18 15:07:53 UTC 2011  Adam Mitz  <mitza@ociweb.com>
-
-        * docs/templates/vc8csharp.txt:
-        * templates/vc8csharp.mpd:
-
-          Added the "PlatformTarget" template variable for C#.
-
-Tue Mar 15 14:54:48 UTC 2011  Adam Mitz  <mitza@ociweb.com>
-
-        * templates/vc10.mpd:
-        * docs/templates/vc10.txt:
-
-          Added the "PlatformToolset" template variable.
-
-        * modules/ProjectCreator.pm:
-        * docs/README:
-
-          Allow the "*" replacement for assignments to the libs keyword.
-
-Wed Mar  9 13:51:00 UTC 2011  William R. Otte  <wotte@dre.vanderbilt.edu>
-
-        * config/ndds_ts_defaults.mpb:
-
-          Added PLATFORM_NDDS_ARGS at the suggestion of Johnny Willemsen.
-
-Thu Mar  3 18:51:23 UTC 2011  Chad Elliott  <elliott_c@ociweb.com>
-
-        * docs/html/RpmSpec.html:
-
-          Fixed html errors and warnings.
-
-        * modules/WorkspaceCreator.pm:
-
-          Fixed a bug where a project added by an aggregated workspace
-          containing a relative path would not be recognized as a duplicate
-          if the same project were added by another workspace without a
-          relative path.
-
-Tue Feb 15 16:02:17 UTC 2011  Adam Mitz  <mitza@ociweb.com>
-
-        * MPC version 3.9.0 released.
+        * history/ChangeLog-3_9:
 
 Local Variables:
 mode: change-log
