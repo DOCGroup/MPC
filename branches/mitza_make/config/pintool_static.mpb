@@ -1,0 +1,37 @@
+// $Id$
+
+project : pin_static {
+  verbatim (make, top) {
+    no_hidden_visibility = 1
+  }
+
+  verbatim (gnuace, top) {
+    no_hidden_visibility = 1
+  }
+
+  verbatim (make, macros) {
+    ifeq ($(shell uname -s), Darwin)
+      CPPFLAGS += -DTARGET_MAC
+      LDFLAGS  += -lpindwarf -lpinpthread
+      LDFLAGS  -= -lpthread
+    else
+      # TODO Add support for linking against gcc libraries included with Pin
+      CPPFLAGS += -DTARGET_LINUX
+      LDLIBS   += -lelf -ldwarf
+      LDFLAGS  += -Wl,--hash-style=sysv -Wl,-Bsymbolic
+    endif
+  }
+
+  verbatim (gnuace, macros) {
+    ifeq ($(shell uname -s), Darwin)
+      CPPFLAGS += -DTARGET_MAC
+      LDFLAGS  += -lpindwarf -lpinpthread
+      LDFLAGS  -= -lpthread
+    else
+      # TODO Add support for linking against gcc libraries included with Pin
+      CPPFLAGS += -DTARGET_LINUX
+      LIBS     += -ldwarf -lelf
+      LDFLAGS  += -Wl,--hash-style=sysv -Wl,-Bsymbolic
+    endif
+  }
+}
