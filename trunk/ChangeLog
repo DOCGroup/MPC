@@ -1,3 +1,11 @@
+Mon Feb 17 11:45:32 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/nmake.mpd:
+          Don't use /FD when compiling sources, that option should
+          only be specified by the MS IDE, not when compiling from
+          a build system or commandline, see
+          http://msdn.microsoft.com/en-us/library/6ce2bkt7.aspx
+
 Tue Jan 28 02:37:12 UTC 2014  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/pin_base.mpb:
