@@ -1,3 +1,9 @@
+Mon Feb 17 11:59:48 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * docs/templates/vc10.txt:
+        * templates/vc10.mpd:
+          Added debug_cmd_args and debug_work_dir as template variables
+
 Mon Feb 17 11:45:32 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/nmake.mpd:
