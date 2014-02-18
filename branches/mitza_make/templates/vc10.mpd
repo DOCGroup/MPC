@@ -94,6 +94,8 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%else%><%if(type_is_static)%><%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%endif%><%endif%></TargetName>
 <%if(type_is_static && staticname && !compares(lib_ext, .lib))%>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%lib_ext%></TargetExt>
+    <LocalDebuggerCommandArguments Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%marker(debug_cmd_args)%></LocalDebuggerCommandArguments>
+    <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(debug_work_dir)%><%debug_work_dir%><%else%>$(OutDir)<%endif%></LocalDebuggerWorkingDirectory>
 <%else%>
 <%if(!type_is_static)%>
 <%if(exename || sharedname || staticname)%>
