@@ -1,3 +1,10 @@
+Tue Feb 25 14:17:16 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/bmake.mpd:
+          For bcc32 default to -O1 for optimized builds, not to -O2
+          because testing showed that -O2 causes some problems with
+          TAO tests
+
 Thu Feb 20 07:55:16 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmakecommon.mpt:
