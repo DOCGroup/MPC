@@ -10,11 +10,18 @@ project {
 
   macros += BIGARRAY_MULTIPLIER=1 USING_XED
 
+  specific (vc9) {
+    runtime_library = 0
+    compile_flags += /Oy
+  }
+
+  specific (vc10) {
+	runtime_library = MultiThreaded
+  }
+
   specific (prop:windows) {
     macros += TARGET_WINDOWS _SECURE_SCL=0
 
-    compile_flags += /Oy
-    runtime_library = 0
     DisableSpecificWarning += 4530
     IgnoreAllDefaultLibraries = true
 
@@ -59,11 +66,13 @@ feature(ia32) {
   avoids += intel64
 
   specific (prop:windows) {
-    // DO NOT CHANGE ORDER
-    pure_libs += "ntdll-32.lib libxed.lib pin.lib pinvm.lib libcmt.lib libcpmt.lib"
-
     libpaths += $(PIN_ROOT)/ia32/lib \
                 $(PIN_ROOT)/ia32/lib-ext
+  }
+
+  specific (prop:windows) {
+    // DO NOT CHANGE ORDER
+    lit_libs += libcpmt libcmt pinvm pin libxed ntdll-32
   }
 }
 
@@ -79,6 +88,6 @@ feature(intel64) {
 
   specific (prop:windows) {
     // DO NOT CHANGE ORDER
-    pure_libs += "ntdll-64.lib libxed.lib pin.lib pinvm.lib libcmt.lib libcpmt.lib"
+    lit_libs += libcpmt libcmt pinvm pin libxed ntdll-64
   }
 }
