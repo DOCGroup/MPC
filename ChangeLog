@@ -1,3 +1,10 @@
+Fri Feb 28 04:12:34 UTC 2014  James H. Hill  <hillj at cs dot iupui dot edu>
+
+        * config/pin_base.mpb:
+        * config/pintool.mpb:
+
+          Added support for vc10.
+
 Tue Feb 25 14:17:16 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmake.mpd:
