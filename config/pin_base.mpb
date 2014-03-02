@@ -13,10 +13,12 @@ project {
   specific (vc9) {
     runtime_library = 0
     compile_flags += /Oy
+
   }
 
   specific (vc10) {
-	runtime_library = MultiThreaded
+	  runtime_library = MultiThreaded
+    macros += _ITERATOR_DEBUG_LEVEL=0
   }
 
   specific (prop:windows) {
