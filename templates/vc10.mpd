@@ -662,7 +662,7 @@
       <CLRSupportLastError><%CLRSupportLastError%></CLRSupportLastError>
 <%endif%>
 <%if(ImageHasSafeExceptionHandlers)%>
-      <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
+      <ImageHasSafeExceptionHandlers><%ImageHasSafeExceptionHandlers%></ImageHasSafeExceptionHandlers>
 <%endif%>
 <%if(!source_files)%>
       <AdditionalOptions>/noentry<%if(link_options)%> <%link_options%><%endif%><%if(release_link_options && !debug_prj)%> <%release_link_options%><%endif%> %(AdditionalOptions)</AdditionalOptions>
