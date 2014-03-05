@@ -26,7 +26,7 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
-my $targets = 'clean depend generated realclean $(CUSTOM_TARGETS)';
+my $targets = 'clean generated realclean $(CUSTOM_TARGETS)';
 
 # ************************************************************
 # Subroutine Section
