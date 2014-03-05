@@ -347,7 +347,7 @@ __prebuild__:
 
 <%endif%>
 <%if(postbuild)%>
-__postbuild__:<%if(exename)%> $(BIN)<%endif%><%if(dll_ext && sharedname)%><%if(version && versupport)%> $(SHLIB).<%version%><%endif%> $(SHLIB)<%endif%><%if(staticname)%> $(LIB)<%endif%>
+__postbuild__:<%if(exename)%> $(BIN)<%endif%><%if(dll_ext && sharedname)%><%if(version && versupport)%> $(SHLIB).<%version%><%endif%> $(SHLIB)<%else%><%if(staticname)%> $(LIB)<%endif%><%endif%>
 	@<%eval(postbuild)%>
 
 <%endif%>

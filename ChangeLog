@@ -1,3 +1,25 @@
+Wed Mar  5 21:59:52 UTC 2014  Adam Mitz  <mitza@ociweb.com>
+
+        * templates/make.mpd:
+
+          Fixed a bug in the previous change for making postbuild always run
+          after the primary output -- now it works with sharedlibs as well.
+
+        * modules/MakeWorkspaceCreator.pm:
+        * modules/MakeWorkspaceBase.pm:
+        * modules/NMakeWorkspaceCreator.pm:
+
+          Made the "make depend" target work with parallel make.
+
+        * modules/Depgen/MakeDependencyWriter.pm:
+
+          If the environment variable MPC_DEPGEN_EXCLUDE is set, it is used
+          as a whitespace-separated list of patterns.  A potential dependency
+          header file that matches one of those patterns is excluded from the
+          depend file.  This is useful for speeding up builds that have a
+          subtree with a lot of headers which don't change much (such as
+          third-party headers or the equivalent of /usr/include).
+
 Tue Mar  4 04:04:59 UTC 2014  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/pin_base.mpb:
@@ -8,7 +30,7 @@ Tue Mar  4 04:04:59 UTC 2014  James H. Hill  <hillj at cs dot iupui dot edu>
         * templates/vc10.mpd:
 
           Updated ImageHasSafeExceptionHandlers to take either true|false since
-          current method made it impossible to set ImageHasSafeExceptionHandlers 
+          current method made it impossible to set ImageHasSafeExceptionHandlers
           to false.
 
 Sun Mar  2 21:55:48 UTC 2014  James H. Hill  <hillj at cs dot iupui dot edu>
@@ -30,7 +52,7 @@ Tue Feb 25 14:17:16 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
           For bcc32 default to -O1 for optimized builds, not to -O2
           because testing showed that -O2 causes some problems with
           TAO tests
-          svn c
+
 Thu Feb 20 07:55:16 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * templates/bmakecommon.mpt:

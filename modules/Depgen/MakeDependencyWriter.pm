@@ -27,17 +27,33 @@ my $cygwin = (defined $ENV{OS} && $ENV{OS} =~ /windows/i);
 # Subroutine Section
 # ************************************************************
 
+sub new {
+  my $self = DependencyWriter::new(@_);
+  if ($ENV{MPC_DEPGEN_EXCLUDE}) {
+    $self->{exclude} = [split(' ', $ENV{MPC_DEPGEN_EXCLUDE})];
+  }
+  return $self;
+}
+
 sub process {
+  my($self, $target, $deps) = @_;
+
+  if (exists $self->{exclude}) {
+    for my $excl (@{$self->{exclude}}) {
+      @$deps = grep {$_ !~ /$excl/} @$deps;
+    }
+  }
+
   ## Replace whitespace with escaped whitespace.
-  map(s/(\s)/\\$1/g, @{$_[2]});
+  map(s/(\s)/\\$1/g, @{$deps});
 
   ## Replace <drive letter>: with /cygdrive/<drive letter>.  The user may
   ## or may not be using Cygwin, but leaving the colon in there will
   ## cause make to fail catastrophically on the next invocation.
-  map(s/([A-Z]):/\/cygdrive\/$1/gi, @{$_[2]}) if ($cygwin);
+  map(s/([A-Z]):/\/cygdrive\/$1/gi, @{$deps}) if ($cygwin);
 
   ## Sort the dependencies to make them reproducible.
-  return "@{$_[1]}: \\\n  " . join(" \\\n  ", sort @{$_[2]}) . "\n";
+  return "@{$target}: \\\n  " . join(" \\\n  ", sort @{$deps}) . "\n";
 }
 
 
