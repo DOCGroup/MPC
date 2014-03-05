@@ -77,6 +77,28 @@ sub workspace_preamble {
             $crlf);
 }
 
+sub write_top_level_rule {
+  my($self, $fh, $crlf, $list, $remain, $trans, $maxline, $target, $suffix) = @_;
+
+  if (defined $maxline) {
+    my $line = $target . ':';
+    foreach my $project (@$list) {
+      $line .= " $$trans{$project}$suffix";
+    }
+    if (length($line) < $maxline) {
+      print $fh $crlf, $line;
+    }
+    else {
+      $$remain = $target . ' ' . $$remain;
+    }
+  }
+  else {
+    print $fh $crlf . $target . ':';
+    foreach my $project (@$list) {
+      print $fh " $$trans{$project}$suffix";
+    }
+  }
+}
 
 sub write_named_targets {
   my($self, $fh, $crlf, $targnum, $list, $remain, $targpre, $allpre, $trans, $phony, $andsym, $maxline) = @_;
@@ -85,24 +107,13 @@ sub write_named_targets {
   $self->{'make_targets'} = $remain;
 
   ## Print out the "all" target
-  if (defined $maxline) {
-    my $all = 'all:';
-    foreach my $project (@$list) {
-      $all .= " $$trans{$project}";
-    }
-    if (length($all) < $maxline) {
-      print $fh $crlf, $all;
-    }
-    else {
-      $remain = 'all ' . $remain;
-    }
-  }
-  else {
-    print $fh $crlf . 'all:';
-    foreach my $project (@$list) {
-      print $fh " $$trans{$project}";
-    }
-  }
+  $self->write_top_level_rule($fh, $crlf, $list, \$remain,
+                              $trans, $maxline, 'all', '');
+  print $fh $crlf;
+
+  ## Print out the "depend" target
+  $self->write_top_level_rule($fh, $crlf, $list, \$remain,
+                              $trans, $maxline, 'depend', '-depend');
 
   ## Print out all other targets here
   print $fh "$crlf$crlf$remain:$crlf";
@@ -121,6 +132,11 @@ sub write_named_targets {
     print $fh $crlf;
     $self->write_project_targets($fh, $crlf,
                                  $targpre . $allpre . 'all',
+                                 [ $project ], $andsym);
+    print $fh ($phony ? "$crlf.PHONY: $$trans{$project}-depend" : ''),
+              $crlf, $$trans{$project}, '-depend:', $crlf;
+    $self->write_project_targets($fh, $crlf,
+                                 $targpre . $allpre . 'depend',
                                  [ $project ], $andsym);
   }
 
