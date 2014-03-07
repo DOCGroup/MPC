@@ -1,3 +1,8 @@
+Fri Mar  7 07:45:41 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc10.mpd:
+          Corrected debug_cmd_args and debug_work_dir as template variables
+
 Fri Mar  7 04:26:21 UTC 2014  Adam Mitz  <mitza@ociweb.com>
 
         * modules/MakeWorkspaceBase.pm:
