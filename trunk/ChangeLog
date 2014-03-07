@@ -1,3 +1,11 @@
+Fri Mar  7 04:26:21 UTC 2014  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/MakeWorkspaceBase.pm:
+
+          When makefiles have a maximum line length limit (only bmake),
+          make sure that 'all' is still the default target in workspaces
+          that have enough projects to exceed that line length limit.
+
 Wed Mar  5 21:59:52 UTC 2014  Adam Mitz  <mitza@ociweb.com>
 
         * templates/make.mpd:
