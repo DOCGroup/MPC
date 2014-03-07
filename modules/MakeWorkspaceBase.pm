@@ -88,6 +88,9 @@ sub write_top_level_rule {
     if (length($line) < $maxline) {
       print $fh $crlf, $line;
     }
+    elsif (length($suffix) > 0) {
+      $$remain .= ' ' . $target;
+    }
     else {
       $$remain = $target . ' ' . $$remain;
     }
