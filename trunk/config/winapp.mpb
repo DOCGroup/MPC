@@ -7,7 +7,7 @@ project {
   } else {
     subsystem = 2
   }
-  specific(vc10) {
+  specific(vc10, vc11) {
     subsystem = Windows
   }
 }
