@@ -5,7 +5,7 @@ project : pin {
     link_options += /EXPORT:main /ENTRY:Ptrace_DllMainCRTStartup@12
   }
 
-  specific (vc10, vc11) {
+  specific (vc10, vc11, vc12) {
 	  link_options += /EXPORT:main
     EntryPointSymbol = Ptrace_DllMainCRTStartup@12
   }
