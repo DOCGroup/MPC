@@ -1,3 +1,13 @@
+Thu Mar 13 12:05:13 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/pin_base.mpb:
+        * config/pintool.mpb:
+        * config/winapp.mpb:
+          Added vc12
+
+        * registry.pl:
+          Added vc11 and vc12
+
 Wed Mar 12 21:29:08 UTC 2014  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/winapp.mpb:
