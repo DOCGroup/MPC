@@ -1,15 +1,10 @@
 // $Id$
 
 project : pin {
-  specific (vc9) {
-    link_options += /EXPORT:main /ENTRY:Ptrace_DllMainCRTStartup@12
+  specific (prop:windows) {
+    link_options += /EXPORT:main
   }
-
-  specific (vc10, vc11, vc12) {
-	  link_options += /EXPORT:main
-    EntryPointSymbol = Ptrace_DllMainCRTStartup@12
-  }
-
+ 
   verbatim (make, top) {
     no_hidden_visibility = 1
   }
@@ -40,5 +35,25 @@ project : pin {
       LIBS     += -ldwarf -lelf
       LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
     endif
+  }
+}
+
+feature (ia32) {
+  specific (vc9) {
+    link_options += /ENTRY:Ptrace_DllMainCRTStartup@12
+  }
+
+  specific (vc10, vc11, vc12) {
+    EntryPointSymbol = Ptrace_DllMainCRTStartup@12
+  }
+}
+
+feature (intel64) {
+  specific (vc9) {
+    link_options += /ENTRY:Ptrace_DllMainCRTStartup
+  }
+
+  specific (vc10, vc11, vc12) {
+    EntryPointSymbol = Ptrace_DllMainCRTStartup
   }
 }
