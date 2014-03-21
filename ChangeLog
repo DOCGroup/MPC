@@ -1,3 +1,14 @@
+Fri Mar 21 16:32:10 UTC 2014  Adam Mitz  <mitza@ociweb.com>
+
+        * config/sqlapi.mpb:
+
+	  Added base project for SQLAPI (www.sqlapi.com).
+
+        * docs/templates/make.txt:
+        * templates/make.mpd:
+
+          Added a template variable 'default_configuration'.
+
 Sun Mar 16 21:50:26 UTC 2014  James H. Hill  <hillj@cs.iupui.edu>
 
         * config/pintool.mpb:
