@@ -3,6 +3,9 @@
 #----------------------------------------------------------------------------
 <%marker(top)%>
 <%if(multiple(configurations) || multiple(platforms))%>
+<%if(default_configuration)%>
+CFG = <%default_configuration%>
+<%else%>
 <%foreach(configurations)%>
 <%if(forfirst)%>
 <%if(multiple(platforms))%>
@@ -14,9 +17,10 @@ CFG = <%platform%> <%configuration%>
 <%else%>
 CFG = <%configuration%>
 <%endif%>
-
 <%endif%>
 <%endfor%>
+<%endif%>
+
 <%endif%>
 <%foreach(compilers)%>
 <%foreach(platforms)%>

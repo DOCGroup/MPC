@@ -27,6 +27,9 @@ cpu = This can be used with the Wind River specific compilers to specify the CPU
 cputype = This can be used with the Wind River specific compilers to specify the CPU type.
 cxx = Holds the C++ compiler.
 cxxint = This is Green Hills specific and specifies the type of integration.
+default_configuration = If multiple platforms/configurations are used, this
+variable can be set to determine which configuration is active when CFG is not
+set on the command line.
 delete = A utility to delete a file.
 depgen = A utility to generate make dependencies.
 depgen_flags = Flags to be passed to the dependency generator utility.
