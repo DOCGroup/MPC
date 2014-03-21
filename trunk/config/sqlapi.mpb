@@ -1,0 +1,7 @@
+// $Id$
+
+project {
+  includes += $(SQLAPI_ROOT)/include
+  libpaths += $(SQLAPI_ROOT)/lib
+  lit_libs += sqlapi
+}
