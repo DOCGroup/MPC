@@ -9,8 +9,6 @@ project {
 
   specific(prop:windows) {
     macros += RTI_WIN32 NDDS_DLL_VARIABLE
-  } else {
-    macros += RTI_UNIX
   }
 
   verbatim(gnuace, circuit) {
@@ -19,6 +17,9 @@ project {
     endif
     ifeq ($(ACE_PLATFORM_CONFIG),config-linux.h)
     FLAGS_C_CC += -DRTI_LINUX
+    endif
+    ifeq ($(ACE_PLATFORM_CONFIG),config-win32.h)
+    FLAGS_C_CC += -DRTI_WIN32
     endif
   }
 }
