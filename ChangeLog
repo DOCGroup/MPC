@@ -1,18 +1,22 @@
+Wed Apr  9 13:11:59 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/nddslib.mpb:
+          If prop:windows is not set, don't set RTI_UNIX, could be that
+          we are on windows using GNU make. If ACE_PLATFORM_CONFIG is
+          config-win32.h, we do use -DRTI_WIN32, we are than on Windows
+
 Fri Mar 21 16:32:10 UTC 2014  Adam Mitz  <mitza@ociweb.com>
 
         * config/sqlapi.mpb:
-
-	  Added base project for SQLAPI (www.sqlapi.com).
+          Added base project for SQLAPI (www.sqlapi.com).
 
         * docs/templates/make.txt:
         * templates/make.mpd:
-
           Added a template variable 'default_configuration'.
 
 Sun Mar 16 21:50:26 UTC 2014  James H. Hill  <hillj@cs.iupui.edu>
 
         * config/pintool.mpb:
-
           Fixed building pintools on 64-bit Windows machines.
 
 Thu Mar 13 12:05:13 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
@@ -28,7 +32,6 @@ Thu Mar 13 12:05:13 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 Wed Mar 12 21:29:08 UTC 2014  James H. Hill  <hillj at cs dot iupui dot edu>
 
         * config/winapp.mpb:
-
           Fixed vc11 project configuration errors.
 
 Fri Mar  7 07:45:41 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
@@ -39,7 +42,6 @@ Fri Mar  7 07:45:41 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 Fri Mar  7 04:26:21 UTC 2014  Adam Mitz  <mitza@ociweb.com>
 
         * modules/MakeWorkspaceBase.pm:
-
           When makefiles have a maximum line length limit (only bmake),
           make sure that 'all' is still the default target in workspaces
           that have enough projects to exceed that line length limit.
