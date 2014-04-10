@@ -1,3 +1,8 @@
+Thu Apr 10 08:26:17 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * config/nddslib.mpb:
+          Set RTI_UNIX on non windows
+
 Thu Apr 10 06:38:25 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/nddslib.mpb:
