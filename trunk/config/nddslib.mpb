@@ -16,7 +16,7 @@ project {
     FLAGS_C_CC += -DRTI_64BIT
     endif
     ifeq ($(ACE_PLATFORM_CONFIG),config-linux.h)
-    FLAGS_C_CC += -DRTI_LINUX
+    FLAGS_C_CC += -DRTI_LINUX -DRTI_UNIX
     endif
     ifeq ($(ACE_PLATFORM_CONFIG),config-win32.h)
     FLAGS_C_CC += -DRTI_WIN32
