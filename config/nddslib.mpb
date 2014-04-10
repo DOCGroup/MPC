@@ -15,11 +15,13 @@ project {
     ifeq ($(buildbits),64)
     FLAGS_C_CC += -DRTI_64BIT
     endif
-    ifeq ($(ACE_PLATFORM_CONFIG),config-linux.h)
-    FLAGS_C_CC += -DRTI_LINUX -DRTI_UNIX
+    ifeq ($(ACE_PLATFORM_CONF IG),config-linux.h)
+    FLAGS_C_CC += -DRTI_LINUX
     endif
     ifeq ($(ACE_PLATFORM_CONFIG),config-win32.h)
     FLAGS_C_CC += -DRTI_WIN32
+    else
+    FLAGS_C_CC += -DRTI_UNIX
     endif
   }
 }
