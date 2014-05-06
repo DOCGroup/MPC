@@ -1,0 +1,38 @@
+// -*- MPC -*-
+// $Id$
+
+conditional_include "common"
+
+configurations       = Debug Release
+common_defines       = WIN32 _WINDOWS
+common_libs          = ws2_32$(LIB_EXT)
+common32_libs        = import32$(LIB_EXT) cw32mti$(LIB_EXT)
+common64_libs        = import64$(LIB_EXT) cw64mti$(LIB_EXT)
+common32_flags       = -a8
+common64_flags       = -fdelayed-template-parsing
+unicode_flags        = -WU
+unicode_lib_modifier = u
+unicode_exe_modifier = u
+
+obj32_ext = .obj
+obj64_ext = .o
+dll_ext = .dll
+lib32_ext = .lib
+lib64_ext = .a
+exe_ext = .exe
+
+cc32    = bcc32
+rc32    = brcc32
+link32  = ilink32
+cc64    = bcc64
+rc64    = brcc64
+link64  = ilink64
+tlib    = tlib
+thflags = -tWM
+dllflags = -Tpd -Gi -x -Gn -w-dup
+libflags = /C
+ccflags  = -q
+exeflags = -Tpe -x -Gn
+warnflags32 = -w-rvl -w-rch -w-ccc -w-obs -w-aus -w-pia -w-inl -w-mls
+warnflags64 =
+
