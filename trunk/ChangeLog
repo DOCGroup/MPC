@@ -1,3 +1,16 @@
+Tue May  6 12:32:53 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/vc10.txt:
+        * templates/vc10.mpd:
+
+          Added a template variable to allow the user to override the
+          default intermediate directory.  Thanks to Craig Miller
+          <craigwmiller at yahoo dot com> for providing this patch.
+
+        * docs/templates/vc8csharp.txt:
+
+          Document a missing template variable.
+
 Thu Apr 10 08:26:17 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/nddslib.mpb:
