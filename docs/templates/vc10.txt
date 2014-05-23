@@ -152,6 +152,7 @@ supportunloadofdelayloadeddll = The UNLOAD qualifier tells the delay-load helper
 suppressstartupbanner = Compiler and linker option that prevents display of the copyright message and version number.
 swaprunfromcd = Tells the operating system to first copy the linker output to a swap file, and then run the image from there. This is a Windows NT 4.0 (and later) feature. When CD is specified, the operating system will copy the image on a removable disk to a page file and then load it.
 swaprunfromnet = Tells the operating system to first copy the linker output to a swap file, and then run the image from there. This is a Windows NT 4.0 (and later) feature. If it is specified, the operating system will first copy the binary image from the network to a swap file and load it from there. This option is useful for running applications over the network.
+targetframeworkversion = The TargetFrameworkVersion attribute.
 targetmachine = Specifies the subsystem for the linker.  See vc10platforms.mpt for some of the settings.
 terminalserveraware = Sets a flag in the IMAGE_OPTIONAL_HEADER DllCharacteristics field in the program image's optional header. When this flag is set, Terminal Server will not make certain changes to the application.
 toolsversion = Override the value of the ToolsVersion attribute of the Project XML element in the vcxproj file.
