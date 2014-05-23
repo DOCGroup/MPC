@@ -1,3 +1,13 @@
+Fri May 23 19:11:37 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/vc10.txt:
+        * templates/vc10.mpd:
+
+          Modified to allow the setting of the TargetFrameworkVersion to
+          change the TargetFrameworkVersion of managed C++ projects.  Thanks
+          to Charles Calkins <calkinsc at ociweb dot com> for bringing this
+          to my attention.
+
 Tue May  6 12:32:53 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/vc10.txt:
