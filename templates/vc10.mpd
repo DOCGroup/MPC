@@ -16,7 +16,7 @@
     <RootNamespace><%project_name%></RootNamespace>
 <%if(managed)%>
     <Keyword>ManagedCProj</Keyword>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v<%TargetFrameworkVersion("4.0")%></TargetFrameworkVersion>
 <%else%>
     <Keyword><%if(UseOfMFC)%>MFCProj<%else%><%platform("Win32")%>Proj<%endif%></Keyword>
 <%endif%>
