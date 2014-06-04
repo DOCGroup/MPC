@@ -1,3 +1,14 @@
+Wed Jun  4 09:36:54 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * modules/VC14ProjectCreator.pm:
+        * modules/VC14WorkspaceCreator.pm:
+        * templates/vc14dll.mpt:
+        * templates/vc14exe.mpt:
+        * templates/vc14lib.mpt:
+        * templates/vc14libexe.mpt:
+        * templates/vc14platforms.mpt:
+          New files for msvc14, partly updated, not tested yet
+
 Fri May 23 19:11:37 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/vc10.txt:
