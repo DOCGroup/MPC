@@ -496,6 +496,18 @@
                 <tr>
                   <td rowspan="1" colspan="1">
                     <p class="TblCode">
+                      <em class="TableCode">vc14</em>
+                    </p>
+                  </td>
+
+                  <td rowspan="1" colspan="1">
+                    <p class="Tbl-Body">Visual Studio 2014.</p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <p class="TblCode">
                       <em class="TableCode">
                         <a href="WB26.html">
                           wb26
@@ -1802,8 +1814,8 @@ class="XRef">the -workers_port option</a>,
               for <em class="Emphasis">static</em> projects with the <em class=
           "Code">em3</em>, <em class="Code">vc6</em>, <em class=
           "Code">vc7</em>, <em class="Code">vc71</em>, <em class="Code">vc8</em>,
-          <em class="Code">vc9</em>, <em class="Code">vc10</em>, <em class="Code">vc11</em>, and
-              <em class="Code">vc12</em> project types. If this environment
+          <em class="Code">vc9</em>, <em class="Code">vc10</em>, <em class="Code">vc11</em>,
+              <em class="Code">vc12</em> and <em class="Code">vc14</em> project types. If this environment
               variable is set, MPC will generate inter-project dependencies for
               libraries within a single workspace. This is usually not desired
               since adding these dependencies in a static workspace has the side
@@ -1959,7 +1971,7 @@ class="XRef">the -workers_port option</a>,
 
                 <p class="Code">
                   &nbsp;&nbsp;exclude(vc6, vc7, vc71, vc8, vc9,
-                  vc10, vc11, vc12, nmake) {
+                  vc10, vc11, vc12, vc14, nmake) {
                 </p>
 
                 <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;this_directory</p>
@@ -2566,7 +2578,7 @@ class="Code">specific</em> clause.
                             <em class="Code">vc7</em>, <em class="Code">vc71</em>,
                             <em class="Code">vc8</em>, <em class="Code">vc9</em>,
                             <em class="Code">vc10</em>, <em class="Code">vc11</em>,
-                            and <em class="Code">vc12</em> project types.
+                            <em class="Code">vc12</em>, and <em class="Code">vc14</em> project types.
                           </p>
                         </td>
                       </tr>
@@ -3211,8 +3223,9 @@ class="Code">specific</em> clause.
                   project file for the <em class="Code">em3</em>, <em class=
               "Code">gnuace</em>, <em class="Code">vc6</em>, <em class=
               "Code">vc7</em>, <em class="Code">vc71</em>, <em class="Code">vc8</em>,
-              <em class="Code">vc9</em>, <em class="Code">vc10</em>, <em class="Code">vc11</em> and
-                  <em class="Code">vc12</em> project types.
+              <em class="Code">vc9</em>, <em class="Code">vc10</em>, <em class="Code">vc11</em>,
+              <em class="Code">vc12</em>, and
+                  <em class="Code">vc14</em> project types.
                 </p>
 
                 <p class="Body">
@@ -8071,7 +8084,8 @@ class="Code">specific</em> clause.
                           type of project being generated. 7.00 is return for vc7,
                           7.10 is return for vc71 and 8.00 is returned for vc8,
                           9.00 is returned for vc9, 10.00 is returned for vc10,
-                          11.00 is returned for vc11, 12.0 is returned for vc12.
+                          11.00 is returned for vc11, 12.0 is returned for vc12,
+                          14.0 is returned for vc14.
                         </p>
                       </td>
                     </tr>
@@ -8389,7 +8403,7 @@ class="Code">specific</em> clause.
                     <p class="Body">
                       Certain project types don't support the same
                       input file used by multiple custom types (current examples of
-                      this are vc10, vc11, vc12, cdt6, and cdt7). To accomodate these types, MPC
+                      this are vc10, vc11, vc12, vc14, cdt6, and cdt7). To accomodate these types, MPC
                       has a capability called "combined custom".  With this capability
                       enabled in the specific ProjectCreator, MPC will "fold together"
                       the multiple custom steps so that the target tool (Visual Studio
