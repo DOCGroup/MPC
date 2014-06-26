@@ -83,6 +83,9 @@
 <%if(PlatformTarget)%>
     <PlatformTarget><%PlatformTarget%></PlatformTarget>
 <%endif%>
+<%if(Prefer32Bit)%>
+    <Prefer32Bit><%Prefer32Bit%></Prefer32Bit>
+<%endif%>
   </PropertyGroup>
 <%endfor%>
 <%endfor%>

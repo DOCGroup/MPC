@@ -1,9 +1,9 @@
-package VC14ProjectCreator;
+package VC13ProjectCreator;
 
 # ************************************************************
-# Description   : A VC14 Project Creator
-# Author        : Johnny Willemsen
-# Create Date   : 6/04/2014
+# Description   : A VC13 Project Creator
+# Author        : Chad Elliott
+# Create Date   : 6/26/2014
 # $Id$
 # ************************************************************
 
@@ -13,22 +13,25 @@ package VC14ProjectCreator;
 
 use strict;
 
-use VC13ProjectCreator;
+use VC12ProjectCreator;
 
 use vars qw(@ISA);
-@ISA = qw(VC13ProjectCreator);
+@ISA = qw(VC12ProjectCreator);
 
 ## NOTE: We call the constant as a function to support Perl 5.6.
 my %info = (Creator::cplusplus() => {'ext'      => '.vcxproj',
-                                     'dllexe'   => 'vc14exe',
-                                     'libexe'   => 'vc14libexe',
-                                     'dll'      => 'vc14dll',
-                                     'lib'      => 'vc14lib',
+                                     'dllexe'   => 'vc13exe',
+                                     'libexe'   => 'vc13libexe',
+                                     'dll'      => 'vc13dll',
+                                     'lib'      => 'vc13lib',
                                      'template' => [ 'vc10', 'vc10filters' ],
                                     },
            );
 
-my %config = ('vcversion' => '14.00',
+my %config = ('vcversion' => '13.00',
+              'toolsversion' => '12.0',
+              'targetframeworkversion' => '4.5',
+              'prefer32bit' => 'false'
              );
 
 # ************************************************************
