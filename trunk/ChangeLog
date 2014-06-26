@@ -1,3 +1,30 @@
+Thu Jun 26 16:28:39 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/vc10dll.mpt:
+        * templates/vc10exe.mpt:
+        * templates/vc10lib.mpt:
+        * templates/vc10libexe.mpt:
+        * templates/vc11dll.mpt:
+        * templates/vc11exe.mpt:
+        * templates/vc11lib.mpt:
+        * templates/vc11libexe.mpt:
+        * templates/vc12dll.mpt:
+        * templates/vc12exe.mpt:
+        * templates/vc12lib.mpt:
+        * templates/vc12libexe.mpt:
+        * templates/vc14dll.mpt:
+        * templates/vc14exe.mpt:
+        * templates/vc14lib.mpt:
+        * templates/vc14libexe.mpt:
+        * templates/vc1xdll.mpt:
+        * templates/vc1xexe.mpt:
+        * templates/vc1xlib.mpt:
+        * templates/vc1xlibexe.mpt:
+
+          Pulled vc10 through vc14 duplicated settings out into common
+          vc1x template input files.  This will make addition of VC1x
+          project types cleaner.
+
 Mon Jun 23 12:49:54 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * config/pin_base.mpb:
