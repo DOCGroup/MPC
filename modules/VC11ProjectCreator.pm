@@ -28,13 +28,6 @@ my %info = (Creator::cplusplus() => {'ext'      => '.vcxproj',
                                     },
            );
 
-my %config = ('vcversion' => '10.00',
-              'prversion' => '10.0.30319.1',
-              'toolsversion' => '4.0',
-              'targetframeworkversion' => '4.0',
-              'xmlheader' => 1
-              );
-
 # ************************************************************
 # Subroutine Section
 # ************************************************************
@@ -47,11 +40,6 @@ sub get_info_hash {
 
   ## Otherwise, see if our parent type can take care of it.
   return $self->SUPER::get_info_hash($key);
-}
-
-sub get_configurable {
-  my($self, $name) = @_;
-  return $config{$name};
 }
 
 1;

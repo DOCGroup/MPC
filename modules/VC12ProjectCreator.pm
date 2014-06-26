@@ -13,10 +13,10 @@ package VC12ProjectCreator;
 
 use strict;
 
-use VC10ProjectCreator;
+use VC11ProjectCreator;
 
 use vars qw(@ISA);
-@ISA = qw(VC10ProjectCreator);
+@ISA = qw(VC11ProjectCreator);
 
 ## NOTE: We call the constant as a function to support Perl 5.6.
 my %info = (Creator::cplusplus() => {'ext'      => '.vcxproj',
@@ -29,11 +29,7 @@ my %info = (Creator::cplusplus() => {'ext'      => '.vcxproj',
            );
 
 my %config = ('vcversion' => '12.00',
-              'prversion' => '10.0.30319.1',
-              'toolsversion' => '4.0',
-              'targetframeworkversion' => '4.0',
-              'xmlheader' => 1
-              );
+             );
 
 # ************************************************************
 # Subroutine Section
@@ -42,7 +38,7 @@ my %config = ('vcversion' => '12.00',
 sub get_info_hash {
   my($self, $key) = @_;
 
-  ## If we have the setting in our information map, the use it.
+  ## If we have the setting in our information map, then use it.
   return $info{$key} if (defined $info{$key});
 
   ## Otherwise, see if our parent type can take care of it.
@@ -51,7 +47,12 @@ sub get_info_hash {
 
 sub get_configurable {
   my($self, $name) = @_;
-  return $config{$name};
+
+  ## If we have the setting in our config map, then use it.
+  return $config{$name} if (defined $config{$name});
+
+  ## Otherwise, see if our parent type can take care of it.
+  return $self->SUPER::get_configurable($name);
 }
 
 1;

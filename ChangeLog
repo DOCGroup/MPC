@@ -1,3 +1,35 @@
+Thu Jun 26 18:10:32 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/vc8csharp.txt:
+        * templates/vc8csharp.mpd:
+
+          Added support for the 'Prefer32Bit' setting.
+
+        * modules/VC11ProjectCreator.pm:
+        * modules/VC12ProjectCreator.pm:
+        * modules/VC14ProjectCreator.pm:
+
+          Removed duplicate code.
+
+        * modules/VC12WorkspaceCreator.pm:
+
+          Fixed the inheritance and visual studio version number.
+
+        * modules/VC14WorkspaceCreator.pm:
+
+          Fixed the inheritance.
+
+        * docs/USAGE:
+        * modules/VC13ProjectCreator.pm:
+        * modules/VC13WorkspaceCreator.pm:
+        * templates/vc13dll.mpt:
+        * templates/vc13exe.mpt:
+        * templates/vc13lib.mpt:
+        * templates/vc13libexe.mpt:
+        * templates/vc13platforms.mpt:
+
+          Added support for Visual Studio 2013.
+
 Thu Jun 26 16:28:39 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/vc10dll.mpt:
