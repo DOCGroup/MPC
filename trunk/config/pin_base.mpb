@@ -16,8 +16,8 @@ project {
 
   }
 
-  specific (vc10, vc11, vc12, vc14) {
-	  runtime_library = MultiThreaded
+  specific (vc10, vc11, vc12, vc13, vc14) {
+    runtime_library = MultiThreaded
     ImageHasSafeExceptionHandlers = false
 
     macros += _ITERATOR_DEBUG_LEVEL=0

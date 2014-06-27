@@ -211,7 +211,7 @@ managed         This keyword can be used as a global setting or as a source
                 component scoped setting (ie. inside the scope of
                 Source_Files).  It specifies that the source files should be
                 compiled as managed C++.  Since this is Microsoft specific, it
-                is only supported by the nmake, vc7, vc71, vc8, vc9, vc10
+                is only supported by the nmake, vc7 - vc14
                 project types.
 no_pch          This keyword can only be used as a source component scoped
                 setting (ie. inside the scope of Source_Files).  It
@@ -355,6 +355,8 @@ specific        This scope allows assignments that are specific to a
                 vc10     |         |      |     X     |    X    |
                 vc11     |         |      |     X     |    X    |
                 vc12     |         |      |     X     |    X    |
+                vc13     |         |      |     X     |    X    |
+                vc14     |         |      |     X     |    X    |
                 wix      |         |      |           |    X    |
 
                 ? - indicates that this is controled by the MPC_GHS_UNIX
@@ -433,17 +435,17 @@ C# Specific Project Keywords
 ----------------------------
 dependent_upon  This can only be applied to source and resx components.  It
                 determines which file the source or resx file is dependent
-                upon for vc8, vc9, and vc10 only.
+                upon for vc8 - vc14 only.
 generates_source This can only be applied to resx components.  It indicates
                 that the resx file or files auto generates a source file for
-                vc8, vc9, and vc10 only.  A value of '1' indicates that the
+                vc8 - vc14 only.  A value of '1' indicates that the
                 resx file generates a source file and the default generator is
                 used. Any other value indicates that the resx file generates a
                 source file and the generator name is taken from the value
                 supplied.  The auto generated name is created by taking the
                 resx file without the extension and appending .Designer.cs.
 subtype         This can only be applied to source and resx components.  It
-                determines the SubType setting for vc8, vc9, and vc10 only.
+                determines the SubType setting for vc8 - vc14 only.
 
 Custom File Definitions
 -----------------------

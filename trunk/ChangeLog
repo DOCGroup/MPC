@@ -1,3 +1,19 @@
+Fri Jun 27 13:55:06 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/pin_base.mpb:
+        * config/pintool.mpb:
+        * config/winapp.mpb:
+        * config/wireshark.mpb:
+        * docs/README:
+
+          Updated to support vc13.
+
+        * modules/ProjectCreator.pm:
+        * templates/vc8csharp.mpd:
+
+          Added support for WPF.  This includes the addition of
+          AppDef_Files, Page_Files, and Splash_Files.
+
 Thu Jun 26 18:10:32 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/vc8csharp.txt:
