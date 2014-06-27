@@ -229,6 +229,9 @@ my %csvc = ('source_files'        => [ "\\.cs" ],
             'ico_files'           => [ "\\.ico" ],
             'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
             'embedded_resource_files' => [],
+            'page_files'          => [],
+            'appdef_files'        => [],
+            'splash_files'        => [],
            );
 
 my %csma = ('source_files' => [ 'dependent_upon',

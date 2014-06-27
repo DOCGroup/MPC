@@ -133,6 +133,12 @@
 <%endfor%>
   </ItemGroup>
   <ItemGroup>
+<%foreach(appdef_files)%>
+    <ApplicationDefinition Include="<%appdef_file%>">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+<%endfor%>
 <%foreach(source_files)%>
 <%if(contains(flag_overrides(source_file, subtype), ^(Form|Component|UserControl)$))%>
     <Compile Include="<%source_file%>">
@@ -184,6 +190,12 @@
 <%endif%>
 <%endfor%>
 <%endfor%>
+<%foreach(page_files)%>
+    <Page Include="<%page_file%>">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+<%endfor%>
 <%foreach(resx_files)%>
     <EmbeddedResource Include="<%resx_file%>">
 <%if(flag_overrides(resx_file, subtype))%>
@@ -232,6 +244,9 @@
 <%endfor%>
 <%foreach(documentation_files)%>
     <None Include="<%documentation_file%>" />
+<%endfor%>
+<%foreach(splash_files)%>
+    <SplashScreen Include="<%splash_file%>" />
 <%endfor%>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
