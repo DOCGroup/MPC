@@ -5,6 +5,9 @@
     <ProductVersion><%prversion("8.0.50727")%></ProductVersion>
     <SchemaVersion><%schemaversion("2.0")%></SchemaVersion>
     <ProjectGuid>{<%guid%>}</ProjectGuid>
+<%if(UICulture)%>
+    <UICulture><%UICulture%></UICulture>
+<%endif%>
 <%foreach(configurations)%>
 <%if(forfirst)%>
     <Configuration Condition=" '$(Configuration)' == '' "><%configuration%></Configuration>
