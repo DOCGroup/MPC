@@ -1,4 +1,0 @@
-// -*- MPC -*-
-// $Id$
-//
-conditional_include "vc12platforms"
