@@ -130,12 +130,22 @@ sub post_workspace {
               ## unmanaged c++ libraries.  If it's a managed project or
               ## it's not a c++ project, it's ok to add a reference.
               elsif ($gmap{$dep}->[1]) {
-                push(@read, $spc . '<ProjectReference Include="' .
-                            $relative . '">' . $crlf,
-                            $spc . '  <Project>{' . $gmap{$dep}->[0] .
-                            '}</Project>' . $crlf,
-                            $spc . '  <Name>' . $dep . '</Name>' . $crlf,
-                            $spc . '</ProjectReference>' . $crlf);
+                ## There are situations where, in C#, we want a dependency
+                ## between projects but not want them linked together (via a
+                ## ProjectReference).  There is a build dependency, i.e.,
+                ## this project needs to be built if some other project is
+                ## built.  But, that's where the dependency ends.  Setting
+                ## the ProjectReference attribute to false allows us to do
+                ## that.
+                my $attr = $creator->get_dependency_attribute($dep);
+                if (!defined $attr || $attr !~ /ProjectReference=false/i) {
+                  push(@read, $spc . '<ProjectReference Include="' .
+                              $relative . '">' . $crlf,
+                              $spc . '  <Project>{' . $gmap{$dep}->[0] .
+                              '}</Project>' . $crlf,
+                              $spc . '  <Name>' . $dep . '</Name>' . $crlf,
+                              $spc . '</ProjectReference>' . $crlf);
+                }
               }
 
               ## Indicate that we need to re-write the file
