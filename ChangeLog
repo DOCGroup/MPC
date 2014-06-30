@@ -1,3 +1,32 @@
+Mon Jun 30 17:35:25 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
+
+        * config/pin_base.mpb:
+        * config/pintool.mpb:
+        * config/winapp.mpb:
+        * config/wireshark.mpb:
+        * docs/README:
+        * docs/USAGE:
+        * modules/VC14ProjectCreator.pm:
+        * modules/VC14WorkspaceCreator.pm:
+
+          Removed references to vc13.
+
+        * modules/VC13ProjectCreator.pm:
+        * modules/VC13WorkspaceCreator.pm:
+        * templates/vc13dll.mpt:
+        * templates/vc13exe.mpt:
+        * templates/vc13lib.mpt:
+        * templates/vc13libexe.mpt:
+        * templates/vc13platforms.mpt:
+
+          Removed these files.  It turned out that vc13 was redundant and is
+          covered by vc12.
+
+        * modules/ProjectCreator.pm:
+
+          Fixed a bug in the handling of the dependency attribute of the
+          'after' keyword.
+
 Mon Jun 30 12:28:49 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/VC8WorkspaceCreator.pm:

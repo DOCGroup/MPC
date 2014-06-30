@@ -14,10 +14,10 @@ package VC14WorkspaceCreator;
 use strict;
 
 use VC14ProjectCreator;
-use VC13WorkspaceCreator;
+use VC12WorkspaceCreator;
 
 use vars qw(@ISA);
-@ISA = qw(VC13WorkspaceCreator);
+@ISA = qw(VC12WorkspaceCreator);
 
 # ************************************************************
 # Subroutine Section

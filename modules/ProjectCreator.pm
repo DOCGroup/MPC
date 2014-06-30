@@ -473,7 +473,14 @@ sub process_assignment {
       ## added.  This function will be called for each one, so we only
       ## need to handle one at a time.
       if ($value =~ s/(\s*([^:]+)):([^\s]+)/$1/) {
-        $self->{'dependency_attributes'}->{$2} = $3;
+        ## The value may contain multiple projects.  But, only one
+        ## dependency attribute will be present at any time.  So, once we
+        ## get here, we need to remove any of the other projects from the
+        ## front of the key string.
+        my $key = $2;
+        my $value = $3;
+        $key =~ s/.*\s+//;
+        $self->{'dependency_attributes'}->{$key} = $value;
       }
 
       ## Check the after value and warn the user in the event that it
