@@ -3171,6 +3171,21 @@ sub get_relative_dep_file {
         $built .= $dirs[$i] . '/';
       }
       $built .= $dependee;
+
+      ## If the project contains a portion of the current working directory,
+      ## we need to strip it off.  If the workspace is a directory below one
+      ## of the projects, the directory count will be incorrect due to the
+      ## use of '..' within the project path.
+      my $re;
+      my $dir = $self->getcwd();
+      while($dir =~ s!^[^/]*/!! &&
+            ($re = $dir . '/' . ('../' x (($dir =~ tr/\///) + 1))) &&
+            $project !~ s!^$re!!) {
+      }
+
+      ## The code above is tricky
+      $self->debug("Project on which this project depends: $project");
+
       my $dircount = ($project =~ tr/\///);
       return ('../' x $dircount) . $built;
     }

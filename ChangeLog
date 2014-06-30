@@ -1,3 +1,22 @@
+Mon Jun 30 12:28:49 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/VC8WorkspaceCreator.pm:
+
+          Support a dependency attribute for C# projects.  By default, using
+          the 'after' keyword causes a build depency *and* a project
+          reference to be created.  Using a dependency attribute of
+          'ProjectReference=false' on the 'after' setting will cause the
+          build dependency to be retained, but the project reference will
+          not be created.
+
+        * modules/WorkspaceCreator.pm:
+
+          If a workspace is in a directory below a project, the project
+          references will be wrong due to the use of '..' within the
+          generated project path.  We will resolve the path as much as
+          possible before counting the directory levels to ensure that the
+          generated relative path is correct.
+
 Fri Jun 27 15:07:30 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/vc8csharp.txt:
