@@ -13,10 +13,10 @@ package VC14ProjectCreator;
 
 use strict;
 
-use VC13ProjectCreator;
+use VC12ProjectCreator;
 
 use vars qw(@ISA);
-@ISA = qw(VC13ProjectCreator);
+@ISA = qw(VC12ProjectCreator);
 
 ## NOTE: We call the constant as a function to support Perl 5.6.
 my %info = (Creator::cplusplus() => {'ext'      => '.vcxproj',
