@@ -1,3 +1,10 @@
+Thu Jul 10 14:17:10 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Depgen/Driver.pm:
+
+          Fixed a bug where the -isystem option was not used as an include
+          path option.
+
 Mon Jun 30 17:35:25 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
 
         * config/pin_base.mpb:
