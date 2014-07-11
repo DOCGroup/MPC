@@ -231,6 +231,9 @@
 <%foreach(embedded_resource_files)%>
     <EmbeddedResource Include="<%embedded_resource_file%>" />
 <%endfor%>
+<%foreach(resource_files)%>
+    <Resource Include="<%resource_file%>" />
+<%endfor%>
 <%foreach(ico_files)%>
     <Content Include="<%ico_file%>" />
 <%endfor%>
