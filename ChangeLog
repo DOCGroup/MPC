@@ -1,3 +1,11 @@
+Fri Jul 11 14:58:13 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+        * templates/vc8csharp.mpd:
+
+          Added support for resource files.  These are different from
+          embedded resource files.
+
 Thu Jul 10 14:17:10 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Depgen/Driver.pm:
