@@ -1,3 +1,15 @@
+Wed Aug 13 13:51:51 UTC 2014  Dennis Feiock  <dfeiock@iupui.edu>
+
+        * config/coredx_ts_defaults.mpb:
+        * config/splice_ts_defaults.mpb:
+
+          Fixed custom action for vc11 builds.
+
+        * config/udm.mpb:
+
+          Link against vc10/vc11 libraries instead of the generic
+          vc9 library.
+
 Fri Jul 11 14:58:13 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
