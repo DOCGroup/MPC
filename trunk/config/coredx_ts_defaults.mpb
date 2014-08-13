@@ -2,10 +2,13 @@
 // $Id$
 
 project {
+  specific {
+    coredx_ddl = $(COREDX_TOP)/host/$(COREDX_HOST)/bin/coredx_ddl
+  }
   Define_Custom(CoreDXTypeSupport) {
-    command               = <%quote%>$(COREDX_TOP)/host/$(COREDX_HOST)/bin/coredx_ddl<%quote%>
+    command               = $(COREDX_DDL)
     commandflags          = -l cpp -f
-    dependent             = <%quote%>$(COREDX_TOP)/host/$(COREDX_HOST)/bin/coredx_ddl<%quote%>
+    dependent             = $(COREDX_DDL)
     source_pre_extension  = , TypeSupport, DataReader, DataWriter
     source_outputext      = .cc
     header_pre_extension  = , TypeSupport, DataReader, DataWriter
