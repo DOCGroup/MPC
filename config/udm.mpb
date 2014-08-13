@@ -22,6 +22,24 @@ project : xerces {
     DisableSpecificWarnings += 4251
   }
 
+  specific(vc10) {
+    // Link against vc10 specific libraries instead of the generic ones
+    Release::lit_libs -= UdmDll
+    Debug::lit_libs -= UdmDllD
+
+    Release::lit_libs += UdmDll_VS10
+    Debug::lit_libs += UdmDll_VS10D
+  }
+
+  specific(vc11) {
+    // Link against vc11 specific libraries instead of the generic ones
+    Release::lit_libs -= UdmDll
+    Debug::lit_libs -= UdmDllD
+
+    Release::lit_libs += UdmDll_v110_Win32
+    Debug::lit_libs += UdmDll_v110_Win32D
+  }
+
   Define_Custom(UDM) {
     dependent         = $(UDM_PATH)/bin/Udm
     command           = <%quote%>$(UDM_PATH)<%quote%>/bin/Udm
