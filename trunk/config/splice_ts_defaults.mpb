@@ -2,13 +2,9 @@
 // $Id$
 
 project : taoidldefaults {
-  specific {
-    idlpp = $(OSPL_HOME)/bin/idlpp
-  }
-
   Define_Custom(SpliceTypeSupport) {
-    command               = $(IDLPP)
-    dependent             = $(IDLPP)
+    command               = $(OSPL_HOME)/bin/idlpp
+    dependent             = $(OSPL_HOME)/bin/idlpp
     source_pre_extension  = SplDcps, Dcps_impl
     source_outputext      = .cpp
     header_pre_extension  = , SplDcps, Dcps_impl
