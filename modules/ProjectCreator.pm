@@ -5497,8 +5497,10 @@ sub project_file_name {
   ## Fill in the name if one wasn't provided
   $name = $self->get_assignment('project_name') if (!defined $name);
 
+  ## Apply the transformation so that any name modifiers are utilized.
   return $self->get_modified_project_file_name(
-                                     $self->project_file_prefix() . $name,
+                                     $self->project_file_prefix() .
+                                     $self->transform_file_name($name),
                                      $self->project_file_extension());
 }
 
