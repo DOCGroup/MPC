@@ -202,7 +202,7 @@ overrides the template input file for all types specified.
 The -feature_file specifies a file to be read that enables or disables
 features.  These feature names can be anything, but they should correspond
 to values used for the 'requires' and 'avoids' keywords.  If a feature is
-required and is not enable then the project will not be created.  If a
+required and is not enabled then the project will not be created.  If a
 feature is to be avoided and it is enabled then the project will not be
 created.
 

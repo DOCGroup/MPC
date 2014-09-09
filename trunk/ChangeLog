@@ -1,3 +1,9 @@
+Tue Sep  9 06:52:00 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * docs/USAGE:
+          Fixed typo, thanks to Pau Garcia i Quiles
+          <pgquiles at elpauer dot org> for providing the patch
+
 Fri Aug 15 15:31:45 UTC 2014  Dennis Feiock  <dfeiock@iupui.edu>
 
         * config/coredx_ts_defaults.mpb:
@@ -169,7 +175,7 @@ Mon Jun 23 12:49:54 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
         * config/winapp.mpb:
         * docs/html/MakeProjectCreator.html:
         * registry.pl:
-          Added support for msvc14
+          Added support for Visual Studio 2014 (vc14)
 
 Wed Jun  4 09:36:54 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 
