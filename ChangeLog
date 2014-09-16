@@ -1,10 +1,17 @@
+Tue Sep 16 14:30:22 UTC 2014  Paul Calabrese  <calabrese_p@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Add .classpath to the list of build files cloned when using the
+          -f option.
+
 Tue Sep  9 14:43:48 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
 
           Fixed a issue where a name modifier applied to projects and files
           (-name_modifier and -apply_project) causes the build order to be
-          incorrect with the make project type (and possibly others). 
+          incorrect with the make project type (and possibly others).
           Thanks to Hubert Talbot <Hubert dot Talbot at criq dot qc dot ca>
           for reporting it and providing the fix.
 
