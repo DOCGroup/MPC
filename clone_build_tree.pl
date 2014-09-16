@@ -111,6 +111,7 @@ sub findCallback {
                     ! /^.*\.bld\z/s        &&
                     ! /^.*\.icc\z/s        &&
                     ! /^.*\.icp\z/s        &&
+                    ! /^.*\.classpath\z/s  &&
                     ! /^.*\.project\z/s    &&
                     ! /^.*\.wrproject\z/s  &&
                     ! /^.*\.wrmakefile\z/s &&
