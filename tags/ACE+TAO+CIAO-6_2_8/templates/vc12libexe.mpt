@@ -1,0 +1,6 @@
+// -*- MPC -*-
+// $Id$
+
+conditional_include "vc12platforms"
+conditional_include "vc1xlibexe"
+conditional_include "user_vc12libexe"
