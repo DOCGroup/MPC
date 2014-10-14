@@ -1,0 +1,97 @@
+// $Id$
+
+project {
+  requires += pin
+
+  includes += $(PIN_ROOT)/source/include \
+              $(PIN_ROOT)/source/include/pin \
+              $(PIN_ROOT)/source/include/pin/gen \
+              $(PIN_ROOT)/extras/components/include
+
+  macros += BIGARRAY_MULTIPLIER=1 USING_XED
+
+  specific (vc9) {
+    runtime_library = 0
+    compile_flags += /Oy
+
+  }
+
+  specific (vc10, vc11, vc12, vc14) {
+    runtime_library = MultiThreaded
+    ImageHasSafeExceptionHandlers = false
+
+    macros += _ITERATOR_DEBUG_LEVEL=0
+  }
+
+  specific (prop:windows) {
+    macros += TARGET_WINDOWS _SECURE_SCL=0
+
+    DisableSpecificWarning += 4530
+    IgnoreAllDefaultLibraries = true
+
+    // We need to remove the _DEBUG macro so that Visual Studio does not
+    // try to link against the debug C++ libraries. Otherwise, the program
+    // will not compile, and will have link errors.
+    Debug::macros -= _DEBUG
+  } else {
+    compile_flags += -O3 -fomit-frame-pointer -fno-strict-aliasing -Wunused-parameter -Wno-unknown-pragmas -fno-stack-protector -fPIC
+    libs += xed
+  }
+
+  verbatim (make, macros) {
+    ifeq ($(shell uname -s), Darwin)
+      CPPFLAGS += -DTARGET_MAC
+    else
+      CPPFLAGS += -DTARGET_LINUX
+    endif
+
+    // We have to disable hidden symbols since we are not manually exporting
+    // the main() function.
+    no_hidden_visibility = 1
+  }
+
+  verbatim (gnuace, macros) {
+    ifeq ($(shell uname -s), Darwin)
+      CPPFLAGS += -DTARGET_MAC
+    else
+      CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv
+    endif
+  }
+}
+
+feature(ia32) {
+  includes += $(PIN_ROOT)/extras/xed2-ia32/include
+
+  libpaths += $(PIN_ROOT)/ia32/lib \
+              $(PIN_ROOT)/ia32/lib-ext \
+              $(PIN_ROOT)/extras/xed2-ia32/lib
+
+  macros += TARGET_IA32 HOST_IA32
+  avoids += intel64
+
+  specific (prop:windows) {
+    libpaths += $(PIN_ROOT)/ia32/lib \
+                $(PIN_ROOT)/ia32/lib-ext
+  }
+
+  specific (prop:windows) {
+    // DO NOT CHANGE ORDER
+    lit_libs += libcpmt libcmt pinvm pin libxed ntdll-32
+  }
+}
+
+feature(intel64) {
+  includes += $(PIN_ROOT)/extras/xed2-intel64/include
+
+  libpaths += $(PIN_ROOT)/intel64/lib \
+              $(PIN_ROOT)/intel64/lib-ext \
+              $(PIN_ROOT)/extras/xed2-intel64/lib
+
+  macros += TARGET_IA32E HOST_IA32E
+  avoids += ia32
+
+  specific (prop:windows) {
+    // DO NOT CHANGE ORDER
+    lit_libs += libcpmt libcmt pinvm pin libxed ntdll-64
+  }
+}
