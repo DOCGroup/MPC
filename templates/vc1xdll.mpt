@@ -27,6 +27,8 @@ Debug {
   output_dir       = .
   intermediate_dir = Debug
   lib_modifier     = d
+  pdbl             = 1
+  pdbc             = 1
 }
 
 Memcheck Release {
@@ -38,6 +40,7 @@ Memcheck Release {
   FixedBaseAddress         = 1
   EnableIntrinsicFunctions = true
   WholeProgramOptimization = true
+  pdbl                     = 1
 }
 
 Memcheck Debug {
@@ -49,6 +52,7 @@ Memcheck Debug {
   BasicRuntimeChecks = 0
   LinkIncremental    = 1
   FixedBaseAddress   = 1
+  pdbl               = 1
 }
 
 MFC Release {
@@ -69,6 +73,8 @@ MFC Debug {
   intermediate_dir = MFC_Debug
   lib_modifier     = mfcd
   UseOfMFC         = Dynamic
+  pdbl             = 1
+  pdbc             = 1
 }
 
 conditional_include "vcpartialmacros"
