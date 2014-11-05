@@ -1,3 +1,10 @@
+Wed Nov  5 08:12:27 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * templates/vc1xdll.mpt:
+        * templates/vc1xexe.mpt:
+          Set same pdbc/pdbl settings to generate pdb files as we do
+          with older vc versions
+
 Wed Nov  5 08:03:49 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
 
         * docs/templates/vc10.txt:
