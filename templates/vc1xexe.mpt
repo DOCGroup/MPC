@@ -10,6 +10,8 @@ ConfigurationType        = 1
 SubSystem                = Console
 MinimalRebuild           = false
 GenerateDebugInformation = true
+use_pdb_modifier         = 1
+pdb_modifier             = _exe
 
 Release {
   LinkIncremental          = 1

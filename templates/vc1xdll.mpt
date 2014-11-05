@@ -9,6 +9,8 @@ common_defines           = WIN32 _WINDOWS _CRT_NONSTDC_NO_WARNINGS
 ConfigurationType        = 2
 MinimalRebuild           = false
 GenerateDebugInformation = true
+use_pdb_modifier         = 1
+pdb_modifier             = _dll
 
 Release {
   optimize                 = MaxSpeed
