@@ -173,6 +173,7 @@ useofatl = Specifies how ATL is used by the configuration (Static, Dynamic).
 useofmfc = Specifies how MFC is used by the configuration (Static, Dynamic).
 useunicodeforassemblerlisting = Causes the assembler listing output file to be created in UTF-8 format.
 useunicoderesponsefiles = Instructs the project system to generate Unicode response files when spawning the librarian.
+use_pdb_modifier = A boolean value to determine whether the 'pdb_modifier' setting will be appended
 verbose = Verbose librarian option.
 warnaserror = Treats all compiler warnings as errors.
 warning_level = Numeric value for warning level (1-4, default is 3), or the strings "all" or "none" (0 is an alias for none).

@@ -497,10 +497,10 @@
 <%endif%>
 <%if(pdbl)%>
 <%if(sharedname)%>
-      <ProgramDatabaseFile>$(OutDir)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%if(use_pdb_modifier)%><%pdb_modifier%><%endif%>.pdb</ProgramDatabaseFile>
 <%else%>
 <%if(exename)%>
-      <ProgramDatabaseFile>$(OutDir)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%>.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%if(use_pdb_modifier)%><%pdb_modifier%><%endif%>.pdb</ProgramDatabaseFile>
 <%endif%>
 <%endif%>
 <%endif%>

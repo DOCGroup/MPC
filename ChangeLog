@@ -1,3 +1,16 @@
+Wed Nov  5 08:03:49 UTC 2014  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+        * docs/templates/vc10.txt:
+        * templates/vc10.mpd:
+        * templates/vc1xdll.mpt:
+        * templates/vc1xexe.mpt:
+        * templates/vc7dll.mpt:
+          With TAO we have the case that exe and dll have the same
+          name which causes problems with the pdb file. Add a new
+          use_pdb_modifier which we enable by default for vc1x, it
+          adds _dll to the pdb file for a dll, and _exe to the pdb
+          file for a exe
+
 Wed Oct  8 13:41:24 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
 
         * MPC version 4.1.0 released.
