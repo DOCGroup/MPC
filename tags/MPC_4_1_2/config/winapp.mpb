@@ -1,0 +1,13 @@
+// -*- MPC -*-
+// $Id$
+
+project {
+  specific(em3, nmake, vc6) {
+    subsystem = windows
+  } else {
+    subsystem = 2
+  }
+  specific(vc10, vc11, vc12, vc14) {
+    subsystem = Windows
+  }
+}
