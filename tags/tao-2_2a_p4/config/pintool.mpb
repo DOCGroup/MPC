@@ -1,0 +1,59 @@
+// $Id$
+
+project : pin {
+  specific (prop:windows) {
+    link_options += /EXPORT:main
+  }
+
+  verbatim (make, top) {
+    no_hidden_visibility = 1
+  }
+
+  verbatim (gnuace, top) {
+    no_hidden_visibility = 1
+  }
+
+  verbatim (make, macros) {
+    ifeq ($(shell uname -s), Darwin)
+      CPPFLAGS += -DTARGET_MAC
+      LDFLAGS  += -lpindwarf -lpinpthread -Wl,-exported_symbols_list -Wl,$(PIN_ROOT)/source/include/pin/pintool.exp
+      LDFLAGS  -= -lpthread
+    else
+      CPPFLAGS += -DTARGET_LINUX
+      LDLIBS   += -ldwarf -lelf
+      LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
+    endif
+  }
+
+  verbatim (gnuace, macros) {
+    ifeq ($(shell uname -s), Darwin)
+      CPPFLAGS += -DTARGET_MAC
+      LDFLAGS  += -lpindwarf -lpinpthread -Wl,-exported_symbols_list -Wl,$(PIN_ROOT)/source/include/pin/pintool.exp
+      LDFLAGS  -= -lpthread
+    else
+      CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv
+      LIBS     += -ldwarf -lelf
+      LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
+    endif
+  }
+}
+
+feature (ia32) {
+  specific (vc9) {
+    link_options += /ENTRY:Ptrace_DllMainCRTStartup@12
+  }
+
+  specific (vc10, vc11, vc12, vc14) {
+    EntryPointSymbol = Ptrace_DllMainCRTStartup@12
+  }
+}
+
+feature (intel64) {
+  specific (vc9) {
+    link_options += /ENTRY:Ptrace_DllMainCRTStartup
+  }
+
+  specific (vc10, vc11, vc12, vc14) {
+    EntryPointSymbol = Ptrace_DllMainCRTStartup
+  }
+}
