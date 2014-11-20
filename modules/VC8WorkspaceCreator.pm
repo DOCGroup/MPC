@@ -81,7 +81,8 @@ sub post_workspace {
     my $ph     = new FileHandle();
     my $outdir = $self->get_outdir();
     $outdir    = $self->getcwd() if ($outdir eq '.');
-    if (open($ph, "$outdir/$project")) {
+    if (open($ph, $self->path_is_relative($project) ?
+                                 "$outdir/$project" : $project)) {
       my $write;
       my @read;
       my $crlf = $self->crlf();

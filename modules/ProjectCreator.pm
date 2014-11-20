@@ -4689,7 +4689,7 @@ sub check_features {
 
   if ($info && !$status) {
     $self->details("Skipping " . $self->get_assignment('project_name') .
-                   " ($self->{'current_input'}), it $why.");
+                   " ($self->{'current_input'}); it $why.");
   }
 
   return $status;
