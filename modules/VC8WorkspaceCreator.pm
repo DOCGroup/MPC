@@ -80,13 +80,14 @@ sub post_workspace {
   foreach my $project (@projects) {
     my $ph     = new FileHandle();
     my $outdir = $self->get_outdir();
-    $outdir    = $self->getcwd() if ($outdir eq '.');
-    if (open($ph, $self->path_is_relative($project) ?
-                                 "$outdir/$project" : $project)) {
+    my $cwd    = $self->getcwd();
+    $outdir    = $cwd if ($outdir eq '.');
+    my $full   = $self->path_is_relative($project) ?
+                                "$outdir/$project" : $project;
+    if (open($ph, $full)) {
       my $write;
       my @read;
       my $crlf = $self->crlf();
-      my $cwd  = $self->getcwd();
       my $lang = $$pjs{$project}->[ProjectCreator::LANGUAGE];
       my $managed = $$pjs{$project}->[ProjectCreator::MANAGED_PROJECT];
 
@@ -99,8 +100,7 @@ sub post_workspace {
           my $deps = $self->get_validated_ordering($project);
           foreach my $dep (@$deps) {
             my $relative = $self->get_relative_dep_file($creator,
-                                                        "$cwd/$project",
-                                                        $dep);
+                                                        $full, $dep);
             if (defined $relative) {
               $relative =~ s!/!\\!g;
 
@@ -162,7 +162,7 @@ sub post_workspace {
       close($ph);
 
       ## If we need to re-write the file, then do so
-      if ($write && open($ph, ">$outdir/$project")) {
+      if ($write && open($ph, ">$full")) {
         foreach my $line (@read) {
           print $ph $line;
         }
