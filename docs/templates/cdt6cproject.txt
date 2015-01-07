@@ -1,4 +1,3 @@
-//
 // Document template variables for templates templates/cdt6cproject.mpd.
 // Please try to keep this alphabetically sorted.
 //

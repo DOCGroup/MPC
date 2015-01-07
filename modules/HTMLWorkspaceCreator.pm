@@ -38,7 +38,6 @@ sub pre_workspace {
 
   ## Next, goes the workspace comment
   $self->print_workspace_comment($fh,
-            '<!--  -->', $crlf,
             '<!-- MPC Command: -->', $crlf,
             '<!-- ', $self->create_command_line_string($0, @ARGV),' -->', $crlf);
 

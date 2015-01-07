@@ -1,4 +1,3 @@
-//
 // Document template variables for templates templates/wb26wrmakefile.mpd.
 // Please try to keep this alphabetically sorted.
 //

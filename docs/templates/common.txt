@@ -1,4 +1,3 @@
-//
 // Document template variables that are common to all or most templates.
 // Please try to keep this alphabetically sorted.
 //

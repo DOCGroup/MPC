@@ -4,8 +4,6 @@
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
   <meta http-equiv="Content-Style-Type" content="text/css">
-  <meta name="id" content=
-  "">
   <link rel="STYLESHEET" href="MakeProjectCreator.css" charset="ISO-8859-1"
   type="text/css">
 
@@ -33,7 +31,7 @@
     workspace declarations (<samp>.mwc</samp> files).  Consequently,
     workspace files utilizing these new features are not
     backwards-compatible with prior releases of MPC.</li>
-    
+
     <li class="body">Since RPM is primarily Linux-based, RpmSpec only
     officially supports use on Linux-based systems.  It <em>may</em>
     work on platforms for which an RPM port exists, but such success
@@ -71,7 +69,7 @@
     Inter-project dependencies that exist between any projects known to
     the top-level workspace automatically turn into inter-package
     dependencies in RPMs.
-    
+
    <h4>Generic workflow</h4>
     <div align="center">
    <img src="rpmworkflow.png" alt="rpm workflow"/>
@@ -121,14 +119,14 @@ workspace {
    Details on the variables allowed in the <samp>specific</samp>
    clause can be found in the <a href="../templates/rpmspec.txt">
    <samp>$MPC_ROOT/docs/templates/rpmspec.txt</samp></a> file.
-   
+
    <p>If you use workspaces as a part of
    building right now, you may wish to write additional
    workspace files specifically for packaging via RPM.
 
    <h4><a name="installready"></a>Making Projects
    <em>Install-Ready</em></h4>
-   
+
    MPC-assisted packaging requires some attention from the developer
    in order to yield its full potential.  What this means is that in
    order for a project to avail itself to be packaged, it must take
@@ -180,7 +178,7 @@ workspace {
      architecture, instead presuming that whatever toolchain is
      needed can be found in the PATH or is specified in the
      <code>.spec</code> file.</li>
-     
+
      <li>The script performs a build/install activity for each package.
    Installation is not into the running system, but rather into a
    "fake" area.  Installation is necessary to satisfy inter-package
@@ -190,7 +188,7 @@ workspace {
    <samp>specific</samp> clause, typically in the top-level
    workspace.</li>
 
-   
+
    </ol>
 </div>
 

@@ -22,10 +22,6 @@ use vars qw(@ISA);
 # Subroutine Section
 # ************************************************************
 
-sub get_id_for_comment {
-  return '';
-}
-
 sub get_project_prefix {
   return 'wb_';
 }
