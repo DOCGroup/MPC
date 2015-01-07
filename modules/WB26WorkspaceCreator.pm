@@ -4,7 +4,6 @@ package WB26WorkspaceCreator;
 # Description   : Workbench 2.6 / VxWorks 6.4 generator
 # Author        : Johnny Willemsen
 # Create Date   : 07/01/2008
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -39,7 +38,7 @@ sub workspace_file_name {
 }
 
 sub get_id_for_comment {
-  return '$Id$';
+  return '';
 }
 
 sub get_project_prefix {

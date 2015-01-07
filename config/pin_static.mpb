@@ -1,5 +1,3 @@
-// $Id$
-
 project : pin_base {
   specific (!prop:windows) {
     libs += sapin

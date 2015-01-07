@@ -1,5 +1,3 @@
-// $Id$
-
 project {
   Define_Custom(PO) {
     command = msgfmt

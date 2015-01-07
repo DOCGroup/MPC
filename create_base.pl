@@ -6,7 +6,7 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 # ******************************************************************
 #      Author: Chad Elliott
 #        Date: 9/13/2007
-#         $Id$
+#         
 # Description: Generate a base project based on a library project
 # ******************************************************************
 

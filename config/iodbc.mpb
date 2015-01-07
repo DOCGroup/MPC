@@ -1,5 +1,3 @@
-// $Id$
-
 project {
   // Support for iODBC (http://www.iodbc.org). This is one
   // variant of porting ODBC to non-Windows systems.

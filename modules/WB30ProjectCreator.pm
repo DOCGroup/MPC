@@ -4,7 +4,6 @@ package WB30ProjectCreator;
 # Description   : Wind River Workbench 3.0 generator
 # Author        : Adam Mitz (Object Computing, Inc.)
 # Create Date   : 07/21/2010
-# $Id$
 # ************************************************************
 
 # ************************************************************

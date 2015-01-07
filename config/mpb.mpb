@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 project {
   // Allow users to specify .mpb files in their project.  This gives the
   // opportunity to see them in IDE's and to install them using

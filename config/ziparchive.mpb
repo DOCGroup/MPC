@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 feature(ziparchive) {
   includes += $(ZIPARCHIVEROOT)/.
   libpaths += $(ZIPARCHIVEROOT)/lib

@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 // openssl is a completely different feature than ssl.
 // Currently ssl uses openssl, and openssl is enabled by
 // default. If we ever add a new ssl library, then you

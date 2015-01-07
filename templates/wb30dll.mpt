@@ -1,5 +1,3 @@
-// $Id$
-
 
 
 conditional_include "wb26dll"

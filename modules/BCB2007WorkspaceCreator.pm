@@ -4,7 +4,6 @@ package BCB2007WorkspaceCreator;
 # Description   : A BCB2007 Workspace Creator
 # Author        : Johnny Willemsen
 # Create Date   : 14/12/2005
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -52,7 +51,7 @@ sub pre_workspace {
 
   ## Optionally print the workspace comment
 #  $self->print_workspace_comment($fh,
-#            '<!-- $Id$ -->', $crlf,
+#            '<!--  -->', $crlf,
 #            '<!-- MPC Command -->', $crlf,
 #            '<!-- ', $self->create_command_line_string($0, @ARGV), ' -->',
 #            $crlf);

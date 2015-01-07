@@ -4,7 +4,6 @@ package Creator;
 # Description   : Base class for workspace and project creators
 # Author        : Chad Elliott
 # Create Date   : 5/13/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************

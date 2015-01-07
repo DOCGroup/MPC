@@ -1,4 +1,3 @@
-// $Id$
 project {
   verbatim(make, macros) {
     WX_PORT         = $(shell $(WXWINDOWS_ROOT)/bin/wx-config --query-toolkit)

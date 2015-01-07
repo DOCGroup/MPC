@@ -1,5 +1,3 @@
-// $Id$
-
 project {
   specific(prop:windows) {
     // Out of the box, Windows supports ODBC since ODBC originated

@@ -1,5 +1,3 @@
-// $Id$
-
 project {
   specific(prop:microsoft) {
     postbuild += \

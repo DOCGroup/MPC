@@ -1,4 +1,3 @@
-// $Id$
 project {
   // These settings are specific to wxWindows 2.9.X on Visual Studio.
   // If you are using a different version of wxWindows, feel free to change

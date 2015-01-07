@@ -4,7 +4,6 @@ package BMakeWorkspaceCreator;
 # Description   : A Borland Make Workspace (Makefile) creator
 # Author        : Chad Elliott
 # Create Date   : 2/03/2004
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -51,7 +50,7 @@ sub pre_workspace {
   my($self, $fh) = @_;
   $self->workspace_preamble($fh, $self->crlf(),
                             'Borland Workspace Makefile',
-                            '$Id$');
+                            '');
 }
 
 

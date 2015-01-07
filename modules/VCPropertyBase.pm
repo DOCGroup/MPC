@@ -4,7 +4,6 @@ package VCPropertyBase;
 # Description   : A VC property base module
 # Author        : Chad Elliott
 # Create Date   : 3/9/2010
-# $Id$
 # ************************************************************
 
 # ************************************************************

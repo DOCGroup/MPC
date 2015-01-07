@@ -4,7 +4,6 @@ package EM3ProjectCreator;
 # Description   : An eMbedded Visual C++ 3.00 Project Creator
 # Author        : Chad Elliott
 # Create Date   : 7/3/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************
