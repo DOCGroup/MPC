@@ -1,4 +1,3 @@
-// $Id$
 //
 // Current as of 9/25/2006
 // This defines the role of all the template variables specific to the
