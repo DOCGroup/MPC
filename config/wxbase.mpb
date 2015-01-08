@@ -1,4 +1,3 @@
-// $Id$
 project {
   // wxWindows specific variables used by this and other wxWindows related
   // base projects.  You must always set WXWINDOWS_ROOT to the full path of

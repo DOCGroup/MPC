@@ -4,7 +4,6 @@ package TemplateParser;
 # Description   : Parses the template and fills in missing values
 # Author        : Chad Elliott
 # Create Date   : 5/17/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************

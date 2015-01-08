@@ -4,7 +4,6 @@ package TemplateInputReader;
 # Description   : Reads the template input and stores the values
 # Author        : Chad Elliott
 # Create Date   : 5/16/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************

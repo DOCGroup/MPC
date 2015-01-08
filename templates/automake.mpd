@@ -1,6 +1,5 @@
 # @file <%project_file%>
 #
-# $Id$
 <%marker(top)%>
 <%if(requires || avoids)%>
 

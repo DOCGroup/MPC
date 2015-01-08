@@ -4,7 +4,6 @@
 #      Author: Chad Elliott
 #        Date: 8/13/2009
 # Description: Create an MPC rpm based on the current version number.
-#         $Id$
 # ******************************************************************
 
 ## First find out where this script is located

@@ -1,4 +1,3 @@
-// $Id$
 project {
   requires += flex
   Define_Custom(FLEX) {

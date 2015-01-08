@@ -1,4 +1,3 @@
-// $Id$
 project: wxadvanced, wxhtml, wxxml {
   specific(prop:windows) {                                  
     Debug::lit_libs   += wx$(WX_PORT)$(WX_VERSION)$(WX_UNICODE)d_ribbon

@@ -1,5 +1,3 @@
-// $Id$
-
 project : wix {
   specific {
     wix_flags   += -ext WixUtilExtension

@@ -4,7 +4,6 @@ package Options;
 # Description   : Process mpc command line options
 # Author        : Chad Elliott
 # Create Date   : 3/20/2003
-# $Id$
 # ************************************************************
 
 # ************************************************************

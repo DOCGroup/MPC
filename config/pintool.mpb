@@ -1,5 +1,3 @@
-// $Id$
-
 project : pin {
   specific (prop:windows) {
     link_options += /EXPORT:main

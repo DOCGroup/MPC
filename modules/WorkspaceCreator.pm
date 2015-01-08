@@ -4,7 +4,6 @@ package WorkspaceCreator;
 # Description   : Base class for all workspace creators
 # Author        : Chad Elliott
 # Create Date   : 5/13/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************

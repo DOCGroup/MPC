@@ -4,7 +4,6 @@ package OutputMessage;
 # Description   : Prints information, warnings and errors.
 # Author        : Chad Elliott
 # Create Date   : 2/02/2004
-# $Id$
 # ************************************************************
 
 # ************************************************************

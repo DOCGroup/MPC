@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 project {
   requires += rpc
   Define_Custom(rpcgen) {

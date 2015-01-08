@@ -1,4 +1,3 @@
-// $Id$
 project {
   requires += yacc
   Define_Custom(YACC) {

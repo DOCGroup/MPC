@@ -4,7 +4,6 @@ package Parser;
 # Description   : A basic parser that requires a parse_line override
 # Author        : Chad Elliott
 # Create Date   : 5/16/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************

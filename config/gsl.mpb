@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 feature(gsl) {
   lit_libs += gsl
 }

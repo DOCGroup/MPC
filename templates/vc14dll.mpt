@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 conditional_include "vc14platforms"
 conditional_include "vc1xdll"
 conditional_include "user_vc14dll"

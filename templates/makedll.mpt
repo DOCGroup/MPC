@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 // ***********************************************************************
 // The default compiler for the 'make' project type is gcc (provided by
 // the fill_value() method in MakeProjectCreator.pm).  This can be

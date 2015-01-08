@@ -4,7 +4,6 @@ package WB30WorkspaceCreator;
 # Description   : Wind River Workbench 3.0 generator
 # Author        : Adam Mitz (Object Computing, Inc.)
 # Create Date   : 07/21/2010
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -22,10 +21,6 @@ use vars qw(@ISA);
 # ************************************************************
 # Subroutine Section
 # ************************************************************
-
-sub get_id_for_comment {
-  return '$Id$';
-}
 
 sub get_project_prefix {
   return 'wb_';

@@ -1,7 +1,3 @@
-//
-// $Id$
-//
-
 project {
   // Support alternate versions of glib:
   expand(GLIB_VERSION) {

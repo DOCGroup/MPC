@@ -4,7 +4,6 @@ package BMakeProjectCreator;
 # Description   : A BMake Project Creator
 # Author        : Chad Elliott
 # Create Date   : 2/03/2004
-# $Id$
 # ************************************************************
 
 # ************************************************************

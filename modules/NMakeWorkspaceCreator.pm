@@ -4,7 +4,6 @@ package NMakeWorkspaceCreator;
 # Description   : A NMake Workspace (Makefile) creator
 # Author        : Chad Elliott
 # Create Date   : 6/10/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -41,7 +40,7 @@ sub workspace_file_extension {
 sub pre_workspace {
   my($self, $fh) = @_;
   $self->workspace_preamble($fh, $self->crlf(), 'NMAKE Workspace',
-                            '$Id$');
+                            '');
 }
 
 
