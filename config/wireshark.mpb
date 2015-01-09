@@ -1,7 +1,3 @@
-//
-// $Id$
-//
-
 project : glib {
   requires      += wireshark
 

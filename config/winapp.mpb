@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 project {
   specific(em3, nmake, vc6) {
     subsystem = windows

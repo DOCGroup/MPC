@@ -6,7 +6,6 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 # ******************************************************************
 #      Author: Chad Elliott
 #        Date: 4/8/2004
-#         $Id$
 # Description: Clone a build tree into an alternate location.
 #              This script is a rewrite of create_ace_build.pl and
 #              does not restrict the user to place the build

@@ -4,7 +4,6 @@ package NMakeProjectCreator;
 # Description   : An NMake Project Creator
 # Author        : Chad Elliott
 # Create Date   : 5/31/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************

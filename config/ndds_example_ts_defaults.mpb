@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 project : ndds_ts_defaults {
   ndds_ts_flags += -example $(NDDSARCHITECTURE)
 }

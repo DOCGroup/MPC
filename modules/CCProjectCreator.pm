@@ -4,7 +4,6 @@ package CCProjectCreator;
 # Description   : A Code Composer Project Creator
 # Author        : Chad Elliott
 # Create Date   : 9/18/2006
-# $Id$
 # ************************************************************
 
 # ************************************************************

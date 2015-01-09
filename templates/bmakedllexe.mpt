@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 conditional_include "bmakecommon"
 
 configurations = Debug Release "Static Debug" "Static Release"

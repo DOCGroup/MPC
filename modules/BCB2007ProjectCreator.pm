@@ -4,7 +4,6 @@ package BCB2007ProjectCreator;
 # Description   : The Borland C++ Builder 2007 Project Creator
 # Author        : Johnny Willemsen
 # Create Date   : 14/12/2005
-# $Id$
 # ************************************************************
 
 # ************************************************************

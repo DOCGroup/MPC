@@ -1,5 +1,3 @@
-// $Id$
-
 project : tena_base {
   macros += TENA_PLATFORM=$(TENA_PLATFORM)
 

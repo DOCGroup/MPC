@@ -4,7 +4,6 @@ package DependencyEditor;
 # Description   : Edits existing dependencies.
 # Author        : Chad Elliott
 # Create Date   : 2/10/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************

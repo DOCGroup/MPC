@@ -4,7 +4,6 @@ package GUID;
 # Description   : Generate GUID's for VC7 projects and workspaces
 # Author        : Chad Elliott
 # Create Date   : 5/14/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************

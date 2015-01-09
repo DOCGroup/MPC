@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 conditional_include "bmakecommon"
 
 startup_letter = x

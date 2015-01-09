@@ -1,5 +1,3 @@
-// $Id$
-//
 // Current as of 2/2/2007
 // This defines the role of all the template variables specific to the
 // 'automake' project type.

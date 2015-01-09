@@ -1,5 +1,3 @@
-// $Id$
-
 project {
   // Support for UnixODBC (http://www.unixodbc.org). This is one
   // variant of porting ODBC to non-Windows systems.

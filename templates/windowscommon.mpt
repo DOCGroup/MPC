@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 lib_prefix =
 lib_ext    = .lib
 dll_ext    = .dll

@@ -4,7 +4,6 @@ package SLEProjectCreator;
 # Description   : The SLE Project Creator
 # Author        : Johnny Willemsen
 # Create Date   : 3/23/2003
-# $Id$
 # ************************************************************
 
 # ************************************************************
