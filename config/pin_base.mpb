@@ -1,3 +1,5 @@
+// $Id: pin_base.mpb 2215 2014-06-30 17:37:41Z elliott_c $
+
 project {
   requires += pin
 
@@ -11,7 +13,6 @@ project {
   specific (vc9) {
     runtime_library = 0
     compile_flags += /Oy
-
   }
 
   specific (vc10, vc11, vc12, vc14) {
@@ -31,8 +32,12 @@ project {
     // try to link against the debug C++ libraries. Otherwise, the program
     // will not compile, and will have link errors.
     Debug::macros -= _DEBUG
-  } else {
-    compile_flags += -O3 -fomit-frame-pointer -fno-strict-aliasing -Wunused-parameter -Wno-unknown-pragmas -fno-stack-protector -fPIC
+  }
+
+  specific (gnuace, make) {
+    compile_flags += -O3 -fomit-frame-pointer -fno-strict-aliasing -Wno-unknown-pragmas -fno-stack-protector -fPIC
+    compile_flags -= -Wunused-parameter
+
     libs += xed
   }
 
