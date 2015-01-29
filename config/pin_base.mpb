@@ -73,11 +73,13 @@ feature(ia32) {
   specific (prop:windows) {
     libpaths += $(PIN_ROOT)/ia32/lib \
                 $(PIN_ROOT)/ia32/lib-ext
-  }
 
-  specific (prop:windows) {
     // DO NOT CHANGE ORDER
     lit_libs += libcpmt libcmt pinvm pin libxed ntdll-32
+  }
+  
+  specific (make, gnuace) {
+    compile_flags += -m32
   }
 }
 
