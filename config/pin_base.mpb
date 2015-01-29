@@ -1,5 +1,3 @@
-// $Id: pin_base.mpb 2215 2014-06-30 17:37:41Z elliott_c $
-
 project {
   requires += pin
 
