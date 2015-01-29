@@ -1,5 +1,8 @@
-project : pin_base {
+// $Id: pin_static.mpb 2166 2013-11-17 18:25:37Z hillj $
+
+project : pin {
   specific (!prop:windows) {
     libs += sapin
+    libs -= pin
   }
 }
