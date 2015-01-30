@@ -11,7 +11,6 @@ project {
   specific (vc9) {
     runtime_library = 0
     compile_flags += /Oy
-
   }
 
   specific (vc10, vc11, vc12, vc14) {
@@ -31,8 +30,12 @@ project {
     // try to link against the debug C++ libraries. Otherwise, the program
     // will not compile, and will have link errors.
     Debug::macros -= _DEBUG
-  } else {
-    compile_flags += -O3 -fomit-frame-pointer -fno-strict-aliasing -Wunused-parameter -Wno-unknown-pragmas -fno-stack-protector -fPIC
+  }
+
+  specific (gnuace, make) {
+    compile_flags += -O3 -fomit-frame-pointer -fno-strict-aliasing -Wno-unknown-pragmas -fno-stack-protector -fPIC
+    compile_flags -= -Wunused-parameter
+
     libs += xed
   }
 
@@ -70,11 +73,13 @@ feature(ia32) {
   specific (prop:windows) {
     libpaths += $(PIN_ROOT)/ia32/lib \
                 $(PIN_ROOT)/ia32/lib-ext
-  }
 
-  specific (prop:windows) {
     // DO NOT CHANGE ORDER
     lit_libs += libcpmt libcmt pinvm pin libxed ntdll-32
+  }
+  
+  specific (make, gnuace) {
+    compile_flags += -m32
   }
 }
 
