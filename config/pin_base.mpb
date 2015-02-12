@@ -1,5 +1,3 @@
-// $Id: pin_base.mpb 2215 2014-06-30 17:37:41Z elliott_c $
-
 project {
   requires += pin
 
@@ -76,11 +74,13 @@ feature(ia32) {
   specific (prop:windows) {
     libpaths += $(PIN_ROOT)/ia32/lib \
                 $(PIN_ROOT)/ia32/lib-ext
-  }
 
-  specific (prop:windows) {
     // DO NOT CHANGE ORDER
     lit_libs += libcpmt libcmt pinvm pin libxed ntdll-32
+  }
+  
+  specific (make, gnuace) {
+    compile_flags += -m32
   }
 }
 
