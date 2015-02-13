@@ -22,6 +22,7 @@ project {
 
   specific (prop:windows) {
     macros += TARGET_WINDOWS _SECURE_SCL=0
+    configurations -= Debug
 
     DisableSpecificWarning += 4530
     IgnoreAllDefaultLibraries = true
