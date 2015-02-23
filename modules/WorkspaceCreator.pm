@@ -2862,8 +2862,14 @@ sub process_cmdline {
           push(@{$parameters->{$key}}, @{$options->{$key}});
         }
         elsif ($type eq 'HASH') {
+          my $merge = ($key eq 'addtemp' || $key eq 'addproj');
           foreach my $hk (keys %{$options->{$key}}) {
-            $parameters->{$key}->{$hk} = $options->{$key}->{$hk};
+            if ($merge && defined $parameters->{$key}->{$hk}) {
+              push(@{$parameters->{$key}->{$hk}}, @{$options->{$key}->{$hk}});
+            }
+            else {
+              $parameters->{$key}->{$hk} = $options->{$key}->{$hk};
+            }
           }
         }
         elsif ($type eq 'SCALAR') {
