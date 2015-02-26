@@ -1,5 +1,3 @@
 // -*- MPC -*-
-// $Id$
-
 conditional_include "automakedll"
 conditional_include "user_automakeexe"

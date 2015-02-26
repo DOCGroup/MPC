@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 feature(lzo1) {
   // If the include files for lzo1 are not relative to the root (for
   // example, /usr/include/lzo), set the LZO1_INCDIR environment variable.

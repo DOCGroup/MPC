@@ -4,7 +4,6 @@ package VC12ProjectCreator;
 # Description   : A VC12 Project Creator
 # Author        : Johnny Willemsen
 # Create Date   : 10/29/2013
-# $Id$
 # ************************************************************
 
 # ************************************************************

@@ -4,7 +4,6 @@ package WorkspaceCreator;
 # Description   : Base class for all workspace creators
 # Author        : Chad Elliott
 # Create Date   : 5/13/2002
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -2863,8 +2862,14 @@ sub process_cmdline {
           push(@{$parameters->{$key}}, @{$options->{$key}});
         }
         elsif ($type eq 'HASH') {
+          my $merge = ($key eq 'addtemp' || $key eq 'addproj');
           foreach my $hk (keys %{$options->{$key}}) {
-            $parameters->{$key}->{$hk} = $options->{$key}->{$hk};
+            if ($merge && defined $parameters->{$key}->{$hk}) {
+              push(@{$parameters->{$key}->{$hk}}, @{$options->{$key}->{$hk}});
+            }
+            else {
+              $parameters->{$key}->{$hk} = $options->{$key}->{$hk};
+            }
           }
         }
         elsif ($type eq 'SCALAR') {

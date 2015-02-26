@@ -4,7 +4,6 @@ package MakeProjectBase;
 # Description   : A Make Project base module
 # Author        : Chad Elliott
 # Create Date   : 1/4/2005
-# $Id$
 # ************************************************************
 
 # ************************************************************

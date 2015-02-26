@@ -4,7 +4,6 @@ package WixWorkspaceCreator;
 # Description   : A Wix Workspace creator
 # Author        : James H. Hill
 # Create Date   : 6/23/2009
-# $Id$
 # ************************************************************
 
 # ************************************************************

@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 project {
         specific {
           xsc_bin = $(XSC_ROOT)/bin/xsc

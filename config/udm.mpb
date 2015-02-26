@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 project : xerces {
   includes += . \
               $(GME_ROOT)/SDK/BON/Common \

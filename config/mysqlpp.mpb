@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 project: mysql {
   includes += $(MYSQLPLUS_ROOT)/include/mysql++
   libpaths += $(MYSQLPLUS_ROOT)/lib

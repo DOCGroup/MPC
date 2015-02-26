@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 project {
   // If the include files for QT are not relative to the root (for
   // example, /usr/include/qt4), set the QT4_INCDIR environment variable.

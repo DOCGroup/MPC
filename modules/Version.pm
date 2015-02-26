@@ -4,7 +4,6 @@ package Version;
 # Description   : Central location for the MPC version.
 # Author        : Chad Elliott
 # Create Date   : 1/5/2003
-# $Id$
 # ************************************************************
 
 # ************************************************************

@@ -1,3 +1,16 @@
+Mon Feb 23 12:34:28 UTC 2015  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/WorkspaceCreator.pm:
+
+          Do not completely override -value_template and -value_project
+          settings given on the actual MPC command line with workspace
+          'cmdline' settings.  They are now merged together.
+
+Thu Jan 08 07:50:12 UTC 2015  Johnny Willemsen  <jwillemsen@remedy.nl
+
+        * All files:
+          Removed subversion Id tag
+
 Thu Nov 20 15:05:35 UTC 2014  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/VC8WorkspaceCreator.pm:

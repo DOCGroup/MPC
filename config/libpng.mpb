@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 feature(libpng): zlib {
   requires += zlib
   includes += "$(PNG_ROOT)/include/libpng"

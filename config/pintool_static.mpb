@@ -1,5 +1,3 @@
-// $Id$
-
 project : pin_static {
   verbatim (make, top) {
     no_hidden_visibility = 1

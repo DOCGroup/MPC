@@ -4,7 +4,6 @@ package MakeWorkspaceCreator;
 # Description   : A Generic Workspace (Makefile) creator
 # Author        : Chad Elliott
 # Create Date   : 2/18/2003
-# $Id$
 # ************************************************************
 
 # ************************************************************
@@ -48,7 +47,7 @@ sub write_project_targets {
 sub pre_workspace {
   my($self, $fh) = @_;
   $self->workspace_preamble($fh, $self->crlf(), 'Make Workspace',
-                            '$Id$');
+                            '');
 }
 
 

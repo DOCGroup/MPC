@@ -1,6 +1,4 @@
 // -*- MPC -*-
-// $Id$
-
 project : taoidldefaults {
   Define_Custom(SpliceTypeSupport) {
     command               = $(OSPL_HOME)/bin/idlpp

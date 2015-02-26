@@ -1,4 +1,3 @@
-// $Id$
 project: wxbase {
   specific(prop:windows) {                                  
     Debug::lit_libs   += wx$(WX_VERSION)$(WX_UNICODE)d_net

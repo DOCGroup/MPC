@@ -1,7 +1,6 @@
-// $Id$
-
-project : pin_base {
+project : pin {
   specific (!prop:windows) {
     libs += sapin
+    libs -= pin
   }
 }
