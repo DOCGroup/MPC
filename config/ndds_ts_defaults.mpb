@@ -1,10 +1,10 @@
 // -*- MPC -*-
 project {
   Define_Custom(NDDSTypeSupport) {
-    command               = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%quote%>
+    command               = <%quote%>$(NDDSSCRIPTDIR)/rtiddsgen<%quote%>
     commandflags          = -language C++ -replace -namespace $(PLATFORM_NDDS_FLAGS)
 
-    dependent             = $(NDDSHOME)/scripts/rtiddsgen<%bat%>
+    dependent             = $(NDDSSCRIPTDIR)/rtiddsgen<%bat%>
 
     source_pre_extension  = , Support, Plugin
     source_outputext      = .cxx
