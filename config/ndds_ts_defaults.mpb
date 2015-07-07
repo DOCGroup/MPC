@@ -18,5 +18,16 @@ project {
   verbatim(gnuace, macros) {
     override no_hidden_visibility = 1
     override no_strict_aliasing = 1
+    ifdef NDDSHOME
+      ifndef NDDSSCRIPTDIR
+        # At the moment NDDSHOME has been set but not NDDSSCRIPTDIR we see if
+        # the scripts directory exists, if so we use that, if not we use bin
+        ifneq ($(wildcard $(NDDSHOME)/scripts),)
+          NDDSSCRIPTDIR = $(NDDSHOME)/scripts
+        else
+          NDDSSCRIPTDIR = $(NDDSHOME)/bin
+        endif
+      endif
+    endif
   }
 }
