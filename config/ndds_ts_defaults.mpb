@@ -1,10 +1,10 @@
 // -*- MPC -*-
 project {
   Define_Custom(NDDSTypeSupport) {
-    command               = <%quote%>$(NDDSHOME)/scripts/rtiddsgen<%quote%>
+    command               = <%quote%>$(NDDSSCRIPTDIR)/rtiddsgen<%quote%>
     commandflags          = -language C++ -replace -namespace $(PLATFORM_NDDS_FLAGS)
 
-    dependent             = $(NDDSHOME)/scripts/rtiddsgen<%bat%>
+    dependent             = $(NDDSSCRIPTDIR)/rtiddsgen<%bat%>
 
     source_pre_extension  = , Support, Plugin
     source_outputext      = .cxx
@@ -18,5 +18,16 @@ project {
   verbatim(gnuace, macros) {
     override no_hidden_visibility = 1
     override no_strict_aliasing = 1
+    ifdef NDDSHOME
+      ifndef NDDSSCRIPTDIR
+        # At the moment NDDSHOME has been set but not NDDSSCRIPTDIR we see if
+        # the scripts directory exists, if so we use that, if not we use bin
+        ifneq ($(wildcard $(NDDSHOME)/scripts),)
+          NDDSSCRIPTDIR = $(NDDSHOME)/scripts
+        else
+          NDDSSCRIPTDIR = $(NDDSHOME)/bin
+        endif
+      endif
+    endif
   }
 }
