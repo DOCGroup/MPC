@@ -1,3 +1,12 @@
+Mon Jul 27 20:04:02 UTC 2015  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+        * modules/TemplateParser.pm:
+
+          Fixed a bug where scoped names would get added to the non-scoped
+          name in every scope.  This bug was introduced by me in my change
+          from Fri Jul  6 16:46:47 UTC 2012.
+
 Mon Feb 23 12:34:28 UTC 2015  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/WorkspaceCreator.pm:
