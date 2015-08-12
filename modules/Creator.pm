@@ -1116,7 +1116,7 @@ sub expand_variables {
       my $val = (defined $ti ? $ti->get_value($name) : undef);
       my @snames;
       if (defined $scopes) {
-        @snames = map { defined $_ ? $_ . '::' . $name : $name } @$scopes;
+        @snames = map { (defined $_ ? $_ : '') . '::' . $name } @$scopes;
       }
       push(@snames, $name);
       my $arr = $self->adjust_value(\@snames,
