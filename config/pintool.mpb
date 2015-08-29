@@ -17,7 +17,7 @@ project : pin {
       LDFLAGS  += -lpindwarf -lpinpthread -Wl,-exported_symbols_list -Wl,$(PIN_ROOT)/source/include/pin/pintool.exp
       LDFLAGS  -= -lpthread
     else
-      CPPFLAGS += -DTARGET_LINUX
+      CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv
       LDLIBS   += -lpindwarf
       LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
     endif
