@@ -453,7 +453,7 @@
 <%if(ModuleDefinitionFile)%>
       <ModuleDefinitionFile><%ModuleDefinitionFile%></ModuleDefinitionFile>
 <%else%>
-<%foreach(source_files)%>
+<%foreach(uniq(source_files))%>
 <%if(ends_with(source_file,\.def))%>
       <ModuleDefinitionFile><%source_file%></ModuleDefinitionFile>
 <%endif%>
@@ -738,7 +738,7 @@
 <%endfor%>
     </ClCompile>
 <%endif%>
-<%foreach(source_files)%>
+<%foreach(uniq(source_files))%>
 <%if(ends_with(source_file,\.def))%>
     <None Include="<%source_file%>" />
 <%else%>
