@@ -1,7 +1,7 @@
 package VC14ProjectCreator;
 
 # ************************************************************
-# Description   : A VC14 Project Creator
+# Description   : A vc14 (Visual Studio 2015) Project Creator
 # Author        : Johnny Willemsen
 # Create Date   : 6/04/2014
 # ************************************************************
