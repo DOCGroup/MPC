@@ -78,7 +78,7 @@ DEPEND :
 	@echo http://www.ociweb.com/products/mpc/down.html
 !ELSE
 <%if(source_files || pch_source)%>
-	$(DEPGEN)<%foreach(includes)%> -I"<%include%>"<%endfor%><%foreach(defines cpu_defines common_defines platform_defines macros)%> -D<%define%><%endfor%><%if(unicode)%> -DUNICODE -D_UNICODE<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%> -D<%staticflag%><%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%> -f "<%noextension(project_file)%>.dep"<%foreach(source_files)%> "<%source_file%>"<%endfor%><%if(pch_source)%> "<%pch_source%>"<%endif%>
+	$(DEPGEN)<%foreach(includes)%> -I"<%include%>"<%endfor%><%foreach(defines cpu_defines common_defines platform_defines macros)%> -D<%define%><%endfor%><%if(unicode)%> -DUNICODE -D_UNICODE<%endif%><%if(type_is_dynamic)%><%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%><%endif%><%if(need_staticflags)%><%foreach(staticflags)%> -D<%staticflag%><%endfor%><%endif%><%if(pch_header)%><%foreach(pch_defines)%> -D<%pch_define%><%endfor%><%endif%> -f "<%noextension(project_file)%>.dep"<%foreach(uniq(source_files))%> "<%source_file%>"<%endfor%><%if(pch_source)%> "<%pch_source%>"<%endif%>
 <%else%>
 	-@rem
 <%endif%>
@@ -159,7 +159,7 @@ LINK32_OBJS= \
 <%if(pch_source)%>
 	"$(INTDIR)\<%transdir(pch_source)%><%basenoextension(pch_source)%>.obj" \
 <%endif%>
-<%foreach(source_files)%>
+<%foreach(uniq(source_files))%>
 	"$(INTDIR)\<%transdir(source_file)%><%basenoextension(source_file)%>.obj"<%fornotlast(" \\")%>
 <%endfor%>
 
@@ -258,7 +258,7 @@ CPP_SWITCHES=<%if(TreatWChar_tAsBuiltInType)%>/Zc:wchar_t <%endif%>/nologo <%if(
 
 <%endif%>
 <%if(exename || sharedname || staticname)%>
-<%foreach(source_files)%>
+<%foreach(uniq(source_files))%>
 SOURCE="<%source_file%>"
 
 "$(INTDIR)\<%transdir(source_file)%><%basenoextension(source_file)%>.obj" : $(SOURCE)
