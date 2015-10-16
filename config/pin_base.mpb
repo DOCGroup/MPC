@@ -62,13 +62,12 @@ project {
 }
 
 feature(ia32) {
-  includes += $(PIN_ROOT)/extras/xed-ia32/include \
-              $(PIN_ROOT)/extras/xed2-ia32/include
+  includes += $(PIN_ROOT)/extras/xed-ia32/include
 
   libpaths += $(PIN_ROOT)/ia32/lib \
               $(PIN_ROOT)/ia32/lib-ext \
               $(PIN_ROOT)/extras/xed-ia32/lib \
-              $(PIN_ROOT)/extras/xed2-ia32/lib
+	      $(PIN_ROOT)/extras/components/lib/ia32
 
 
   macros += TARGET_IA32 HOST_IA32
@@ -81,20 +80,19 @@ feature(ia32) {
     // DO NOT CHANGE ORDER
     lit_libs += libcpmt libcmt pinvm pin libxed ntdll-32
   }
-  
+
   specific (make, gnuace) {
     compile_flags += -m32
   }
 }
 
 feature(intel64) {
-  includes += $(PIN_ROOT)/extras/xed-intel64/include \
-              $(PIN_ROOT)/extras/xed2-intel64/include
+  includes += $(PIN_ROOT)/extras/xed-intel64/include
 
   libpaths += $(PIN_ROOT)/intel64/lib \
               $(PIN_ROOT)/intel64/lib-ext \
               $(PIN_ROOT)/extras/xed-intel64/lib \
-              $(PIN_ROOT)/extras/xed2-intel64/lib
+              $(PIN_ROOT)/extras/components/lib/intel64
 
   macros += TARGET_IA32E HOST_IA32E
   avoids += ia32
