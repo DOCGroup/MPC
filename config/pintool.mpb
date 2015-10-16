@@ -30,7 +30,7 @@ project : pin {
       LDFLAGS  -= -lpthread
     else
       CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv
-      LIBS     += -lpindwarf
+      LDLIBS     += -lpindwarf
       LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
     endif
   }
