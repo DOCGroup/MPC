@@ -1,7 +1,7 @@
 package VC14ProjectCreator;
 
 # ************************************************************
-# Description   : A VC14 Project Creator
+# Description   : A vc14 (Visual Studio 2015) Project Creator
 # Author        : Johnny Willemsen
 # Create Date   : 6/04/2014
 # ************************************************************
@@ -28,6 +28,7 @@ my %info = (Creator::cplusplus() => {'ext'      => '.vcxproj',
            );
 
 my %config = ('vcversion' => '14.00',
+              'toolsversion' => '14.0',
              );
 
 # ************************************************************
