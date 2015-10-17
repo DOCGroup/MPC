@@ -80,7 +80,7 @@ feature(ia32) {
     // DO NOT CHANGE ORDER
     lit_libs += libcpmt libcmt pinvm pin libxed ntdll-32
   }
-  
+
   specific (make, gnuace) {
     compile_flags += -m32
   }

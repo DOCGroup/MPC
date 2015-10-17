@@ -13,10 +13,10 @@ project : pin_static {
       LDFLAGS  += -lpindwarf -lpinpthread
       LDFLAGS  -= -lpthread
     else
-      # TODO Add support for linking against gcc libraries included with Pin
       CPPFLAGS += -DTARGET_LINUX
-      LDLIBS   += -lelf -ldwarf
       LDFLAGS  += -Wl,--hash-style=sysv -Wl,-Bsymbolic
+      LDFLAGS  -= -ldl -lpthread
+      LDLIBS   += -lpindwarf -ldl
     endif
   }
 
@@ -28,7 +28,7 @@ project : pin_static {
     else
       # TODO Add support for linking against gcc libraries included with Pin
       CPPFLAGS += -DTARGET_LINUX
-      LIBS     += -ldwarf -lelf
+      LIBS     += -lpindwarf
       LDFLAGS  += -Wl,--hash-style=sysv -Wl,-Bsymbolic
     endif
   }
