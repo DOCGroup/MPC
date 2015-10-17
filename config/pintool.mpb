@@ -20,7 +20,6 @@ project : pin {
       CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv
       LDLIBS   += -lpindwarf
       LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
-      LDFLAGS  -= -lelf -ldwarf
     endif
   }
 
@@ -31,9 +30,8 @@ project : pin {
       LDFLAGS  -= -lpthread
     else
       CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv
-      LDLIBS   += -lpindwarf
+      LIBS     += -lpindwarf
       LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
-      LDFLAGS  -= -lelf -ldwarf
     endif
   }
 }
