@@ -1,3 +1,10 @@
+Wed Feb 17 19:19:40 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          When creating a project with only custom projects, keep explicitly
+          added files when removing non-custom_only aspects of the project.
+
 Tue Sep  8 13:16:45 UTC 2015  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/makedll.mpt:

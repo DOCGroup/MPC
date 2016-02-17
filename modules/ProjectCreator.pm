@@ -167,7 +167,7 @@ my $generic_key = 'generic_files';
 
 ## These constants are used with the "project info" and
 ## must match the order that is defined by the call order
-## of ProjectCreator::update_project_info().  This is called
+## of ProjectCreator::update_project_info().  This called
 ## order is determined by the TemplateParser.
 ##
 ## NOTE: If you are going to add a new constant, you must make it the
@@ -5508,9 +5508,12 @@ sub remove_non_custom_settings {
   my $self = shift;
 
   ## Remove any files that may have automatically been added
-  ## to this project
+  ## to this project.  If they were explicitly added, then we
+  ## will leave them in the project.
   foreach my $key (keys %{$self->{'custom_only_removed'}}) {
-    $self->{$key} = {};
+    if ($self->{'defaulted'}->{$key}) {
+      $self->{$key} = {};
+    }
   }
 
   ## Unset the exename, sharedname and staticname
