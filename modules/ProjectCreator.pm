@@ -921,7 +921,7 @@ sub parse_line {
             ## information.
             foreach my $key (keys %{$self->{'valid_components'}}) {
               delete $self->{$key};
-              $self->{'defaulted'}->{$key} = 0;
+              delete $self->{'defaulted'}->{$key};
             }
             if (defined $self->{'addtemp_state'}) {
               $self->restore_state($self->{'addtemp_state'}, 'addtemp');
@@ -1533,11 +1533,22 @@ sub parse_components {
         ## The default components name was never used
         ## so we remove it from the components
         delete $$comps{$current};
+
+        ## For custom_only projects, an empty section is functionally
+        ## equivalent to not defining it at all.
+        $self->{'defaulted'}->{$tag} = 1
+          if (!defined $self->{'defaulted'}->{$tag} &&
+              $self->get_assignment('custom_only'));
       }
       else {
         ## It was used, so we need to add that name to
         ## the set of group names unless it's already been added.
         $self->process_assignment_add($grtag, $current);
+
+        ## Define the defaulted section value so that if a following
+        ## empty section of the same type is found, it will not cause the
+        ## defaulted value to be overwritten.
+        $self->{'defaulted'}->{$tag} = 0;
       }
       if ($set) {
         $current = $defgroup;

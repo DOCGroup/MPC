@@ -1,3 +1,16 @@
+Mon Mar  7 19:40:37 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Fixed an issue with custom_only projects that define empty
+          Source_Files sections.  For these projects, an empty section is
+          equivalent to a defaulted section as they do not serve any real
+          purpose.
+
+        * templates/make.mpd:
+
+          Fixed spacing.
+
 Wed Feb 17 19:19:40 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
