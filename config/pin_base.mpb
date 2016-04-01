@@ -67,8 +67,7 @@ feature(ia32) {
   libpaths += $(PIN_ROOT)/ia32/lib \
               $(PIN_ROOT)/ia32/lib-ext \
               $(PIN_ROOT)/extras/xed-ia32/lib \
-        $(PIN_ROOT)/extras/components/lib/ia32
-
+              $(PIN_ROOT)/extras/components/lib/ia32
 
   macros += TARGET_IA32 HOST_IA32
   avoids += intel64
