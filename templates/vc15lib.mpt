@@ -1,0 +1,4 @@
+// -*- MPC -*-
+conditional_include "vc15platforms"
+conditional_include "vc1xlib"
+conditional_include "user_vc15lib"
