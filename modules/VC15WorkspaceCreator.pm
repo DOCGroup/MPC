@@ -1,4 +1,4 @@
-package VC14WorkspaceCreator;
+package VC15WorkspaceCreator;
 
 # ************************************************************
 # Description   : A vc15 (Visual Studio 15) Workspace Creator
