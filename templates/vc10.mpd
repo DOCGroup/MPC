@@ -318,7 +318,7 @@
       <CompileAsManaged><%CompileAsManaged%></CompileAsManaged>
 <%endif%>
 <%if(MultiProcessorCompilation)%>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation><%MultiProcessorCompilation%></MultiProcessorCompilation>
 <%endif%>
 <%if(UseUnicodeForAssemblerListing)%>
       <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
