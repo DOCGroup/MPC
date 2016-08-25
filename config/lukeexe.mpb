@@ -1,0 +1,5 @@
+project: winapp{
+  specific(prop:microsoft) {
+    Debug::exe_ext = _Debug.exe
+  }
+}

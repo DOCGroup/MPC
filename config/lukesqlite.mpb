@@ -1,0 +1,23 @@
+project{
+    libs+=sqlite3
+
+    expand(LMX_LIB_ROOT){
+	$(LMX_LIB_ROOT)
+    }
+
+    macros+=SQLITE_HAS_CODEC
+
+    includes +=$(LMX_LIB_ROOT)\sqlite3\include
+    specific(prop:microsoft) {
+	 libpaths +=$(LMX_LIB_ROOT)\sqlite3\$(PlatformName)\lib
+    }
+
+    Source_Files{
+        *.cpp
+	CppSqlite{
+	    no_pch=1
+	    $(LMX_LIB_ROOT)\sqlite3\Src\CppSQLite3.cpp
+	    $(LMX_LIB_ROOT)\sqlite3\Src\CodingConv.cpp
+	}
+    }
+}

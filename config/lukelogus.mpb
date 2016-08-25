@@ -1,0 +1,12 @@
+project{
+    libs+=Log4cplusAgentus
+
+    expand(LMX_LIB_ROOT){
+	$(LMX_LIB_ROOT)
+    }
+
+    includes +=$(LMX_LIB_ROOT)\log4cplus\include
+    specific(prop:microsoft) {
+	 libpaths +=$(LMX_LIB_ROOT)\log4cplus\Unicode\$(PlatformName)\lib
+    }
+}

@@ -1,0 +1,7 @@
+project{
+    libs+=DShowUtilAgentu
+    includes +=$(LMX_LIB_ROOT)\DShowUtilAgent\include
+    specific(prop:microsoft) {
+	 libpaths +=$(LMX_LIB_ROOT)\DShowUtilAgent\Unicode\$(PlatformName)\lib
+    }
+}

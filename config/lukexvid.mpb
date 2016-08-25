@@ -1,0 +1,7 @@
+project{
+    libs+=libxvidcore
+    includes +=$(LMX_LIB_ROOT)\xvidcore\include
+    specific(prop:microsoft) {
+	 libpaths +=$(LMX_LIB_ROOT)\xvidcore\$(PlatformName)\lib
+    }
+}

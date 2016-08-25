@@ -1,0 +1,7 @@
+project{
+    libs+=pngu jpegu zlibu jbigu jasperu libpsdu mngu libdcru CxImageu
+    includes +=$(LMX_LIB_ROOT)\CxImage\include
+    specific(prop:microsoft) {
+	 libpaths +=$(LMX_LIB_ROOT)\CxImage\Unicode\$(PlatformName)\lib
+    }
+}

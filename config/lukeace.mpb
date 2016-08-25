@@ -1,0 +1,8 @@
+project{
+    libs+=ACE
+    libpaths+=$(ACE_ROOT)\lib
+    includes+=$(ACE_ROOT)
+    specific(prop:microsoft) {
+        DisableSpecificWarnings += 4996
+    }
+}

@@ -1,0 +1,6 @@
+project{
+  specific(prop:microsoft) {
+    Debug::runtime_library = 1
+    Release::runtime_library = 0
+  }
+}
