@@ -3324,12 +3324,7 @@ sub generated_source_listed {
     foreach my $key (keys %$comps) {
       foreach my $val (@{$$comps{$key}}) {
         foreach my $i (keys %$arr) {
-          ## If $gent doesn't cause $tag files to be generated, then we
-          ## can just return a non-zero value to short-circuit attempting
-          ## to add generated files after the caller continues.
           my @gfiles = $self->generated_filenames($$arr{$i}, $gent, $tag, $i);
-          return 2 if ($#gfiles == -1);
-
           foreach my $re (@gfiles) {
             $re = $self->escape_regex_special($re);
             return 1 if ($val =~ /$re$/);
