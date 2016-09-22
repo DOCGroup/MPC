@@ -69,9 +69,12 @@ sub new {
 
 sub get_output {
   ## This method is called with the filename and command options and
-  ## expects an array reference containing filenames that will be
-  ## generated, but can not be described using the normal Define_Custom
-  ## syntax.
+  ## returns an array reference containing filenames that will be
+  ## generated but can not be described using the normal Define_Custom
+  ## syntax.  An optional second return value is a hash reference
+  ## describing additional dependencies as {type => {file => [deps]}}.
+  ## It's used to tell MPC that 'file' (one of the outputs) belongs to
+  ## 'type' and has additional dependencies 'deps'.
   return [];
 }
 
