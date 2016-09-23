@@ -1280,6 +1280,22 @@ sub handle_scoped_unknown {
   return 0, "Unrecognized line: $line";
 }
 
+sub add_custom_depend {
+  my($self, $tag, $key, $aref) = @_;
+
+  my @deps = @$aref;
+  if ($self->{'convert_slashes'}) {
+    foreach my $dep (@deps) {
+      $dep =~ s/\//\\/g;
+    }
+  }
+
+  $self->{'custom_special_depend'}->{$tag}->{$key} = []
+      unless defined $self->{'custom_special_depend'}->{$tag}->{$key};
+  StringProcessor::merge($self->{'custom_special_depend'}->{$tag}->{$key},
+                         \@deps);
+}
+
 sub process_component_line {
   my($self, $tag, $line, $fh, $flags,
      $grname, $current, $excarr, $comps, $count) = @_;
@@ -1353,12 +1369,7 @@ sub process_component_line {
         $self->{'custom_special_output'}->{$tag}->{$key} = $self->create_array($out);
       }
       if (defined $dep) {
-        $self->{'custom_special_depend'}->{$tag}->{$key} = $self->create_array($dep);
-        if ($self->{'convert_slashes'}) {
-          foreach my $depfile (@{$self->{'custom_special_depend'}->{$tag}->{$key}}) {
-            $depfile =~ s/\//\\/g;
-          }
-        }
+        $self->add_custom_depend($tag, $key, $self->create_array($dep));
       }
     }
 
@@ -1370,8 +1381,15 @@ sub process_component_line {
       my $key = $line;
       $key =~ s/\\/\//g if ($self->{'convert_slashes'});
       my $cmdflags = $$flags{'commandflags'};
-      my $add_out = $cmdHelper->get_output($key, $cmdflags);
+      my($add_out, $deps) = $cmdHelper->get_output($key, $cmdflags);
+
       push(@{$self->{'custom_special_output'}->{$tag}->{$key}}, @$add_out);
+      foreach my $depTag (keys %$deps) {
+        foreach my $depFile (keys %{$deps->{$depTag}}) {
+          $self->add_custom_depend($depTag, $depFile,
+                                   $deps->{$depTag}->{$depFile});
+        }
+      }
     }
 
     ## Set up the files array.  If the line contains a wild card
@@ -3268,9 +3286,15 @@ sub generate_default_components {
                   my $flags = defined $flo->{$tag}->{$file} ?
                                 $flo->{$tag}->{$file}->{$cmdflags} :
                                 $genext->{$tag}->{$cmdflags};
-                  my $add_out = $cmdHelper->get_output($file, $flags);
+                  my ($add_out, $deps) = $cmdHelper->get_output($file, $flags);
                   push(@{$self->{'custom_special_output'}->{$tag}->{$file}},
                        @$add_out);
+                  foreach my $depTag (keys %$deps) {
+                    foreach my $depFile (keys %{$deps->{$depTag}}) {
+                      $self->add_custom_depend($depTag, $depFile,
+                                               $deps->{$depTag}->{$depFile});
+                    }
+                  }
                 }
               }
             }
@@ -3324,12 +3348,7 @@ sub generated_source_listed {
     foreach my $key (keys %$comps) {
       foreach my $val (@{$$comps{$key}}) {
         foreach my $i (keys %$arr) {
-          ## If $gent doesn't cause $tag files to be generated, then we
-          ## can just return a non-zero value to short-circuit attempting
-          ## to add generated files after the caller continues.
           my @gfiles = $self->generated_filenames($$arr{$i}, $gent, $tag, $i);
-          return 2 if ($#gfiles == -1);
-
           foreach my $re (@gfiles) {
             $re = $self->escape_regex_special($re);
             return 1 if ($val =~ /$re$/);
