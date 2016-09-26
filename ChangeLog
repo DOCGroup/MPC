@@ -1,3 +1,15 @@
+Mon Sep 26 21:08:34 UTC 2016  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/ProjectCreator.pm (generated_source_listed):
+
+          From Chad Elliott: removed an optimization that was invalid
+
+        * modules/ProjectCreator.pm (other changes):
+        * modules/CommandHelper.pm:
+
+          Allow CommandHelper::get_output to return more detailed
+          dependency info.  See comments in that function for usage.
+
 Mon Mar  7 19:40:37 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/ProjectCreator.pm:
