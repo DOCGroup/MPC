@@ -1,7 +1,0 @@
-project{
-    lit_libs+=ssleay32 libeay32
-    includes +=$(SSL_ROOT)\include
-    specific(prop:microsoft) {
-	 libpaths +=$(SSL_ROOT)\$(PlatformName)\lib
-    }
-}

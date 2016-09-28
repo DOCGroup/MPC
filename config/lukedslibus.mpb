@@ -1,9 +1,0 @@
-project{
-    libs+=DShowUtilLibus BaseClassesus libxvidcore
-    lit_libs+=strmiids
-    includes +=$(LMX_LIB_ROOT)\DShowUtilAgent\include
-    specific(prop:microsoft) {
-	 libpaths +=$(LMX_LIB_ROOT)\DShowUtilAgent\Unicode\$(PlatformName)\lib
-	 libpaths +=$(LMX_LIB_ROOT)\xvidcore\$(PlatformName)\lib
-    }
-}

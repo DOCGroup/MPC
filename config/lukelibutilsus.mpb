@@ -1,7 +1,0 @@
-project{
-    libs+=LmxLibUtilToolsus
-    includes +=$(LMX_LIB_ROOT)\LmxLibUtilTools\include
-    specific(prop:microsoft) {
-	 libpaths +=$(LMX_LIB_ROOT)\LmxLibUtilTools\Unicode\$(PlatformName)\lib
-    }
-}
