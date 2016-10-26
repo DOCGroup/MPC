@@ -16,6 +16,9 @@ project {
     ifeq ($(ACE_PLATFORM_CONFIG),config-linux.h)
     FLAGS_C_CC += -DRTI_LINUX
     endif
+    ifeq ($(ACE_PLATFORM_CONFIG),config-android.h)
+    FLAGS_C_CC += -DRTI_LINUX
+    endif
     ifeq ($(ACE_PLATFORM_CONFIG),config-win32.h)
     FLAGS_C_CC += -DRTI_WIN32
     else
