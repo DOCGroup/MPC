@@ -1,3 +1,9 @@
+Wed Oct 26 11:31:35 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/makedll.mpt:
+
+          Added support for the Keil compiler.
+
 Mon Sep 26 21:08:34 UTC 2016  Adam Mitz  <mitza@ociweb.com>
 
         * modules/ProjectCreator.pm (generated_source_listed):
