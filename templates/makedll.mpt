@@ -142,7 +142,7 @@ arm_keil {
   ar            = armar
   arflags       = -rcs
   compilerflags = --gnu -DKEIL
-  platforms     = cmsis
+  platforms     = cmsis_cortex_m4
 }
 
 Intel {
@@ -281,9 +281,9 @@ nucleus {
   extracppflags = -mcpu=arm7tdmi -msoft-float -mthumb-interwork
 }
 
-cmsis {
+cmsis_cortex_m4 {
   gnumake       = 1
-  extracppflags = --arm --cpu=ARM7TDMI-S
+  extracppflags = --cpu=Cortex-M4
 }
 
 solaris {
