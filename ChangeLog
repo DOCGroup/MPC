@@ -1,3 +1,13 @@
+Wed Nov  9 17:57:54 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/USAGE:
+        * modules/UVISProjectCreator.pm:
+        * modules/UVISWorkspaceCreator.pm:
+        * templates/uvis.mpd:
+        * templates/uvis.mpt:
+
+          Added support for the Keil uVision 5 IDE.
+
 Mon Oct 31 16:16:07 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/makedll.mpt:
