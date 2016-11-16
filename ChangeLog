@@ -1,3 +1,11 @@
+Wed Nov 16 21:50:12 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/uvis.mpd:
+        * templates/uvis.mpt:
+
+          Added support for user defined DEVICE_Files and CMSIS_Files to
+          support building for specific targets.
+
 Wed Nov 16 14:44:33 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Depgen/Driver.pm:

@@ -10,6 +10,8 @@ Release {
 }
 
 STM32L476ZGTx {
+  board = STM32L476
+  dfp = STM32L4xx
   vendor = STMicroelectronics
   flash = STM32L4xx_1024.FLM
   register = stm32l4xx.h
