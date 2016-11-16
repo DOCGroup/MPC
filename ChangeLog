@@ -1,3 +1,20 @@
+Wed Nov 16 14:44:33 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Depgen/Driver.pm:
+        * modules/Depgen/MakeDependencyWriter.pm:
+
+          Added an option to override the creation of Cygwin paths on
+          Windows.
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Corrected linking with the Keil compiler.
+
+        * templates/uvis.mpd:
+
+          Fixed the implementation of the pure_libs keyword.
+
 Thu Nov 10 18:00:05 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/uvis.mpd:

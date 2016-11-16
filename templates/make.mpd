@@ -107,7 +107,11 @@ LIBSUFFIX     = <%lib_modifier%>
 EXESUFFIX     = <%lib_modifier%>
 <%endif%>
 GENFLAGS      =<%if(!contains(configuration, Release) || optimize)%> <%genflags%><%endif%>
+<%if(link_lib_name)%>
+LDLIBS        =<%foreach(libs)%> "$(LIBPREFIX)<%lib%>$(LIBSUFFIX)<%lib_ext%>"<%endfor%><%foreach(lit_libs)%> "$(LIBPREFIX)<%lit_lib%><%lib_ext%>"<%endfor%><%foreach(pure_libs)%> "<%pure_lib%>"<%endfor%> <%ldlibs%>
+<%else%>
 LDLIBS        =<%foreach(libs)%> <%libopt%>"<%libname_prefix%><%lib%>$(LIBSUFFIX)"<%endfor%><%foreach(lit_libs)%> <%libopt%>"<%lit_lib%>"<%endfor%><%foreach(pure_libs)%> "<%pure_lib%>"<%endfor%> <%ldlibs%>
+<%endif%>
 OBJS          =<%if(pch_source && pchsupport)%> <%targetoutdir%><%obj_dir%><%noextension(pch_source)%>$(OBJEXT)<%endif%><%foreach(source_files)%> <%if(targetoutdir || obj_dir)%><%targetoutdir%><%obj_dir%><%transdir(source_file)%><%basenoextension(source_file)%><%else%><%noextension(source_file)%><%endif%>$(OBJEXT)<%endfor%><%if(rc)%><%foreach(resource_files)%> <%targetoutdir%><%obj_dir%><%resource_file%>$(RESEXT)<%endfor%><%endif%>
 <%if(lib_ext)%>
 <%if(staticname)%>

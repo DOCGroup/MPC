@@ -140,6 +140,9 @@ arm_keil {
   cc            = armcc
   cxx           = armcc
   ar            = armar
+  ld            = armlink
+  libpathopt    = "--userlibpath "
+  link_lib_name = 1
   arflags       = -rcs
   compilerflags = --gnu -DKEIL
   platforms     = cmsis_cortex_m4

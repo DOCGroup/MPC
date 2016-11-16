@@ -502,11 +502,18 @@
         <Group>
           <GroupName>Libraries</GroupName>
           <Files>
-<%foreach(libs lit_libs pure_libs)%>
+<%foreach(libs lit_libs)%>
             <File>
               <FileName><%basename(lib)%>.lib</FileName>
               <FileType>4</FileType>
               <FilePath><%libpaths%>\<%lib%>.lib</FilePath>
+            </File>
+<%endfor%>
+<%foreach(pure_libs)%>
+            <File>
+              <FileName><%basename(pure_lib)%></FileName>
+              <FileType>4</FileType>
+              <FilePath><%pure_lib%></FilePath>
             </File>
 <%endfor%>
           </Files>
