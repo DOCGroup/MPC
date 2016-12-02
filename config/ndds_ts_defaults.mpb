@@ -15,7 +15,7 @@ project {
 
   requires += ndds
 
-  verbatim(gnuace, macros) {
+  verbatim(gnuace, macros, 1) {
     override no_hidden_visibility = 1
     override no_strict_aliasing = 1
     ifdef NDDSHOME
