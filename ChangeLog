@@ -1,3 +1,15 @@
+Tue Jan 17 15:16:06 UTC 2017  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/UVISWorkspaceCreator.pm:
+
+          Convert slashes in the project path to backslashes.
+
+        * templates/uvis.mpd:
+
+          Support building assembly files and only put the device and CMSIS
+          sections in if the project is an executable and there are
+          device_files.
+
 Thu Nov 17 13:20:23 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/uvis.mpd:

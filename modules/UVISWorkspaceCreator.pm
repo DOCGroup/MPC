@@ -53,10 +53,11 @@ sub write_comps {
 
   print $fh '  <WorkspaceName>', $self->get_workspace_name(), ' - ',
             $self->create_command_line_string($0, @ARGV),
-            '</WorkspaceName>', $crlf;
+            '</WorkspaceName>', $crlf, $crlf;
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     print $fh "  <project>$crlf",
-              "    <PathAndName>$project</PathAndName>$crlf",
+              "    <PathAndName>", $self->slash_to_backslash($project),
+              "</PathAndName>$crlf",
               "  </project>$crlf$crlf";
   }
 }

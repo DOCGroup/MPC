@@ -450,7 +450,11 @@
 <%foreach(source_files)%>
             <File>
               <FileName><%basename(source_file)%></FileName>
+<%if(ends_with(source_file, \.s))%>
+              <FileType>2</FileType>
+<%else%>
               <FileType>1</FileType>
+<%endif%>
               <FilePath><%source_file%></FilePath>
             </File>
 <%endfor%>
@@ -657,6 +661,7 @@
     </Target>
   </Targets>
 
+<%if(exename)%>
 <%foreach(configurations)%>
 <%foreach(devices)%>
   <RTE>
@@ -681,12 +686,14 @@
           <targetInfo name="<%project_name%>"/>
         </targetInfos>
       </component>
+<%if(device_files)%>
        <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.0.3" condition="<%board%> CMSIS">
         <package name="<%dfp%>_DFP" schemaVersion="1.2" url="http://www.keil.com/pack" vendor="Keil" version="1.2.0"/>
         <targetInfos>
           <targetInfo name="<%project_name%>"/>
         </targetInfos>
-      </component>
+       </component>
+<%endif%>
     </components>
     <files>
 <%foreach(cmsis_files)%>
@@ -724,5 +731,6 @@
   </RTE>
 <%endfor%>
 <%endfor%>
+<%endif%>
 
 </Project>
