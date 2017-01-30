@@ -19,7 +19,7 @@
           <Vendor><%vendor%></Vendor>
           <PackID>Keil.<%dfp%>_DFP.1.2.0</PackID>
           <PackURL>http://www.keil.com/pack</PackURL>
-          <Cpu>IRAM(0x20000000,0x00018000) IRAM2(0x10000000,0x00008000) IROM(0x08000000,0x00100000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
+          <Cpu>IRAM(<%iram1_start%>,<%iram1_size%>) IRAM2(<%iram2_start%>,<%iram2_size%>) IROM(0x08000000,0x00100000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
           <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0<%dfp%>_1024 -FS08000000 -FL0100000 -FP0($$Device:<%device%>$Flash\<%flash%>))</FlashDriverDll>
@@ -206,11 +206,11 @@
             <Ro3Chk>0</Ro3Chk>
             <Ir1Chk>1</Ir1Chk>
             <Ir2Chk>0</Ir2Chk>
-            <Ra1Chk>0</Ra1Chk>
-            <Ra2Chk>0</Ra2Chk>
-            <Ra3Chk>0</Ra3Chk>
-            <Im1Chk>1</Im1Chk>
-            <Im2Chk>0</Im2Chk>
+            <Ra1Chk><%if(xram1_start && xram1_size)%>1<%else%>0<%endif%></Ra1Chk>
+            <Ra2Chk><%if(xram2_start && xram2_size)%>1<%else%>0<%endif%></Ra2Chk>
+            <Ra3Chk><%if(xram3_start && xram3_size)%>1<%else%>0<%endif%></Ra3Chk>
+            <Im1Chk><%if(iram1_start && iram1_size)%>1<%else%>0<%endif%></Im1Chk>
+            <Im2Chk><%if(iram2_start && iram2_size)%>1<%else%>0<%endif%></Im2Chk>
             <OnChipMemories>
               <Ocm1>
                 <Type>0</Type>
@@ -244,8 +244,8 @@
               </Ocm6>
               <IRAM>
                 <Type>0</Type>
-                <StartAddress>0x20000000</StartAddress>
-                <Size>0x18000</Size>
+                <StartAddress><%iram1_start%></StartAddress>
+                <Size><%iram1_size%></Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
@@ -284,28 +284,28 @@
               </OCR_RVCT5>
               <OCR_RVCT6>
                 <Type>0</Type>
-                <StartAddress>0x0</StartAddress>
-                <Size>0x0</Size>
+                <StartAddress><%xram1_start(0x0)%></StartAddress>
+                <Size><%xram1_size(0x0)%></Size>
               </OCR_RVCT6>
               <OCR_RVCT7>
                 <Type>0</Type>
-                <StartAddress>0x0</StartAddress>
-                <Size>0x0</Size>
+                <StartAddress><%xram2_start(0x0)%></StartAddress>
+                <Size><%xram2_size(0x0)%></Size>
               </OCR_RVCT7>
               <OCR_RVCT8>
                 <Type>0</Type>
-                <StartAddress>0x0</StartAddress>
-                <Size>0x0</Size>
+                <StartAddress><%xram3_start(0x0)%></StartAddress>
+                <Size><%xram3_size(0x0)%></Size>
               </OCR_RVCT8>
               <OCR_RVCT9>
                 <Type>0</Type>
-                <StartAddress>0x20000000</StartAddress>
-                <Size><%iram1_size(0x18000)%></Size>
+                <StartAddress><%iram1_start%></StartAddress>
+                <Size><%iram1_size%></Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
-                <StartAddress>0x10000000</StartAddress>
-                <Size><%iram2_size(0x8000)%></Size>
+                <StartAddress><%iram2_start%></StartAddress>
+                <Size><%iram2_size%></Size>
               </OCR_RVCT10>
             </OnChipMemories>
             <RvctStartVector></RvctStartVector>
@@ -357,7 +357,7 @@
             </VariousControls>
           </Aads>
           <LDads>
-            <umfTarg>1</umfTarg>
+            <umfTarg><%if(scatter_file)%>0<%else%>1<%endif%></umfTarg>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
             <noStLib>0</noStLib>
@@ -366,7 +366,7 @@
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile></ScatterFile>
+            <ScatterFile><%scatter_file%></ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
