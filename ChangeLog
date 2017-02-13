@@ -1,3 +1,12 @@
+Mon Feb 13 21:58:22 UTC 2017  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Enhanced handling of 'gendir' for project types that use
+          "combined custom" (mostly vc >= 10).  Need to track common
+          'gendir' for output file and also get the input-file-specific
+          value of 'gendir' to replace the <%gendir%> token.
+
 Tue Feb  7 15:36:45 UTC 2017  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/uvis.mpd:
