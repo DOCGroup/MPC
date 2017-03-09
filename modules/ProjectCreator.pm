@@ -4420,7 +4420,7 @@ sub get_custom_assign_or_override {
   }
   return undef if !defined $value;
   if (defined $customDefined{$var} && ($customDefined{$var} & 0x14)) {
-    return $self->convert_command_parameters($tag, $value, @params);
+    return $self->convert_command_parameters($tag, $value, $input, undef, @params);
   }
   return $value;
 }
@@ -5740,6 +5740,7 @@ sub combine_custom_types {
   my $self = shift;
   my %input; # (input_file_name => [custom1_files, custom2_files], ...)
   my $fo = $self->{'flag_overrides'};
+  my %gendir; # (input_file_name => {directory => count}, ...)
 
   # Build the %input data structure as an index of how each input file is used.
   foreach my $tag (keys %{$self->{'generated_exts'}}) {
@@ -5756,6 +5757,9 @@ sub combine_custom_types {
           if ($self->{'generated_exts'}->{$tag}->{'command'} ||
               (defined $of && $fo->{$tag}->{$of}->{'command'})) {
             push(@{$input{$in}}, $tag);
+            if (defined $fo->{$tag}->{$of}->{'gendir'}) {
+              $gendir{$in}->{$fo->{$tag}->{$of}->{'gendir'}}++;
+            }
           }
         }
       }
@@ -5764,7 +5768,6 @@ sub combine_custom_types {
 
   # For each input file used in multiple custom types, move it into the new
   # synthetic type.
-
   foreach my $in (keys %input) {
     next if scalar @{$input{$in}} < 2;
     my $combo_tag = join('_and_', map {/(.+)_files$/; $1} @{$input{$in}})
@@ -5787,6 +5790,11 @@ sub combine_custom_types {
       my @keys = keys %custom;
       push(@keys, @default_matching_assignments);
       $self->{'matching_assignments'}->{$combo_tag} = \@keys;
+    }
+
+    my @gendir_keys = keys %{$gendir{$in}};
+    if ($#gendir_keys == 0) {
+      $fo->{$combo_tag}->{$in}->{'gendir'} = $gendir_keys[0];
     }
 
     # Add to new type -- groups aren't relevant here, so just use the default

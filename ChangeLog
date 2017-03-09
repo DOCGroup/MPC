@@ -1,3 +1,97 @@
+Mon Feb 13 21:58:22 UTC 2017  Adam Mitz  <mitza@ociweb.com>
+
+        * modules/ProjectCreator.pm:
+
+          Enhanced handling of 'gendir' for project types that use
+          "combined custom" (mostly vc >= 10).  Need to track common
+          'gendir' for output file and also get the input-file-specific
+          value of 'gendir' to replace the <%gendir%> token.
+
+Tue Feb  7 15:36:45 UTC 2017  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/uvis.mpd:
+
+          Updated to support the 'prebuild' keyword.
+
+Mon Jan 30 18:41:22 UTC 2017  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/uvis.mpd:
+
+          Added template variables to set the ram sizes and a scatter file.
+
+Tue Jan 17 15:16:06 UTC 2017  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/UVISWorkspaceCreator.pm:
+
+          Convert slashes in the project path to backslashes.
+
+        * templates/uvis.mpd:
+
+          Support building assembly files and only put the device and CMSIS
+          sections in if the project is an executable and there are
+          device_files.
+
+Thu Nov 17 13:20:23 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/uvis.mpd:
+
+          Added the ability to set the IRAM1 and IRAM2 sizes.
+
+Wed Nov 16 21:50:12 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/uvis.mpd:
+        * templates/uvis.mpt:
+
+          Added support for user defined DEVICE_Files and CMSIS_Files to
+          support building for specific targets.
+
+Wed Nov 16 14:44:33 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Depgen/Driver.pm:
+        * modules/Depgen/MakeDependencyWriter.pm:
+
+          Added an option to override the creation of Cygwin paths on
+          Windows.
+
+        * templates/make.mpd:
+        * templates/makedll.mpt:
+
+          Corrected linking with the Keil compiler.
+
+        * templates/uvis.mpd:
+
+          Fixed the implementation of the pure_libs keyword.
+
+Thu Nov 10 18:00:05 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/uvis.mpd:
+
+          Updated to support 'postbuild' and to support linking in libraries
+          to an executable.
+
+Wed Nov  9 17:57:54 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/USAGE:
+        * modules/UVISProjectCreator.pm:
+        * modules/UVISWorkspaceCreator.pm:
+        * templates/uvis.mpd:
+        * templates/uvis.mpt:
+
+          Added support for the Keil uVision 5 IDE.
+
+Mon Oct 31 16:16:07 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/makedll.mpt:
+
+          Updated to change the platform for the Keil compiler to something
+          specific to the operating system and architecture.
+
+Wed Oct 26 11:31:35 UTC 2016  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/makedll.mpt:
+
+          Added support for the Keil compiler.
+
 Mon Sep 26 21:08:34 UTC 2016  Adam Mitz  <mitza@ociweb.com>
 
         * modules/ProjectCreator.pm (generated_source_listed):
