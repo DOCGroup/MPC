@@ -1,7 +1,7 @@
 package VC15ProjectCreator;
 
 # ************************************************************
-# Description   : A vc15 (Visual Studio 15) Project Creator
+# Description   : A vc15 (Visual Studio 2017) Project Creator
 # Author        : Johnny Willemsen
 # Create Date   : 1/04/2016
 # ************************************************************

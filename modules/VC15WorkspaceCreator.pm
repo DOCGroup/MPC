@@ -1,7 +1,7 @@
 package VC15WorkspaceCreator;
 
 # ************************************************************
-# Description   : A vc15 (Visual Studio 15) Workspace Creator
+# Description   : A vc15 (Visual Studio 2017) Workspace Creator
 # Author        : Johnny Willemsen
 # Create Date   : 01/05/2016
 # ************************************************************
