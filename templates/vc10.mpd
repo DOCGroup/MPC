@@ -14,6 +14,12 @@
     <ProjectName><%project_name%></ProjectName>
     <ProjectGuid>{<%guid%>}</ProjectGuid>
     <RootNamespace><%project_name%></RootNamespace>
+<%if(VCProjectVersion)%>
+    <VCProjectVersion><%VCProjectVersion%></VCProjectVersion>
+<%endif%>
+<%if(WindowsTargetPlatformVersion)%>
+    <WindowsTargetPlatformVersion><%WindowsTargetPlatformVersion%></WindowsTargetPlatformVersion>
+<%endif%>
 <%if(managed)%>
     <Keyword>ManagedCProj</Keyword>
     <TargetFrameworkVersion>v<%TargetFrameworkVersion("4.0")%></TargetFrameworkVersion>
