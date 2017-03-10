@@ -70,13 +70,13 @@ FDIR=/usr/lib/MPC
 
 ##Check if build and work diretory already exist
 if [ -d "$BDIR" -o -f "$BDIR" ]; then
-  echo "Necessary directory $BDIR aleady exists."
+  echo "Necessary directory $BDIR already exists."
   echo "Exiting."
   exit
 fi
 
 if [ -d "$WDIR" -o -f "$WDIR" ]; then
-  echo "Necessary directory $WDIR aleady exists."
+  echo "Necessary directory $WDIR already exists."
   echo "Exiting."
   exit
 fi

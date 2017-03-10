@@ -10,7 +10,7 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 #              This script is a rewrite of create_ace_build.pl and
 #              does not restrict the user to place the build
 #              in any particular location or that it be used with
-#              ACE_wrappers.  Some of the functions were barrowed
+#              ACE_wrappers.  Some of the functions were borrowed
 #              from create_ace_build.pl, but were modified quite a
 #              bit.
 # ******************************************************************
