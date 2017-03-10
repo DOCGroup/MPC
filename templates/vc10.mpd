@@ -783,7 +783,7 @@
 <%endif%>
 <%if(template_files)%>
   <ItemGroup>
-<%foreach(template_files)%>
+<%foreach(uniq(template_files))%>
     <ClCompile Include="<%template_file%>">
 <%foreach(platforms)%>
 <%foreach(configurations)%>
@@ -796,7 +796,7 @@
 <%endif%>
 <%if(header_files)%>
   <ItemGroup>
-<%foreach(header_files)%>
+<%foreach(uniq(header_files))%>
     <ClInclude Include="<%header_file%>" />
 <%endfor%>
   </ItemGroup>
@@ -833,14 +833,14 @@
 <%endfor%>
 <%if(inline_files)%>
   <ItemGroup>
-<%foreach(inline_files)%>
+<%foreach(uniq(inline_files))%>
     <None Include="<%inline_file%>" />
 <%endfor%>
   </ItemGroup>
 <%endif%>
 <%if(documentation_files)%>
   <ItemGroup>
-<%foreach(documentation_files)%>
+<%foreach(uniq(documentation_files))%>
     <CustomBuild Include="<%documentation_file%>">
       <FileType>Document</FileType>
 <%foreach(platforms)%>
@@ -854,7 +854,7 @@
 <%endif%>
 <%if(resource_files && !type_is_static)%>
   <ItemGroup>
-<%foreach(resource_files)%>
+<%foreach(uniq(resource_files))%>
     <<%if(ends_with(resource_file,\.rc))%>ResourceCompile<%else%>None<%endif%> Include="<%resource_file%>" />
 <%endfor%>
   </ItemGroup>
