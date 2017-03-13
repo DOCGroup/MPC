@@ -358,7 +358,7 @@ specific        This scope allows assignments that are specific to a
                 vc14     |         |      |     X     |    X    |
                 wix      |         |      |           |    X    |
 
-                ? - indicates that this is controled by the MPC_GHS_UNIX
+                ? - indicates that this is controlled by the MPC_GHS_UNIX
                 environment variable.
 
                 If a keyword is not recognized as a valid MPC keyword, it is
@@ -620,7 +620,7 @@ postcommand         Allows a user to execute arbitrary commands after
                     <%prj_type%>  - The project type supplied by the -type
                                     option.
 
-                    The following psuedo template variables will be set to
+                    The following pseudo template variables will be set to
                     the known extension for Windows and empty on non-Windows
                     based project types.
 
