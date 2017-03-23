@@ -1,0 +1,4 @@
+// -*- MPC -*-
+conditional_include "vs2017platforms"
+conditional_include "vc1xlibexe"
+conditional_include "user_vs2017libexe"

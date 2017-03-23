@@ -1,7 +1,7 @@
-package VC15ProjectCreator;
+package VS2017ProjectCreator;
 
 # ************************************************************
-# Description   : A vc15 (Visual Studio 2017) Project Creator
+# Description   : A vs2017 (Visual Studio 2017) Project Creator
 # Author        : Johnny Willemsen
 # Create Date   : 1/04/2016
 # ************************************************************
@@ -19,10 +19,10 @@ use vars qw(@ISA);
 
 ## NOTE: We call the constant as a function to support Perl 5.6.
 my %info = (Creator::cplusplus() => {'ext'      => '.vcxproj',
-                                     'dllexe'   => 'vc15exe',
-                                     'libexe'   => 'vc15libexe',
-                                     'dll'      => 'vc15dll',
-                                     'lib'      => 'vc15lib',
+                                     'dllexe'   => 'vs2017exe',
+                                     'libexe'   => 'vs2017libexe',
+                                     'dll'      => 'vs2017dll',
+                                     'lib'      => 'vs2017lib',
                                      'template' => [ 'vc10', 'vc10filters' ],
                                     },
            );

@@ -26,7 +26,7 @@ project : glib {
   specific(vc14) {
     macros      += MSC_VER_REQUIRED=1900
   }
-  specific(vc15) {
+  specific(vs2017) {
     macros      += MSC_VER_REQUIRED=1910
   }
   verbatim(nmake, top) {

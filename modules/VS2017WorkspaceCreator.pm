@@ -1,7 +1,7 @@
-package VC15WorkspaceCreator;
+package VS2017WorkspaceCreator;
 
 # ************************************************************
-# Description   : A vc15 (Visual Studio 2017) Workspace Creator
+# Description   : A vs2017 (Visual Studio 2017) Workspace Creator
 # Author        : Johnny Willemsen
 # Create Date   : 01/05/2016
 # ************************************************************
@@ -12,7 +12,7 @@ package VC15WorkspaceCreator;
 
 use strict;
 
-use VC15ProjectCreator;
+use VS2017ProjectCreator;
 use VC12WorkspaceCreator;
 
 use vars qw(@ISA);

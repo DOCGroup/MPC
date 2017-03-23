@@ -211,7 +211,7 @@ managed         This keyword can be used as a global setting or as a source
                 component scoped setting (ie. inside the scope of
                 Source_Files).  It specifies that the source files should be
                 compiled as managed C++.  Since this is Microsoft specific, it
-                is only supported by the nmake, vc7 - vc14
+                is only supported by the nmake, vc7 - vc14, and vs*
                 project types.
 no_pch          This keyword can only be used as a source component scoped
                 setting (ie. inside the scope of Source_Files).  It
@@ -356,6 +356,7 @@ specific        This scope allows assignments that are specific to a
                 vc11     |         |      |     X     |    X    |
                 vc12     |         |      |     X     |    X    |
                 vc14     |         |      |     X     |    X    |
+                vs2017   |         |      |     X     |    X    |
                 wix      |         |      |           |    X    |
 
                 ? - indicates that this is controlled by the MPC_GHS_UNIX
