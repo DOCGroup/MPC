@@ -1,3 +1,32 @@
+Thu Mar 23 19:33:48 UTC 2017  Adam Mitz  <mitza@ociweb.com>
+
+        * config/pin_base.mpb:
+        * config/pin_tool.mpb:
+        * config/winapp.mpb:
+        * config/wireshark.mpb:
+        * docs/README:
+        * docs/html/MakeProjectCreator.html:
+        * modules/VS2017ProjectCreator.pm:
+        * modules/VS2017WorkspaceCreator.pm:
+        * bin/registry.pl:
+        * templates/vs2017dll.mpt:
+        * templates/vs2017exe.mpt:
+        * templates/vs2017lib.mpt:
+        * templates/vs2017libexe.mpt:
+        * templates/vs2017platforms.mpt:
+
+          Renamed "-type vc15" to vs2017.  Updated documentation.
+
+        * modules/VC15ProjectCreator.pm:
+        * modules/VC15WorkspaceCreator.pm:
+        * templates/vc15dll.mpt:
+        * templates/vc15exe.mpt:
+        * templates/vc15lib.mpt:
+        * templates/vc15libexe.mpt:
+        * templates/vc15platforms.mpt:
+
+          Removed/renamed these files.
+
 Mon Feb 13 21:58:22 UTC 2017  Adam Mitz  <mitza@ociweb.com>
 
         * modules/ProjectCreator.pm:
