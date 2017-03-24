@@ -347,16 +347,8 @@ specific        This scope allows assignments that are specific to a
                 ghs      |         |      |           |    ?    |
                 make     |         |  X   |           |         |
                 nmake    |         |  X   |     X     |    X    |
-                vc6      |         |      |     X     |    X    |
-                vc7      |         |      |     X     |    X    |
-                vc71     |         |      |     X     |    X    |
-                vc8      |         |      |     X     |    X    |
-                vc9      |         |      |     X     |    X    |
-                vc10     |         |      |     X     |    X    |
-                vc11     |         |      |     X     |    X    |
-                vc12     |         |      |     X     |    X    |
-                vc14     |         |      |     X     |    X    |
-                vs2017   |         |      |     X     |    X    |
+                vc*      |         |      |     X     |    X    |
+                vs*      |         |      |     X     |    X    |
                 wix      |         |      |           |    X    |
 
                 ? - indicates that this is controlled by the MPC_GHS_UNIX
@@ -435,17 +427,17 @@ C# Specific Project Keywords
 ----------------------------
 dependent_upon  This can only be applied to source and resx components.  It
                 determines which file the source or resx file is dependent
-                upon for vc8 - vc14 only.
+                upon for vc8 - vc14, vs* only.
 generates_source This can only be applied to resx components.  It indicates
                 that the resx file or files auto generates a source file for
-                vc8 - vc14 only.  A value of '1' indicates that the
+                vc8 - vc14, vs* only.  A value of '1' indicates that the
                 resx file generates a source file and the default generator is
                 used. Any other value indicates that the resx file generates a
                 source file and the generator name is taken from the value
                 supplied.  The auto generated name is created by taking the
                 resx file without the extension and appending .Designer.cs.
 subtype         This can only be applied to source and resx components.  It
-                determines the SubType setting for vc8 - vc14 only.
+                determines the SubType setting for vc8 - vc14, vs* only.
 
 Custom File Definitions
 -----------------------
