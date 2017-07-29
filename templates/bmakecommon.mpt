@@ -3,6 +3,8 @@ conditional_include "common"
 
 configurations       = Debug Release
 common_defines       = WIN32 _WINDOWS
+common32_defines     =
+common64_defines     = WIN64
 common_libs          = ws2_32$(LIB_EXT)
 common32_libs        = import32$(LIB_EXT) cw32mti$(LIB_EXT)
 common64_libs        = import64$(LIB_EXT) cw64mti$(LIB_EXT)
@@ -26,7 +28,10 @@ cc64    = bcc64
 rc64    = brcc64
 link64  = ilink64
 tlib    = tlib
-thflags = -tWM
+thrflags32 = -tWM
+thrflags64 = -tM
+binaryflags32 = -tWR -tWD
+binaryflags64 = -tR -tD
 dllflags = -Tpd -Gi -x -Gn -w-dup
 libflags = /C
 ccflags  = -q
