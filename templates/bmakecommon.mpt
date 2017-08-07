@@ -1,4 +1,7 @@
 // -*- MPC -*-
+
+// The *32 settings are for bcc32, *32c are for bcc32c (the clang based bcc32), and *64 are for bcc64 (also clang based)
+
 conditional_include "common"
 
 configurations       = Debug Release
