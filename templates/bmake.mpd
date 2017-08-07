@@ -135,7 +135,6 @@ OBJFILES = \
 
 LFLAGS   = \
            $(LINKERPATHS) \
-<%if(build64bit)%>
 <%if(debug_prj)%>
            -v \
            -r \
