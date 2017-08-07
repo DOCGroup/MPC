@@ -229,21 +229,27 @@ COMMON_FLAGS = \
 <%endif%>
 
 <%if(build64bit)%>
+<%if(common64_defines)%>
 COMMON_DEFINES = \
 <%foreach(common64_defines)%>
          -D<%common64_define%><%fornotlast(" \\")%>
 <%endfor%>
+<%endif%>
 <%else%>
 !ifdef CLASSIC
+<%if(common32_defines)%>
 COMMON_DEFINES = \
 <%foreach(common32_defines)%>
          -D<%common32_define%><%fornotlast(" \\")%>
 <%endfor%>
+<%endif%>
 !else
+<%if(common32c_defines)%>
 COMMON_DEFINES = \
 <%foreach(common32c_defines)%>
          -D<%common32c_define%><%fornotlast(" \\")%>
 <%endfor%>
+<%endif%>
 !endif
 <%endif%>
 
