@@ -187,14 +187,16 @@ RC_FLAGS = \
 <%if(!build64bit)%>
 <%if(pch_header)%>
 
-# Borland precompiled headers can choke on some header files.
+# Borland bcc32 precompiled headers can choke on some header files.
 # Set NO_USE_PCH if you do not want to use precompiled headers.
 !ifndef NO_USE_PCH
+!ifdef CLASSIC
 PCH_CFLAGS = \
 <%foreach(pch_defines)%>
              -D<%pch_define%> \
 <%endfor%>
              -H=$(INTERMEDIATE)\<%noextension(project_name)%>.csm -Hh=<%pch_header%>
+!endif
 !endif
 <%endif%>
 <%endif%>
