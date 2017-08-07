@@ -238,13 +238,14 @@ COMMON_DEFINES = \
 COMMON_DEFINES = \
 <%foreach(common32_defines)%>
          -D<%common32_define%><%fornotlast(" \\")%>
+<%endfor%>
 !else
 COMMON_DEFINES = \
 <%foreach(common32c_defines)%>
          -D<%common32c_define%><%fornotlast(" \\")%>
+<%endfor%>
 !endif
 <%endif%>
-
 
 CFLAGS = \
 <%foreach(cflags)%>
