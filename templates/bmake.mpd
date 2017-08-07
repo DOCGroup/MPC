@@ -9,7 +9,7 @@
 <%foreach(configurations)%>
 !ifdef <%normalize(uc(configuration))%>
 OCFLAGS32    = <%if(optimize)%>-O1<%else%><%if(debug_prj)%>-v -y -Od -vi- -k<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
-OCFLAGS32C   = <%if(optimize)%>-O1<%else%><%if(debug_prj)%>-Od -vi- -k<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
+OCFLAGS32C   = <%if(optimize)%>-O1<%else%><%if(debug_prj)%>-Od -vi- <%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
 OCFLAGS64    = <%if(optimize)%>-O3<%else%><%if(debug_prj)%>-g -O0 <%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
 CFG_DIR      = <%intermediate_dir%>\\
 LIBMODIFIER  = <%if(use_lib_modifier)%><%lib_modifier%><%endif%>
@@ -52,15 +52,45 @@ CG_CFLAGS = -vG
 CG_LIB    = cg32.lib
 !endif
 
+DLL_EXT      = <%dll_ext%>
+EXE_EXT      = <%exe_ext%>
 <%if(build64bit)%>
+STARTUP_BITS = 64
+CC64         = <%cc64%>
+LINK64       = <%link64%>
+LIB_EXT      = <%lib64_ext%>
 OBJ_EXT      = <%obj64_ext%>
+THREADFLAGS  = <%thrflags64%>
+BINARYFLAGS  = <%binaryflags64%>
+LINKERPATHS  = -L"$(BDS)\lib\win64\debug" -L"$(BDS)\lib\win64\release"
+WARNFLAGS64  = <%warnflags64%>
 <%else%>
+LINK32       = <%link32%>
+STARTUP_BITS = 32
 !ifdef CLASSIC
+CC32         = <%cc32%>
+LIB_EXT      = <%lib32_ext%>
 OBJ_EXT      = <%obj32_ext%>
+THREADFLAGS  = <%thrflags32%>
+BINARYFLAGS  = <%binaryflags32%>
+LINKERPATHS  = -L"$(BDS)\lib\win32\release" -L"$(BDS)\lib\win32\debug"
+WARNFLAGS32  = <%warnflags32%>
 !else
+CC32C        = <%cc32c%>
+LIB_EXT      = <%lib32c_ext%>
 OBJ_EXT      = <%obj32c_ext%>
+THREADFLAGS  = <%thrflags32c%>
+BINARYFLAGS  = <%binaryflags32c%>
+LINKERPATHS  = -L"$(BDS)\lib\win32c\debug" -L"$(BDS)\lib\win32c\release"
+WARNFLAGS32C = <%warnflags32c%>
 !endif
 <%endif%>
+RC           = <%rc%>
+TLIB32       = <%tlib32%>
+DLLFLAGS     = <%dllflags%>
+LIBFLAGS     = <%libflags%>
+EXEFLAGS     = <%exeflags%>
+CCFLAGS      = <%ccflags%><%if(type_is_binary)%> $(BINARYFLAGS)<%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
 
 <%if(use_vcl)%>
 STARTUP_LETTER = <%if(exename)%>w<%else%><%startup_letter%><%endif%>
@@ -68,47 +98,7 @@ STARTUP_LETTER = <%if(exename)%>w<%else%><%startup_letter%><%endif%>
 VCL_CFLAGS     = -D_NO_VCL
 STARTUP_LETTER = <%startup_letter%>
 <%endif%>
-<%if(build64bit)%>
-STARTUP_BITS   = 64
-<%else%>
-STARTUP_BITS   = 32
-<%endif%>
 STARTUP_OBJ    = c0$(STARTUP_LETTER)$(STARTUP_BITS)$(UC_MAIN)$(OBJ_EXT)
-
-DLL_EXT      = <%dll_ext%>
-<%if(build64bit)%>
-LIB_EXT      = <%lib64_ext%>
-THREADFLAGS  = <%thrflags64%>
-BINARYFLAGS  = <%binaryflags64%>
-LINKERPATHS  = -L"$(BDS)\lib\win64\debug" -L"$(BDS)\lib\win64\release"
-<%else%>
-!ifdef CLASSIC
-LIB_EXT      = <%lib32_ext%>
-THREADFLAGS  = <%thrflags32%>
-BINARYFLAGS  = <%binaryflags32%>
-LINKERPATHS  = -L"$(BDS)\lib\win32\release" -L"$(BDS)\lib\win32\debug"
-!else
-LIB_EXT      = <%lib32c_ext%>
-THREADFLAGS  = <%thrflags32c%>
-BINARYFLAGS  = <%binaryflags32c%>
-LINKERPATHS  = -L"$(BDS)\lib\win32c\debug" -L"$(BDS)\lib\win32c\release"
-!endif
-<%endif%>
-EXE_EXT      = <%exe_ext%>
-CC32         = <%cc32%>
-RC           = <%rc%>
-LINK32       = <%link32%>
-CC64         = <%cc64%>
-LINK64       = <%link64%>
-CC32C        = <%cc32c%>
-TLIB32       = <%tlib32%>
-DLLFLAGS     = <%dllflags%>
-LIBFLAGS     = <%libflags%>
-EXEFLAGS     = <%exeflags%>
-WARNFLAGS32  = <%warnflags32%>
-WARNFLAGS32C = <%warnflags32c%>
-WARNFLAGS64  = <%warnflags64%>
-CCFLAGS      = <%ccflags%><%if(type_is_binary)%> $(BINARYFLAGS)<%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
 
 INTERMEDIATE = $(CFG_DIR)$(UNICODE_DIR)<%noextension(project_name)%>
 <%if(exename)%>
