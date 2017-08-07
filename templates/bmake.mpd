@@ -9,6 +9,7 @@
 <%foreach(configurations)%>
 !ifdef <%normalize(uc(configuration))%>
 OCFLAGS32    = <%if(optimize)%>-O1<%else%><%if(debug_prj)%>-v -y -Od -vi- -k<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
+OCFLAGS32C   = <%if(optimize)%>-O3<%else%><%if(debug_prj)%>-g -O0 <%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
 OCFLAGS64    = <%if(optimize)%>-O3<%else%><%if(debug_prj)%>-g -O0 <%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
 CFG_DIR      = <%intermediate_dir%>\\
 LIBMODIFIER  = <%if(use_lib_modifier)%><%lib_modifier%><%endif%>
@@ -54,7 +55,11 @@ CG_LIB    = cg32.lib
 <%if(build64bit)%>
 OBJ_EXT      = <%obj64_ext%>
 <%else%>
+!ifdef CLASSIC
 OBJ_EXT      = <%obj32_ext%>
+!else
+OBJ_EXT      = <%obj32c_ext%>
+!endif
 <%endif%>
 
 <%if(use_vcl)%>
@@ -75,23 +80,33 @@ DLL_EXT      = <%dll_ext%>
 LIB_EXT      = <%lib64_ext%>
 THREADFLAGS  = <%thrflags64%>
 BINARYFLAGS  = <%binaryflags64%>
+LINKERPATHS  = -L"$(BDS)\lib\win64\debug" -L"$(BDS)\lib\win64\release"
 <%else%>
+!ifdef CLASSIC
 LIB_EXT      = <%lib32_ext%>
 THREADFLAGS  = <%thrflags32%>
 BINARYFLAGS  = <%binaryflags32%>
+LINKERPATHS  = -L"$(BDS)\lib\win32\release" -L"$(BDS)\lib\win32\debug"
+!else
+LIB_EXT      = <%lib32c_ext%>
+THREADFLAGS  = <%thrflags32c%>
+BINARYFLAGS  = <%binaryflags32c%>
+LINKERPATHS  = -L"$(BDS)\lib\win32c\debug" -L"$(BDS)\lib\win32c\release"
+!endif
 <%endif%>
 EXE_EXT      = <%exe_ext%>
 CC32         = <%cc32%>
-RC32         = <%rc32%>
+RC           = <%rc%>
 LINK32       = <%link32%>
 CC64         = <%cc64%>
-RC64         = <%rc64%>
 LINK64       = <%link64%>
-TLIB         = <%tlib%>
+CC32C        = <%cc32c%>
+TLIB32       = <%tlib32%>
 DLLFLAGS     = <%dllflags%>
 LIBFLAGS     = <%libflags%>
 EXEFLAGS     = <%exeflags%>
 WARNFLAGS32  = <%warnflags32%>
+WARNFLAGS32C = <%warnflags32c%>
 WARNFLAGS64  = <%warnflags64%>
 CCFLAGS      = <%ccflags%><%if(type_is_binary)%> $(BINARYFLAGS)<%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
 
@@ -119,14 +134,11 @@ OBJFILES = \
 <%if(libpaths)%>
 
 LFLAGS   = \
+           $(LINKERPATHS) \
 <%if(build64bit)%>
-           -L"$(BDS)\lib\win64\debug" -L"$(BDS)\lib\win64\release" \
 <%if(debug_prj)%>
            -v \
            -r \
-<%endif%>
-<%else%>
-           -L"$(BDS)\lib\win32\release" -L"$(BDS)\lib\win32\debug" \
 <%endif%>
 <%if(linkflags)%>
         <%linkflags%> \
@@ -145,6 +157,16 @@ LFLAGS   = \
 <%endfor%>
 <%endif%>
 
+<%if(build64bit)%>
+COMMON_LIBS = <%common_libs%> <%common64_libs%>
+<%else%>
+!ifdef CLASSIC
+COMMON_LIBS = $(CG_LIB) <%common_libs%> <%common32_libs%>
+!else
+COMMON_LIBS = <%common_libs%> <%common32c_libs%>
+!endif
+<%endif%>
+
 LIBFILES = \
 <%foreach(reverse(libs))%>
            <%libname_prefix%><%lib%>$(LIBMODIFIER)$(ULIBMODIFIER)$(LIB_EXT) \
@@ -155,11 +177,7 @@ LIBFILES = \
 <%foreach(reverse(pure_libs))%>
            <%pure_lib%> \
 <%endfor%>
-<%if(build64bit)%>
-           <%common_libs%> <%common64_libs%>
-<%else%>
-           $(CG_LIB) <%common_libs%> <%common32_libs%>
-<%endif%>
+           $(COMMON_LIBS)
 
 <%if(resource_files)%>
 
@@ -192,25 +210,49 @@ PCH_CFLAGS = \
 <%endif%>
 <%endif%>
 
+<%if(build64bit)%>
+COMMON_FLAGS = \
+<%foreach(common64_flags)%>
+         <%common64_flag%><%fornotlast(" \\")%>
+<%endfor%>
+<%else%>
+!ifdef CLASSIC
+COMMON_FLAGS = \
+<%foreach(common32_flags)%>
+         <%common32_flag%><%fornotlast(" \\")%>
+<%endfor%>
+!else
+COMMON_FLAGS = \
+<%foreach(common32c_flags)%>
+         <%common32c_flag%><%fornotlast(" \\")%>
+<%endfor%>
+!endif
+<%endif%>
+
+<%if(build64bit)%>
+COMMON_DEFINES = \
+<%foreach(common64_defines)%>
+         -D<%common64_define%><%fornotlast(" \\")%>
+<%endfor%>
+<%else%>
+!ifdef CLASSIC
+COMMON_DEFINES = \
+<%foreach(common32_defines)%>
+         -D<%common32_define%><%fornotlast(" \\")%>
+!else
+COMMON_DEFINES = \
+<%foreach(common32c_defines)%>
+         -D<%common32c_define%><%fornotlast(" \\")%>
+!endif
+<%endif%>
+
+
 CFLAGS = \
 <%foreach(cflags)%>
          <%cflag%> \
 <%endfor%>
-<%if(build64bit)%>
-<%foreach(common64_flags)%>
-         <%common64_flag%> \
-<%endfor%>
-<%foreach(common64_defines)%>
-         -D<%common64_define%> \
-<%endfor%>
-<%else%>
-<%foreach(common32_flags)%>
-         <%common32_flag%> \
-<%endfor%>
-<%foreach(common32_defines)%>
-         -D<%common32_define%> \
-<%endfor%>
-<%endif%>
+         $(COMMON_FLAGS) \
+         $(COMMON_DEFINES) \
 <%foreach(macros common_defines)%>
          -D<%macro%> \
 <%endfor%>
@@ -266,7 +308,7 @@ all:<%if(prebuild)%> __prebuild__<%endif%> $(OUTPUTDIR)$(NAME)$(LIB_EXT)<%if(pos
 
 $(OUTPUTDIR)$(NAME)$(LIB_EXT): $(OBJFILES)
   @if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
-  $(TLIB) $(LIBFLAGS) $(OUTPUTDIR)$(NAME)$(LIB_EXT) @&&!
+  $(TLIB32) $(LIBFLAGS) $(OUTPUTDIR)$(NAME)$(LIB_EXT) @&&!
 + $(**: = &^
 + )
 !
@@ -332,48 +374,88 @@ generated: $(GENERATED_DIRTY)
 .path$(OBJ_EXT) = $(INTERMEDIATE)
 
 .path.cpp = $(CPPDIR)
+<%if(build64bit)%>
 .cpp$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-<%if(build64bit)%>
         $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
 <%else%>
+!ifdef CLASSIC
+.cpp$(OBJ_EXT):
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
         $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+!else
+.cpp$(OBJ_EXT):
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+        $(CC32C) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32C) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32C) -c -o $(@D)\$(@F) $<
+!endif
 <%endif%>
 
 .path.cxx = $(CPPDIR)
+<%if(build64bit)%>
 .cxx$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-<%if(build64bit)%>
         $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
 <%else%>
+!ifdef CLASSIC
+.cxx$(OBJ_EXT):
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
         $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+!else
+.cxx$(OBJ_EXT):
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+        $(CC32C) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32C) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32C) -c -o $(@D)\$(@F) $<
+!endif
 <%endif%>
 
 .path.cc = $(CPPDIR)
+<%if(build64bit)%>
 .cc$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-<%if(build64bit)%>
         $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
 <%else%>
+!ifdef CLASSIC
+.cc$(OBJ_EXT):
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
         $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+!else
+.cc$(OBJ_EXT):
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+        $(CC32C) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32C) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32C) -c -o $(@D)\$(@F) $<
+!endif
 <%endif%>
 
 .path.C = $(CPPDIR)
+<%if(build64bit)%>
 .C$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-<%if(build64bit)%>
         $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
 <%else%>
+!ifdef CLASSIC
+.C$(OBJ_EXT):
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
         $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+!else
+.C$(OBJ_EXT):
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+        $(CC32C) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32C) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32C) -c -o $(@D)\$(@F) $<
+!endif
 <%endif%>
 
 .path.c = $(CPPDIR)
+<%if(build64bit)%>
 .c$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-<%if(build64bit)%>
         $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
 <%else%>
+!ifdef CLASSIC
+.c$(OBJ_EXT):
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
         $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+!else
+.c$(OBJ_EXT):
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+        $(CC32C) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32C) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32C) -c -o $(@D)\$(@F) $<
+!endif
 <%endif%>
 
 <%foreach(source_files)%>
@@ -383,7 +465,11 @@ generated: $(GENERATED_DIRTY)
 <%if(build64bit)%>
   $(CC64) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) <%source_file%>
 <%else%>
+!ifdef CLASSIC
   $(CC32) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) <%source_file%>
+!else
+  $(CC32C) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32C) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32C) -c -o $(@D)\$(@F) <%source_file%>
+!endif
 <%endif%>
 
 <%endif%>
@@ -395,13 +481,13 @@ generated: $(GENERATED_DIRTY)
 .path.rc = $(RESDIR)
 .rc.res:
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(RC32) $(RC_FLAGS) -fo$@ $<
+        $(RC) $(RC_FLAGS) -fo$@ $<
 
 <%foreach(resource_files)%>
 <%if(transdir(resource_file))%>
 "$(INTERMEDIATE)\<%transdir(resource_file)%><%basenoextension(resource_file)%>.res":
   @if not exist "$(INTERMEDIATE)\<%transdir(resource_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(resource_file)%>"
-  $(RC32) -fo$@ <%resource_file%>
+  $(RC) -fo$@ <%resource_file%>
 
 <%endif%>
 <%endfor%>
