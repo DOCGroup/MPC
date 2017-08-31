@@ -28,3 +28,9 @@ feature(openssl) {
     libpaths += $(SSL_ROOT)/lib/VC
   }
 }
+
+feature(openssl11) {
+  specific(prop:windows) {
+    lit_libs -= libeay32 ssleay32
+    lit_libs += ssl crypto
+}
