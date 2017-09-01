@@ -32,6 +32,6 @@ feature(openssl) {
 feature(openssl11) {
   specific(prop:windows) {
     lit_libs -= libeay32 ssleay32
-    lit_libs += ssl crypto
+    lit_libs += libssl libcrypto
   }
 }
