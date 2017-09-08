@@ -23,7 +23,7 @@ my %info = (Creator::cplusplus() => {'ext'      => '.vcxproj',
                                      'libexe'   => 'vs2017libexe',
                                      'dll'      => 'vs2017dll',
                                      'lib'      => 'vs2017lib',
-                                     'template' => [ 'vc10', 'vc10filters' ],
+                                     'template' => [ 'vs2017', 'vs2017filters' ],
                                     },
            );
 
