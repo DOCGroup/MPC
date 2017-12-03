@@ -231,6 +231,9 @@
 <%if(OpenMP || OpenMPSupport)%>
       <OpenMPSupport>true</OpenMPSupport>
 <%endif%>
+<%if(LanguageStandard)%>
+      <LanguageStandard><%LanguageStandard%></LanguageStandard>
+<%endif%>
 <%if(pch_header)%>
       <PrecompiledHeader>Use</PrecompiledHeader>
 <%if(pch_header_output)%>

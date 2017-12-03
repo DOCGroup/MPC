@@ -79,6 +79,7 @@ intdir = Specify this to override the default intermediate directory.
 keycontainer = Specify a key container to sign an assembly.
 keyfile = Specify key or key pair to sign an assembly.  If set, embedmanifest defaults to false.
 largeaddressaware = Tells the linker that the application can handle addresses larger than 2 gigabytes.
+languagestandard = Which version of ISO C++ standard to compile against (stdcpp14, stdcpp17, stdcpplatest) - Visual Studio 2017+ only
 lib_options = Additional command-line options for the librarian.
 link_options = Additional command-line options for the linker.
 linkerrorreporting = Allows you to provide linker internal compiler error (ICE) information directly to the Visual C++ team (PromptImmediately, QueueForNextLogin, SendErrorReport, NoErrorReport).
