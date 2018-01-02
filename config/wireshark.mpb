@@ -1,5 +1,5 @@
 project : glib {
-  requires      += wireshark
+  requires      += wireshark_any
 
   // Unfortunately Wireshark does not install headers for plugin
   // development; instead we rely on the source distribution:
@@ -32,12 +32,29 @@ project : glib {
   verbatim(nmake, top) {
     include $(WIRESHARK_SRC)/config.nmake
   }
+  
+  specific(!prop:windows) {
+    libpaths    += $(WIRESHARK_SRC)/wiretap/.libs $(WIRESHARK_SRC)/epan/.libs
+    lit_libs    += wiretap wireshark
+  }
+}
 
+feature (wireshark) {
   specific(prop:windows) {
     libpaths    += $(WIRESHARK_SRC)/wiretap $(WIRESHARK_SRC)/epan
     lit_libs    += wiretap-$(WIRETAP_VERSION) libwireshark
-  } else {
-    libpaths    += $(WIRESHARK_SRC)/wiretap/.libs $(WIRESHARK_SRC)/epan/.libs
+  }
+}
+
+// Building Wireshark 2 on Windows is a CMake out of source build
+// WIRESHARK2_BUILD is the build folder
+// WIRESHARK2_BIN is the folder in the build where the executables and
+//   libraries where placed. This is likely "run\RelWithDebInfo" but is left
+//   as an option in case the build configuration of Wireshark is different.
+feature (wireshark2) {
+  specific(prop:windows) {
+    includes    += $(WIRESHARK2_BUILD)
+    libpaths    += $(WIRESHARK2_BIN)
     lit_libs    += wiretap wireshark
   }
 }
