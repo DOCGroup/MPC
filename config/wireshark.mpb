@@ -48,13 +48,13 @@ feature (wireshark) {
 
 // Building Wireshark 2 on Windows is a CMake out of source build
 // WIRESHARK2_BUILD is the build folder
-// WIRESHARK2_BIN is the folder in the build where the executables and
-//   libraries where placed. This is likely "run\RelWithDebInfo" but is left
-//   as an option in case the build configuration of Wireshark is different.
+// WIRESHARK2_BIN is the relative folder in the build where the executables
+//   and libraries were placed. This is likely "run\RelWithDebInfo" but is
+//   left as an option in case the build configuration is different.
 feature (wireshark2) {
   specific(prop:windows) {
     includes    += $(WIRESHARK2_BUILD)
     libpaths    += $(WIRESHARK2_BIN)
-    lit_libs    += wiretap wireshark
+    lit_libs    += wiretap wireshark wsutil
   }
 }
