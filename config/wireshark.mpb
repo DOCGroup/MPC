@@ -36,7 +36,7 @@ project : glib {
   verbatim(nmake, top, 1) {
     include $(WIRESHARK_SRC)/config.nmake
   }
-  
+
   specific(!prop:windows) {
     libpaths    += $(WIRESHARK_SRC)/wiretap/.libs $(WIRESHARK_SRC)/epan/.libs
     lit_libs    += wiretap wireshark
