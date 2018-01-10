@@ -3,7 +3,6 @@ feature(!wireshark, !wireshark2) {
 }
 
 project : glib {
-  requires      += wireshark_any
 
   // Unfortunately Wireshark does not install headers for plugin
   // development; instead we rely on the source distribution:
