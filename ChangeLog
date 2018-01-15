@@ -1,3 +1,12 @@
+Mon Jan 15 17:31:47 UTC 2018  Frederick Hornsey <fred@hornsey.us>
+        * config/wireshark.mpb:
+        * config/global.features:
+
+          Added parameters for Wireshark 2 on Windows.
+            wireshark2
+            wireshark2_build
+            wireshark2_bin
+
 Thu Jan 11 18:43:46 UTC 2018  Adam Mitz  <mitza@ociweb.com>
 
         * clone_build_tree.pl:
