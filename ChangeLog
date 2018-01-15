@@ -7,6 +7,12 @@ Mon Jan 15 17:31:47 UTC 2018  Frederick Hornsey <fred@hornsey.us>
             wireshark2_build
             wireshark2_bin
 
+Thu Jan 11 18:43:46 UTC 2018  Adam Mitz  <mitza@ociweb.com>
+
+        * clone_build_tree.pl:
+
+          Treat the .git directory the same as .svn and CVS.
+
 Mon Aug  7 14:23:34 UTC 2017  Adam Mitz  <mitza@ociweb.com>
 
         * docs/README:
