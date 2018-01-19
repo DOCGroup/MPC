@@ -1,15 +1,18 @@
-Wed Jan 17 23:55:29 UTC 2018  Frederick Hornsey <fred@hornsey.us>
+Fri Jan 19 01:52:54 UTC 2018  Frederick Hornsey <fred@hornsey.us>
 
         * config/wireshark.mpb:
         * config/global.features:
 
-		  When using Wireshark builds built using Autoconf (like Linux),
-		  should use the old feature "wireshark". When using Wireshark builds
-		  built with CMake should use "wireshark_cmake", "WIRESHARK_BUILD",
-		  and "WIRESHARK_LIB".
+          When using Wireshark builds built using Autoconf (like Linux),
+          Wireshark 1.x on Windows, and systems where Wireshark headers are
+          installed, use the wireshark feature as before.
 
-		  These parameters replace "wireshark2", "WIRESHARK2_BUILD", and
-		  "WIRESHARK2_BIN".
+          When using Wireshark builds built with CMake use wireshark_cmake
+          set to the Wireshark source, $WIRESHARK_BUILD set to the build
+          directory and $WIRESHARK_LIB set to relative path inside the build
+          directory that contains the Wireshark dynamic libraries. These
+          parameters replace wireshark2, $WIRESHARK2_BUILD, and
+          $WIRESHARK2_BIN.
 
 Mon Jan 15 17:31:47 UTC 2018  Frederick Hornsey <fred@hornsey.us>
         * config/wireshark.mpb:

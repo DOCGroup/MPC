@@ -35,9 +35,10 @@ project : glib {
 }
 
 // Autoconf / In Source Wireshark Build Method
-// This one is how the Wireshark Developers Guide says to build Wireshark on
-// Linux (autogen.sh).
-// This is also used for older 1.x Wireshark Windows builds.
+// This feasture works with how Wireshark Developers Guide says to build
+// Wireshark on Linux (autogen.sh). This is also used for older 1.x Wireshark
+// Windows builds and if Wireshark headers are installed on the system.
+// On Windows $(WIRETAP_VERSION) also has to be specified as well.
 feature(wireshark) {
   avoids += wireshark_cmake
   specific(prop:windows) {
@@ -49,24 +50,24 @@ feature(wireshark) {
   }
 }
 
+// Out of Source Built Wireshark
 // CMake out of source builds of Wireshark are used in the Developers Guide
 // for Windows and macOS. This can also be used on Linux if built using CMake.
-// To use build against them we need two absolute
-// paths:
+// To use build against them we need two additional paths:
 //   WIRESHARK_BUILD
 //     The location of the build that the user choose when building Wireshark.
 //     It must contain the config.h file after building Wireshark.
 //   WIRESHARK_LIB
-//     The location of the wireshark dynamic libraries located within
+//     The location of the wireshark dynamic libraries relative to
 //     WIRESHARK_BUILD.
 //     For Windows this might be:
-//       %WIRESHARK_BUILD%\run\RelWithDebInfo
+//       run\RelWithDebInfo
 //     For macOS this might be:
-//       $WIRESHARK_BUILD/run/Wireshark.app/Contents/PlugIns/wireshark
+//       run/Wireshark.app/Contents/PlugIns/wireshark
 feature(wireshark_cmake) {
   avoids += wireshark
 
   includes    += $(WIRESHARK_BUILD)
-  libpaths    += $(WIRESHARK_LIB)
+  libpaths    += $(WIRESHARK_BUILD)/$(WIRESHARK_LIB)
   lit_libs    += wiretap wireshark wsutil
 }
