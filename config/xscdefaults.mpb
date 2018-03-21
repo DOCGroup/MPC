@@ -3,7 +3,7 @@ project {
         specific {
           xsc_bin = $(XSC_ROOT)/bin/xsc
           xsc_dep = $(XSC_ROOT)/bin/xsc
-          xsc_flags = --backend cxx --cxx-char-type ACE_TCHAR --cxx-generate-writer-types
+          xsc_flags = --backend cxx
         }
 
         Define_Custom(XSC) {
