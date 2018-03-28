@@ -8,6 +8,7 @@
 platforms = Win32 x64
 default_platform = Win32
 PlatformToolset = v141
+WindowsTargetPlatformVersion = 10.0.16299.0
 
 Win32 {
   output_subdir    = I386
