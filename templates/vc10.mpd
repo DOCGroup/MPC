@@ -822,13 +822,7 @@
 <%endfor%>
     </CustomBuild>
 <%else%>
-    <None Include="<%custom_type->input_file%>">
-<%foreach(platforms)%>
-<%foreach(configurations)%>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">true</ExcludedFromBuild>
-<%endfor%>
-<%endfor%>
-    </None>
+    <None Include="<%custom_type->input_file%>" />
 <%endif%>
 <%endfor%>
   </ItemGroup>
