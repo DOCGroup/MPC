@@ -1,0 +1,28 @@
+// Current as of 5/16/2018
+// This defines the role of all the template variables specific to the
+// 'uvis' project type.
+//
+// Please try to keep this alphabetically sorted.
+//
+board = The name of the board (e.g., STM32L476)
+cmsis_files = Special source files that are part of the CMSIS OS grouping
+debuginformation = A boolean indicating if debug information should be added
+device_files =  Special source files that are part of the Device grouping
+devices = The list of devices (e.g., STM32L476ZGTx)
+dfp = The name of the development package (e.g., STM32L4xx)
+flash = The name of the flash driver (e.g., STM32L4xx_1024.FLM)
+genflags = Flags that will be passed to the C/C++ compiler
+iram1_size = The size of the first internal ram definition
+iram1_start = The starting address of the first internal ram definition
+iram2_size = The size of the second internal ram definition
+iram2_start = The starting address of the second internal ram definition
+register = The name of the register header file
+scatter_file = The name of the file that contains the scatter memory definitions
+sfd = The name of the SFD file (e.g., STM32L4x6.svd)
+vendor = The name of the vendor of the board
+xram1_size = The size of the first external ram definition
+xram1_start = The starting address of the first external ram definition
+xram2_size = The size of the second external ram definition
+xram2_start = The starting address of the second external ram definition
+xram3_size = The size of the third external ram definition
+xram3_start = The starting address of the third external ram definition

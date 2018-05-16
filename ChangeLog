@@ -1,3 +1,9 @@
+Wed May 16 14:43:23 UTC 2018  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/uvis.txt:
+
+          Documented the uvis.mpd template.
+
 Fri Jan 19 01:52:54 UTC 2018  Frederick Hornsey <fred@hornsey.us>
 
         * config/wireshark.mpb:
@@ -15,6 +21,7 @@ Fri Jan 19 01:52:54 UTC 2018  Frederick Hornsey <fred@hornsey.us>
           $WIRESHARK2_BIN.
 
 Mon Jan 15 17:31:47 UTC 2018  Frederick Hornsey <fred@hornsey.us>
+
         * config/wireshark.mpb:
         * config/global.features:
 
