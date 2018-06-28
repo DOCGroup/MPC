@@ -7,7 +7,6 @@
 <%if(!compares(grouped_source_file, default_group))%>
     <Filter Include="<%grouped_source_file%>">
       <UniqueIdentifier>{<%new_guid(grouped_source_file)%>}</UniqueIdentifier>
-      <Extensions><%foreach(ext, extensions(source_files))%><%ext%><%fornotlast(";")%><%endfor%></Extensions>
     </Filter>
 <%endif%>
 <%endfor%>
@@ -23,7 +22,6 @@
 <%if(!compares(grouped_header_file, default_group))%>
     <Filter Include="<%grouped_header_file%>">
       <UniqueIdentifier>{<%new_guid(grouped_header_file)%>}</UniqueIdentifier>
-      <Extensions><%foreach(ext, extensions(header_files))%><%ext%><%fornotlast(";")%><%endfor%></Extensions>
     </Filter>
 <%endif%>
 <%endfor%>

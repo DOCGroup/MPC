@@ -24,7 +24,7 @@
     <Keyword>ManagedCProj</Keyword>
     <TargetFrameworkVersion>v<%TargetFrameworkVersion("4.0")%></TargetFrameworkVersion>
 <%else%>
-    <Keyword><%if(UseOfMFC)%>MFCProj<%else%><%platform("Win32")%>Proj<%endif%></Keyword>
+	<%if(activex)%><Keyword>MFCActiveXProj</Keyword><%else%><Keyword><%if(UseOfMFC)%>MFCProj<%else%><%platform("Win32")%>Proj<%endif%></Keyword><%endif%>
 <%endif%>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -33,7 +33,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'" Label="Configuration">
     <ConfigurationType><%if(type_is_dynamic)%>DynamicLibrary<%else%><%if(type_is_static && staticname)%>StaticLibrary<%else%><%if(custom_only)%>Utility<%else%><%if(makeoutput)%>Makefile<%else%>Application<%endif%><%endif%><%endif%><%endif%></ConfigurationType>
 <%if(UseOfMFC)%>
-    <UseOfMfc><%UseOfMFC%></UseOfMfc>
+    <UseOfMfc><%if(compares(UseOfMFC,1))%>Static<%else%><%if(compares(UseOfMFC,2))%>Dynamic<%endif%><%endif%></UseOfMfc>
+<%else%>
+	<UseOfMfc>false</UseOfMfc>
 <%endif%>
 <%if(UseOfATL)%>
     <UseOfAtl><%UseOfATL%></UseOfAtl>
@@ -63,6 +65,7 @@
 <%foreach(configurations)%>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	<%if(custom_prop)%><Import Project="<%custom_prop%>" /><%endif%>
   </ImportGroup>
 <%endfor%>
 <%endfor%>
@@ -97,7 +100,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(type_is_dynamic)%><%if(dllout)%><%dllout%>\<%else%><%libout%>\<%endif%><%else%><%if(type_is_static)%><%libout%>\<%else%><%if(exeout)%><%exeout%>\<%if(windows_style)%><%output_dir("Debug")%>\<%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%>\<%else%><%output_dir(".")%>\<%endif%><%endif%><%endif%><%endif%></OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(intdir)%><%intdir%>\<%else%><%intermediate_dir%>\<%noextension(project_file)%>\<%if(output_subdir)%><%output_subdir%>\<%endif%><%endif%></IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(debug_prj)%>true<%else%>false<%endif%></LinkIncremental>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%else%><%if(type_is_static)%><%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%endif%><%endif%></TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%else%><%if(type_is_static)%><%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%else%><%exename%><%if(use_exe_modifier)%><%exe_modifier%><%endif%><%endif%><%endif%></TargetName>
     <LocalDebuggerCommandArguments Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%marker(debug_cmd_args)%></LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(debug_work_dir)%><%debug_work_dir%><%else%>$(OutDir)<%endif%></LocalDebuggerWorkingDirectory>
 <%if(type_is_static && staticname && !compares(lib_ext, .lib))%>
@@ -105,8 +108,12 @@
 <%else%>
 <%if(!type_is_static)%>
 <%if(exename || sharedname || staticname)%>
-<%if(type_is_dynamic && !compares(dll_ext, .dll))%>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%dll_ext%></TargetExt>
+<%if(type_is_dynamic)%>
+<%if(activex)%>
+	<TargetExt Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">.ocx</TargetExt>
+<%else%>
+	<%if(!compares(dll_ext, .dll))%><TargetExt Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%dll_ext%></TargetExt><%endif%>	
+<%endif%>
 <%else%>
 <%if(!type_is_dynamic && !compares(exe_ext, .exe))%>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%exe_ext%></TargetExt>
@@ -139,21 +146,7 @@
       <Command><%eval(prebuild)%></Command>
     </PreBuildEvent>
 <%endif%>
-    <Midl>
-      <PreprocessorDefinitions><%foreach(midl_defines)%><%midl_define%>;<%endfor%>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories><%foreach(midl_includes)%><%midl_include%>;<%endfor%>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TargetEnvironment><%platform%></TargetEnvironment>
-<%if(midl_notlb)%>
-      <GenerateStublessProxies>false</GenerateStublessProxies>
-<%endif%>
-      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
-      <HeaderFileName>%(Filename).h</HeaderFileName>
-      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
-<%if(midl_flags)%>
-      <AdditionalOptions><%midl_flags%></AdditionalOptions>
-<%endif%>
-    </Midl>
+
     <ClCompile>
       <Optimization><%optimize("Disabled")%></Optimization>
 <%if(InlineFunctionExpansion)%>
@@ -199,7 +192,13 @@
 <%if(SmallerTypeCheck)%>
       <SmallerTypeCheck>true</SmallerTypeCheck>
 <%endif%>
-      <RuntimeLibrary><%if(runtime_library)%><%runtime_library%><%else%><%if(type_is_static || need_staticflags)%><%if(debug_prj)%>MultiThreadedDebug<%else%>MultiThreaded<%endif%><%else%><%if(debug_prj)%>MultiThreadedDebugDLL<%else%>MultiThreadedDLL<%endif%><%endif%><%endif%></RuntimeLibrary>
+
+<%if(runtime_library)%>
+	<RuntimeLibrary><%if(compares(runtime_library,0))%>MultiThreaded<%else%><%if(compares(runtime_library,1))%>MultiThreadedDebug<%else%><%if(compares(runtime_library,2))%>MultiThreadedDLL<%else%><%if(compares(runtime_library,3))%>MultiThreadedDebugDLL<%endif%><%endif%><%endif%><%endif%></RuntimeLibrary>
+<%else%>
+      <RuntimeLibrary><%if(type_is_static || need_staticflags)%><%if(debug_prj)%>MultiThreadedDebug<%else%>MultiThreaded<%endif%><%else%><%if(debug_prj)%>MultiThreadedDebugDLL<%else%>MultiThreadedDLL<%endif%><%endif%></RuntimeLibrary>
+<%endif%>
+	  
 <%if(StructMemberAlignment)%>
       <StructMemberAlignment><%StructMemberAlignment%></StructMemberAlignment>
 <%endif%>
@@ -262,7 +261,8 @@
       <ObjectFileName><%ObjectFileName%></ObjectFileName>
 <%endif%>
 <%if(pdbc)%>
-      <ProgramDataBaseFileName><%if(type_is_static)%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%><%if(output_subdir)%>\<%output_subdir%><%endif%>\<%endif%></ProgramDataBaseFileName>
+      <OutputFile><%if(lib_full)%><%lib_full%><%lib_ext%><%else%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endif%></OutputFile>
+      <ProgramDataBaseFileName><%if(type_is_static)%><%if(lib_full)%><%lib_full%><%else%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%endif%>.pdb<%else%><%intermediate_dir%>\<%noextension(project_file)%><%if(output_subdir)%>\<%output_subdir%><%endif%>\<%endif%></ProgramDataBaseFileName>
 <%else%>
 <%if(ProgramDataBaseFileName)%>
       <ProgramDataBaseFileName><%ProgramDataBaseFileName%></ProgramDataBaseFileName>
@@ -282,7 +282,7 @@
 <%endif%>
       <WarningLevel><%if(compares(warning_level, all))%>EnableAllWarnings<%else%><%if(compares(warning_level, none) || compares(warning_level, 0))%>TurnOffAllWarnings<%else%>Level<%warning_level("3")%><%endif%><%endif%></WarningLevel>
 <%if(!managed && debug_format)%>
-      <DebugInformationFormat><%debug_format%></DebugInformationFormat>
+      <DebugInformationFormat><%if(compares(debug_format, 0))%>None<%else%><%if(compares(debug_format, 1))%>OldStyle<%else%><%if(compares(debug_format, 2))%>ProgramDatabase<%else%><%if(compares(debug_format, 3))%>EditAndContinue<%endif%><%endif%><%endif%><%endif%></DebugInformationFormat>
 <%endif%>
 <%if(CallingConvention)%>
       <CallingConvention><%CallingConvention%></CallingConvention>
@@ -335,23 +335,22 @@
 <%if(compile_flags)%>
       <AdditionalOptions><%compile_flags%> %(AdditionalOptions)</AdditionalOptions>
 <%endif%>
+<%if(activex)%>
+      <SDLCheck>true</SDLCheck>
+<%endif%>
     </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions><%if(unicode)%>UNICODE;_UNICODE;<%endif%><%foreach(defines macros platform_defines)%><%define%>;<%endfor%>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture><%culture("1033")%></Culture>
-      <AdditionalIncludeDirectories><%foreach(includes)%><%include%>;<%endfor%>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
+
 <%if(prelink)%>
     <PreLinkEvent>
       <Command><%eval(prelink)%></Command>
     </PreLinkEvent>
 <%endif%>
-<%if(type_is_static)%>
+<%if(type_is_static && staticname)%>
     <Lib>
 <%if(staticname)%>
-      <OutputFile><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%></OutputFile>
+	  <OutputFile><%if(lib_full)%><%lib_full%><%lib_ext%><%else%><%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endif%></OutputFile>
 <%endif%>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies><%foreach(reverse(libs))%><%fornotfirst(";")%><%libname_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endfor%><%foreach(reverse(lit_libs))%>;<%lit_lib%>.lib<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%><%endfor%>;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories><%foreach(libpaths)%><%libpath%>;<%endfor%>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
 <%if(SuppressStartupBanner)%>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -415,9 +414,10 @@
 <%if(GenerateDebugInformation)%>
       <GenerateDebugInformation><%GenerateDebugInformation%></GenerateDebugInformation>
 <%endif%>
-      <AdditionalDependencies><%foreach(reverse(libs))%><%libname_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>;<%endfor%><%foreach(reverse(lit_libs))%><%lit_lib%>.lib;<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%>;<%endfor%>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies><%foreach(reverse(libs))%><%fornotfirst(";")%><%libname_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endfor%><%foreach(reverse(lit_libs))%>;<%lit_lib%>.lib<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%><%endfor%>;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories><%foreach(libpaths)%><%libpath%>;<%endfor%>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
 <%if(exename || sharedname || staticname)%>
-      <OutputFile>$(OutDir)<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%></OutputFile>
+      <OutputFile>$(OutDir)<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%if(activex)%>.ocx<%else%><%dll_ext%><%endif%>   <%else%><%exename%><%if(use_exe_modifier)%><%exe_modifier%><%endif%><%exe_ext%><%endif%></OutputFile>
 <%endif%>
 <%if(ShowProgress)%>
       <ShowProgress><%ShowProgress%></ShowProgress>
@@ -434,7 +434,7 @@
 <%if(PerUserRedirection)%>
       <PerUserRedirection>true</PerUserRedirection>
 <%endif%>
-      <AdditionalLibraryDirectories><%foreach(libpaths)%><%libpath%>;<%endfor%>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+
 <%if(LinkStatus)%>
       <LinkStatus>true</LinkStatus>
 <%endif%>
@@ -509,7 +509,7 @@
       <ProgramDatabaseFile>$(OutDir)\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%if(use_pdb_modifier)%><%pdb_modifier%><%endif%>.pdb</ProgramDatabaseFile>
 <%else%>
 <%if(exename)%>
-      <ProgramDatabaseFile>$(OutDir)\<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%if(use_pdb_modifier)%><%pdb_modifier%><%endif%>.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)\<%exename%><%if(use_exe_modifier)%><%exe_modifier%><%endif%><%if(use_pdb_modifier)%><%pdb_modifier%><%endif%>.pdb</ProgramDatabaseFile>
 <%endif%>
 <%endif%>
 <%endif%>
@@ -623,10 +623,10 @@
       <SupportNobindOfDelayLoadedDLL>true</SupportNobindOfDelayLoadedDLL>
 <%endif%>
 <%if(ImportLibrary)%>
-      <ImportLibrary><%ImportLibrary%></ImportLibrary>
+    <ImportLibrary><%ImportLibrary%></ImportLibrary>
 <%else%>
 <%if(type_is_dynamic && sharedname)%>
-      <ImportLibrary><%libout%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%></ImportLibrary>
+    <ImportLibrary><%if(lib_full)%><%lib_full%><%lib_ext%><%else%><%libout%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endif%></ImportLibrary>
 <%endif%>
 <%endif%>
 <%if(MergeSections)%>
@@ -682,32 +682,49 @@
 <%endif%>
     </Link>
 <%endif%>
+<%if(activex)%>
+	<Midl>
+		<MkTypLibCompatible>false</MkTypLibCompatible>
+		<ValidateAllParameters>true</ValidateAllParameters>
+		<PreprocessorDefinitions><%foreach(midl_defines)%><%midl_define%>;<%endfor%>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+		<TypeLibraryName>$(IntDir)\<%project_name%>.tlb</TypeLibraryName>
+		<HeaderFileName>$(ProjectName)idl.h</HeaderFileName>
+	</Midl>
+<%endif%>
+	<ResourceCompile>
+      <PreprocessorDefinitions><%if(unicode)%>UNICODE;_UNICODE;<%endif%><%foreach(defines macros platform_defines)%><%define%>;<%endfor%>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture><%culture("1033")%></Culture>
+<%if(activex)%>	  
+      <AdditionalIncludeDirectories>$(IntDir);<%foreach(includes)%><%include%>;<%endfor%>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+<%else%>
+      <AdditionalIncludeDirectories><%foreach(includes)%><%include%>;<%endfor%>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+<%endif%>
+    </ResourceCompile>
+
+
 <%if(postbuild)%>
     <PostBuildEvent>
       <Command><%eval(postbuild)%></Command>
     </PostBuildEvent>
 <%endif%>
-<!-- "postclean" was made-up by MPC for use by vs_postclean.pl.
-     Check if msbuild has any support for a custom post-cleaning step
-<%if(postclean)%>
-                        <Tool
-                                Name="VCPostCleanEventTool"
-                                CommandLine="<%eval(postclean)%>"
-                        />
-<%endif%> -->
-<!-- No known equivalent for DeploymentTool in vc10:
-<%if(deploymenttool)%>
-                        <DeploymentTool
-                                ForceDirty="-1"
-                                RemoteDirectory="<%deployment_directory%>"
-                                RegisterOutput="0"
-                                AdditionalFiles=""
-                        />
-<%endif%>
--->
   </ItemDefinitionGroup>
 <%endfor%>
 <%endfor%>
+
+<!-- SUPPORT FOR OCX -->
+<%if(activex)%>
+  <ItemGroup>
+	<Midl Include="<%project_name%>.idl" />
+  </ItemGroup> 
+  <ItemGroup>
+    <Image Include="<%project_name%>.ico" />
+    <Image Include="<%project_name%>Ctrl.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="<%project_name%>.def" />
+  </ItemGroup>
+<%endif%>
+
   <ItemGroup>
 <%if(after && add_references)%>
     <!-- MPC ADD DEPENDENCIES -->
@@ -816,7 +833,7 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">Invoking "<%if(custom_type->input_file->commands)%><%foreach(custom_type->input_file->commands)%><%custom_type->input_file->command%><%fornotlast(" and ")%><%endfor%><%else%><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%><%endif%> on <%custom_type->input_file%>"</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%fornotlast(";")%><%endfor%></Outputs>
 <%if(flag_overrides(custom_type->input_file, dependent) || custom_type->dependent || custom_type->input_file->dependencies || (!need_staticflags && (flag_overrides(custom_type->input_file, dependent_libs) || custom_type->dependent_libs)))%>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(flag_overrides(custom_type->input_file, dependent))%><%foreach(dep, flag_overrides(custom_type->input_file, dependent))%><%dep%><%if(!has_extension(dep))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%else%><%if(custom_type->dependent)%><%foreach(custom_type->dependent)%><%custom_type->dependent%><%if(!has_extension(custom_type->dependent))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%endif%><%endif%><%foreach(custom_type->input_file->dependencies)%><%if(flag_overrides(custom_type->input_file, dependent) || custom_type->dependent)%>;<%else%><%fornotfirst(";")%><%endif%><%custom_type->input_file->dependencie%><%endfor%><%if(!need_staticflags)%><%if(flag_overrides(custom_type->input_file, dependent_libs))%><%foreach(dep_lib, flag_overrides(custom_type->input_file, dependent_libs))%><%if(flag_overrides(custom_type->input_file, dependent) || custom_type->dependent || custom_type->input_file->dependencies)%>;<%else%><%fornotfirst(";")%><%endif%><%dirname(dep_lib)%>\<%libname_prefix%><%basename(dep_lib)%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endfor%><%else%><%if(custom_type->dependent_libs)%><%foreach(custom_type->dependent_libs)%><%if(flag_overrides(custom_type->input_file, dependent) || custom_type->dependent || custom_type->input_file->dependencies)%>;<%else%><%fornotfirst(";")%><%endif%><%dirname(custom_type->dependent_lib)%>\<%libname_prefix%><%basename(custom_type->dependent_lib)%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%endfor%><%endif%><%endif%><%endif%></AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%if(flag_overrides(custom_type->input_file, dependent))%><%foreach(dep, flag_overrides(custom_type->input_file, dependent))%><%dep%><%if(!has_extension(dep))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%else%><%if(custom_type->dependent)%><%foreach(custom_type->dependent)%><%custom_type->dependent%><%if(!has_extension(custom_type->dependent))%><%exe_ext%><%endif%><%fornotlast(";")%><%endfor%><%endif%><%endif%><%foreach(custom_type->input_file->dependencies)%><%if(flag_overrides(custom_type->input_file, dependent) || custom_type->dependent)%>;<%else%><%fornotfirst(";")%><%endif%><%custom_type->input_file->dependencie%><%endfor%><%if(!need_staticflags)%><%if(flag_overrides(custom_type->input_file, dependent_libs))%><%foreach(dep_lib, flag_overrides(custom_type->input_file, dependent_libs))%><%if(flag_overrides(custom_type->input_file, dependent) || custom_type->dependent || custom_type->input_file->dependencies)%>;<%else%><%fornotfirst(";")%><%endif%><%dirname(dep_lib)%>\<%libname_prefix%><%basename(dep_lib)%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%if(activex)%>.ocx<%else%><%dll_ext%><%endfor%><%else%><%if(custom_type->dependent_libs)%><%foreach(custom_type->dependent_libs)%><%if(flag_overrides(custom_type->input_file, dependent) || custom_type->dependent || custom_type->input_file->dependencies)%>;<%else%><%fornotfirst(";")%><%endif%><%dirname(custom_type->dependent_lib)%>\<%libname_prefix%><%basename(custom_type->dependent_lib)%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%if(activex)%>.ocx<%else%><%dll_ext%><%endfor%><%endif%><%endif%><%endif%></AdditionalInputs>
 <%endif%>
 <%endfor%>
 <%endfor%>
