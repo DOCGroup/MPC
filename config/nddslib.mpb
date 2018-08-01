@@ -15,6 +15,9 @@ project {
     endif
     ifeq ($(ACE_PLATFORM_CONFIG),config-linux.h)
     FLAGS_C_CC += -DRTI_LINUX
+    ifeq ($(CXX),clang++)
+    FLAGS_C_CC += -Wno-return-type-c-linkage -Wno-deprecated-register
+    endif
     endif
     ifeq ($(ACE_PLATFORM_CONFIG),config-android.h)
     FLAGS_C_CC += -DRTI_LINUX
