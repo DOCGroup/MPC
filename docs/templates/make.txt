@@ -83,6 +83,6 @@ testdirend = Used in creating intermediate directories.
 testdirstart = Used in creating intermediate directories.
 touch = The utility used to create the initial dependency file.
 type = A utility to display a file on the terminal.
-versupport = A platform specific setting that inidicates if shared library versioning is supported.
+versupport = A platform specific setting that indicates if shared library versioning is supported.
 visibility = A boolean setting to determine if visibility options are passed to the compiler.
 visopt = The compiler specific options to enable symbol visibility.
