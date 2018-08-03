@@ -290,7 +290,7 @@
 <%if(type_is_static)%>
 				Name="VCLibrarianTool"
 <%if(staticname)%>
-				OutputFile="<%libout%>\<%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
+				OutputFile="<%libout%>\<%libname_prefix%><%if(output_subdir)%><%output_subdir%>\<%endif%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
 <%if(lib_options)%>
 				AdditionalOptions="<%lib_options%>"
@@ -323,14 +323,14 @@
 				AdditionalDependencies="<%foreach(reverse(libs))%><%fornotfirst(" ")%><%libname_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endfor%><%foreach(reverse(lit_libs))%> <%lit_lib%>.lib<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%><%endfor%>"
 <%endif%>
 <%if(exename || sharedname || staticname)%>
-				OutputFile="$(OutDir)\<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
+				OutputFile="$(OutDir)\<%if(output_subdir)%><%output_subdir%>\<%endif%><%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
 <%endif%>
 <%if(win_version)%>
 				Version="<%win_version%>"
 <%endif%>
 				LinkIncremental="<%LinkIncremental("2")%>"
 				SuppressStartupBanner="<%SuppressStartupBanner("true")%>"
-				AdditionalLibraryDirectories="<%foreach(libpaths)%><%libpath%><%fornotlast(";")%><%endfor%>"
+				AdditionalLibraryDirectories="<%foreach(libpaths)%><%libpath%><%if(output_subdir)%>\<%output_subdir%><%endif%><%fornotlast(";")%><%endfor%>"
 <%if(ShowProgress)%>
 				ShowProgress="<%ShowProgress%>"
 <%endif%>
@@ -469,7 +469,7 @@
 				ImportLibrary="<%ImportLibrary%>"
 <%else%>
 <%if(type_is_dynamic && sharedname)%>
-				ImportLibrary="<%libout%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
+				ImportLibrary="<%libout%>\<%if(output_subdir)%><%output_subdir%><%endif%>\<%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%>"
 <%endif%>
 <%endif%>
 <%if(SupportUnloadOfDelayLoadedDLL)%>
