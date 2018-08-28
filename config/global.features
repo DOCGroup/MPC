@@ -23,6 +23,7 @@ libpng        = 0
 openssl11     = 0
 python        = 0
 qt            = 0
+qt5           = 0
 rpc           = 0
 swig_java     = 0
 swig_perl     = 0

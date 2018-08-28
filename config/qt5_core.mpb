@@ -1,0 +1,49 @@
+project {
+  expand(QT5_INCDIR) {
+    $QT5_INCDIR
+    $(QT5_DIR)/include
+  }
+
+  requires += qt5
+  includes += $(QT5_INCDIR)
+  libpaths += $(QT5_DIR)/lib
+  lit_libs += Qt5Core
+
+  verbatim (make, macros) {
+    CPPFLAGS += -fPIC
+  }
+
+  verbatim (gnuace, macros) {
+    CPPFLAGS += -fPIC
+  }
+
+  Define_Custom(UIC) {
+    command          = $(QT5_DIR)/bin/uic
+    output_option    = -o
+    inputext         = .ui
+    pre_filename     = ui_
+    header_outputext = .h
+  }
+
+  Define_Custom(MOC) {
+    automatic_in     = 0
+    automatic_out    = 0
+    command          = $(QT5_DIR)/bin/moc
+    output_option    = -o
+    pch_postrule     = 1
+    inputext         = .h
+    pre_extension    = _moc
+    source_outputext = .cpp
+  }
+
+  Define_Custom(QRC) {
+    command          = $(QT5_DIR)/bin/rcc
+    output_option    = -o
+    commandflags     = -name <%input_noext%>
+    pch_postrule     = 1
+    inputext         = .qrc
+    pre_extension    = _qrc
+    source_outputext = .cpp
+  }
+}
+
