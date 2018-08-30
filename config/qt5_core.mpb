@@ -6,7 +6,7 @@ project {
 
   requires += qt5
   includes += $(QT5_INCDIR)
-  libpaths += $(QT5_DIR)/lib
+  libpaths += $(QT5_DIR)/lib $(QT5_DIR)/bin
   lit_libs += Qt5Core
 
   verbatim (make, macros) {
@@ -15,6 +15,13 @@ project {
 
   verbatim (gnuace, macros) {
     CPPFLAGS += -fPIC
+  }
+
+  specific (prop:windows) {
+    // On Windows it's possible for Qt to include winsock.h through windows.h
+    // which will conflict with winsock2.h. This forces the preprocessor to skip
+    // winsock.h.
+    macros += _WINSOCKAPI_
   }
 
   Define_Custom(UIC) {
