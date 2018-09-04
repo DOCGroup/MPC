@@ -1,4 +1,4 @@
 project: qt5_core {
-  lit_libs += Qt5Network
+  libs += Qt5Network
 }
 

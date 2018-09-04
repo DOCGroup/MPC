@@ -1,4 +1,4 @@
 project: qt5_widgets {
-  lit_libs += Qt5OpenGL
+  libs += Qt5OpenGL
 }
 

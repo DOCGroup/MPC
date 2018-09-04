@@ -1,4 +1,4 @@
 project: qt5_core {
-  lit_libs += Qt5Test
+  libs += Qt5Test
 }
 

@@ -7,7 +7,7 @@ project {
   requires += qt5
   includes += $(QT5_INCDIR)
   libpaths += $(QT5_DIR)/lib
-  lit_libs += Qt5Core
+  libs += Qt5Core
 
   // On Linux at least, Qt5 by default requires position independent code
   verbatim (make, macros) {
