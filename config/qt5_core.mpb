@@ -1,20 +1,17 @@
 project {
   expand(QT5_INCDIR) {
     $QT5_INCDIR
-    $(QT5_DIR)/include
+    $(QTDIR)/include
   }
 
   requires += qt5
   includes += $(QT5_INCDIR)
-  libpaths += $(QT5_DIR)/lib
+  libpaths += $(QTDIR)/lib
   libs += Qt5Core
 
   // On Linux at least, Qt5 by default requires position independent code
-  verbatim (make, macros) {
-    CPPFLAGS += -fPIC
-  }
-  verbatim (gnuace, macros) {
-    CPPFLAGS += -fPIC
+  specific (gnuace) {
+    CPPFLAGS += $(PIC)
   }
 
   specific (prop:microsoft) {
@@ -25,7 +22,7 @@ project {
   }
 
   Define_Custom(UIC) {
-    command          = $(QT5_DIR)/bin/uic
+    command          = $(QTDIR)/bin/uic
     output_option    = -o
     inputext         = .ui
     pre_filename     = ui_
@@ -35,7 +32,7 @@ project {
   Define_Custom(MOC) {
     automatic_in     = 0
     automatic_out    = 0
-    command          = $(QT5_DIR)/bin/moc
+    command          = $(QTDIR)/bin/moc
     output_option    = -o
     pch_postrule     = 1
     inputext         = .h
@@ -44,7 +41,7 @@ project {
   }
 
   Define_Custom(QRC) {
-    command          = $(QT5_DIR)/bin/rcc
+    command          = $(QTDIR)/bin/rcc
     output_option    = -o
     commandflags     = -name <%input_noext%>
     pch_postrule     = 1
