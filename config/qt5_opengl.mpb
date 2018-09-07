@@ -1,0 +1,4 @@
+project: qt5_widgets {
+  libs += Qt5OpenGL
+}
+
