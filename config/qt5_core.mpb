@@ -3,10 +3,18 @@ project {
     $QT5_INCDIR
     $(QTDIR)/include
   }
+  expand(QT5_BINDIR) {
+    $QT5_BINDIR
+    $(QTDIR)/bin
+  }
+  expand(QT5_LIBDIR) {
+    $QT5_LIBDIR
+    $(QTDIR)/lib
+  }
 
   requires += qt5
   includes += $(QT5_INCDIR)
-  libpaths += $(QTDIR)/lib
+  libpaths += $(QT5_LIBDIR)
   libs += Qt5Core
 
   // On Linux at least, Qt5 by default requires position independent code
@@ -22,7 +30,7 @@ project {
   }
 
   Define_Custom(UIC) {
-    command          = $(QTDIR)/bin/uic
+    command          = $(QT5_BINDIR)/uic
     output_option    = -o
     inputext         = .ui
     pre_filename     = ui_
@@ -32,7 +40,7 @@ project {
   Define_Custom(MOC) {
     automatic_in     = 0
     automatic_out    = 0
-    command          = $(QTDIR)/bin/moc
+    command          = $(QT5_BINDIR)/moc
     output_option    = -o
     pch_postrule     = 1
     inputext         = .h
@@ -41,7 +49,7 @@ project {
   }
 
   Define_Custom(QRC) {
-    command          = $(QTDIR)/bin/rcc
+    command          = $(QT5_BINDIR)/rcc
     output_option    = -o
     commandflags     = -name <%input_noext%>
     pch_postrule     = 1
