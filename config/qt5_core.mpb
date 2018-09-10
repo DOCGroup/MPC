@@ -11,7 +11,7 @@ project {
 
   // On Linux at least, Qt5 by default requires position independent code
   specific (gnuace) {
-    CPPFLAGS += $(PIC)
+    compile_flags += $(PIC)
   }
 
   specific (prop:microsoft) {
