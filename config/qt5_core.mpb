@@ -11,6 +11,13 @@ project {
     $QT5_LIBDIR
     $(QTDIR)/lib
   }
+  // On some linux systems with both Qt4 and Qt5 installed, the uic and moc
+  // executables for Qt5 need to be run as "uic-qt5"
+  // Expand the variable here to avoid the "undefined" warning from msvc.
+  expand(QT5_SUFFIX) {
+    $QT5_SUFFIX
+    ""
+  }
 
   requires += qt5
   includes += $(QT5_INCDIR)
@@ -30,7 +37,7 @@ project {
   }
 
   Define_Custom(UIC) {
-    command          = $(QT5_BINDIR)/uic
+    command          = $(QT5_BINDIR)/uic$(QT5_SUFFIX)
     output_option    = -o
     inputext         = .ui
     pre_filename     = ui_
@@ -40,7 +47,7 @@ project {
   Define_Custom(MOC) {
     automatic_in     = 0
     automatic_out    = 0
-    command          = $(QT5_BINDIR)/moc
+    command          = $(QT5_BINDIR)/moc$(QT5_SUFFIX)
     output_option    = -o
     pch_postrule     = 1
     inputext         = .h
@@ -49,7 +56,7 @@ project {
   }
 
   Define_Custom(QRC) {
-    command          = $(QT5_BINDIR)/rcc
+    command          = $(QT5_BINDIR)/rcc$(QT5_SUFFIX)
     output_option    = -o
     commandflags     = -name <%input_noext%>
     pch_postrule     = 1
