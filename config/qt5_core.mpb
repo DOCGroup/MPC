@@ -26,7 +26,7 @@ project {
 
   // On Linux at least, Qt5 by default requires position independent code
   specific (gnuace) {
-    compile_flags += $(PIC)
+    compile_flags += $(if $(PIC),$(PIC),-fPIC)
   }
 
   specific (prop:microsoft) {
@@ -65,4 +65,3 @@ project {
     source_outputext = .cpp
   }
 }
-
