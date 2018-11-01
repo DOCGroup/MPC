@@ -4,8 +4,17 @@
 // default. If we ever add a new ssl library, then you
 // would likely enable only one ssl library feature.
 feature(openssl) {
-  includes += $(SSL_ROOT)/include
-  libpaths += $(SSL_ROOT)/lib
+  expand(SSL_INCDIR) {
+    $SSL_INCDIR
+    $(SSL_ROOT)/include
+  }
+  expand(SSL_LIBDIR) {
+    $SSL_LIBDIR
+    $(SSL_ROOT)/lib
+  }
+
+  includes += $(SSL_INCDIR)
+  libpaths += $(SSL_LIBDIR)
 
   specific(prop:windows) {
     lit_libs += libeay32 ssleay32
