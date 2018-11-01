@@ -25,7 +25,7 @@ project {
   macros   += WXUSINGDLL $(WX_PORT_MACRO)
   libpaths += $(WXWINDOWS_ROOT)/lib
 
-  specific(prop:windows) {                                  
+  specific(prop:windows) {
     Debug::lit_libs   += wxbase$(WX_VERSION)$(WX_UNICODE)d
     Release::lit_libs += wxbase$(WX_VERSION)$(WX_UNICODE)
   } else {
