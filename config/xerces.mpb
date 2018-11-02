@@ -29,17 +29,8 @@ feature(xerces2) {
   lit_libs += $(XERCESLIB)
 }
 feature(xerces3) {
-  expand(XERCESC_INCDIR) {
-    $XERCESC_INCDIR
-    $(XERCESCROOT)/include
-  }
-  expand(XERCESC_LIBDIR) {
-    $XERCESC_LIBDIR
-    $(XERCESCROOT)/lib
-  }
-
-  includes += $(XERCESC_INCDIR)
-  libpaths += $(XERCESC_LIBDIR)
+  includes += $(XERCESC_INCDIR) $(XERCESCROOT)/include
+  libpaths += $(XERCESC_LIBDIR) $(XERCESCROOT)/lib
 
   specific(prop:microsoft) {
     xerceslib = xerces-c_3
