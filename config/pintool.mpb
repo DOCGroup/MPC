@@ -41,7 +41,7 @@ feature (ia32) {
     link_options += /ENTRY:Ptrace_DllMainCRTStartup@12
   }
 
-  specific (vc10, vc11, vc12, vc14, vs2017) {
+  specific (vc10, vc11, vc12, vc14, vs2017, vs2019) {
     EntryPointSymbol = Ptrace_DllMainCRTStartup@12
   }
 }
@@ -51,7 +51,7 @@ feature (intel64) {
     link_options += /ENTRY:Ptrace_DllMainCRTStartup
   }
 
-  specific (vc10, vc11, vc12, vc14, vs2017) {
+  specific (vc10, vc11, vc12, vc14, vs2017, vs2019) {
     EntryPointSymbol = Ptrace_DllMainCRTStartup
   }
 }
