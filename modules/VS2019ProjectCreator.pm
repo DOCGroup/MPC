@@ -27,8 +27,8 @@ my %info = (Creator::cplusplus() => {'ext'      => '.vcxproj',
                                     },
            );
 
-my %config = ('vcversion' => '14.20',
-              'toolsversion' => '14.2',
+my %config = ('vcversion' => '16.00',
+              'toolsversion' => '16.0',
              );
 
 # ************************************************************
