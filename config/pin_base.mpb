@@ -13,7 +13,7 @@ project {
     compile_flags += /Oy
   }
 
-  specific (vc10, vc11, vc12, vc14, vs2017) {
+  specific (vc10, vc11, vc12, vc14, vs2017, vs2019) {
     runtime_library = MultiThreaded
     ImageHasSafeExceptionHandlers = false
 
