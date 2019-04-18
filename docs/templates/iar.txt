@@ -1,0 +1,17 @@
+// Current as of 8/18/2019
+// This defines the role of all the template variables specific to the
+// 'iar' project type.
+//
+// Please try to keep this alphabetically sorted.
+//
+chip = This will be the chip version used by the UI.
+debug = This will be 1 if in debug mode and 0 if in release mode.
+dlib_config = The configuration header file for the DLib.
+gendianmode = Corresponds to the Endian mode under General Options.
+gendianmodebe = When General Options Endian mode is Big (1), BE32 is 0 and BE8 is 1.
+generalenablemisra = Set this to 1 to enable MISRA in the General Options.
+ilinkicffile = Set this to override the default ICF file.
+ilinkprogramentrylabel = Use this to override the default program entry name.
+oglastsavedbyproductversion = The version number of the product at the last saving time of the project.
+ogproductversion = The version number of the product that created the project.
+toolchain = The tool chain setting (e.g., ARM).

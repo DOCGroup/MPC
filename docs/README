@@ -345,8 +345,10 @@ specific        This scope allows assignments that are specific to a
                 cc       |         |      |           |    X    |
                 em3      |         |      |     X     |    X    |
                 ghs      |         |      |           |    ?    |
+                iar      |         |      |           |    X    |
                 make     |         |  X   |           |         |
                 nmake    |         |  X   |     X     |    X    |
+                uvis     |         |      |           |    X    |
                 vc*      |         |      |     X     |    X    |
                 vs*      |         |      |     X     |    X    |
                 wix      |         |      |           |    X    |

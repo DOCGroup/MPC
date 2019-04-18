@@ -1,3 +1,16 @@
+Thu Apr 18 22:18:20 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/README:
+        * docs/USAGE:
+        * docs/templates/iar.txt:
+        * modules/IARProjectCreator.pm:
+        * modules/IARWorkspaceCreator.pm:
+        * templates/iar.mpd:
+        * templates/iar.mpt:
+
+          Added an initial, simplistic IAR workspace/project generator.
+          There will be more changes to fully suport this IDE.
+
 Mon May 21 14:33:24 UTC 2018  Adam Mitz  <mitza@objectcomputing.com>
 
         * templates/vc10.mpd:
