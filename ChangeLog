@@ -1,3 +1,20 @@
+Mon Apr 22 13:57:40 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/CDT6WorkspaceCreator.pm:
+        * modules/DirectoryManager.pm:
+        * modules/TemplateParser.pm:
+        * modules/WorkspaceCreator.pm:
+
+          Replaced calls to Cwd::abs_path with an implementation in
+          DirectoryManger that accounts for needs of Win32 specific
+          paths.
+
+        * templates/iar.mpd:
+        * templates/iar.mpt:
+
+          Fixes for linking executables and creating libraries.  Also
+          added the use of lib_modifier.
+
 Thu Apr 18 22:18:20 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/README:
