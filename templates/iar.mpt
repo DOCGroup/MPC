@@ -1,13 +1,16 @@
+conditional_include "common"
+conditional_include "unixcommon"
+exe_ext = .out
+
 configurations = "int flash sramdata debug" "int flash sramdata release"
 toolchain = ARM
 chip = "MK70FN1M0xxx12	NXP MK70FN1M0xxx12"
 
 int flash sramdata debug {
   debug = 1
-  lib_modifier = sd
+  lib_modifier = d
 }
 
 int flash sramdata release {
   debug = 0
-  lib_modifier = s
 }

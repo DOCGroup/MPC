@@ -830,7 +830,7 @@ sub handle_scoped_unknown {
         ## likely to match up with the addition of this file or directory
         ## from an upper workspace.
         my $cwd = $self->getcwd();
-        $line = Cwd::abs_path($self->{'scoped_basedir'} . "/$line");
+        $line = $self->abs_path($self->{'scoped_basedir'} . "/$line");
         if (index($line, $cwd) == 0) {
           $line = substr($line, length($cwd) + 1);
         }

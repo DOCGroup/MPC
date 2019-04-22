@@ -41,7 +41,7 @@
                 </option>
                 <option>
                     <name>GOutputBinary</name>
-                    <state>0</state>
+		    <state><%if(exename)%>0<%else%>1<%endif%></state>
                 </option>
                 <option>
                     <name>OGCoreOrChip</name>
@@ -50,12 +50,12 @@
                 <option>
                     <name>GRuntimeLibSelect</name>
                     <version>0</version>
-                    <state>1</state>
+		    <state>2</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelectSlave</name>
                     <version>0</version>
-                    <state>1</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>RTDescription</name>
@@ -607,9 +607,7 @@
                 </option>
                 <option>
                     <name>AUserIncludes</name>
-<%foreach(libpaths)%>
-                    <state><%libpath%></state>
-<%endfor%>
+                    <state></state>
                 </option>
                 <option>
                     <name>AExtraOptionsCheckV2</name>
@@ -686,7 +684,7 @@
                 <debug><%debug%></debug>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state><%if(exename)%><%exename%>.out<%endif%></state>
+		    <state><%full_path(exeout)%>\<%if(exename)%><%exename%><%exe_ext%><%endif%></state>
                 </option>
                 <option>
                     <name>IlinkLibIOConfig</name>
@@ -801,6 +799,9 @@
                     <state> --redirect __iar_dlmalloc=malloc</state>
                     <state> --redirect __iar_dlcalloc=calloc</state>
                     <state> --redirect __iar_dlfree=free</state>
+<%foreach(libpaths)%>
+                    <state>-L<%full_path(libpath)%></state>
+<%endfor%>
                 </option>
                 <option>
                     <name>IlinkLowLevelInterfaceSlave</name>
@@ -814,10 +815,10 @@
                     <name>IlinkAdditionalLibs</name>
 <%if(exename)%>
 <%foreach(libs)%>
-                    <state><%lib%><%lib_modifier%>.a</state>
+		    <state><%lib_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%></state>
 <%endfor%>
 <%foreach(lit_libs)%>
-                    <state><%lit_lib%>.a</state>
+		    <state><%lib_prefix%><%lit_lib%><%lib_ext%></state>
 <%endfor%>
 <%foreach(pure_libs)%>
                     <state><%pure_lib%></state>
@@ -1026,11 +1027,11 @@
                 </option>
                 <option>
                     <name>IarchiveOverride</name>
-                    <state>0</state>
+		    <state><%if(staticname)%>1<%else%>0<%endif%></state>
                 </option>
                 <option>
                     <name>IarchiveOutput</name>
-                    <state><%staticname%></state>
+		    <state><%full_path(libout)%>\<%lib_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%></state>
                 </option>
             </data>
         </settings>

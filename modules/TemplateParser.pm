@@ -1530,7 +1530,7 @@ sub actual_full_path {
   $value =~ s/\\/\//g;
   my $dir = $self->mpc_dirname($value);
   if (-e $dir) {
-    $dir = Cwd::abs_path($dir);
+    $dir = $self->abs_path($dir);
   }
   elsif ($self->{'prjc'}->path_is_relative($dir)) {
     ## If the directory is is not already an absolute path, then we will
@@ -1539,8 +1539,11 @@ sub actual_full_path {
     $dir = $self->getcwd() . '/' . $dir;
   }
 
-  ## Create the full path value and convert the slashes if necessary.
+  ## Create the full path value, remove directories represented as '.' and
+  ## convert the slashes if necessary.
   $value = $dir . '/' . $self->mpc_basename($value);
+  $value =~ s/\/\.\//\//g;
+  $value =~ s/\/\.$//;
   $value =~ s/\//\\/g if ($self->{'cslashes'});
   return $value;
 }

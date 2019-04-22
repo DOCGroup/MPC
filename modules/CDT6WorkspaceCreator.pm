@@ -72,7 +72,7 @@ sub write_comps {
 
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     print $fh $$info{$project}->[ProjectCreator::PROJECT_NAME], ' ',
-      Cwd::abs_path($self->mpc_dirname($project)), '/.project', $crlf;
+      $self->abs_path($self->mpc_dirname($project)), '/.project', $crlf;
     $self->add_dependencies($creator, $project);
   }
 }

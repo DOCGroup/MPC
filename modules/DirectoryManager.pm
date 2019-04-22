@@ -29,6 +29,13 @@ if ($^O eq 'cygwin' && $cwd !~ /[A-Za-z]:/) {
   }
   $case_insensitive = 1;
 }
+elsif ($^O eq 'msys' && $cwd !~ /[A-Za-z]:/) {
+  my $mp = Win32::GetCwd();
+  if (defined $mp) {
+    $mp =~ s/\\/\//g;
+    $cwd = $mp;
+  }
+}
 elsif ($onVMS) {
   $cwd = VMS::Filespec::unixify($cwd);
   $cwd =~ s!/$!!g;
@@ -62,6 +69,15 @@ sub cd {
           chop($cwd = $cyg);
         }
       }
+      elsif ($^O eq 'msys' && $cwd !~ /[A-Za-z]:/) {
+        ## We're using Mingw32 perl, use Win32::GetCwd() to get the windows
+        ## path and then fix up the slashes.
+        my $mp = Win32::GetCwd();
+        if (defined $mp) {
+          $mp =~ s/\\/\//g;
+          $cwd = $mp;
+        }
+      }
       elsif ($onVMS) {
         ## On VMS, we need to get the UNIX style path and remove the
         ## trailing slash.
@@ -82,6 +98,19 @@ sub cd {
     }
   }
   return $status;
+}
+
+
+sub abs_path {
+  my($self, $path) = @_;
+
+  ## When needing a full path, it's usually because the build system requires
+  ## it.  If that's the case, it is unlikely to understand cygwin or mingw32
+  ## paths.  For these, we will return the full path for Win32 specifically.
+  return Win32::GetFullPathName($path) if ($^O eq 'cygwin' || $^O eq 'msys');
+
+  ## For all others, we will just use Cwd::abs_path
+  return Cwd::abs_path($path);
 }
 
 
