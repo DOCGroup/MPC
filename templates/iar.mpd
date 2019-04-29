@@ -21,7 +21,16 @@
                 </option>
                 <option>
                     <name>ObjPath</name>
+<%if(custom_only)%>
+<%comment(IAR requires a project to build a library or an executable.  Since)%>
+<%comment(this is a custom only project, we do not have the required options)%>
+<%comment(to correctly build the source.  We must change the output directory)%>
+<%comment(so that when it does build the source, it does not interfere with)%>
+<%comment(the actual building of the source files.)%>
+                    <state>$PROJ_DIR$/<%configuration%>/custom/obj</state>
+<%else%>
                     <state>$PROJ_DIR$/<%configuration%>/obj</state>
+<%endif%>
                 </option>
                 <option>
                     <name>ListPath</name>
@@ -209,7 +218,11 @@
             <data>
                 <version>35</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug><%debug%></debug>
+		<debug><%debug%></debug>
+                <option>
+                    <name>OICompilerExtraOption</name>
+                    <state>1</state>
+                </option>
                 <option>
                     <name>CCOptimizationNoSizeConstraints</name>
                     <state>0</state>
@@ -279,7 +292,7 @@
                 <option>
                     <name>CCAllowList</name>
                     <version>1</version>
-                    <state>00000000</state>
+                    <state>11111110</state>
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
@@ -361,7 +374,7 @@
                 </option>
                 <option>
                     <name>CCOptLevel</name>
-                    <state>0</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CCOptStrategy</name>
@@ -370,7 +383,7 @@
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
-                    <state>0</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CompilerMisraRules98</name>
@@ -1077,6 +1090,7 @@
 <%endfor%>
     </group>
 <%endif%>
+<%if(source_files)%>
     <group>
         <name>Source Files</name>
 <%foreach(source_files)%>
@@ -1085,6 +1099,7 @@
         </file>
 <%endfor%>
     </group>
+<%endif%>
 <%if(template_files)%>
     <group>
         <name>Template Files</name>
@@ -1095,4 +1110,43 @@
 <%endfor%>
     </group>
 <%endif%>
+<%foreach(custom_types)%>
+<%if(custom_type->input_files)%>
+    <group>
+        <name><%ucw(custom_type)%></name>
+<%foreach(custom_type->input_files)%>
+        <file>
+            <name>$PROJ_DIR$\<%custom_type->input_file%></name>
+<%if(custom_type->input_file->output_files)%>
+<%foreach(configurations)%>
+            <configuration>
+                <name><%configuration%></name>
+                <settings>
+                    <name>CUSTOM</name>
+                    <data>
+                        <extensions><%foreach(custom_type->inputexts)%>.<%custom_type->inputext%><%fornotlast(",")%><%endfor%></extensions>
+                        <cmdline><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%></cmdline>
+                        <hasPrio>0</hasPrio>
+                        <outputs>
+<%foreach(custom_type->input_file->output_files)%>
+                            <file>
+                                <name><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%></name>
+                            </file>
+<%endfor%>
+                        </outputs>
+                        <inputs>
+                            <file>
+                                <name><%custom_type->input_file%></name>
+                            </file>
+                        </inputs>
+                    </data>
+                </settings>
+            </configuration>
+<%endfor%>
+<%endif%>
+        </file>
+<%endfor%>
+    </group>
+<%endif%>
+<%endfor%>
 </project>
