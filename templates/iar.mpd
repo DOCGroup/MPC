@@ -308,11 +308,17 @@
                 </option>
                 <option>
                     <name>IExtraOptionsCheck</name>
-                    <state>0</state>
+		    <state><%if(compile_flags)%>1<%else%>0<%endif%></state>
                 </option>
                 <option>
                     <name>IExtraOptions</name>
+<%if(compile_flags)%>
+<%foreach(compile_flags)%>
+		    <state><%compile_flag%></state>
+<%endfor%>
+<%else%>
                     <state></state>
+<%endif%>
                 </option>
                 <option>
                     <name>CCLangConformance</name>
