@@ -1,3 +1,9 @@
+Wed May 15 18:25:52 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/iar.mpd:
+
+          Exclude template files from the build.
+
 Fri May 10 16:09:37 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/iar.mpd:

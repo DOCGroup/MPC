@@ -1112,6 +1112,11 @@
 <%foreach(template_files)%>
         <file>
             <name>$PROJ_DIR$\<%template_file%></name>
+            <excluded>
+<%foreach(configurations)%>
+                <configuration><%configuration%></configuration>
+<%endfor%>
+            </excluded>
         </file>
 <%endfor%>
     </group>
