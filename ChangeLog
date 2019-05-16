@@ -1,3 +1,13 @@
+Thu May 16 17:46:26 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/DirectoryManager.pm:
+        * modules/IARWorkspaceCreator.pm:
+        * modules/TemplateParser.pm:
+        * templates/iar.mpd:
+
+          Made it so the $WS_DIR$ and $PROJ_DIR$ variables are prepended
+          only if the path is relative.
+
 Wed May 15 18:25:52 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/iar.mpd:

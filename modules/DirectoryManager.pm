@@ -196,7 +196,7 @@ sub path_is_relative {
   ## To determine if the path is relative, we just determine if it is not
   ## an absolute path.
   #my($self, $path) = @_;
-  return (index($_[1], '/') != 0 && $_[1] !~ /^[A-Z]:\//i);
+  return (index($_[1], '/') != 0 && $_[1] !~ /^[A-Z]:[\/\\]/i && $_[1] !~ /^\$\(\w+\)/);
 }
 
 # ************************************************************

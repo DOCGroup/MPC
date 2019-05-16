@@ -53,9 +53,12 @@ sub write_comps {
             $self->create_command_line_string($0, @ARGV),
             ' -->', $crlf;
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
+    ## Only emit the prefix if the path is relative.  IAR requires it unless
+    ## the path is fully qualified.
     print $fh "  <project>$crlf",
-              "    <path>\$WS_DIR\$\\", $self->slash_to_backslash($project),
-              "</path>$crlf",
+              "    <path>";
+    print $fh '$WS_DIR$\\' if ($self->path_is_relative($project));
+    print $fh $self->slash_to_backslash($project), "</path>$crlf",
               "  </project>$crlf";
   }
 }

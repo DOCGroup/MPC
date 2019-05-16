@@ -363,7 +363,7 @@
                 <option>
                     <name>CCIncludePath2</name>
 <%foreach(includes)%>
-                    <state><%include%></state>
+		    <state><%if(is_relative(include))%>$PROJ_DIR$/<%endif%><%include%></state>
 <%endfor%>
                 </option>
                 <option>
@@ -1071,7 +1071,7 @@
         <name>Documentation Files</name>
 <%foreach(documentation_files)%>
         <file>
-            <name>$PROJ_DIR$\<%documentation_file%></name>
+            <name><%if(is_relative(documentation_file))%>$PROJ_DIR$/<%endif%><%documentation_file%></name>
         </file>
 <%endfor%>
     </group>
@@ -1081,7 +1081,7 @@
         <name>Header Files</name>
 <%foreach(header_files)%>
         <file>
-            <name>$PROJ_DIR$\<%header_file%></name>
+            <name><%if(is_relative(header_file))%>$PROJ_DIR$/<%endif%><%header_file%></name>
         </file>
 <%endfor%>
     </group>
@@ -1091,7 +1091,7 @@
         <name>Inline Files</name>
 <%foreach(inline_files)%>
         <file>
-            <name>$PROJ_DIR$\<%inline_file%></name>
+            <name><%if(is_relative(inline_file))%>$PROJ_DIR$/<%endif%><%inline_file%></name>
         </file>
 <%endfor%>
     </group>
@@ -1101,7 +1101,7 @@
         <name>Source Files</name>
 <%foreach(source_files)%>
         <file>
-            <name>$PROJ_DIR$\<%source_file%></name>
+            <name><%if(is_relative(source_file))%>$PROJ_DIR$/<%endif%><%source_file%></name>
         </file>
 <%endfor%>
     </group>
@@ -1111,7 +1111,7 @@
         <name>Template Files</name>
 <%foreach(template_files)%>
         <file>
-            <name>$PROJ_DIR$\<%template_file%></name>
+            <name><%if(is_relative(template_file))%>$PROJ_DIR$/<%endif%><%template_file%></name>
             <excluded>
 <%foreach(configurations)%>
                 <configuration><%configuration%></configuration>
@@ -1127,7 +1127,7 @@
         <name><%ucw(custom_type)%></name>
 <%foreach(custom_type->input_files)%>
         <file>
-            <name>$PROJ_DIR$\<%custom_type->input_file%></name>
+            <name><%if(is_relative(custom_type->input_file))%>$PROJ_DIR$/<%endif%><%custom_type->input_file%></name>
 <%if(custom_type->input_file->output_files)%>
 <%foreach(configurations)%>
             <configuration>

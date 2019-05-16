@@ -91,6 +91,7 @@ my %keywords = ('if'              => 0,
                 'new_guid'        => 0,
                 'deref'           => 0,
                 'set'             => 0,
+                'is_relative'     => $get_type|$doif_type|$get_combined_type,
                );
 
 my %target_type_vars = ('type_is_static'   => 1,
@@ -1990,6 +1991,28 @@ sub handle_set {
     $self->{'error_in_handle'} = 'set() requires a name and a value';
   }
 }
+
+
+sub get_is_relative {
+  my($self, $name) = @_;
+  return $self->doif_is_relative($self->get_value_with_default($name));
+}
+
+
+sub doif_is_relative {
+  my($self, $val) = @_;
+  return $self->{'prjc'}->path_is_relative($val) if (defined $val);
+  return undef;
+}
+
+
+sub handle_is_relative {
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($name);
+  $self->append_current(
+         $self->{'prjc'}->path_is_relative($val) ? '1' : '0') if (defined $val);
+}
+
 
 sub prepare_parameters {
   my($self, $prefix) = @_;
