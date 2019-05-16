@@ -779,7 +779,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state><%ilinkicffile%></state>
+		    <state><%if(is_relative(ilinkicffile))%>$PROJ_DIR$/<%endif%><%ilinkicffile%></state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
