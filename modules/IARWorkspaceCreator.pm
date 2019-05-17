@@ -70,4 +70,10 @@ sub post_workspace {
 }
 
 
+sub aggressive_relative_replacement {
+  #my $self = shift;
+  return 1;
+}
+
+
 1;

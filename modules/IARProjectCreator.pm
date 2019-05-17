@@ -75,4 +75,10 @@ sub get_cmdsep_symbol {
 }
 
 
+sub aggressive_relative_replacement {
+  #my $self = shift;
+  return 1;
+}
+
+
 1;

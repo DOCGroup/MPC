@@ -1135,13 +1135,13 @@
                 <settings>
                     <name>CUSTOM</name>
                     <data>
-                        <extensions><%foreach(custom_type->inputexts)%>.<%custom_type->inputext%><%fornotlast(",")%><%endfor%></extensions>
+                        <extensions><%extension(custom_type->input_file)%><%foreach(custom_type->inputexts)%> .<%custom_type->inputext%><%endfor%></extensions>
                         <cmdline><%if(flag_overrides(custom_type->input_file, command))%><%flag_overrides(custom_type->input_file, command)%><%else%><%custom_type->command%><%endif%> <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%> <%custom_type->input_file%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%foreach(custom_type->input_file->output_files)%><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endfor%><%endif%></cmdline>
                         <hasPrio>0</hasPrio>
                         <outputs>
-<%foreach(custom_type->input_file->output_files)%>
+<%foreach(custom_type->input_file->non_template_output_files)%>
                             <file>
-                                <name><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%></name>
+                                <name><%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>\<%basename(custom_type->input_file->non_template_output_file)%><%else%><%custom_type->input_file->non_template_output_file%><%endif%></name>
                             </file>
 <%endfor%>
                         </outputs>

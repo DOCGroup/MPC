@@ -92,6 +92,7 @@ my %keywords = ('if'              => 0,
                 'deref'           => 0,
                 'set'             => 0,
                 'is_relative'     => $get_type|$doif_type|$get_combined_type,
+		'extension'       => $get_type,
                );
 
 my %target_type_vars = ('type_is_static'   => 1,
@@ -388,7 +389,7 @@ sub get_value {
                 if (!defined $value && $name =~ /^(.*)\->(\w+)/) {
                   my $pre  = $1;
                   my $post = $2;
-                  my $base = $self->get_value($pre);
+		  my $base = $self->get_value($pre);
 
                   if (defined $base) {
                     $value = $self->{'prjc'}->get_special_value(
@@ -2011,6 +2012,19 @@ sub handle_is_relative {
   my $val = $self->get_value_with_default($name);
   $self->append_current(
          $self->{'prjc'}->path_is_relative($val) ? '1' : '0') if (defined $val);
+}
+
+
+sub get_extension {
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($name);
+  return ($val =~ /(\.[^\.]+)$/ ? $1 : '');
+}
+
+
+sub handle_extension {
+  my($self, $name) = @_;
+  $self->append_current($self->get_extension($name));
 }
 
 

@@ -1,3 +1,20 @@
+Fri May 17 14:42:45 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
+
+        * modules/Creator.pm:
+        * modules/IARProjectCreator.pm:
+        * modules/IARWorkspaceCreator.pm:
+
+          If a project type requires relative paths, locate a relative path
+          when replacing $() variables if at all possible.
+
+        * modules/ProjectCreator.pm:
+        * modules/TemplateParser.pm:
+        * templates/iar.mpd:
+
+          A new template function, 'extension', can be used to get the
+          extension of a file.  Additionally, non-template files can now be
+          obtained through the custom input file interface.
+
 Thu May 16 18:04:40 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/iar.mpd:

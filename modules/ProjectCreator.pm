@@ -4617,6 +4617,22 @@ sub get_custom_value {
       }
     }
   }
+  elsif ($cmd eq 'non_template_output_files') {
+    # Generate non-template output files based on $based
+    if (defined $self->{'custom_output_files'}) {
+      $value = [];
+      foreach my $file (@{$self->{'custom_output_files'}->{$based}}) {
+        my $template = 0;
+        foreach my $ext (@{$self->{'valid_components'}->{'template_files'}}) {
+          if ($file =~ /$ext$/) {
+            $template = 1;
+            last;
+          }
+        }
+        push(@$value, $file) if (!$template);
+      }
+    }
+  }
   elsif ($cmd eq 'inputexts') {
     my @array = @{$self->{'valid_components'}->{$based}};
     foreach my $val (@array) {

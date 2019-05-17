@@ -1027,12 +1027,41 @@ sub get_outdir {
 }
 
 
+sub aggressively_replace {
+  my($self, $icwd, $val) = @_;
+  my $count = 0;
+  my $wd = $icwd;
+  my $ival = ($self->{'case_tolerant'} ? lc($val) : $val);
+
+  ## Search back up the directories until we either find a match or we
+  ## run out of directories.
+  while($wd =~ s/[^\/]+[\/]?$//) {
+    ## We have gone up one directory
+    $count++;
+
+    ## Make a regular expression and see if we have found a match
+    ## with our provided directory value.
+    my $re = $self->escape_regex_special($wd);
+    if ($ival =~ /^($re)/) {
+      ## We have found how it is relative.  Now make the relative path
+      ## and return it.
+      my $prefix = $1;
+      my $suffix = substr($val, length($prefix));
+      return ('../' x $count) . $suffix;
+    }
+  }
+
+  ## We never found a match
+  return undef;
+}
+
 sub expand_variables {
   my($self, $value, $rel, $expand_template, $scopes, $expand, $warn) = @_;
   my $cwd = $self->getcwd();
   my $start = 0;
   my $forward_slashes  = $self->{'convert_slashes'} ||
                          $self->{'requires_forward_slashes'};
+  my $aggrep = $self->aggressive_relative_replacement();
 
   ## Fix up the value for Windows switch the \\'s to /
   $cwd =~ s/\\/\//g if ($forward_slashes);
@@ -1100,13 +1129,31 @@ sub expand_variables {
           ## instead of leaving it we will expand it.  But, we will only
           ## get into this section if this is the secondary attempt to
           ## replace the variable (indicated by the $warn boolean).
-          $val =~ s/\//\\/g if ($self->{'convert_slashes'});
-          substr($value, $start) =~ s/\$\([^)]+\)/$val/;
-          $whole = $val;
+          my $aggressive_rel;
+          if ($aggrep &&
+              ($aggressive_rel = $self->aggressively_replace($icwd, $val))) {
+            $aggressive_rel =~ s/\//\\/g if ($self->{'convert_slashes'});
+            substr($value, $start) =~ s/\$\([^)]+\)/$aggressive_rel/;
+            $whole = $aggressive_rel;
+          }
+          else {
+            $val =~ s/\//\\/g if ($self->{'convert_slashes'});
+            substr($value, $start) =~ s/\$\([^)]+\)/$val/;
+            $whole = $val;
+          }
         }
         else {
-          my $loc = index(substr($value, $start), $whole);
-          $start += $loc if ($loc > 0);
+          my $aggressive_rel;
+          if ($aggrep &&
+              ($aggressive_rel = $self->aggressively_replace($icwd, $val))) {
+            $aggressive_rel =~ s/\//\\/g if ($self->{'convert_slashes'});
+            substr($value, $start) =~ s/\$\([^)]+\)/$aggressive_rel/;
+            $whole = $aggressive_rel;
+          }
+          else {
+            my $loc = index(substr($value, $start), $whole);
+            $start += $loc if ($loc > 0);
+          }
         }
       }
     }
@@ -1282,6 +1329,12 @@ sub get_secondary_relative_values {
   my $self = shift;
   return ($self->{'use_env'} ? \%ENV :
                                $self->{'relative'}), $self->{'expand_vars'};
+}
+
+
+sub aggressive_relative_replacement {
+  #my $self = shift;
+  return 0;
 }
 
 
