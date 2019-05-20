@@ -34,10 +34,10 @@ use vars qw(@ISA);
 #   calling perform_ for a nested function are written to the output)
 # 5 means that the get_ method performs the get_ and doif_ functionality
 #
-# Perl Function		Parameter Type		Return Type
-# get_			string			string or array
-# perform_		array reference		array
-# doif_			array reference		boolean
+# Perl Function         Parameter Type          Return Type
+# get_                  string                  string or array
+# perform_              array reference         array
+# doif_                 array reference         boolean
 #
 my $get_type             = 1 << 0;
 my $perform_type         = 1 << 1;
@@ -92,7 +92,7 @@ my %keywords = ('if'              => 0,
                 'deref'           => 0,
                 'set'             => 0,
                 'is_relative'     => $get_type|$doif_type|$get_combined_type,
-		'extension'       => $get_type,
+                'extension'       => $get_type,
                );
 
 my %target_type_vars = ('type_is_static'   => 1,
@@ -389,7 +389,7 @@ sub get_value {
                 if (!defined $value && $name =~ /^(.*)\->(\w+)/) {
                   my $pre  = $1;
                   my $post = $2;
-		  my $base = $self->get_value($pre);
+                  my $base = $self->get_value($pre);
 
                   if (defined $base) {
                     $value = $self->{'prjc'}->get_special_value(
@@ -2047,8 +2047,8 @@ sub prepare_parameters {
         if (defined $fo) {
           $outdir = $self->tp_dirname($$output[$i]);
           if (!($outdir ne '' && $indir ne $outdir && $fo ne $outdir)) {
-	    $$output[$i] = ($fo eq '.' ? '' : $fo . '/') .
-			  $self->tp_basename($$output[$i]);
+            $$output[$i] = ($fo eq '.' ? '' : $fo . '/') .
+                          $self->tp_basename($$output[$i]);
           }
         }
         $$output[$i] =~ s/\//\\/g if ($self->{'cslashes'});
