@@ -815,9 +815,12 @@
                 </option>
                 <option>
                     <name>IlinkExtraOptions</name>
-                    <state> --redirect __iar_dlmalloc=malloc</state>
-                    <state> --redirect __iar_dlcalloc=calloc</state>
-                    <state> --redirect __iar_dlfree=free</state>
+                    <state>--redirect __iar_dlmalloc=malloc</state>
+                    <state>--redirect __iar_dlcalloc=calloc</state>
+                    <state>--redirect __iar_dlfree=free</state>
+<%foreach(linkflags)%>
+                    <state><%linkflag%></state>
+<%endfor%>
 <%foreach(libpaths)%>
                     <state>-L<%full_path(libpath)%></state>
 <%endfor%>

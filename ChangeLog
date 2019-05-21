@@ -1,3 +1,9 @@
+Tue May 21 11:16:16 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
+
+        * templates/iar.mpd:
+
+          Added support for the 'linkflags' template variable.
+
 Fri May 17 14:42:45 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
 
         * modules/Creator.pm:
