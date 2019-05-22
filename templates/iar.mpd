@@ -59,12 +59,12 @@
                 <option>
                     <name>GRuntimeLibSelect</name>
                     <version>0</version>
-                    <state>2</state>
+		    <state><%gruntimelibselect%></state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelectSlave</name>
                     <version>0</version>
-                    <state>2</state>
+		    <state><%gruntimelibselect%></state>
                 </option>
                 <option>
                     <name>RTDescription</name>
@@ -122,7 +122,17 @@
                 </option>
                 <option>
                     <name>RTConfigPath2</name>
-                    <state>$TOOLKIT_DIR$\inc\c\<%dlib_config(DLib_Config_Normal.h)%></state>
+<%if(compares(gruntimelibselect, 1))%>
+                    <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</state>
+<%else%>
+<%if(compares(gruntimelibselect, 2))%>
+                    <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Full.h</state>
+<%else%>
+<%if(compares(gruntimelibselect, 3))%>
+                    <state><%dlib_config%></state>
+<%endif%>
+<%endif%>
+<%endif%>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>

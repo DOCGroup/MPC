@@ -6,6 +6,14 @@ configurations = Debug Release
 toolchain = ARM
 chip = "MK70FN1M0xxx12	NXP MK70FN1M0xxx12"
 
+// GRuntimeLibSelect determines the type of DLib support.
+// You can override this in your mpb file.
+// 0 - None
+// 1 - Normal
+// 2 - Full
+// 3 - Custom
+gruntimelibselect = 1
+
 Debug {
   debug = 1
   lib_modifier = d

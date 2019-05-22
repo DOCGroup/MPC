@@ -1,3 +1,12 @@
+Wed May 22 13:21:16 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
+
+        * docs/templates/iar.txt:
+        * templates/iar.mpd:
+        * templates/iar.mpt:
+
+          Added a 'gruntimelibselect' template variable to change the DLib
+          config setting.
+
 Tue May 21 11:16:16 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
 
         * templates/iar.mpd:

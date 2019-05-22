@@ -6,10 +6,11 @@
 //
 chip = This will be the chip version used by the UI.
 debug = This will be 1 if in debug mode and 0 if in release mode.
-dlib_config = The configuration header file for the DLib.
+dlib_config = The configuration header file for the DLib.  This is only used if gruntimelibselect is set to 3.
 gendianmode = Corresponds to the Endian mode under General Options.
 gendianmodebe = When General Options Endian mode is Big (1), BE32 is 0 and BE8 is 1.
 generalenablemisra = Set this to 1 to enable MISRA in the General Options.
+gruntimelibselect = Sets the DLib runtime support (0 - None, 1 - Normal, 2 - Full, 3 - Custom).
 ilinkicffile = Set this to override the default ICF file.
 ilinkprogramentrylabel = Use this to override the default program entry name.
 oglastsavedbyproductversion = The version number of the product at the last saving time of the project.
