@@ -2492,6 +2492,11 @@ sub add_explicit_output {
 
 sub generated_filenames {
   my($self, $part, $type, $tag, $file, $noext, $arrs) = @_;
+  ## $part  - The full path of the input file minus the extension
+  ## $type  - The input file type (e.g., 'java_files')
+  ## $file  - The full path of the input file
+  ## $noext - bool indicating an inverse need for an extension
+  ## $arrs  - bool indicating that the return array should be made of arrays
 
   ## A custom type is not allowed to generate it's own input files
   return () if ($type eq $tag);
@@ -5713,7 +5718,12 @@ sub find_command_helper {
 
   ## See if we have a command helper for this tag
   my $ch = CommandHelper::get($tag);
-  return $ch if (defined $ch);
+  if (defined $ch) {
+    ## Give the command helper a reference to the creator.  The helper
+    ## can benefit from many of the infrastructure functions available.
+    $ch->set_creator($self);
+    return $ch;
+  }
 
   ## None for the base define custom, try again with the parent
   return $self->find_command_helper($self->{'define_custom_parent'}->{$tag});

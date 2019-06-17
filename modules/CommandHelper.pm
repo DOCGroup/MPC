@@ -97,4 +97,9 @@ sub get_tied {
   return [], undef;
 }
 
+sub set_creator {
+  my($self, $creator) = @_;
+  $self->{'creator'} = $creator;
+}
+
 1;

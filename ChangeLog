@@ -1,3 +1,10 @@
+Mon Jun 17 14:17:49 UTC 2019  Chad Elliott  <elliottc@objectcomputing.com>
+
+        * modules/CommandHelper.pm:
+        * modules/ProjectCreator.pm:
+
+          Provide a ProjectCreator reference to the CommandHelper.
+
 Wed May 22 13:21:16 UTC 2019  Chad Elliott  <elliott_c@ociweb.com>
 
         * docs/templates/iar.txt:
