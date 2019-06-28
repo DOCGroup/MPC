@@ -93,6 +93,7 @@ my %keywords = ('if'              => 0,
                 'set'             => 0,
                 'is_relative'     => $get_type|$doif_type|$get_combined_type,
                 'extension'       => $get_type,
+                'is_custom_input' => $get_type|$doif_type|$get_combined_type,
                );
 
 my %target_type_vars = ('type_is_static'   => 1,
@@ -138,6 +139,7 @@ sub new {
   $self->{'keyname_used'}         = {};
   $self->{'scopes'}               = {};
   $self->{'aux_file'}             = undef;
+  $self->{'custom_input_cache'}   = {};
 
   $self->{'foreach'}  = {};
   $self->{'foreach'}->{'count'}      = -1;
@@ -2012,6 +2014,60 @@ sub handle_is_relative {
   my $val = $self->get_value_with_default($name);
   $self->append_current(
          $self->{'prjc'}->path_is_relative($val) ? '1' : '0') if (defined $val);
+}
+
+
+sub get_is_custom_input {
+  my($self, $name) = @_;
+  return $self->doif_is_custom_input($self->get_value_with_default($name));
+}
+
+
+sub doif_is_custom_input {
+  my($self, $val) = @_;
+
+  ## Create an array reference from the custom_types string value.
+  my $custom_types = $self->{'prjc'}->get_assignment('custom_types');
+  my $ctypes = $self->create_array(defined $custom_types ? $custom_types : '');
+
+  foreach my $ctype (@$ctypes) {
+    ## Get the input files for each custom type.  We cache it to avoid
+    ## generating the custom inputs for each and every call.  This function
+    ## is usually called within a foreach context, so it will be called many
+    ## times per run.
+    my $inputs;
+    if (defined $self->{'custom_input_cache'}->{$ctype}) {
+      $inputs = $self->{'custom_input_cache'}->{$ctype};
+    }
+    else {
+      $inputs = $self->{'prjc'}->get_custom_value('input_files', $ctype);
+      $self->{'custom_input_cache'}->{$ctype} = $inputs;
+    }
+
+    ## Once we have the inputs, see if any of them match the current file
+    foreach my $input (@$inputs) {
+      ## There are various ways that the user could list files such that
+      ## a custom input could physically match a built-in file listing
+      ## but not be equal, in a string comparison sense.  Resolving those
+      ## differences requires path traversal and that the files actually
+      ## exist (which isn't guaranteed at project generation time).  So,
+      ## we do the minimal comparison using the file_sorter on the
+      ## ProjectCreator to handle case sensitivity automatically.
+      return 1 if ($self->{'prjc'}->file_sorter($input, $val));
+    }
+  }
+
+  ## There are either no custom types or there isn't a custom input file
+  ## that matches the one we're currently processing.
+  return undef;
+}
+
+
+sub handle_is_custom_input {
+  my($self, $name) = @_;
+  my $val = $self->get_value_with_default($name);
+  $self->append_current(
+    $self->doif_is_custom_input($val) ? '1' : '0') if (defined $val);
 }
 
 

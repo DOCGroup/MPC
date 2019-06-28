@@ -1,3 +1,27 @@
+Fri Jun 28 15:52:37 UTC 2019  Chad Elliott  <elliottc@objectcomputing.com>
+
+        * modules/TemplateParser.pm:
+
+          Added a template function, is_custom_input, which takes a file
+          as the parameter and checks it against all custom input files.  It
+          returns true/false when used in a <%if()%> context.
+
+        * templates/vc10.mpd:
+
+          Use the 'is_custom_input' function template to ensure that files
+          listed as custom type inputs are not listed under template_files,
+          header_files, inline_files, documentation_files, or resource_files.
+          If a custom type input is also listed under source_files, we will
+          leave it to the user to resolve this externally.
+
+          This is technically only required for certain versions of vs2017 and
+          vs2019, but in order to provide this functionality for just those
+          two types would require a duplication of the vc10 template with a
+          few minor adjustments.  Future fixes to the vc10 template would have
+          needed to have been propagated to the slightly different vs2017
+          template.  To simplify maintenance, I just made the changes to this
+          template file.
+
 Mon Jun 17 14:17:49 UTC 2019  Chad Elliott  <elliottc@objectcomputing.com>
 
         * modules/CommandHelper.pm:
