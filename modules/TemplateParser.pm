@@ -2053,7 +2053,7 @@ sub doif_is_custom_input {
       ## exist (which isn't guaranteed at project generation time).  So,
       ## we do the minimal comparison using the file_sorter on the
       ## ProjectCreator to handle case sensitivity automatically.
-      return 1 if ($self->{'prjc'}->file_sorter($input, $val));
+      return 1 if ($self->{'prjc'}->file_sorter($input, $val) == 0);
     }
   }
 
