@@ -5,7 +5,7 @@
 	Name="<%project_name%>"
 	ProjectGUID="{<%guid%>}"
 	RootNamespace="<%project_name%>"
-	Keyword="<%if(UseOfMFC)%>MFCProj<%else%><%platform("Win32")%>Proj<%endif%>"
+	Keyword="<%if(UseOfMFC)%><%if(activex)%>MFCActiveXProj<%else%>MFCProj<%endif%><%else%><%platform("Win32")%>Proj<%endif%>"
 	SignManifests="true"
 	>
 	<Platforms>
@@ -80,10 +80,17 @@
 <%if(midl_notlb)%>
 				GenerateTypeLibrary="false"
 <%endif%>
+<%if(activex)%>
+				MkTypLibCompatible="false"
+				TypeLibraryName="$(IntDir)/$(InputName).tlb"
+				HeaderFileName="$(ProjectName)idl.h"
+				ValidateParameters="true"
+<%else%>
 				TypeLibraryName="$(InputName).tlb"
 				HeaderFileName="$(InputName).h"
 				InterfaceIdentifierFileName="$(InputName)_i.c"
 				ProxyFileName="$(InputName)_p.c"
+<%endif%>
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -278,7 +285,11 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="<%if(unicode)%>UNICODE;_UNICODE;<%endif%><%foreach(defines macros platform_defines)%><%define%><%fornotlast(";")%><%endfor%>"
 				Culture="<%culture("1033")%>"
+<%if(activex)%>
+				AdditionalIncludeDirectories="$(IntDir)<%foreach(includes)%><%fornotlast(",")%><%include%><%endfor%>"
+<%else%>
 				AdditionalIncludeDirectories="<%foreach(includes)%><%include%><%fornotlast(",")%><%endfor%>"
+<%endif%>
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -298,7 +309,7 @@
 <%else%>
 				Name="VCLinkerTool"
 <%if(RegisterOutput)%>
-				RegisterOutput="<%RegisterOutput%>"
+				RegisterOutput="<%if(compares(RegisterOutput,1))%>true<%else%>false<%endif%>"
 <%endif%>
 <%if(IgnoreImportLibrary)%>
 				IgnoreImportLibrary="<%IgnoreImportLibrary%>"
@@ -323,7 +334,7 @@
 				AdditionalDependencies="<%foreach(reverse(libs))%><%fornotfirst(" ")%><%libname_prefix%><%lib%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%lib_ext%><%endfor%><%foreach(reverse(lit_libs))%> <%lit_lib%>.lib<%endfor%><%foreach(reverse(pure_libs))%> <%pure_lib%><%endfor%>"
 <%endif%>
 <%if(exename || sharedname || staticname)%>
-				OutputFile="$(OutDir)\<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%dll_ext%><%else%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%><%endif%>"
+				OutputFile="$(OutDir)\<%if(type_is_dynamic)%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%if(activex)%>.ocx<%else%><%dll_ext%><%endif%><%else%><%exename%><%if(use_exe_modifier)%><%exe_modifier%><%endif%><%exe_ext%><%endif%>"
 <%endif%>
 <%if(win_version)%>
 				Version="<%win_version%>"
@@ -537,7 +548,7 @@
 			<DeploymentTool
 				ForceDirty="-1"
 				RemoteDirectory="<%deployment_directory%>"
-				RegisterOutput="0"
+				RegisterOutput="false"
 				AdditionalFiles=""
 			/>
 <%endif%>
