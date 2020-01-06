@@ -1429,7 +1429,12 @@ sub process_component_line {
       my $over = $self->{'flag_overrides'}->{$tag};
       if (defined $over) {
         foreach my $file (@files) {
-          $$over{$file} = $flags;
+          ## We are giving these flag overrides to multiple files.  Since
+          ## $flags is a hash reference, we need to make a copy so that
+          ## modifying one of these files flag overrides doesn't modify
+          ## all of them.
+          my %copy = %$flags;
+          $$over{$file} = \%copy;
         }
       }
 
