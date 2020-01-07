@@ -33,23 +33,11 @@ jobs:
         vcpkgarch: x64-windows
         vcpkglibdir: debug\lib
         vcpkgpackages: openssl xerces-c
-      Release64:
-        BuildPlatform: x64
-        BuildConfiguration: Release
-        vcpkgarch: x64-windows
-        vcpkglibdir: lib
-        vcpkgpackages: openssl xerces-c
       Debug32:
         BuildPlatform: Win32
         BuildConfiguration: Debug
         vcpkgarch: x86-windows
         vcpkglibdir: debug\lib
-        vcpkgpackages: openssl xerces-c
-      Release32:
-        BuildPlatform: Win32
-        BuildConfiguration: Release
-        vcpkgarch: x86-windows
-        vcpkglibdir: lib
         vcpkgpackages: openssl xerces-c
   variables:
     VCPKG_ROOT: $(Build.SourcesDirectory)\vcpkg
@@ -192,57 +180,11 @@ jobs:
     vmImage: ubuntu-latest
   strategy:
     matrix:
-      GCC48:
-        CC: gcc-4.8
-        CXX: g++-4.8
-        PackageDeps: g++-4.8
-        platform_file: include $(ACE_ROOT)/include/makeinclude/platform_linux.GNU
-      GCC6:
-        CC: gcc-6
-        CXX: g++-6
-        PackageDeps: g++-6
-        platform_file: include $(ACE_ROOT)/include/makeinclude/platform_linux.GNU
-      GCC7:
-        CC: gcc-7
-        CXX: g++-7
-        PackageDeps: g++-7
-        platform_file: include $(ACE_ROOT)/include/makeinclude/platform_linux.GNU
-      GCC8:
-        CC: gcc-8
-        CXX: g++-8
-        PackageDeps: g++-8
-        platform_file: include $(ACE_ROOT)/include/makeinclude/platform_linux.GNU
       GCC9:
         CC: gcc-9
         CXX: g++-9
         PackageDeps: g++-9
         platform_file: include $(ACE_ROOT)/include/makeinclude/platform_linux.GNU
-      CLANG5:
-        CC: clang-5.0
-        CXX: clang++-5.0
-        PackageDeps: clang-5.0
-        platform_file: include $(ACE_ROOT)/include/makeinclude/platform_linux_clang.GNU
-      CLANG6:
-        CC: clang-6.0
-        CXX: clang++-6.0
-        PackageDeps: clang-6.0
-        platform_file: include $(ACE_ROOT)/include/makeinclude/platform_linux_clang.GNU
-      CLANG7:
-        CC: clang-7
-        CXX: clang++-7
-        PackageDeps: clang-7
-        platform_file: include $(ACE_ROOT)/include/makeinclude/platform_linux_clang.GNU
-      CLANG8:
-        CC: clang-8
-        CXX: clang++-8
-        PackageDeps: clang-8
-        platform_file: include $(ACE_ROOT)/include/makeinclude/platform_linux_clang.GNU
-      CLANG9:
-        CC: clang-9
-        CXX: clang++-9
-        PackageDeps: clang-9
-        Repo: llvm-toolchain-$(lsb_release -cs)-9
-        platform_file: include $(ACE_ROOT)/include/makeinclude/platform_linux_clang.GNU
   steps:
   - script: |
       wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
