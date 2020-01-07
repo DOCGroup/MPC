@@ -75,12 +75,12 @@ jobs:
       echo "xerces3=1" | out-file -encoding ASCII $(ACE_ROOT)\bin\MakeProjectCreator\config\default.features
       echo "ssl=1" | out-file -append -encoding ASCII $(ACE_ROOT)\bin\MakeProjectCreator\config\default.features
     displayName: Create default.features file
-  - powershell: perl $(ACE_ROOT)/bin/mwc.pl -type vs2019 CIAO_TAO_DAnCE.mwc -workers 4
-    displayName: Run script mwc.pl on CIAO_TAO_DAnCE.mwc
+  - powershell: perl $(ACE_ROOT)/bin/mwc.pl -type vs2019 $(CIAO_ROOT)/CIAO_TAO_DAnCE.mwc -workers 4
+    displayName: Run script mwc.pl on $(CIAO_ROOT)/CIAO_TAO_DAnCE.mwc
   - task: VSBuild@1
-    displayName: Build solution CIAO_TAO_DAnCE.sln
+    displayName: Build solution $(CIAO_ROOT)/CIAO_TAO_DAnCE.sln
     inputs:
-      solution: CIAO_TAO_DAnCE.sln
+      solution: $(CIAO_ROOT)/CIAO_TAO_DAnCE.sln
       platform: $(BuildPlatform)
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
@@ -127,12 +127,12 @@ jobs:
       echo "xerces3=1" | out-file -encoding ASCII $(ACE_ROOT)\bin\MakeProjectCreator\config\default.features
       echo "ssl=1" | out-file -append -encoding ASCII $(ACE_ROOT)\bin\MakeProjectCreator\config\default.features
     displayName: Create default.features file
-  - powershell: perl $(ACE_ROOT)/bin/mwc.pl -type vs2017 CIAO_TAO_DAnCE.mwc -workers 4
-    displayName: Run script mwc.pl on CIAO_TAO_DAnCE.mwc
+  - powershell: perl $(ACE_ROOT)/bin/mwc.pl -type vs2017 $(CIAO_ROOT)/CIAO_TAO_DAnCE.mwc -workers 4
+    displayName: Run script mwc.pl on $(CIAO_ROOT)/CIAO_TAO_DAnCE.mwc
   - task: VSBuild@1
-    displayName: Build solution CIAO_TAO_DAnCE.sln
+    displayName: Build solution $(CIAO_ROOT)/CIAO_TAO_DAnCE.sln
     inputs:
-      solution: CIAO_TAO_DAnCE.sln
+      solution: $(CIAO_ROOT)/CIAO_TAO_DAnCE.sln
       platform: $(BuildPlatform)
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
@@ -177,12 +177,12 @@ jobs:
       echo "xerces3=1" | out-file -encoding ASCII $(ACE_ROOT)\bin\MakeProjectCreator\config\default.features
       echo "ssl=1" | out-file -append -encoding ASCII $(ACE_ROOT)\bin\MakeProjectCreator\config\default.features
     displayName: Create default.features file
-  - powershell: perl $(ACE_ROOT)/bin/mwc.pl -type vc14 CIAO_TAO_DAnCE.mwc -workers 4
-    displayName: Run script mwc.pl on CIAO_TAO_DAnCE.mwc
+  - powershell: perl $(ACE_ROOT)/bin/mwc.pl -type vc14 $(CIAO_ROOT)/CIAO_TAO_DAnCE.mwc -workers 4
+    displayName: Run script mwc.pl on $(CIAO_ROOT)/CIAO_TAO_DAnCE.mwc
   - task: VSBuild@1
-    displayName: Build solution CIAO_TAO_DAnCE.sln
+    displayName: Build solution $(CIAO_ROOT)/CIAO_TAO_DAnCE.sln
     inputs:
-      solution: CIAO_TAO_DAnCE.sln
+      solution: $(CIAO_ROOT)/CIAO_TAO_DAnCE.sln
       platform: $(BuildPlatform)
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
@@ -274,9 +274,9 @@ jobs:
       'dds4ccm_opendds=1' >> $(ACE_ROOT)/include/makeinclude/platform_macros.GNU
       "$(platform_file)" >> $(ACE_ROOT)/include/makeinclude/platform_macros.GNU
     displayName: Create platform_macros file
-  - powershell: perl $(ACE_ROOT)/bin/mwc.pl -type gnuace CIAO_TAO_DAnCE_OpenDDS.mwc -workers 4
-    displayName: Run mwc.pl on CIAO_TAO_DAnCE_OpenDDS.mwc
-  - bash: make -j 6
+  - powershell: perl $(ACE_ROOT)/bin/mwc.pl -type gnuace $(CIAO_ROOT)/CIAO_TAO_DAnCE_OpenDDS.mwc -workers 4
+    displayName: Run mwc.pl on $(CIAO_ROOT)/CIAO_TAO_DAnCE_OpenDDS.mwc
+  - bash: make -j 6 -C $(CIAO_ROOT)
     displayName: Build project
 
 - job: MacOSX
@@ -293,7 +293,7 @@ jobs:
   - powershell: |
       'include $(ACE_ROOT)/include/makeinclude/platform_macosx.GNU' > $(ACE_ROOT)/include/makeinclude/platform_macros.GNU;
     displayName: Create platform_macros file
-  - powershell: perl $(ACE_ROOT)/bin/mwc.pl -type gnuace CIAO_TAO_DAnCE.mwc -workers 4
-    displayName: Run mwc.pl on CIAO_TAO_DAnCE.mwc
-  - bash: make -j 6
+  - powershell: perl $(ACE_ROOT)/bin/mwc.pl -type gnuace $(CIAO_ROOT)/CIAO_TAO_DAnCE.mwc -workers 4
+    displayName: Run mwc.pl on $(CIAO_ROOT)/CIAO_TAO_DAnCE.mwc
+  - bash: make -j 6 -C $(CIAO_ROOT)
     displayName: Build project
