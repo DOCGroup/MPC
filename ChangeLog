@@ -1,3 +1,11 @@
+Tue Jan  7 01:55:14 UTC 2020  Chad Elliott  <elliottc@objectcomputing.com>
+
+        * modules/ProjectCreator.pm:
+
+          Do not make a copy of the flag overrides hash when the files are
+          part of the same component group.  We make the copy later on when
+          we are modifying the overrides for tied files.
+
 Mon Jan  6 06:21:29 UTC 2020  Chad Elliott  <elliottc@objectcomputing.com>
 
         * modules/ProjectCreator.pm:
