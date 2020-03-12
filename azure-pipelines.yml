@@ -121,52 +121,6 @@ jobs:
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
 
-- job: VisualStudio2015
-  timeoutInMinutes: 90
-  pool:
-    vmImage: vs2015-win2012r2
-  strategy:
-    matrix:
-      Release64:
-        BuildPlatform: x64
-        BuildConfiguration: Release
-        vcpkgarch: x64-windows
-        vcpkglibdir: lib
-  variables:
-    VCPKG_ROOT: $(Build.SourcesDirectory)\vcpkg
-    XERCESCROOT: $(Build.SourcesDirectory)\vcpkg\packages\xerces-c_$(vcpkgarch)
-    SSL_ROOT: $(Build.SourcesDirectory)\vcpkg\packages\openssl-windows_$(vcpkgarch)
-    SSL_LIBDIR: $(SSL_ROOT)\$(vcpkglibdir)
-    XERCESC_LIBDIR: $(XERCESCROOT)\$(vcpkglibdir)
-  steps:
-  - powershell: |
-      git clone --depth 1 git://github.com/Microsoft/vcpkg.git $(VCPKG_ROOT)
-      $(VCPKG_ROOT)\bootstrap-vcpkg.bat
-      $(VCPKG_ROOT)\vcpkg.exe install --recurse --triplet $(vcpkgarch) openssl xerces-c
-    displayName: vcpkg
-  - powershell: |
-      git clone -q --depth 1 git://github.com/DOCGroup/ACE_TAO.git $(Build.SourcesDirectory)/ACE_TAO
-      git clone -q --depth 1 git://github.com/DOCGroup/DAnCE.git $(DAnCE_ROOT)
-      git clone -q --depth 1 git://github.com/DOCGroup/CIAO.git $(CIAO_ROOT)
-    displayName: git clone dependent repositories
-  - powershell: |
-      '#include "ace/config-win32.h"' > $(ACE_ROOT)\ace\config.h
-    displayName: Create config.h file
-  - powershell: |
-      echo "xerces3=1" | out-file -encoding ASCII $(ACE_ROOT)\bin\MakeProjectCreator\config\default.features
-      echo "ssl=1" | out-file -append -encoding ASCII $(ACE_ROOT)\bin\MakeProjectCreator\config\default.features
-      echo "openssl11=1" | out-file -append -encoding ASCII $(ACE_ROOT)\bin\MakeProjectCreator\config\default.features
-    displayName: Create default.features file
-  - powershell: perl $(ACE_ROOT)/bin/mwc.pl -type vc14 $(CIAO_ROOT)/CIAO_TAO_DAnCE.mwc -workers 4
-    displayName: Run script mwc.pl on $(CIAO_ROOT)/CIAO_TAO_DAnCE.mwc
-  - task: VSBuild@1
-    displayName: Build solution $(CIAO_ROOT)/CIAO_TAO_DAnCE.sln
-    inputs:
-      solution: $(CIAO_ROOT)/CIAO_TAO_DAnCE.sln
-      platform: $(BuildPlatform)
-      configuration: $(BuildConfiguration)
-      maximumCpuCount: true
-
 - job: Linux
   pool:
     vmImage: ubuntu-latest
