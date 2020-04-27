@@ -4913,7 +4913,7 @@ sub write_output_file {
             $different = 0 if (!$self->files_are_different($name, $tmp));
           }
           else {
-            $error = "Unable to open $tmp for output.";
+            $error = "Unable to open $tmp for output: $!";
             $status = 0;
             last;
           }
@@ -4929,7 +4929,7 @@ sub write_output_file {
               }
             }
             else {
-              $error = "Unable to open $name for output.";
+              $error = "Unable to open $name for output: $!";
               $status = 0;
               last;
             }
@@ -4953,7 +4953,7 @@ sub write_output_file {
             }
           }
           else {
-            $error = "Unable to open $name for output.";
+            $error = "Unable to open $name for output: $!";
             $status = 0;
             last;
           }
