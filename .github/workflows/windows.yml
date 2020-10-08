@@ -1,0 +1,103 @@
+name: windows
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 1 * * SUN'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - name: VS2017Debug64
+            vmimage: windows-2016
+            mpctype: vs2017
+            BuildPlatform: x64
+            BuildConfiguration: Debug
+            vcpkgarch: x64-windows
+            vcpkglibdir: debug/lib
+            vcpkgpackages: openssl xerces-c
+          - name: VS2019Debug64
+            vmimage: windows-2019
+            mpctype: vs2019
+            BuildPlatform: x64
+            BuildConfiguration: Debug
+            vcpkgarch: x64-windows
+            vcpkglibdir: debug/lib
+            vcpkgpackages: openssl xerces-c
+          - name: VS2019Release32
+            vmimage: windows-2019
+            mpctype: vs2019
+            BuildPlatform: Win32
+            BuildConfiguration: Release
+            vcpkgarch: x86-windows
+            vcpkglibdir: lib
+            vcpkgpackages: openssl xerces-c
+    runs-on: ${{ matrix.vmimage }}
+    name: ${{ matrix.name }}
+    env:
+      DOC_ROOT: ${{ github.workspace }}/ACE_TAO
+      ACE_ROOT: ${{ github.workspace }}/ACE_TAO/ACE
+      TAO_ROOT: ${{ github.workspace }}/ACE_TAO/TAO
+      MPC_ROOT: ${{ github.workspace }}/
+      CIAO_ROOT: ${{ github.workspace }}/CIAO
+      DANCE_ROOT: ${{ github.workspace }}/DAnCE
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+      XERCESC_INCDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/include
+      XERCESC_LIBDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/${{ matrix.vcpkglibdir }}
+      SSL_INCDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/include
+      SSL_LIBDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/${{ matrix.vcpkglibdir }}
+    steps:
+    - name: checkout MPC
+      uses: actions/checkout@v2
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2
+      with:
+        repository: DOCGroup/ACE_TAO
+        path: ${{ env.DOC_ROOT }}
+    - name: checkout CIAO
+      uses: actions/checkout@v2
+      with:
+        repository: DOCGroup/CIAO
+        path: ${{ env.CIAO_ROOT }}
+    - name: checkout DAnCE
+      uses: actions/checkout@v2
+      with:
+        repository: DOCGroup/DAnCE
+        path: ${{ env.DANCE_ROOT }}
+    - name: Install vcpkg
+      uses: lukka/run-vcpkg@v3
+      with:
+        vcpkgGitCommitId: 56fffbe49dfb4dd8fae0940f272c5fd2b86be991
+        vcpkgArguments: --recurse ${{ matrix.vcpkgpackages }}
+        vcpkgTriplet: ${{ matrix.vcpkgarch }}
+        appendedCacheKey: ${{ matrix.name }}
+    - name: create $ACE_ROOT/ace/config.h
+      run: |
+        '#include "ace/config-win32.h"' > ${env:ACE_ROOT}/ace/config.h
+      shell: pwsh
+    - name: create $ACE_ROOT/bin/MakeProjectCreator/config/default.features
+      run: |
+        echo "ipv6=1" | out-file -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        echo "xerces3=1" | out-file -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        echo "ssl=1" | out-file -append -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        echo "openssl11=1" | out-file -append -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        echo "versioned_namespace=1" | out-file -append -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+      shell: pwsh
+    - name: Add optional features ${{ matrix.OptionalFeatures }}
+      run: |
+        echo "${{ matrix.OptionalFeatures }}" | out-file -append -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+      shell: pwsh
+      if: matrix.OptionalFeatures != ''
+    - name: Run mwc.pl on $(CIAO_ROOT)/CIAO_TAO_DAnCE.mwc
+      run: |
+        perl ${env:ACE_ROOT}/bin/mwc.pl -type ${{ matrix.mpctype }} ${env:CIAO_ROOT}/CIAO_TAO_DAnCE.mwc -workers 4
+      shell: pwsh
+    - name: Setup msbuild
+      uses: microsoft/setup-msbuild@v1.0.1
+    - name: Build solution $(CIAO_ROOT)/CIAO_TAO_DAnCE.sln
+      run: |
+        msbuild -maxcpucount -p:Platform=${{ matrix.BuildPlatform }} -p:Configuration=${{ matrix.BuildConfiguration }} ${env:CIAO_ROOT}/CIAO_TAO_DAnCE.sln
+      shell: pwsh
