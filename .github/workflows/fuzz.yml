@@ -1,0 +1,26 @@
+name: fuzz
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 1 * * SUN'
+
+env:
+  DOC_ROOT: ${{ github.workspace }}/ACE
+  ACE_ROOT: ${{ github.workspace }}/ACE/ACE
+  TAO_ROOT: ${{ github.workspace }}/ACE/TAO
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout MPC
+      uses: actions/checkout@v2
+    - name: git clone dependent repositories
+      run: |
+        git clone --depth 1 git://github.com/DOCGroup/ACE_TAO.git $DOC_ROOT
+    - name: Run fuzz
+      run: |
+        perl ${env:ACE_ROOT}/bin/fuzz.pl
+      shell: pwsh
