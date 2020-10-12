@@ -96,7 +96,7 @@ jobs:
         perl ${env:ACE_ROOT}/bin/mwc.pl -type ${{ matrix.mpctype }} ${env:CIAO_ROOT}/CIAO_TAO_DAnCE.mwc -workers 4
       shell: pwsh
     - name: Setup msbuild
-      uses: microsoft/setup-msbuild@v1.0.1
+      uses: microsoft/setup-msbuild@v1
     - name: Build solution $(CIAO_ROOT)/CIAO_TAO_DAnCE.sln
       run: |
         msbuild -maxcpucount -p:Platform=${{ matrix.BuildPlatform }} -p:Configuration=${{ matrix.BuildConfiguration }} ${env:CIAO_ROOT}/CIAO_TAO_DAnCE.sln
