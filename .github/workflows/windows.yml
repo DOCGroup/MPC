@@ -42,8 +42,6 @@ jobs:
       ACE_ROOT: ${{ github.workspace }}/ACE_TAO/ACE
       TAO_ROOT: ${{ github.workspace }}/ACE_TAO/TAO
       MPC_ROOT: ${{ github.workspace }}/
-      CIAO_ROOT: ${{ github.workspace }}/CIAO
-      DANCE_ROOT: ${{ github.workspace }}/DAnCE
       VCPKG_ROOT: ${{ github.workspace }}/vcpkg
       XERCESC_INCDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/include
       XERCESC_LIBDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/${{ matrix.vcpkglibdir }}
@@ -57,16 +55,6 @@ jobs:
       with:
         repository: DOCGroup/ACE_TAO
         path: ${{ env.DOC_ROOT }}
-    - name: checkout CIAO
-      uses: actions/checkout@v2
-      with:
-        repository: DOCGroup/CIAO
-        path: ${{ env.CIAO_ROOT }}
-    - name: checkout DAnCE
-      uses: actions/checkout@v2
-      with:
-        repository: DOCGroup/DAnCE
-        path: ${{ env.DANCE_ROOT }}
     - name: Install vcpkg
       uses: lukka/run-vcpkg@v4
       with:
@@ -91,13 +79,13 @@ jobs:
         echo "${{ matrix.OptionalFeatures }}" | out-file -append -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
       shell: pwsh
       if: matrix.OptionalFeatures != ''
-    - name: Run mwc.pl on $(CIAO_ROOT)/CIAO_TAO_DAnCE.mwc
+    - name: Run mwc.pl on $(TAO_ROOT)/TAO_ACE.mwc
       run: |
-        perl ${env:ACE_ROOT}/bin/mwc.pl -type ${{ matrix.mpctype }} ${env:CIAO_ROOT}/CIAO_TAO_DAnCE.mwc -workers 4
+        perl ${env:ACE_ROOT}/bin/mwc.pl -type ${{ matrix.mpctype }} ${env:TAO_ROOT}/TAO_ACE.mwc -workers 4
       shell: pwsh
     - name: Setup msbuild
       uses: microsoft/setup-msbuild@v1
-    - name: Build solution $(CIAO_ROOT)/CIAO_TAO_DAnCE.sln
+    - name: Build solution $(TAO_ROOT)/TAO_ACE.sln
       run: |
-        msbuild -maxcpucount -p:Platform=${{ matrix.BuildPlatform }} -p:Configuration=${{ matrix.BuildConfiguration }} ${env:CIAO_ROOT}/CIAO_TAO_DAnCE.sln
+        msbuild -maxcpucount -p:Platform=${{ matrix.BuildPlatform }} -p:Configuration=${{ matrix.BuildConfiguration }} ${env:TAO_ROOT}/TAO_ACE.sln
       shell: pwsh
