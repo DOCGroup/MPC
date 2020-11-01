@@ -199,7 +199,15 @@
 <%if(SmallerTypeCheck)%>
       <SmallerTypeCheck>true</SmallerTypeCheck>
 <%endif%>
-      <RuntimeLibrary><%if(runtime_library)%><%runtime_library%><%else%><%if(type_is_static || need_staticflags)%><%if(debug_prj)%>MultiThreadedDebug<%else%>MultiThreaded<%endif%><%else%><%if(debug_prj)%>MultiThreadedDebugDLL<%else%>MultiThreadedDLL<%endif%><%endif%><%endif%></RuntimeLibrary>
+<%if(runtime_library)%>
+<RuntimeLibrary><%runtime_library%></RuntimeLibrary>
+<%else%>
+	<%if(type_is_dynamic || useDynamicSystemLibraries)%>
+	<RuntimeLibrary><%if(debug_prj)%>MultiThreadedDebugDLL<%else%>MultiThreadedDLL<%endif%></RuntimeLibrary>
+	<%else%>
+      <RuntimeLibrary><%if(debug_prj)%>MultiThreadedDebug<%else%>MultiThreaded<%endif%></RuntimeLibrary>
+	<%endif%>
+<%endif%>
 <%if(StructMemberAlignment)%>
       <StructMemberAlignment><%StructMemberAlignment%></StructMemberAlignment>
 <%endif%>
