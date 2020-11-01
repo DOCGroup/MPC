@@ -205,7 +205,7 @@
 	<%if(type_is_dynamic || useDynamicSystemLibraries)%>
 	<RuntimeLibrary><%if(debug_prj)%>MultiThreadedDebugDLL<%else%>MultiThreadedDLL<%endif%></RuntimeLibrary>
 	<%else%>
-      <RuntimeLibrary><%if(debug_prj)%>MultiThreadedDebug<%else%>MultiThreaded<%endif%></RuntimeLibrary>
+	<RuntimeLibrary><%if(debug_prj)%>MultiThreadedDebug<%else%>MultiThreaded<%endif%></RuntimeLibrary>
 	<%endif%>
 <%endif%>
 <%if(StructMemberAlignment)%>
