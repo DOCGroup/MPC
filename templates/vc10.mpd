@@ -202,7 +202,7 @@
 <%if(runtime_library)%>
 <RuntimeLibrary><%runtime_library%></RuntimeLibrary>
 <%else%>
-	<%if(type_is_dynamic || useDynamicSystemLibraries)%>
+	<%if(!need_staticflags || useDynamicSystemLibraries)%>
 	<RuntimeLibrary><%if(debug_prj)%>MultiThreadedDebugDLL<%else%>MultiThreadedDLL<%endif%></RuntimeLibrary>
 	<%else%>
 	<RuntimeLibrary><%if(debug_prj)%>MultiThreadedDebug<%else%>MultiThreaded<%endif%></RuntimeLibrary>
