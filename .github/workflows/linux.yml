@@ -23,9 +23,6 @@ jobs:
       ACE_ROOT: ${{ github.workspace }}/ACE_TAO/ACE
       TAO_ROOT: ${{ github.workspace }}/ACE_TAO/TAO
       MPC_ROOT: ${{ github.workspace }}/
-      CIAO_ROOT: ${{ github.workspace }}/CIAO
-      DANCE_ROOT: ${{ github.workspace }}/DAnCE
-      DDS_ROOT: ${{ github.workspace }}/OpenDDS
       CC: ${{ matrix.CC }}
       CXX: ${{ matrix.CXX }}
     steps:
@@ -36,21 +33,6 @@ jobs:
       with:
         repository: DOCGroup/ACE_TAO
         path: ${{ env.DOC_ROOT }}
-    - name: checkout CIAO
-      uses: actions/checkout@v2
-      with:
-        repository: DOCGroup/CIAO
-        path: ${{ env.CIAO_ROOT }}
-    - name: checkout DAnCE
-      uses: actions/checkout@v2
-      with:
-        repository: DOCGroup/DAnCE
-        path: ${{ env.DANCE_ROOT }}
-    - name: checkout OpenDDS
-      uses: actions/checkout@v2
-      with:
-        repository: objectcomputing/OpenDDS
-        path: ${{ env.DDS_ROOT }}
     - name: Add Repo
       run: |
         wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
@@ -69,7 +51,6 @@ jobs:
         'ipv6=1' > ${env:ACE_ROOT}/include/makeinclude/platform_macros.GNU
         'xerces3=1' >> ${env:ACE_ROOT}/include/makeinclude/platform_macros.GNU
         'ssl=1' >> ${env:ACE_ROOT}/include/makeinclude/platform_macros.GNU
-        'dds4ccm_opendds=1' >> ${env:ACE_ROOT}/include/makeinclude/platform_macros.GNU
       shell: pwsh
     - name: add optional optional macros
       run: |
@@ -83,8 +64,6 @@ jobs:
     - name: create $ACE_ROOT/bin/MakeProjectCreator/config/default.features
       run: |
         'ipv6=1' > ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
-        'dds4ccm_opendds=1' >> ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
-        'dds_suppress_anys=0' >> ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
         'xerces3=1' >> ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
         'ssl=1' >> ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
       shell: pwsh
@@ -93,11 +72,11 @@ jobs:
         '${{ matrix.optional_feature }}' >> ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
       if: matrix.optional_feature != ''
       shell: pwsh
-    - name: Run mwc.pl on $(CIAO_ROOT)/CIAO_TAO_DAnCE_OpenDDS.mwc
+    - name: Run mwc.pl on $(TAO_ROOT)/TAO_ACE.mwc
       run: |
-        perl ${env:ACE_ROOT}/bin/mwc.pl -type gnuace ${env:CIAO_ROOT}/CIAO_TAO_DAnCE_OpenDDS.mwc -workers 4
+        perl ${env:ACE_ROOT}/bin/mwc.pl -type gnuace ${env:TAO_ROOT}/TAO_ACE.mwc -workers 4
       shell: pwsh
-    - name: Build CIAO_TAO_DAnCE_OpenDDS project
+    - name: Build TAO_ACE project
       run: |
-        make -j 6 -C ${env:CIAO_ROOT}
+        make -j 6 -C ${env:TAO_ROOT}
       shell: pwsh
