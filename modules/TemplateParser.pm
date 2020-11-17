@@ -475,6 +475,17 @@ sub get_value_with_default {
   return (UNIVERSAL::isa($value, 'ARRAY') ? "@$value" : $value);
 }
 
+sub get_match_pattern {
+  my ($tp, $patarg) = @_;
+
+  my $patval = $tp->get_value($patarg);
+  if (defined $patval) {
+    return $patval;
+  }
+  else {
+    return $patarg;
+  }
+}
 
 sub process_foreach {
   my $self   = shift;
@@ -930,6 +941,7 @@ sub doif_contains {
   if (defined $val) {
     my($name, $pattern) = $self->split_parameters("@$val");
     if (defined $name && defined $pattern) {
+      $pattern = $self->get_match_pattern ($pattern);
       return ($self->get_value_with_default($name) =~ /$pattern/);
     }
   }
