@@ -1,19 +1,25 @@
 // -*- MPC -*-
 project {
-        specific {
-          xsc_bin = $(XSC_ROOT)/bin/xsc
-          xsc_dep = $(XSC_ROOT)/bin/xsc
-          xsc_flags = --backend cxx
-        }
+  specific {
+    xsc_bin = $(XSC_ROOT)/bin/xsc
+    xsc_dep = $(XSC_ROOT)/bin/xsc
+    xsc_flags = --backend cxx
+  }
 
-        Define_Custom(XSC) {
-          automatic         = 0
-          dependent         = $(XSC_DEP)
-          command           = $(XSC_BIN)
-          commandflags      = $(XSC_FLAGS)
-          inputext          = .xsd
-          source_outputext  = .cpp
-          header_outputext  = .hpp
-          keyword xscflags  = commandflags
-        }
+  verbatim(gnuace,macros,1) {
+    XSC_BIN = $(XSC_ROOT)/bin/xsc
+    XSC_DEP = $(XSC_ROOT)/bin/xsc$(EXEEXT)
+    XSC_FLAGS = --backend cxx
+  }
+
+  Define_Custom(XSC) {
+    automatic         = 0
+    dependent         = $(XSC_DEP)
+    command           = $(XSC_BIN)
+    commandflags      = $(XSC_FLAGS)
+    inputext          = .xsd
+    source_outputext  = .cpp
+    header_outputext  = .hpp
+    keyword xscflags  = commandflags
+  }
 }
