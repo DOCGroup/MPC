@@ -6,7 +6,7 @@
 //platforms = Win32 x64
 
 platforms = Win32 x64
-default_platform = Win32
+default_platform = x64
 PlatformToolset = v141
 WindowsTargetPlatformVersion = 10.0.17763.0
 
