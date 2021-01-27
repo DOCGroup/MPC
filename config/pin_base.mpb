@@ -4,9 +4,11 @@ project {
   includes += $(PIN_ROOT)/source/include \
               $(PIN_ROOT)/source/include/pin \
               $(PIN_ROOT)/source/include/pin/gen \
-              $(PIN_ROOT)/extras/components/include
+              $(PIN_ROOT)/extras/components/include \
+              ..
 
-  macros += BIGARRAY_MULTIPLIER=1 USING_XED
+  macros += BIGARRAY_MULTIPLIER=1 USING_XED PIN_CRT=1 __PIN__=1
+  lit_libs += c-dynamic m-dynamic stlport-dynamic
 
   specific (vc9) {
     runtime_library = 0
@@ -34,7 +36,7 @@ project {
   }
 
   specific (gnuace, make) {
-    compile_flags += -O3 -fomit-frame-pointer -fno-strict-aliasing -Wno-unknown-pragmas -fno-stack-protector -fPIC
+    compile_flags += -O3 -funwind-tables -fno-stack-protector -fasynchronous-unwind-tables -fomit-frame-pointer -fno-strict-aliasing -fno-rtti -faligned-new -fPIC -isystem $(PIN_ROOT)/extras/stlport/include -isystem $(PIN_ROOT)/extras/libstdc++/include -isystem $(PIN_ROOT)/extras/crt/include -isystem $(PIN_ROOT)/extras/crt/include/arch-x86_64 -isystem $(PIN_ROOT)/extras/crt/include/kernel/uapi -isystem $(PIN_ROOT)/extras/crt/include/kernel/asm-x86_64 -I$(PIN_ROOT)/source/include/pin -I$(PIN_ROOT)/source/include/pin/gen -I$(PIN_ROOT)/extras/components/include -I$(PIN_ROOT)/extras/xed-intel64/include/xed -nostdlib
     compile_flags -= -Wunused-parameter
 
     libs += xed
@@ -100,4 +102,5 @@ feature(intel64) {
     // DO NOT CHANGE ORDER
     lit_libs += libcpmt libcmt pinvm pin libxed ntdll-64
   }
+
 }
