@@ -14,11 +14,11 @@ project : pin {
   verbatim (make, macros) {
     ifeq ($(shell uname -s), Darwin)
       CPPFLAGS += -DTARGET_MAC
-      LDFLAGS  += -lpindwarf -lpinpthread -Wl,-exported_symbols_list -Wl,$(PIN_ROOT)/source/include/pin/pintool.exp
+      LDFLAGS  += $(PIN_ROOT)/intel64/runtime/pincrt/crtbeginS.o -nostdlib -ldl-dynamic -lunwind-dynamic -lpin3dwarf -lpinpthread -Wl,-exported_symbols_list -Wl,$(PIN_ROOT)/source/include/pin/pintool.exp
       LDFLAGS  -= -lpthread
     else
-      CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv
-      LDLIBS   += -lpindwarf
+      CPPFLAGS += -DTARGET_LINUX -fno-rtti -Wl,--hash-style=sysv $(PIN_ROOT)/intel64/runtime/pincrt/crtendS.o
+      LDLIBS   += -nostdlib -ldl-dynamic -lunwind-dynamic -lpin3dwarf -L$(PIN_ROOT)/intel64/runtime/pincrt
       LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
     endif
   }
@@ -30,7 +30,7 @@ project : pin {
       LDFLAGS  -= -lpthread
     else
       CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv
-      LIBS     += -lpindwarf
+      LIBS     += -lpindwarf -L$(PIN_ROOT)/intel64/runtime/pincrt
       LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
     endif
   }

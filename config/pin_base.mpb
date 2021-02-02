@@ -8,7 +8,7 @@ project {
               ..
 
   macros += BIGARRAY_MULTIPLIER=1 USING_XED PIN_CRT=1 __PIN__=1
-  lit_libs += c-dynamic m-dynamic stlport-dynamic
+  lit_libs += c-dynamic m-dynamic stlport-dynamic dl-dynamic unwind-dynamic
 
   specific (vc9) {
     runtime_library = 0
@@ -36,7 +36,7 @@ project {
   }
 
   specific (gnuace, make) {
-    compile_flags += -O3 -funwind-tables -fno-stack-protector -fasynchronous-unwind-tables -fomit-frame-pointer -fno-strict-aliasing -fno-rtti -faligned-new -fPIC -isystem $(PIN_ROOT)/extras/stlport/include -isystem $(PIN_ROOT)/extras/libstdc++/include -isystem $(PIN_ROOT)/extras/crt/include -isystem $(PIN_ROOT)/extras/crt/include/arch-x86_64 -isystem $(PIN_ROOT)/extras/crt/include/kernel/uapi -isystem $(PIN_ROOT)/extras/crt/include/kernel/asm-x86_64 -I$(PIN_ROOT)/source/include/pin -I$(PIN_ROOT)/source/include/pin/gen -I$(PIN_ROOT)/extras/components/include -I$(PIN_ROOT)/extras/xed-intel64/include/xed -nostdlib
+    compile_flags += -O3 -funwind-tables -fno-stack-protector -fasynchronous-unwind-tables -fomit-frame-pointer -fno-strict-aliasing -fno-rtti -faligned-new -fPIC -isystem $(PIN_ROOT)/extras/stlport/include -isystem $(PIN_ROOT)/extras/libstdc++/include -isystem $(PIN_ROOT)/extras/crt/include -isystem $(PIN_ROOT)/extras/crt/include/arch-x86_64 -isystem $(PIN_ROOT)/extras/crt/include/kernel/uapi -isystem $(PIN_ROOT)/extras/crt/include/kernel/asm-x86_64 -I$(PIN_ROOT)/source/include/pin -I$(PIN_ROOT)/source/include/pin/gen -I$(PIN_ROOT)/extras/components/include -I$(PIN_ROOT)/extras/xed-intel64/include/xed -nostdlib -fpermissive -Wno-error=all -fno-exceptions
     compile_flags -= -Wunused-parameter
 
     libs += xed
