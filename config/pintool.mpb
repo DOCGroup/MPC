@@ -14,11 +14,11 @@ project : pin {
   verbatim (make, macros) {
     ifeq ($(shell uname -s), Darwin)
       CPPFLAGS += -DTARGET_MAC
-      LDFLAGS  += $(PIN_ROOT)/intel64/runtime/pincrt/crtbeginS.o -nostdlib -ldl-dynamic -lunwind-dynamic -lpin3dwarf -lpinpthread -Wl,-exported_symbols_list -Wl,$(PIN_ROOT)/source/include/pin/pintool.exp
+      LDFLAGS  += -nostdlib -ldl-dynamic -lunwind-dynamic -lpin3dwarf -lpinpthread -Wl,-exported_symbols_list -Wl,$(PIN_ROOT)/source/include/pin/pintool.exp
       LDFLAGS  -= -lpthread
     else
-      CPPFLAGS += -DTARGET_LINUX -fno-rtti -Wl,--hash-style=sysv $(PIN_ROOT)/intel64/runtime/pincrt/crtendS.o
-      LDLIBS   += -nostdlib -ldl-dynamic -lunwind-dynamic -lpin3dwarf -L$(PIN_ROOT)/intel64/runtime/pincrt
+      CPPFLAGS += -DTARGET_LINUX -fno-rtti -Wl,--hash-style=sysv
+      LDLIBS   += -nostdlib -ldl-dynamic -lunwind-dynamic -lpin3dwarf
       LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
     endif
   }
@@ -30,7 +30,7 @@ project : pin {
       LDFLAGS  -= -lpthread
     else
       CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv
-      LIBS     += -lpindwarf -L$(PIN_ROOT)/intel64/runtime/pincrt
+      LIBS     += -lpindwarf
       LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
     endif
   }
@@ -53,5 +53,10 @@ feature (intel64) {
 
   specific (vc10, vc11, vc12, vc14, vs2017, vs2019) {
     EntryPointSymbol = Ptrace_DllMainCRTStartup
+  }
+
+  specific (make, gnuace) {
+    compile_flags += $(PIN_ROOT)/intel64/runtime/pincrt/crtendS.o
+    libpaths += $(PIN_ROOT)/intel64/runtime/pincrt
   }
 }
