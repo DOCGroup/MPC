@@ -16,9 +16,8 @@ feature(zlib) {
   specific(prop:windows) {
     zlibname = zlib
     Debug::zlibname = zlibd
-
+    lit_libs += $(ZLIBNAME)
   } else {
-    zlibname = z
+    lit_libs += z
   }
-  lit_libs += $(ZLIBNAME)
 }
