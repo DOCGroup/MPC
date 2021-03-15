@@ -1,11 +1,11 @@
 // -*- MPC -*-
 feature(zlib) {
   expand(ZLIB_INCDIR) {
-    ZLIB_INCDIR
+    $ZLIB_INCDIR
     $(ZLIB_ROOT)/include
   }
   expand(ZLIB_LIBDIR) {
-    ZLIB_LIBDIR
+    $ZLIB_LIBDIR
     $(ZLIB_ROOT)/lib
   }
 
