@@ -14,9 +14,8 @@ feature(zlib) {
   macros   += ZLIB
 
   specific(prop:windows) {
-    zlibname = zlib
-    Debug::zlibname = zlibd
-    lit_libs += $(ZLIBNAME)
+    Debug::lit_libs += zlibd
+    Release::lit_libs += zlib
   } else {
     lit_libs += z
   }
