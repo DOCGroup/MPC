@@ -2,7 +2,7 @@ name: cancel
 
 on:
   workflow_run:
-    workflows: ['face', 'fuzz', 'linux', 'macosx', 'windows']
+    workflows: ['fuzz', 'linux', 'macosx', 'windows']
     types: ['requested']
 
 jobs:
