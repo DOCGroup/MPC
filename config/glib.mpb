@@ -10,9 +10,16 @@ project {
     lib
   }
 
-  includes      += $(GLIB_ROOT)/include/glib-$(GLIB_VERSION) \
-                   $(GLIB_ROOT)/$(GLIB_LIB_DIR)/glib-$(GLIB_VERSION)/include
   libpaths      += $(GLIB_ROOT)/lib
 
   lit_libs      += glib-$(GLIB_VERSION)
+}
+
+feature(glib_versioned_includes) {
+  includes += $(GLIB_ROOT)/include/glib-$(GLIB_VERSION) \
+              $(GLIB_ROOT)/$(GLIB_LIB_DIR)/glib-$(GLIB_VERSION)/include
+}
+
+feature(!glib_versioned_includes) {
+  includes += $(GLIB_ROOT)/include
 }
