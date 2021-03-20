@@ -22,4 +22,9 @@ feature(glib_versioned_includes) {
 
 feature(!glib_versioned_includes) {
   includes += $(GLIB_ROOT)/include
+  libpaths -= $(GLIB_ROOT)/lib
+  specific {
+    Debug::libpaths += $(GLIB_ROOT)/debug/lib
+    Release::libpaths += $(GLIB_ROOT)/lib
+  }
 }
