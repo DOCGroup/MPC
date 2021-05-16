@@ -167,6 +167,7 @@ undefineallpreprocessordefinitions = Undefine all previously defined preprocesso
 undefinepreprocessordefinitions = Specifies one or more preprocessor undefines (semicolon-separated).
 unicode = If enabled: sets the CharacterSet to Unicode, enables Unicode-specific preprocessor macro definitions, and changes the entrypoint (if using unicode_mfc_entry).
 unicode_mfc_entry = Sets the entrypoint symbol for Unicode MFC configurations.
+useDynamicSystemLibraries = Link with the .DLL runtime libraries
 usefullpaths = Use full paths in diagnostic messages.
 useofatl = Specifies how ATL is used by the configuration (Static, Dynamic).
 useofmfc = Specifies how MFC is used by the configuration (Static, Dynamic).
