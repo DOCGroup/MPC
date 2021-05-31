@@ -4306,7 +4306,7 @@ sub convert_command_parameters {
     }
 
     ## Check for the gendir setting associated with this input file.  We
-    ## have to check at so many levels so we don't inadvertantly create
+    ## have to check at so many levels so we don't inadvertently create
     ## intermediate hash tables.
     if (defined $self->{'flag_overrides'}->{$ktype} &&
         defined $self->{'flag_overrides'}->{$ktype}->{$input} &&

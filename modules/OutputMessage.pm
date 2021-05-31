@@ -49,7 +49,7 @@ sub set_levels {
   }
 }
 
-## Accessor for the debug setting.  No parameters are necesary.
+## Accessor for the debug setting.  No parameters are necessary.
 sub get_debug_level {
   return $debug;
 }

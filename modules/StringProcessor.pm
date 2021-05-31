@@ -117,7 +117,7 @@ sub crlf {
 sub windows_crlf {
   ## Windows and cygwin require a carriage return and line feed.
   ## However, at some point cygwin changed the way it does output and can
-  ## be controled through an environment variable.
+  ## be controlled through an environment variable.
   return ($^O eq 'MSWin32' ||
           ($^O eq 'cygwin' &&
            ($] < 5.008 || (defined $ENV{PERLIO} && $ENV{PERLIO} eq 'crlf'))) ?

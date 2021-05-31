@@ -150,7 +150,7 @@ sub usageAndExit {
                "directory>\n\nThis script will create a base project ",
                "based on the contents of the\nsupplied MPC file.  ",
                "This is only useful if the project ",
-               "explictly sets\nsharedname or staticname.\n";
+               "explicitly sets\nsharedname or staticname.\n";
   exit(0);
 }
 
