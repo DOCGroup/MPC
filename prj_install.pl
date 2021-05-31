@@ -469,7 +469,7 @@ for(my $i = 0; $i <= $#ARGV; ++$i) {
       }
     }
     else {
-      usageAndExit('Unkown option: ' . $arg);
+      usageAndExit('Unknown option: ' . $arg);
     }
   }
   elsif (!defined $insdir) {
