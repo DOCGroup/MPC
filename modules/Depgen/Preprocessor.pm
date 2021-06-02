@@ -123,7 +123,7 @@ sub process {
   }
 
   ## This has to be outside the if (open(...
-  ## If the last file to be processed isn't accessable then
+  ## If the last file to be processed isn't accessible then
   ## we still need to return the array reference of includes.
   if (!$noincs) {
     my @files = ($file);

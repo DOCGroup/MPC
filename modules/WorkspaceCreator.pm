@@ -1352,7 +1352,7 @@ sub generate_hierarchy {
     }
     elsif ($top ne $current) {
       if ($current ne '.') {
-        ## Write out the hierachical workspace
+        ## Write out the hierarchical workspace
         $self->cd($current);
         ($status, $errorString) = $self->generate_hierarchy($creator, \@saved, \%sinfo);
 
@@ -1535,7 +1535,7 @@ sub generate_project_files {
 
   }
 
-  ## Add implict project dependencies based on source files
+  ## Add implicit project dependencies based on source files
   ## that have been used by multiple projects.  If we do it here
   ## before we call generate_hierarchy(), we don't have to call it
   ## in generate_hierarchy() for each workspace.
@@ -1846,7 +1846,7 @@ sub generate_project_files_fork {
     }
   }
 
-  ## Add implict project dependencies based on source files
+  ## Add implicit project dependencies based on source files
   ## that have been used by multiple projects.  If we do it here
   ## before we call generate_hierarchy(), we don't have to call it
   ## in generate_hierarchy() for each workspace.
@@ -2269,7 +2269,7 @@ sub generate_project_files_fork_socket {
     }
   }
 
-  ## Add implict project dependencies based on source files
+  ## Add implicit project dependencies based on source files
   ## that have been used by multiple projects.  If we do it here
   ## before we call generate_hierarchy(), we don't have to call it
   ## in generate_hierarchy() for each workspace.

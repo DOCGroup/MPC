@@ -1,0 +1,12 @@
+project {
+  requires += zmq
+
+  libpaths += $(ZMQ_ROOT)/lib
+  includes += $(ZMQ_ROOT)/include
+  specific(prop:windows) {
+    lit_libs += libzmq$(ZMQ_LIBVERSION)
+  }
+  specific(!prop:windows) {
+    libs     += zmq
+  }
+}

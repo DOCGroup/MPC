@@ -1,0 +1,5 @@
+[default.extend-words]
+mosquitto = "mosquitto"
+
+[files]
+extend-exclude = ["templates/*.*", "history/*"]

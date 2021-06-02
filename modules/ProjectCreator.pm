@@ -1429,6 +1429,8 @@ sub process_component_line {
       my $over = $self->{'flag_overrides'}->{$tag};
       if (defined $over) {
         foreach my $file (@files) {
+          ## We are giving these flag overrides to multiple files.  We must
+          ## do so because these files are all in the same group.
           $$over{$file} = $flags;
         }
       }
@@ -3844,6 +3846,10 @@ sub generate_defaults {
                             $file, $self->{'valid_components'}->{$gentype});
           my($tied, $vc) = $cmdHelper->get_tied($file, \@files);
           foreach my $tie (@$tied) {
+            ## We have a tied file, now we need to actually perform
+            ## the tieing of the two.  We will do this by saying that
+            ## the output of the original is necessary for the
+            ## processing of the tied file.
             my @gen;
             if (!defined $vc) {
               foreach $vc (@vc) {
@@ -3852,11 +3858,6 @@ sub generate_defaults {
                 last if ($#gen >= 0);
               }
             }
-
-            ## We have a tied file, now we need to actually perform
-            ## the tieing of the two.  We will do this by saying that
-            ## the output of the original is necessary for the
-            ## processing of the tied file.
             @gen = $self->generated_filenames($part, $gentype,
                                               $vc, $file) if (!$gen[0]);
 
@@ -3865,13 +3866,35 @@ sub generate_defaults {
             ## ($gentype), so we just add the first one and
             ## we're done.
             my $first = $gen[0];
-            $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep} =
-              $self->{'generated_exts'}->{$gentype}->{$dep}
-              if (!defined $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep});
+            my $needcopy = 1;
+            if (!defined $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep}) {
+              ## We are about to modify the flag overrides for a tied file.
+              ## We need to make a copy so that we do not affect the
+              ## overrides of grouped, but no longer affiliated files.
+              my %copy = %{$self->{'flag_overrides'}->{$gentype}->{$tie}};
+              $self->{'flag_overrides'}->{$gentype}->{$tie} = \%copy;
+              $needcopy = undef;
 
-            $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep} .= " $first"
+              ## Start a new dependent setting based on the original
+              ## custom build settings.
+              $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep} =
+                $self->{'generated_exts'}->{$gentype}->{$dep};
+            }
+
             if (!defined $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep} ||
-                $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep} !~ /\b$first\b/);
+                $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep} !~ /\b$first\b/) {
+              if ($needcopy) {
+                ## We are about to modify the flag overrides for a tied file.
+                ## We need to make a copy so that we do not affect the
+                ## overrides of grouped, but no longer affiliated files.
+                my %copy = %{$self->{'flag_overrides'}->{$gentype}->{$tie}};
+                $self->{'flag_overrides'}->{$gentype}->{$tie} = \%copy;
+                $needcopy = undef;
+              }
+
+              ## Update the dependent value for this tied file.
+              $self->{'flag_overrides'}->{$gentype}->{$tie}->{$dep} .= " $first";
+            }
           }
         }
       }
@@ -4283,7 +4306,7 @@ sub convert_command_parameters {
     }
 
     ## Check for the gendir setting associated with this input file.  We
-    ## have to check at so many levels so we don't inadvertantly create
+    ## have to check at so many levels so we don't inadvertently create
     ## intermediate hash tables.
     if (defined $self->{'flag_overrides'}->{$ktype} &&
         defined $self->{'flag_overrides'}->{$ktype}->{$input} &&
@@ -4890,7 +4913,7 @@ sub write_output_file {
             $different = 0 if (!$self->files_are_different($name, $tmp));
           }
           else {
-            $error = "Unable to open $tmp for output.";
+            $error = "Unable to open $tmp for output: $!";
             $status = 0;
             last;
           }
@@ -4906,7 +4929,7 @@ sub write_output_file {
               }
             }
             else {
-              $error = "Unable to open $name for output.";
+              $error = "Unable to open $name for output: $!";
               $status = 0;
               last;
             }
@@ -4930,7 +4953,7 @@ sub write_output_file {
             }
           }
           else {
-            $error = "Unable to open $name for output.";
+            $error = "Unable to open $name for output: $!";
             $status = 0;
             last;
           }

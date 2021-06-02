@@ -1,0 +1,12 @@
+project {
+  requires += mosquitto
+
+  libpaths += $(MQTT_ROOT)/lib
+  includes += $(MQTT_ROOT)/include
+  specific(prop:windows) {
+    lit_libs += mosquitto$(MQTT_LIBVERSION)
+  }
+  specific(!prop:windows) {
+    libs     += mosquitto
+  }
+}
