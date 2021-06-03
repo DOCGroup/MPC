@@ -1,0 +1,6 @@
+project: qt5_gui {
+  libs += Qt5Quick Qt5Qml
+  includes += $(QT5_INCDIR)/QtQuick
+  includes += $(QT5_INCDIR)/QtQml
+}
+
