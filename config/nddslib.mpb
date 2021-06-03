@@ -6,7 +6,7 @@ project {
   includes += $(NDDSHOME)/include $(NDDSHOME)/include/ndds
 
   specific(prop:windows) {
-    macros += RTI_WIN32 NDDS_DLL_VARIABLE
+    macros += RTI_WIN32 NDDS_DLL_VARIABLE WIN32_LEAN_AND_MEAN
   }
 
   verbatim(gnuace, circuit) {
@@ -23,7 +23,7 @@ project {
     FLAGS_C_CC += -DRTI_LINUX
     endif
     ifeq ($(ACE_PLATFORM_CONFIG),config-win32.h)
-    FLAGS_C_CC += -DRTI_WIN32
+    FLAGS_C_CC += -DRTI_WIN32 -DWIN32_LEAN_AND_MEAN
     else
     FLAGS_C_CC += -DRTI_UNIX
     endif
