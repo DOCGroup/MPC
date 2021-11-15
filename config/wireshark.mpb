@@ -32,13 +32,16 @@ project : glib {
   specific(vs2019) {
     macros      += MSC_VER_REQUIRED=1920
   }
+  specific(vs2022) {
+    macros      += MSC_VER_REQUIRED=1930
+  }
   verbatim(nmake, top, 1) {
     include $(WIRESHARK_SRC)/config.nmake
   }
 }
 
 // Autoconf / In Source Wireshark Build Method
-// This feasture works with how Wireshark Developers Guide says to build
+// This feature works with how Wireshark Developers Guide says to build
 // Wireshark on Linux (autogen.sh). This is also used for older 1.x Wireshark
 // Windows builds and if Wireshark headers are installed on the system.
 // On Windows $(WIRETAP_VERSION) also has to be specified as well.

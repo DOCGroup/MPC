@@ -7,14 +7,15 @@ project {
               $(PIN_ROOT)/extras/components/include \
 	      $(PIN_ROOT)/extras/crt/include
 
-  macros += BIGARRAY_MULTIPLIER=1 USING_XED
+  macros += BIGARRAY_MULTIPLIER=1 USING_XED PIN_CRT=1 __PIN__=1
+  lit_libs += c-dynamic m-dynamic stlport-dynamic dl-dynamic unwind-dynamic
 
   specific (vc9) {
     runtime_library = 0
     compile_flags += /Oy
   }
 
-  specific (vc10, vc11, vc12, vc14, vs2017, vs2019) {
+  specific (prop:microsoft) {
     runtime_library = MultiThreaded
     ImageHasSafeExceptionHandlers = false
 
@@ -35,7 +36,8 @@ project {
   }
 
   specific (gnuace, make) {
-    compile_flags += -O3 -fomit-frame-pointer -fno-strict-aliasing -Wno-unknown-pragmas -fno-stack-protector -fPIC
+    compile_flags += -O3 -funwind-tables -fno-stack-protector -fasynchronous-unwind-tables -fomit-frame-pointer -fno-strict-aliasing -fno-rtti -faligned-new -fPIC -nostdlib -fpermissive -Wno-error=all -fno-exceptions
+    compile_flags += '-isystem $(PIN_ROOT)/extras/stlport/include -isystem $(PIN_ROOT)/extras/libstdc++/include -isystem $(PIN_ROOT)/extras/crt/include -isystem $(PIN_ROOT)/extras/crt/include/kernel/uapi'
     compile_flags -= -Wunused-parameter
 
     libs += xed
@@ -102,4 +104,9 @@ feature(intel64) {
     // DO NOT CHANGE ORDER
     lit_libs += libcpmt libcmt pinvm pin libxed ntdll-64
   }
+
+  specific (make, gnuace) {
+    compile_flags += -isystem $(PIN_ROOT)/extras/crt/include/arch-x86_64 -isystem $(PIN_ROOT)/extras/crt/include/kernel/asm-x86_64
+  }
+
 }

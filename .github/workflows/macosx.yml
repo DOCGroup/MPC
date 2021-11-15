@@ -1,0 +1,61 @@
+name: macosx
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 1 * * SUN'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        cxxstd: ["11"]
+        os: [macos-10.15, macos-11.0]
+        include:
+          - platform_file: include $(ACE_ROOT)/include/makeinclude/platform_macosx.GNU
+    runs-on: ${{ matrix.os }}
+    name: "${{ matrix.os }}-C++${{ matrix.cxxstd }}"
+    env:
+      DOC_ROOT: ${{ github.workspace }}/ACE_TAO
+      ACE_ROOT: ${{ github.workspace }}/ACE_TAO/ACE
+      TAO_ROOT: ${{ github.workspace }}/ACE_TAO/TAO
+      MPC_ROOT: ${{ github.workspace }}/
+    steps:
+    - name: checkout MPC
+      uses: actions/checkout@v2
+    - name: checkout ACE/TAO
+      uses: actions/checkout@v2
+      with:
+        repository: DOCGroup/ACE_TAO
+        path: ${{ env.DOC_ROOT }}
+    - name: create $ACE_ROOT/ace/config.h
+      run: |
+        '#include "ace/config-macosx.h"' > ${env:ACE_ROOT}/ace/config.h
+      shell: pwsh
+    - name: Add c++${{ matrix.cxxstd }} platform_macros.GNU
+      run: |
+        'c++${{ matrix.cxxstd }}=1' > ${env:ACE_ROOT}/include/makeinclude/platform_macros.GNU
+      shell: pwsh
+    - name: create $ACE_ROOT/include/makeinclude/platform_macros.GNU
+      run: |
+        '${{ matrix.platform_file }}' >> ${env:ACE_ROOT}/include/makeinclude/platform_macros.GNU
+      shell: pwsh
+    - name: create $ACE_ROOT/bin/MakeProjectCreator/config/default.features
+      run: |
+        'ipv6=1' > ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        'versioned_namespace=1' >> ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+      shell: pwsh
+    - name: Run mwc.pl on $(TAO_ROOT)/TAO_ACE.mwc
+      run: |
+        perl ${env:ACE_ROOT}/bin/mwc.pl -type gnuace ${env:TAO_ROOT}/TAO_ACE.mwc -workers 4
+      shell: pwsh
+    - name: Build TAO_ACE project
+      run: |
+        make -j 6 -C ${env:TAO_ROOT}
+      shell: pwsh

@@ -1,4 +1,4 @@
-#! /usr/bin/perl
+#!/usr/bin/env perl
 eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
     & eval 'exec perl -w -S $0 $argv:q'
     if 0;
@@ -269,7 +269,7 @@ sub symlinkFiles {
     }
   }
 
-  ## Remove links that point to non-existant files.  The subroutine is
+  ## Remove links that point to non-existent files.  The subroutine is
   ## now anonymous to avoid the "will not stay shared" warning for %dirs.
   my %dirs;
   File::Find::find({wanted => sub {
@@ -334,7 +334,7 @@ sub hardlinkFiles {
     }
   }
 
-  ## Remove links that point to non-existant files
+  ## Remove links that point to non-existent files
   my $lfh = new FileHandle();
   my $txt = "$fullbuild/clone_build_tree.links";
   if (open($lfh, $txt)) {

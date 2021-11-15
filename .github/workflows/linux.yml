@@ -1,0 +1,89 @@
+name: linux
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 1 * * SUN'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - CC: gcc-10
+            CXX: g++-10
+            PackageDeps: g++-10
+            platform_file: include $(ACE_ROOT)/include/makeinclude/platform_linux.GNU
+            os: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} ${{ matrix.CXX }} ${{ matrix.feature }}
+    env:
+      DOC_ROOT: ${{ github.workspace }}/ACE_TAO
+      ACE_ROOT: ${{ github.workspace }}/ACE_TAO/ACE
+      TAO_ROOT: ${{ github.workspace }}/ACE_TAO/TAO
+      MPC_ROOT: ${{ github.workspace }}/
+      CC: ${{ matrix.CC }}
+      CXX: ${{ matrix.CXX }}
+    steps:
+    - name: checkout MPC
+      uses: actions/checkout@v2
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2
+      with:
+        repository: DOCGroup/ACE_TAO
+        path: ${{ env.DOC_ROOT }}
+    - name: Add Repo
+      run: |
+        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+        sudo apt-add-repository "deb http://apt.llvm.org/$(lsb_release -cs)/ ${{ matrix.Repo }} main"
+      if: matrix.Repo != ''
+    - name: Add packages
+      run: |
+        sudo apt-get --yes update
+        sudo apt-get --yes install libxerces-c-dev libssl-dev ${{ matrix.PackageDeps }}
+    - name: create $ACE_ROOT/ace/config.h
+      run: |
+        '#include "ace/config-linux.h"' > ${env:ACE_ROOT}/ace/config.h
+      shell: pwsh
+    - name: create $ACE_ROOT/include/makeinclude/platform_macros.GNU
+      run: |
+        'ipv6=1' > ${env:ACE_ROOT}/include/makeinclude/platform_macros.GNU
+        'xerces3=1' >> ${env:ACE_ROOT}/include/makeinclude/platform_macros.GNU
+        'ssl=1' >> ${env:ACE_ROOT}/include/makeinclude/platform_macros.GNU
+        'zlib=1' >> ${env:ACE_ROOT}/include/makeinclude/platform_macros.GNU
+      shell: pwsh
+    - name: add optional optional macros
+      run: |
+        '${{ matrix.optional_macros }}' >> ${env:ACE_ROOT}/include/makeinclude/platform_macros.GNU
+      shell: pwsh
+      if: matrix.optional_macros != ''
+    - name: extend $ACE_ROOT/include/makeinclude/platform_macros.GNU
+      run: |
+        '${{ matrix.platform_file }}' >>  ${env:ACE_ROOT}/include/makeinclude/platform_macros.GNU
+      shell: pwsh
+    - name: create $ACE_ROOT/bin/MakeProjectCreator/config/default.features
+      run: |
+        'ipv6=1' > ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        'xerces3=1' >> ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        'ssl=1' >> ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        'zlib=1' >> ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+      shell: pwsh
+    - name: add optional optional feature
+      run: |
+        '${{ matrix.optional_feature }}' >> ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+      if: matrix.optional_feature != ''
+      shell: pwsh
+    - name: Run mwc.pl on $(TAO_ROOT)/TAO_ACE.mwc
+      run: |
+        perl ${env:ACE_ROOT}/bin/mwc.pl -type gnuace ${env:TAO_ROOT}/TAO_ACE.mwc -workers 4
+      shell: pwsh
+    - name: Build TAO_ACE project
+      run: |
+        make -j 6 -C ${env:TAO_ROOT}
+      shell: pwsh

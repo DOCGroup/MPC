@@ -1,0 +1,108 @@
+name: windows
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 1 * * SUN'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: VS2017Debug64
+            vmimage: windows-2016
+            mpctype: vs2017
+            BuildPlatform: x64
+            BuildConfiguration: Debug
+            vcpkgarch: x64-windows
+            vcpkglibdir: debug/lib
+            vcpkgpackages: openssl xerces-c zlib
+          - name: VS2019Debug64
+            vmimage: windows-2019
+            mpctype: vs2019
+            BuildPlatform: x64
+            BuildConfiguration: Debug
+            vcpkgarch: x64-windows
+            vcpkglibdir: debug/lib
+            vcpkgpackages: openssl xerces-c zlib
+          - name: VS2019Release32
+            vmimage: windows-2019
+            mpctype: vs2019
+            BuildPlatform: Win32
+            BuildConfiguration: Release
+            vcpkgarch: x86-windows
+            vcpkglibdir: lib
+            vcpkgpackages: openssl xerces-c zlib
+          - name: VS2022Debug64
+            vmimage: windows-2022
+            mpctype: vs2022
+            BuildPlatform: x64
+            BuildConfiguration: Debug
+            vcpkgarch: x64-windows
+            vcpkglibdir: debug/lib
+            vcpkgpackages: openssl xerces-c zlib
+    runs-on: ${{ matrix.vmimage }}
+    name: ${{ matrix.name }}
+    env:
+      DOC_ROOT: ${{ github.workspace }}/ACE_TAO
+      ACE_ROOT: ${{ github.workspace }}/ACE_TAO/ACE
+      TAO_ROOT: ${{ github.workspace }}/ACE_TAO/TAO
+      MPC_ROOT: ${{ github.workspace }}/
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+      XERCESC_INCDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/include
+      XERCESC_LIBDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/${{ matrix.vcpkglibdir }}
+      SSL_INCDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/include
+      SSL_LIBDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/${{ matrix.vcpkglibdir }}
+      ZLIB_INCDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/include
+      ZLIB_LIBDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/${{ matrix.vcpkglibdir }}
+    steps:
+    - name: checkout MPC
+      uses: actions/checkout@v2
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2
+      with:
+        repository: DOCGroup/ACE_TAO
+        path: ${{ env.DOC_ROOT }}
+    - name: Install vcpkg
+      uses: lukka/run-vcpkg@v7
+      with:
+        vcpkgGitCommitId: 70033dbb31527fb3e69654731f540f59c87787f9
+        vcpkgArguments: --recurse ${{ matrix.vcpkgpackages }}
+        vcpkgTriplet: ${{ matrix.vcpkgarch }}
+        appendedCacheKey: ${{ matrix.name }}
+    - name: create $ACE_ROOT/ace/config.h
+      run: |
+        '#include "ace/config-win32.h"' > ${env:ACE_ROOT}/ace/config.h
+      shell: pwsh
+    - name: create $ACE_ROOT/bin/MakeProjectCreator/config/default.features
+      run: |
+        echo "ipv6=1" | out-file -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        echo "xerces3=1" | out-file -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        echo "ssl=1" | out-file -append -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        echo "openssl11=1" | out-file -append -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        echo "versioned_namespace=1" | out-file -append -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+        echo "zlib=1" | out-file -append -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+      shell: pwsh
+    - name: Add optional features ${{ matrix.OptionalFeatures }}
+      run: |
+        echo "${{ matrix.OptionalFeatures }}" | out-file -append -encoding ASCII ${env:ACE_ROOT}/bin/MakeProjectCreator/config/default.features
+      shell: pwsh
+      if: matrix.OptionalFeatures != ''
+    - name: Run mwc.pl on $(TAO_ROOT)/TAO_ACE.mwc
+      run: |
+        perl ${env:ACE_ROOT}/bin/mwc.pl -type ${{ matrix.mpctype }} ${env:TAO_ROOT}/TAO_ACE.mwc -workers 4
+      shell: pwsh
+    - name: Setup msbuild
+      uses: microsoft/setup-msbuild@v1
+    - name: Build solution $(TAO_ROOT)/TAO_ACE.sln
+      run: |
+        msbuild -maxcpucount -p:Platform=${{ matrix.BuildPlatform }} -p:Configuration=${{ matrix.BuildConfiguration }} ${env:TAO_ROOT}/TAO_ACE.sln
+      shell: pwsh

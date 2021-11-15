@@ -9,7 +9,7 @@
 <%foreach(configurations)%>
 !ifdef <%normalize(uc(configuration))%>
 OCFLAGS32    = <%if(optimize)%>-O1<%else%><%if(debug_prj)%>-v -y -Od -vi- -k<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
-OCFLAGS32C   = <%if(optimize)%>-O1<%else%><%if(debug_prj)%>-Od -vi- <%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
+OCFLAGS32C   = <%if(optimize)%>-O3<%else%><%if(debug_prj)%>-Od -vi- <%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
 OCFLAGS64    = <%if(optimize)%>-O3<%else%><%if(debug_prj)%>-g -O0 <%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
 CFG_DIR      = <%intermediate_dir%>\\
 LIBMODIFIER  = <%if(use_lib_modifier)%><%lib_modifier%><%endif%>

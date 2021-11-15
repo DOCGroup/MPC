@@ -530,6 +530,18 @@
                 <tr>
                   <td rowspan="1" colspan="1">
                     <p class="TblCode">
+                      <em class="TableCode">vs2022</em>
+                    </p>
+                  </td>
+
+                  <td rowspan="1" colspan="1">
+                    <p class="Tbl-Body">Visual Studio 2022.</p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <p class="TblCode">
                       <em class="TableCode">
                         <a href="WB26.html">
                           wb26
@@ -1838,7 +1850,7 @@ class="XRef">the -workers_port option</a>,
           "Code">vc7</em>, <em class="Code">vc71</em>, <em class="Code">vc8</em>,
           <em class="Code">vc9</em>, <em class="Code">vc10</em>, <em class="Code">vc11</em>,
               <em class="Code">vc12</em>, <em class="Code">vc14</em>,
-              <em class="Code">vs2017</em>, and <em class="Code">vs2019</em> project types. If this environment
+              and <em class="Code">vs*</em> project types. If this environment
               variable is set, MPC will generate inter-project dependencies for
               libraries within a single workspace. This is usually not desired
               since adding these dependencies in a static workspace has the side
@@ -1994,7 +2006,7 @@ class="XRef">the -workers_port option</a>,
 
                 <p class="Code">
                   &nbsp;&nbsp;exclude(vc6, vc7, vc71, vc8, vc9,
-                  vc10, vc11, vc12, vc14, vs2017, vs2019, nmake) {
+                  vc10, vc11, vc12, vc14, vs2017, vs2019, vs2022, nmake) {
                 </p>
 
                 <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;this_directory</p>
@@ -2603,7 +2615,7 @@ class="Code">specific</em> clause.
                             <em class="Code">vc10</em>, <em class="Code">vc11</em>,
                             <em class="Code">vc12</em>, <em class="Code">vc14</em>,
                             <em class="Code">vc12</em>, <em class="Code">vc14</em>,
-                            <em class="Code">vs2017</em>, and <em class="Code">vs2019</em> project types.
+                            and <em class="Code">vs*</em> project types.
                           </p>
                         </td>
                       </tr>
@@ -3250,7 +3262,7 @@ class="Code">specific</em> clause.
               "Code">vc7</em>, <em class="Code">vc71</em>, <em class="Code">vc8</em>,
               <em class="Code">vc9</em>, <em class="Code">vc10</em>, <em class="Code">vc11</em>,
               <em class="Code">vc12</em>, <em class="Code">vc14</em>,
-              <em class="Code">vs2017</em>, and <em class="Code">vs2019</em> project types.
+              and <em class="Code">vs*</em> project types.
                 </p>
 
                 <p class="Body">
@@ -5815,7 +5827,7 @@ class="Code">specific</em> clause.
                             A project and platform
                             non-specific command separator which always runs
                             right-hand side of the command. For example, in the
-                            following psuedo commmand string, both the <em class=
+                            following pseudo command string, both the <em class=
                         "Code">&lt;%cat%&gt;</em> and <em class=
                         "Code">&lt;%mv%&gt;</em> commands would be run.
                             <em class="Code">
@@ -8110,7 +8122,7 @@ class="Code">specific</em> clause.
                           7.10 is return for vc71 and 8.00 is returned for vc8,
                           9.00 is returned for vc9, 10.00 is returned for vc10,
                           11.00 is returned for vc11, 12.0 is returned for vc12,
-                          14.0 is returned for vc14, 14.1 is returned for vs2017, 14.2 is returned for vs2019.
+                          14.0 is returned for vc14, 14.1 is returned for vs2017, 14.2 is returned for vs2019, 14.3 is returned for vs2022.
                         </p>
                       </td>
                     </tr>
@@ -8428,7 +8440,7 @@ class="Code">specific</em> clause.
                     <p class="Body">
                       Certain project types don't support the same
                       input file used by multiple custom types (current examples of
-                      this are vc10, vc11, vc12, vc14, vs2017, vs2019, cdt6, and cdt7). To accommodate these types, MPC
+                      this are vc10, vc11, vc12, vc14, vs*, cdt6, and cdt7). To accommodate these types, MPC
                       has a capability called "combined custom".  With this capability
                       enabled in the specific ProjectCreator, MPC will "fold together"
                       the multiple custom steps so that the target tool (Visual Studio
@@ -8439,7 +8451,7 @@ class="Code">specific</em> clause.
                       non-empty.  If it isn't empty, the values in it can be iterated
                       over with a <em class="Code">&lt;%foreach%&gt;</em>.  During that
                       iteration, the following values can be obtained by the template.
-                      Each one would appear in the template preceeded by
+                      Each one would appear in the template preceded by
                       <em class="Code">custom_type-&gt;input_file-&gt;</em>
                     </p>
 

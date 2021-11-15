@@ -1,4 +1,4 @@
-#! /usr/bin/perl
+#!/usr/bin/env perl
 eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
     & eval 'exec perl -w -S $0 $argv:q'
     if 0;
@@ -469,7 +469,7 @@ for(my $i = 0; $i <= $#ARGV; ++$i) {
       }
     }
     else {
-      usageAndExit('Unkown option: ' . $arg);
+      usageAndExit('Unknown option: ' . $arg);
     }
   }
   elsif (!defined $insdir) {
