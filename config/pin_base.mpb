@@ -4,7 +4,8 @@ project {
   includes += $(PIN_ROOT)/source/include \
               $(PIN_ROOT)/source/include/pin \
               $(PIN_ROOT)/source/include/pin/gen \
-              $(PIN_ROOT)/extras/components/include
+              $(PIN_ROOT)/extras/components/include \
+	      $(PIN_ROOT)/extras/crt/include
 
   macros += BIGARRAY_MULTIPLIER=1 USING_XED
 
@@ -86,7 +87,8 @@ feature(ia32) {
 }
 
 feature(intel64) {
-  includes += $(PIN_ROOT)/extras/xed-intel64/include
+  includes += $(PIN_ROOT)/extras/xed-intel64/include \
+              $(PIN_ROOT)/extras/xed-intel64/include/xed
 
   libpaths += $(PIN_ROOT)/intel64/lib \
               $(PIN_ROOT)/intel64/lib-ext \
