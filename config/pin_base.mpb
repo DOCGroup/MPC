@@ -5,7 +5,7 @@ project {
               $(PIN_ROOT)/source/include/pin \
               $(PIN_ROOT)/source/include/pin/gen \
               $(PIN_ROOT)/extras/components/include \
-	      $(PIN_ROOT)/extras/crt/include
+              $(PIN_ROOT)/extras/crt/include
 
   macros += BIGARRAY_MULTIPLIER=1 USING_XED PIN_CRT=1 __PIN__=1
   lit_libs += c-dynamic m-dynamic stlport-dynamic dl-dynamic unwind-dynamic
