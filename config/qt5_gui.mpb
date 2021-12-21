@@ -1,4 +1,4 @@
 project: qt5_core {
-  libs += Qt5Gui
+  lit_libs += Qt5Gui$(QT5_LIBSUFFIX)
 }
 

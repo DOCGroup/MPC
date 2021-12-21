@@ -22,7 +22,16 @@ project {
   requires += qt5
   includes += $(QT5_INCDIR)
   libpaths += $(QT5_LIBDIR)
-  libs += Qt5Core
+
+  // Use lit_libs instead of libs for qt5's libraries.
+  // When generating -static projects of a type that uses lib_modifier,
+  // the lib_modifier will have an "s" in it (s for Release, sd for Debug).
+  // However, the libraries produced by the Qt project never have an "s" suffix.
+  // When MPC generates -static projects, the Qt being used may or may not be
+  // static (it doesn't matter for project generation).
+  // Since the Qt projects do use a "d" suffix for Debug whether or not the
+  // libs are static, we need to account for that with $(QT5_LIBSUFFIX).
+  lit_libs += Qt5Core$(QT5_LIBSUFFIX)
 
   // On Linux at least, Qt5 by default requires position independent code
   specific (gnuace) {
@@ -34,6 +43,7 @@ project {
     // which will conflict with winsock2.h. This makes windows.h not include
     // winsock.h
     macros += WIN32_LEAN_AND_MEAN
+    Debug::QT5_LIBSUFFIX = d
   }
 
   Define_Custom(UIC) {

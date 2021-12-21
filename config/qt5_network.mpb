@@ -1,4 +1,4 @@
 project: qt5_core {
-  libs += Qt5Network
+  lit_libs += Qt5Network$(QT5_LIBSUFFIX)
 }
 
