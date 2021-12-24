@@ -1,11 +1,8 @@
 // -*- MPC -*-
 project {
-  specific(em3, nmake, vc6) {
+  specific(nmake) {
     subsystem = windows
   } else {
-    subsystem = 2
-  }
-  specific(vc10, vc11, vc12, vc14, vs2017, vs2019) {
     subsystem = Windows
   }
 }

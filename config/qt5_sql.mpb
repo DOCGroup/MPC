@@ -1,4 +1,4 @@
 project: qt5_core {
-  libs += Qt5Sql
+  lit_libs += Qt5Sql$(QT5_LIBSUFFIX)
 }
 

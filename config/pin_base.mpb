@@ -5,7 +5,7 @@ project {
               $(PIN_ROOT)/source/include/pin \
               $(PIN_ROOT)/source/include/pin/gen \
               $(PIN_ROOT)/extras/components/include \
-              ..
+              $(PIN_ROOT)/extras/crt/include
 
   macros += BIGARRAY_MULTIPLIER=1 USING_XED PIN_CRT=1 __PIN__=1
   lit_libs += c-dynamic m-dynamic stlport-dynamic dl-dynamic unwind-dynamic
@@ -15,7 +15,7 @@ project {
     compile_flags += /Oy
   }
 
-  specific (vc10, vc11, vc12, vc14, vs2017, vs2019) {
+  specific (prop:microsoft) {
     runtime_library = MultiThreaded
     ImageHasSafeExceptionHandlers = false
 
