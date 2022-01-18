@@ -73,7 +73,7 @@ feature(wireshark) {
 feature(wireshark_cmake) {
   avoids += wireshark
 
-  includes    += $(WIRESHARK_BUILD)
+  includes    += $(WIRESHARK_BUILD) $(WIRESHARK_SRC)/include
   libpaths    += $(WIRESHARK_BUILD)/$(WIRESHARK_LIB)
   lit_libs    += wiretap wireshark wsutil
 }
