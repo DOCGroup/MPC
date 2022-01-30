@@ -1,0 +1,5 @@
+project: qt5_gui {
+  libs += Qt5Qml
+  includes += $(QT5_INCDIR)/QtQml
+}
+
