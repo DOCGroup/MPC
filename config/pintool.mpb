@@ -14,11 +14,11 @@ project : pin {
   verbatim (make, macros) {
     ifeq ($(shell uname -s), Darwin)
       CPPFLAGS += -DTARGET_MAC
-      LDFLAGS  += -nostdlib -ldl-dynamic -lunwind-dynamic -lpin3dwarf -lpinpthread -Wl,-exported_symbols_list -Wl,$(PIN_ROOT)/source/include/pin/pintool.exp
+      LDFLAGS  += -nostdlib -lpin3dwarf -Wl,-exported_symbols_list -Wl,$(PIN_ROOT)/source/include/pin/pintool.exp
       LDFLAGS  -= -lpthread
     else
       CPPFLAGS += -DTARGET_LINUX -fno-rtti -Wl,--hash-style=sysv
-      LDLIBS   += -nostdlib -ldl-dynamic -lunwind-dynamic -lpin3dwarf
+      LDLIBS   += -nostdlib -ldl-dynamic -lpin3dwarf
       LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
     endif
   }
@@ -26,7 +26,7 @@ project : pin {
   verbatim (gnuace, macros) {
     ifeq ($(shell uname -s), Darwin)
       CPPFLAGS += -DTARGET_MAC
-      LDFLAGS  += -lpindwarf -lpinpthread -Wl,-exported_symbols_list -Wl,$(PIN_ROOT)/source/include/pin/pintool.exp
+      LDFLAGS  += -lpinpthread -Wl,-exported_symbols_list -Wl,$(PIN_ROOT)/source/include/pin/pintool.exp
       LDFLAGS  -= -lpthread
     else
       CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv
@@ -53,10 +53,5 @@ feature (intel64) {
 
   specific (prop:microsoft) {
     EntryPointSymbol = Ptrace_DllMainCRTStartup
-  }
-
-  specific (make, gnuace) {
-    compile_flags += $(PIN_ROOT)/intel64/runtime/pincrt/crtendS.o
-    libpaths += $(PIN_ROOT)/intel64/runtime/pincrt
   }
 }
