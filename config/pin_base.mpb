@@ -4,11 +4,16 @@ project {
   includes += $(PIN_ROOT)/source/include \
               $(PIN_ROOT)/source/include/pin \
               $(PIN_ROOT)/source/include/pin/gen \
+	          $(PIN_ROOT)/extras/stlport/include \
+	          $(PIN_ROOT)/extras/libstdc++/include \
+	          $(PIN_ROOT)/extras/crt/include \
+	          $(PIN_ROOT)/extras/crt/include/kernel/uapi \
+	          $(PIN_ROOT)/extras/crt/include/kernel/uapi/asm-x86 \
+	          $(PIN_ROOT)/libunwind/include \
               $(PIN_ROOT)/extras/components/include \
-              $(PIN_ROOT)/extras/crt/include
+	          $(PIN_ROOT)/extras/crt/include
 
   macros += BIGARRAY_MULTIPLIER=1 USING_XED PIN_CRT=1 __PIN__=1
-  lit_libs += c-dynamic m-dynamic stlport-dynamic dl-dynamic unwind-dynamic
 
   specific (vc9) {
     runtime_library = 0
@@ -36,18 +41,20 @@ project {
   }
 
   specific (gnuace, make) {
-    compile_flags += -O3 -funwind-tables -fno-stack-protector -fasynchronous-unwind-tables -fomit-frame-pointer -fno-strict-aliasing -fno-rtti -faligned-new -fPIC -nostdlib -fpermissive -Wno-error=all -fno-exceptions
-    compile_flags += '-isystem $(PIN_ROOT)/extras/stlport/include -isystem $(PIN_ROOT)/extras/libstdc++/include -isystem $(PIN_ROOT)/extras/crt/include -isystem $(PIN_ROOT)/extras/crt/include/kernel/uapi'
+    compile_flags += -O3 -funwind-tables -fno-stack-protector -fasynchronous-unwind-tables -fomit-frame-pointer -fno-strict-aliasing -fno-rtti -fPIC -nostdlib -fpermissive -Wno-error=all -fno-exceptions
     compile_flags -= -Wunused-parameter
 
     libs += xed
+    libs += c-dynamic m-dynamic stlport-dynamic unwind-dynamic 
   }
 
   verbatim (make, macros) {
     ifeq ($(shell uname -s), Darwin)
-      CPPFLAGS += -DTARGET_MAC
+      CPPFLAGS += -DTARGET_MAC -D__DARWIN_ONLY_UNIX_CONFORMANCE=1 -D__DARWIN_UNIX03=0
+      LDFLAGS  += -Wl,-no_new_main
     else
-      CPPFLAGS += -DTARGET_LINUX
+      CPPFLAGS += -DTARGET_LINUX -faligned-new
+      LDFLAGS  += -ldl-dynamic
     endif
 
     // We have to disable hidden symbols since we are not manually exporting
@@ -57,15 +64,16 @@ project {
 
   verbatim (gnuace, macros) {
     ifeq ($(shell uname -s), Darwin)
-      CPPFLAGS += -DTARGET_MAC
+      CPPFLAGS += -DTARGET_MAC -D__DARWIN_ONLY_UNIX_CONFORMANCE=1 -D__DARWIN_UNIX03=0
     else
-      CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv
+      CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv -faligned-new
     endif
   }
 }
 
 feature(ia32) {
-  includes += $(PIN_ROOT)/extras/xed-ia32/include
+  includes += $(PIN_ROOT)/extras/xed-ia32/include \
+              $(PIN_ROOT)/extras/crt/include/arch-x86
 
   libpaths += $(PIN_ROOT)/ia32/lib \
               $(PIN_ROOT)/ia32/lib-ext \
@@ -90,12 +98,14 @@ feature(ia32) {
 
 feature(intel64) {
   includes += $(PIN_ROOT)/extras/xed-intel64/include \
-              $(PIN_ROOT)/extras/xed-intel64/include/xed
+              $(PIN_ROOT)/extras/xed-intel64/include/xed \
+	          $(PIN_ROOT)/extras/crt/include/arch-x86_64
 
   libpaths += $(PIN_ROOT)/intel64/lib \
               $(PIN_ROOT)/intel64/lib-ext \
               $(PIN_ROOT)/extras/xed-intel64/lib \
-              $(PIN_ROOT)/extras/components/lib/intel64
+              $(PIN_ROOT)/extras/components/lib/intel64 \
+              $(PIN_ROOT)/intel64/runtime/pincrt
 
   macros += TARGET_IA32E HOST_IA32E
   avoids += ia32

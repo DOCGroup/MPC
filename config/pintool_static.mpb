@@ -10,7 +10,6 @@ project : pin_static {
   verbatim (make, macros) {
     ifeq ($(shell uname -s), Darwin)
       CPPFLAGS += -DTARGET_MAC
-      LDFLAGS  += -lpindwarf -lpinpthread
       LDFLAGS  -= -lpthread
     else
       CPPFLAGS += -DTARGET_LINUX
@@ -23,7 +22,6 @@ project : pin_static {
   verbatim (gnuace, macros) {
     ifeq ($(shell uname -s), Darwin)
       CPPFLAGS += -DTARGET_MAC
-      LDFLAGS  += -lpindwarf -lpinpthread
       LDFLAGS  -= -lpthread
     else
       # TODO Add support for linking against gcc libraries included with Pin
