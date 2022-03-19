@@ -1,4 +1,9 @@
 project : pin_static {
+  specific (gnuace, make) {
+    libs += c-static os-apis
+    libs -= c-dynamic m-dynamic stlport-dynamic unwind-dynamic xed
+  }
+  
   verbatim (make, top) {
     no_hidden_visibility = 1
   }
@@ -14,8 +19,7 @@ project : pin_static {
     else
       CPPFLAGS += -DTARGET_LINUX
       LDFLAGS  += -Wl,--hash-style=sysv -Wl,-Bsymbolic
-      LDFLAGS  -= -ldl -lpthread
-      LDLIBS   += -lpindwarf -ldl
+      LDLIBS   += -static $(PIN_ROOT)/intel64/runtime/pincrt/crtbeginS.o $(PIN_ROOT)/intel64/runtime/pincrt/crtendS.o
     endif
   }
 
@@ -26,7 +30,7 @@ project : pin_static {
     else
       # TODO Add support for linking against gcc libraries included with Pin
       CPPFLAGS += -DTARGET_LINUX
-      LIBS     += -lpindwarf
+      LIBS     += -static
       LDFLAGS  += -Wl,--hash-style=sysv -Wl,-Bsymbolic
     endif
   }

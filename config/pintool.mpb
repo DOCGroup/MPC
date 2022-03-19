@@ -19,7 +19,7 @@ project : pin {
     else
       CPPFLAGS += -DTARGET_LINUX -fno-rtti -Wl,--hash-style=sysv
       LDLIBS   += -nostdlib -ldl-dynamic -lpin3dwarf
-      LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
+      LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver $(PIN_ROOT)/intel64/runtime/pincrt/crtbeginS.o $(PIN_ROOT)/intel64/runtime/pincrt/crtendS.o
     endif
   }
 
@@ -30,7 +30,6 @@ project : pin {
       LDFLAGS  -= -lpthread
     else
       CPPFLAGS += -DTARGET_LINUX -Wl,--hash-style=sysv
-      LIBS     += -lpindwarf
       LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
     endif
   }
