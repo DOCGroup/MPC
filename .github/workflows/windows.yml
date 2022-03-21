@@ -17,14 +17,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: VS2017Debug64
-            vmimage: windows-2016
-            mpctype: vs2017
-            BuildPlatform: x64
-            BuildConfiguration: Debug
-            vcpkgarch: x64-windows
-            vcpkglibdir: debug/lib
-            vcpkgpackages: openssl xerces-c zlib
           - name: VS2019Debug64
             vmimage: windows-2019
             mpctype: vs2019
@@ -48,6 +40,14 @@ jobs:
             BuildConfiguration: Debug
             vcpkgarch: x64-windows
             vcpkglibdir: debug/lib
+            vcpkgpackages: openssl xerces-c zlib
+          - name: VS2022Release32
+            vmimage: windows-2022
+            mpctype: vs2022
+            BuildPlatform: Win32
+            BuildConfiguration: Release
+            vcpkgarch: x86-windows
+            vcpkglibdir: lib
             vcpkgpackages: openssl xerces-c zlib
     runs-on: ${{ matrix.vmimage }}
     name: ${{ matrix.name }}
