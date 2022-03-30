@@ -11,6 +11,7 @@ feature(openssl) {
   expand(SSL_LIBDIR) {
     $SSL_LIBDIR
     $(SSL_ROOT)/lib
+    $(SSL_ROOT)/lib64
   }
 
   includes += $(SSL_INCDIR)
