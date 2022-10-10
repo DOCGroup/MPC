@@ -1,0 +1,66 @@
+cmake_minimum_required(VERSION <%cmake_minimum_required(3.3.0)%>)
+
+<%marker(top)%>
+project(<%project_name%> <%language%>)
+
+<%if(contains(includes, DDS_ROOT))%>
+find_package(OpenDDS REQUIRED)
+
+<%else%>
+<%if(contains(includes, TAO_ROOT))%>
+find_package(TAO REQUIRED)
+
+<%else%>
+<%if(contains(includes, ACE_ROOT))%>
+find_package(ACE REQUIRED)
+
+<%else%>
+<%endif%>
+<%endif%>
+<%endif%>
+set(SOURCE_FILES <%non_generated_sources%>)
+<%if(libs || lit_libs || pure_libs)%>
+set(TARGET_LINK_LIBRARIES<%if(libs)%> <%libs%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
+<%endif%>
+<%if(exename)%>
+set(PROJECT_TARGET <%exename%>)
+<%else%>
+<%if(sharedname)%>
+set(PROJECT_TARGET <%sharedname%>)
+<%else%>
+<%if(staticname)%>
+set(PROJECT_TARGET <%staticname%>)
+<%endif%>
+<%endif%>
+<%endif%>
+<%marker(macros)%>
+
+<%if(exename)%>
+add_executable(${PROJECT_TARGET} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_TARGET} ${TARGET_LINK_LIBRARIES})
+<%else%>
+<%if(sharedname)%>
+add_library(${PROJECT_TARGET} SHARED ${SOURCE_FILES})
+target_link_libraries(${PROJECT_TARGET} ${TARGET_LINK_LIBRARIES})
+<%else%>
+<%if(staticname)%>
+add_library(${PROJECT_TARGET} ${SOURCE_FILES})
+<%endif%>
+<%endif%>
+<%endif%>
+
+<%if(includes)%>
+target_include_directories(${PROJECT_TARGET} PUBLIC <%env_includes%>)
+
+<%endif%>
+<%if(custom_types)%>
+<%foreach(custom_types)%>
+<%if(custom_type->command && custom_type->input_files)%>
+include(<%custom_type%>.cmake OPTIONAL)
+<%uc(custom_type)%>_TARGET_SOURCES(${PROJECT_TARGET} PUBLIC <%custom_type->input_files%>)
+<%endif%>
+<%endfor%>
+<%endif%>
+
+<%marker(local)%>
+<%marker(bottom)%>
