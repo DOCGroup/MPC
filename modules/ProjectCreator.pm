@@ -3346,7 +3346,7 @@ sub remove_duplicated_files {
 
 
 sub generated_source_listed {
-  my($self, $gent, $tag, $arr, $sext) = @_;
+  my($self, $gent, $tag, $arr) = @_;
   my $names = $self->{$tag};
 
   ## Find out which generated source files are listed
@@ -3416,9 +3416,7 @@ sub list_default_generated {
               UNIVERSAL::isa($self->{'special_supplied'}->{$type}, 'ARRAY'))) &&
             (!defined $self->{'generated_exts'}->{$type} ||
              $self->{'generated_exts'}->{$type}->{'automatic_in'})) {
-          if (!$self->generated_source_listed(
-                                $gentype, $type, \%arr,
-                                $self->{'valid_components'}->{$gentype})) {
+          if (!$self->generated_source_listed($gentype, $type, \%arr)) {
             $self->add_generated_files($gentype, $type, $group, \%arr);
           }
         }
