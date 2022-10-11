@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION <%cmake_minimum_required(3.3.0)%>)
+cmake_minimum_required(VERSION <%cmake_minimum_required(3.12.0)%>)
 
 <%marker(top)%>
 project(<%project_name%> <%language%>)
@@ -20,7 +20,8 @@ find_package(ACE REQUIRED)
 <%endif%>
 set(SOURCE_FILES <%non_generated_sources%>)
 <%if(libs || lit_libs || pure_libs)%>
-set(TARGET_LINK_LIBRARIES<%if(libs)%> <%libs%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
+set(TARGET_LINK_LIBRARIES<%if(libs)%> $<$<CONFIG:Release>:<%libs%>>
+                          $<$<CONFIG:Debug>:<%foreach(libs)%><%fornotfirst(" ")%><%lib%>d<%endfor%>><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
 <%endif%>
 <%if(exename)%>
 set(PROJECT_TARGET <%exename%>)
