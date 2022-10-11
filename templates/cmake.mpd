@@ -35,16 +35,28 @@ set(PROJECT_TARGET <%staticname%>)
 <%endif%>
 <%marker(macros)%>
 
+<%if(libout)%>
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY <%env_libout%>)
+<%endif%>
+<%if(dllout || libout)%>
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY <%if(dllout)%><%env_dllout%><%else%><%env_libout%><%endif%>)
+<%endif%>
+<%if(exeout)%>
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <%env_exeout%>)
+<%endif%>
+
 <%if(exename)%>
 add_executable(${PROJECT_TARGET} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_TARGET} ${TARGET_LINK_LIBRARIES})
 <%else%>
 <%if(sharedname)%>
 add_library(${PROJECT_TARGET} SHARED ${SOURCE_FILES})
+add_compile_definitions(<%dynamicflags%>)
 target_link_libraries(${PROJECT_TARGET} ${TARGET_LINK_LIBRARIES})
 <%else%>
 <%if(staticname)%>
 add_library(${PROJECT_TARGET} ${SOURCE_FILES})
+add_compile_definitions(<%staticflags%>)
 <%endif%>
 <%endif%>
 <%endif%>
@@ -53,11 +65,20 @@ add_library(${PROJECT_TARGET} ${SOURCE_FILES})
 target_include_directories(${PROJECT_TARGET} PUBLIC <%env_includes%>)
 
 <%endif%>
+<%if(libpaths)%>
+target_link_directories(${PROJECT_TARGET} PUBLIC <%env_libpaths%>)
+
+<%endif%>
+<%if(macros)%>
+add_compile_definitions(<%macros%>)
+<%endif%>
 <%if(custom_types)%>
 <%foreach(custom_types)%>
 <%if(custom_type->command && custom_type->input_files)%>
-include(<%custom_type%>.cmake OPTIONAL)
-<%uc(custom_type)%>_TARGET_SOURCES(${PROJECT_TARGET} PUBLIC <%custom_type->input_files%>)
+
+include(<%custom_type%> OPTIONAL)
+<%uc(custom_type)%>_TARGET_SOURCES(${PROJECT_TARGET} PUBLIC <%custom_type->input_files%>
+                         <%uc(custom_type)%>_OPTIONS <%custom_type->commandflags%>)
 <%endif%>
 <%endfor%>
 <%endif%>

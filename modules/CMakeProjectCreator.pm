@@ -56,14 +56,21 @@ sub fill_value {
     ## Currently, we only support C++
     return 'CXX' if ($self->get_language() eq Creator::cplusplus());
   }
-  elsif ($name eq 'env_includes') {
-    my $includes = $self->get_assignment('includes');
-    if (defined $includes) {
-      $includes = $self->create_array($includes);
-      foreach my $include (@$includes) {
-        $include =~ s/\$\(([^\)]+)\)/\$ENV{$1}/g;
+  elsif ($name =~ /^env_(\w+)/) {
+    my $dotdir = ($1 eq 'libpaths' ? '${CMAKE_CURRENT_BIN_DIR}' :
+                                     '${CMAKE_CURRENT_SOURCE_DIR}');
+    my $paths = $self->get_assignment($1);
+    if (defined $paths) {
+      $paths = $self->create_array($paths);
+      foreach my $path (@$paths) {
+        if ($path eq '.') {
+          $path = $dotdir;
+        }
+        else {
+          $path =~ s/\$\(([^\)]+)\)/\$ENV{$1}/g;
+        }
       }
-      return "@$includes";
+      return "@$paths";
     }
   }
   elsif ($name eq 'non_generated_sources') {
