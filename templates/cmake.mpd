@@ -69,18 +69,24 @@ add_compile_definitions(<%macros%>)
 <%if(custom_type->command)%>
 
 include(<%custom_type%> OPTIONAL)
-<%uc(custom_type)%>_TARGET_SOURCES(${PROJECT_TARGET} PUBLIC <%custom_type->input_files%>
-                         <%uc(custom_type)%>_OPTIONS <%custom_type->commandflags%>)
+<%foreach(custom_type->input_files)%>
+<%uc(custom_type)%>_TARGET_SOURCES(
+    ${PROJECT_TARGET} PUBLIC <%custom_type->input_file%>
+    <%uc(custom_type)%>_OPTIONS <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%>)
+
+<%endfor%>
 <%else%>
 <%foreach(custom_type->input_files)%>
-<%if(forfirst && custom_type->input_file->commands)%>
+<%if(custom_type->input_file->commands)%>
+<%if(forfirst)%>
 include(<%custom_type%> OPTIONAL)
-<%foreach(custom_type->input_files)%>
+<%endif%>
 <%uc(custom_type)%>_TARGET_SOURCES(
     ${PROJECT_TARGET} PUBLIC <%custom_type->input_file%>
 <%foreach(custom_type->input_file->commands)%>
     <%uc(custom_type->input_file->command->type)%>_OPTIONS <%custom_type->input_file->command->flags%><%fornotlast("
-")%><%endfor%><%endfor%>)
+")%><%endfor%>)
+
 <%endif%>
 <%endfor%>
 <%endif%>
