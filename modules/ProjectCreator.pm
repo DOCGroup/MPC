@@ -834,6 +834,9 @@ sub parse_line {
         ## Project Ending
         if (!defined $self->{'reading_parent'}->[0] &&
             !$self->{'reading_global'}) {
+          ## Call into the project type's pre-generation hook.
+          $self->pre_generation();
+
           ## Fill in all the default values
           $self->generate_defaults();
 
@@ -2861,7 +2864,7 @@ sub generate_default_target_names {
         if (!defined $sources[0]) {
           @sources = $self->get_component_list($self->get_resource_tag(), 1);
         }
-        if (defined $sources[0]) {
+        if (defined $sources[0] || $self->default_to_library()) {
           if (!$shared_empty) {
             $self->process_assignment('sharedname',
                                       $self->{'unmodified_project_name'});
@@ -6079,6 +6082,14 @@ sub warn_useless_project {
 
 sub pre_write_output_file {
   return 1;
+}
+
+sub pre_generation {
+  #my $self = shift;
+}
+
+sub default_to_library {
+  return 0;
 }
 
 1;
