@@ -5820,7 +5820,7 @@ sub combine_custom_types {
   # synthetic type.
   foreach my $in (keys %input) {
     next if scalar @{$input{$in}} < 2;
-    my $combo_tag = join('_and_', map {/(.+)_files$/; $1} @{$input{$in}})
+    my $combo_tag = join('_and_', map {/(.+)_files$/; $1} sort(@{$input{$in}}))
       . '_files';
     if (!$self->{'combined_custom'}->{$combo_tag}) {
       $self->{'combined_custom'}->{$combo_tag} = $input{$in};
