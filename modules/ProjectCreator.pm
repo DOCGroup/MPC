@@ -4674,14 +4674,15 @@ sub get_custom_value {
   }
   elsif ($cmd eq 'commands') { # only used with 'combined_custom'
     $value = [];
-    my %details = ('flags' => 'commandflags',
+    my %details = ('flags'  => 'commandflags',
                    'outopt' => 'output_option',
-                   'gdir' => 'gendir');
+                   'gdir'   => 'gendir');
     for my $tag (@{$self->{'custom_multi_cmd'}->{$based}}) {
       my $command = $self->get_custom_assign_or_override('command', $tag,
                                                          $based, @params);
       push(@$value, $command);
-      my $det = $self->{'custom_multi_details'}->{$command} = {};
+      my $det = $self->{'custom_multi_details'}->{$command} = {'type' => $tag,
+                                                               'outfile' => ''};
       for my $k (keys %details) {
         $det->{$k} = $self->get_custom_assign_or_override($details{$k}, $tag,
                                                           $based, @params);
@@ -4704,10 +4705,9 @@ sub get_custom_value {
       }
     }
   }
-  elsif ($cmd eq 'flags' || $cmd eq 'outopt' || $cmd eq 'outfile' ||
-         $cmd eq 'gdir') {
+  elsif (exists $self->{'custom_multi_details'}->{$based}->{$cmd}) {
     # only used with 'combined_custom'
-    $value = $self->{'custom_multi_details'}->{$based}->{$cmd} || '';
+    $value = $self->{'custom_multi_details'}->{$based}->{$cmd};
   }
   elsif (defined $customDefined{$cmd}) {
     $value = $self->get_assignment($cmd,
