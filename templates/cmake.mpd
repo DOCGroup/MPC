@@ -20,22 +20,10 @@ find_package(ACE REQUIRED)
 <%endif%>
 set(SOURCE_FILES <%source_files%>)
 <%if(libs || lit_libs || pure_libs)%>
-set(TARGET_LINK_LIBRARIES<%if(libs)%> $<$<CONFIG:Release>:<%libs%>>
-                          $<$<CONFIG:Debug>:<%foreach(libs)%><%fornotfirst(" ")%><%lib%>d<%endfor%>><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
+set(TARGET_LINK_LIBRARIES<%if(libs)%> <%foreach(configurations)%><%fornotfirst("                          ")%>$<$<CONFIG:<%configuration%>>:<%foreach(libs)%><%fornotfirst(" ")%><%lib%><%lib_modifier%><%endfor%>><%fornotlast("
+")%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
 <%endif%>
-<%if(exename)%>
-set(PROJECT_TARGET <%exename%>)
-<%else%>
-<%if(sharedname)%>
-set(PROJECT_TARGET <%sharedname%>)
-<%else%>
-<%if(staticname)%>
-set(PROJECT_TARGET <%staticname%>)
-<%else%>
-set(PROJECT_TARGET <%project_name%>)
-<%endif%>
-<%endif%>
-<%endif%>
+set(PROJECT_TARGET <%if(exename)%><%exename%><%else%><%if(sharedname)%><%sharedname%><%else%><%if(staticname)%><%staticname%><%else%><%project_name%><%endif%><%endif%><%endif%>)
 <%marker(macros)%>
 
 <%if(libout)%>
@@ -77,11 +65,25 @@ add_compile_definitions(<%macros%>)
 <%endif%>
 <%if(custom_types)%>
 <%foreach(custom_types)%>
-<%if(custom_type->command && custom_type->input_files)%>
+<%if(custom_type->input_files)%>
+<%if(custom_type->command)%>
 
 include(<%custom_type%> OPTIONAL)
 <%uc(custom_type)%>_TARGET_SOURCES(${PROJECT_TARGET} PUBLIC <%custom_type->input_files%>
                          <%uc(custom_type)%>_OPTIONS <%custom_type->commandflags%>)
+<%else%>
+<%foreach(custom_type->input_files)%>
+<%if(forfirst && custom_type->input_file->commands)%>
+include(<%custom_type%> OPTIONAL)
+<%foreach(custom_type->input_files)%>
+<%uc(custom_type)%>_TARGET_SOURCES(
+    ${PROJECT_TARGET} PUBLIC <%custom_type->input_file%>
+<%foreach(custom_type->input_file->commands)%>
+    <%uc(custom_type->input_file->command->type)%>_OPTIONS <%custom_type->input_file->command->flags%><%fornotlast("
+")%><%endfor%><%endfor%>)
+<%endif%>
+<%endfor%>
+<%endif%>
 <%endif%>
 <%endfor%>
 <%endif%>

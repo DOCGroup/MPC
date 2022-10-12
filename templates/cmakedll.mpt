@@ -1,0 +1,16 @@
+// -*- MPC -*-
+
+configurations = Debug Release
+
+// ***********************************************************************
+// Configuration Section
+// ***********************************************************************
+
+Debug {
+  lib_modifier = d
+}
+
+Release {
+}
+
+conditional_include "user_cmakedll"

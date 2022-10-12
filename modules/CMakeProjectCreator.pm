@@ -18,13 +18,6 @@ use vars qw(@ISA);
 @ISA = qw(ProjectCreator);
 
 # ************************************************************
-# Data Section
-# ************************************************************
-
-## NOTE: We call the constant as a function to support Perl 5.6.
-my %info = (Creator::cplusplus() => {'template' => 'cmake'});
-
-# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -61,6 +54,11 @@ sub need_to_write_project {
   return $status;
 }
 
+sub pre_write_output_file {
+  my $self = shift;
+  return $self->combine_custom_types();
+}
+
 sub dollar_special {
   return 1;
 }
@@ -69,17 +67,17 @@ sub project_file_prefix {
   return "CMakeLists.";
 }
 
-sub languageSupported {
-  return defined $info{$_[0]->get_language()};
-}
-
 sub escape_spaces {
   #my $self = shift;
   return 1;
 }
 
-sub get_template {
-  return $info{$_[0]->get_language()}->{'template'};
+sub get_dll_exe_template_input_file {
+  return 'cmakeexe';
+}
+
+sub get_dll_template_input_file {
+  return 'cmakedll';
 }
 
 sub fill_value {
