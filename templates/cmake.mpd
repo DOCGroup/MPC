@@ -3,15 +3,15 @@ cmake_minimum_required(VERSION <%cmake_minimum_required(3.12.0)%>)
 <%marker(top)%>
 project(<%project_name%> <%language%>)
 
-<%if(contains(includes, DDS_ROOT))%>
+<%if(contains(env_includes, DDS_ROOT))%>
 find_package(OpenDDS REQUIRED)
 
 <%else%>
-<%if(contains(includes, TAO_ROOT))%>
+<%if(contains(env_includes, TAO_ROOT))%>
 find_package(TAO REQUIRED)
 
 <%else%>
-<%if(contains(includes, ACE_ROOT))%>
+<%if(contains(env_includes, ACE_ROOT))%>
 find_package(ACE REQUIRED)
 
 <%else%>
