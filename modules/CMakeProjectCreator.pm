@@ -54,6 +54,12 @@ sub need_to_write_project {
   return $status;
 }
 
+sub get_use_env {
+  ## Override the option getter so that, for CMake, MPC always functions as
+  ## if the -use_env option was supplied on the command line.
+  return 1;
+}
+
 sub pre_write_output_file {
   my $self = shift;
   return $self->combine_custom_types();
