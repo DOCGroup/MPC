@@ -82,6 +82,7 @@ sub create_array {
   $escaped |= ($line =~ s/\\\t/\04/g);
   $escaped |= ($line =~ s/\\\"/\05/g);
   $escaped |= ($line =~ s/\\\\/\06/g);
+  $escaped |= ($line =~ s/\n/\07/g);
 
   foreach my $part (grep(!/^\s*$/,
                          split(/(\"[^\"]+\"|\'[^\']+\'|\s+)/, $line))) {
@@ -98,6 +99,7 @@ sub create_array {
       $part =~ s/\04/\t/g;
       $part =~ s/\05/\"/g;
       $part =~ s/\06/\\/g;
+      $part =~ s/\07/\n/g;
     }
 
     ## Push it onto the array
