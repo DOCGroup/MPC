@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION <%cmake_minimum_required(3.12.0)%>)
 <%marker(top)%>
 project(<%project_name%> <%language%>)
 
+<%if(pre_find_package)%>
+<%pre_find_package%>
+<%endif%>
 <%if(contains(env_includes, DDS_ROOT))%>
 find_package(OpenDDS REQUIRED)
 
@@ -36,6 +39,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY <%if(dllout)%><%env_dllout%><%else%><%env_lib
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <%env_exeout%>)
 <%endif%>
 
+<%if(compile_flags)%>
+add_compile_options(<%compile_flags%>)
+
+<%endif%>
 <%if(exename)%>
 add_executable(${PROJECT_TARGET} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_TARGET} ${TARGET_LINK_LIBRARIES})
@@ -62,6 +69,7 @@ target_link_directories(${PROJECT_TARGET} PUBLIC <%env_libpaths%>)
 <%endif%>
 <%if(macros)%>
 add_compile_definitions(<%macros%>)
+
 <%endif%>
 <%if(custom_types)%>
 <%foreach(custom_types)%>
@@ -72,7 +80,7 @@ include(<%custom_type%> OPTIONAL)
 <%foreach(custom_type->input_files)%>
 <%uc(custom_type)%>_TARGET_SOURCES(
     ${PROJECT_TARGET} PUBLIC <%custom_type->input_file%>
-    <%uc(custom_type)%>_OPTIONS <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%>)
+    <%uc(custom_type)%>_OPTIONS <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endif%>)
 
 <%endfor%>
 <%else%>
