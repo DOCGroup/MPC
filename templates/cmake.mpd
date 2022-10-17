@@ -67,6 +67,10 @@ target_include_directories(${PROJECT_TARGET} PUBLIC <%env_includes%>)
 target_link_directories(${PROJECT_TARGET} PUBLIC <%env_libpaths%>)
 
 <%endif%>
+<%if(pch_header)%>
+target_precompile_headers(${PROJECT_TARGET} PRIVATE <%pch_header%>)
+
+<%endif%>
 <%if(macros)%>
 add_compile_definitions(<%macros%>)
 
