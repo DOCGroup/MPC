@@ -11,20 +11,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: VS2017Debug64
-            vmimage: windows-2016
-            mpctype: vs2017
-            BuildPlatform: x64
-            BuildConfiguration: Debug
-            vcpkgarch: x64-windows
-            vcpkglibdir: debug/lib
-            vcpkgpackages: openssl xerces-c zlib
           - name: VS2019Debug64
             vmimage: windows-2019
             mpctype: vs2019
@@ -48,6 +43,14 @@ jobs:
             BuildConfiguration: Debug
             vcpkgarch: x64-windows
             vcpkglibdir: debug/lib
+            vcpkgpackages: openssl xerces-c zlib
+          - name: VS2022Release32
+            vmimage: windows-2022
+            mpctype: vs2022
+            BuildPlatform: Win32
+            BuildConfiguration: Release
+            vcpkgarch: x86-windows
+            vcpkglibdir: lib
             vcpkgpackages: openssl xerces-c zlib
     runs-on: ${{ matrix.vmimage }}
     name: ${{ matrix.name }}
@@ -74,7 +77,7 @@ jobs:
     - name: Install vcpkg
       uses: lukka/run-vcpkg@v7
       with:
-        vcpkgGitCommitId: 70033dbb31527fb3e69654731f540f59c87787f9
+        vcpkgGitCommitId: b86c0c35b88e2bf3557ff49dc831689c2f085090
         vcpkgArguments: --recurse ${{ matrix.vcpkgpackages }}
         vcpkgTriplet: ${{ matrix.vcpkgarch }}
         appendedCacheKey: ${{ matrix.name }}
