@@ -1,5 +1,7 @@
 // -*- MPC -*-
 
+conditional_include "common"
+
 configurations = Debug Release
 
 // ***********************************************************************

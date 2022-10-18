@@ -29,14 +29,41 @@ set(TARGET_LINK_LIBRARIES<%if(libs)%> <%foreach(configurations)%><%fornotfirst("
 set(PROJECT_TARGET <%if(exename)%><%exename%><%else%><%if(sharedname)%><%sharedname%><%else%><%if(staticname)%><%staticname%><%else%><%project_name%><%endif%><%endif%><%endif%>)
 <%marker(macros)%>
 
-<%if(libout)%>
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY <%env_libout%>)
-<%endif%>
-<%if(dllout || libout)%>
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY <%if(dllout)%><%env_dllout%><%else%><%env_libout%><%endif%>)
-<%endif%>
 <%if(exeout)%>
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <%env_exeout%>)
+<%if(use_lib_modifier)%>
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG <%env_exeout%>)
+<%endif%>
+<%else%>
+<%if(libout)%>
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY <%env_libout%>)
+<%if(use_lib_modifier)%>
+<%foreach(configurations)%>
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_libout%>)
+<%endfor%>
+<%endif%>
+<%endif%>
+<%if(dllout)%>
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY <%env_dllout%>)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <%env_dllout%>)
+<%if(use_lib_modifier)%>
+<%foreach(configurations)%>
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_dllout%>)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_dllout%>)
+<%endfor%>
+<%endif%>
+<%else%>
+<%if(libout)%>
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY <%env_libout%>)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <%env_libout%>)
+<%if(use_lib_modifier)%>
+<%foreach(configurations)%>
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_libout%>)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_libout%>)
+<%endfor%>
+<%endif%>
+<%endif%>
+<%endif%>
 <%endif%>
 
 <%if(compile_flags)%>
@@ -56,6 +83,13 @@ target_link_libraries(${PROJECT_TARGET} ${TARGET_LINK_LIBRARIES})
 add_library(${PROJECT_TARGET} ${SOURCE_FILES})
 add_compile_definitions(<%staticflags%>)
 <%endif%>
+<%endif%>
+<%if(use_lib_modifier)%>
+<%foreach(configurations)%>
+<%if(lib_modifier)%>
+set_target_properties(${PROJECT_TARGET} PROPERTIES <%uc(configuration)%>_POSTFIX "<%lib_modifier%>")
+<%endif%>
+<%endfor%>
 <%endif%>
 <%endif%>
 
