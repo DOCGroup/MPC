@@ -97,7 +97,7 @@ sub write_and_compare_file {
       ## If a project doesn't exist, create the basis of a project so that we
       ## can add our add_subdirectory() calls below it.
       push(@lines, "cmake_minimum_required(VERSION $version)" . $self->crlf(),
-                   "project(workspace)" . $self->crlf());
+                   "project(workspace CXX)" . $self->crlf());
       $insert = $#lines;
     }
 
