@@ -76,12 +76,16 @@ target_link_libraries(${PROJECT_TARGET} ${TARGET_LINK_LIBRARIES})
 <%else%>
 <%if(sharedname)%>
 add_library(${PROJECT_TARGET} SHARED ${SOURCE_FILES})
+<%if(dynamicflags)%>
 add_compile_definitions(<%dynamicflags%>)
+<%endif%>
 target_link_libraries(${PROJECT_TARGET} ${TARGET_LINK_LIBRARIES})
 <%else%>
 <%if(staticname)%>
 add_library(${PROJECT_TARGET} ${SOURCE_FILES})
+<%if(staticflags)%>
 add_compile_definitions(<%staticflags%>)
+<%endif%>
 <%endif%>
 <%endif%>
 <%if(use_lib_modifier)%>
@@ -104,6 +108,9 @@ target_link_directories(${PROJECT_TARGET} PUBLIC <%env_libpaths%>)
 <%if(pch_header)%>
 target_precompile_headers(${PROJECT_TARGET} PRIVATE <%pch_header%>)
 
+<%endif%>
+<%if(pch_source)%>
+add_compile_definitions(<%pch_defines%>)
 <%endif%>
 <%if(macros)%>
 add_compile_definitions(<%macros%>)
