@@ -20,6 +20,12 @@ use vars qw(@ISA);
 @ISA = qw(WorkspaceCreator);
 
 # ************************************************************
+# Data Section
+# ************************************************************
+
+my $version = '3.12.0';
+
+# ************************************************************
 # Subroutine Section
 # ************************************************************
 
@@ -80,14 +86,16 @@ sub write_and_compare_file {
     ## the file and then insert add_subdirectory() calls to it.
     my @lines;
     my $insert;
-    my $version = '3.12.0';
     my $fh = new FileHandle();
     if (open($fh, $wsname)) {
       for(my $i = 0; <$fh>; $i++) {
         push(@lines, $_);
-        if (/cmake_minimum_required\(VERSION ([^\)]+)\)/) {
+        if (/find_package\(/) {
+          ## We need to insert the calls to add_subdirectory() after the last
+          ## find_package() to allow for configuration settings from packages.
+          ## This will allow us to modify the CMakeLists.txt to possibly make
+          ## certain subdirectories conditional.
           $insert = $i;
-          $version = $1;
         }
       }
       close($fh);
