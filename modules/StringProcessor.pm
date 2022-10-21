@@ -52,11 +52,15 @@ sub process_special {
   my $escaped = ($line =~ s/\\\\/\01/g);
   $escaped |= ($line =~ s/\\"/\02/g);
 
-  ## Un-escape all other characters
-  $line =~ s/\\(.)/$1/g;
-
   ## Remove any non-escaped double quotes
   $line =~ s/"//g;
+
+  ## Un-escape all other characters.  Using eval allows the user to pass
+  ## escaped characters that will be converted to their actual character
+  ## couterpart (i.e., \n, \f, etc).
+  if (index($line, '\\') != -1) {
+    eval("\$line = \"$line\"");
+  }
 
   ## Put the escaped double quotes and backslashes back in
   if ($escaped) {
