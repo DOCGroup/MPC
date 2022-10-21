@@ -4704,6 +4704,12 @@ sub get_custom_value {
         }
       }
     }
+
+    ## Sort the list of commands based on the original type so that generated
+    ## projects are reproducable.
+    my $det = $self->{'custom_multi_details'};
+    my @sorted = sort { $det->{$a}->{'type'} cmp $det->{$b}->{'type'} } @$value;
+    $value = \@sorted;
   }
   elsif (exists $self->{'custom_multi_details'}->{$based}->{$cmd}) {
     # only used with 'combined_custom'
