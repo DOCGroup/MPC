@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION <%cmake_minimum_required(3.12.0)%>)
 
 <%marker(top)%>
 project(<%project_name%> <%language%>)
+option(BUILD_SHARED_LIBS "Build using shared libraries" <%if(need_staticflags)%>OFF<%else%>ON<%endif%>)
 
 <%if(pre_find_package)%>
 <%pre_find_package%>
@@ -23,7 +24,7 @@ find_package(ACE REQUIRED)
 <%endif%>
 set(SOURCE_FILES <%source_files%>)
 <%if(libs || lit_libs || pure_libs)%>
-set(TARGET_LINK_LIBRARIES<%if(libs)%> <%foreach(configurations)%><%fornotfirst("                          ")%>$<$<CONFIG:<%configuration%>>:<%foreach(libs)%><%fornotfirst(" ")%><%lib%><%lib_modifier%><%endfor%>><%fornotlast("\n")%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
+set(TARGET_LINK_LIBRARIES<%if(libs)%> <%foreach(configurations)%><%fornotfirst("                          ")%>$<$<CONFIG:<%configuration%>>:<%foreach(libs)%><%fornotfirst(" ")%><%lib%>${LIBRARY_DECORATOR}<%lib_modifier%><%endfor%>><%fornotlast("\n")%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
 <%endif%>
 set(PROJECT_TARGET <%if(exename)%><%exename%><%else%><%if(sharedname)%><%sharedname%><%else%><%if(staticname)%><%staticname%><%else%><%project_name%><%endif%><%endif%><%endif%>)
 <%marker(macros)%>
@@ -72,11 +73,30 @@ add_compile_options(<%compile_flags%>)
 <%if(exename)%>
 add_executable(${PROJECT_TARGET} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_TARGET} ${TARGET_LINK_LIBRARIES})
+<%if(staticflags)%>
+if(NOT BUILD_SHARED_LIBS)
+  add_compile_definitions(<%staticflags%>)
+  set_property(TARGET ${PROJECT_TARGET} PROPERTY
+               MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
+<%endif%>
 <%else%>
 <%if(sharedname)%>
-add_library(${PROJECT_TARGET} SHARED ${SOURCE_FILES})
+add_library(${PROJECT_TARGET} ${SOURCE_FILES})
 <%if(dynamicflags)%>
-add_compile_definitions(<%dynamicflags%>)
+if(BUILD_SHARED_LIBS)
+  add_compile_definitions(<%dynamicflags%>)
+<%if(staticflags)%>
+else()
+  add_compile_definitions(<%staticflags%>)
+<%endif%>
+endif()
+<%else%>
+<%if(staticflags)%>
+if(NOT BUILD_SHARED_LIBS)
+  add_compile_definitions(<%staticflags%>)
+endif()
+<%endif%>
 <%endif%>
 target_link_libraries(${PROJECT_TARGET} ${TARGET_LINK_LIBRARIES})
 <%else%>
@@ -90,7 +110,7 @@ add_compile_definitions(<%staticflags%>)
 <%if(use_lib_modifier)%>
 <%foreach(configurations)%>
 <%if(lib_modifier)%>
-set_target_properties(${PROJECT_TARGET} PROPERTIES <%uc(configuration)%>_POSTFIX "<%lib_modifier%>")
+set_target_properties(${PROJECT_TARGET} PROPERTIES <%uc(configuration)%>_POSTFIX "${LIBRARY_DECORATOR}<%lib_modifier%>")
 <%endif%>
 <%endfor%>
 <%endif%>
