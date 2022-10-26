@@ -7,21 +7,10 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" <%if(need_staticflags)%>
 <%if(pre_find_package)%>
 <%pre_find_package%>
 <%endif%>
-<%if(contains(env_includes, DDS_ROOT))%>
-find_package(OpenDDS REQUIRED)
+<%foreach(packages)%>
+find_package(<%package%> REQUIRED)
+<%endfor%>
 
-<%else%>
-<%if(contains(env_includes, TAO_ROOT))%>
-find_package(TAO REQUIRED)
-
-<%else%>
-<%if(contains(env_includes, ACE_ROOT))%>
-find_package(ACE REQUIRED)
-
-<%else%>
-<%endif%>
-<%endif%>
-<%endif%>
 set(SOURCE_FILES <%source_files%>)
 <%if(libs || lit_libs || pure_libs)%>
 set(TARGET_LINK_LIBRARIES<%if(libs)%> <%foreach(configurations)%><%fornotfirst("                          ")%>$<$<CONFIG:<%configuration%>>:<%foreach(libs)%><%fornotfirst(" ")%><%lib%>${LIBRARY_DECORATOR}<%lib_modifier%><%endfor%>><%fornotlast("\n")%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
