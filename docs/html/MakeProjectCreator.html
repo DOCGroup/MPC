@@ -286,6 +286,18 @@
                 <tr>
                   <td rowspan="1" colspan="1">
                     <p class="Tbl-Body">
+                      <em class="TableCode">cmake</em>
+                    </p>
+                  </td>
+
+                  <td rowspan="1" colspan="1">
+                    <p class="Tbl-Body">Support for CMake requires user provided modules for custom commands.</p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <p class="Tbl-Body">
                       <em class="TableCode">em3</em>
                     </p>
                   </td>
@@ -6782,7 +6794,7 @@ class="Code">specific</em> clause.
                 </blockquote>
 
                 <p class="Body">
-                  The following mpc file (<em class=
+                  The following .mpc file (<em class=
             "Code">RTEC_Perf.mpc</em> ) shows the simple and small number of
                   lines required to generate usable build tool project files.
                 </p>
@@ -6899,7 +6911,9 @@ class="Code">specific</em> clause.
                   Line five adds <em class=
             "Code">TAO_RTEC_PERF_BUILD_DLL</em> to the <em class=
             "Code">dllflags</em>, which defines a macro that is used by the
-                  <em class="Code">rtec_perf_export.h</em> header file.
+                  <em class="Code">rtec_perf_export.h</em> header file when
+                  building shared libraries on platforms that support symbol
+                  visibility.
                 </p>
 
                 <blockquote>
@@ -8174,7 +8188,7 @@ class="Code">specific</em> clause.
 
                 <blockquote>
 
-                  <p class="Code">document_template.pl v1.3</p>
+                  <p class="Code">document_template.pl v1.4</p>
 
                   <p class="Code">
                     Usage: document_template.pl &lt;template&gt;
@@ -8182,6 +8196,16 @@ class="Code">specific</em> clause.
                   </p>
 
                   <p class="Code">&nbsp;</p>
+
+                  <p class="Code">
+                    template &nbsp;&nbsp;&nbsp;- .mpd file to document.  Certain MPC types don't
+                    use a template,
+                  </p>
+
+                  <p class="Code">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in that case this aregument can be the Perl module.
+                  </p>
 
                   <p class="Code">
                     html output - This defaults to the name of the

@@ -1,0 +1,14 @@
+// Current as of 10/26/2022
+// This defines the role of all the template variables specific to the
+// 'cmake' project type.
+//
+// Please try to keep this alphabetically sorted.
+//
+cmake_minimum_required = Sets the minimum required version for CMake.
+env_dllout = The value of 'dllout' with &#36;() values converted to &#36;ENV{}.
+env_exeout = The value of 'exeout' with &#36;() values converted to &#36;ENV{}.
+env_includes = The value of 'includes' with &#36;() values converted to &#36;ENV{}.
+env_libout = The value of 'libout' with &#36;() values converted to &#36;ENV{}.
+env_libpaths = The value of 'libpaths' with &#36;() values converted to &#36;ENV{}.
+packages = A list of packages to be used with the find_package() command.
+pre_find_package = A specific command or set of commands to be issued before any find_package() commands are called.
