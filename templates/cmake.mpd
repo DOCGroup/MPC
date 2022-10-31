@@ -13,7 +13,11 @@ find_package(<%package%> REQUIRED)
 
 set(SOURCE_FILES <%source_files%>)
 <%if(libs || lit_libs || pure_libs)%>
+if(CMAKE_CONFIGURATION_TYPES)
 set(TARGET_LINK_LIBRARIES<%if(libs)%> <%foreach(configurations)%><%fornotfirst("                          ")%>$<$<CONFIG:<%configuration%>>:<%foreach(libs)%><%fornotfirst(" ")%><%lib%>${LIBRARY_DECORATOR}<%lib_modifier%><%endfor%>><%fornotlast("\n")%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
+else()
+set(TARGET_LINK_LIBRARIES<%if(libs)%><%foreach(libs)%> <%lib%>${LIBRARY_DECORATOR}<%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
+endif()
 <%endif%>
 set(PROJECT_TARGET <%if(exename)%><%exename%><%else%><%if(sharedname)%><%sharedname%>${LIBRARY_DECORATOR}<%else%><%if(staticname)%><%staticname%>${LIBRARY_DECORATOR}<%else%><%project_name%>${LIBRARY_DECORATOR}<%endif%><%endif%><%endif%>)
 <%marker(macros)%>
