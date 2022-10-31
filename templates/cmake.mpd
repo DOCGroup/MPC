@@ -106,11 +106,11 @@ set_target_properties(${PROJECT_TARGET} PROPERTIES <%uc(configuration)%>_POSTFIX
 <%endif%>
 
 <%if(includes)%>
-target_include_directories(${PROJECT_TARGET} PUBLIC <%env_includes%>)
+target_include_directories(${PROJECT_TARGET} PRIVATE <%env_includes%>)
 
 <%endif%>
 <%if(libpaths)%>
-target_link_directories(${PROJECT_TARGET} PUBLIC <%env_libpaths%>)
+target_link_directories(${PROJECT_TARGET} PRIVATE <%env_libpaths%>)
 
 <%endif%>
 <%if(pch_header)%>
