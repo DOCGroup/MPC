@@ -75,7 +75,7 @@ sub write_and_compare_file {
       push(@project_dirs, $dir);
     }
     else {
-      $self->warning("Multiple projects in the same workspace are not " .
+      $self->warning("Multiple projects in the same directory are not " .
                      "supported: $dir");
     }
   }
