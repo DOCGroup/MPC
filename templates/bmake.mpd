@@ -62,7 +62,7 @@ LIB_EXT      = <%lib64_ext%>
 OBJ_EXT      = <%obj64_ext%>
 THREADFLAGS  = <%thrflags64%>
 BINARYFLAGS  = <%binaryflags64%>
-LINKERPATHS  = -L"$(BDS)\lib\win64\debug" -L"$(BDS)\lib\win64\release"
+LINKERPATHS  = -L"$(BDS)\lib\win64\debug" -L"$(BDS)\lib\win64\release" -GE:HIGHENTROPYVA=off
 WARNFLAGS64  = <%warnflags64%>
 <%else%>
 LINK32       = <%link32%>
