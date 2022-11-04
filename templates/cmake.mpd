@@ -27,7 +27,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <%env_exeout%>)
 <%if(use_lib_modifier)%>
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG <%env_exeout%>)
 <%endif%>
-<%else%>
+<%endif%>
+<%if(!exename)%>
 <%if(libout)%>
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY <%env_libout%>)
 <%if(use_lib_modifier)%>
