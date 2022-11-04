@@ -94,8 +94,8 @@ sub fill_value {
     return 'CXX' if ($self->get_language() eq Creator::cplusplus());
   }
   elsif ($name =~ /^env_(\w+)/) {
-    my $dotdir = ($1 eq 'libpaths' ? '${CMAKE_CURRENT_BIN_DIR}' :
-                                     '${CMAKE_CURRENT_SOURCE_DIR}');
+    my $dotdir = '${CMAKE_CURRENT_SOURCE_DIR}' .
+                 ($1 eq 'libpaths' ? ' ${CMAKE_CURRENT_BINARY_DIR}' : '');
     my $paths = $self->get_assignment($1);
     if (defined $paths) {
       $paths = $self->create_array($paths);
