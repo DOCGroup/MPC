@@ -11,15 +11,15 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" <%if(need_staticflags)%>
 find_package(<%package%> REQUIRED)
 <%endfor%>
 
-set(SOURCE_FILES <%source_files%>)
+set(SOURCE_FILES_<%uc(normalize(project_name))%> <%source_files%>)
 <%if(libs || lit_libs || pure_libs)%>
 if(CMAKE_CONFIGURATION_TYPES)
-set(TARGET_LINK_LIBRARIES<%if(libs)%> <%foreach(configurations)%><%fornotfirst("                          ")%>$<$<CONFIG:<%configuration%>>:<%foreach(libs)%><%fornotfirst(" ")%><%lib%>${LIBRARY_DECORATOR}<%lib_modifier%><%endfor%>><%fornotlast("\n")%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
+set(TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%><%if(libs)%> <%foreach(configurations)%><%fornotfirst("                          ")%>$<$<CONFIG:<%configuration%>>:<%foreach(libs)%><%fornotfirst(" ")%><%lib%>${LIBRARY_DECORATOR}<%lib_modifier%><%endfor%>><%fornotlast("\n")%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
 else()
-set(TARGET_LINK_LIBRARIES<%if(libs)%><%foreach(libs)%> <%lib%>${LIBRARY_DECORATOR}<%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
+set(TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%><%if(libs)%><%foreach(libs)%> <%lib%>${LIBRARY_DECORATOR}<%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
 endif()
 <%endif%>
-set(PROJECT_TARGET <%if(exename)%><%exename%><%else%><%if(sharedname)%><%sharedname%>${LIBRARY_DECORATOR}<%else%><%if(staticname)%><%staticname%>${LIBRARY_DECORATOR}<%else%><%project_name%>${LIBRARY_DECORATOR}<%endif%><%endif%><%endif%>)
+set(PROJECT_TARGET_<%uc(normalize(project_name))%> <%if(exename)%><%exename%><%else%><%if(sharedname)%><%sharedname%>${LIBRARY_DECORATOR}<%else%><%if(staticname)%><%staticname%>${LIBRARY_DECORATOR}<%else%><%project_name%>${LIBRARY_DECORATOR}<%endif%><%endif%><%endif%>)
 <%marker(macros)%>
 
 <%if(exeout)%>
@@ -65,18 +65,18 @@ add_compile_options(<%compile_flags%>)
 
 <%endif%>
 <%if(exename)%>
-add_executable(${PROJECT_TARGET} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_TARGET} ${TARGET_LINK_LIBRARIES})
+add_executable(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>})
+target_link_libraries(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%>})
 <%if(staticflags)%>
 if(NOT BUILD_SHARED_LIBS)
   add_compile_definitions(<%staticflags%>)
-  set_property(TARGET ${PROJECT_TARGET} PROPERTY
+  set_property(TARGET ${PROJECT_TARGET_<%uc(normalize(project_name))%>} PROPERTY
                MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 <%endif%>
 <%else%>
 <%if(sharedname)%>
-add_library(${PROJECT_TARGET} ${SOURCE_FILES})
+add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>})
 <%if(dynamicflags)%>
 if(BUILD_SHARED_LIBS)
   add_compile_definitions(<%dynamicflags%>)
@@ -92,10 +92,10 @@ if(NOT BUILD_SHARED_LIBS)
 endif()
 <%endif%>
 <%endif%>
-target_link_libraries(${PROJECT_TARGET} ${TARGET_LINK_LIBRARIES})
+target_link_libraries(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%>})
 <%else%>
 <%if(staticname)%>
-add_library(${PROJECT_TARGET} ${SOURCE_FILES})
+add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>})
 <%if(staticflags)%>
 add_compile_definitions(<%staticflags%>)
 <%endif%>
@@ -104,22 +104,22 @@ add_compile_definitions(<%staticflags%>)
 <%if(use_lib_modifier)%>
 <%foreach(configurations)%>
 <%if(lib_modifier)%>
-set_target_properties(${PROJECT_TARGET} PROPERTIES <%uc(configuration)%>_POSTFIX "<%lib_modifier%>")
+set_target_properties(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PROPERTIES <%uc(configuration)%>_POSTFIX "<%lib_modifier%>")
 <%endif%>
 <%endfor%>
 <%endif%>
 <%endif%>
 
 <%if(includes)%>
-target_include_directories(${PROJECT_TARGET} PRIVATE <%env_includes%>)
+target_include_directories(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%env_includes%>)
 
 <%endif%>
 <%if(libpaths)%>
-target_link_directories(${PROJECT_TARGET} PRIVATE <%env_libpaths%>)
+target_link_directories(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%env_libpaths%>)
 
 <%endif%>
 <%if(pch_header)%>
-target_precompile_headers(${PROJECT_TARGET} PRIVATE <%pch_header%>)
+target_precompile_headers(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%pch_header%>)
 
 <%endif%>
 <%if(pch_source)%>
@@ -137,7 +137,7 @@ add_compile_definitions(<%macros%>)
 include(<%custom_type%> OPTIONAL)
 <%foreach(custom_type->input_files)%>
 <%uc(custom_type)%>_TARGET_SOURCES(
-    ${PROJECT_TARGET} PUBLIC <%custom_type->input_file%>
+    ${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%custom_type->input_file%>
     <%uc(custom_type)%>_OPTIONS <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endif%>)
 
 <%endfor%>
@@ -148,7 +148,7 @@ include(<%custom_type%> OPTIONAL)
 include(<%custom_type%> OPTIONAL)
 <%endif%>
 <%uc(custom_type)%>_TARGET_SOURCES(
-    ${PROJECT_TARGET} PUBLIC <%custom_type->input_file%>
+    ${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%custom_type->input_file%>
 <%foreach(custom_type->input_file->commands)%>
     <%uc(custom_type->input_file->command->type)%>_OPTIONS <%custom_type->input_file->command->flags%><%fornotlast("\n")%><%endfor%>)
 

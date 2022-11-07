@@ -29,6 +29,15 @@ my $version = '3.12.0';
 # Subroutine Section
 # ************************************************************
 
+sub workspace_per_project {
+  #my $self = shift;
+  return 1;
+}
+
+sub workspace_file_name {
+  return 'CMakeLists.txt';
+}
+
 sub pre_workspace {
   my($self, $fh) = @_;
   my $crlf = $self->crlf();
@@ -42,95 +51,73 @@ sub pre_workspace {
            '# ', $self->create_command_line_string($0, @ARGV), $crlf);
 }
 
-sub write_and_compare_file {
-  my($self, $outdir, $oname, $func, @params) = @_;
+sub get_top_directory {
+  my($self, $path) = @_;
+
+  ## Get the top level directory in the path.  If the path does not contain
+  ## a directory, the path will be returned unmodified.
+  my $dir = $path;
+  my $done = 0;
+  do {
+    ## Go up one directory.  If we were already at the top directory,
+    ## we're finished.
+    my $next = $self->mpc_dirname($dir);
+    if ($next eq '.') {
+      $done = 1;
+    }
+    else {
+      $dir = $next;
+    }
+  } while(!$done);
+
+  return $dir;
+}
+
+sub write_comps {
+  my($self, $fh, $creator) = @_;
   my $status = 1;
   my $errorString = '';
   my @project_dirs;
+  my @projects = $self->sort_dependencies($self->get_projects(), 0);
 
-  ## Set the output directory if one wasn't provided
-  $outdir = $self->get_outdir() if (!defined $outdir);
-
-  ## Remove the existing workspace, if one exists.
-  my $wsname = "$outdir/CMakeLists.txt";
-  unlink($wsname);
-
-  ## Rename the first (and hopefully the only) project in the directory to what
-  ## CMake expects.
+  ## Build a list of top level directories.  We only want to go down one
+  ## directory.  The workspace in that directory will handle going to
+  ## other subdirectories.
   my %dirs;
-  foreach my $entry ($self->sort_dependencies($self->get_projects(), 0)) {
-    my $dir = dirname($entry);
-    if (!exists $dirs{$dir}) {
+  foreach my $entry (@projects) {
+    my $dir = $self->get_top_directory($entry);
+    if ($dir ne $entry && !exists $dirs{$dir}) {
       ## Keep track of the project existing in this directory
       $dirs{$dir} = 1;
 
-      ## Rename the project file to CMakeLists.txt and if it fails, we need to
-      ## propagate that back to the caller.
-      if (rename($entry, "$dir/CMakeLists.txt") == 0) {
-        $status = 0;
-        $errorString = "Unable to rename $entry";
-        last;
-      }
-
       push(@project_dirs, $dir);
-    }
-    else {
-      $self->warning("Multiple projects in the same directory are not " .
-                     "supported: $dir");
     }
   }
 
-  if ($status) {
-    ## See if a project file exists in this directory.  Since the workspace and
-    ## project files would have the same name, we need to read the contents of
-    ## the file and then insert add_subdirectory() calls to it.
-    my @lines;
-    my $insert;
-    my $fh = new FileHandle();
-    if (open($fh, $wsname)) {
-      for(my $i = 0; <$fh>; $i++) {
-        push(@lines, $_);
-        if (/find_package\(/) {
-          ## We need to insert the calls to add_subdirectory() after the last
-          ## find_package() to allow for configuration settings from packages.
-          ## This will allow us to modify the CMakeLists.txt to possibly make
-          ## certain subdirectories conditional.
-          $insert = $i;
-        }
+  ## Create the basis of a project so that we can add our add_subdirectory()
+  ## calls below it.
+  my $crlf = $self->crlf();
+  print $fh "cmake_minimum_required(VERSION $version)", $crlf,
+            "project(workspace CXX)", $crlf;
+
+  my $first = 1;
+  foreach my $dir (@project_dirs) {
+    if ($first) {
+      $first = undef;
+      print $fh $crlf;
+    }
+    print $fh "add_subdirectory($dir)$crlf";
+  }
+
+  $first = 1;
+  foreach my $entry (@projects) {
+    my $dir = $self->mpc_dirname($entry);
+    if ($dir eq '.') {
+      if ($first) {
+        $first = undef;
+        print $fh $crlf;
       }
-      close($fh);
-    }
-
-    if ($#lines == -1) {
-      ## If a project doesn't exist, create the basis of a project so that we
-      ## can add our add_subdirectory() calls below it.
-      push(@lines, "cmake_minimum_required(VERSION $version)" . $self->crlf(),
-                   "project(workspace CXX)" . $self->crlf());
-      $insert = $#lines;
-    }
-
-    ## Create the workspace here.
-    if (open($fh, ">$wsname")) {
-      ## Write out the pre-workspace information
-      $self->pre_workspace($fh);
-
-      for(my $i = 0; $i <= $#lines; $i++) {
-        print $fh "$lines[$i]";
-        if ($i == $insert) {
-          my $crlf = $self->crlf();
-          print $fh $crlf;
-          foreach my $dir (@project_dirs) {
-            if ($dir ne $outdir) {
-              print $fh "add_subdirectory($dir)$crlf";
-            }
-          }
-        }
-      }
-      close($fh);
-    }
-    else {
-      $status = 0;
-      $errorString = "Unable to open $wsname for output.";
+      print $fh "include($entry)$crlf";
     }
   }
 
