@@ -97,8 +97,9 @@ sub write_comps {
   ## Create the basis of a project so that we can add our add_subdirectory()
   ## calls below it.
   my $crlf = $self->crlf();
+  my $ws = TemplateParser::actual_normalize(undef, $self->get_workspace_name());
   print $fh "cmake_minimum_required(VERSION $version)", $crlf,
-            "project(workspace CXX)", $crlf;
+            "project($ws CXX)", $crlf;
 
   my $first = 1;
   foreach my $dir (@project_dirs) {

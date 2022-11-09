@@ -61,7 +61,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_libout%>)
 <%endif%>
 
 <%if(compile_flags)%>
-add_compile_options(<%compile_flags%>)
+target_compile_options(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%compile_flags%>)
 
 <%endif%>
 <%if(exename)%>
@@ -69,7 +69,7 @@ add_executable(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_
 target_link_libraries(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%>})
 <%if(staticflags)%>
 if(NOT BUILD_SHARED_LIBS)
-  add_compile_definitions(<%staticflags%>)
+  target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%staticflags%>)
   set_property(TARGET ${PROJECT_TARGET_<%uc(normalize(project_name))%>} PROPERTY
                MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
@@ -79,16 +79,16 @@ endif()
 add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>})
 <%if(dynamicflags)%>
 if(BUILD_SHARED_LIBS)
-  add_compile_definitions(<%dynamicflags%>)
+  target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%dynamicflags%>)
 <%if(staticflags)%>
 else()
-  add_compile_definitions(<%staticflags%>)
+  target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%staticflags%>)
 <%endif%>
 endif()
 <%else%>
 <%if(staticflags)%>
 if(NOT BUILD_SHARED_LIBS)
-  add_compile_definitions(<%staticflags%>)
+  target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%staticflags%>)
 endif()
 <%endif%>
 <%endif%>
@@ -97,7 +97,7 @@ target_link_libraries(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${TARGET
 <%if(staticname)%>
 add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>})
 <%if(staticflags)%>
-add_compile_definitions(<%staticflags%>)
+target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%staticflags%>)
 <%endif%>
 <%endif%>
 <%endif%>
@@ -123,10 +123,10 @@ target_precompile_headers(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIV
 
 <%endif%>
 <%if(pch_source)%>
-add_compile_definitions(<%pch_defines%>)
+target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%pch_defines%>)
 <%endif%>
 <%if(macros)%>
-add_compile_definitions(<%macros%>)
+target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC<%macros%>)
 
 <%endif%>
 <%if(custom_types)%>
