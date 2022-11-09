@@ -631,6 +631,7 @@ sub process_foreach {
       ## Now parse the line of text, each time
       ## with different values
       ++$self->{'foreach'}->{'processing'};
+      $self->{'prjc'}->set_forcount($i);
       my($status, $error) = $self->parse_line(undef, $text);
       --$self->{'foreach'}->{'processing'};
       return $error if (defined $error);
