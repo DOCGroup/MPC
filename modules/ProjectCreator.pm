@@ -353,6 +353,7 @@ sub new {
   $self->{'escape_spaces'}         = $self->escape_spaces();
   $self->{'current_template'}      = undef;
   $self->{'make_coexistence'}      = $makeco;
+  $self->{'forcount'}              = 0;
 
   $self->add_default_matching_assignments();
   $self->reset_generating_types();
@@ -4673,14 +4674,24 @@ sub get_custom_value {
   }
   elsif ($cmd eq 'commands') { # only used with 'combined_custom'
     $value = [];
+
+    ## Clear out the previous custom_multi_details hash map so that we don't
+    ## have extraneous data associated with commands from previous iterations.
+    $self->{'custom_multi_details'} = {};
+
     my %details = ('flags' => 'commandflags',
                    'outopt' => 'output_option',
                    'gdir' => 'gendir');
     for my $tag (@{$self->{'custom_multi_cmd'}->{$based}}) {
       my $command = $self->get_custom_assign_or_override('command', $tag,
                                                          $based, @params);
-      push(@$value, $command);
-      my $det = $self->{'custom_multi_details'}->{$command} = {};
+
+      ## Use $tag as the key for custom_multi_details and store the command as
+      ## a data member that we can access later.  $command shouldn't be used
+      ## as the key because it is not guaranteed to be unique.
+      my $det = $self->{'custom_multi_details'}->{$tag} = {'_cmd' => $command,
+                                                           'type' => $tag,
+                                                           'outfile' => ''};
       for my $k (keys %details) {
         $det->{$k} = $self->get_custom_assign_or_override($details{$k}, $tag,
                                                           $based, @params);
@@ -4702,17 +4713,46 @@ sub get_custom_value {
         }
       }
     }
-  }
-  elsif ($cmd eq 'flags' || $cmd eq 'outopt' || $cmd eq 'outfile' ||
-         $cmd eq 'gdir') {
-    # only used with 'combined_custom'
-    $value = $self->{'custom_multi_details'}->{$based}->{$cmd} || '';
+
+    ## Sort the list of types so that generated projects are reproducable.
+    ## Additionally, we need them to be ordered (and numbered) so that we can
+    ## match the command with the right tag when iterating in the template.
+    my $det = $self->{'custom_multi_details'};
+    my $i = 0;
+    foreach my $key (sort { $a cmp $b } keys %$det) {
+      $det->{$key}->{'_order'} = $i++;
+      push(@$value, $det->{$key}->{'_cmd'});
+    }
   }
   elsif (defined $customDefined{$cmd}) {
     $value = $self->get_assignment($cmd,
                                    $self->{'generated_exts'}->{$based});
     if (defined $value && ($customDefined{$cmd} & 0x14) != 0) {
       $value = $self->convert_command_parameters($based, $value, @params);
+    }
+  }
+  else {
+    ## This is only used with 'combined_custom'.
+    ##
+    ## $based - The command for the original define custom.
+    ## $cmd   - The member after the arrow operator.
+    ##
+    ## We cannot use a direct lookup because the command is no longer the
+    ## key for custom_multi_details.  It is possible to have two or more custom
+    ## types that use the same command.  Therefore, we have to use the custom
+    ## type name ($tag) as the key.  Since this code can only be called within
+    ## a foreach, we have to rely on the fact that the values created above
+    ## (during the processing of 'commands') are sorted to correlate the
+    ## command, stored in $base, with the correct tag in order to get the
+    ## correct command flags and other associated values.
+    foreach my $tag (keys %{$self->{'custom_multi_details'}}) {
+      my $det = $self->{'custom_multi_details'}->{$tag};
+      if ($det->{'_cmd'} eq $based && $det->{'_order'} == $self->{'forcount'}) {
+        if (exists $det->{$cmd}) {
+          $value = $det->{$cmd};
+        }
+        last;
+      }
     }
   }
 
@@ -5819,7 +5859,7 @@ sub combine_custom_types {
   # synthetic type.
   foreach my $in (keys %input) {
     next if scalar @{$input{$in}} < 2;
-    my $combo_tag = join('_and_', map {/(.+)_files$/; $1} @{$input{$in}})
+    my $combo_tag = join('_and_', map {/(.+)_files$/; $1} sort(@{$input{$in}}))
       . '_files';
     if (!$self->{'combined_custom'}->{$combo_tag}) {
       $self->{'combined_custom'}->{$combo_tag} = $input{$in};
@@ -5883,6 +5923,10 @@ sub combine_custom_types {
   return 1;
 }
 
+sub set_forcount {
+  my($self, $count) = @_;
+  $self->{'forcount'} = $count;
+}
 
 # ************************************************************
 # Accessors used by support scripts
