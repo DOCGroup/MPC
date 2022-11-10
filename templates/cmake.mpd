@@ -110,6 +110,11 @@ set_target_properties(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PROPERTI
 <%endif%>
 <%endif%>
 
+if(CMAKE_CONFIGURATION_TYPES)
+target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC
+<%foreach(configurations)%>                           $<$<CONFIG:<%configuration%>>:MPC_LIB_MODIFIER="${LIBRARY_DECORATOR}<%lib_modifier%>"><%fornotlast("\n")%><%endfor%>)
+endif()
+
 <%if(includes)%>
 target_include_directories(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%env_includes%>)
 
