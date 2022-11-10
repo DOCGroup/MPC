@@ -4674,6 +4674,11 @@ sub get_custom_value {
   }
   elsif ($cmd eq 'commands') { # only used with 'combined_custom'
     $value = [];
+
+    ## Clear out the previous custom_multi_details hash map so that we don't
+    ## have extraneous data associated with commands from previous iterations.
+    $self->{'custom_multi_details'} = {};
+
     my %details = ('flags' => 'commandflags',
                    'outopt' => 'output_option',
                    'gdir' => 'gendir');
