@@ -2,6 +2,9 @@
 // This defines the role of all the template variables specific to the
 // 'cmake' project type.
 //
+// The value &#36; is used below to represent the dollar sign.  The dollar
+// sign is interpreted by the parser in document_template.pl.
+//
 // Please try to keep this alphabetically sorted.
 //
 cmake_minimum_required = Sets the minimum required version for CMake.
