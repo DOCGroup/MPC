@@ -131,7 +131,7 @@ target_precompile_headers(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIV
 target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%pch_defines%>)
 <%endif%>
 <%if(macros)%>
-target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC<%macros%>)
+target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%macros%>)
 
 <%endif%>
 <%if(custom_types)%>
