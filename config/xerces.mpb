@@ -38,9 +38,6 @@ feature(xerces3) {
     $(XERCESCROOT)/lib
   }
 
-  includes += $(XERCESC_INCDIR)
-  libpaths += $(XERCESC_LIBDIR)
-
   specific(prop:microsoft) {
     xerceslib = xerces-c_3
 
@@ -55,6 +52,14 @@ feature(xerces3) {
   specific(!prop:windows) {
     macros   += XML_USE_PTHREADS
     xerceslib = xerces-c
+  }
+
+  specific(cmake) {
+    includes += ${XercesC_INCLUDE_DIRS}
+    xerceslib = XercesC::XercesC
+  } else {
+    includes += $(XERCESC_INCDIR)
+    libpaths += $(XERCESC_LIBDIR)
   }
 
   // We have to use lit_libs here as the library decorator
