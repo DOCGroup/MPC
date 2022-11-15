@@ -56,7 +56,7 @@ feature(xerces3) {
 
   specific(cmake) {
     includes += ${XercesC_INCLUDE_DIRS}
-    xerceslib = XercesC::XercesC
+    xerceslib = ${XercesC_LIBRARIES}
   } else {
     includes += $(XERCESC_INCDIR)
     libpaths += $(XERCESC_LIBDIR)
