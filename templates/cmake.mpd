@@ -13,10 +13,17 @@ find_package(<%package%> REQUIRED)
 
 set(SOURCE_FILES_<%uc(normalize(project_name))%> <%source_files%>)
 <%if(libs || lit_libs || pure_libs)%>
+<%foreach(libs)%>
+<%if(cmake_macro(lib))%>
+if(<%cmake_macro(lib)%>)
+  set(<%cmake_macro(lib)%>_DEFINED TRUE)
+endif()
+<%endif%>
+<%endfor%>
 if(CMAKE_CONFIGURATION_TYPES)
-set(TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%><%if(libs)%> <%foreach(configurations)%><%fornotfirst("                          ")%>$<$<CONFIG:<%configuration%>>:<%foreach(libs)%><%fornotfirst(" ")%><%lib%>${LIBRARY_DECORATOR}<%lib_modifier%><%endfor%>><%fornotlast("\n")%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
+set(TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%><%if(libs)%> <%foreach(configurations)%><%fornotfirst("                          ")%>$<$<CONFIG:<%configuration%>>:<%foreach(libs)%><%fornotfirst(" ")%><%if(cmake_macro(lib))%>$<IF:$<BOOL:${<%cmake_macro(lib)%>_DEFINED}>,<%lib%>${LIBRARY_DECORATOR}<%lib_modifier%>,><%else%><%lib%>${LIBRARY_DECORATOR}<%lib_modifier%><%endif%><%endfor%>><%fornotlast("\n")%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
 else()
-set(TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%><%if(libs)%><%foreach(libs)%> <%lib%>${LIBRARY_DECORATOR}<%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
+set(TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%><%if(libs)%><%foreach(libs)%> <%if(cmake_macro(lib))%>$<IF:$<BOOL:${<%cmake_macro(lib)%>_DEFINED}>,<%lib%>${LIBRARY_DECORATOR},><%else%><%lib%>${LIBRARY_DECORATOR}<%endif%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
 endif()
 <%endif%>
 set(PROJECT_TARGET_<%uc(normalize(project_name))%> <%if(exename)%><%exename%><%else%><%if(sharedname)%><%sharedname%>${LIBRARY_DECORATOR}<%else%><%if(staticname)%><%staticname%>${LIBRARY_DECORATOR}<%else%><%project_name%>${LIBRARY_DECORATOR}<%endif%><%endif%><%endif%>)
