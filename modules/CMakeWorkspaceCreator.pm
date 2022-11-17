@@ -51,24 +51,34 @@ sub pre_workspace {
            '# ', $self->create_command_line_string($0, @ARGV), $crlf);
 }
 
+## Get the top level directory in the path.  If the path does not contain
+## a directory, the path will be returned unmodified.
 sub get_top_directory {
   my($self, $path) = @_;
 
-  ## Get the top level directory in the path.  If the path does not contain
-  ## a directory, the path will be returned unmodified.
-  my $dir = $path;
-  my $done = 0;
-  do {
-    ## Go up one directory.  If we were already at the top directory,
-    ## we're finished.
-    my $next = $self->mpc_dirname($dir);
-    if ($next eq '.') {
-      $done = 1;
-    }
-    else {
-      $dir = $next;
-    }
-  } while(!$done);
+  ## First, convert the path to a relative path based on the current working
+  ## directory.
+  my $dir = $self->path_to_relative($self->getcwd(), $path);
+  if ($dir =~ /^\.\.\// || !$self->path_is_relative($dir)) {
+    ## If the directory is above the current directory or not relative to
+    ## the current working directory, we need to give the directory portion
+    ## back and call it a day.
+    return $self->mpc_dirname($dir);
+  }
+  else {
+    my $done = 0;
+    do {
+      ## Go up one directory.  If we were already at the top directory,
+      ## we're finished.
+      my $next = $self->mpc_dirname($dir);
+      if ($next eq '.') {
+        $done = 1;
+      }
+      else {
+        $dir = $next;
+      }
+    } while(!$done);
+  }
 
   return $dir;
 }
