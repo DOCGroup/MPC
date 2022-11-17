@@ -95,17 +95,20 @@ sub write_ws_top {
             "project($ws CXX)", $crlf;
 }
 
-sub write_single_include_ws {
-  my($self, $prj) = @_;
+sub write_include_ws {
+  my($self, $prjs) = @_;
   my $fh = new FileHandle();
-  my $dir = $self->mpc_dirname($prj);
+  my $dir = $self->mpc_dirname($$prjs[0]);
   my $file = $dir . '/' . $self->workspace_file_name();
 
   if (open($fh, ">$file")) {
     my $crlf = $self->crlf();
     $self->pre_workspace($fh);
     $self->write_ws_top($fh, basename($dir));
-    print $fh "${crlf}include(", basename($prj), ")$crlf";
+    foreach my $prj (@$prjs) {
+      print $fh "${crlf}include(", basename($prj), ")";
+    }
+    print $fh $crlf;
     close($fh);
   }
 }
@@ -121,19 +124,28 @@ sub write_comps {
   ## directory.  The workspace in that directory will handle going to
   ## other subdirectories.
   my %dirs;
+  my %out_of_tree;
   foreach my $entry (@projects) {
     my $dir = $self->get_top_directory($entry);
-    if ($dir ne $entry && !exists $dirs{$dir}) {
-      ## Keep track of the project existing in this directory
-      $dirs{$dir} = 1;
+    if ($dir ne $entry) {
+      if (!exists $dirs{$dir}) {
+        ## Keep track of the project existing in this directory
+        $dirs{$dir} = 1;
+
+        push(@project_dirs, $dir);
+      }
 
       ## If this directory is out-of-tree, it will not contain a top-level
       ## workspace (due to the way that workspace-per-directory works).  We
-      ## need to generate one here.
+      ## need to keep track of it here.
       if ($self->out_of_tree($dir)) {
-        $self->write_single_include_ws($entry);
+        if (exists $out_of_tree{$dir}) {
+          push(@{$out_of_tree{$dir}}, $entry);
+        }
+        else {
+          $out_of_tree{$dir} = [$entry];
+        }
       }
-      push(@project_dirs, $dir);
     }
   }
 
@@ -151,7 +163,7 @@ sub write_comps {
       print $fh $crlf;
     }
     my $bin_dir = '';
-    if ($self->out_of_tree($dir)) {
+    if (exists $out_of_tree{$dir}) {
       ## Because this directory is out-of-tree, CMake requires a binary
       ## directory to be passed to add_subdirectory().
       my $bin = basename($dir);
@@ -160,6 +172,7 @@ sub write_comps {
       }
       $bin_dir = " $bin";
       $bin_used{$bin} = 1;
+      $self->write_include_ws($out_of_tree{$dir});
     }
     print $fh "add_subdirectory($dir$bin_dir)$crlf";
   }
