@@ -11,6 +11,18 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" <%if(need_staticflags)%>
 find_package(<%package%> REQUIRED)
 <%endfor%>
 
+<%if(header_files)%>
+set(HEADER_FILES_<%uc(normalize(project_name))%> <%header_files%>)
+
+<%endif%>
+<%if(inline_files)%>
+set(INLINE_FILES_<%uc(normalize(project_name))%> <%inline_files%>)
+
+<%endif%>
+<%if(template_files)%>
+set(TEMPLATE_FILES_<%uc(normalize(project_name))%> <%template_files%>)
+
+<%endif%>
 set(SOURCE_FILES_<%uc(normalize(project_name))%> <%source_files%>)
 <%if(libs || lit_libs || pure_libs)%>
 <%foreach(libs)%>
