@@ -88,7 +88,7 @@ add_executable(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_
 target_link_libraries(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%>})
 <%if(staticflags)%>
 if(NOT BUILD_SHARED_LIBS)
-  target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%staticflags%>)
+  target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%staticflags%>)
   set_property(TARGET ${PROJECT_TARGET_<%uc(normalize(project_name))%>} PROPERTY
                MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
@@ -98,16 +98,16 @@ endif()
 add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>})
 <%if(dynamicflags)%>
 if(BUILD_SHARED_LIBS)
-  target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%dynamicflags%>)
+  target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%dynamicflags%>)
 <%if(staticflags)%>
 else()
-  target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%staticflags%>)
+  target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%staticflags%>)
 <%endif%>
 endif()
 <%else%>
 <%if(staticflags)%>
 if(NOT BUILD_SHARED_LIBS)
-  target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%staticflags%>)
+  target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%staticflags%>)
 endif()
 <%endif%>
 <%endif%>
@@ -116,7 +116,7 @@ target_link_libraries(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${TARGET
 <%if(staticname)%>
 add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>})
 <%if(staticflags)%>
-target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%staticflags%>)
+target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%staticflags%>)
 <%endif%>
 <%endif%>
 <%endif%>
