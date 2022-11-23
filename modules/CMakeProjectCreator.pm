@@ -104,7 +104,7 @@ sub fill_value {
           $path = $dotdir;
         }
         else {
-          $path =~ s/\$\(([^\)]+)\)/\$ENV{$1}/g;
+          $path =~ s/\$\(([^\)]+)\)/\${$1}/g;
         }
       }
       return "@$paths";
