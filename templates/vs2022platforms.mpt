@@ -2,12 +2,12 @@
 //
 // Any of these platforms can set using value_template platforms=
 // when generating solutions/projects.
-//
 
 platforms = Win32 x64 ARM ARM64
 default_platform = x64
 PlatformToolset = v143
 WindowsTargetPlatformVersion = 10.0
+MultiProcessorCompilation = true
 
 Win32 {
   output_subdir    = I386
