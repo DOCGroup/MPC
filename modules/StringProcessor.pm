@@ -57,7 +57,7 @@ sub process_special {
 
   ## Un-escape all other characters.  Using eval allows the user to pass
   ## escaped characters that will be converted to their actual character
-  ## couterpart (i.e., \n, \f, etc).
+  ## counterpart (i.e., \n, \f, etc).
   if (index($line, '\\') != -1) {
     eval("\$line = \"$line\"");
   }
