@@ -199,6 +199,30 @@ sub path_is_relative {
   return (index($_[1], '/') != 0 && $_[1] !~ /^[A-Z]:[\/\\]/i && $_[1] !~ /^\$\(\w+\)/);
 }
 
+sub path_to_relative {
+  my($self, $check, $path) = @_;
+
+  ## See if it's already relative.  If it is, there's nothing to do.
+  if ($path !~ s/^.[\/]+// && !$self->path_is_relative($path)) {
+    ## See how many times we have to chop off a directory until we find that
+    ## the provided path contains part of the current working directory.
+    my $dircount = 0;
+    while($check ne '.' && index($path, $check) != 0) {
+      $dircount++;
+      $check = $self->mpc_dirname($check);
+    }
+
+    ## If we didn't go all the way back up the current working directory, we
+    ## can create a relative path from it based on the number of directories
+    ## we removed above.
+    if ($check ne '.') {
+      $path = ('../' x $dircount) . substr($path, length($check) + 1);
+    }
+  }
+
+  return $path;
+}
+
 # ************************************************************
 # Virtual Methods To Be Overridden
 # ************************************************************

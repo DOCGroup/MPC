@@ -1343,8 +1343,14 @@ sub generate_hierarchy {
   my %projinfo  = %{$originfo};
 
   foreach my $prj (@projects) {
-    my($top, $rest) = $self->topname($prj);
+    ## If the project path starts with ./ the code assumed that the top was
+    ## the current directory and would end up not creating the workspace as
+    ## it should have been.  We will clean up the project directory and pass
+    ## that to topname() instead.
+    my $clean = $prj;
+    $clean =~ s/^\.[\/]+//;
 
+    my($top, $rest) = $self->topname($clean);
     if (!defined $current) {
       $current = $top;
       push(@saved, $rest);

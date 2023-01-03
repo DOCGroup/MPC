@@ -52,11 +52,15 @@ sub process_special {
   my $escaped = ($line =~ s/\\\\/\01/g);
   $escaped |= ($line =~ s/\\"/\02/g);
 
-  ## Un-escape all other characters
-  $line =~ s/\\(.)/$1/g;
-
   ## Remove any non-escaped double quotes
   $line =~ s/"//g;
+
+  ## Un-escape all other characters.  Using eval allows the user to pass
+  ## escaped characters that will be converted to their actual character
+  ## couterpart (i.e., \n, \f, etc).
+  if (index($line, '\\') != -1) {
+    eval("\$line = \"$line\"");
+  }
 
   ## Put the escaped double quotes and backslashes back in
   if ($escaped) {
@@ -82,6 +86,7 @@ sub create_array {
   $escaped |= ($line =~ s/\\\t/\04/g);
   $escaped |= ($line =~ s/\\\"/\05/g);
   $escaped |= ($line =~ s/\\\\/\06/g);
+  $escaped |= ($line =~ s/\n/\07/g);
 
   foreach my $part (grep(!/^\s*$/,
                          split(/(\"[^\"]+\"|\'[^\']+\'|\s+)/, $line))) {
@@ -98,6 +103,7 @@ sub create_array {
       $part =~ s/\04/\t/g;
       $part =~ s/\05/\"/g;
       $part =~ s/\06/\\/g;
+      $part =~ s/\07/\n/g;
     }
 
     ## Push it onto the array
