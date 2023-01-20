@@ -11,6 +11,7 @@ package Version;
 # ************************************************************
 
 use strict;
+use File::Spec;
 
 # ************************************************************
 # Data Section
@@ -38,7 +39,8 @@ sub get {
     my $cwd = Cwd::getcwd();
     if (chdir(::getBasePath())) {
       ## Get the git revision for the final part of the version string.
-      my $r = _readVersion('git rev-parse --short HEAD |');
+      my $nul = File::Spec->devnull();
+      my $r = _readVersion("git rev-parse --short HEAD 2> $nul |");
       if (defined $r) {
         ## Store the version for later use, in the event that the git
         ## revision isn't available in the future.
