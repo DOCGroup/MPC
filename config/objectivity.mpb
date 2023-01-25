@@ -1,0 +1,30 @@
+// -*- MPC -*-
+project {
+  // For some reason, Objectivity names things differently on Windows
+  specific(prop:windows) {
+    lit_libs += oodbi ooco
+    ooddl = ooddlx
+  } else {
+    lit_libs += oo ooco
+    ooddl = ooddl_int
+  }
+
+  Define_Custom(ddl) {
+    command              = $(OBJECTIVITY_ROOT)/bin/$(OODDL)
+    commandflags         = -I$(OBJECTIVITY_ROOT)/include
+    pch_postrule         = 1
+    inputext             = .ddl
+    source_pre_extension = _ddl
+    header_pre_extension = , _ref
+    source_outputext     = .cpp
+    header_outputext     = .h
+  }
+
+  includes += $(OBJECTIVITY_ROOT)/include
+  libpaths += $(OBJECTIVITY_ROOT)/lib
+
+  specific(prop:microsoft) {
+    // Including <objy/query/Query.h> causes this warning
+    DisableSpecificWarnings += 4251
+  }
+}
