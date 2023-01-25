@@ -1,0 +1,3 @@
+project {
+  includes += $(MSGPACK_ROOT)/include
+}
