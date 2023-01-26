@@ -339,7 +339,7 @@ sub usageAndExit {
   my $base = basename($0);
   my $spc  = ' ' x (length($base) + 8);
   print STDERR "$base v$version\n",
-               "Usage: $base [-a tag1[,tagN]] [-b tag=dir] [-d dir]",
+               "Usage: $base [-a tag1[,tagN]] [-b tag=dir] [-d dir] ",
                ($hasSymlink ? '[-l] ' : ''), "[-o tag=dir]\n",
                $spc, "[-s tag1[,tagN]] [-x tag1[,tagN]] [-v] [-k] [-i]\n",
                $spc, "[install directory] [$insext files or directories]\n\n",
