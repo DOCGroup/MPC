@@ -1,0 +1,16 @@
+// -*- MPC -*-
+project {
+  Define_Custom(objectbox) {
+    command          = $(OBJECTBOX_ROOT)/bin/objectbox-generator
+    commandflags     = -cpp
+    pch_postrule     = 1
+    inputext         = .fbs
+    pre_extension    = .obx
+    source_outputext = .cpp
+    header_outputext = .hpp
+  }
+
+  includes += $(OBJECTBOX_ROOT)/include
+  libpaths += $(OBJECTBOX_ROOT)/lib
+  lit_libs += objectbox
+}
