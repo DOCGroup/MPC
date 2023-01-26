@@ -59,149 +59,156 @@
     VM heap size is insufficient for building projects the size of
     ACE/TAO/CIAO. A minimum of 768Mb or more is suggested. This can be
     done on the command line launch of eclipse, or in the
-    <code>eclipse.ini</code> file.</li>
+    <em class="Code">eclipse.ini</em> file.</li>
 
     </ul>
  </div>
 
   <div>
     <h3 class="Head2">Usage</h3>
-    For every <code>project <var>myprojname</var> { }</code> in mpc files, the CDT6 project type
+    <p class="Body">
+    For every <em class="Code">project <var>myprojname</var> { }</em> in mpc files, the CDT6 project type
     generates a corresponding "eclipse project" directory of the form
-    <samp>cdt_<var>myprojname</var></samp>.  The CDT6 Project Type
+    <em class="Code">cdt_<var>myprojname</var></em>.  The CDT6 Project Type
     uses Eclipse's <em>linked resource</em> feature to work around
     Eclipse's usual requirement that source files reside inside the Eclipse project
     directory.  However, the linked resource feature also comes with
     restrictions; see <a href="#fullpath">the note</a> for details.
-
-    <h4>Generic workflow</h4>
+    </p>
+    <h4 class="Head5">Generic workflow</h4>
+    <p class="Body">
     Presuming .mpc files already exist:
+    </p>
     <ol>
-     <li>Generate projects using <samp>-type cdt6</samp>.</li>
-      <li>Import projects into an Eclipse workspace.</li>
+      <li><p class="Body">Generate projects using <em class="Code">-type cdt6</em>.</p></li>
+      <li><p class="Body">Import projects into an Eclipse workspace.</p></li>
    </ol>
 
-   <h4>Workflow for building ACE/TAO</h4>
+   <h4 class="Head5">Workflow for building ACE/TAO</h4>
    <ol>
-     <li>Check out a copy of ACE/TAO.</li>
+     <li><p class="Body">Check out a copy of ACE/TAO.</p></li>
 
-     <li>Configure ACE/TAO for your target(s) by setting up
-   <samp>config.h</samp>.
+     <li><p class="Body">Configure ACE/TAO for your target(s) by setting up
+   <em class="Code">config.h</em>.</p>
      </li>
 
-     <li>Set up environment variables (<var>ACE_ROOT</var>,
+     <li><p class="Body">Set up environment variables (<var>ACE_ROOT</var>,
      <var>TAO_ROOT</var>, etc.), <var>PATH</var>,
-     <var>LD_LIBRARY_PATH</var> (or similar), etc.
+     <var>LD_LIBRARY_PATH</var> (or similar), etc.</p>
      </li>
 
-     <li>Verify settings in <samp>global.features</samp> and, if changes
+     <li><p class="Body">Verify settings in <em class="Code">global.features</em> and, if changes
      are necessary, make appropriate changes in
-     <samp>default.features</samp>.
+     <em class="Code">default.features</em>.</p>
      </li>
 
-     <li>Generate projects using <samp>-type cdt6</samp> insuring the
-     use of <samp>mwc.pl</samp> from within ACE, e.g.,
-     <blockquote><pre>
-$ cd $TAO_ROOT
-$ mwc.pl -type cdt6 TAO_ACE.mwc
-</pre></blockquote>
-     <samp>mwc.pl</samp> will churn for awhile.
+     <li><p class="Body">Generate projects using <em class="Code">-type cdt6</em> insuring the
+     use of <em class="Code">mwc.pl</em> from within ACE, e.g.,</p>
+     <blockquote>
+<p class="Code">$ cd $TAO_ROOT</p>
+<p class="Code">$ mwc.pl -type cdt6 TAO_ACE.mwc</p>
+</blockquote>
+     <p class="Body"><em class="Code">mwc.pl</em> will churn for awhile.</p>
      </li>
 
-     <li><em>Suggestion:</em> Verify that <strong>Project->Build
+     <li><p class="Body"><em>Suggestion:</em> Verify that <strong>Project->Build
      Automatically</strong> is unchecked (has no checkmark to its
      immediate left). If this is left on, then the build will start as
-     soon as the import in the next step begins, and it will build everything.</li>
+     soon as the import in the next step begins, and it will build everything.</p></li>
 
-     <li>From within Eclipse (preferably an otherwise-empty workspace) select
-     <strong>File->Import...</strong> and perform the following actions:
+     <li><p class="Body">From within Eclipse (preferably an otherwise-empty workspace) select
+     <strong>File->Import...</strong> and perform the following actions:</p>
      <ol type="a">
-       <li>Choose <strong>General->Existing Projects Into
-     Workspace</strong> and click <strong>Next</strong></li>
-       <li>In "Select Root Directory:" text field, enter the full path
+       <li><p class="Body">Choose <strong>General->Existing Projects Into
+     Workspace</strong> and click <strong>Next</strong></p></li>
+       <li><p class="Body">In "Select Root Directory:" text field, enter the full path
      to the directory <em>above</em> ACE, TAO, etc. (you can also use
      the "Browse" feature to select the directory from the GUI). For
      example, if you checked everything out into
-     <samp>/home/joedeveloper/acetao</samp> and ACE and TAO are in a
+     <em class="Code">/home/joedeveloper/acetao</em> and ACE and TAO are in a
      peer layout under that directory, you would enter
-     <samp>/home/joedeveloper/acetao</samp> in the text field.
-     </li>
-     <li>Eclipse will scan all the subdirectories looking for existing
+     <em class="Code">/home/joedeveloper/acetao</em> in the text field.
+     </p></li>
+     <li><p class="Body">Eclipse will scan all the subdirectories looking for existing
      projects; this can take a few minutes for something as large as
      TAO or CIAO. <strong>NOTE:</strong> If you have previously run
      MPC to generate CDT projects with one workspace
-     (<samp>.mwc</samp> file) and then ran it later with a different
+     (<em class="Code">.mwc</em> file) and then ran it later with a different
      workspace without removing the projects from the first
      generation, Eclipse will still find those projects for import.
      See <a href="#remove_projects">the note on removing generated
-     projects</a> for information on how to do that.</li>
+     projects</a> for information on how to do that.</p></li>
 
-     <li><strong>Be sure that the checkbox next to <em>Copy projects
+     <li><p class="Body"><strong>Be sure that the checkbox next to <em>Copy projects
      into workspace</em> is <em>UN</em>checked.</strong> Copying projects into
      the workspace unnecessarily duplicates files, plus we have found
      that Eclipse can get confused with file paths sometimes (though
-     sometimes it will work).</li>
+     sometimes it will work).</p></li>
 
-     <li>Feel free to use <em>Working Sets</em> or not. You may also
+     <li><p class="Body">Feel free to use <em>Working Sets</em> or not. You may also
      choose to import a subset of the discovered projects by
      manipulating them in the list, however, experience suggests that
      the list is ignorant of dependency interactions between projects,
      so you must manage that manually (<em>i.e.</em>, you could import
      a project, but not projects upon which the first depends, and
-     that first project would then fail to build).</li>
+     that first project would then fail to build).</p></li>
 
-     <li>Click <strong>Finish</strong> to proceed with the import.</li>
+     <li><p class="Body">Click <strong>Finish</strong> to proceed with the import.</p></li>
      </ol>
+     <p class="Body">
      Eclipse will now start populating the <em>Projects</em> pane with
      projects.  If you didn't uncheck <strong>Build
      Automatically</strong>, then builds will start.  Regardless, the
-     C++ indexer will run in the background across the source of all projects.</li>
+     C++ indexer will run in the background across the source of all projects.</p></li>
    </ol>
 
-   <h4>Building A Project</h4>
+   <h4 class="Head5">Building A Project</h4>
+   <p class="Body">
    To build a project or set of projects, select the project (or
    projects) in the <em>Project</em> pane, then select
    <strong>Project->Build Project</strong>. Eclipse will evaluate
    <em>ALL</em> dependencies automatically, though not necessarily
    quickly.
-   <p>
+   </p>
+   <p class="Body">
    <em>Hint:</em> a good choice to get all of ACE/TAO built is to
    choose the <em>Naming Service</em> project.
-
+   </p>
 </div>
 
 <div>
   <h3 class="Head2">Multiple Platforms</h3>
+  <p class="Body">
   Just as a project created within CDT can be set up to support
   multiple platforms, so too can projects generated via MPC. To the
   extent possible, the platforms are represented in generated projects
   in the same way as they are in "native" projects (though there will
   be some differences).
-
-  <h4>Generating Projects with Multiple Platform Support</h4>
-  <p>
-  Platforms are named in a list called <samp>platforms</samp> in the
+  </p>
+  <h4 class="Head5">Generating Projects with Multiple Platform Support</h4>
+  <p class="Body">
+  Platforms are named in a list called <em class="Code">platforms</em> in the
   CDT6 template (much like other MPC templates). The list defaults to
-  the platform on which <samp>mwc.pl</samp> is run.  To generate for
+  the platform on which <em class="Code">mwc.pl</em> is run.  To generate for
   another platforms, or for additional platforms, you must provide
-  <samp>platforms</samp> with the list of platforms to generate.
+  <em class="Code">platforms</em> with the list of platforms to generate.
   </p>
-  <p>
+  <p class="Body">
   Generate projects using a similar incantation to the default (from
-  above) using <samp>-type cdt6</samp> and <samp>-value_template
-  platform="&lt;platform_list&gt;"</samp>, insuring the
-     use of <samp>mwc.pl</samp> from within ACE, e.g.,
-     <blockquote><pre>
-$ cd $TAO_ROOT
-$ mwc.pl -type cdt6 -value_template platforms="linux cellppu" TAO_ACE.mwc
-</pre></blockquote>
+  above) using <em class="Code">-type cdt6</em> and <em class="Code">-value_template
+  platform="&lt;platform_list&gt;"</em>, insuring the
+     use of <em class="Code">mwc.pl</em> from within ACE, e.g.,
+     <blockquote>
+<p class="Code">$ cd $TAO_ROOT</p>
+<p class="Code">$ mwc.pl -type cdt6 -value_template platforms="linux cellppu" TAO_ACE.mwc</p>
+</blockquote>
   </p>
-  <p>
+  <p class="Body">
   Platforms are defined as scopes in <tt>templates/cdt6platforms.mpt</tt>.
   </p>
 
-  <h4>Cross-Compilation</h4>
-  <p>
+  <h4 class="Head5">Cross-Compilation</h4>
+  <p class="Body">
   Cross-compilation is handled the same as a platform; the target is
   the platform.  If you want to generate for cross-compilation, the
   cross-compiler information must be defined in a scope (typically
@@ -210,46 +217,47 @@ $ mwc.pl -type cdt6 -value_template platforms="linux cellppu" TAO_ACE.mwc
   the target, follow <a href="#addplatform">the instructions for adding
   a new platform.</a>
   </p>
-  <p>
-  In the example given above, <samp>cellppu</samp> is the name of the
+  <p class="Body">
+  In the example given above, <em class="Code">cellppu</em> is the name of the
   platform for cross-compilation.
   </p>
 
-  <h4>Adding a New Platform<a name="addplatform"></a></h4>
+  <h4 class="Head5">Adding a New Platform<a name="addplatform"></a></h4>
+  <p class="Body">
   To add a new platform, particularly one for cross-compilation, it's
   probably easiest to start from an existing scope, e.g.,
-  <samp>cellppu</samp>. For cross-compilation where the cross-compiler
+  <em class="Code">cellppu</em>. For cross-compilation where the cross-compiler
   toolchain is GNU Compiler-based, you will need to provide the names
   of the various executables in the toolchain in the values
-  <samp>as</samp>, <samp>ar</samp>, <samp>cc</samp>, and
-  <samp>cxx</samp>.  And, optionally, <samp>ccld</samp> and/or
-  <samp>cxxld</samp> if the linker used for linking C and C++
+  <em class="Code">as</em>, <em class="Code">ar</em>, <em class="Code">cc</em>, and
+  <em class="Code">cxx</em>.  And, optionally, <em class="Code">ccld</em> and/or
+  <em class="Code">cxxld</em> if the linker used for linking C and C++
   executables, respectively, is different from the respective
   compiler. CDT expects these to be in the path.
-
+  </p>
 </div>
   <div>
     <h3 class="Head2">Notes</h3>
     <ol>
-      <li>
+      <li><p class="Body">
       There is no generated workspace. Eclipse's concept of workspace is
       very different from MPC's, and there is no way to generate a
       workspace. Eclipse's workspace concept doesn't permit sharing
       among machines or developers or even checking a workspace into
       version control.
-      </li>
+      </p></li>
 
-      <li>The Eclipse "workspace" and MPC project + source must not be in the
+      <li><p class="Body">The Eclipse "workspace" and MPC project + source must not be in the
       same directory hierarchy.  For example, if you chose to have
       Eclipse store its workspace in
-      <samp>/home/joedeveloper/workspace</samp>, you may not put your
+      <em class="Code">/home/joedeveloper/workspace</em>, you may not put your
       MPC project+source under that directory.  However, putting the
-      MPC project+source under <samp>/home/joedeveloper/acetao</samp>
+      MPC project+source under <em class="Code">/home/joedeveloper/acetao</em>
       or similar, <em>i.e.</em>, as a <em>peer</em> to the workspace
       directory, is fine.
-      </li>
+      </p></li>
 
-      <li><a name="fullpath"></a>CDT6 uses Eclipse's <em>linked
+      <li><p class="Body"><a name="fullpath"></a>CDT6 uses Eclipse's <em>linked
       resource</em> feature to work around the usual requirement that
       all source code reside in Eclipse project directories.  These
       act similar to Unix symbolic links.  While convenient so that a
@@ -257,23 +265,23 @@ $ mwc.pl -type cdt6 -value_template platforms="linux cellppu" TAO_ACE.mwc
       layout, it comes at a price: the target of the link must be
       specified as a full path. The consequence of this restriction is
       that, once the CDT6 projects get generated, the source should
-      not move in the filesystem.</li>
+      not move in the filesystem.</p></li>
 
-      <li><a name="remove_projects"></a>MPC's CDT Project Generator
-    creates directories named <samp>cdt_*</samp> for projects, similar
+      <li><p class="Body"><a name="remove_projects"></a>MPC's CDT Project Generator
+    creates directories named <em class="Code">cdt_*</em> for projects, similar
     to how the GNUACE generator generates makefiles of the form
-    <samp>GNUmakefile.*</samp>. To remove all CDT projects from a
-    directory hierarchy, on Linux you can use a command such as:
-<pre>
-  $ find . -name 'cdt_*' -print | xargs rm -rf
-</pre>
+    <em class="Code">GNUmakefile.*</em>. To remove all CDT projects from a
+    directory hierarchy, on Linux you can use a command such as:</p>
+<blockquote>
+<p class="Code">$ find . -name 'cdt_*' -print | xargs rm -rf</p>
+</blockquote>
       </li>
 
-      <li>Perfect hash generation using the IDL compiler is not
+      <li><p class="Body">Perfect hash generation using the IDL compiler is not
     currently working because the IDL compiler cannot find the
-    <samp>gperf</samp> executable. This may be a <code>PATH</code>
+    <em class="Code">gperf</em> executable. This may be a <em class="Code">PATH</em>
     issue, "installation" issue, or an mpc file dependency issue.  The
-    IDL compiler works but does not generate perfect hash lookups.</li>
+    IDL compiler works but does not generate perfect hash lookups.</p></li>
     </ol>
   </div>
 
@@ -282,5 +290,5 @@ $ mwc.pl -type cdt6 -value_template platforms="linux cellppu" TAO_ACE.mwc
 
 <hr>
 <address></address>
-<!-- hhmts start --> Last modified: Thu Jul 22 11:14:15 CDT 2010 <!-- hhmts end -->
+<!-- hhmts start --> Last modified: Thu Jan 26 14:18:15 CDT 2010 <!-- hhmts end -->
 </body> </html>
