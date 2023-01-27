@@ -1,0 +1,10 @@
+// dot mwc.dot -Tpng -o mwc.png
+digraph workspace {
+  rankdir=LR;
+
+  mwcfile [shape="cylinder" height="1" label="MWC\nFile"];
+  mwc [shape="box" height="1" style="rounded" label="Make Workspace\nCreator"];
+  out [shape="box" height="1" label="Workspace File\n(Makefile, sln, etc.)"];
+                
+  mwcfile -> mwc -> out;
+}
