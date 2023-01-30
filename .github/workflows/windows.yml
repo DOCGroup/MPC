@@ -27,7 +27,7 @@ jobs:
             BuildConfiguration: Debug
             vcpkgarch: x64-windows
             vcpkglibdir: debug/lib
-            vcpkgpackages: openssl xerces-c zlib
+            vcpkgpackages: '"openssl", "xerces-c", "zlib"'
           - name: VS2019Release32
             vmimage: windows-2019
             mpctype: vs2019
@@ -35,7 +35,7 @@ jobs:
             BuildConfiguration: Release
             vcpkgarch: x86-windows
             vcpkglibdir: lib
-            vcpkgpackages: openssl xerces-c zlib
+            vcpkgpackages: '"openssl", "xerces-c", "zlib"'
           - name: VS2022Debug64
             vmimage: windows-2022
             mpctype: vs2022
@@ -43,7 +43,7 @@ jobs:
             BuildConfiguration: Debug
             vcpkgarch: x64-windows
             vcpkglibdir: debug/lib
-            vcpkgpackages: openssl xerces-c zlib
+            vcpkgpackages: '"openssl", "xerces-c", "zlib"'
           - name: VS2022Release32
             vmimage: windows-2022
             mpctype: vs2022
@@ -51,7 +51,7 @@ jobs:
             BuildConfiguration: Release
             vcpkgarch: x86-windows
             vcpkglibdir: lib
-            vcpkgpackages: openssl xerces-c zlib
+            vcpkgpackages: '"openssl", "xerces-c", "zlib"'
     runs-on: ${{ matrix.vmimage }}
     name: ${{ matrix.name }}
     env:
@@ -60,12 +60,14 @@ jobs:
       TAO_ROOT: ${{ github.workspace }}/ACE_TAO/TAO
       MPC_ROOT: ${{ github.workspace }}/
       VCPKG_ROOT: ${{ github.workspace }}/vcpkg
-      XERCESC_INCDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/include
-      XERCESC_LIBDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/${{ matrix.vcpkglibdir }}
-      SSL_INCDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/include
-      SSL_LIBDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/${{ matrix.vcpkglibdir }}
-      ZLIB_INCDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/include
-      ZLIB_LIBDIR: ${{ github.workspace }}/vcpkg/installed/${{ matrix.vcpkgarch }}/${{ matrix.vcpkglibdir }}
+      XERCESC_INCDIR: ${{ github.workspace }}/vcpkg_installed/${{ matrix.vcpkgarch }}/include
+      XERCESC_LIBDIR: ${{ github.workspace }}/vcpkg_installed/${{ matrix.vcpkgarch }}/${{ matrix.vcpkglibdir }}
+      SSL_INCDIR: ${{ github.workspace }}/vcpkg_installed/${{ matrix.vcpkgarch }}/include
+      SSL_LIBDIR: ${{ github.workspace }}/vcpkg_installed/${{ matrix.vcpkgarch }}/${{ matrix.vcpkglibdir }}
+      ZLIB_INCDIR: ${{ github.workspace }}/vcpkg_installed/${{ matrix.vcpkgarch }}/include
+      ZLIB_LIBDIR: ${{ github.workspace }}/vcpkg_installed/${{ matrix.vcpkgarch }}/${{ matrix.vcpkglibdir }}
+      VCPKG_DEFAULT_TRIPLET: ${{ matrix.vcpkgarch }}
+      VCPKG_INSTALLED_DIR: ${{ github.workspace }}/vcpkg_installed
     steps:
     - name: checkout MPC
       uses: actions/checkout@v3
@@ -74,13 +76,16 @@ jobs:
       with:
         repository: DOCGroup/ACE_TAO
         path: ${{ env.DOC_ROOT }}
+    - name: create vcpkg.json
+      run: |
+        '{"name": "tao","version-string": "githubaction","dependencies": [ ${{ matrix.vcpkgpackages }} ]}' > vcpkg.json
+      shell: pwsh
     - name: Install vcpkg
-      uses: lukka/run-vcpkg@v7
+      uses: lukka/run-vcpkg@v10
       with:
-        vcpkgGitCommitId: b86c0c35b88e2bf3557ff49dc831689c2f085090
-        vcpkgArguments: --recurse ${{ matrix.vcpkgpackages }}
-        vcpkgTriplet: ${{ matrix.vcpkgarch }}
+        vcpkgGitCommitId: 94ce0dab56f4d8ba6bd631ba59ed682b02d45c46
         appendedCacheKey: ${{ matrix.name }}
+        runVcpkgInstall: true
     - name: create $ACE_ROOT/ace/config.h
       run: |
         '#include "ace/config-win32.h"' > ${env:ACE_ROOT}/ace/config.h
