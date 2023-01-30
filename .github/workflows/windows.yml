@@ -81,6 +81,9 @@ jobs:
         vcpkgArguments: --recurse ${{ matrix.vcpkgpackages }}
         vcpkgTriplet: ${{ matrix.vcpkgarch }}
         appendedCacheKey: ${{ matrix.name }}
+    - uses: shogo82148/actions-setup-perl@v1
+      with:
+        perl-version: '5.36'
     - name: create $ACE_ROOT/ace/config.h
       run: |
         '#include "ace/config-win32.h"' > ${env:ACE_ROOT}/ace/config.h
