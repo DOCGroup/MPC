@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION <%cmake_minimum_required(3.12.0)%>)
+cmake_minimum_required(VERSION <%cmake_minimum_required(3.20.0)%>)
 
 <%marker(top)%>
 project(<%project_name%> <%language%>)
@@ -33,9 +33,12 @@ endif()
 <%endif%>
 <%endfor%>
 if(CMAKE_CONFIGURATION_TYPES)
-set(TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%><%if(libs)%> <%foreach(configurations)%><%fornotfirst("                          ")%>$<$<CONFIG:<%configuration%>>:<%foreach(libs)%><%fornotfirst(" ")%><%if(cmake_macro(lib))%>$<IF:$<BOOL:${<%cmake_macro(lib)%>_DEFINED}>,<%lib%>${LIBRARY_DECORATOR}<%lib_modifier%>,><%else%><%lib%>${LIBRARY_DECORATOR}<%lib_modifier%><%endif%><%endfor%>><%fornotlast("\n")%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
+  set(TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%><%if(libs)%>
+    <%foreach(libs)%><%fornotfirst(" ")%><%if(cmake_macro(lib))%>$<IF:$<BOOL:${<%cmake_macro(lib)%>_DEFINED}>,<%lib%>${LIBRARY_DECORATOR}<%lib_modifier%>,><%else%><%lib%>${LIBRARY_DECORATOR}<%lib_modifier%><%endif%><%endfor%><%endif%><%if(lit_libs)%>
+    <%lit_libs%><%endif%><%if(pure_libs)%>
+    <%pure_libs%><%endif%>)
 else()
-set(TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%><%if(libs)%><%foreach(libs)%> <%if(cmake_macro(lib))%>$<IF:$<BOOL:${<%cmake_macro(lib)%>_DEFINED}>,<%lib%>${LIBRARY_DECORATOR},><%else%><%lib%>${LIBRARY_DECORATOR}<%endif%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
+  set(TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%><%if(libs)%><%foreach(libs)%> <%if(cmake_macro(lib))%>$<IF:$<BOOL:${<%cmake_macro(lib)%>_DEFINED}>,<%lib%>${LIBRARY_DECORATOR},><%else%><%lib%>${LIBRARY_DECORATOR}<%endif%><%endfor%><%endif%><%if(lit_libs)%> <%lit_libs%><%endif%><%if(pure_libs)%> <%pure_libs%><%endif%>)
 endif()
 <%endif%>
 set(PROJECT_TARGET_<%uc(normalize(project_name))%> <%if(exename)%><%exename%><%else%><%if(sharedname)%><%sharedname%>${LIBRARY_DECORATOR}<%else%><%if(staticname)%><%staticname%>${LIBRARY_DECORATOR}<%else%><%project_name%>${LIBRARY_DECORATOR}<%endif%><%endif%><%endif%>)
@@ -79,12 +82,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_libout%>)
 <%endif%>
 <%endif%>
 
+<%if(exename || sharedname || staticname)%>
 <%if(compile_flags)%>
 target_compile_options(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%compile_flags%>)
 
 <%endif%>
 <%if(exename)%>
-add_executable(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>})
+add_executable(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>} ${HEADER_FILES_<%uc(normalize(project_name))%>} ${INLINE_FILES_<%uc(normalize(project_name))%>})
 target_link_libraries(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%>})
 <%if(staticflags)%>
 if(NOT BUILD_SHARED_LIBS)
@@ -95,7 +99,7 @@ endif()
 <%endif%>
 <%else%>
 <%if(sharedname)%>
-add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>})
+add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>} ${HEADER_FILES_<%uc(normalize(project_name))%>} ${INLINE_FILES_<%uc(normalize(project_name))%>})
 <%if(dynamicflags)%>
 if(BUILD_SHARED_LIBS)
   target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%dynamicflags%>)
@@ -111,10 +115,10 @@ if(NOT BUILD_SHARED_LIBS)
 endif()
 <%endif%>
 <%endif%>
-target_link_libraries(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%>})
+target_link_libraries(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC ${TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%>})
 <%else%>
 <%if(staticname)%>
-add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>})
+add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>} ${HEADER_FILES_<%uc(normalize(project_name))%>} ${INLINE_FILES_<%uc(normalize(project_name))%>})
 <%if(staticflags)%>
 target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%staticflags%>)
 <%endif%>
@@ -153,6 +157,7 @@ target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUB
 target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%macros%>)
 
 <%endif%>
+<%endif%>
 <%if(custom_types)%>
 <%foreach(custom_types)%>
 <%if(custom_type->input_files)%>
@@ -161,7 +166,7 @@ target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUB
 include(<%custom_type%> OPTIONAL)
 <%foreach(custom_type->input_files)%>
 <%uc(custom_type)%>_TARGET_SOURCES(
-    ${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%custom_type->input_file%>
+    ${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%custom_type->input_file%>
     <%uc(custom_type)%>_OPTIONS <%if(flag_overrides(custom_type->input_file, commandflags))%><%flag_overrides(custom_type->input_file, commandflags)%><%else%><%custom_type->commandflags%><%endif%><%if(custom_type->output_option)%> <%custom_type->output_option%> <%if(flag_overrides(custom_type->input_file, gendir))%><%flag_overrides(custom_type->input_file, gendir)%>/<%basename(custom_type->input_file->output_file)%><%else%><%custom_type->input_file->output_file%><%endif%><%endif%>)
 
 <%endfor%>
@@ -172,7 +177,7 @@ include(<%custom_type%> OPTIONAL)
 include(<%custom_type%> OPTIONAL)
 <%endif%>
 <%uc(custom_type)%>_TARGET_SOURCES(
-    ${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%custom_type->input_file%>
+    ${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%custom_type->input_file%>
 <%foreach(custom_type->input_file->commands)%>
     <%uc(custom_type->input_file->command->type)%>_OPTIONS <%custom_type->input_file->command->flags%><%fornotlast("\n")%><%endfor%>)
 
