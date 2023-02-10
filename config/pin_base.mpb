@@ -46,7 +46,6 @@ project {
 
     libs += xed
     libs += c-dynamic m-dynamic c++ c++abi unwind-dynamic
-    ldlibs =
   }
 
   verbatim (make, macros) {
