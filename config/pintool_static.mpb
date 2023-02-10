@@ -1,9 +1,4 @@
 project : pin_static {
-  specific (gnuace, make) {
-    libs += c-static os-apis
-    libs -= c-dynamic m-dynamic stlport-dynamic unwind-dynamic xed
-  }
-  
   verbatim (make, top) {
     no_hidden_visibility = 1
   }
