@@ -4,8 +4,8 @@ project {
   includes += $(PIN_ROOT)/source/include \
               $(PIN_ROOT)/source/include/pin \
               $(PIN_ROOT)/source/include/pin/gen \
-	          $(PIN_ROOT)/extras/stlport/include \
-	          $(PIN_ROOT)/extras/libstdc++/include \
+              	  $(PIN_ROOT)/extras/cxx/include \
+              	  $(PIN_ROOT)/extras/libstdc++/include \
 	          $(PIN_ROOT)/extras/crt/include \
 	          $(PIN_ROOT)/extras/crt/include/kernel/uapi \
 	          $(PIN_ROOT)/extras/crt/include/kernel/uapi/asm-x86 \
@@ -42,10 +42,11 @@ project {
 
   specific (gnuace, make) {
     compile_flags += -O3 -funwind-tables -fno-stack-protector -fasynchronous-unwind-tables -fomit-frame-pointer -fno-strict-aliasing -fno-rtti -fPIC -nostdlib -fpermissive -Wno-error=all -fno-exceptions
-    compile_flags -= -Wunused-parameter
+    compile_flags -= -Wunused-parameter -nostdlib
 
     libs += xed
-    libs += c-dynamic m-dynamic stlport-dynamic unwind-dynamic 
+    libs += c-dynamic m-dynamic c++ c++abi unwind-dynamic
+    ldlibs =
   }
 
   verbatim (make, macros) {
