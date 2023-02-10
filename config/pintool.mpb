@@ -38,7 +38,7 @@ project : pin {
 
 feature (ia32) {
   specific (vc9) {
-    link_	options += /ENTRY:Ptrace_DllMainCRTStartup@12
+    link_options += /ENTRY:Ptrace_DllMainCRTStartup@12
   }
 
   specific (prop:microsoft) {
