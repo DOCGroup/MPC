@@ -1,0 +1,22 @@
+// -*- MPC -*-
+project {
+  Define_Custom(Schema) {
+    automatic_in        = 1
+    automatic_out       = 1
+    command             = $(OS_ROOTDIR)/bin/ossg
+    commandflags        = -I $(OS_ROOTDIR)/include \
+                          -asdb <%input_noext%>.adb -asof <%input_noext%>.obj
+    inputext            = .imp
+    generic_outputext   = .obj, .adb
+    keyword schemaflags = commandflags
+  }
+
+  includes += $(OS_ROOTDIR)/include
+  libpaths += $(OS_ROOTDIR)/lib
+  libs     += ostore
+
+  specific(prop:microsoft) {
+    macros += _CRT_SECURE_NO_WARNINGS
+    exceptionhandling = Async
+  }
+}
