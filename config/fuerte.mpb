@@ -1,12 +1,7 @@
 // -*- MPC -*-
-project: boost_date_time, openssl {
+project: boost_date_time, openssl, velocypack {
   macros   += NGHTTP2_STATICLIB
-  includes += $(ARANGODB_ROOT)/include
-  libpaths += $(ARANGODB_ROOT)/lib
-  lit_libs += fuerte llhttp nghttp2 velocypack
-
-  specific(prop:microsoft) {
-    LanguageStandard = stdcpp20
-    //DisableSpecificWarnings += 26481
-  }
+  includes += $(FUERTE_ROOT)/include
+  libpaths += $(FUERTE_ROOT)/lib
+  lit_libs += fuerte llhttp nghttp2
 }

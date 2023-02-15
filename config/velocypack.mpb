@@ -1,0 +1,10 @@
+// -*- MPC -*-
+project {
+  includes += $(VELOCYPACK_ROOT)/include
+  libpaths += $(VELOCYPACK_ROOT)/lib
+  lit_libs += velocypack
+
+  specific(prop:microsoft) {
+    LanguageStandard = stdcpp20
+  }
+}
