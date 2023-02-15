@@ -17,7 +17,7 @@ project: mysql {
 
   macros   += DATABASE_MYSQL LIBODB_MYSQL_INCLUDE_SHORT
   includes += $(ODB_ROOT)
-  libpaths += $(ODB_ROOT)/lib
+  libpaths += $(ODB_ROOT)/lib64 $(ODB_ROOT)/lib
 
   specific(prop:windows) {
     macros += WIN32_LEAN_AND_MEAN
