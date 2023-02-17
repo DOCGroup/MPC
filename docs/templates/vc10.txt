@@ -21,6 +21,7 @@ clrimagetype = Sets the type of a CLR image (ForceIJWImage, ForcePureILImage, Fo
 clrsupportlasterror = Preserve Last Error Code for PInvoke Calls (Enabled = default, Disabled, SystemDlls).
 clrthreadattribute = Explicitly specify the threading attribute for the entry point of your CLR program (MTAThreadingAttribute, STAThreadingAttribute).
 clrunmanagedcodecheck = Specifies whether the linker will apply SuppressUnmanagedCodeSecurityAttribute to linker-generated PInvoke calls from managed code into native DLLs.
+codeanalysisruleset = Specifies the code analysis ruleset file for the project.
 common_defines = Specifies macros that are common to all target types.
 compileas = Override default C or C++ selection (CompileAsC, CompileAsCpp).
 compileasmanaged = Use this only if you need to explicitly set the MSBuild XML CompileAsManaged tag.  Otherwise use MPC's built-in keyword for "managed".
