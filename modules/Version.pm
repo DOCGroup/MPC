@@ -18,7 +18,7 @@ use File::Spec;
 # ************************************************************
 
 ## This is the starting major and minor version
-my $version = '5.0';
+my $version = '5.1';
 my $once    = 1;
 my $cache   = 'modules/.version';
 
