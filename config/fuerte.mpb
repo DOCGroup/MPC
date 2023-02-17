@@ -1,0 +1,7 @@
+// -*- MPC -*-
+project: boost_date_time, openssl, velocypack {
+  macros   += NGHTTP2_STATICLIB
+  includes += $(FUERTE_ROOT)/include
+  libpaths += $(FUERTE_ROOT)/lib
+  lit_libs += fuerte llhttp nghttp2
+}
