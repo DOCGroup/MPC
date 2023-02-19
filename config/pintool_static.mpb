@@ -13,9 +13,8 @@ project : pin_static {
       LDFLAGS  -= -lpthread
     else
       CPPFLAGS += -DTARGET_LINUX
-      LDFLAGS  += -Wl,--hash-style=sysv -Wl,-Bsymbolic
-      LDFLAGS  -= -ldl -lpthread
-      LDLIBS   += -lpindwarf -ldl
+      LDFLAGS  += -Wl,--hash-style=sysv -Wl,-Bsymbolic,$(PIN_ROOT)/intel64/runtime/pincrt/crtbegin.o $(PIN_ROOT)/intel64/runtime/pincrt/crtend.o
+      LDLIBS += -nostdlib -ldl-dynamic -lpindwarf
     endif
   }
 
@@ -26,7 +25,6 @@ project : pin_static {
     else
       # TODO Add support for linking against gcc libraries included with Pin
       CPPFLAGS += -DTARGET_LINUX
-      LIBS     += -lpindwarf
       LDFLAGS  += -Wl,--hash-style=sysv -Wl,-Bsymbolic
     endif
   }

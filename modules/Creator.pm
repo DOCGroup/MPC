@@ -1327,7 +1327,7 @@ sub get_initial_relative_values {
 
 sub get_secondary_relative_values {
   my $self = shift;
-  return ($self->{'use_env'} ? \%ENV :
+  return ($self->get_use_env() ? \%ENV :
                                $self->{'relative'}), $self->{'expand_vars'};
 }
 

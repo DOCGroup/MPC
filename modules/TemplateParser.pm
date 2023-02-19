@@ -69,6 +69,7 @@ my %keywords = ('if'              => 0,
                 'reverse'         => $get_type|$perform_type,
                 'sort'            => $get_type|$perform_type,
                 'uniq'            => $get_type|$perform_type,
+                'cmake_macro'     => $get_type|$perform_type|$doif_type,
                 'multiple'        => $get_type|$doif_type|$get_combined_type,
                 'starts_with'     => $get_type|$doif_type|$get_combined_type,
                 'ends_with'       => $get_type|$doif_type|$get_combined_type,
@@ -1718,6 +1719,43 @@ sub handle_basename {
 
   $self->append_current(
             $self->tp_basename($self->get_value_with_default($name)));
+}
+
+
+sub actual_cmake_macro {
+  my($self, $value) = @_;
+  return $1 if ($value =~ /^\$\{(\w+)\}$/);
+  return '';
+}
+
+
+sub perform_cmake_macro {
+  my($self, $value) = @_;
+  my @val;
+  foreach my $val (@$value) {
+    push(@val, $self->actual_cmake_macro($val));
+  }
+  return @val;
+}
+
+
+sub get_cmake_macro {
+  my($self, $name) = @_;
+  return $self->actual_cmake_macro($self->get_value_with_default($name));
+}
+
+
+sub doif_cmake_macro {
+  my($self, $value) = @_;
+  return (defined $value && $value ne '');
+}
+
+
+sub handle_cmake_macro {
+  my($self, $name) = @_;
+
+  $self->append_current(
+            $self->actual_cmake_macro($self->get_value_with_default($name)));
 }
 
 

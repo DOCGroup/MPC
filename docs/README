@@ -3,8 +3,7 @@
 .:: 3/13/2002 ::.
 
 The Makefile, Project and Workspace Creator.
-Designed by Justin Michel (michel_j@ociweb.com) and Chad Elliott.
-Implemented by Chad Elliott (elliott_c@ociweb.com).
+Designed by Justin Michel and Chad Elliott.
 
 A single tool (MPC) can be used to generate tool specific input (i.e.,
 Makefile, dsp, vcproj, etc.)  The generator takes platform and building

@@ -1,0 +1,6 @@
+// -*- MPC -*-
+project: boost_base, msgpack {
+  includes += $(OP_LITE_ROOT)
+  libpaths += $(OP_LITE_ROOT)/lib
+  libs += op_lite
+}

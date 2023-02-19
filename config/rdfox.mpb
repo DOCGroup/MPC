@@ -1,0 +1,10 @@
+// -*- MPC -*-
+project {
+  includes += $(RDFOX_ROOT)/include
+  libpaths += $(RDFOX_ROOT)/lib
+  lit_libs += libRDFox
+
+  specific(prop:microsoft) {
+    exceptionhandling = Async
+  }
+}

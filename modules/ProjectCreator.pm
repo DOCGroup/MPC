@@ -835,6 +835,9 @@ sub parse_line {
         ## Project Ending
         if (!defined $self->{'reading_parent'}->[0] &&
             !$self->{'reading_global'}) {
+          ## Call into the project type's pre-generation hook.
+          $self->pre_generation();
+
           ## Fill in all the default values
           $self->generate_defaults();
 
@@ -2862,7 +2865,7 @@ sub generate_default_target_names {
         if (!defined $sources[0]) {
           @sources = $self->get_component_list($self->get_resource_tag(), 1);
         }
-        if (defined $sources[0]) {
+        if (defined $sources[0] || $self->default_to_library()) {
           if (!$shared_empty) {
             $self->process_assignment('sharedname',
                                       $self->{'unmodified_project_name'});
@@ -3347,7 +3350,7 @@ sub remove_duplicated_files {
 
 
 sub generated_source_listed {
-  my($self, $gent, $tag, $arr, $sext) = @_;
+  my($self, $gent, $tag, $arr) = @_;
   my $names = $self->{$tag};
 
   ## Find out which generated source files are listed
@@ -3417,9 +3420,7 @@ sub list_default_generated {
               UNIVERSAL::isa($self->{'special_supplied'}->{$type}, 'ARRAY'))) &&
             (!defined $self->{'generated_exts'}->{$type} ||
              $self->{'generated_exts'}->{$type}->{'automatic_in'})) {
-          if (!$self->generated_source_listed(
-                                $gentype, $type, \%arr,
-                                $self->{'valid_components'}->{$gentype})) {
+          if (!$self->generated_source_listed($gentype, $type, \%arr)) {
             $self->add_generated_files($gentype, $type, $group, \%arr);
           }
         }
@@ -4679,9 +4680,9 @@ sub get_custom_value {
     ## have extraneous data associated with commands from previous iterations.
     $self->{'custom_multi_details'} = {};
 
-    my %details = ('flags' => 'commandflags',
+    my %details = ('flags'  => 'commandflags',
                    'outopt' => 'output_option',
-                   'gdir' => 'gendir');
+                   'gdir'   => 'gendir');
     for my $tag (@{$self->{'custom_multi_cmd'}->{$based}}) {
       my $command = $self->get_custom_assign_or_override('command', $tag,
                                                          $based, @params);
@@ -6125,6 +6126,14 @@ sub warn_useless_project {
 
 sub pre_write_output_file {
   return 1;
+}
+
+sub pre_generation {
+  #my $self = shift;
+}
+
+sub default_to_library {
+  return 0;
 }
 
 1;

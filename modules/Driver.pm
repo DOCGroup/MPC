@@ -48,6 +48,8 @@ sub new {
   my @creators = @_;
   my $self = $class->SUPER::new();
 
+  Version::cache();
+
   $self->{'path'}     = $path;
   $self->{'basepath'} = ::getBasePath();
   $self->{'name'}     = $name;
