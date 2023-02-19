@@ -1,0 +1,12 @@
+// -*- MPC -*-
+project {
+  includes += $(REDIS_ROOT)/include
+  libpaths += $(REDIS_ROOT)/lib
+  lit_libs += redis++
+  libs     += hiredis
+
+  specific(prop:microsoft) {
+    LanguageStandard = stdcpp17
+    DisableSpecificWarnings += 4200
+  }
+}

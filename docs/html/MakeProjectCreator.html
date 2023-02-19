@@ -99,7 +99,7 @@
                   <p class="Tbl-Body">&nbsp;</p>
 
                   <div>
-                    <img src="images/mpc.gif" alt=
+                    <img src="images/mpc.png" alt=
                   "Generating projects with mpc.pl">
                     </div>
                 </td>
@@ -137,7 +137,7 @@
                   <p class="Tbl-Body">&nbsp;</p>
 
                   <div>
-                    <img src="images/mwc.gif" alt=
+                    <img src="images/mwc.png" alt=
                   "Generating workspaces with mwc.pl">
                     </div>
                 </td>
@@ -280,6 +280,18 @@
                     <p class="Tbl-Body">
                       Eclipse CDT 7 (for Eclipse "Helios" 3.6)
                     </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td rowspan="1" colspan="1">
+                    <p class="Tbl-Body">
+                      <em class="TableCode">cmake</em>
+                    </p>
+                  </td>
+
+                  <td rowspan="1" colspan="1">
+                    <p class="Tbl-Body">Support for CMake requires user provided modules for custom commands.</p>
                   </td>
                 </tr>
 
@@ -2381,6 +2393,25 @@ class="Code">specific</em> clause.
                         <td rowspan="1" colspan="1">
                           <p class="Tbl-Body">
                             <em class=
+                      "TableCode">buildflags</em>
+                          </p>
+                        </td>
+
+                        <td rowspan="1" colspan="1">
+                          <p class="Tbl-Body">
+                            This keyword can only be used as a source component
+                            scoped setting (ie. inside the scope of
+                            Source_Files).  It specifies additional build flags
+                            that will be passed to the compiler as the source
+                            files are being compiled.
+                          </p>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td rowspan="1" colspan="1">
+                          <p class="Tbl-Body">
+                            <em class=
                       "TableCode">custom_only</em>
                           </p>
                         </td>
@@ -3895,6 +3926,102 @@ class="Code">specific</em> clause.
                         <tr>
                           <td rowspan="1" colspan="1">
                             <p class="Tbl-Body">
+                              <em class="TableCode">vc14</em>
+                            </p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">&nbsp;</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">&nbsp;</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">Yes</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">Yes</p>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">
+                              <em class="TableCode">vs2017</em>
+                            </p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">&nbsp;</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">&nbsp;</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">Yes</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">Yes</p>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">
+                              <em class="TableCode">vs2019</em>
+                            </p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">&nbsp;</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">&nbsp;</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">Yes</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">Yes</p>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">
+                              <em class="TableCode">vs2022</em>
+                            </p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">&nbsp;</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">&nbsp;</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">Yes</p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">Yes</p>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">
                               <em class="TableCode">wix</em>
                             </p>
                           </td>
@@ -4005,7 +4132,9 @@ class="Code">specific</em> clause.
 
                   <p class="Code">&nbsp;&nbsp;Define_Custom(MOC) {</p>
 
-                  <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;automatic = 0</p>
+                  <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;automatic_in = 0</p>
+
+                  <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;automatic_out = 0</p>
 
                   <p class="Code">
                     &nbsp;&nbsp;&nbsp;&nbsp;command =
@@ -4921,23 +5050,25 @@ class="Code">specific</em> clause.
 
                   <p class="Code">&nbsp;&nbsp;Define_Custom(Quogen) {</p>
 
-                  <p class="Code">&nbsp;&nbsp;automatic = 0</p>
+                  <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;automatic_in = 0</p>
 
-                  <p class="Code">&nbsp;&nbsp;command = perl quogen.pl</p>
+                  <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;automatic_out = 0</p>
+
+                  <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;command = perl quogen.pl</p>
 
                   <p class="Code">
-                    &nbsp;&nbsp;commandflags = --debuglevel=1
+                    &nbsp;&nbsp;&nbsp;&nbsp;commandflags = --debuglevel=1
                     --language=c++ \
                   </p>
 
                   <p class="Code">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--kernel_language=c++
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--kernel_language=c++
                   </p>
 
-                  <p class="Code">&nbsp;&nbsp;inputext = .prp</p>
+                  <p class="Code">&nbsp;&nbsp;&nbsp;&nbsp;inputext = .prp</p>
 
                   <p class="Code">
-                    &nbsp;&nbsp;keyword quogenflags =
+                    &nbsp;&nbsp;&nbsp;&nbsp;keyword quogenflags =
                     commandflags
                   </p>
 
@@ -6268,13 +6399,23 @@ class="Code">specific</em> clause.
 
                 <p class="Code">bzip2 = 0</p>
 
+                <p class="Code">erlang = 0</p>
+
                 <p class="Code">java = 0</p>
 
                 <p class="Code">mfc = 0</p>
 
+                <p class="Code">libpng = 0</p>
+
+                <p class="Code">openssl11 = 0</p>
+
                 <p class="Code">python = 0</p>
 
                 <p class="Code">qt = 0</p>
+
+                <p class="Code">qt4 = 0</p>
+
+                <p class="Code">qt5 = 0</p>
 
                 <p class="Code">rpc = 0</p>
 
@@ -6292,7 +6433,13 @@ class="Code">specific</em> clause.
 
                 <p class="Code">uses_wchar = 0</p>
 
-                <p class="Code">xalan = 0</p>
+                <p class="Code">wireshark_any = 0</p>
+
+                <p class="Code">wireshark = 0</p>
+
+                <p class="Code">wireshark_cmake = 0</p>
+
+                <p class="Code">xalanc = 0</p>
 
                 <p class="Code">xerces = 0</p>
 
@@ -6782,7 +6929,7 @@ class="Code">specific</em> clause.
                 </blockquote>
 
                 <p class="Body">
-                  The following mpc file (<em class=
+                  The following .mpc file (<em class=
             "Code">RTEC_Perf.mpc</em> ) shows the simple and small number of
                   lines required to generate usable build tool project files.
                 </p>
@@ -6899,7 +7046,9 @@ class="Code">specific</em> clause.
                   Line five adds <em class=
             "Code">TAO_RTEC_PERF_BUILD_DLL</em> to the <em class=
             "Code">dllflags</em>, which defines a macro that is used by the
-                  <em class="Code">rtec_perf_export.h</em> header file.
+                  <em class="Code">rtec_perf_export.h</em> header file when
+                  building shared libraries on platforms that support symbol
+                  visibility.
                 </p>
 
                 <blockquote>
@@ -8174,24 +8323,45 @@ class="Code">specific</em> clause.
 
                 <blockquote>
 
-                  <p class="Code">document_template.pl v1.3</p>
+                  <p class="Code">document_template.pl v1.4</p>
 
                   <p class="Code">
                     Usage: document_template.pl &lt;template&gt;
-                    [&lt;html output&gt; [language]]
+                    [&lt;outputfile&gt; [language]]
                   </p>
 
                   <p class="Code">&nbsp;</p>
 
                   <p class="Code">
-                    html output - This defaults to the name of the
+                    template &nbsp;&nbsp;&nbsp;- .mpd file to document.  Certain MPC types don't
+                    use a template,
+                  </p>
+
+                  <p class="Code">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in that case this argument can be the Perl module.
+                  </p>
+
+                  <p class="Code">
+                    outputfile &nbsp;- This defaults to the name of the
                     template file with the .mpd
                   </p>
 
                   <p class="Code">
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extension replaced with
-                    .html.
+                    '.html'  If &lt;outputfile&gt; ends in '.txt',
+                  </p>
+
+                  <p class="Code">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the output is in text
+                    format similar to what is found in
+                  </p>
+
+                  <p class="Code">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.../docs/templates.
                   </p>
 
                   <p class="Code">
@@ -8554,6 +8724,21 @@ class="Code">specific</em> clause.
                               The <em class=
                       "TableCode">gendir</em> for this particular
                               command.
+                            </p>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">
+                              <em class=
+                      "TableCode">command-&gt;type</em>
+                            </p>
+                          </td>
+
+                          <td rowspan="1" colspan="1">
+                            <p class="Tbl-Body">
+                              The original type of file for this command.
                             </p>
                           </td>
                         </tr>

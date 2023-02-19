@@ -1,0 +1,3 @@
+project: boost_base {
+  includes += $(MSGPACK_ROOT)/include
+}

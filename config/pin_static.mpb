@@ -1,4 +1,5 @@
 project : pin {
+  requires += static
   specific (!prop:windows) {
     libs += sapin
     libs -= pin

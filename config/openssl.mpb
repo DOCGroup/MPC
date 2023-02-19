@@ -13,8 +13,10 @@ feature(openssl) {
     $(SSL_ROOT)/lib
   }
 
-  includes += $(SSL_INCDIR)
-  libpaths += $(SSL_LIBDIR)
+  specific(!cmake) {
+    includes += $(SSL_INCDIR)
+    libpaths += $(SSL_LIBDIR)
+  }
 
   specific(prop:windows) {
     lit_libs += libeay32 ssleay32
@@ -35,6 +37,15 @@ feature(openssl) {
   }
   specific(prop:microsoft) {
     libpaths += $(SSL_ROOT)/lib/VC
+  }
+
+  specific(cmake) {
+    // Undo the else of the !prop:windows above.
+    lit_libs -= ssl crypto
+    includes -= /usr/kerberos/include
+
+    lit_libs += ${OPENSSL_LIBRARIES}
+    includes += ${OPENSSL_INCLUDE_DIR}
   }
 }
 

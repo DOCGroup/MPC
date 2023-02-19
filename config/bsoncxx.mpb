@@ -1,0 +1,6 @@
+// -*- MPC -*-
+project: boost_base {
+  includes += $(MONGODB_ROOT)/include/bsoncxx/v_noabi
+  libpaths += $(MONGODB_ROOT)/lib
+  lit_libs += bsoncxx bson-1.0
+}

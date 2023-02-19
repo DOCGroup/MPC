@@ -1,0 +1,34 @@
+// -*- MPC -*-
+project: mysql {
+  Define_Custom(odb) {
+    automatic_in            = 0
+    output_follows_input    = 0
+    command                 = $(ODB_ROOT)/bin/odb
+    commandflags            = -d mysql --generate-query --generate-schema \
+                              --odb-file-suffix .odb --sql-file-suffix .odb
+    pch_postrule            = 1
+    inputext                = .h, .hpp, .hxx, .hh
+    pre_extension           = .odb
+    source_outputext        = .cxx
+    inline_outputext        = .ixx
+    header_outputext        = .hxx
+    documentation_outputext = .sql
+  }
+
+  macros   += DATABASE_MYSQL LIBODB_MYSQL_INCLUDE_SHORT
+  includes += $(ODB_ROOT)
+  libpaths += $(ODB_ROOT)/lib64 $(ODB_ROOT)/lib
+
+  specific(prop:windows) {
+    macros += WIN32_LEAN_AND_MEAN
+    Debug::lit_libs   += odb-d odb-mysql-d
+    Release::lit_libs += odb odb-mysql
+  } else {
+    lit_libs += odb odb-mysql
+  }
+
+  specific(prop:microsoft) {
+    // Ignore unrecognized pragma's and non-exported base class
+    DisableSpecificWarnings += 4068 4275
+  }
+}

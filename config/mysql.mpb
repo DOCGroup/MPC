@@ -1,6 +1,6 @@
 // -*- MPC -*-
 project {
-  includes += $(MYSQL_ROOT)/include/mysql
-  libpaths += $(MYSQL_ROOT)/lib/mysql
+  includes += $(MYSQL_ROOT)/include $(MYSQL_ROOT)/include/mysql
+  libpaths += $(MYSQL_ROOT)/lib $(MYSQL_ROOT)/lib/mysql
   lit_libs += mysqlclient
 }

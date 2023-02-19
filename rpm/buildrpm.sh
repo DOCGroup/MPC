@@ -104,7 +104,7 @@ sed "s/VERSION/$VERSION/; s/PACKAGER/$PACKAGER/; s!FINALDIR!$FDIR!" $loc/rpm/MPC
 ## Make a copy of the original MPC source to the new directory
 mkdir -p $MDIR/$FDIR
 cd $loc
-tar --exclude=.svn -cf - . | (cd $WDIR/$MDIR/$FDIR; tar -xf -)
+tar --exclude=.git\* -cf - . | (cd $WDIR/$MDIR/$FDIR; tar -xf -)
 
 ## Create the build source tar.bz2
 cd $WDIR

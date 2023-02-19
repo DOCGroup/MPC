@@ -1,0 +1,5 @@
+// -*- MPC -*-
+project: bsoncxx {
+  includes += $(MONGODB_ROOT)/include/mongocxx/v_noabi
+  lit_libs += mongocxx mongoc-1.0
+}

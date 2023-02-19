@@ -115,7 +115,7 @@
 <%endif%>
 <%endif%>
 <%endif%>
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'"><%CodeAnalysisRuleSet("AllRules.ruleset")%></CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='<%configuration%>|<%platform%>'" />
 <%if(ReferencePath)%>

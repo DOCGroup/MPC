@@ -1,0 +1,20 @@
+// dot mpc.dot -Tpng -o mpc.png
+digraph project {
+  rankdir=LR;
+  splines="ortho";
+
+  mpcfile [shape="cylinder" height="1" label="MPC\nFile"];
+  tfile [shape="cylinder" height="1" label="Template\nFile"];
+  tifile [shape="cylinder" height="1" label="Template\nInput File"];
+
+  p [shape="point" width="0"];
+
+  mpc [shape="box" height="1" style="rounded" label="Make Project\nCreator"];
+  out [shape="box" height="1" label="Project File\n(Makefile, vcxproj, etc.)"];
+
+  // Send all three into the point with no arrowhead
+  {mpcfile, tfile, tifile} -> p [dir="none"];
+
+  // Go from the point to the rest
+  p -> mpc -> out;
+}

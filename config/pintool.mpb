@@ -18,8 +18,8 @@ project : pin {
       LDFLAGS  -= -lpthread
     else
       CPPFLAGS += -DTARGET_LINUX -fno-rtti -Wl,--hash-style=sysv
-      LDLIBS   += -nostdlib -ldl-dynamic -lpin3dwarf
-      LDFLAGS  += -Wl,-Bsymbolic -Wl,--version-script=$(PIN_ROOT)/source/include/pin/pintool.ver
+      LDLIBS   += -nostdlib -ldl-dynamic -lpindwarf
+      LDFLAGS  += -Wl,-Bsymbolic -Wl,$(PIN_ROOT)/intel64/runtime/pincrt/crtbeginS.o $(PIN_ROOT)/intel64/runtime/pincrt/crtendS.o
     endif
   }
 
