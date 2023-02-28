@@ -44,44 +44,6 @@ endif()
 set(PROJECT_TARGET_<%uc(normalize(project_name))%> <%if(exename)%><%exename%><%else%><%if(sharedname)%><%sharedname%>${LIBRARY_DECORATOR}<%else%><%if(staticname)%><%staticname%>${LIBRARY_DECORATOR}<%else%><%project_name%>${LIBRARY_DECORATOR}<%endif%><%endif%><%endif%>)
 <%marker(macros)%>
 
-<%if(exeout)%>
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <%env_exeout%>)
-<%if(use_lib_modifier)%>
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG <%env_exeout%>)
-<%endif%>
-<%endif%>
-<%if(!exename)%>
-<%if(libout)%>
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY <%env_libout%>)
-<%if(use_lib_modifier)%>
-<%foreach(configurations)%>
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_libout%>)
-<%endfor%>
-<%endif%>
-<%endif%>
-<%if(dllout)%>
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY <%env_dllout%>)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <%env_dllout%>)
-<%if(use_lib_modifier)%>
-<%foreach(configurations)%>
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_dllout%>)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_dllout%>)
-<%endfor%>
-<%endif%>
-<%else%>
-<%if(libout)%>
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY <%env_libout%>)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <%env_libout%>)
-<%if(use_lib_modifier)%>
-<%foreach(configurations)%>
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_libout%>)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_libout%>)
-<%endfor%>
-<%endif%>
-<%endif%>
-<%endif%>
-<%endif%>
-
 <%if(exename || sharedname || staticname)%>
 <%if(compile_flags)%>
 target_compile_options(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%compile_flags%>)
@@ -90,6 +52,12 @@ target_compile_options(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC 
 <%if(exename)%>
 add_executable(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>} ${HEADER_FILES_<%uc(normalize(project_name))%>} ${INLINE_FILES_<%uc(normalize(project_name))%>})
 target_link_libraries(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%>})
+if(CMAKE_IMPORT_LIBRARY_SUFFIX AND BUILD_SHARED_LIBS AND TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%>)
+  add_custom_command(TARGET ${PROJECT_TARGET_<%uc(normalize(project_name))%>} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:${PROJECT_TARGET_<%uc(normalize(project_name))%>}> $<TARGET_FILE_DIR:${PROJECT_TARGET_<%uc(normalize(project_name))%>}>
+    COMMAND_EXPAND_LISTS
+  )
+endif()
 <%if(staticflags)%>
 if(NOT BUILD_SHARED_LIBS)
   target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%staticflags%>)
