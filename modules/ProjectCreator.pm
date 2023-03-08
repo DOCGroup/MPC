@@ -1386,7 +1386,6 @@ sub process_component_line {
       $key =~ s/\\/\//g if ($self->{'convert_slashes'});
       my $cmdflags = $$flags{'commandflags'};
       my($add_out, $deps) = $cmdHelper->get_output($key, $cmdflags);
-
       push(@{$self->{'custom_special_output'}->{$tag}->{$key}}, @$add_out);
       foreach my $depTag (keys %$deps) {
         foreach my $depFile (keys %{$deps->{$depTag}}) {
@@ -3183,10 +3182,9 @@ sub correct_generated_files {
 sub generate_default_components {
   my($self, $files, $passed) = @_;
   my $genext   = $self->{'generated_exts'};
-  my @gc       = reverse sort { $self->sort_generated_types($a, $b)
-                              } keys %$genext;
   my @tags     = (defined $passed ? $passed :
-                    (@gc, keys %{$language{$self->get_language()}->[0]}));
+                    ($self->get_generated_components(),
+                     keys %{$language{$self->get_language()}->[0]}));
   my $pchh     = $self->get_assignment('pch_header');
   my $pchc     = $self->get_assignment('pch_source');
   my $recurse  = $self->get_assignment('recurse');
@@ -3195,11 +3193,9 @@ sub generate_default_components {
   my $cmdflags = 'commandflags';
 
   ## The order of @tags does make a difference in the way that generated
-  ## files get added.  Hence the sort call on the generate_exts keys to
-  ## ensure that user defined types come first.  They are reverse sorted
-  ## using the custom sort function to ensure that user defined types
-  ## that rely on other user defined types for input files are processed
-  ## first.
+  ## files get added.  The function that returns the generated components
+  ## sorts the tags such that user defined types that rely on other user
+  ## defined types for input files are processed first.
   foreach my $tag (@tags) {
     if (!defined $genext->{$tag} ||
         $genext->{$tag}->{'automatic_in'}) {
@@ -3688,27 +3684,80 @@ sub remove_excluded {
 }
 
 
-sub sort_generated_types {
-  ## We need to sort the custom component types such that a custom type
-  ## that generates input for another custom type comes first in the
-  ## list.
-  my($self, $left, $right, $norecurse) = @_;
-  foreach my $key (keys %{$self->{'generated_exts'}->{$left}}) {
+sub get_outputexts {
+  my($self, $type) = @_;
+  my @outputexts;
+
+  ## Get all generated output extensions for this generated type.
+  foreach my $key (keys %{$self->{'generated_exts'}->{$type}}) {
     if ($key =~ /_files$/) {
-      foreach my $regex (@{$self->{'generated_exts'}->{$left}->{$key}}) {
-        my $ext = $regex;
-        $ext =~ s/\\//g;
-        foreach my $vreg (@{$self->{'valid_components'}->{$right}}) {
-          return -1 if ($ext =~ /$vreg$/);
+      push(@outputexts, @{$self->{'generated_exts'}->{$type}->{$key}});
+    }
+  }
+
+  ## If the generated type has a helper, get it and add the output exstensions
+  ## to the list.
+  my $cmdHelper = $self->find_command_helper($type);
+  push(@outputexts, @{$cmdHelper->get_outputexts()}) if (defined $cmdHelper);
+
+  return \@outputexts;
+}
+
+sub get_generated_components {
+  my $self = shift;
+  my @list = keys %{$self->{'generated_exts'}};
+  my $len  = scalar(@list);
+  my %geninfo;
+  my %movedfor;
+  for(my $i = 1; $i < $len; $i++) {
+    my $right = $list[$i];
+
+    ## Cache the outputexts into a hash map so that we do not have to call a
+    ## function more than once per type.  Since items in the list will be
+    ## swapped and $i modified, we are very likely to hit this cache multiple
+    ## times.
+    my $outputexts;
+    if (exists $geninfo{$right}) {
+      $outputexts = $geninfo{$right};
+    }
+    else {
+      $geninfo{$right} = $outputexts = $self->get_outputexts($right);
+    }
+
+    ## Go backwards in the list to see if $right will generate inputs for
+    ## anything to the left.
+    for(my $j = $i - 1; $j >= 0; $j--) {
+      my $left = $list[$j];
+      ## See if $right generates input for $left
+      my $generates;
+      foreach my $inputext (@{$self->{'valid_components'}->{$left}}) {
+        if (grep { $_ eq $inputext } @$outputexts) {
+          $generates = 1;
+          last;
         }
+      }
+
+      if ($generates) {
+        ## If it does and we haven't already moved $right because of $left,
+        ## then we will move $right in front of $left, push everything to the
+        ## right up to $i, and reset $i to $j (after the increment of the outer
+        ## for loop).
+        if (exists $movedfor{$right} && $movedfor{$right} eq $left) {
+          $self->warning("Circular generation dependency for $right and $left");
+        }
+        else {
+          $movedfor{$right} = $left;
+          for(my $k = $i; $k > $j; $k--) {
+            $list[$k] = $list[$k - 1];
+          }
+          $list[$j] = $right;
+          $i = $j - 1;
+        }
+        last;
       }
     }
   }
-  if (!$norecurse && $self->sort_generated_types($right, $left, 1) == -1) {
-    return 1;
-  }
-
-  return 0;
+  return @list;
 }
 
 sub generate_defaults {
@@ -3747,8 +3796,7 @@ sub generate_defaults {
   my @vc = sort { return -1 if $a eq 'source_files';
                   return  1 if $b eq 'source_files';
                   return $b cmp $a; } keys %{$self->{'valid_components'}};
-  my @gvc = sort { $self->sort_generated_types($a, $b)
-                 } keys %{$self->{'generated_exts'}};
+  my @gvc = $self->get_generated_components();
   foreach my $gentype (@gvc) {
     $self->list_default_generated($gentype, \@vc);
   }
