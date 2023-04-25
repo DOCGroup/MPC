@@ -1802,7 +1802,8 @@ sub generate_project_files_fork {
     }
 
     $self->{'cacheok'} = $cacheok;
-    if ($self->cd($dir)) {
+    my $full = "$cwd/$dir";
+    if ($self->cd($full)) {
       if ($self->{'cacheok'} && defined $allprojects{$prkey}) {
 
         $files_written = $allprojects{$prkey};
@@ -1840,8 +1841,7 @@ sub generate_project_files_fork {
       ## Unable to change to the directory.
       ## We don't restore the state before we leave,
       ## but that's ok since we will be exiting soon.
-      return 0, $creator, $msg;
-
+      return 0, $creator, "Unable to change directory to $full";
     }
 
     ## Return things to the way they were
