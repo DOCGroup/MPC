@@ -1802,7 +1802,7 @@ sub generate_project_files_fork {
     }
 
     $self->{'cacheok'} = $cacheok;
-    my $full = "$cwd/$dir";
+    my $full = $self->path_is_relative($dir) ? "$cwd/$dir" : $dir;
     if ($self->cd($full)) {
       if ($self->{'cacheok'} && defined $allprojects{$prkey}) {
 
