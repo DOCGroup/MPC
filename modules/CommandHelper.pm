@@ -51,6 +51,7 @@ sub get {
   ## create a singleton of that type and return it.
   foreach my $inc (@INC) {
     if (-r "$inc/$type.pm") {
+      OutputMessage::debug(undef, "Found $type.pm in $inc");
       require "$type.pm";
       $required{$type} = $type->new();
       return $required{$type};
