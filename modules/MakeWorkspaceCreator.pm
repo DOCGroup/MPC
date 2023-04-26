@@ -38,7 +38,7 @@ sub write_project_targets {
     my $chdir = ($dname ne '.');
     print $fh "\t\@",
               ($chdir ? "cd $dname && " : ''),
-              "\$(MAKE) -f ",
+              '"$(MAKE)" -f ',
               ($chdir ? $self->mpc_basename($project) : $project),
               " $target$crlf";
   }
