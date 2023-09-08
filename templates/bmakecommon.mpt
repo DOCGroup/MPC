@@ -33,7 +33,6 @@ startup_bits = 32
 link = ilink32
 common_libs = ws2_32$(LIB_EXT) import32$(LIB_EXT) cw32mti$(LIB_EXT) $(CG_LIB)
 tlib = tlib
-output_flags = -n$(@D)
 pch = 1
 }
 
@@ -53,7 +52,6 @@ startup_bits = 32
 link = ilink32
 common_libs = ws2_32$(LIB_EXT) import32$(LIB_EXT) cw32mti$(LIB_EXT)
 tlib = tlib
-output_flags = -o $(@D)\$(@F)
 }
 
 bcc64 {
@@ -72,7 +70,6 @@ startup_bits = 64
 link = ilink64
 common_libs = ws2_32$(LIB_EXT) import64$(LIB_EXT) cw64mti$(LIB_EXT)
 tlib = tlib64
-output_flags = -o $(@D)\$(@F)
 }
 
 bcc64x {
@@ -91,5 +88,4 @@ startup_bits = 64
 link = ilink64
 common_libs = ws2_32$(LIB_EXT) import64$(LIB_EXT) cw64mti$(LIB_EXT)
 tlib = tlib64
-output_flags = -o $(@D)\$(@F)
 }

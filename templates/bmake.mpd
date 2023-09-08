@@ -23,7 +23,6 @@ STARTUP_BITS = <%startup_bits%>
 LINK = <%link%>
 COMMON_LIBS = <%common_libs%>
 TLIB = <%tlib%>
-OUTPUT_FLAGS = <%output_flags%>
 <%if(pch)%>PCH = 1<%endif%>
 !else
 <%endfor%>
@@ -295,33 +294,33 @@ generated: $(GENERATED_DIRTY)
 .path.cpp = $(CPPDIR)
 .cpp$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c $(OUTPUT_FLAGS) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 
 .path.cxx = $(CPPDIR)
 .cxx$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c $(OUTPUT_FLAGS) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 
 .path.cc = $(CPPDIR)
 .cc$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c $(OUTPUT_FLAGS) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 
 .path.C = $(CPPDIR)
 .C$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c $(OUTPUT_FLAGS) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 
 .path.c = $(CPPDIR)
 .c$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c $(OUTPUT_FLAGS) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 
 <%foreach(source_files)%>
 <%if(transdir(source_file) || flag_overrides(source_file, buildflags))%>
 "$(INTERMEDIATE)\<%transdir(source_file)%><%basenoextension(source_file)%>$(OBJ_EXT)":
   @if not exist "$(INTERMEDIATE)\<%transdir(source_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(source_file)%>"
-  $(CC) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c $(OUTPUT_FLAGS) <%source_file%>
+  $(CC) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) <%source_file%>
 <%endif%>
 <%endfor%>
 <%if(resource_files)%>
