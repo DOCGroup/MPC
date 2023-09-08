@@ -166,12 +166,14 @@ RC_FLAGS = \
 !endif
 <%endif%>
 
+<%if(pch_header)%>
 # Set NO_USE_PCH if you do not want to use precompiled headers.
 !ifndef NO_USE_PCH
 !ifdef PCH
 PCH_CFLAGS = <%foreach(pch_defines)%>-D<%pch_define%> <%endfor%>-H=$(INTERMEDIATE)\<%noextension(project_name)%>.csm -Hh=<%pch_header%>
 !endif
 !endif
+<%endif%>
 
 CFLAGS = \
 <%foreach(cflags)%>
@@ -294,33 +296,33 @@ generated: $(GENERATED_DIRTY)
 .path.cpp = $(CPPDIR)
 .cpp$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
 
 .path.cxx = $(CPPDIR)
 .cxx$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
 
 .path.cc = $(CPPDIR)
 .cc$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
 
 .path.C = $(CPPDIR)
 .C$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
 
 .path.c = $(CPPDIR)
 .c$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
 
 <%foreach(source_files)%>
 <%if(transdir(source_file) || flag_overrides(source_file, buildflags))%>
 "$(INTERMEDIATE)\<%transdir(source_file)%><%basenoextension(source_file)%>$(OBJ_EXT)":
   @if not exist "$(INTERMEDIATE)\<%transdir(source_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(source_file)%>"
-  $(CC) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) <%source_file%>
+  $(CC) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) <%source_file%>
 <%endif%>
 <%endfor%>
 <%if(resource_files)%>
