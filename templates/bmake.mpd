@@ -301,7 +301,6 @@ generated: $(GENERATED_DIRTY)
 .cxx$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
         $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c $(OUTPUT_FLAGS) $<
-!endif
 
 .path.cc = $(CPPDIR)
 .cc$(OBJ_EXT):
@@ -328,18 +327,15 @@ generated: $(GENERATED_DIRTY)
 <%if(resource_files)%>
 !ifndef STATIC_CFG
 .path.res = $(INTERMEDIATE)
-
 .path.rc = $(RESDIR)
 .rc.res:
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
         $(RC) $(RC_FLAGS) -fo$@ $<
-
 <%foreach(resource_files)%>
 <%if(transdir(resource_file))%>
 "$(INTERMEDIATE)\<%transdir(resource_file)%><%basenoextension(resource_file)%>.res":
   @if not exist "$(INTERMEDIATE)\<%transdir(resource_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(resource_file)%>"
   $(RC) -fo$@ <%resource_file%>
-
 <%endif%>
 <%endfor%>
 !endif
