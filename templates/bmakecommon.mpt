@@ -5,10 +5,8 @@
 conditional_include "common"
 
 configurations       = Debug Release
-common_defines       = WIN32 _WINDOWS
-common32_defines     =
-common32c_defines    =
-common64_defines     = WIN64
+compilers            = bcc32 bcc32c bcc64 bcc64x
+common_defines       =
 common_libs          = ws2_32$(LIB_EXT)
 common32_libs        = import32$(LIB_EXT) cw32mti$(LIB_EXT)
 common32c_libs       = import32$(LIB_EXT) cw32mti$(LIB_EXT)
@@ -24,30 +22,57 @@ obj32_ext = .obj
 obj32c_ext = .obj
 obj64_ext = .o
 dll_ext = .dll
-lib32_ext = .lib
-lib32c_ext = .lib
-lib64_ext = .a
 exe_ext = .exe
 
-cc32    = bcc32
 rc      = brcc32
 link32  = ilink32
-cc32c   = bcc32c
-cc64    = bcc64
 link64  = ilink64
 tlib32  = tlib
 tlib64  = tlib64
-thrflags32 = -tWM
-thrflags32c = -tM
-thrflags64 = -tM
-binaryflags32 = -tWR -tWD
-binaryflags32c = -tR -tD
-binaryflags64 = -tR -tD
 dllflags = -Tpd -Gi -x -Gn -w-dup
 libflags = /C
 ccflags  = -q
 exeflags = -Tpe -x -Gn
-warnflags32 = -w-rvl -w-rch -w-ccc -w-obs -w-aus -w-pia -w-inl -w-mls
-warnflags32c =
-warnflags64 =
 
+bcc32  {
+debug_flags = -v -y -Od -vi- -k
+optimize_flags = -O1
+warn_flags = -w-rvl -w-rch -w-ccc -w-obs -w-aus -w-pia -w-inl -w-mls
+cc = bcc32
+binary_flags = -tWR -tWD
+lib_ext = .lib
+common_defines = WIN32 _WINDOWS
+}
+
+bcc32c {
+debug_flags = -Od -vi-
+optimize_flags = -O3
+warn_flags =
+cc = bcc32c
+binary_flags = -tR -tD
+thr_flags = -tWM
+lib_ext = .lib
+common_defines = WIN32 _WINDOWS
+}
+
+bcc64 {
+debug_flags = -g -O0
+optimize_flags = -O3
+warn_flags =
+cc = bcc64
+binary_flags = -tR -tD
+thr_flags = -tM
+lib_ext = .a
+common_defines = WIN32 _WINDOWS WIN64
+}
+
+bcc64x {
+debug_flags = -g -O0
+optimize_flags = -O3
+warn_flags =
+cc = bcc64x
+binary_flags = -tR -tD
+thr_flags = -tM
+lib_ext = .a
+common_defines = WIN32 _WINDOWS WIN64
+}

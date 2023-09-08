@@ -6,11 +6,26 @@
 #
 #----------------------------------------------------------------------------
 <%marker(top)%>
+<%foreach(compilers)%>
+!ifdef <%normalize(uc(compiler))%>
+CC = <%cc%>
+OPTIMIZE_CFLAGS = <%optimize_flags%>
+DEBUG_CFLAGS = <%debug_flags%>
+WARN_FLAGS = <%warn_flags%>
+BINARY_FLAGS  = <%binary_flags%>
+THREAD_FLAGS  = <%thr_flags%>
+LIB_EXT      = <%lib_ext%>
+COMMON_DEFINES =<%foreach(common_defines)%> -D<%common64_define%><%endfor%>
+!else
+<%endfor%>
+!error You must select one of these compilers:<%foreach(compilers)%> <%normalize(uc(compiler))%><%endfor%>
+<%foreach(compilers)%>
+!endif
+<%endfor%>
+
 <%foreach(configurations)%>
 !ifdef <%normalize(uc(configuration))%>
-OCFLAGS32    = <%if(optimize)%>-O1<%else%><%if(debug_prj)%>-v -y -Od -vi- -k<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
-OCFLAGS32C   = <%if(optimize)%>-O3<%else%><%if(debug_prj)%>-Od -vi- <%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
-OCFLAGS64    = <%if(optimize)%>-O3<%else%><%if(debug_prj)%>-g -O0 <%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
+OCFLAGS    = <%if(optimize)%>$(OPTIMIZE_CFLAGS)<%else%><%if(debug_prj)%> $(DEBUG_CFLAGS)<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
 CFG_DIR      = <%intermediate_dir%>\\
 LIBMODIFIER  = <%if(use_lib_modifier)%><%lib_modifier%><%endif%>
 EXEMODIFIER  = <%if(use_exe_modifier)%><%lib_modifier%><%endif%>
@@ -56,33 +71,19 @@ DLL_EXT      = <%dll_ext%>
 EXE_EXT      = <%exe_ext%>
 <%if(build64bit)%>
 STARTUP_BITS = 64
-CC64         = <%cc64%>
 LINK64       = <%link64%>
-LIB_EXT      = <%lib64_ext%>
+
 OBJ_EXT      = <%obj64_ext%>
-THREADFLAGS  = <%thrflags64%>
-BINARYFLAGS  = <%binaryflags64%>
 LINKERPATHS  = -L"$(BDS)\lib\win64\debug" -L"$(BDS)\lib\win64\release" -GE:HIGHENTROPYVA=off
-WARNFLAGS64  = <%warnflags64%>
 <%else%>
 LINK32       = <%link32%>
 STARTUP_BITS = 32
 !ifdef CLASSIC
-CC32         = <%cc32%>
-LIB_EXT      = <%lib32_ext%>
 OBJ_EXT      = <%obj32_ext%>
-THREADFLAGS  = <%thrflags32%>
-BINARYFLAGS  = <%binaryflags32%>
 LINKERPATHS  = -L"$(BDS)\lib\win32\release" -L"$(BDS)\lib\win32\debug"
-WARNFLAGS32  = <%warnflags32%>
 !else
-CC32C        = <%cc32c%>
-LIB_EXT      = <%lib32c_ext%>
 OBJ_EXT      = <%obj32c_ext%>
-THREADFLAGS  = <%thrflags32c%>
-BINARYFLAGS  = <%binaryflags32c%>
 LINKERPATHS  = -L"$(BDS)\lib\win32c\debug" -L"$(BDS)\lib\win32c\release"
-WARNFLAGS32C = <%warnflags32c%>
 !endif
 <%endif%>
 RC           = <%rc%>
@@ -90,7 +91,7 @@ TLIB32       = <%tlib32%>
 DLLFLAGS     = <%dllflags%>
 LIBFLAGS     = <%libflags%>
 EXEFLAGS     = <%exeflags%>
-CCFLAGS      = <%ccflags%><%if(type_is_binary)%> $(BINARYFLAGS)<%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
+CCFLAGS      = <%ccflags%><%if(type_is_binary)%> $(BINARY_FLAGS)<%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
 
 <%if(use_vcl)%>
 STARTUP_LETTER = <%if(exename)%>w<%else%><%startup_letter%><%endif%>
@@ -217,31 +218,6 @@ COMMON_FLAGS = \
 <%foreach(common32c_flags)%>
          <%common32c_flag%><%fornotlast(" \\")%>
 <%endfor%>
-!endif
-<%endif%>
-
-<%if(build64bit)%>
-<%if(common64_defines)%>
-COMMON_DEFINES = \
-<%foreach(common64_defines)%>
-         -D<%common64_define%><%fornotlast(" \\")%>
-<%endfor%>
-<%endif%>
-<%else%>
-!ifdef CLASSIC
-<%if(common32_defines)%>
-COMMON_DEFINES = \
-<%foreach(common32_defines)%>
-         -D<%common32_define%><%fornotlast(" \\")%>
-<%endfor%>
-<%endif%>
-!else
-<%if(common32c_defines)%>
-COMMON_DEFINES = \
-<%foreach(common32c_defines)%>
-         -D<%common32c_define%><%fornotlast(" \\")%>
-<%endfor%>
-<%endif%>
 !endif
 <%endif%>
 
@@ -375,16 +351,16 @@ generated: $(GENERATED_DIRTY)
 <%if(build64bit)%>
 .cpp$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 <%else%>
 !ifdef CLASSIC
 .cpp$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 !else
 .cpp$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC32C) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32C) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32C) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 !endif
 <%endif%>
 
@@ -392,16 +368,16 @@ generated: $(GENERATED_DIRTY)
 <%if(build64bit)%>
 .cxx$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 <%else%>
 !ifdef CLASSIC
 .cxx$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 !else
 .cxx$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC32C) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32C) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32C) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 !endif
 <%endif%>
 
@@ -409,16 +385,16 @@ generated: $(GENERATED_DIRTY)
 <%if(build64bit)%>
 .cc$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 <%else%>
 !ifdef CLASSIC
 .cc$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 !else
 .cc$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC32C) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32C) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32C) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 !endif
 <%endif%>
 
@@ -426,16 +402,16 @@ generated: $(GENERATED_DIRTY)
 <%if(build64bit)%>
 .C$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 <%else%>
 !ifdef CLASSIC
 .C$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 !else
 .C$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC32C) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32C) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32C) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 !endif
 <%endif%>
 
@@ -443,16 +419,16 @@ generated: $(GENERATED_DIRTY)
 <%if(build64bit)%>
 .c$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC64) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 <%else%>
 !ifdef CLASSIC
 .c$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC32) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) $<
 !else
 .c$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC32C) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32C) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32C) -c -o $(@D)\$(@F) $<
+        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) $<
 !endif
 <%endif%>
 
@@ -461,12 +437,12 @@ generated: $(GENERATED_DIRTY)
 "$(INTERMEDIATE)\<%transdir(source_file)%><%basenoextension(source_file)%>$(OBJ_EXT)":
   @if not exist "$(INTERMEDIATE)\<%transdir(source_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(source_file)%>"
 <%if(build64bit)%>
-  $(CC64) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS64) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS64) -c -o $(@D)\$(@F) <%source_file%>
+  $(CC) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) <%source_file%>
 <%else%>
 !ifdef CLASSIC
-  $(CC32) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32) -c -n$(@D) <%source_file%>
+  $(CC) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -n$(@D) <%source_file%>
 !else
-  $(CC32C) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS32C) $(CG_CFLAGS) $(UC_CFLAGS) $(THREADFLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS32C) -c -o $(@D)\$(@F) <%source_file%>
+  $(CC) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARNFLAGS) -c -o $(@D)\$(@F) <%source_file%>
 !endif
 <%endif%>
 
