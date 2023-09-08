@@ -12,10 +12,17 @@ CC = <%cc%>
 OPTIMIZE_CFLAGS = <%optimize_flags%>
 DEBUG_CFLAGS = <%debug_flags%>
 WARN_FLAGS = <%warn_flags%>
-BINARY_FLAGS  = <%binary_flags%>
-THREAD_FLAGS  = <%thr_flags%>
-LIB_EXT      = <%lib_ext%>
+BINARY_FLAGS = <%binary_flags%>
+THREAD_FLAGS = <%thr_flags%>
+LIB_EXT = <%lib_ext%>
 COMMON_DEFINES =<%foreach(common_defines)%> -D<%common64_define%><%endfor%>
+COMMON_FLAGS = <%foreach(common_flags)%><%common_flag%><%endfor%>
+OBJ_EXT = <%obj_ext%>
+LINKER_PATHS = <%linker_paths%>
+STARTUP_BITS = <%startup_bits%>
+LINK = <%link%>
+COMMON_LIBS = <%common_libs%>
+TLIB = <%tlib%>
 !else
 <%endfor%>
 !error You must select one of these compilers:<%foreach(compilers)%> <%normalize(uc(compiler))%><%endfor%>
@@ -69,25 +76,7 @@ CG_LIB    = cg32.lib
 
 DLL_EXT      = <%dll_ext%>
 EXE_EXT      = <%exe_ext%>
-<%if(build64bit)%>
-STARTUP_BITS = 64
-LINK64       = <%link64%>
-
-OBJ_EXT      = <%obj64_ext%>
-LINKERPATHS  = -L"$(BDS)\lib\win64\debug" -L"$(BDS)\lib\win64\release" -GE:HIGHENTROPYVA=off
-<%else%>
-LINK32       = <%link32%>
-STARTUP_BITS = 32
-!ifdef CLASSIC
-OBJ_EXT      = <%obj32_ext%>
-LINKERPATHS  = -L"$(BDS)\lib\win32\release" -L"$(BDS)\lib\win32\debug"
-!else
-OBJ_EXT      = <%obj32c_ext%>
-LINKERPATHS  = -L"$(BDS)\lib\win32c\debug" -L"$(BDS)\lib\win32c\release"
-!endif
-<%endif%>
 RC           = <%rc%>
-TLIB32       = <%tlib32%>
 DLLFLAGS     = <%dllflags%>
 LIBFLAGS     = <%libflags%>
 EXEFLAGS     = <%exeflags%>
@@ -125,7 +114,7 @@ OBJFILES = \
 <%if(libpaths)%>
 
 LFLAGS   = \
-           $(LINKERPATHS) \
+           $(LINKER_PATHS) \
 <%if(debug_prj)%>
            -v \
            -r \
@@ -145,16 +134,6 @@ LFLAGS   = \
 <%foreach(libpaths)%>
            -L"<%libpath%>" -j"<%libpath%>"<%fornotlast(" \\")%>
 <%endfor%>
-<%endif%>
-
-<%if(build64bit)%>
-COMMON_LIBS = <%common_libs%> <%common64_libs%>
-<%else%>
-!ifdef CLASSIC
-COMMON_LIBS = $(CG_LIB) <%common_libs%> <%common32_libs%>
-!else
-COMMON_LIBS = <%common_libs%> <%common32c_libs%>
-!endif
 <%endif%>
 
 LIBFILES = \
@@ -202,25 +181,6 @@ PCH_CFLAGS = \
 <%endif%>
 <%endif%>
 
-<%if(build64bit)%>
-COMMON_FLAGS = \
-<%foreach(common64_flags)%>
-         <%common64_flag%><%fornotlast(" \\")%>
-<%endfor%>
-<%else%>
-!ifdef CLASSIC
-COMMON_FLAGS = \
-<%foreach(common32_flags)%>
-         <%common32_flag%><%fornotlast(" \\")%>
-<%endfor%>
-!else
-COMMON_FLAGS = \
-<%foreach(common32c_flags)%>
-         <%common32c_flag%><%fornotlast(" \\")%>
-<%endfor%>
-!endif
-<%endif%>
-
 CFLAGS = \
 <%foreach(cflags)%>
          <%cflag%> \
@@ -246,11 +206,7 @@ $(OUTPUTDIR)$(NAME)$(EXE_EXT): $(OBJFILES) $(RESOURCE)
 <%if(prelink)%>
   <%eval(prelink)%>
 <%endif%>
-<%if(build64bit)%>
-  $(LINK64) @&&!
-<%else%>
-  $(LINK32) @&&!
-<%endif%>
+  $(LINK) @&&!
   $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
 !
 
@@ -265,11 +221,7 @@ $(OUTPUTDIR)$(NAME)$(DLL_EXT): $(OBJFILES) $(RESOURCE)
 <%if(prelink)%>
   <%eval(prelink)%>
 <%endif%>
-<%if(build64bit)%>
-  $(LINK64) @&&!
-<%else%>
-  $(LINK32) @&&!
-<%endif%>
+  $(LINK) @&&!
   $(DLLFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
 !
 !endif
@@ -282,7 +234,7 @@ all:<%if(prebuild)%> __prebuild__<%endif%> $(OUTPUTDIR)$(NAME)$(LIB_EXT)<%if(pos
 
 $(OUTPUTDIR)$(NAME)$(LIB_EXT): $(OBJFILES)
   @if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
-  $(TLIB32) $(LIBFLAGS) $(OUTPUTDIR)$(NAME)$(LIB_EXT) @&&!
+  $(TLIB) $(LIBFLAGS) $(OUTPUTDIR)$(NAME)$(LIB_EXT) @&&!
 + $(**: = &^
 + )
 !
