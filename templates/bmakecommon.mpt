@@ -6,7 +6,6 @@ conditional_include "common"
 
 configurations       = Debug Release
 compilers            = bcc32 bcc32c bcc64 bcc64x
-common_defines       =
 unicode_flags        = -WU
 unicode_lib_modifier = u
 unicode_exe_modifier = u
