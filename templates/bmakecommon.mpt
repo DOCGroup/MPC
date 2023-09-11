@@ -4,9 +4,9 @@
 
 conditional_include "common"
 
-configurations       = Debug Release
-compilers            = bcc32 bcc32c bcc64 bcc64x
-unicode_flags        = -WU
+configurations = Debug Release
+compilers = bcc32 bcc32c bcc64 bcc64x
+unicode_flags = -WU
 unicode_lib_modifier = u
 unicode_exe_modifier = u
 dll_ext = .dll
@@ -63,7 +63,7 @@ binary_flags = -tR -tD
 thr_flags = -tM
 lib_ext = .a
 common_defines = WIN32 _WINDOWS WIN64
-common64_flags =
+common_flags =
 obj_ext = .o
 linker_paths = -L\"$(BDS)\lib\win64\debug\" -L\"$(BDS)\lib\win64\release\" -GE:HIGHENTROPYVA=off
 startup_bits = 64
@@ -81,7 +81,7 @@ binary_flags = -tR -tD
 thr_flags = -tM
 lib_ext = .a
 common_defines = WIN32 _WINDOWS WIN64
-common64_flags =
+common_flags =
 obj_ext = .o
 linker_paths = -L\"$(BDS)\lib\win64x\debug\" -L\"$(BDS)\lib\win64x\release\"
 startup_bits = 64
