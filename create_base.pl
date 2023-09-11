@@ -32,7 +32,7 @@ require Creator;
 # Data Section
 # ******************************************************************
 
-my $version = '0.1';
+my $version = '0.2';
 
 # ******************************************************************
 # Subroutine Section
@@ -45,6 +45,8 @@ sub gather_info {
   if (open($fh, $name)) {
     my @lines = ();
     my $pname = undef;
+    my $pline = undef;
+
     while(<$fh>) {
       ## Get the line a remove leading and trailing white space
       my $line = $_;
@@ -81,6 +83,7 @@ sub gather_info {
         ## us.
         $pname = Creator::fill_type_name(undef, $pname, $def);
         push(@lines, "project$parents {");
+        $pline = $def;
       }
       elsif ($line =~ /^(shared|static)name\s*=\s*(.+)$/) {
         ## Add in the libs and after settings.
@@ -95,10 +98,15 @@ sub gather_info {
     }
     close($fh);
 
-    ## Only return the lines if there is more than one line.  It is
-    ## possible (and likely) that we've read in the project declaration,
-    ## but the project did not contain a sharedname or staticname
-    ## setting.
+    ## If we have the unmodified project name, but the user did not provide
+    ## a sharedname or staticname, we will use that as the library name.
+    if (defined $pline && $#lines == 0) {
+      push(@lines, "  libs  += $pline",
+                   "  after += $pname",
+                   "}");
+    }
+
+    ## Only return the lines if there is more than one line.
     return @lines if ($#lines > 0);
   }
 
@@ -148,9 +156,7 @@ sub usageAndExit {
   print STDERR "Create Base Project v$version\n",
                "Usage: ", basename($0), " <mpc files> <output file or ",
                "directory>\n\nThis script will create a base project ",
-               "based on the contents of the\nsupplied MPC file.  ",
-               "This is only useful if the project ",
-               "explicitly sets\nsharedname or staticname.\n";
+               "based on the contents of the\nsupplied MPC file.\n";
   exit(0);
 }
 

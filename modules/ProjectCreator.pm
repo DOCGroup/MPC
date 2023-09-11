@@ -194,7 +194,7 @@ my $cppresource = 'resource_files';
 my %cppvc = ('source_files'        => [ "\\.cpp", "\\.cxx", "\\.cc", "\\.c", "\\.C", ],
              'template_files'      => [ "_T\\.cpp", "_T\\.cxx", "_T\\.cc", "_T\\.c", "_T\\.C", "_t\\.cpp", "_t\\.cxx", "_t\\.cc", "_t\\.c", "_t\\.C", "\\.tpp" ],
              'header_files'        => [ "\\.h", "\\.hpp", "\\.hxx", "\\.hh", ],
-             'inline_files'        => [ "\\.i", "\\.ipp", "\\.inl", ],
+             'inline_files'        => [ "\\.i", "\\.ipp", "\\.ixx", "\\.inl", ],
              'documentation_files' => [ "README", "readme", "\\.doc", "\\.txt", "\\.html" ],
              $cppresource          => [ "\\.rc", ],
             );

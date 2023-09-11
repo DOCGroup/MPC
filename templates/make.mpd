@@ -1,3 +1,4 @@
+# -*-Makefile-*-
 #----------------------------------------------------------------------------
 #       Macros
 #----------------------------------------------------------------------------
@@ -119,8 +120,9 @@ AREXT         = <%lib_ext%>
 LIB           = $(LTARGETDIR)$(LIBPREFIX)<%staticname%>$(LIBSUFFIX)$(AREXT)
 <%endif%>
 <%endif%>
-<%if(dll_ext && sharedname)%>
+<%if(dll_ext)%>
 SOEXT         = <%dll_ext%>
+<%if(sharedname)%>
 SHTARGETDIR   = <%if(dllout)%><%dllout%><%if(!compares(dllout, .))%><%output_dir_ext%><%endif%><%else%><%libout%><%if(!compares(libout, .))%><%output_dir_ext%><%endif%><%endif%><%slash%><%targetoutdir%>
 <%if(version && versupport)%>
 SHLIB_BASE    = $(LIBPREFIX)<%sharedname%>$(LIBSUFFIX)$(SOEXT)
@@ -128,6 +130,7 @@ SHLIB_BASE    = $(LIBPREFIX)<%sharedname%>$(LIBSUFFIX)$(SOEXT)
 SHLIB         = $(SHTARGETDIR)$(LIBPREFIX)<%sharedname%>$(LIBSUFFIX)$(SOEXT)
 <%if(shflags)%>
 SHFLAGS       = <%shflags%>
+<%endif%>
 <%endif%>
 <%endif%>
 SRC           =<%if(pch_source && pchsupport)%> <%pch_source%><%endif%> <%source_files%>
