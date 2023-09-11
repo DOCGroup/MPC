@@ -35,9 +35,9 @@ jobs:
       CXX: ${{ matrix.CXX }}
     steps:
     - name: checkout MPC
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: checkout ACE_TAO
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: DOCGroup/ACE_TAO
         path: ${{ env.DOC_ROOT }}
