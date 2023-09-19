@@ -11,6 +11,7 @@
 CC = <%cc%>
 OPTIMIZE_CFLAGS = <%optimize_flags%>
 DEBUG_CFLAGS = <%debug_flags%>
+CC_CFLAGS = <%ccflags%>
 WARN_FLAGS = <%warn_flags%>
 BINARY_FLAGS = <%binary_flags%>
 THREAD_FLAGS = <%thr_flags%>
@@ -81,7 +82,7 @@ RC           = <%rc%>
 DLLFLAGS     = <%dllflags%>
 LIBFLAGS     = <%libflags%>
 EXEFLAGS     = <%exeflags%>
-CCFLAGS      = <%ccflags%><%if(type_is_binary)%> $(BINARY_FLAGS)<%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
+CCFLAGS      = $(CC_CFLAGS)<%if(type_is_binary)%> $(BINARY_FLAGS)<%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
 
 <%if(use_vcl)%>
 STARTUP_LETTER = <%if(exename)%>w<%else%><%startup_letter%><%endif%>
