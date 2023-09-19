@@ -14,7 +14,6 @@ exe_ext = .exe
 rc = brcc32
 dllflags = -Tpd -Gi -x -Gn -w-dup
 libflags = /C
-ccflags  = -q
 exeflags = -Tpe -x -Gn
 
 bcc32  {
@@ -34,6 +33,7 @@ link = ilink32
 common_libs = ws2_32$(LIB_EXT) import32$(LIB_EXT) cw32mti$(LIB_EXT) $(CG_LIB)
 tlib = tlib
 pch = 1
+ccflags = -q
 }
 
 bcc32c {
@@ -52,6 +52,7 @@ startup_bits = 32
 link = ilink32
 common_libs = ws2_32$(LIB_EXT) import32$(LIB_EXT) cw32mti$(LIB_EXT)
 tlib = tlib
+ccflags = -q
 }
 
 bcc64 {
@@ -70,6 +71,7 @@ startup_bits = 64
 link = ilink64
 common_libs = ws2_32$(LIB_EXT) import64$(LIB_EXT) cw64mti$(LIB_EXT)
 tlib = tlib64
+ccflags = -q
 }
 
 bcc64x {
@@ -88,4 +90,5 @@ startup_bits = 64
 link = ilink64
 common_libs = ws2_32$(LIB_EXT) import64$(LIB_EXT) cw64mti$(LIB_EXT)
 tlib = tlib64
+ccflags =
 }
