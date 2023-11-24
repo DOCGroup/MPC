@@ -2,7 +2,7 @@
 project {
   Define_Custom(NDDSTypeSupport) {
     command               = <%quote%>$(NDDSSCRIPTDIR)/rtiddsgen<%quote%>
-    commandflags          = -language C++ -replace -namespace $(PLATFORM_NDDS_FLAGS)
+    commandflags          = -replace -namespace $(PLATFORM_NDDS_FLAGS)
 
     dependent             = $(NDDSSCRIPTDIR)/rtiddsgen<%bat%>
 
