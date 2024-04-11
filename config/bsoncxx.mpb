@@ -1,6 +1,12 @@
 // -*- MPC -*-
-project: boost_base {
-  includes += $(MONGODB_ROOT)/include/bsoncxx/v_noabi
-  libpaths += $(MONGODB_ROOT)/lib
+project {
+  includes += $(MONGODB_ROOT)/include
   lit_libs += bsoncxx bson-1.0
+
+  specific (prop:microsoft) {
+    Debug::libpaths += $(MONGODB_ROOT)/debug/lib $(MONGODB_ROOT)/lib
+    Release::libpaths += $(MONGODB_ROOT)/lib
+  } else {
+    libpaths += $(MONGODB_ROOT)/lib
+  }
 }
