@@ -41,9 +41,10 @@ feature(xerces3) {
   specific(prop:microsoft) {
     xerceslib = xerces-c_3
 
-    // Linking the optimized version of xerces-c_2 into a debug application
-    // has been known to cause run-time issues (as of 4/25/2005), so we
-    // will link in the debug version for the "Debug" configuration.
+    // Support (but don't require) installation layouts that have
+    // the debug libraries in a subdirectory.  vcpkg uses this.
+    Debug::libpaths += $(XERCESCROOT)<%slash%>debug<%slash%>lib
+
     Debug::xerceslib = xerces-c_3D
   }
   specific(prop:borland) {
