@@ -32,6 +32,7 @@ OBJECTSEARCHPATH = \
    -j"<%libpath%>"
 <%fornotlast(" \\")%>
 <%endfor%>
+<%endif%>
 !else
 <%endfor%>
 !error You must select one of these compilers:<%foreach(compilers)%> <%normalize(uc(compiler))%><%endfor%>
