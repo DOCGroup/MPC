@@ -24,6 +24,7 @@ STARTUP_BITS = <%startup_bits%>
 LINK = <%link%>
 COMMON_LIBS = <%common_libs%>
 TLIB = <%tlib%>
+DLLFLAGS = <%dllflags%>
 <%if(pch)%>PCH = 1<%endif%>
 !else
 <%endfor%>
@@ -56,6 +57,13 @@ POSTLINKRM   = <%postlinkrmext%>
 <%if(exename)%>
 EXEOUTPUTDIR = <%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug")%><%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%><%endif%>\\
 <%endif%>
+<%if(objectsearchpath)%>
+OBJECTSEARCHPATH = \
+<%foreach(libpaths)%>
+   -j"<%libpath%>"
+<%fornotlast(" \\")%>
+<%endfor%>
+<%endif%>
 !else
 <%endfor%>
 !error You must define one of these valid configurations:<%foreach(configurations)%> <%normalize(uc(configuration))%><%endfor%>
@@ -79,7 +87,6 @@ CG_LIB    = cg32.lib
 DLL_EXT      = <%dll_ext%>
 EXE_EXT      = <%exe_ext%>
 RC           = <%rc%>
-DLLFLAGS     = <%dllflags%>
 LIBFLAGS     = <%libflags%>
 EXEFLAGS     = <%exeflags%>
 CCFLAGS      = $(CC_CFLAGS)<%if(type_is_binary)%> $(BINARY_FLAGS)<%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
@@ -134,8 +141,9 @@ LFLAGS   = \
            -v<%if(libpaths)%> \<%endif%>
 <%endif%>
 <%foreach(libpaths)%>
-           -L"<%libpath%>" -j"<%libpath%>"<%fornotlast(" \\")%>
+           -L"<%libpath%>" \
 <%endfor%>
+           $(OBJECTSEARCHPATH)
 <%endif%>
 
 LIBFILES = \

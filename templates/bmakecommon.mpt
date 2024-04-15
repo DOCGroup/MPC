@@ -12,7 +12,6 @@ unicode_exe_modifier = u
 dll_ext = .dll
 exe_ext = .exe
 rc = brcc32
-dllflags = -Tpd -Gi -x -Gn -w-dup
 libflags = /C
 exeflags = -Tpe -x -Gn
 
@@ -33,7 +32,12 @@ link = ilink32
 common_libs = ws2_32$(LIB_EXT) import32$(LIB_EXT) cw32mti$(LIB_EXT) $(CG_LIB)
 tlib = tlib
 pch = 1
+<<<<<<< Updated upstream
 ccflags = -q
+=======
+dllflags = -Tpd -Gi -x -Gn -w-dup
+object_search_path = 1
+>>>>>>> Stashed changes
 }
 
 bcc32c {
@@ -52,7 +56,12 @@ startup_bits = 32
 link = ilink32
 common_libs = ws2_32$(LIB_EXT) import32$(LIB_EXT) cw32mti$(LIB_EXT)
 tlib = tlib
+<<<<<<< Updated upstream
 ccflags = -q
+=======
+dllflags = -Tpd -Gi -x -Gn -w-dup
+object_search_path = 1
+>>>>>>> Stashed changes
 }
 
 bcc64 {
@@ -71,7 +80,12 @@ startup_bits = 64
 link = ilink64
 common_libs = ws2_32$(LIB_EXT) import64$(LIB_EXT) cw64mti$(LIB_EXT)
 tlib = tlib64
+<<<<<<< Updated upstream
 ccflags = -q
+=======
+dllflags = -Tpd -Gi -x -Gn -w-dup
+object_search_path = 1
+>>>>>>> Stashed changes
 }
 
 bcc64x {
@@ -87,8 +101,16 @@ common_flags =
 obj_ext = .o
 linker_paths = -L\"$(BDS)\lib\win64x\debug\" -L\"$(BDS)\lib\win64x\release\"
 startup_bits = 64
+<<<<<<< Updated upstream
 link = bcc64x
 common_libs = ws2_32$(LIB_EXT) import64$(LIB_EXT) cw64mti$(LIB_EXT)
 tlib = tlib64
 ccflags =
+=======
+link = ld.lld
+common_libs = ws2_32$(LIB_EXT) import64$(LIB_EXT) cw64mti$(LIB_EXT)
+tlib = tlib64
+dllflags = -m i386pep -shared --Bstatic --entry DllMainCRTStartup --enable-auto-image-base
+object_search_path = 0
+>>>>>>> Stashed changes
 }
