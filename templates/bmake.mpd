@@ -29,8 +29,7 @@ DLLFLAGS = <%dllflags%>
 <%if(objectsearchpath)%>
 OBJECTSEARCHPATH = \
 <%foreach(libpaths)%>
-   -j"<%libpath%>"
-<%fornotlast(" \\")%>
+   -j"<%libpath%>"<%fornotlast(" \\")%>
 <%endfor%>
 <%endif%>
 !else
