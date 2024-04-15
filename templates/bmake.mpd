@@ -26,6 +26,12 @@ COMMON_LIBS = <%common_libs%>
 TLIB = <%tlib%>
 DLLFLAGS = <%dllflags%>
 <%if(pch)%>PCH = 1<%endif%>
+<%if(objectsearchpath)%>
+OBJECTSEARCHPATH = \
+<%foreach(libpaths)%>
+   -j"<%libpath%>"
+<%fornotlast(" \\")%>
+<%endfor%>
 !else
 <%endfor%>
 !error You must select one of these compilers:<%foreach(compilers)%> <%normalize(uc(compiler))%><%endfor%>
@@ -57,12 +63,6 @@ POSTLINKRM   = <%postlinkrmext%>
 <%if(exename)%>
 EXEOUTPUTDIR = <%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug")%><%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%><%endif%>\\
 <%endif%>
-<%if(objectsearchpath)%>
-OBJECTSEARCHPATH = \
-<%foreach(libpaths)%>
-   -j"<%libpath%>"
-<%fornotlast(" \\")%>
-<%endfor%>
 <%endif%>
 !else
 <%endfor%>
