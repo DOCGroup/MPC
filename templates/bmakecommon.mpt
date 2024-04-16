@@ -104,6 +104,6 @@ common_libs = dllcrt2.o crtbegin.o ws2_32$(LIB_EXT) -lmoldname -lucrt -lmingw32 
 tlib = tlib64
 dllflags = -m i386pep -shared --Bstatic --enable-auto-image-base
 object_search_path = 0
-linker_dll_arguments = $(DLLFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(DLL_EXT) --out-implib $(NAME).lib $(LIBFILES) $(RESOURCE)
+linker_dll_arguments = $(DLLFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(DLL_EXT) --out-implib $(OUTPUTDIR)$(NAME).lib $(LIBFILES) $(RESOURCE)
 linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
 }
