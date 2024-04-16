@@ -35,6 +35,8 @@ pch = 1
 ccflags = -q
 dllflags = -Tpd -Gi -x -Gn -w-dup
 object_search_path = 1
+linker_dll_arguments = $(DLLFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
+linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
 }
 
 bcc32c {
@@ -56,6 +58,8 @@ tlib = tlib
 ccflags = -q
 dllflags = -Tpd -Gi -x -Gn -w-dup
 object_search_path = 1
+linker_dll_arguments = $(DLLFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
+linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
 }
 
 bcc64 {
@@ -77,6 +81,8 @@ tlib = tlib64
 ccflags = -q
 dllflags = -Tpd -Gi -x -Gn -w-dup
 object_search_path = 1
+linker_dll_arguments = $(DLLFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
+linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
 }
 
 bcc64x {
@@ -98,4 +104,6 @@ common_libs = ws2_32$(LIB_EXT) import64$(LIB_EXT) cw64mti$(LIB_EXT)
 tlib = tlib64
 dllflags = -m i386pep -shared --Bstatic --entry DllMainCRTStartup --enable-auto-image-base
 object_search_path = 0
+linker_dll_arguments = $(DLLFLAGS) $(LFLAGS) $(OBJFILES) $(OUTPUTDIR)$(NAME)$(DLL_EXT) $(LIBFILES) $(RESOURCE)
+linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
 }
