@@ -13,7 +13,6 @@ dll_ext = .dll
 exe_ext = .exe
 rc = brcc32
 libflags = /C
-exeflags = -Tpe -x -Gn
 
 bcc32  {
 debug_flags = -v -y -Od -vi- -k
@@ -35,6 +34,7 @@ pch = 1
 ccflags = -q
 dllflags = -Tpd -Gi -x -Gn -w-dup
 object_search_path = 1
+exeflags = -Tpe -x -Gn
 linker_dll_arguments = $(DLLFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
 linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
 }
@@ -58,6 +58,7 @@ tlib = tlib
 ccflags = -q
 dllflags = -Tpd -Gi -x -Gn -w-dup
 object_search_path = 1
+exeflags = -Tpe -x -Gn
 linker_dll_arguments = $(DLLFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
 linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
 }
@@ -80,6 +81,7 @@ common_libs = ws2_32$(LIB_EXT) import64$(LIB_EXT) cw64mti$(LIB_EXT)
 tlib = tlib64
 ccflags = -q
 dllflags = -Tpd -Gi -x -Gn -w-dup
+exeflags = -Tpe -x -Gn
 object_search_path = 1
 linker_dll_arguments = $(DLLFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
 linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
@@ -100,10 +102,13 @@ linker_paths = -L\"$(BDS)\lib\win64x\debug\" -L\"$(BDS)\lib\win64x\release\" -L\
 startup_bits = 64
 ccflags = -q
 link = ld.lld
-common_libs = dllcrt2.o crtbegin.o ws2_32$(LIB_EXT) -lmoldname -lucrt -lmingw32 -lmingwex -l"c++" -lunwind -lmingwthrd -l:import64$(LIB_EXT) dllcrt2.o crtbegin.o libclang_rt.builtins-x86_64.a
+common_libs = crtbegin.o ws2_32$(LIB_EXT) -lmoldname -lucrt -lmingw32 -lmingwex -l\"c++\" -lunwind -lmingwthrd -l:import64$(LIB_EXT) libclang_rt.builtins-x86_64.a
+dll_libs = dllcrt2.o
+exe_libs = crt2.o
 tlib = tlib64
 dllflags = -m i386pep -shared --Bstatic --enable-auto-image-base
+exeflags = -m i386pep --Bstatic
 object_search_path = 0
-linker_dll_arguments = $(DLLFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(DLL_EXT) --out-implib $(OUTPUTDIR)$(NAME).lib $(LIBFILES) $(RESOURCE)
-linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
+linker_dll_arguments = $(DLLFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(DLL_EXT) --out-implib $(OUTPUTDIR)$(NAME).lib $(DLLLIBS) $(LIBFILES) $(RESOURCE)
+linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME).exe $(EXELIBS) $(LIBFILES) $(RESOURCE)
 }

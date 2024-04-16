@@ -23,6 +23,8 @@ LINKER_PATHS = <%linker_paths%>
 STARTUP_BITS = <%startup_bits%>
 LINK = <%link%>
 COMMON_LIBS = <%common_libs%>
+DLLLIBS = <%dll_libs%>
+EXELIBS = <%exe_libs%>
 TLIB = <%tlib%>
 DLLFLAGS = <%dllflags%>
 <%if(pch)%>PCH = 1<%endif%>
@@ -32,6 +34,7 @@ OBJECTSEARCHPATH = \
    -j"<%libpath%>"<%fornotlast(" \\")%>
 <%endfor%>
 <%endif%>
+EXEFLAGS = <%exeflags%>
 LINKER_DLL_ARGUMENTS = <%linker_dll_arguments%>
 LINKER_EXE_ARGUMENTS = <%linker_exe_arguments%>
 !else
@@ -89,7 +92,6 @@ DLL_EXT      = <%dll_ext%>
 EXE_EXT      = <%exe_ext%>
 RC           = <%rc%>
 LIBFLAGS     = <%libflags%>
-EXEFLAGS     = <%exeflags%>
 CCFLAGS      = $(CC_CFLAGS)<%if(type_is_binary)%> $(BINARY_FLAGS)<%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
 
 <%if(use_vcl)%>
