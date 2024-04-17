@@ -23,8 +23,20 @@ LINKER_PATHS = <%linker_paths%>
 STARTUP_BITS = <%startup_bits%>
 LINK = <%link%>
 COMMON_LIBS = <%common_libs%>
+DLLLIBS = <%dll_libs%>
+EXELIBS = <%exe_libs%>
 TLIB = <%tlib%>
+DLLFLAGS = <%dllflags%>
 <%if(pch)%>PCH = 1<%endif%>
+<%if(objectsearchpath)%>
+OBJECTSEARCHPATH = \
+<%foreach(libpaths)%>
+   -j"<%libpath%>"<%fornotlast(" \\")%>
+<%endfor%>
+<%endif%>
+EXEFLAGS = <%exeflags%>
+LINKER_DLL_ARGUMENTS = <%linker_dll_arguments%>
+LINKER_EXE_ARGUMENTS = <%linker_exe_arguments%>
 !else
 <%endfor%>
 !error You must select one of these compilers:<%foreach(compilers)%> <%normalize(uc(compiler))%><%endfor%>
@@ -79,9 +91,7 @@ CG_LIB    = cg32.lib
 DLL_EXT      = <%dll_ext%>
 EXE_EXT      = <%exe_ext%>
 RC           = <%rc%>
-DLLFLAGS     = <%dllflags%>
 LIBFLAGS     = <%libflags%>
-EXEFLAGS     = <%exeflags%>
 CCFLAGS      = $(CC_CFLAGS)<%if(type_is_binary)%> $(BINARY_FLAGS)<%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
 
 <%if(use_vcl)%>
@@ -134,8 +144,9 @@ LFLAGS   = \
            -v<%if(libpaths)%> \<%endif%>
 <%endif%>
 <%foreach(libpaths)%>
-           -L"<%libpath%>" -j"<%libpath%>"<%fornotlast(" \\")%>
+           -L"<%libpath%>" \
 <%endfor%>
+           $(OBJECTSEARCHPATH)
 <%endif%>
 
 LIBFILES = \
@@ -202,7 +213,7 @@ $(OUTPUTDIR)$(NAME)$(EXE_EXT): $(OBJFILES) $(RESOURCE)
   <%eval(prelink)%>
 <%endif%>
   $(LINK) @&&!
-  $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(EXE_EXT),, $(LIBFILES),, $(RESOURCE)
+  $(LINKER_EXE_ARGUMENTS)
 !
 
 <%endif%>
@@ -217,7 +228,7 @@ $(OUTPUTDIR)$(NAME)$(DLL_EXT): $(OBJFILES) $(RESOURCE)
   <%eval(prelink)%>
 <%endif%>
   $(LINK) @&&!
-  $(DLLFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPUTDIR)$(NAME)$(DLL_EXT),, $(LIBFILES),, $(RESOURCE)
+  $(LINKER_DLL_ARGUMENTS)
 !
 !endif
 
