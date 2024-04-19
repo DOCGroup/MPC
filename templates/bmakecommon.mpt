@@ -16,6 +16,7 @@ libflags = /C
 
 bcc32  {
 debug_flags = -v -y -Od -vi- -k
+release_flags =
 optimize_flags = -O1
 warn_flags = -w-rvl -w-rch -w-ccc -w-obs -w-aus -w-pia -w-inl -w-mls
 cc = bcc32
@@ -41,6 +42,7 @@ linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPU
 
 bcc32c {
 debug_flags = -Od -vi-
+release_flags =
 optimize_flags = -O3
 warn_flags =
 cc = bcc32c
@@ -65,6 +67,7 @@ linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPU
 
 bcc64 {
 debug_flags = -g -O0
+release_flags =
 optimize_flags = -O3
 warn_flags =
 cc = bcc64
@@ -89,6 +92,7 @@ linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPU
 
 bcc64x {
 debug_flags = -g -O0
+release_flags = -Wno-ignored-attributes
 optimize_flags = -O3
 warn_flags =
 cc = bcc64x
