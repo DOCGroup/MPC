@@ -11,6 +11,7 @@
 CC = <%cc%>
 OPTIMIZE_CFLAGS = <%optimize_flags%>
 DEBUG_CFLAGS = <%debug_flags%>
+RELEASE_CFLAGS = <%release_flags%>
 CC_CFLAGS = <%ccflags%>
 WARN_FLAGS = <%warn_flags%>
 BINARY_FLAGS = <%binary_flags%>
@@ -46,7 +47,7 @@ LINKER_EXE_ARGUMENTS = <%linker_exe_arguments%>
 
 <%foreach(configurations)%>
 !ifdef <%normalize(uc(configuration))%>
-OCFLAGS    = <%if(optimize)%>$(OPTIMIZE_CFLAGS)<%else%><%if(debug_prj)%> $(DEBUG_CFLAGS)<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%>
+OCFLAGS    = <%if(optimize)%>$(OPTIMIZE_CFLAGS)<%else%><%if(debug_prj)%> $(DEBUG_CFLAGS)<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%><%if(!debug_prj)%> $(RELEASE_CFLAGS)<%endif%>
 CFG_DIR      = <%intermediate_dir%>\\
 LIBMODIFIER  = <%if(use_lib_modifier)%><%lib_modifier%><%endif%>
 EXEMODIFIER  = <%if(use_exe_modifier)%><%lib_modifier%><%endif%>
