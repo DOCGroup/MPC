@@ -79,10 +79,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_libout%>)
 <%endif%>
 <%endif%>
 
-<%if(languagestandard)%>
-target_compile_features(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE "cxx_std_<%languagestandard%>")
-
-<%endif%>
 <%if(compile_flags)%>
 target_compile_options(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC <%compile_flags%>)
 
@@ -131,6 +127,10 @@ set_target_properties(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PROPERTI
 <%endif%>
 <%endfor%>
 <%endif%>
+<%endif%>
+<%if(languagestandard)%>
+target_compile_features(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC "cxx_std_<%languagestandard%>")
+
 <%endif%>
 
 if(CMAKE_CONFIGURATION_TYPES)
