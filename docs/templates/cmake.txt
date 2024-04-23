@@ -15,3 +15,4 @@ env_libout = The value of 'libout' with &#36;() values converted to &#36;ENV{}.
 env_libpaths = The value of 'libpaths' with &#36;() values converted to &#36;ENV{}.
 packages = A list of packages to be used with the find_package() command.
 pre_find_package = A specific command or set of commands to be issued before any find_package() commands are called.
+languagestandard = Which version of ISO C++ standard to compile against (14, 17, 20)
