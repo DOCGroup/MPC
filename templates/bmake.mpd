@@ -14,6 +14,7 @@ PDB_FLAGS = <%pdb_flags%>
 DEBUG_CFLAGS = <%debug_flags%>
 RELEASE_CFLAGS = <%release_flags%>
 CC_CFLAGS = <%ccflags%>
+STACK_LFLAG = <%stack_flag%>
 WARN_FLAGS = <%warn_flags%>
 BINARY_FLAGS = <%binary_flags%>
 THREAD_FLAGS = <%thr_flags%>
@@ -139,7 +140,7 @@ LFLAGS   = \
         <%linkflags%> \
 <%endif%>
 <%if(StackReserveSize)%>
-           /S:<%StackReserveSize%> \
+           $(STACK_LFLAG)<%StackReserveSize%> \
 <%endif%>
 <%if(StackCommitSize)%>
            /Sc:<%StackCommitSize%> \
