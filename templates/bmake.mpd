@@ -10,6 +10,7 @@
 !ifdef <%normalize(uc(compiler))%>
 CC = <%cc%>
 OPTIMIZE_CFLAGS = <%optimize_flags%>
+PDB_FLAGS = <%pdb_flags%>
 DEBUG_CFLAGS = <%debug_flags%>
 RELEASE_CFLAGS = <%release_flags%>
 CC_CFLAGS = <%ccflags%>
@@ -48,12 +49,13 @@ LINKER_EXE_ARGUMENTS = <%linker_exe_arguments%>
 
 <%foreach(configurations)%>
 !ifdef <%normalize(uc(configuration))%>
-OCFLAGS    = <%if(optimize)%>$(OPTIMIZE_CFLAGS)<%else%><%if(debug_prj)%> $(DEBUG_CFLAGS)<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%><%if(!debug_prj)%> $(RELEASE_CFLAGS)<%endif%>
-CFG_DIR      = <%intermediate_dir%>\\
-LIBMODIFIER  = <%if(use_lib_modifier)%><%lib_modifier%><%endif%>
-EXEMODIFIER  = <%if(use_exe_modifier)%><%lib_modifier%><%endif%>
+OCFLAGS = <%if(optimize)%>$(OPTIMIZE_CFLAGS) <%else%><%if(debug_prj)%>$(DEBUG_CFLAGS)<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%><%if(!debug_prj)%> $(RELEASE_CFLAGS)<%endif%>
+LFLAGS =<%if(debug_prj)%> $(PDB_FLAGS)<%endif%>
+CFG_DIR = <%intermediate_dir%>\\
+LIBMODIFIER = <%if(use_lib_modifier)%><%lib_modifier%><%endif%>
+EXEMODIFIER = <%if(use_exe_modifier)%><%lib_modifier%><%endif%>
 <%if(type_is_static)%>
-STATIC_CFG   = 1
+STATIC_CFG = 1
 <%endif%>
 <%if(type_is_static || need_staticflags)%>
 <%if(staticflags)%>
@@ -61,11 +63,11 @@ STATIC_FLAGS =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
 <%endif%>
 <%else%>
 <%if(dynamicflags)%>
-DYN_FLAGS    =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
+DYN_FLAGS =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
 <%endif%>
 <%endif%>
 <%if(postlinkrmext)%>
-POSTLINKRM   = <%postlinkrmext%>
+POSTLINKRM = <%postlinkrmext%>
 <%endif%>
 <%if(exename)%>
 EXEOUTPUTDIR = <%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug")%><%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%><%endif%>\\
@@ -128,6 +130,7 @@ OBJFILES = \
 <%if(libpaths)%>
 
 LFLAGS   = \
+           $(LFLAGS) \
            $(LINKER_PATHS) \
 <%if(debug_prj)%>
            -v \
