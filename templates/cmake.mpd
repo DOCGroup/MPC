@@ -128,6 +128,10 @@ set_target_properties(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PROPERTI
 <%endfor%>
 <%endif%>
 <%endif%>
+<%if(languagestandard)%>
+target_compile_features(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC "cxx_std_<%languagestandard%>")
+
+<%endif%>
 
 if(CMAKE_CONFIGURATION_TYPES)
 target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PUBLIC
