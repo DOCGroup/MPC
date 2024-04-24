@@ -10,6 +10,7 @@
 !ifdef <%normalize(uc(compiler))%>
 CC = <%cc%>
 OPTIMIZE_CFLAGS = <%optimize_flags%>
+PDB_FLAGS = <%pdb_flags%>
 DEBUG_CFLAGS = <%debug_flags%>
 RELEASE_CFLAGS = <%release_flags%>
 CC_CFLAGS = <%ccflags%>
@@ -129,7 +130,7 @@ OBJFILES = \
 LFLAGS   = \
            $(LINKER_PATHS) \
 <%if(debug_prj)%>
-           -v \
+           -v $(PDB_FLAGS) \
            -r \
 <%endif%>
 <%if(linkflags)%>

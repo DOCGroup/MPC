@@ -18,6 +18,7 @@ bcc32  {
 debug_flags = -v -y -Od -vi- -k
 release_flags =
 optimize_flags = -O1
+pdb_flags =
 warn_flags = -w-rvl -w-rch -w-ccc -w-obs -w-aus -w-pia -w-inl -w-mls
 cc = bcc32
 thr_flags = -tWM
@@ -44,6 +45,7 @@ bcc32c {
 debug_flags = -Od -vi-
 release_flags =
 optimize_flags = -O3
+pdb_flags =
 warn_flags =
 cc = bcc32c
 binary_flags = -tR -tD
@@ -69,6 +71,7 @@ bcc64 {
 debug_flags = -g -O0
 release_flags =
 optimize_flags = -O3
+pdb_flags =
 warn_flags =
 cc = bcc64
 binary_flags = -tR -tD
@@ -94,6 +97,7 @@ bcc64x {
 debug_flags = -g -O0
 release_flags = -Wno-ignored-attributes
 optimize_flags = -O3
+pdb_flags = -pdb $(OUTPUTDIR)$(NAME).pdb
 warn_flags =
 cc = bcc64x
 binary_flags = -tR -tD
