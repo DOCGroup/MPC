@@ -49,8 +49,8 @@ LINKER_EXE_ARGUMENTS = <%linker_exe_arguments%>
 
 <%foreach(configurations)%>
 !ifdef <%normalize(uc(configuration))%>
-OCFLAGS = <%if(optimize)%>$(OPTIMIZE_CFLAGS)<%else%><%if(debug_prj)%> $(DEBUG_CFLAGS)<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%><%if(!debug_prj)%> $(RELEASE_CFLAGS)<%endif%>
-LFLAGS = <%if(debug_prj)%> $(PDB_FLAGS)<%endif%>
+OCFLAGS = <%if(optimize)%>$(OPTIMIZE_CFLAGS) <%else%><%if(debug_prj)%>$(DEBUG_CFLAGS)<%foreach(debug_macros)%> -D<%debug_macro%><%endfor%><%endif%><%endif%><%foreach(defines)%> -D<%define%><%endfor%><%if(!debug_prj)%> $(RELEASE_CFLAGS)<%endif%>
+LFLAGS =<%if(debug_prj)%> $(PDB_FLAGS)<%endif%>
 CFG_DIR = <%intermediate_dir%>\\
 LIBMODIFIER = <%if(use_lib_modifier)%><%lib_modifier%><%endif%>
 EXEMODIFIER = <%if(use_exe_modifier)%><%lib_modifier%><%endif%>
