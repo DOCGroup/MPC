@@ -21,6 +21,7 @@ THREAD_FLAGS = <%thr_flags%>
 LIB_EXT = <%lib_ext%>
 COMMON_DEFINES =<%foreach(common_defines)%> -D<%common_define%><%endfor%>
 COMMON_FLAGS = <%foreach(common_flags)%><%common_flag%><%endfor%>
+PLATFORM_LIBS_PREFIX = <%platform_libs_prefix%>
 OBJ_EXT = <%obj_ext%>
 LINKER_PATHS = <%linker_paths%>
 STARTUP_BITS = <%startup_bits%>
@@ -160,6 +161,9 @@ LIBFILES = \
 <%endfor%>
 <%foreach(reverse(lit_libs))%>
            <%lit_lib%>$(LIB_EXT) \
+<%endfor%>
+<%foreach(reverse(platform_libs))%>
+           $(PLATFORM_LIBS_PREFIX)<%platform_libs%> \
 <%endfor%>
 <%foreach(reverse(pure_libs))%>
            <%pure_lib%> \
