@@ -801,6 +801,9 @@
 <%endif%>
 <%if(header_files)%>
   <ItemGroup>
+  <%if(pch_header)%> 
+    <ClInclude Include="<%pch_header%>" />
+  <%endif%>
 <%foreach(uniq(header_files))%>
 <%if(!is_custom_input(header_file))%>
     <ClInclude Include="<%header_file%>" />
