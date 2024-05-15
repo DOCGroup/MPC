@@ -7,15 +7,18 @@
 	{optional} -non_shared
 <%endif%>
 <%else%>
-<%if(sharedname)%>
-	[Shared Object]
-	-o <%if(dllout)%><%reltop_dllout%><%else%><%reltop_libout%><%endif%>/<%lib_prefix%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%libext(".so")%>
-<%else%>
+<%comment("TODO-sonndinh: If we put the sharedname branch before the staticname branch, MPC picks")%>
+<%comment("the sharedname branch even if we have a specific clause with ghs type in .mpc file")%>
+<%comment("and call mpc.pl -type ghs with that .mpc file. As a temporary fix, put staticname first.")%>
 <%if(staticname)%>
 	[Library]
-	-o <%reltop_libout%>/<%lib_prefix%><%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%libext(".a")%>
+	-o <%reltop_libout%>\<%lib_prefix%><%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%libext(".a")%>
 <%else%>
-	[Subproject]
+<%if(sharedname)%>
+  [Shared Object]
+  -o <%if(dllout)%><%reltop_dllout%><%else%><%reltop_libout%><%endif%>/<%lib_prefix%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%libext(".so")%>
+<%else%>
+  [Subproject]
 <%endif%>
 <%endif%>
 <%endif%>
