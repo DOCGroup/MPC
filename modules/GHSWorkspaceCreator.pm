@@ -81,24 +81,29 @@ sub pre_workspace {
   # The first option requires setting environment variables.
   # The second option requires passing parameters to the -relative option.
 
+  ## Try to read the INTEGRITY installation directory and BSP name from environment.
+  ## Default values are the installation directory on Windows and the BSP name
+  ## for the simulator for PowerPC architecture.
+  my $ghs_os_dir = defined $ENV{GHS_OS_DIR} ? $ENV{GHS_OS_DIR} : 'C:\ghs\int1146';
+  my $ghs_bsp_name = defined $ENV{GHS_BSP_NAME} ? $ENV{GHS_BSP_NAME} : "sim800";
+
   ## Print out the preliminary information
   print $fh "#!gbuild$crlf",
-            "macro __OS_DIR=C:\ghs\int1146$crlf",
-            "macro __BSP_NAME=sim800$crlf",
-            'macro __BSP_DIR=${__OS_DIR}\${__BSP_NAME}$crlf',
+            "macro __OS_DIR=$ghs_os_dir$crlf",
+            "macro __BSP_NAME=$ghs_bsp_name$crlf",
+            "macro __BSP_DIR=\${__OS_DIR}\\\${__BSP_NAME}$crlf",
             "macro ACE_ROOT=%expand_path(.)$crlf",
-            'macro __BUILD_DIR=${ACE_ROOT}\build$crlf',
-            'macro __LIBS_DIR_BASE=${__OS_DIR}\libs$crlf',
+            "macro __BUILD_DIR=\${ACE_ROOT}\\build$crlf",
+            "macro __LIBS_DIR_BASE=\${__OS_DIR}\\libs$crlf",
             "primaryTarget=$tgt$crlf",
-            'customization=${__OS_DIR}\target\integrity.bod$crlf',
+            "customization=\${__OS_DIR}\\target\\integrity.bod$crlf",
             "[Project]$crlf",
-            #"\t-DACE_HAS_CPP14$crlf",
             "\t-gcc$crlf",
             "\t--c++14$crlf",
             "\t--libcxx$crlf",
             "\t:sourceDir=.$crlf",
-            '\t:optionsFile=${__OS_DIR}\target\${__BSP_NAME}.opt$crlf',
-	          '\t-I${ACE_ROOT}$crlf',
+            "\t:optionsFile=\${__OS_DIR}\\target\\\${__BSP_NAME}.opt$crlf",
+	          "\t-I\${ACE_ROOT}$crlf",
 	          "\t-language=cxx$crlf",
 	          "\t--new_style_casts$crlf",
 	          "\t-non_shared$crlf";
@@ -106,8 +111,7 @@ sub pre_workspace {
 
 # TODO(sonndinh): Looks like this only support [INTEGRITY Application] with
 # only one [Program] (i.e., executable) in the image. But this seems sufficient
-# for most cases.
-# How does a [INTEGRITY Application] gpj file look with more
+# for most cases. How does a [INTEGRITY Application] gpj file look with more
 # than one [Program]s and how does the corresponding .int file look?
 sub create_integrity_project {
   my($self, $int_proj, $project, $type, $target) = @_;
@@ -165,11 +169,11 @@ sub mix_settings {
     # (sonndinh): Go through the lines in this project's gpj file.
     # Each line may result in some changes added to the workspace gpj file.
     # The changes are returned in the $mix variable.
-    # In case the project is an 
+    # In case the project is an
     while(<$rh>) {
       # (sonndinh): Don't need to add compiler/linker options to the workspace file.
       # The gpj file for each individual project should have those already.
-      # In the workspace file (the top-level project file), only need to list the child projects.  
+      # In the workspace file (the top-level project file), only need to list the child projects.
       if (/^\s*(\[(Program|Library|Subproject)\])\s*$/) {
         my $type = $1;
         if ($integrity_project && $type eq '[Program]') {
