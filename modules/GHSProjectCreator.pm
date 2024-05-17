@@ -87,6 +87,10 @@ sub fill_value {
     $startre = $self->escape_regex_special($self->getstartdir());
   }
 
+  ## NOTE(sonndinh): As of Green Hills MULTI IDE v8.1.4, the paths do not
+  ## need to be relative to the top directory. Hence, most of the reltop_
+  ## uses in the GHS template are removed.
+
   ## The Green Hills project format is strange and needs all paths
   ## relative to the top directory, no matter where the source files
   ## reside.  The template uses reltop_ in front of the real project
