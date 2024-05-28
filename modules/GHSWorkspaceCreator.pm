@@ -141,9 +141,9 @@ sub create_integrity_project {
                 "AddressSpace$crlf",
                 "\tFilename\t\t\t$target$crlf",
                 "\tLanguage\t\t\tC++$crlf",
-                #"\tLibrary\t\t\t\tlibINTEGRITY.so$crlf",
-                #"\tLibrary\t\t\t\tlibc.so$crlf",
-                #"\tLibrary\t\t\t\tlibscxx_e.so$crlf",
+                ## sonndinh: Some ACE tests require a bigger heap memory size.
+                ## Default heap size is 64kB; increase to 2MB here.
+                "\tHeapSize\t\t\t0x200000$crlf",
                 "\tTask Initial$crlf",
                 "\t\tStackLength\t\t0x8000$crlf",
                 "\tEndTask$crlf",
