@@ -110,10 +110,14 @@ sub pre_workspace {
 	          "\t-non_shared$crlf";
 }
 
-# TODO(sonndinh): Looks like this only support [INTEGRITY Application] with
-# only one [Program] (i.e., executable) in the image. But this seems sufficient
-# for most cases. How does a [INTEGRITY Application] gpj file look with more
-# than one [Program]s and how does the corresponding .int file look?
+# Write a .int file processed by the Integrate tool to create a dynamic download image.
+# This file creates a single virtual AddressSpace with specific assumptions such as
+# the language being used is C++, the heap size, stack length of the Initial Task.
+# Specific application may need to update the generated .int file according to its needs.
+# For example, if the application requires working with a file system, use the MULTI IDE
+# GUI to add a file system module to the application; this will automatically update the
+# .int file. If the application requires more heap memory, manually update the HeapSize
+# line to increase the heap size.
 sub create_integrity_project {
   my($self, $int_proj, $project, $type, $target) = @_;
   my $outdir   = $self->get_outdir();
@@ -141,8 +145,8 @@ sub create_integrity_project {
                 "AddressSpace$crlf",
                 "\tFilename\t\t\t$target$crlf",
                 "\tLanguage\t\t\tC++$crlf",
-                ## sonndinh: Some ACE tests require a bigger heap memory size.
-                ## Default heap size is 64kB; increase to 2MB here.
+                # Default heap size is 64kB.
+                # Increase to 2MB here to cover more applications.
                 "\tHeapSize\t\t\t0x200000$crlf",
                 "\tTask Initial$crlf",
                 "\t\tStackLength\t\t0x8000$crlf",
@@ -160,28 +164,32 @@ sub mix_settings {
   my $mix    = $project;
   my $outdir = $self->get_outdir();
 
+  # If the project file path is already an absolute path, use it.
+  my $fullpath;
+  if ($project =~ /^\/.*/ || $project =~ /^[a-zA-Z]:.*/) {
+    $fullpath = $project;
+  } else {
+    $fullpath = "$outdir/$project";
+  }
+
   ## Things that seem like they should be set in the project
   ## actually have to be set in the controlling project file.
-  if (open($rh, "$outdir/$project")) {
+  if (open($rh, $fullpath)) {
     my $crlf = $self->crlf();
     my $integrity_project = (index($tgt, 'integrity') >= 0);
     my($int_proj, $int_type, $target);
 
-    # (sonndinh): Go through the lines in this project's gpj file.
-    # Each line may result in some changes added to the workspace gpj file.
-    # The changes are returned in the $mix variable.
-    # In case the project is an
     while(<$rh>) {
-      # (sonndinh): Don't need to add compiler/linker options to the workspace file.
-      # The gpj file for each individual project should have those already.
-      # In the workspace file (the top-level project file), only need to list the child projects.
+      # Don't need to add compiler/linker options to the workspace file.
+      # The .gpj file for each individual project should have those already.
+      # In the workspace file, only need to list the child projects.
       if (/^\s*(\[(Program|Library|Subproject)\])\s*$/) {
         my $type = $1;
         if ($integrity_project && $type eq '[Program]') {
-          $int_proj = $project;             #E.g., tests/ARGV_Test.gpj
-          $int_proj =~ s/(\.gpj)$/_int$1/;  #E.g., tests/ARGV_Test_int.gpj
+          $int_proj = $project;             #E.g., tests/MyTest.gpj
+          $int_proj =~ s/(\.gpj)$/_int$1/;  #E.g., tests/MyTest_int.gpj
           $int_type = $type;                #E.g., [Program]
-          $mix =~ s/(\.gpj)$/_int$1/;       #E.g., tests/ARGV_Test_int.gpj
+          $mix =~ s/(\.gpj)$/_int$1/;       #E.g., tests/MyTest_int.gpj
           $type = $integrity;               # [INTEGRITY Application]
         }
         $mix .= "\t\t$type$crlf";
@@ -228,22 +236,10 @@ sub mix_settings {
 sub write_comps {
   my($self, $fh) = @_;
 
-  #my $projects = $self->get_projects();
-  #my @list = $self->sort_dependencies($projects);
-
-  #foreach (@list) {
-  #  print "$_\n";
-  #}
-
-  # TODO(sonndinh): Looks like the individual project files are produced before this happens.
-  # And this module relies on them to add contents to the workspace file (default.gpj in case of GHS).
-
   ## Print out each project
   foreach my $project ($self->sort_dependencies($self->get_projects(), 0)) {
     print $fh $self->mix_settings($project);
   }
 }
-
-
 
 1;
