@@ -50,6 +50,10 @@ sub workspace_file_name {
   return $_[0]->get_modified_workspace_name('default', '.gpj');
 }
 
+sub is_absolute_path {
+  my $path = shift;
+  return ($path =~ /^\/.+/ || $path =~ /^[a-zA-Z]:.+/);
+}
 
 sub pre_workspace {
   my($self, $fh) = @_;
@@ -60,7 +64,11 @@ sub pre_workspace {
   if (defined $$prjs[0]) {
     my $fh      = new FileHandle();
     my $outdir  = $self->get_outdir();
-    if (open($fh, "$outdir/$$prjs[0]")) {
+    #my $fullpath = $$prjs[0];
+    #$fullpath = "$outdir/$fullpath" unless ($fullpath =~ /^\/.+/ || $fullpath =~ /^[a-zA-Z]:.+/);
+    my $fullpath = is_absolute_path($$prjs[0]) ? $$prjs[0] : "$outdir/$$prjs[0]";
+
+    if (open($fh, $fullpath)) {
       while(<$fh>) {
         if (/^#primaryTarget=(.+)$/) {
           $tgt = $1;
@@ -87,13 +95,17 @@ sub pre_workspace {
   my $ghs_os_dir = defined $ENV{GHS_OS_DIR} ? $ENV{GHS_OS_DIR} : 'C:\ghs\int1146';
   my $ghs_bsp_name = defined $ENV{GHS_BSP_NAME} ? $ENV{GHS_BSP_NAME} : "sim800";
 
+  my $ace_root = $ENV{ACE_ROOT};
+  my $tao_root = $ENV{TAO_ROOT};
+
   ## Print out the preliminary information
   print $fh "#!gbuild$crlf",
             "macro __OS_DIR=$ghs_os_dir$crlf",
             "macro __BSP_NAME=$ghs_bsp_name$crlf",
             "macro __BSP_DIR=\${__OS_DIR}\\\${__BSP_NAME}$crlf",
-            "macro ACE_ROOT=%expand_path(.)$crlf",
-            "macro __BUILD_DIR=\${ACE_ROOT}\\build$crlf",
+            #"macro ACE_ROOT=%expand_path(.)$crlf",
+            #"macro __BUILD_DIR=\${ACE_ROOT}\\build$crlf",
+            "macro __BUILD_DIR=%expand_path(.)\\build$crlf",
             "macro __LIBS_DIR_BASE=\${__OS_DIR}\\libs$crlf",
             "primaryTarget=$tgt$crlf",
             "customization=\${__OS_DIR}\\target\\integrity.bod$crlf",
@@ -104,7 +116,9 @@ sub pre_workspace {
             "\t--libcxx$crlf",
             "\t:sourceDir=.$crlf",
             "\t:optionsFile=\${__OS_DIR}\\target\\\${__BSP_NAME}.opt$crlf",
-	          "\t-I\${ACE_ROOT}$crlf",
+	          #"\t-I\${ACE_ROOT}$crlf",
+            "\t-I$ace_root$crlf",
+            "\t-I$tao_root$crlf",
 	          "\t-language=cxx$crlf",
 	          "\t--new_style_casts$crlf",
 	          "\t-non_shared$crlf";
@@ -165,12 +179,13 @@ sub mix_settings {
   my $outdir = $self->get_outdir();
 
   # If the project file path is already an absolute path, use it.
-  my $fullpath;
-  if ($project =~ /^\/.*/ || $project =~ /^[a-zA-Z]:.*/) {
-    $fullpath = $project;
-  } else {
-    $fullpath = "$outdir/$project";
-  }
+  my $fullpath = is_absolute_path($project) ? $project : "$outdir/$project";
+
+  #if ($project =~ /^\/.+/ || $project =~ /^[a-zA-Z]:.+/) {
+  #  $fullpath = $project;
+  #} else {
+  #  $fullpath = "$outdir/$project";
+  #}
 
   ## Things that seem like they should be set in the project
   ## actually have to be set in the controlling project file.
