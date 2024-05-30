@@ -79,12 +79,11 @@ sub pre_workspace {
     }
   }
 
-  # TODO(sonndinh): Some platform information is configurable such as
-  # the path to an INTEGRITY installation, bsp name.
+  # TODO(sonndinh):
   # Some other information is specific to ACE such as its root directory,
   # its compilation and linking requirements (C++ version, flags, etc).
   # These can be put in some form of input to MPC instead of hardcoded here.
-  # Update: We can use environment variables and command-line options:
+  # We can use environment variables and command-line options:
   # --expand_vars, -use_env. Or can use the -relative command-line option.
   # The first option requires setting environment variables.
   # The second option requires passing parameters to the -relative option.
@@ -95,6 +94,7 @@ sub pre_workspace {
   my $ghs_os_dir = defined $ENV{GHS_OS_DIR} ? $ENV{GHS_OS_DIR} : 'C:\ghs\int1146';
   my $ghs_bsp_name = defined $ENV{GHS_BSP_NAME} ? $ENV{GHS_BSP_NAME} : "sim800";
 
+  ## Require that ACE_ROOT and TAO_ROOT environment variables are set.
   my $ace_root = $ENV{ACE_ROOT};
   my $tao_root = $ENV{TAO_ROOT};
 
@@ -103,9 +103,10 @@ sub pre_workspace {
             "macro __OS_DIR=$ghs_os_dir$crlf",
             "macro __BSP_NAME=$ghs_bsp_name$crlf",
             "macro __BSP_DIR=\${__OS_DIR}\\\${__BSP_NAME}$crlf",
-            #"macro ACE_ROOT=%expand_path(.)$crlf",
-            #"macro __BUILD_DIR=\${ACE_ROOT}\\build$crlf",
-            "macro __BUILD_DIR=%expand_path(.)\\build$crlf",
+            "macro ACE_ROOT=$ace_root$crlf",
+            "macro __BUILD_DIR=\${ACE_ROOT}\\build$crlf",
+            #"macro __BUILD_DIR=%expand_path(.)\\build$crlf",
+            "macro TAO_ROOT=$tao_root$crlf",
             "macro __LIBS_DIR_BASE=\${__OS_DIR}\\libs$crlf",
             "primaryTarget=$tgt$crlf",
             "customization=\${__OS_DIR}\\target\\integrity.bod$crlf",
@@ -116,9 +117,10 @@ sub pre_workspace {
             "\t--libcxx$crlf",
             "\t:sourceDir=.$crlf",
             "\t:optionsFile=\${__OS_DIR}\\target\\\${__BSP_NAME}.opt$crlf",
-	          #"\t-I\${ACE_ROOT}$crlf",
-            "\t-I$ace_root$crlf",
-            "\t-I$tao_root$crlf",
+	          "\t-I\${ACE_ROOT}$crlf",
+            "\t-I\${TAO_ROOT}$crlf",
+            #"\t-I$ace_root$crlf",
+            #"\t-I$tao_root$crlf",
 	          "\t-language=cxx$crlf",
 	          "\t--new_style_casts$crlf",
 	          "\t-non_shared$crlf";
