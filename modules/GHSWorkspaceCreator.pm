@@ -64,8 +64,6 @@ sub pre_workspace {
   if (defined $$prjs[0]) {
     my $fh      = new FileHandle();
     my $outdir  = $self->get_outdir();
-    #my $fullpath = $$prjs[0];
-    #$fullpath = "$outdir/$fullpath" unless ($fullpath =~ /^\/.+/ || $fullpath =~ /^[a-zA-Z]:.+/);
     my $fullpath = is_absolute_path($$prjs[0]) ? $$prjs[0] : "$outdir/$$prjs[0]";
 
     if (open($fh, $fullpath)) {
@@ -142,7 +140,8 @@ sub create_integrity_project {
   my $int_file = $int_proj;
   $int_file =~ s/\.gpj$/.int/;
 
-  if (open($fh, ">$outdir/$int_proj")) {
+  my $int_proj_path = is_absolute_path($int_proj) ? $int_proj : "$outdir/$int_proj";
+  if (open($fh, ">$int_proj_path")) {
     ## First print out the project file
     print $fh "#!gbuild$crlf",
               "\t$integrity$crlf",
@@ -154,7 +153,8 @@ sub create_integrity_project {
     close($fh);
 
     ## Next create the integration file
-    if (open($fh, ">$outdir/$int_file")) {
+    my $int_path = is_absolute_path($int_file) ? $int_file : "$outdir/$int_file";
+    if (open($fh, ">$int_path")) {
       print $fh "Kernel$crlf",
                 "\tFilename\t\t\tDynamicDownload$crlf",
                 "EndKernel$crlf$crlf",
@@ -182,12 +182,6 @@ sub mix_settings {
 
   # If the project file path is already an absolute path, use it.
   my $fullpath = is_absolute_path($project) ? $project : "$outdir/$project";
-
-  #if ($project =~ /^\/.+/ || $project =~ /^[a-zA-Z]:.+/) {
-  #  $fullpath = $project;
-  #} else {
-  #  $fullpath = "$outdir/$project";
-  #}
 
   ## Things that seem like they should be set in the project
   ## actually have to be set in the controlling project file.
