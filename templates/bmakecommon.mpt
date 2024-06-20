@@ -123,12 +123,12 @@ ccflags = -q
 link = bcc64x
 common_libs = -Xlinker crtbegin.o -lws2_32 -lmoldname -lucrt -lmingw32 -lmingwex -l\"c++\" -lunwind -lmingwthrd -l:import64$(LIB_EXT)
 platform_libs_prefix = -l
-dll_libs = -Xlinker dllcrt2.o
-exe_libs = -Xlinker crt2.o
+dll_libs = 
+exe_libs = 
 tlib = tlib64
-dllflags = -Xlinker -m -Xlinker i386pep -Xlinker -shared -Xlinker --Bdynamic -Xlinker --enable-auto-image-base
+dllflags = -tD -Xlinker -m -Xlinker i386pep -Xlinker -shared -Xlinker --Bdynamic -Xlinker --enable-auto-image-base
 exeflags = -Xlinker -m -Xlinker i386pep -Xlinker --Bdynamic
 object_search_path = 0
-linker_dll_arguments = --driver-mode=g++ $(DLLFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(DLL_EXT) -Xlinker --out-implib -Xlinker $(OUTPUTDIR)$(NAME).lib $(DLLLIBS) $(LIBFILES) $(RESOURCE)
-linker_exe_arguments = --driver-mode=g++ $(EXEFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(EXE_EXT) $(EXELIBS) $(LIBFILES) $(RESOURCE)
+linker_dll_arguments = --driver-mode=g++ $(DLLFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)\\$(NAME)$(DLL_EXT) -Xlinker --out-implib -Xlinker $(OUTPUTDIR)$(NAME).lib $(DLLLIBS) $(LIBFILES) $(RESOURCE)
+linker_exe_arguments = --driver-mode=g++ $(EXEFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)\\$(NAME)$(EXE_EXT) $(EXELIBS) $(LIBFILES) $(RESOURCE)
 }
