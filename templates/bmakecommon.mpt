@@ -15,6 +15,7 @@ rc = brcc32
 libflags = /C
 
 bcc32  {
+path_seperator = \\
 debug_flags = -v -y -Od -vi- -k
 release_flags =
 optimize_flags = -O1
@@ -44,6 +45,7 @@ linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPU
 }
 
 bcc32c {
+path_seperator = \\
 debug_flags = -Od -vi-
 release_flags =
 optimize_flags = -O3
@@ -72,6 +74,7 @@ linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPU
 }
 
 bcc64 {
+path_seperator = \\
 debug_flags = -g -O0
 release_flags =
 optimize_flags = -O3
@@ -100,10 +103,11 @@ linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPU
 }
 
 bcc64x {
+path_seperator = \\\\
 debug_flags = -g -O0
 release_flags = -Wno-ignored-attributes
 optimize_flags = -O3
-pdb_flags = -pdb $(OUTPUTDIR)$(NAME).pdb
+pdb_flags = -Xlinker -pdb -Xlinker $(OUTPUTDIR)$(NAME).pdb
 warn_flags =
 stack_flag = --stack=
 cc = bcc64x
@@ -113,18 +117,18 @@ lib_ext = .lib
 common_defines = WIN32 _WINDOWS WIN64
 common_flags = -Qunused-arguments
 obj_ext = .o
-linker_paths = -L\"$(BDS)\lib\win64x\debug\" -L\"$(BDS)\lib\win64x\release\" -L\"$(BDS)\x86_64-w64-mingw32\lib\" -L\"$(BDS)\lib\clang\15.0.7\lib\windows\"
+linker_paths = -L\"$(BDS)\lib\win64x\debug\" -L\"$(BDS)\lib\win64x\release\" -L\"$(BDS)\x86_64-w64-mingw32\lib\"
 startup_bits = 64
 ccflags = -q
-link = ld.lld
-common_libs = crtbegin.o -lws2_32 -lmoldname -lucrt -lmingw32 -lmingwex -l\"c++\" -lunwind -lmingwthrd -l:import64$(LIB_EXT) -lclang_rt.builtins-x86_64
+link = bcc64x
+common_libs = -lcrtbegin.o -lws2_32 -lmoldname -lucrt -lmingw32 -lmingwex -l\"c++\" -lunwind -lmingwthrd -l:import64$(LIB_EXT) -lclang_rt.builtins-x86_64
 platform_libs_prefix = -l
 dll_libs = dllcrt2.o
 exe_libs = crt2.o
 tlib = tlib64
-dllflags = -m i386pep -shared --Bdynamic --enable-auto-image-base
-exeflags = -m i386pep --Bdynamic
+dllflags = -Xlinker -m -Xlinker i386pep -Xlinker -shared -Xlinker --Bdynamic -Xlinker --enable-auto-image-base
+exeflags = -Xlinker -m -Xlinker i386pep -Xlinker --Bdynamic
 object_search_path = 0
-linker_dll_arguments = $(DLLFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(DLL_EXT) --out-implib $(OUTPUTDIR)$(NAME).lib $(DLLLIBS) $(LIBFILES) $(RESOURCE)
-linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(EXE_EXT) $(EXELIBS) $(LIBFILES) $(RESOURCE)
+linker_dll_arguments = --driver-mode=g++ $(DLLFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(DLL_EXT) -Xlinker --out-implib -Xlinker $(OUTPUTDIR)$(NAME).lib $(DLLLIBS) $(LIBFILES) $(RESOURCE)
+linker_exe_arguments = --driver-mode=g++ $(EXEFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(EXE_EXT) $(EXELIBS) $(LIBFILES) $(RESOURCE)
 }

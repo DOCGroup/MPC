@@ -9,6 +9,7 @@
 <%foreach(compilers)%>
 !ifdef <%normalize(uc(compiler))%>
 CC = <%cc%>
+PATH_SEPERATOR = <%path_seperator%>
 OPTIMIZE_CFLAGS = <%optimize_flags%>
 PDB_FLAGS = <%pdb_flags%>
 DEBUG_CFLAGS = <%debug_flags%>
@@ -107,7 +108,7 @@ STARTUP_LETTER = <%startup_letter%>
 <%endif%>
 STARTUP_OBJ    = c0$(STARTUP_LETTER)$(STARTUP_BITS)$(UC_MAIN)$(OBJ_EXT)
 
-INTERMEDIATE = $(CFG_DIR)$(UNICODE_DIR)<%noextension(project_name)%>
+INTERMEDIATE = $(CFG_DIR)$(PATH_SEPERATOR)$(UNICODE_DIR)$(PATH_SEPERATOR)<%noextension(project_name)%>$(PATH_SEPERATOR)
 <%if(exename)%>
 NAME         = <%exename%>$(EXEMODIFIER)
 <%else%>
@@ -125,7 +126,7 @@ RESDIR       = <%rcdir%>
 
 OBJFILES = \
 <%foreach(source_files)%>
-           "$(INTERMEDIATE)\<%transdir(source_file)%><%basenoextension(source_file)%>$(OBJ_EXT)"<%fornotlast(" \\")%>
+           "$(INTERMEDIATE)$(PATH_SEPERATOR)<%transdir(source_file)%><%basenoextension(source_file)%>$(OBJ_EXT)"<%fornotlast(" \\")%>
 <%endfor%>
 <%endif%>
 <%if(libpaths)%>
