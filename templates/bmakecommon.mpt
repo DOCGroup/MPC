@@ -15,7 +15,6 @@ rc = brcc32
 libflags = /C
 
 bcc32  {
-path_seperator = \\
 debug_flags = -v -y -Od -vi- -k
 release_flags =
 optimize_flags = -O1
@@ -45,7 +44,6 @@ linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPU
 }
 
 bcc32c {
-path_seperator = \\
 debug_flags = -Od -vi-
 release_flags =
 optimize_flags = -O3
@@ -74,7 +72,6 @@ linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPU
 }
 
 bcc64 {
-path_seperator = \\
 debug_flags = -g -O0
 release_flags =
 optimize_flags = -O3
@@ -103,7 +100,6 @@ linker_exe_arguments = $(EXEFLAGS) $(LFLAGS) $(STARTUP_OBJ) $(OBJFILES), $(OUTPU
 }
 
 bcc64x {
-path_seperator = \\\\
 debug_flags = -g -O0
 release_flags = -Wno-ignored-attributes
 optimize_flags = -O3
@@ -129,6 +125,6 @@ tlib = tlib64
 dllflags = -tD -Xlinker -m -Xlinker i386pep -Xlinker -shared -Xlinker --Bdynamic -Xlinker --enable-auto-image-base
 exeflags = -Xlinker -m -Xlinker i386pep -Xlinker --Bdynamic
 object_search_path = 0
-linker_dll_arguments = --driver-mode=g++ $(DLLFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)\\$(NAME)$(DLL_EXT) -Xlinker --out-implib -Xlinker $(OUTPUTDIR)$(NAME).lib $(DLLLIBS) $(LIBFILES) $(RESOURCE)
-linker_exe_arguments = --driver-mode=g++ $(EXEFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)\\$(NAME)$(EXE_EXT) $(EXELIBS) $(LIBFILES) $(RESOURCE)
+linker_dll_arguments = --driver-mode=g++ $(DLLFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(DLL_EXT) -Xlinker --out-implib -Xlinker $(OUTPUTDIR)$(NAME).lib $(DLLLIBS) $(LIBFILES) $(RESOURCE)
+linker_exe_arguments = --driver-mode=g++ $(EXEFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(EXE_EXT) $(EXELIBS) $(LIBFILES) $(RESOURCE)
 }
