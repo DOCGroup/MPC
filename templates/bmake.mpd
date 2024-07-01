@@ -27,7 +27,6 @@ LINKER_PATHS = <%linker_paths%>
 STARTUP_BITS = <%startup_bits%>
 LINK = <%link%>
 COMMON_LIBS = <%common_libs%>
-EXELIBS = <%exe_libs%>
 TLIB = <%tlib%>
 DLLFLAGS = <%dllflags%>
 <%if(pch)%>PCH = 1<%endif%>
