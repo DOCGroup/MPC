@@ -128,8 +128,8 @@ link = bcc64x
 common_libs = -lws2_32 -lucrt -lmingwthrd 
 platform_libs_prefix = -l
 tlib = tlib64
-dllflags = -tD -Xlinker -m -Xlinker i386pep -Xlinker -shared -Xlinker --Bdynamic -Xlinker --enable-auto-image-base
-exeflags = -Xlinker -m -Xlinker i386pep -Xlinker --Bdynamic
+dllflags = -tD -Xlinker --Bdynamic
+exeflags = -Xlinker --Bdynamic
 object_search_path = 0
 linker_dll_arguments = --driver-mode=g++ $(DLLFLAGS) $(LFLAGS:\=/) $(OBJFILES:\=/) -o $(OUTPUTDIR:\=/)$(NAME)$(DLL_EXT) -Xlinker --out-implib -Xlinker $(OUTPUTDIR:\=/)$(NAME).lib $(LIBFILES:\=/) $(RESOURCE:\=/)
 linker_exe_arguments = --driver-mode=g++ $(EXEFLAGS) $(LFLAGS:\=/) $(OBJFILES:\=/) -o $(OUTPUTDIR:\=/)$(NAME)$(EXE_EXT) $(LIBFILES:\=/) $(RESOURCE:\=/)
