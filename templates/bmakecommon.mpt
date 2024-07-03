@@ -105,7 +105,7 @@ release_flags = -Wno-ignored-attributes
 optimize_flags = -O3
 pdb_flags = -Xlinker -pdb -Xlinker $(OUTPUTDIR)$(NAME).pdb
 warn_flags =
-stack_flag = --stack=
+stack_flag = -Xlinker --stack=
 cc = bcc64x
 binary_flags = -tR -tD
 thr_flags = -tM
