@@ -1,6 +1,10 @@
 // -*- MPC -*-
 
-// The *32 settings are for bcc32, *32c are for bcc32c (the clang based bcc32), and *64 are for bcc64 (also clang based)
+// These settings are for:
+// bcc32 are for bcc32, the old Embarcadero C++ compiler
+// bcc32c are for the clang5 based bcc32c
+// bcc64 are for the clang5 based bcc64
+// bcc64x are for the clang15 based bcc64x
 
 conditional_include "common"
 
@@ -29,6 +33,7 @@ common_defines = WIN32 _WINDOWS
 common_flags = -a8
 obj_ext = .obj
 linker_paths = -L\"$(BDS)\lib\win32\release\" -L\"$(BDS)\lib\win32\debug\"
+linker_passthrough =
 startup_bits = 32
 link = ilink32
 common_libs = ws2_32$(LIB_EXT) import32$(LIB_EXT) cw32mti$(LIB_EXT) $(CG_LIB)
@@ -58,6 +63,7 @@ common_defines = WIN32 _WINDOWS
 common_flags = -a8
 obj_ext = .obj
 linker_paths = -L\"$(BDS)\lib\win32c\debug\" -L\"$(BDS)\lib\win32c\release\"
+linker_passthrough =
 startup_bits = 32
 link = ilink32
 common_libs = ws2_32$(LIB_EXT) import32$(LIB_EXT) cw32mti$(LIB_EXT)
@@ -86,6 +92,7 @@ common_defines = WIN32 _WINDOWS WIN64
 common_flags =
 obj_ext = .o
 linker_paths = -L\"$(BDS)\lib\win64\debug\" -L\"$(BDS)\lib\win64\release\" -GE:HIGHENTROPYVA=off
+linker_passthrough =
 startup_bits = 64
 link = ilink64
 common_libs = ws2_32$(LIB_EXT) import64$(LIB_EXT) cw64mti$(LIB_EXT)
@@ -103,7 +110,7 @@ bcc64x {
 debug_flags = -g -O0
 release_flags = -Wno-ignored-attributes
 optimize_flags = -O3
-pdb_flags = -Xlinker -pdb -Xlinker $(OUTPUTDIR)$(NAME).pdb
+pdb_flags = -Xlinker -pdb -Xlinker $(OUTPUTDIR:\=/)$(NAME).pdb
 warn_flags =
 stack_flag = -Xlinker --stack=
 cc = bcc64x
@@ -113,16 +120,17 @@ lib_ext = .lib
 common_defines = WIN32 _WINDOWS WIN64
 common_flags = -Qunused-arguments
 obj_ext = .o
-linker_paths = -L\"$(BDS)\lib\win64x\debug\" -L\"$(BDS)\lib\win64x\release\" -L\"$(BDS)\x86_64-w64-mingw32\lib\"
+linker_paths = 
+linker_passthrough = -Xlinker
 startup_bits = 64
 ccflags = -q
 link = bcc64x
-common_libs = -lws2_32 -lmoldname -lucrt -lmingw32 -lmingwex -l\"c++\" -lunwind -lmingwthrd -l:import64$(LIB_EXT)
+common_libs = -lws2_32 -lucrt -lmingwthrd 
 platform_libs_prefix = -l
 tlib = tlib64
-dllflags = -tD -Xlinker -m -Xlinker i386pep -Xlinker -shared -Xlinker --Bdynamic -Xlinker --enable-auto-image-base
-exeflags = -Xlinker -m -Xlinker i386pep -Xlinker --Bdynamic
+dllflags = -tD -Xlinker --Bdynamic
+exeflags = -Xlinker --Bdynamic
 object_search_path = 0
-linker_dll_arguments = --driver-mode=g++ $(DLLFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(DLL_EXT) -Xlinker --out-implib -Xlinker $(OUTPUTDIR)$(NAME).lib $(LIBFILES) $(RESOURCE)
-linker_exe_arguments = --driver-mode=g++ $(EXEFLAGS) $(LFLAGS) $(OBJFILES) -o $(OUTPUTDIR)$(NAME)$(EXE_EXT) $(LIBFILES) $(RESOURCE)
+linker_dll_arguments = --driver-mode=g++ $(DLLFLAGS) $(LFLAGS:\=/) $(OBJFILES:\=/) -o $(OUTPUTDIR:\=/)$(NAME)$(DLL_EXT) -Xlinker --out-implib -Xlinker $(OUTPUTDIR:\=/)$(NAME).lib $(LIBFILES:\=/) $(RESOURCE:\=/)
+linker_exe_arguments = --driver-mode=g++ $(EXEFLAGS) $(LFLAGS:\=/) $(OBJFILES:\=/) -o $(OUTPUTDIR:\=/)$(NAME)$(EXE_EXT) $(LIBFILES:\=/) $(RESOURCE:\=/)
 }
