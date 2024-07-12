@@ -24,11 +24,10 @@ COMMON_FLAGS = <%foreach(common_flags)%><%common_flag%><%endfor%>
 PLATFORM_LIBS_PREFIX = <%platform_libs_prefix%>
 OBJ_EXT = <%obj_ext%>
 LINKER_PATHS = <%linker_paths%>
+LINKER_PASSTHROUGH = <%linker_passthrough%>
 STARTUP_BITS = <%startup_bits%>
 LINK = <%link%>
 COMMON_LIBS = <%common_libs%>
-DLLLIBS = <%dll_libs%>
-EXELIBS = <%exe_libs%>
 TLIB = <%tlib%>
 DLLFLAGS = <%dllflags%>
 <%if(pch)%>PCH = 1<%endif%>
@@ -157,10 +156,10 @@ LFLAGS   = \
 
 LIBFILES = \
 <%foreach(reverse(libs))%>
-           <%libname_prefix%><%lib%>$(LIBMODIFIER)$(ULIBMODIFIER)$(LIB_EXT) \
+           $(LINKER_PASSTHROUGH) <%libname_prefix%><%lib%>$(LIBMODIFIER)$(ULIBMODIFIER)$(LIB_EXT) \
 <%endfor%>
 <%foreach(reverse(lit_libs))%>
-           <%lit_lib%>$(LIB_EXT) \
+           $(LINKER_PASSTHROUGH) <%lit_lib%>$(LIB_EXT) \
 <%endfor%>
 <%foreach(reverse(platform_libs))%>
            $(PLATFORM_LIBS_PREFIX)<%platform_libs%> \
