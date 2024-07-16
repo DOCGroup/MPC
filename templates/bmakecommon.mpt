@@ -120,16 +120,16 @@ lib_ext = .lib
 common_defines = WIN32 _WINDOWS WIN64
 common_flags = -Qunused-arguments
 obj_ext = .o
-linker_paths = 
+linker_paths =
 linker_passthrough = -Xlinker
 startup_bits = 64
 ccflags = -q
 link = bcc64x
-common_libs = -lws2_32 -lucrt -lmingwthrd 
+common_libs = -lws2_32 -lucrt -lmingwthrd
 platform_libs_prefix = -l
 tlib = tlib64
-dllflags = -tD -Xlinker --Bdynamic
-exeflags = -Xlinker --Bdynamic
+dllflags = -tD -tR
+exeflags = -tR
 object_search_path = 0
 linker_dll_arguments = --driver-mode=g++ $(DLLFLAGS) $(LFLAGS:\=/) $(OBJFILES:\=/) -o $(OUTPUTDIR:\=/)$(NAME)$(DLL_EXT) -Xlinker --out-implib -Xlinker $(OUTPUTDIR:\=/)$(NAME).lib $(LIBFILES:\=/) $(RESOURCE:\=/)
 linker_exe_arguments = --driver-mode=g++ $(EXEFLAGS) $(LFLAGS:\=/) $(OBJFILES:\=/) -o $(OUTPUTDIR:\=/)$(NAME)$(EXE_EXT) $(LIBFILES:\=/) $(RESOURCE:\=/)
