@@ -95,7 +95,7 @@ endif()
 <%endif%>
 <%else%>
 <%if(sharedname)%>
-add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>})
+add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} SHARED ${SOURCE_FILES_<%uc(normalize(project_name))%>})
 <%if(dynamicflags)%>
 if(BUILD_SHARED_LIBS)
   target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%dynamicflags%>)
