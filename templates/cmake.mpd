@@ -114,7 +114,7 @@ endif()
 target_link_libraries(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${TARGET_LINK_LIBRARIES_<%uc(normalize(project_name))%>})
 <%else%>
 <%if(staticname)%>
-add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} ${SOURCE_FILES_<%uc(normalize(project_name))%>})
+add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} STATIC ${SOURCE_FILES_<%uc(normalize(project_name))%>})
 <%if(staticflags)%>
 target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%staticflags%>)
 <%endif%>
