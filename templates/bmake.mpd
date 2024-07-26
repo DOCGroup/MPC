@@ -203,6 +203,7 @@ CFLAGS = \
 <%foreach(macros common_defines)%>
          -D<%macro%> \
 <%endfor%>
+         -DMPC_LIB_MODIFIER=\"$(LIBMODIFIER)$(ULIBMODIFIER)\"
 <%foreach(includes)%>
          -I"<%include%>" \
 <%endfor%>
