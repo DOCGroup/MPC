@@ -10,6 +10,7 @@
 !ifdef <%normalize(uc(compiler))%>
 CC = <%cc%>
 OPTIMIZE_CFLAGS = <%optimize_flags%>
+UNICODE_CFLAGS = <%unicode_flags%>
 PDB_FLAGS = <%pdb_flags%>
 DEBUG_CFLAGS = <%debug_flags%>
 RELEASE_CFLAGS = <%release_flags%>
@@ -40,6 +41,7 @@ OBJECTSEARCHPATH = \
 EXEFLAGS = <%exeflags%>
 LINKER_DLL_ARGUMENTS = <%linker_dll_arguments%>
 LINKER_EXE_ARGUMENTS = <%linker_exe_arguments%>
+DEBUG_EXT = <%debug_ext%>
 !else
 <%endfor%>
 !error You must select one of these compilers:<%foreach(compilers)%> <%normalize(uc(compiler))%><%endfor%>
@@ -66,9 +68,6 @@ STATIC_FLAGS =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
 DYN_FLAGS =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
 <%endif%>
 <%endif%>
-<%if(postlinkrmext)%>
-POSTLINKRM = <%postlinkrmext%>
-<%endif%>
 <%if(exename)%>
 EXEOUTPUTDIR = <%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug")%><%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%><%endif%>\\
 <%endif%>
@@ -80,7 +79,7 @@ EXEOUTPUTDIR = <%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug
 <%endfor%>
 
 !ifdef UNICODE
-UC_CFLAGS    = <%unicode_flags%>
+UC_CFLAGS    = $(UNICODE_CFLAGS)
 UNICODE_DIR  = Unicode\\
 UC_MAIN      = w
 ULIBMODIFIER = <%unicode_lib_modifier%>
@@ -204,6 +203,7 @@ CFLAGS = \
 <%foreach(macros common_defines)%>
          -D<%macro%> \
 <%endfor%>
+         -DMPC_LIB_MODIFIER=\"$(LIBMODIFIER)$(ULIBMODIFIER)\" \
 <%foreach(includes)%>
          -I"<%include%>" \
 <%endfor%>
@@ -390,7 +390,7 @@ realclean: clean
 <%endif%>
 <%endif%>
 <%if(exename || sharedname || staticname)%>
-        @del "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" 2>NUL
+        @del "$(OUTPUTDIR)$(NAME)$(DEBUG_EXT)" 2>NUL
 <%endif%>
 <%if(postclean)%>
   -<%eval(postclean)%>

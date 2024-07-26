@@ -10,7 +10,6 @@ conditional_include "common"
 
 configurations = Debug Release
 compilers = bcc32 bcc32c bcc64 bcc64x
-unicode_flags = -WU
 unicode_lib_modifier = u
 unicode_exe_modifier = u
 dll_ext = .dll
@@ -22,6 +21,7 @@ bcc32  {
 debug_flags = -v -y -Od -vi- -k
 release_flags =
 optimize_flags = -O1
+unicode_flags = -WU
 pdb_flags =
 warn_flags = -w-rvl -w-rch -w-ccc -w-obs -w-aus -w-pia -w-inl -w-mls
 stack_flag = /S:
@@ -32,6 +32,7 @@ lib_ext = .lib
 common_defines = WIN32 _WINDOWS
 common_flags = -a8
 obj_ext = .obj
+debug_ext = .tds
 linker_paths = -L\"$(BDS)\lib\win32\release\" -L\"$(BDS)\lib\win32\debug\"
 linker_passthrough =
 startup_bits = 32
@@ -52,6 +53,7 @@ bcc32c {
 debug_flags = -Od -vi-
 release_flags =
 optimize_flags = -O3
+unicode_flags = -WU
 pdb_flags =
 warn_flags =
 stack_flag = /S:
@@ -62,6 +64,7 @@ lib_ext = .lib
 common_defines = WIN32 _WINDOWS
 common_flags = -a8
 obj_ext = .obj
+debug_ext = .tds
 linker_paths = -L\"$(BDS)\lib\win32c\debug\" -L\"$(BDS)\lib\win32c\release\"
 linker_passthrough =
 startup_bits = 32
@@ -81,6 +84,7 @@ bcc64 {
 debug_flags = -g -O0
 release_flags =
 optimize_flags = -O3
+unicode_flags = -WU
 pdb_flags =
 warn_flags =
 stack_flag = /S:
@@ -91,6 +95,7 @@ lib_ext = .a
 common_defines = WIN32 _WINDOWS WIN64
 common_flags =
 obj_ext = .o
+debug_ext = .tds
 linker_paths = -L\"$(BDS)\lib\win64\debug\" -L\"$(BDS)\lib\win64\release\" -GE:HIGHENTROPYVA=off
 linker_passthrough =
 startup_bits = 64
@@ -110,7 +115,9 @@ bcc64x {
 debug_flags = -g -O0
 release_flags = -Wno-ignored-attributes
 optimize_flags = -O3
-pdb_flags = -Xlinker -pdb -Xlinker $(OUTPUTDIR:\=/)$(NAME).pdb
+unicode_flags = -tU
+debug_ext = .pdb
+pdb_flags = -Xlinker -pdb -Xlinker $(OUTPUTDIR:\=/)$(NAME).$(DEBUG_EXT)
 warn_flags =
 stack_flag = -Xlinker --stack=
 cc = bcc64x
