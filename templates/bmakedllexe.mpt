@@ -10,7 +10,6 @@ Release {
   output_dir       = Release
   intermediate_dir = Release
   lib_modifier     = _br
-  postlinkrmext    = .tds
 }
 
 Debug {
@@ -19,7 +18,6 @@ Debug {
   defines          = _DEBUG
   intermediate_dir = Debug
   lib_modifier     = _bd
-  postlinkrmext    = .tds
 }
 
 Static Release {
@@ -28,7 +26,6 @@ Static Release {
   output_dir       = Static_Release
   intermediate_dir = Static_Release
   lib_modifier     = _bsr
-  postlinkrmext    = .tds
   type_is_static   = 1
 }
 
@@ -39,7 +36,6 @@ Static Debug {
   output_dir       = Static_Debug
   intermediate_dir = Static_Debug
   lib_modifier     = _bsd
-  postlinkrmext    = .tds
   type_is_static   = 1
 }
 

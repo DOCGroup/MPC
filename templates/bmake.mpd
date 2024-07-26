@@ -41,6 +41,7 @@ OBJECTSEARCHPATH = \
 EXEFLAGS = <%exeflags%>
 LINKER_DLL_ARGUMENTS = <%linker_dll_arguments%>
 LINKER_EXE_ARGUMENTS = <%linker_exe_arguments%>
+DEBUG_EXT = <%debug_ext%>
 !else
 <%endfor%>
 !error You must select one of these compilers:<%foreach(compilers)%> <%normalize(uc(compiler))%><%endfor%>
@@ -66,9 +67,6 @@ STATIC_FLAGS =<%foreach(staticflags)%> -D<%staticflag%><%endfor%>
 <%if(dynamicflags)%>
 DYN_FLAGS =<%foreach(dynamicflags)%> -D<%dynamicflag%><%endfor%>
 <%endif%>
-<%endif%>
-<%if(postlinkrmext)%>
-POSTLINKRM = <%postlinkrmext%>
 <%endif%>
 <%if(exename)%>
 EXEOUTPUTDIR = <%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug")%><%endif%><%else%><%if(windows_style)%><%output_dir("Debug")%><%else%><%output_dir(".")%><%endif%><%endif%>\\
@@ -391,7 +389,7 @@ realclean: clean
 <%endif%>
 <%endif%>
 <%if(exename || sharedname || staticname)%>
-        @del "$(OUTPUTDIR)$(NAME)$(POSTLINKRM)" 2>NUL
+        @del "$(OUTPUTDIR)$(NAME)$(DEBUG_EXT)" 2>NUL
 <%endif%>
 <%if(postclean)%>
   -<%eval(postclean)%>

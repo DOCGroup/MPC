@@ -32,6 +32,7 @@ lib_ext = .lib
 common_defines = WIN32 _WINDOWS
 common_flags = -a8
 obj_ext = .obj
+debug_ext = .tds
 linker_paths = -L\"$(BDS)\lib\win32\release\" -L\"$(BDS)\lib\win32\debug\"
 linker_passthrough =
 startup_bits = 32
@@ -63,6 +64,7 @@ lib_ext = .lib
 common_defines = WIN32 _WINDOWS
 common_flags = -a8
 obj_ext = .obj
+debug_ext = .tds
 linker_paths = -L\"$(BDS)\lib\win32c\debug\" -L\"$(BDS)\lib\win32c\release\"
 linker_passthrough =
 startup_bits = 32
@@ -93,6 +95,7 @@ lib_ext = .a
 common_defines = WIN32 _WINDOWS WIN64
 common_flags =
 obj_ext = .o
+debug_ext = .tds
 linker_paths = -L\"$(BDS)\lib\win64\debug\" -L\"$(BDS)\lib\win64\release\" -GE:HIGHENTROPYVA=off
 linker_passthrough =
 startup_bits = 64
@@ -113,7 +116,8 @@ debug_flags = -g -O0
 release_flags = -Wno-ignored-attributes
 optimize_flags = -O3
 unicode_flags = -tU
-pdb_flags = -Xlinker -pdb -Xlinker $(OUTPUTDIR:\=/)$(NAME).pdb
+debug_ext = .pdb
+pdb_flags = -Xlinker -pdb -Xlinker $(OUTPUTDIR:\=/)$(NAME).$(DEBUG_EXT)
 warn_flags =
 stack_flag = -Xlinker --stack=
 cc = bcc64x
