@@ -78,7 +78,7 @@ EXEOUTPUTDIR = <%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug
 !endif
 <%endfor%>
 
-!ifdef UNICODE
+!ifdef ACE_UNICODE
 UC_CFLAGS    = $(UNICODE_CFLAGS)
 UNICODE_DIR  = Unicode\\
 UC_MAIN      = w
