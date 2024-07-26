@@ -10,6 +10,7 @@
 !ifdef <%normalize(uc(compiler))%>
 CC = <%cc%>
 OPTIMIZE_CFLAGS = <%optimize_flags%>
+UNICODE_CFLAGS = <%unicode_flags%>
 PDB_FLAGS = <%pdb_flags%>
 DEBUG_CFLAGS = <%debug_flags%>
 RELEASE_CFLAGS = <%release_flags%>
@@ -80,7 +81,7 @@ EXEOUTPUTDIR = <%if(exeout)%><%exeout%><%if(windows_style)%>\<%output_dir("Debug
 <%endfor%>
 
 !ifdef UNICODE
-UC_CFLAGS    = <%unicode_flags%>
+UC_CFLAGS    = $(UNICODE_CFLAGS)
 UNICODE_DIR  = Unicode\\
 UC_MAIN      = w
 ULIBMODIFIER = <%unicode_lib_modifier%>
