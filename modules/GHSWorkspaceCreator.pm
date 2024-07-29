@@ -109,10 +109,11 @@ sub pre_workspace {
             "primaryTarget=$tgt$crlf",
             "customization=\${__OS_DIR}\\target\\integrity.bod$crlf",
             "[Project]$crlf",
+            "\t#Trick ACE to proceed with C++11; we're not actually using C++14!$crlf"
             "\t-DACE_HAS_CPP14$crlf",
             "\t-gcc$crlf",
-            "\t--c++14$crlf",
-            "\t--libcxx$crlf",
+            "\t--c++11$crlf",
+            #"\t--libcxx$crlf",
             "\t:sourceDir=.$crlf",
             "\t:optionsFile=\${__OS_DIR}\\target\\\${__BSP_NAME}.opt$crlf",
 	          "\t-I\${ACE_ROOT}$crlf",
