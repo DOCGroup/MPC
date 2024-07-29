@@ -121,7 +121,7 @@ optimize_flags = -O3
 unicode_flags = -tU
 unicode_linker_flags = -tU
 debug_ext = .pdb
-pdb_flags = -Xlinker -pdb -Xlinker $(OUTPUTDIR:\=/)$(NAME).$(DEBUG_EXT)
+pdb_flags = -Xlinker -pdb -Xlinker $(OUTPUTDIR:\=/)$(NAME)$(DEBUG_EXT)
 warn_flags =
 stack_flag = -Xlinker --stack=
 cc = bcc64x
