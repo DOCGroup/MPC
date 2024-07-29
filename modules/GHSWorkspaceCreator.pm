@@ -109,7 +109,7 @@ sub pre_workspace {
             "primaryTarget=$tgt$crlf",
             "customization=\${__OS_DIR}\\target\\integrity.bod$crlf",
             "[Project]$crlf",
-            "\t#Trick ACE to proceed with C++11; we're not actually using C++14!$crlf"
+            "\t#Trick ACE to proceed with C++11; we're not actually using C++14!$crlf",
             "\t-DACE_HAS_CPP14$crlf",
             "\t-gcc$crlf",
             "\t--c++11$crlf",
