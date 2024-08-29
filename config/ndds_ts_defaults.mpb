@@ -4,8 +4,6 @@ project {
     command               = <%quote%>$(NDDSHOME)/bin/rtiddsgen<%quote%>
     commandflags          = $(PLATFORM_NDDS_FLAGS)
 
-    dependent             = $(NDDSHOME)/bin/rtiddsgen<%bat%>
-
     source_pre_extension  = , Support, Plugin
     source_outputext      = .cxx
     header_pre_extension  = , Support, Plugin
