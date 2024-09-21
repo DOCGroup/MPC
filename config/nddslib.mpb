@@ -27,5 +27,8 @@ project {
     else
     FLAGS_C_CC += -DRTI_UNIX
     endif
+    ifeq ($(ACE_PLATFORM_CONFIG),config-qnx.h)
+    FLAGS_C_CC += -DRTI_QNX
+    endif
   }
 }
