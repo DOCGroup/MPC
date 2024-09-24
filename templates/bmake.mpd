@@ -26,7 +26,6 @@ COMMON_FLAGS = <%foreach(common_flags)%><%common_flag%><%endfor%>
 PLATFORM_LIBS_PREFIX = <%platform_libs_prefix%>
 OBJ_EXT = <%obj_ext%>
 LINKER_PATHS = <%linker_paths%>
-LINKER_PASSTHROUGH = <%linker_passthrough%>
 STARTUP_BITS = <%startup_bits%>
 LINK = <%link%>
 COMMON_LIBS = <%common_libs%>
@@ -157,10 +156,10 @@ LFLAGS   = \
 
 LIBFILES = \
 <%foreach(reverse(libs))%>
-           $(LINKER_PASSTHROUGH) <%libname_prefix%><%lib%>$(LIBMODIFIER)$(ULIBMODIFIER)$(LIB_EXT) \
+           <%libname_prefix%><%lib%>$(LIBMODIFIER)$(ULIBMODIFIER)$(LIB_EXT) \
 <%endfor%>
 <%foreach(reverse(lit_libs))%>
-           $(LINKER_PASSTHROUGH) <%lit_lib%>$(LIB_EXT) \
+           <%lit_lib%>$(LIB_EXT) \
 <%endfor%>
 <%foreach(reverse(platform_libs))%>
            $(PLATFORM_LIBS_PREFIX)<%platform_libs%> \

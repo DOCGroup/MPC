@@ -35,7 +35,6 @@ common_flags = -a8
 obj_ext = .obj
 debug_ext = .tds
 linker_paths = -L\"$(BDS)\lib\win32\release\" -L\"$(BDS)\lib\win32\debug\"
-linker_passthrough =
 startup_bits = 32
 link = ilink32
 common_libs = ws2_32$(LIB_EXT) import32$(LIB_EXT) cw32mti$(LIB_EXT) $(CG_LIB)
@@ -68,7 +67,6 @@ common_flags = -a8
 obj_ext = .obj
 debug_ext = .tds
 linker_paths = -L\"$(BDS)\lib\win32c\debug\" -L\"$(BDS)\lib\win32c\release\"
-linker_passthrough =
 startup_bits = 32
 link = ilink32
 common_libs = ws2_32$(LIB_EXT) import32$(LIB_EXT) cw32mti$(LIB_EXT)
@@ -99,8 +97,7 @@ common_defines = WIN32 _WINDOWS WIN64
 common_flags =
 obj_ext = .o
 debug_ext = .tds
-linker_paths = -L\"$(BDS)\lib\win64\debug\" -L\"$(BDS)\lib\win64\release\" -GE:HIGHENTROPYVA=off
-linker_passthrough =
+linker_paths = -L\"$(BDS)\lib\win64\debug\" -L\"$(BDS)\lib\win64\release\"
 startup_bits = 64
 link = ilink64
 common_libs = ws2_32$(LIB_EXT) import64$(LIB_EXT) cw64mti$(LIB_EXT)
@@ -129,10 +126,9 @@ binary_flags = -tR -tD
 thr_flags = -tM
 lib_ext = .lib
 common_defines = WIN32 _WINDOWS WIN64
-common_flags = -Qunused-arguments
+common_flags =
 obj_ext = .o
 linker_paths =
-linker_passthrough = -Xlinker
 startup_bits = 64
 ccflags = -q
 link = bcc64x
@@ -142,6 +138,6 @@ tlib = tlib64
 dllflags = -tD -tR
 exeflags = -tR
 object_search_path = 0
-linker_dll_arguments = --driver-mode=g++ $(DLLFLAGS) $(UC_LFLAGS) $(LFLAGS:\=/) $(OBJFILES:\=/) -o $(OUTPUTDIR:\=/)$(NAME)$(DLL_EXT) -Xlinker --out-implib -Xlinker $(OUTPUTDIR:\=/)$(NAME).lib $(LIBFILES:\=/) $(RESOURCE:\=/)
-linker_exe_arguments = --driver-mode=g++ $(EXEFLAGS) $(UC_LFLAGS) $(LFLAGS:\=/) $(OBJFILES:\=/) -o $(OUTPUTDIR:\=/)$(NAME)$(EXE_EXT) $(LIBFILES:\=/) $(RESOURCE:\=/)
+linker_dll_arguments = $(DLLFLAGS) $(UC_LFLAGS) $(LFLAGS:\=/) $(OBJFILES:\=/) -o $(OUTPUTDIR:\=/)$(NAME)$(DLL_EXT) -Xlinker --out-implib -Xlinker $(OUTPUTDIR:\=/)$(NAME).lib $(LIBFILES:\=/) $(RESOURCE:\=/)
+linker_exe_arguments = $(EXEFLAGS) $(UC_LFLAGS) $(LFLAGS:\=/) $(OBJFILES:\=/) -o $(OUTPUTDIR:\=/)$(NAME)$(EXE_EXT) $(LIBFILES:\=/) $(RESOURCE:\=/)
 }
