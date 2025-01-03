@@ -92,37 +92,27 @@ sub pre_workspace {
   my $ghs_os_dir = defined $ENV{GHS_OS_DIR} ? $ENV{GHS_OS_DIR} : 'C:\ghs\int1146';
   my $ghs_bsp_name = defined $ENV{GHS_BSP_NAME} ? $ENV{GHS_BSP_NAME} : "sim800";
 
-  ## Require that ACE_ROOT and TAO_ROOT environment variables are set.
-  my $ace_root = $ENV{ACE_ROOT};
-  my $tao_root = $ENV{TAO_ROOT};
-
   ## Print out the preliminary information
   print $fh "#!gbuild$crlf",
+            "import ACE_ROOT$crlf",
+            "import TAO_ROOT$crlf",
             "macro __OS_DIR=$ghs_os_dir$crlf",
             "macro __BSP_NAME=$ghs_bsp_name$crlf",
             "macro __BSP_DIR=\${__OS_DIR}\\\${__BSP_NAME}$crlf",
-            "macro ACE_ROOT=$ace_root$crlf",
             "macro __BUILD_DIR=\${ACE_ROOT}\\build$crlf",
-            #"macro __BUILD_DIR=%expand_path(.)\\build$crlf",
-            "macro TAO_ROOT=$tao_root$crlf",
             "macro __LIBS_DIR_BASE=\${__OS_DIR}\\libs$crlf",
             "primaryTarget=$tgt$crlf",
             "customization=\${__OS_DIR}\\target\\integrity.bod$crlf",
             "[Project]$crlf",
-            "\t#Trick ACE to proceed with C++11; we're not actually using C++14!$crlf",
-            "\t-DACE_HAS_CPP14$crlf",
             "\t-gcc$crlf",
             "\t--c++11$crlf",
-            #"\t--libcxx$crlf",
             "\t:sourceDir=.$crlf",
             "\t:optionsFile=\${__OS_DIR}\\target\\\${__BSP_NAME}.opt$crlf",
-	          "\t-I\${ACE_ROOT}$crlf",
+            "\t-I\${ACE_ROOT}$crlf",
             "\t-I\${TAO_ROOT}$crlf",
-            #"\t-I$ace_root$crlf",
-            #"\t-I$tao_root$crlf",
-	          "\t-language=cxx$crlf",
-	          "\t--new_style_casts$crlf",
-	          "\t-non_shared$crlf";
+            "\t-language=cxx$crlf",
+            "\t--new_style_casts$crlf",
+            "\t-non_shared$crlf";
 }
 
 # Write a .int file processed by the Integrate tool to create a dynamic download image.
@@ -140,14 +130,16 @@ sub create_integrity_project {
   my $fh       = new FileHandle();
   my $int_file = $int_proj;
   $int_file =~ s/\.gpj$/.int/;
+  my $int_file_base = $self->mpc_basename($int_file);
+  my $project_base = $self->mpc_basename($project);
 
   my $int_proj_path = is_absolute_path($int_proj) ? $int_proj : "$outdir/$int_proj";
   if (open($fh, ">$int_proj_path")) {
     ## First print out the project file
     print $fh "#!gbuild$crlf",
               "\t$integrity$crlf",
-              "$project\t\t$type$crlf",
-              "$int_file$crlf";
+              "$project_base\t\t$type$crlf",
+              "$int_file_base$crlf";
     foreach my $bsp (@integ_bsps) {
       print $fh "$bsp$crlf";
     }
