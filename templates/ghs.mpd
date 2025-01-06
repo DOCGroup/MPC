@@ -2,7 +2,7 @@
 #primaryTarget=<%primaryTarget("ppc_integrity.tgt")%>
 <%if(exename)%>
 [Program]
-	-o <%if(exeout)%><%exeout%><%endif%>/<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>
+	-o <%if(exeout)%><%exeout%>/<%endif%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>
 <%if(need_staticflags)%>
 	-non_shared
 <%endif%>
@@ -135,6 +135,8 @@
 <%if(!custom_only && source_files)%>
 <%foreach(custom_type->input_file->source_output_files)%>
 <%if(forfirst)%>
+<%if(remove_from(source_files, \.cpp, custom_type->input_file->source_output_file, \.cpp))%>
+<%endif%>
 <%custom_type->input_file->source_output_file%>
 <%endif%>
 <%endfor%>
