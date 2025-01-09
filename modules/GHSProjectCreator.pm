@@ -25,6 +25,11 @@ use vars qw(@ISA);
 # Data Section
 # ************************************************************
 
+my %templates = ('ghs' => '.gpj',
+                 'ghscmd' => '.cmd');
+my @tkeys = sort keys %templates;
+my $default_template = 'ghs';
+
 my $startre;
 
 # ************************************************************
@@ -67,6 +72,7 @@ sub post_file_creation {
   return undef;
 }
 
+
 sub compare_output {
   #my $self = shift;
   return 1;
@@ -76,6 +82,26 @@ sub compare_output {
 sub project_file_extension {
   #my $self = shift;
   return '.gpj';
+}
+
+
+sub get_template {
+  return @tkeys;
+}
+
+
+sub file_visible { # (self, template)
+  return $_[1] eq $default_template;
+}
+
+
+sub project_file_name {
+  my($self, $name, $template) = @_;
+  my $project_file_name = $self->SUPER::project_file_name($name, $template);
+  if (!$self->file_visible($template)) {
+    $project_file_name =~ s/\.gpj$/.cmd/;
+  }
+  return $project_file_name;
 }
 
 

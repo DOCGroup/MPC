@@ -1,0 +1,20 @@
+pushd <%convert_slashes(reltop)%>
+<%foreach(custom_types)%>
+<%foreach(custom_type->input_files)%>
+<%if(flag_overrides(custom_type->input_file, gendir))%>
+<%mkdir%> <%flag_overrides(custom_type->input_file, gendir)%><%postmkdir%>
+<%endif%>
+<%translate_vars(custom_type->command, win32)%> ^
+<%if(flag_overrides(custom_type->input_file, commandflags))%>
+  <%translate_vars(flag_overrides(custom_type->input_file, commandflags), win32)%> ^
+<%else%>
+  <%translate_vars(custom_type->commandflags, win32)%> ^
+<%endif%>
+<%if(custom_type->output_option)%>
+  <%custom_type->input_file%> <%custom_type->output_option%> <%custom_type->input_file->output_file%>
+<%else%>
+  <%custom_type->input_file%>
+<%endif%>
+<%endfor%>
+<%endfor%>
+popd
