@@ -96,6 +96,8 @@ sub pre_workspace {
   print $fh "#!gbuild$crlf",
             "import ACE_ROOT$crlf",
             "import TAO_ROOT$crlf",
+            'defineConfig(Debug dbg "")', $crlf,
+            'defineConfig(Release rel "")', $crlf,
             "macro __OS_DIR=$ghs_os_dir$crlf",
             "macro __BSP_NAME=$ghs_bsp_name$crlf",
             "macro __BSP_DIR=\${__OS_DIR}\\\${__BSP_NAME}$crlf",
@@ -112,7 +114,8 @@ sub pre_workspace {
             "\t-I\${TAO_ROOT}$crlf",
             "\t-language=cxx$crlf",
             "\t--new_style_casts$crlf",
-            "\t-non_shared$crlf";
+            "\t-non_shared$crlf",
+            "\t{config(dbg)}-G$crlf";
 }
 
 # Write a .int file processed by the Integrate tool to create a dynamic download image.
@@ -158,7 +161,7 @@ sub create_integrity_project {
                 # Increase to 2MB here to cover more applications.
                 "\tHeapSize\t\t\t0x200000$crlf",
                 "\tTask Initial$crlf",
-                "\t\tStackLength\t\t0x8000$crlf",
+                "\t\tStackLength\t\t0xa000$crlf",
                 "\tEndTask$crlf",
                 "EndAddressSpace$crlf";
       close($fh);
