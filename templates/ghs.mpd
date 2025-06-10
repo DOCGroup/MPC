@@ -7,7 +7,7 @@
 	-non_shared
 <%endif%>
 <%else%>
-<%comment("sonndinh: When sharedname is defined and staticname is not set in the mpc file,")%>
+<%comment("When sharedname is defined and staticname is not set in the mpc file,")%>
 <%comment("the staticname takes the same value as sharedname. The opposite is also true.")%>
 <%comment("Because of that, we can't condition only on whether either of them is defined.")%>
 <%comment("This fixes that by including the template input variable need_staticflags.")%>

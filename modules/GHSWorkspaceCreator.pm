@@ -77,15 +77,6 @@ sub pre_workspace {
     }
   }
 
-  # TODO(sonndinh):
-  # Some other information is specific to ACE such as its root directory,
-  # its compilation and linking requirements (C++ version, flags, etc).
-  # These can be put in some form of input to MPC instead of hardcoded here.
-  # We can use environment variables and command-line options:
-  # --expand_vars, -use_env. Or can use the -relative command-line option.
-  # The first option requires setting environment variables.
-  # The second option requires passing parameters to the -relative option.
-
   ## Try to read the INTEGRITY installation directory and BSP name from environment.
   ## Default values are the installation directory on Windows and the BSP name
   ## for the simulator for PowerPC architecture.
@@ -200,27 +191,15 @@ sub mix_settings {
           $type = $integrity;               # [INTEGRITY Application]
         }
         $mix .= "\t\t$type$crlf";
-        #$mix .= "\t\t$type$crlf" .
-        #        "\t-object_dir=" . $self->mpc_dirname($project) .
-        #        '/.obj' . $crlf;
       }
       elsif (/^\s*(\[Shared Object\])\s*$/) {
         $mix .= "\t\t$1$crlf";
-        #$mix .= "\t\t$1$crlf" .
-        #        "\t-pic$crlf" .
-        #        "\t-object_dir=" . $self->mpc_dirname($project) .
-        #        '/.shobj' . $crlf;
       }
       elsif ($integrity_project && /^(.*\.bsp)\s/) {
         push(@integ_bsps, $1);
       }
       else {
         if (/^\s*\-((\w)\w*)/) {
-          ## Save the required options into the mixed project string
-          if (defined $directives{$2} || defined $directives{$1}) {
-            #$mix .= $_;
-          }
-
           ## If this is an integrity project, we need to find out
           ## what the output file will be for the integrate file.
           if (defined $int_proj && /^\s*\-o\s+(.*)\s$/) {

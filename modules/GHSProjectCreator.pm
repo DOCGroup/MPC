@@ -86,7 +86,7 @@ sub project_file_extension {
 
 
 sub get_template {
-  return @tkeys;
+  return $ENV{MPC_GHS_GENERATE_CMD} ? @tkeys : $_[0]->{'pctype'};
 }
 
 
@@ -112,10 +112,6 @@ sub fill_value {
   if (!defined $startre) {
     $startre = $self->escape_regex_special($self->getstartdir());
   }
-
-  ## NOTE(sonndinh): As of Green Hills MULTI IDE v8.1.4, the paths do not
-  ## need to be relative to the top directory. Hence, most of the reltop_
-  ## uses in the GHS template are removed.
 
   ## The Green Hills project format is strange and needs all paths
   ## relative to the top directory, no matter where the source files
