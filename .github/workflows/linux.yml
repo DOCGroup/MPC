@@ -23,7 +23,7 @@ jobs:
             CXX: g++-10
             PackageDeps: g++-10
             platform_file: include $(ACE_ROOT)/include/makeinclude/platform_linux.GNU
-            os: ubuntu-20.04
+            os: ubuntu-24.04
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} ${{ matrix.CXX }} ${{ matrix.feature }}
     env:
@@ -43,7 +43,7 @@ jobs:
         path: ${{ env.DOC_ROOT }}
     - name: Add Repo
       run: |
-        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
         sudo apt-add-repository "deb http://apt.llvm.org/$(lsb_release -cs)/ ${{ matrix.Repo }} main"
       if: matrix.Repo != ''
     - name: Add packages
