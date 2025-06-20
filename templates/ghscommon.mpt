@@ -5,3 +5,4 @@ conditional_include "unixcommon"
 optimize       = 1
 exceptions     = 1
 lib_modifier   =
+need_staticflags = 1

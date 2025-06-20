@@ -1,21 +1,25 @@
 #!gbuild
 #primaryTarget=<%primaryTarget("ppc_integrity.tgt")%>
 <%if(exename)%>
-	[Program]
-	-o <%if(exeout)%><%reltop_exeout%><%else%><%reltop%><%endif%>/<%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>
+[Program]
+	-o <%if(exeout)%><%exeout%>/<%endif%><%exename%><%if(use_exe_modifier)%><%lib_modifier%><%endif%><%exe_ext%>
 <%if(need_staticflags)%>
-	{optional} -non_shared
+	-non_shared
 <%endif%>
 <%else%>
-<%if(sharedname)%>
-	[Shared Object]
-	-o <%if(dllout)%><%reltop_dllout%><%else%><%reltop_libout%><%endif%>/<%lib_prefix%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%libext(".so")%>
+<%comment("When sharedname is defined and staticname is not set in the mpc file,")%>
+<%comment("the staticname takes the same value as sharedname. The opposite is also true.")%>
+<%comment("Because of that, we can't condition only on whether either of them is defined.")%>
+<%comment("This fixes that by including the template input variable need_staticflags.")%>
+<%if(!need_staticflags && sharedname)%>
+[Shared Object]
+  -o <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>/<%lib_prefix%><%libname_prefix%><%sharedname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%libext(".so")%>
 <%else%>
-<%if(staticname)%>
-	[Library]
-	-o <%reltop_libout%>/<%lib_prefix%><%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%libext(".a")%>
+<%if(need_staticflags && staticname)%>
+[Library]
+	-o <%libout%>/<%lib_prefix%><%libname_prefix%><%staticname%><%if(use_lib_modifier)%><%lib_modifier%><%endif%><%libext(".a")%>
 <%else%>
-	[Subproject]
+[Subproject]
 <%endif%>
 <%endif%>
 <%endif%>
@@ -40,11 +44,11 @@
 	-D<%pch_define%>
 <%endfor%>
 <%endif%>
-<%foreach(reltop_includes)%>
-	-I<%reltop_include%>
+<%foreach(includes)%>
+	-I<%include%>
 <%endfor%>
-<%foreach(reltop_libpaths)%>
-	-L<%reltop_libpath%>
+<%foreach(libpaths)%>
+	-L<%libpath%>
 <%endfor%>
 <%if(libs || lit_libs || pure_libs)%>
 <%if(exename || sharedname)%>
@@ -131,6 +135,8 @@
 <%if(!custom_only && source_files)%>
 <%foreach(custom_type->input_file->source_output_files)%>
 <%if(forfirst)%>
+<%if(remove_from(source_files, \.cpp, custom_type->input_file->source_output_file, \.cpp))%>
+<%endif%>
 <%custom_type->input_file->source_output_file%>
 <%endif%>
 <%endfor%>
