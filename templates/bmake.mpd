@@ -42,6 +42,7 @@ EXEFLAGS = <%exeflags%>
 LINKER_DLL_ARGUMENTS = <%linker_dll_arguments%>
 LINKER_EXE_ARGUMENTS = <%linker_exe_arguments%>
 DEBUG_EXT = <%debug_ext%>
+<%if(parallel_flags)%>PARALLEL_CFLAGS = <%parallel_flags%><%endif%>
 !else
 <%endfor%>
 !error You must select one of these compilers:<%foreach(compilers)%> <%normalize(uc(compiler))%><%endfor%>
@@ -97,6 +98,8 @@ EXE_EXT      = <%exe_ext%>
 RC           = <%rc%>
 LIBFLAGS     = <%libflags%>
 CCFLAGS      = $(CC_CFLAGS)<%if(type_is_binary)%> $(BINARY_FLAGS)<%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
+
+.nosilent
 
 <%if(use_vcl)%>
 STARTUP_LETTER = <%if(exename)%>w<%else%><%startup_letter%><%endif%>
@@ -314,10 +317,18 @@ generated: $(GENERATED_DIRTY)
 
 .path$(OBJ_EXT) = $(INTERMEDIATE)
 
+!ifdef PARALLEL_CFLAGS
+.path.cpp = $(CPPDIR)
+.cpp$(OBJ_EXT):
+  if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+  $(CC) $(PARALLEL_CFLAGS) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -output-dir $(@D) -c {$? }
+
+!else
 .path.cpp = $(CPPDIR)
 .cpp$(OBJ_EXT):
   @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
         $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
+!endif
 
 .path.cxx = $(CPPDIR)
 .cxx$(OBJ_EXT):
