@@ -99,6 +99,10 @@ RC           = <%rc%>
 LIBFLAGS     = <%libflags%>
 CCFLAGS      = $(CC_CFLAGS)<%if(type_is_binary)%> $(BINARY_FLAGS)<%endif%><%if(compile_flags)%> <%compile_flags%><%endif%>
 
+!ifndef MPC_NUMBER_OF_PROCESSORS
+MPC_NUMBER_OF_PROCESSORS = $(NUMBER_OF_PROCESSORS)
+!endif
+
 .nosilent
 
 <%if(use_vcl)%>
