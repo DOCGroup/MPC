@@ -334,7 +334,7 @@ $(OUTPUTDIR):
 !else
 .path.cpp = $(CPPDIR)
 .cpp$(OBJ_EXT):
-  (CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
+  $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
 !endif
 
 .path.cxx = $(CPPDIR)
