@@ -140,4 +140,5 @@ exeflags = -tR
 object_search_path = 0
 linker_dll_arguments = $(DLLFLAGS) $(UC_LFLAGS) $(LFLAGS:\=/) $(OBJFILES:\=/) -o $(OUTPUTDIR:\=/)$(NAME)$(DLL_EXT) -Xlinker --out-implib -Xlinker $(OUTPUTDIR:\=/)$(NAME).lib $(LIBFILES:\=/) $(RESOURCE:\=/)
 linker_exe_arguments = $(EXEFLAGS) $(UC_LFLAGS) $(LFLAGS:\=/) $(OBJFILES:\=/) -o $(OUTPUTDIR:\=/)$(NAME)$(EXE_EXT) $(LIBFILES:\=/) $(RESOURCE:\=/)
+parallel_flags = --jobs=$(MPC_NUMBER_OF_PROCESSORS)
 }
