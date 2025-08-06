@@ -355,7 +355,7 @@ $(OUTPUTDIR):
 
 <%foreach(source_files)%>
 <%if(transdir(source_file) || flag_overrides(source_file, buildflags))%>
-"$(INTERMEDIATE)\<%transdir(source_file)%><%basenoextension(source_file)%>$(OBJ_EXT)"
+"$(INTERMEDIATE)\<%transdir(source_file)%><%basenoextension(source_file)%>$(OBJ_EXT)":
   if not exist "$(INTERMEDIATE)\<%transdir(source_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(source_file)%>"
   $(CC) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) <%source_file%>
 <%endif%>
