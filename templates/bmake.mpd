@@ -219,8 +219,7 @@ CFLAGS = \
 OUTPUTDIR = $(EXEOUTPUTDIR)
 all:<%if(prebuild)%> __prebuild__<%endif%> $(OUTPUTDIR)$(NAME)$(EXE_EXT)<%if(postbuild)%> __postbuild__<%endif%>
 
-$(OUTPUTDIR)$(NAME)$(EXE_EXT): $(OBJFILES) $(RESOURCE)
-  @if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
+$(OUTPUTDIR)$(NAME)$(EXE_EXT): $(INTERMEDIATE) $(OUTPUTDIR) $(OBJFILES) $(RESOURCE)
 <%if(prelink)%>
   <%eval(prelink)%>
 <%endif%>
@@ -234,8 +233,7 @@ $(OUTPUTDIR)$(NAME)$(EXE_EXT): $(OBJFILES) $(RESOURCE)
 OUTPUTDIR = <%if(dllout)%><%dllout%><%else%><%libout%><%endif%>\\
 all:<%if(prebuild)%> __prebuild__<%endif%> $(OUTPUTDIR)$(NAME)$(DLL_EXT)<%if(postbuild)%> __postbuild__<%endif%>
 
-$(OUTPUTDIR)$(NAME)$(DLL_EXT): $(OBJFILES) $(RESOURCE)
-  @if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
+$(OUTPUTDIR)$(NAME)$(DLL_EXT): $(INTERMEDIATE) $(OUTPUTDIR) $(OBJFILES) $(RESOURCE)
 <%if(prelink)%>
   <%eval(prelink)%>
 <%endif%>
@@ -250,8 +248,7 @@ $(OUTPUTDIR)$(NAME)$(DLL_EXT): $(OBJFILES) $(RESOURCE)
 OUTPUTDIR = <%libout%>\\
 all:<%if(prebuild)%> __prebuild__<%endif%> $(OUTPUTDIR)$(NAME)$(LIB_EXT)<%if(postbuild)%> __postbuild__<%endif%>
 
-$(OUTPUTDIR)$(NAME)$(LIB_EXT): $(OBJFILES)
-  @if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
+$(OUTPUTDIR)$(NAME)$(LIB_EXT): $(INTERMEDIATE) $(OUTPUTDIR) $(OBJFILES)
   $(TLIB) $(LIBFLAGS) $(OUTPUTDIR)$(NAME)$(LIB_EXT) @&&!
 + $(**: = &^
 + )
@@ -315,45 +312,47 @@ all:<%if(prebuild)%> __prebuild__<%endif%> $(GENERATED_DIRTY)<%if(postbuild)%> _
 generated: $(GENERATED_DIRTY)
   @-rem
 
+$(INTERMEDIATE):
+  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+
+<%if(exename || sharedname || staticname)%>
+$(OUTPUTDIR):
+  @if not exist "$(OUTPUTDIR)" mkdir "$(OUTPUTDIR)"
+<%endif%>
+
 .path$(OBJ_EXT) = $(INTERMEDIATE)
 
 !ifdef PARALLEL_CFLAGS
 .path.cpp = $(CPPDIR)
 .cpp$(OBJ_EXT):
-  if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
   $(CC) $(PARALLEL_CFLAGS) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -output-dir $(@D) -c {$? }
 
 !else
 .path.cpp = $(CPPDIR)
 .cpp$(OBJ_EXT):
-  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
+  (CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
 !endif
 
 .path.cxx = $(CPPDIR)
 .cxx$(OBJ_EXT):
-  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
+  $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
 
 .path.cc = $(CPPDIR)
 .cc$(OBJ_EXT):
-  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
+  $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
 
 .path.C = $(CPPDIR)
 .C$(OBJ_EXT):
-  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
+  $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
 
 .path.c = $(CPPDIR)
 .c$(OBJ_EXT):
-  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
+  $(CC) $(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) $<
 
 <%foreach(source_files)%>
 <%if(transdir(source_file) || flag_overrides(source_file, buildflags))%>
-"$(INTERMEDIATE)\<%transdir(source_file)%><%basenoextension(source_file)%>$(OBJ_EXT)":
-  @if not exist "$(INTERMEDIATE)\<%transdir(source_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(source_file)%>"
+"$(INTERMEDIATE)\<%transdir(source_file)%><%basenoextension(source_file)%>$(OBJ_EXT)"
+  if not exist "$(INTERMEDIATE)\<%transdir(source_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(source_file)%>"
   $(CC) <%if(flag_overrides(source_file, buildflags))%><%flag_overrides(source_file, buildflags)%> <%endif%>$(DYN_FLAGS) $(STATIC_FLAGS) $(OCFLAGS) $(CG_CFLAGS) $(UC_CFLAGS) $(THREAD_FLAGS) $(CCFLAGS) $(CFLAGS) $(WARN_FLAGS) -c -o $(@D)\$(@F) <%source_file%>
 <%endif%>
 <%endfor%>
@@ -362,12 +361,12 @@ generated: $(GENERATED_DIRTY)
 .path.res = $(INTERMEDIATE)
 .path.rc = $(RESDIR)
 .rc.res:
-  @if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
-        $(RC) $(RC_FLAGS) -fo$@ $<
+  if not exist "$(INTERMEDIATE)" mkdir "$(INTERMEDIATE)"
+  $(RC) $(RC_FLAGS) -fo$@ $<
 <%foreach(resource_files)%>
 <%if(transdir(resource_file))%>
 "$(INTERMEDIATE)\<%transdir(resource_file)%><%basenoextension(resource_file)%>.res":
-  @if not exist "$(INTERMEDIATE)\<%transdir(resource_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(resource_file)%>"
+  if not exist "$(INTERMEDIATE)\<%transdir(resource_file)%>" mkdir "$(INTERMEDIATE)\<%transdir(resource_file)%>"
   $(RC) -fo$@ <%resource_file%>
 <%endif%>
 <%endfor%>
