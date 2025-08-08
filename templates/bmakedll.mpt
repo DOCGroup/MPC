@@ -9,6 +9,7 @@ Release {
   defines          = NDEBUG
   intermediate_dir = Release
   lib_modifier     = _br
+  pdbl             = 1
 }
 
 Debug {
@@ -17,6 +18,7 @@ Debug {
   defines          = _DEBUG
   intermediate_dir = Debug
   lib_modifier     = _bd
+  pdbl             = 1
 }
 
 Static Release {
@@ -26,6 +28,7 @@ Static Release {
   intermediate_dir = Static_Release
   lib_modifier     = _bsr
   type_is_static   = 1
+  pdbl             = 1
 }
 
 Static Debug {
@@ -36,6 +39,7 @@ Static Debug {
   intermediate_dir = Static_Debug
   lib_modifier     = _bsd
   type_is_static   = 1
+  pdbl             = 1
 }
 
 conditional_include "user_bmakedll"
