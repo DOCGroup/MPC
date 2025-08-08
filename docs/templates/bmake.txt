@@ -22,6 +22,7 @@ exeflags = Linker flags that are required to create an executable.
 libflags = Flags that are required to create a static library.
 link = The name of the tool used to create dynamic libraries and executables.
 obj_ext = The extension given to object files.
+pdbl = If this boolean template variable is set, the Linker Debugging property "Generate Program Database File" will be set according to the project target.
 rc = The name of the resource compiler.
 rcdir = The list of directories to be searched when locating resource files. This is determined by the BMakeProjectCreator.
 startup_letter = The text used during the creation of the startup object file.
