@@ -19,6 +19,7 @@ debug_prj = Indicates that the current template configuration is debug.  This is
 defines = Macros that are specific to a particular configuration.
 dllflags = Linker flags that are required to create a dynamic library.
 exeflags = Linker flags that are required to create an executable.
+languagestandard = Which version of ISO C++ standard to compile against (c++14, c++17, c++20, c++23)
 libflags = Flags that are required to create a static library.
 link = The name of the tool used to create dynamic libraries and executables.
 obj_ext = The extension given to object files.
