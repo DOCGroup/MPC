@@ -31,9 +31,9 @@ jobs:
       MPC_ROOT: ${{ github.workspace }}/
     steps:
     - name: checkout MPC
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: checkout ACE/TAO
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: DOCGroup/ACE_TAO
         path: ${{ env.DOC_ROOT }}
