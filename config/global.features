@@ -20,7 +20,6 @@ erlang        = 0
 java          = 0
 mfc           = 0
 libpng        = 0
-openssl11     = 0
 python        = 0
 qt            = 0 // Qt3
 qt4           = 0

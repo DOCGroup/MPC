@@ -19,7 +19,7 @@ feature(openssl) {
   }
 
   specific(prop:windows) {
-    lit_libs += libeay32 ssleay32
+    lit_libs += libssl libcrypto
     includes += $(SSL_ROOT)/inc32
     libpaths += $(SSL_ROOT)/out32dll $(SSL_ROOT)/out32
   } else {
@@ -46,12 +46,5 @@ feature(openssl) {
 
     lit_libs += ${OPENSSL_LIBRARIES}
     includes += ${OPENSSL_INCLUDE_DIR}
-  }
-}
-
-feature(openssl11) {
-  specific(prop:windows) {
-    lit_libs -= libeay32 ssleay32
-    lit_libs += libssl libcrypto
   }
 }
