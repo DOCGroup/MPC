@@ -20,8 +20,6 @@ feature(openssl) {
 
   specific(prop:windows) {
     lit_libs += libssl libcrypto
-    includes += $(SSL_ROOT)/inc32
-    libpaths += $(SSL_ROOT)/out32dll $(SSL_ROOT)/out32
   } else {
     lit_libs += ssl crypto
 
