@@ -30,15 +30,6 @@ feature(openssl) {
     includes += /usr/kerberos/include
   }
 
-  // Some prepackaged installations of OpenSSL have libraries in different
-  // locations.
-  specific(prop:borland) {
-    libpaths += $(SSL_ROOT)/lib/Builder5
-  }
-  specific(prop:microsoft) {
-    libpaths += $(SSL_ROOT)/lib/VC
-  }
-
   specific(cmake) {
     // Undo the else of the !prop:windows above.
     lit_libs -= ssl crypto
