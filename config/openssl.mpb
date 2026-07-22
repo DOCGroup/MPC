@@ -20,23 +20,12 @@ feature(openssl) {
 
   specific(prop:windows) {
     lit_libs += libssl libcrypto
-    includes += $(SSL_ROOT)/inc32
-    libpaths += $(SSL_ROOT)/out32dll $(SSL_ROOT)/out32
   } else {
     lit_libs += ssl crypto
 
     // Some Linux OpenSSL installations compile in Kerberos support.  Add
     // the Kerberos include path to preprocessor include path.
     includes += /usr/kerberos/include
-  }
-
-  // Some prepackaged installations of OpenSSL have libraries in different
-  // locations.
-  specific(prop:borland) {
-    libpaths += $(SSL_ROOT)/lib/Builder5
-  }
-  specific(prop:microsoft) {
-    libpaths += $(SSL_ROOT)/lib/VC
   }
 
   specific(cmake) {
