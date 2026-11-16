@@ -14,8 +14,9 @@ feature(zlib) {
   macros   += ZLIB
 
   specific(prop:windows) {
-    Debug::lit_libs += zd
-    Release::lit_libs += z
+    // zlib 1.4 names its MSVC libraries libz, libzd, libzs and libzsd,
+    // which matches libz with the lib_modifier MPC adds
+    libs += libz
   } else {
     lit_libs += z
   }
