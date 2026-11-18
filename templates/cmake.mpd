@@ -41,42 +41,24 @@ endif()
 set(PROJECT_TARGET_<%uc(normalize(project_name))%> <%if(exename)%><%exename%><%else%><%if(sharedname)%><%sharedname%>${LIBRARY_DECORATOR}<%else%><%if(staticname)%><%staticname%>${LIBRARY_DECORATOR}<%else%><%project_name%>${LIBRARY_DECORATOR}<%endif%><%endif%><%endif%>)
 <%marker(macros)%>
 
-<%if(exeout)%>
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <%env_exeout%>)
-<%if(use_lib_modifier)%>
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG <%env_exeout%>)
-<%endif%>
-<%endif%>
-<%if(!exename)%>
-<%if(libout)%>
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY <%env_libout%>)
-<%if(use_lib_modifier)%>
+<%if(exename)%>
 <%foreach(configurations)%>
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_libout%>)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_<%uc(configuration)%> <%exeout%>)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_<%uc(configuration)%> <%libout%>)
 <%endfor%>
 <%endif%>
-<%endif%>
-<%if(dllout)%>
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY <%env_dllout%>)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <%env_dllout%>)
-<%if(use_lib_modifier)%>
+
+<%if(staticname)%>
 <%foreach(configurations)%>
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_dllout%>)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_dllout%>)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_<%uc(configuration)%> <%libout%>)
 <%endfor%>
 <%endif%>
-<%else%>
-<%if(libout)%>
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY <%env_libout%>)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY <%env_libout%>)
-<%if(use_lib_modifier)%>
+
+<%if(sharedname)%>
 <%foreach(configurations)%>
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_libout%>)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_<%uc(configuration)%> <%env_libout%>)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_<%uc(configuration)%> <%libout%>)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_<%uc(configuration)%> <%dllout%>)
 <%endfor%>
-<%endif%>
-<%endif%>
-<%endif%>
 <%endif%>
 
 <%if(compile_flags)%>
@@ -93,9 +75,18 @@ if(NOT BUILD_SHARED_LIBS)
                MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 <%endif%>
+<%if(linkflags)%>
+set_target_properties(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PROPERTIES LINK_FLAGS <%linkflags%>)
+<%endif%>
 <%else%>
 <%if(sharedname)%>
 add_library(${PROJECT_TARGET_<%uc(normalize(project_name))%>} SHARED ${SOURCE_FILES_<%uc(normalize(project_name))%>})
+<%if(version)%>
+set_target_properties(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PROPERTIES VERSION <%version%>)
+<%endif%>
+<%if(linkflags)%>
+set_target_properties(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PROPERTIES LINK_FLAGS <%linkflags%>)
+<%endif%>
 <%if(dynamicflags)%>
 if(BUILD_SHARED_LIBS)
   target_compile_definitions(${PROJECT_TARGET_<%uc(normalize(project_name))%>} PRIVATE <%dynamicflags%>)
