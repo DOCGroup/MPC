@@ -39,6 +39,7 @@ my %types   = ('nmake' => ['NMAKE', 'NMAKE'],
                'vs2017' => ['SLN 2017', 'PROJ 2017'],
                'vs2019' => ['SLN 2019', 'PROJ 2019'],
                'vs2022' => ['SLN 2022', 'PROJ 2022'],
+               'vs2026' => ['SLN 2026', 'PROJ 2026'],
                'wix'   => ['WiX', 'WiX Project'],
               );
 
